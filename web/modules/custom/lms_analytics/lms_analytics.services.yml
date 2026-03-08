@@ -1,0 +1,4 @@
+services:
+  lms_analytics.service:
+    class: Drupal\lms_analytics\Service\AnalyticsService
+    arguments: ['@entity_type.manager', '@database']

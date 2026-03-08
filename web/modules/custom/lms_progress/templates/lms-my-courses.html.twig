@@ -1,0 +1,47 @@
+{# My Courses page #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <h1 class="lms-manage__title">{{ 'My Courses'|t }}</h1>
+
+    {% if courses|length > 0 %}
+      <div class="row g-4">
+        {% for course in courses %}
+          <div class="col-lg-4 col-md-6">
+            <div class="lms-card lms-card--course">
+              {% if course.thumbnail %}
+                <div class="lms-card__image">
+                  <img src="{{ file_url(course.thumbnail.uri.value) }}" alt="{{ course.name }}" loading="lazy">
+                  <span class="lms-badge lms-badge--{{ course.status == 'completed' ? 'success' : (course.status == 'in_progress' ? 'warning' : 'primary') }}">
+                    {{ course.status|replace({'_': ' '})|capitalize }}
+                  </span>
+                </div>
+              {% endif %}
+              <div class="lms-card__body">
+                <h3 class="lms-card__title">
+                  <a href="{{ course.url }}">{{ course.name }}</a>
+                </h3>
+                <div class="lms-progress-bar">
+                  <div class="lms-progress-bar__fill" style="width: {{ course.progress }}%"></div>
+                </div>
+                <div class="lms-card__footer">
+                  <span class="lms-progress-bar__label">{{ course.progress|number_format(0) }}%</span>
+                  <a href="{{ course.url }}" class="lms-btn lms-btn--sm lms-btn--primary">
+                    {{ course.status == 'completed' ? 'Review'|t : 'Continue'|t }}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="lms-empty-state">
+        <i class="fas fa-book-open"></i>
+        <h3>{{ 'No enrolled courses yet'|t }}</h3>
+        <a href="{{ path('lms_course.catalog') }}" class="lms-btn lms-btn--primary">{{ 'Browse Courses'|t }}</a>
+      </div>
+    {% endif %}
+  </div>
+</section>

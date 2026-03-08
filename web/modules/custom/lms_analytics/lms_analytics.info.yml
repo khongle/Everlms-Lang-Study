@@ -1,0 +1,8 @@
+name: 'LMS Analytics'
+type: module
+description: 'Analytics integration (GA4) and internal reporting.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+lifecycle: stable

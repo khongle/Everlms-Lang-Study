@@ -1,0 +1,8 @@
+name: 'LMS Question'
+type: module
+description: 'Question bank: 8 question types with Answer and MatchingPair entities.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+lifecycle: stable

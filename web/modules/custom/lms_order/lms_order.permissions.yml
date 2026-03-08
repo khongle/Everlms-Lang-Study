@@ -1,0 +1,8 @@
+administer lms_order:
+  title: 'Administer orders'
+
+create lms_order:
+  title: 'Create orders'
+
+view own lms_order:
+  title: 'View own orders'

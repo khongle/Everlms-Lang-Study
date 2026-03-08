@@ -1,0 +1,83 @@
+{# Dashboard page #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <h1 class="lms-manage__title">{{ 'Dashboard'|t }}</h1>
+
+    {# KPI Cards #}
+    <div class="grid-kpi">
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--primary">
+          <i class="fas fa-book-open"></i>
+        </div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__value">{{ stats.enrolled }}</span>
+          <span class="lms-kpi-card__label">{{ 'Enrolled Courses'|t }}</span>
+        </div>
+      </div>
+
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--warning">
+          <i class="fas fa-spinner"></i>
+        </div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__value">{{ stats.in_progress }}</span>
+          <span class="lms-kpi-card__label">{{ 'In Progress'|t }}</span>
+        </div>
+      </div>
+
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--success">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__value">{{ stats.completed }}</span>
+          <span class="lms-kpi-card__label">{{ 'Completed'|t }}</span>
+        </div>
+      </div>
+
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--info">
+          <i class="fas fa-certificate"></i>
+        </div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__value">{{ stats.certificates }}</span>
+          <span class="lms-kpi-card__label">{{ 'Certificates'|t }}</span>
+        </div>
+      </div>
+    </div>
+
+    {# Continue Learning #}
+    {% if recent_courses|length > 0 %}
+      <div class="lms-section__header">
+        <h2 class="lms-section__title">{{ 'Continue Learning'|t }}</h2>
+        <a href="{{ path('lms_progress.my_courses') }}" class="lms-btn lms-btn--outline lms-btn--sm">{{ 'View All'|t }}</a>
+      </div>
+
+      <div class="grid-courses">
+        {% for item in recent_courses %}
+          <div class="lms-card lms-card--course">
+            <div class="lms-card__body">
+              <h3 class="lms-card__title">
+                <a href="{{ path('lms_course.detail', {'lms_course': item.course.id}) }}">{{ item.course.label }}</a>
+              </h3>
+              <div class="lms-progress-bar">
+                <div class="lms-progress-bar__fill" style="width: {{ item.progress }}%"></div>
+              </div>
+              <span class="lms-progress-bar__label">{{ item.progress|number_format(0) }}% {{ 'complete'|t }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="lms-empty-state">
+        <i class="fas fa-graduation-cap"></i>
+        <h3>{{ "You haven't enrolled in any courses yet"|t }}</h3>
+        <a href="{{ path('lms_course.catalog') }}" class="lms-btn lms-btn--primary">
+          {{ 'Browse Courses'|t }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>

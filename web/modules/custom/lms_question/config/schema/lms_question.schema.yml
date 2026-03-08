@@ -1,0 +1,13 @@
+lms_question.question_type.*:
+  type: config_entity
+  label: 'Question Type'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    description:
+      type: text
+      label: 'Description'

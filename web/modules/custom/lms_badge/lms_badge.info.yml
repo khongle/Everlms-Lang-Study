@@ -1,0 +1,8 @@
+name: 'LMS Badge'
+type: module
+description: 'Gamification badges and leaderboard.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+lifecycle: stable

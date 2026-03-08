@@ -1,0 +1,109 @@
+{# Quiz Taking Page #}
+{{ attach_library('lms_theme/global') }}
+
+<div class="lms-quiz">
+  <div class="container">
+    <div class="lms-quiz__header">
+      <h1>{{ quiz.label }}</h1>
+      {% if quiz.field_body.value %}
+        <p class="lms-quiz__instructions">{{ quiz.field_body.value|striptags }}</p>
+      {% endif %}
+
+      <div class="lms-quiz__meta">
+        <span><i class="fas fa-question-circle"></i> {{ questions|length }} {{ 'questions'|t }}</span>
+        {% if time_limit > 0 %}
+          <span><i class="fas fa-clock"></i> {{ time_limit }} {{ 'minutes'|t }}</span>
+        {% endif %}
+        <span><i class="fas fa-trophy"></i> {{ 'Pass:'|t }} {{ quiz.field_threshold.value ?? 70 }}%</span>
+      </div>
+    </div>
+
+    <form class="lms-quiz__form" method="post">
+      {% for index, question in questions %}
+        <div class="lms-card lms-quiz__question" data-question="{{ question.id }}">
+          <div class="lms-quiz__question-header">
+            <span class="lms-quiz__question-num">{{ 'Q'|t }}{{ index + 1 }}</span>
+            <span class="lms-quiz__question-points">{{ question.points }} {{ 'pts'|t }}</span>
+          </div>
+
+          <h3 class="lms-quiz__question-title">{{ question.name }}</h3>
+
+          {% if question.body %}
+            <div class="lms-quiz__question-body">{{ question.body|raw }}</div>
+          {% endif %}
+
+          {# Multiple Choice #}
+          {% if question.type == 'multiple_choice' and question.choices is defined %}
+            <div class="lms-quiz__choices">
+              {% for choice in question.choices %}
+                <label class="lms-quiz__choice">
+                  <input type="checkbox" name="q_{{ question.id }}[]" value="{{ choice.id }}">
+                  <span>{{ choice.text }}</span>
+                </label>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {# Single Choice #}
+          {% if question.type == 'single_choice' and question.choices is defined %}
+            <div class="lms-quiz__choices">
+              {% for choice in question.choices %}
+                <label class="lms-quiz__choice">
+                  <input type="radio" name="q_{{ question.id }}" value="{{ choice.id }}">
+                  <span>{{ choice.text }}</span>
+                </label>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {# True False #}
+          {% if question.type == 'true_false' %}
+            <div class="lms-quiz__choices">
+              <label class="lms-quiz__choice">
+                <input type="radio" name="q_{{ question.id }}" value="1">
+                <span>{{ 'True'|t }}</span>
+              </label>
+              <label class="lms-quiz__choice">
+                <input type="radio" name="q_{{ question.id }}" value="0">
+                <span>{{ 'False'|t }}</span>
+              </label>
+            </div>
+          {% endif %}
+
+          {# Fill Blank / Short Answer #}
+          {% if question.type in ['fill_blank', 'short_answer'] %}
+            <input type="text" name="q_{{ question.id }}" class="form-control" placeholder="{{ 'Your answer...'|t }}">
+          {% endif %}
+
+          {# Essay #}
+          {% if question.type == 'essay' %}
+            <textarea name="q_{{ question.id }}" class="form-control" rows="6" placeholder="{{ 'Write your answer...'|t }}"></textarea>
+          {% endif %}
+
+          {# Matching #}
+          {% if question.type == 'matching' and question.pairs is defined %}
+            <div class="lms-quiz__matching">
+              {% for pair in question.pairs %}
+                <div class="lms-quiz__match-row">
+                  <span class="lms-quiz__match-left">{{ pair.left }}</span>
+                  <select name="q_{{ question.id }}_{{ loop.index0 }}" class="form-control">
+                    <option value="">{{ '— Select —'|t }}</option>
+                    {% for p in question.pairs %}
+                      <option value="{{ p.right }}">{{ p.right }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <div class="lms-quiz__submit">
+        <button type="submit" class="lms-btn lms-btn--primary lms-btn--lg">
+          <i class="fas fa-paper-plane"></i> {{ 'Submit Quiz'|t }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+name: 'LMS Payment'
+type: module
+description: 'Payment gateway interface and base services.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+lifecycle: stable

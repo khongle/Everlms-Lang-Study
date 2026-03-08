@@ -1,0 +1,38 @@
+{# Categories listing page #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <div class="lms-section__header">
+      <h1 class="lms-section__title">{{ 'Course Categories'|t }}</h1>
+    </div>
+
+    {% if categories|length > 0 %}
+      <div class="lms-categories-grid">
+        {% set icons = {
+          'Programming': 'fa-code',
+          'Business': 'fa-chart-line',
+          'Design': 'fa-palette',
+          'Marketing': 'fa-bullhorn',
+          'Frontend': 'fa-laptop-code',
+          'Backend': 'fa-server',
+          'Mobile': 'fa-mobile-alt',
+        } %}
+        {% for category in categories %}
+          <a href="{{ path('lms_course.category_detail', {'taxonomy_term': category.tid}) }}" class="lms-category-card">
+            <i class="fas {{ icons[category.name] ?? 'fa-book' }}"></i>
+            <h3>{{ category.name }}</h3>
+            {% if category.description__value %}
+              <p>{{ category.description__value|striptags }}</p>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="lms-empty-state">
+        <i class="fas fa-folder-open"></i>
+        <h3>{{ 'No categories yet'|t }}</h3>
+      </div>
+    {% endif %}
+  </div>
+</section>

@@ -1,0 +1,46 @@
+# Public routes
+lms_course.homepage:
+  path: '/homepage'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\CoursePublicController::homepage'
+    _title: 'EverLMS — Transform Your Future'
+  requirements:
+    _permission: 'access content'
+
+lms_course.catalog:
+  path: '/courses'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\CoursePublicController::catalog'
+    _title: 'Browse Courses'
+  requirements:
+    _permission: 'access content'
+
+lms_course.detail:
+  path: '/courses/{lms_course}'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\CoursePublicController::detail'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      lms_course:
+        type: entity:lms_course
+
+lms_course.category:
+  path: '/categories'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\CoursePublicController::categories'
+    _title: 'Categories'
+  requirements:
+    _permission: 'access content'
+
+lms_course.category_detail:
+  path: '/categories/{taxonomy_term}'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\CoursePublicController::categoryDetail'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      taxonomy_term:
+        type: entity:taxonomy_term

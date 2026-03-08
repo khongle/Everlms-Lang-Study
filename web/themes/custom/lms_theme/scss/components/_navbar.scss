@@ -69,6 +69,10 @@
             color: $color-text-primary;
             background: $glass-bg;
         }
+
+        &--active {
+            color: $color-primary;
+        }
     }
 
     &__actions {

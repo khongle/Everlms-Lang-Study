@@ -1,0 +1,180 @@
+{# Course Detail — matches 03-course-detail.png: banner + tabs + curriculum + enrollment sidebar #}
+{{ attach_library('lms_theme/global') }}
+
+{# Course Banner #}
+<section class="lms-course-banner">
+  <div class="container">
+    {% if course.field_thumbnail.entity %}
+      <div class="lms-course-banner__image">
+        <img src="{{ file_url(course.field_thumbnail.entity.uri.value) }}" alt="{{ course.label }}">
+      </div>
+    {% endif %}
+
+    <div class="lms-course-banner__info">
+      <h1>{{ course.label }}</h1>
+      <div class="lms-course-banner__meta">
+        <span class="lms-course-banner__instructor">
+          <i class="fas fa-user"></i> {{ course.field_instructor_name.value ?? 'Instructor'|t }}
+        </span>
+        <span class="lms-course-banner__rating">
+          <i class="fas fa-star" style="color: #fee140"></i> 4.5
+        </span>
+        <span>{{ '359 Enrollments'|t }}</span>
+      </div>
+      <div class="lms-course-banner__price-row">
+        {% set price = course.field_price.value|default(0) %}
+        <span class="lms-course-banner__price">
+          {% if price > 0 %}
+            ${{ price|number_format(2) }}
+          {% else %}
+            {{ 'Free'|t }}
+          {% endif %}
+        </span>
+        <a href="#" class="lms-btn lms-btn--primary">{{ 'Enroll Now'|t }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# Tab Navigation #}
+<div class="lms-course-tabs">
+  <div class="container">
+    <ul class="lms-tabs" role="tablist">
+      <li><a href="#overview" class="lms-tabs__link lms-tabs__link--active" data-tab="overview">{{ 'Overview'|t }}</a></li>
+      <li><a href="#curriculum" class="lms-tabs__link" data-tab="curriculum">{{ 'Curriculum'|t }}</a></li>
+      <li><a href="#instructor" class="lms-tabs__link" data-tab="instructor">{{ 'Instructor'|t }}</a></li>
+      <li><a href="#reviews" class="lms-tabs__link" data-tab="reviews">{{ 'Reviews'|t }}</a></li>
+      <li><a href="#faq" class="lms-tabs__link" data-tab="faq">{{ 'FAQ'|t }}</a></li>
+    </ul>
+  </div>
+</div>
+
+{# Content area with sidebar #}
+<section class="lms-section">
+  <div class="container">
+    <div class="lms-course-layout">
+      {# Left: Tab content #}
+      <div class="lms-course-layout__main">
+
+        {# Overview Tab #}
+        <div class="lms-tab-panel" id="overview">
+          <h2 class="lms-tab-panel__title">{{ 'Overview'|t }}</h2>
+          {% if course.field_body.value %}
+            <div class="lms-course-body">{{ course.field_body.value|raw }}</div>
+          {% endif %}
+
+          {% if course.field_what_learn.value %}
+            <h3>{{ "What You'll Learn"|t }}</h3>
+            <div class="lms-learn-list">
+              {{ course.field_what_learn.value|raw }}
+            </div>
+          {% endif %}
+
+          {% if course.field_prerequisites.value %}
+            <h3>{{ 'Prerequisites'|t }}</h3>
+            <p>{{ course.field_prerequisites.value }}</p>
+          {% endif %}
+
+          {% if level %}
+            <div class="lms-course-meta-item">
+              <i class="fas fa-signal"></i> <strong>{{ 'Course Level'|t }}</strong>: {{ level.label }}
+            </div>
+          {% endif %}
+
+          <div class="lms-course-meta-item">
+            <i class="fas fa-globe"></i> <strong>{{ 'Language'|t }}</strong>: {{ course.field_language.value ?? 'English'|t }}
+          </div>
+
+          <div class="lms-course-meta-item">
+            <i class="fas fa-clock"></i> <strong>{{ 'Duration'|t }}</strong>: {{ course.field_duration.value ?? '0' }} {{ 'min'|t }}
+          </div>
+        </div>
+
+        {# Curriculum Tab (shown below in mobile) #}
+        <div class="lms-tab-panel" id="curriculum">
+          <h2 class="lms-tab-panel__title">{{ 'Curriculum'|t }}</h2>
+          {% for item in curriculum %}
+            <div class="lms-curriculum__chapter">
+              <div class="lms-curriculum__chapter-header" data-bs-toggle="collapse" data-bs-target="#chapter-{{ loop.index }}">
+                <h3>
+                  <i class="fas fa-chevron-down"></i>
+                  {{ item.chapter.label }}
+                </h3>
+                <span class="lms-curriculum__count">{{ item.lessons|length }} {{ 'lessons'|t }}</span>
+              </div>
+              <div class="collapse show" id="chapter-{{ loop.index }}">
+                <ul class="lms-curriculum__lessons">
+                  {% for lesson in item.lessons %}
+                    <li class="lms-curriculum__lesson">
+                      {% set type_icons = {
+                        'video': 'fa-play-circle',
+                        'text': 'fa-file-alt',
+                        'quiz': 'fa-question-circle',
+                        'h5p': 'fa-puzzle-piece',
+                        'scorm': 'fa-code',
+                        'zoom': 'fa-video',
+                      } %}
+                      <i class="fas {{ type_icons[lesson.field_type.value] ?? 'fa-circle' }}"></i>
+                      <span class="lms-curriculum__lesson-title">{{ lesson.label }}</span>
+                      {% if lesson.field_duration.value > 0 %}
+                        <span class="lms-curriculum__lesson-duration">{{ lesson.field_duration.value }}m</span>
+                      {% endif %}
+                      <i class="fas fa-lock lms-curriculum__lock"></i>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        {# Instructor Tab #}
+        <div class="lms-tab-panel" id="instructor" style="display:none">
+          <h2 class="lms-tab-panel__title">{{ 'Instructor'|t }}</h2>
+          <p>{{ 'Instructor details will be displayed here.'|t }}</p>
+        </div>
+
+        {# Reviews Tab #}
+        <div class="lms-tab-panel" id="reviews" style="display:none">
+          <h2 class="lms-tab-panel__title">{{ 'Reviews'|t }}</h2>
+          <p>{{ 'Student reviews will be displayed here.'|t }}</p>
+        </div>
+
+        {# FAQ Tab #}
+        <div class="lms-tab-panel" id="faq" style="display:none">
+          <h2 class="lms-tab-panel__title">{{ 'FAQ'|t }}</h2>
+          <p>{{ 'Frequently asked questions.'|t }}</p>
+        </div>
+      </div>
+
+      {# Right sidebar — Enrollment card #}
+      <aside class="lms-course-layout__sidebar">
+        <div class="lms-card lms-enroll-card">
+          <div class="lms-enroll-card__price">
+            {% if price > 0 %}
+              ${{ price|number_format(2) }}
+            {% else %}
+              {{ 'Free'|t }}
+            {% endif %}
+          </div>
+          <a href="#" class="lms-btn lms-btn--primary lms-btn--block">{{ 'Enroll Now'|t }}</a>
+
+          <h4>{{ "What's Included"|t }}</h4>
+          <ul class="lms-enroll-card__includes">
+            <li><i class="fas fa-check"></i> {{ 'Lifetime access'|t }}</li>
+            <li><i class="fas fa-check"></i> {{ 'Lifetime complete'|t }}</li>
+            <li><i class="fas fa-check"></i> {{ 'Certificate'|t }}</li>
+          </ul>
+
+          <h4>{{ 'Social Share'|t }}</h4>
+          <div class="lms-enroll-card__share">
+            <a href="#" class="lms-social-btn lms-social-btn--fb"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="lms-social-btn lms-social-btn--tw"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="lms-social-btn lms-social-btn--li"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="lms-social-btn"><i class="fas fa-link"></i></a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>

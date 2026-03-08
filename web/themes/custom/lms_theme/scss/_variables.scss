@@ -105,3 +105,30 @@ $z-navbar: 1030;
 $z-dropdown: 1040;
 $z-modal: 1050;
 $z-tooltip: 1060;
+
+// Shorthand color aliases
+$color-primary: $color-accent-primary;
+$color-secondary: $color-accent-secondary;
+$color-success: $color-accent-success;
+$color-danger: $color-accent-danger;
+$color-warning: $color-accent-warning;
+$color-info: $color-accent-info;
+
+// Missing sizes
+$font-size-xs: 0.75rem; // 12px
+
+// Utility Mixins
+@mixin glass-card {
+    background: $glass-bg;
+    border: 1px solid $glass-border;
+    backdrop-filter: $glass-blur;
+    -webkit-backdrop-filter: $glass-blur;
+    border-radius: $radius-lg;
+}
+
+@mixin gradient-text {
+    background: $gradient-primary;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}

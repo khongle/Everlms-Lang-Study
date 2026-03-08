@@ -1,0 +1,37 @@
+# User portal routes
+lms_progress.my_courses:
+  path: '/my-courses'
+  defaults:
+    _controller: '\Drupal\lms_progress\Controller\UserPortalController::myCourses'
+    _title: 'My Courses'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+lms_progress.lesson_view:
+  path: '/learn/{lms_course}/{lms_lesson}'
+  defaults:
+    _controller: '\Drupal\lms_progress\Controller\UserPortalController::lessonView'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_course:
+        type: entity:lms_course
+      lms_lesson:
+        type: entity:lms_lesson
+
+lms_progress.dashboard:
+  path: '/dashboard'
+  defaults:
+    _controller: '\Drupal\lms_progress\Controller\UserPortalController::dashboard'
+    _title: 'Dashboard'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+lms_progress.certificates:
+  path: '/my-certificates'
+  defaults:
+    _controller: '\Drupal\lms_progress\Controller\UserPortalController::myCertificates'
+    _title: 'My Certificates'
+  requirements:
+    _user_is_logged_in: 'TRUE'

@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * LMS Progress module hooks.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_theme().
+ */
+function lms_progress_theme(): array {
+  return [
+    'lms_dashboard' => [
+      'variables' => [
+        'stats' => [],
+        'recent_courses' => [],
+      ],
+      'template' => 'lms-dashboard',
+    ],
+    'lms_my_courses' => [
+      'variables' => [
+        'courses' => [],
+      ],
+      'template' => 'lms-my-courses',
+    ],
+    'lms_lesson_view' => [
+      'variables' => [
+        'course' => NULL,
+        'lesson' => NULL,
+        'curriculum' => [],
+        'video_position' => 0,
+      ],
+      'template' => 'lms-lesson-view',
+    ],
+    'lms_my_certificates' => [
+      'variables' => [
+        'certificates' => [],
+      ],
+      'template' => 'lms-my-certificates',
+    ],
+  ];
+}

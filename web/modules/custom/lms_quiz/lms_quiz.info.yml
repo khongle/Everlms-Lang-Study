@@ -1,0 +1,9 @@
+name: 'LMS Quiz'
+type: module
+description: 'Quiz engine: quiz taking, results, grading.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+  - lms_question:lms_question
+lifecycle: stable

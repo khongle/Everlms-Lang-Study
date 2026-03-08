@@ -1,0 +1,44 @@
+{# My Quiz Results #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <h1 class="lms-manage__title">{{ 'My Quiz Results'|t }}</h1>
+
+    {% if results|length > 0 %}
+      <div class="lms-table-wrapper">
+        <table class="lms-table">
+          <thead>
+            <tr>
+              <th>{{ 'Quiz'|t }}</th>
+              <th>{{ 'Score'|t }}</th>
+              <th>{{ 'Date'|t }}</th>
+              <th>{{ 'Actions'|t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in results %}
+              <tr>
+                <td>{{ item.quiz_name }}</td>
+                <td>
+                  <span class="lms-badge lms-badge--{{ item.score >= 70 ? 'success' : 'danger' }}">
+                    {{ item.score|number_format(0) }}%
+                  </span>
+                </td>
+                <td>{{ item.date|date('M d, Y') }}</td>
+                <td>
+                  <a href="{{ item.url }}" class="lms-btn lms-btn--sm lms-btn--outline">{{ 'View'|t }}</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="lms-empty-state">
+        <i class="fas fa-clipboard-check"></i>
+        <h3>{{ 'No quiz results yet'|t }}</h3>
+      </div>
+    {% endif %}
+  </div>
+</section>

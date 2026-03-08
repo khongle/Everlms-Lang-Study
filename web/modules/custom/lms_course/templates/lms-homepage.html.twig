@@ -1,0 +1,126 @@
+{# Homepage template — matches 01-homepage.png mockup #}
+{{ attach_library('lms_theme/global') }}
+
+{# 1. Hero Section #}
+<section class="lms-hero">
+  <div class="container">
+    <div class="lms-hero__inner">
+      <h1 class="lms-hero__title">
+        {{ 'Build Your Future with'|t }}<br>
+        <span class="lms-text-gradient">{{ 'Online Learning'|t }}</span>
+      </h1>
+      <p class="lms-hero__subtitle">
+        {{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy eirmod tempor incididunt.'|t }}
+      </p>
+
+      {# Search bar #}
+      <div class="lms-hero__search">
+        <form action="{{ path('lms_course.catalog') }}" method="get">
+          <div class="lms-search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" name="q" placeholder="{{ 'Search for exam courses...'|t }}" class="lms-search-bar__input">
+          </div>
+        </form>
+      </div>
+
+      <a href="{{ path('lms_course.catalog') }}" class="lms-btn lms-btn--primary lms-btn--lg">
+        {{ 'Explore Courses'|t }}
+      </a>
+    </div>
+  </div>
+</section>
+
+{# 2. Core Values #}
+<section class="lms-section lms-section--alt">
+  <div class="container">
+    <h2 class="lms-section__title lms-section__title--center lms-section__title--italic">{{ 'Core Values'|t }}</h2>
+    <div class="lms-values-grid">
+      {% set values = [
+        { icon: 'fa-infinity', title: 'Build Once Use Forever'|t, desc: 'Build courses easily installed on course and own your information.'|t },
+        { icon: 'fa-sliders-h', title: 'Customizable'|t, desc: 'Customizable user models and personalized/collaboration and monetization.'|t },
+        { icon: 'fa-shield-alt', title: 'Your Data Your Control'|t, desc: 'Your information/knowledge above all/users to gain per contents.'|t },
+        { icon: 'fa-robot', title: 'AI Course Builder'|t, desc: 'AI Course Outline development and complete and build more and faster.'|t },
+      ] %}
+      {% for val in values %}
+        <div class="lms-value-card">
+          <div class="lms-value-card__icon">
+            <i class="fas {{ val.icon }}"></i>
+          </div>
+          <h3>{{ val.title }}</h3>
+          <p>{{ val.desc }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# 3. Lesson Types #}
+<section class="lms-section">
+  <div class="container">
+    <h2 class="lms-section__title lms-section__title--center lms-section__title--italic">{{ 'Lesson Types'|t }}</h2>
+    <div class="lms-lesson-types">
+      {% set lesson_types = [
+        { icon: 'fa-code', label: 'SCORM', color: '#667eea' },
+        { icon: 'fa-puzzle-piece', label: 'H5P', color: '#764ba2' },
+        { icon: 'fa-play-circle', label: 'YouTube', color: '#f5576c' },
+        { icon: 'fa-video', label: 'Video', color: '#fa709a' },
+        { icon: 'fa-video', label: 'Zoom', color: '#4facfe' },
+        { icon: 'fa-file-alt', label: 'Text', color: '#43e97b' },
+      ] %}
+      {% for lt in lesson_types %}
+        <div class="lms-lesson-type">
+          <div class="lms-lesson-type__icon" style="background: {{ lt.color }}20; color: {{ lt.color }}">
+            <i class="fas {{ lt.icon }}"></i>
+          </div>
+          <span>{{ lt.label }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# 4. Powerful Features #}
+<section class="lms-section lms-section--alt">
+  <div class="container">
+    <h2 class="lms-section__title lms-section__title--center lms-section__title--italic">{{ 'Powerful Features'|t }}</h2>
+    <div class="lms-features-grid">
+      {% set features = [
+        { icon: 'fa-chart-line', title: 'Ai Attendance'|t, desc: 'Create plan for courses meeting timeline or achievement.'|t },
+        { icon: 'fa-tachometer-alt', title: 'Powerful Review'|t, desc: 'Generate grade/presentation style for courses and grading.'|t },
+        { icon: 'fa-clock', title: 'Fast editing'|t, desc: 'Streamlined to transform per minute per management.'|t },
+        { icon: 'fa-shield-alt', title: 'Protect solutions'|t, desc: 'Strict auto-verification series, security and verifications.'|t },
+        { icon: 'fa-user-graduate', title: 'Easy to use'|t, desc: 'Student only accessible via online study and modules.'|t },
+        { icon: 'fa-list-check', title: 'Entire Features'|t, desc: 'Some of top platform selection and documentation/features.'|t },
+        { icon: 'fa-pen-fancy', title: 'Stretch Assign'|t, desc: 'Simple and advanced/access module set up presentation.'|t },
+        { icon: 'fa-calendar-check', title: 'Course Meetings'|t, desc: 'Meetings auto schedule and planning per class.'|t },
+        { icon: 'fa-tasks', title: 'Course Management'|t, desc: 'Build and create courses and chapter/management/planning.'|t },
+        { icon: 'fa-magic', title: 'Course Builder'|t, desc: 'AI Powered course builder from outlines and content.'|t },
+      ] %}
+      {% for feat in features %}
+        <div class="lms-feature-card">
+          <div class="lms-feature-card__icon">
+            <i class="fas {{ feat.icon }}"></i>
+          </div>
+          <h4>{{ feat.title }}</h4>
+          <p>{{ feat.desc }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# 5. Case Studies / Featured Courses #}
+{% if featured_courses|length > 0 %}
+<section class="lms-section">
+  <div class="container">
+    <h2 class="lms-section__title lms-section__title--center lms-section__title--italic">{{ 'Case Studies'|t }}</h2>
+    <div class="grid-courses">
+      {% for card in featured_courses %}
+        {{ { '#theme': 'lms_course_card', '#card': card } }}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# 6. Footer content is handled by page.html.twig #}

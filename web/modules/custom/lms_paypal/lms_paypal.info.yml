@@ -1,0 +1,8 @@
+name: 'LMS PayPal'
+type: module
+description: 'PayPal payment gateway integration.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_payment:lms_payment
+lifecycle: stable

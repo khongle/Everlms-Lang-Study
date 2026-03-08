@@ -1,0 +1,8 @@
+name: 'LMS FAQ'
+type: module
+description: '3-scope FAQ system: global, course-level, lesson-level.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+lifecycle: stable

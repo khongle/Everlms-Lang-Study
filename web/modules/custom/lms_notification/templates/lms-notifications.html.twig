@@ -1,0 +1,49 @@
+{# Notification center #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <h1 class="lms-manage__title">{{ 'Notifications'|t }}</h1>
+
+    {% if notifications|length > 0 %}
+      <div class="lms-notifications">
+        {% set type_icons = {
+          'enrollment': 'fa-user-plus',
+          'quiz_result': 'fa-clipboard-check',
+          'certificate': 'fa-certificate',
+          'payment': 'fa-credit-card',
+          'forum_reply': 'fa-comment',
+          'system': 'fa-bell',
+        } %}
+        {% for notif in notifications %}
+          <div class="lms-card lms-notification-item {{ not notif.read ? 'lms-notification-item--unread' }}">
+            <div class="lms-notification-item__icon">
+              <i class="fas {{ type_icons[notif.type] ?? 'fa-bell' }}"></i>
+            </div>
+            <div class="lms-notification-item__body">
+              <h4>
+                {% if notif.link %}
+                  <a href="{{ notif.link }}">{{ notif.title }}</a>
+                {% else %}
+                  {{ notif.title }}
+                {% endif %}
+              </h4>
+              {% if notif.message %}
+                <p>{{ notif.message|striptags }}</p>
+              {% endif %}
+              <small>{{ notif.created|date('M d, Y H:i') }}</small>
+            </div>
+            {% if not notif.read %}
+              <span class="lms-badge lms-badge--primary lms-badge--sm">{{ 'New'|t }}</span>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="lms-empty-state">
+        <i class="fas fa-bell-slash"></i>
+        <h3>{{ 'No notifications'|t }}</h3>
+      </div>
+    {% endif %}
+  </div>
+</section>

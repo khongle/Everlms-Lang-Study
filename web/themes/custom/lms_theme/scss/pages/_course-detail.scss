@@ -1,0 +1,261 @@
+// Course Detail page — matches 03-course-detail.png
+
+// Banner
+.lms-course-banner {
+    padding: $spacer-xl 0;
+    background: $color-bg-secondary;
+    border-bottom: 1px solid $color-border;
+
+    .container {
+        display: flex;
+        gap: $spacer-xl;
+        align-items: flex-end;
+
+        @media (max-width: $breakpoint-md) {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+
+    &__image {
+        width: 400px;
+        min-width: 400px;
+        border-radius: $radius-lg;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        @media (max-width: $breakpoint-md) {
+            width: 100%;
+            min-width: unset;
+        }
+    }
+
+    &__info {
+        flex: 1;
+
+        h1 {
+            font-size: $font-size-h2;
+            font-weight: $font-weight-extrabold;
+            margin-bottom: $spacer-sm;
+        }
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        gap: $spacer-lg;
+        color: $color-text-secondary;
+        font-size: $font-size-sm;
+        margin-bottom: $spacer-md;
+
+        i {
+            margin-right: 4px;
+        }
+    }
+
+    &__price-row {
+        display: flex;
+        align-items: center;
+        gap: $spacer-lg;
+    }
+
+    &__price {
+        font-size: $font-size-h2;
+        font-weight: $font-weight-extrabold;
+        color: $color-success;
+    }
+}
+
+// Tab navigation
+.lms-course-tabs {
+    background: $color-bg-primary;
+    border-bottom: 1px solid $color-border;
+    position: sticky;
+    top: $navbar-height;
+    z-index: 10;
+}
+
+.lms-tabs {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: $spacer-sm;
+
+    &__link {
+        display: block;
+        padding: $spacer-sm $spacer-md;
+        color: $color-text-secondary;
+        text-decoration: none;
+        font-size: $font-size-sm;
+        border-bottom: 2px solid transparent;
+        transition: all $transition-fast;
+
+        &:hover {
+            color: $color-text-primary;
+        }
+
+        &--active {
+            color: $color-primary;
+            border-bottom-color: $color-primary;
+        }
+    }
+}
+
+.lms-tab-panel__title {
+    font-size: $font-size-h3;
+    font-weight: $font-weight-bold;
+    margin-bottom: $spacer-lg;
+}
+
+// Course layout: main + sidebar
+.lms-course-layout {
+    display: flex;
+    gap: $spacer-xl;
+
+    &__main {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__sidebar {
+        width: 300px;
+        min-width: 300px;
+
+        @media (max-width: $breakpoint-md) {
+            width: 100%;
+            min-width: unset;
+        }
+    }
+
+    @media (max-width: $breakpoint-md) {
+        flex-direction: column;
+    }
+}
+
+// Enrollment card
+.lms-enroll-card {
+    position: sticky;
+    top: 130px;
+    padding: $spacer-lg;
+
+    &__price {
+        font-size: $font-size-h2;
+        font-weight: $font-weight-extrabold;
+        color: $color-success;
+        text-align: center;
+        margin-bottom: $spacer-md;
+    }
+
+    h4 {
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+        margin-top: $spacer-lg;
+        margin-bottom: $spacer-sm;
+    }
+
+    &__includes {
+        list-style: none;
+        padding: 0;
+
+        li {
+            padding: $spacer-xs 0;
+            font-size: $font-size-sm;
+            color: $color-text-secondary;
+
+            i {
+                color: $color-success;
+                margin-right: $spacer-xs;
+            }
+        }
+    }
+
+    &__share {
+        display: flex;
+        gap: $spacer-sm;
+    }
+}
+
+// Social buttons
+.lms-social-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+    font-size: $font-size-sm;
+    background: $color-bg-tertiary;
+    border: 1px solid $color-border;
+    transition: all $transition-fast;
+
+    &:hover {
+        border-color: $color-primary;
+        color: $color-primary;
+    }
+
+    &--fb {
+        background: #1877f2;
+        border-color: #1877f2;
+
+        &:hover {
+            opacity: 0.85;
+            color: #fff;
+        }
+    }
+
+    &--tw {
+        background: #1da1f2;
+        border-color: #1da1f2;
+
+        &:hover {
+            opacity: 0.85;
+            color: #fff;
+        }
+    }
+
+    &--li {
+        background: #0a66c2;
+        border-color: #0a66c2;
+
+        &:hover {
+            opacity: 0.85;
+            color: #fff;
+        }
+    }
+}
+
+// Course body text
+.lms-course-body {
+    line-height: 1.8;
+    color: $color-text-secondary;
+    margin-bottom: $spacer-xl;
+}
+
+.lms-course-meta-item {
+    padding: $spacer-xs 0;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+
+    i {
+        color: $color-primary;
+        margin-right: $spacer-xs;
+    }
+
+    strong {
+        color: $color-text-primary;
+    }
+}
+
+// Curriculum lock icon
+.lms-curriculum__lock {
+    color: $color-text-muted;
+    font-size: $font-size-xs;
+}

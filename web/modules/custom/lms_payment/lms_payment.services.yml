@@ -1,0 +1,3 @@
+services:
+  lms_payment.gateway_manager:
+    class: Drupal\lms_payment\Service\PaymentManager

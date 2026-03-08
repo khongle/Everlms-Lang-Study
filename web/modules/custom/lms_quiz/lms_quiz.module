@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * LMS Quiz module hooks.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_theme().
+ */
+function lms_quiz_theme(): array {
+  return [
+    'lms_quiz_take' => [
+      'variables' => [
+        'quiz' => NULL,
+        'questions' => [],
+        'time_limit' => 0,
+      ],
+      'template' => 'lms-quiz-take',
+    ],
+    'lms_quiz_result' => [
+      'variables' => [
+        'quiz' => NULL,
+        'result' => NULL,
+        'result_label' => '',
+        'score' => 0,
+        'responses' => [],
+      ],
+      'template' => 'lms-quiz-result',
+    ],
+    'lms_my_quiz_results' => [
+      'variables' => [
+        'results' => [],
+      ],
+      'template' => 'lms-my-quiz-results',
+    ],
+  ];
+}

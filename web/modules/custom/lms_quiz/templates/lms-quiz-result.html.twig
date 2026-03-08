@@ -1,0 +1,44 @@
+{# Quiz Result Page #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <div class="lms-quiz-result">
+      {# Score header #}
+      <div class="lms-quiz-result__header text-center">
+        <div class="lms-quiz-result__score-circle {% if score >= 70 %}lms-quiz-result__score-circle--pass{% else %}lms-quiz-result__score-circle--fail{% endif %}">
+          <span class="lms-quiz-result__score-value">{{ score|number_format(0) }}%</span>
+        </div>
+        <h1>{{ quiz ? quiz.label : 'Quiz Result'|t }}</h1>
+        <span class="lms-badge lms-badge--{{ score >= 70 ? 'success' : 'danger' }}">
+          {{ result_label }}
+        </span>
+      </div>
+
+      {# Responses #}
+      {% if responses|length > 0 %}
+        <h2 class="lms-section__title">{{ 'Your Answers'|t }}</h2>
+        {% for response in responses %}
+          <div class="lms-card lms-quiz-result__response {{ response.correct ? 'lms-quiz-result__response--correct' : 'lms-quiz-result__response--incorrect' }}">
+            <div class="lms-quiz-result__response-header">
+              <i class="fas {{ response.correct ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
+              <span>{{ response.question }}</span>
+              <span class="lms-quiz-result__points">{{ response.score }} {{ 'pts'|t }}</span>
+            </div>
+            {% if response.text_answer %}
+              <p class="lms-quiz-result__answer">{{ response.text_answer }}</p>
+            {% endif %}
+            {% if response.pending %}
+              <span class="lms-badge lms-badge--warning">{{ 'Pending Review'|t }}</span>
+            {% endif %}
+            {% if response.feedback %}
+              <div class="lms-quiz-result__feedback">
+                <strong>{{ 'Feedback:'|t }}</strong> {{ response.feedback }}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</section>

@@ -1,42 +1,35 @@
-{# EverLMS — Page template #}
+{# EverLMS — Page template — matches mockup navbar + footer #}
 <div class="lms-page">
-  {# Navbar #}
+  {# Navbar — matches mockup: Logo | Nav | Login/Register #}
   <header class="lms-navbar">
     <div class="lms-navbar__container">
       <a href="{{ path('<front>') }}" class="lms-navbar__brand">
-        {% if page.header %}
-          {{ page.header }}
-        {% else %}
-          EverLMS
-        {% endif %}
+        <i class="fas fa-graduation-cap"></i> {{ 'EverLMS'|t }}
       </a>
 
       <button class="lms-navbar__toggle" aria-label="Toggle navigation">
         <i class="fas fa-bars"></i>
       </button>
 
-      {% if page.primary_menu %}
-        <nav class="lms-navbar__nav" role="navigation">
-          {{ page.primary_menu }}
-        </nav>
-      {% endif %}
+      <nav class="lms-navbar__nav" role="navigation">
+        <a href="{{ path('<front>') }}" class="lms-navbar__link lms-navbar__link--active">{{ 'Home'|t }}</a>
+        <a href="{{ path('lms_course.catalog') }}" class="lms-navbar__link">{{ 'Courses'|t }}</a>
+        <a href="{{ path('lms_course.category') }}" class="lms-navbar__link">{{ 'Categories'|t }}</a>
+        <a href="#" class="lms-navbar__link">{{ 'Pricing'|t }}</a>
+        <a href="#" class="lms-navbar__link">{{ 'Blog'|t }}</a>
+        <a href="#" class="lms-navbar__link">{{ 'Contact'|t }}</a>
+      </nav>
 
       <div class="lms-navbar__actions">
-        {% if page.secondary_menu %}
-          {{ page.secondary_menu }}
+        {% if logged_in %}
+          <a href="{{ path('lms_progress.dashboard') }}" class="lms-btn lms-btn--sm lms-btn--outline">{{ 'Dashboard'|t }}</a>
+        {% else %}
+          <a href="{{ path('user.login') }}" class="lms-navbar__link">{{ 'Login'|t }}</a>
+          <a href="{{ path('user.register') }}" class="lms-btn lms-btn--sm lms-btn--primary">{{ 'Register'|t }}</a>
         {% endif %}
       </div>
     </div>
   </header>
-
-  {# Hero #}
-  {% if page.hero %}
-    <section class="lms-hero">
-      <div class="container">
-        {{ page.hero }}
-      </div>
-    </section>
-  {% endif %}
 
   {# Breadcrumb #}
   {% if page.breadcrumb %}
@@ -45,65 +38,55 @@
     </div>
   {% endif %}
 
-  {# Highlighted #}
-  {% if page.highlighted %}
-    <div class="container">
-      {{ page.highlighted }}
-    </div>
-  {% endif %}
-
   {# Main Content #}
   <main id="main-content" class="lms-page__content">
-    {% if page.content_top %}
-      {{ page.content_top }}
-    {% endif %}
-
-    <div class="row">
-      {% if page.sidebar_first %}
-        <aside class="col-lg-3">
-          {{ page.sidebar_first }}
-        </aside>
-      {% endif %}
-
-      <div class="{{ page.sidebar_first or page.sidebar_second ? 'col-lg-' ~ (12 - (page.sidebar_first ? 3 : 0) - (page.sidebar_second ? 3 : 0)) : 'col-12' }}">
-        {{ page.content }}
-      </div>
-
-      {% if page.sidebar_second %}
-        <aside class="col-lg-3">
-          {{ page.sidebar_second }}
-        </aside>
-      {% endif %}
-    </div>
-
-    {% if page.content_bottom %}
-      {{ page.content_bottom }}
-    {% endif %}
+    {{ page.content }}
   </main>
 
-  {# Footer #}
+  {# Footer — matches mockup: 4 columns + bottom #}
   <footer class="lms-footer">
     <div class="lms-footer__container">
       <div class="lms-footer__grid">
-        {% if page.footer_first %}
-          <div>{{ page.footer_first }}</div>
-        {% endif %}
-        {% if page.footer_second %}
-          <div>{{ page.footer_second }}</div>
-        {% endif %}
-        {% if page.footer_third %}
-          <div>{{ page.footer_third }}</div>
-        {% endif %}
-        {% if page.footer_fourth %}
-          <div>{{ page.footer_fourth }}</div>
-        {% endif %}
+        <div class="lms-footer__col">
+          <h4>{{ 'Quick Links'|t }}</h4>
+          <ul>
+            <li><a href="{{ path('<front>') }}">{{ 'Home'|t }}</a></li>
+            <li><a href="{{ path('lms_course.catalog') }}">{{ 'Courses'|t }}</a></li>
+            <li><a href="{{ path('lms_course.category') }}">{{ 'Categories'|t }}</a></li>
+            <li><a href="#">{{ 'Blog'|t }}</a></li>
+          </ul>
+        </div>
+        <div class="lms-footer__col">
+          <h4>{{ 'Course'|t }}</h4>
+          <ul>
+            <li><a href="#">{{ 'News & Notices'|t }}</a></li>
+            <li><a href="#">{{ 'Pricing'|t }}</a></li>
+            <li><a href="#">{{ 'Course Guides'|t }}</a></li>
+          </ul>
+        </div>
+        <div class="lms-footer__col">
+          <h4>{{ 'Supports'|t }}</h4>
+          <ul>
+            <li><a href="#">{{ 'About Us'|t }}</a></li>
+            <li><a href="#">{{ 'Supports'|t }}</a></li>
+            <li><a href="#">{{ 'FAQ'|t }}</a></li>
+            <li><a href="#">{{ 'Contact Us'|t }}</a></li>
+          </ul>
+        </div>
+        <div class="lms-footer__col">
+          <h4>{{ 'Contact Info'|t }}</h4>
+          <ul>
+            <li><i class="fas fa-map-marker-alt"></i> {{ 'Company Headquarters, District'|t }}</li>
+            <li><i class="fas fa-phone"></i> +01 00 200 0000</li>
+            <li><i class="fas fa-phone"></i> +01 00 200 0000</li>
+            <li><i class="fas fa-envelope"></i> everlms@gmail.com</li>
+          </ul>
+        </div>
       </div>
 
-      {% if page.footer_bottom %}
-        <div class="lms-footer__bottom">
-          {{ page.footer_bottom }}
-        </div>
-      {% endif %}
+      <div class="lms-footer__bottom">
+        <p>{{ 'Powered by'|t }} <a href="#">EverLMS</a></p>
+      </div>
     </div>
   </footer>
 </div>

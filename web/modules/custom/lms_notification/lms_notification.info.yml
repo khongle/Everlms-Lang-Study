@@ -1,0 +1,8 @@
+name: 'LMS Notification'
+type: module
+description: 'In-app notification system.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+lifecycle: stable

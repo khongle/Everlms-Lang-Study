@@ -1,0 +1,8 @@
+# Notification routes
+lms_notification.list:
+  path: '/notifications'
+  defaults:
+    _controller: '\Drupal\lms_notification\Controller\NotificationController::listNotifications'
+    _title: 'Notifications'
+  requirements:
+    _user_is_logged_in: 'TRUE'

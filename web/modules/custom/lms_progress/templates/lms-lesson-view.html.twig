@@ -1,0 +1,106 @@
+{# Lesson View — Learning page #}
+{{ attach_library('lms_theme/global') }}
+
+<div class="lms-learn">
+  <div class="lms-learn__main">
+    {# Content area #}
+    <div class="lms-learn__content">
+      {# Video / Content #}
+      <div class="lms-learn__player">
+        {% set type = lesson.field_type.value %}
+
+        {% if type == 'video' %}
+          {% if lesson.field_video_url.value %}
+            <div class="lms-learn__video-wrapper">
+              <iframe src="{{ lesson.field_video_url.value }}"
+                allowfullscreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                class="lms-learn__iframe">
+              </iframe>
+            </div>
+          {% else %}
+            <div class="lms-learn__placeholder">
+              <i class="fas fa-play-circle"></i>
+              <p>{{ 'Video content will appear here.'|t }}</p>
+            </div>
+          {% endif %}
+        {% elseif type == 'text' %}
+          <div class="lms-learn__text-content">
+            {{ lesson.field_text_content.value|raw }}
+          </div>
+        {% else %}
+          <div class="lms-learn__placeholder">
+            <i class="fas fa-{{ type == 'quiz' ? 'question-circle' : (type == 'h5p' ? 'puzzle-piece' : (type == 'zoom' ? 'video' : 'file-alt')) }}"></i>
+            <p>{{ type|capitalize }} {{ 'content'|t }}</p>
+          </div>
+        {% endif %}
+      </div>
+
+      {# Lesson info #}
+      <div class="lms-learn__info">
+        <h1 class="lms-learn__title">{{ lesson.label }}</h1>
+        <div class="lms-learn__actions">
+          <button class="lms-btn lms-btn--success" id="lms-mark-complete">
+            <i class="fas fa-check"></i> {{ 'Mark Complete'|t }}
+          </button>
+        </div>
+      </div>
+
+      {# Description #}
+      {% if lesson.field_body.value %}
+        <div class="lms-learn__description">
+          {{ lesson.field_body.value|raw }}
+        </div>
+      {% endif %}
+
+      {# Attachments #}
+      {% if lesson.field_attachments|length > 0 %}
+        <div class="lms-learn__attachments">
+          <h3><i class="fas fa-paperclip"></i> {{ 'Resources'|t }}</h3>
+          <ul>
+            {% for file in lesson.field_attachments %}
+              <li>
+                <a href="{{ file_url(file.entity.uri.value) }}" target="_blank">
+                  <i class="fas fa-download"></i> {{ file.entity.filename.value }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {# Sidebar — Curriculum #}
+  <aside class="lms-learn__sidebar">
+    <div class="lms-learn__sidebar-header">
+      <h2>{{ course.label }}</h2>
+    </div>
+    <nav class="lms-learn__nav">
+      {% for item in curriculum %}
+        <div class="lms-learn__chapter">
+          <h4 class="lms-learn__chapter-title">{{ item.chapter.label }}</h4>
+          <ul class="lms-learn__lesson-list">
+            {% for l in item.lessons %}
+              <li class="lms-learn__lesson-item {% if l.id == lesson.id %}lms-learn__lesson-item--active{% endif %}">
+                <a href="{{ path('lms_progress.lesson_view', {'lms_course': course.id, 'lms_lesson': l.id}) }}">
+                  {% set type_icons = {
+                    'video': 'fa-play-circle',
+                    'text': 'fa-file-alt',
+                    'quiz': 'fa-question-circle',
+                    'h5p': 'fa-puzzle-piece',
+                  } %}
+                  <i class="fas {{ type_icons[l.field_type.value] ?? 'fa-circle' }}"></i>
+                  <span>{{ l.label }}</span>
+                  {% if l.field_duration.value > 0 %}
+                    <small>{{ l.field_duration.value }}m</small>
+                  {% endif %}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </nav>
+  </aside>
+</div>

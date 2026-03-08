@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * @file
+ * LMS Course module hooks.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_theme().
+ */
+function lms_course_theme(): array {
+  return [
+    'lms_homepage' => [
+      'variables' => [
+        'featured_courses' => [],
+        'categories' => [],
+        'stats' => [],
+      ],
+      'template' => 'lms-homepage',
+    ],
+    'lms_catalog' => [
+      'variables' => [
+        'courses' => [],
+        'categories' => [],
+        'title' => NULL,
+      ],
+      'template' => 'lms-catalog',
+    ],
+    'lms_course_detail' => [
+      'variables' => [
+        'course' => NULL,
+        'curriculum' => [],
+        'category' => NULL,
+        'level' => NULL,
+      ],
+      'template' => 'lms-course-detail',
+    ],
+    'lms_categories' => [
+      'variables' => [
+        'categories' => [],
+      ],
+      'template' => 'lms-categories',
+    ],
+    'lms_course_card' => [
+      'variables' => [
+        'card' => [],
+      ],
+      'template' => 'lms-course-card',
+    ],
+  ];
+}

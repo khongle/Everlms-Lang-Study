@@ -1,0 +1,40 @@
+{# My Certificates page #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <h1 class="lms-manage__title">{{ 'My Certificates'|t }}</h1>
+
+    {% if certificates|length > 0 %}
+      <div class="row g-4">
+        {% for cert in certificates %}
+          <div class="col-lg-4 col-md-6">
+            <div class="lms-card lms-card--certificate">
+              <div class="lms-card__body text-center">
+                <div class="lms-certificate-icon">
+                  <i class="fas fa-award"></i>
+                </div>
+                <h3 class="lms-card__title">{{ cert.course_name }}</h3>
+                <p class="lms-card__desc">{{ cert.template_name }}</p>
+                <small class="text-muted">
+                  #{{ cert.certificate_number }}
+                </small>
+                {% if cert.pdf %}
+                  <a href="{{ file_url(cert.pdf.uri.value) }}" class="lms-btn lms-btn--primary lms-btn--sm lms-btn--block" target="_blank">
+                    <i class="fas fa-download"></i> {{ 'Download PDF'|t }}
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="lms-empty-state">
+        <i class="fas fa-certificate"></i>
+        <h3>{{ 'No certificates yet'|t }}</h3>
+        <p>{{ 'Complete a course to earn your first certificate!'|t }}</p>
+      </div>
+    {% endif %}
+  </div>
+</section>

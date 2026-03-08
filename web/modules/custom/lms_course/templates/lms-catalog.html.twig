@@ -1,0 +1,118 @@
+{# Course listing — matches 02-course-listing.png: left sidebar + course grid + sort + pagination #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    {# Breadcrumb #}
+    <nav class="lms-breadcrumb">
+      <a href="{{ path('<front>') }}">{{ 'Home'|t }}</a>
+      <span>/</span>
+      <span>{{ 'Courses'|t }}</span>
+    </nav>
+
+    <div class="lms-catalog">
+      {# Left sidebar — Search Filters #}
+      <aside class="lms-catalog__sidebar">
+        <h3 class="lms-catalog__sidebar-title">{{ 'SEARCH FILTERS'|t }}</h3>
+
+        {# Title search #}
+        <div class="lms-catalog__filter-group">
+          <input type="text" class="form-control lms-input" placeholder="{{ 'Title'|t }}" id="course-search">
+        </div>
+
+        {# Category filter #}
+        <div class="lms-catalog__filter-group">
+          <h4>{{ 'CATEGORY'|t }}</h4>
+          <select class="form-control lms-select" id="category-filter">
+            <option value="">{{ 'All Categories'|t }}</option>
+            {% for cat in categories %}
+              <option value="{{ cat.id }}">{{ cat.label }}</option>
+            {% endfor %}
+          </select>
+          {% for cat in categories[:6] %}
+            <label class="lms-catalog__checkbox">
+              <input type="checkbox" value="{{ cat.id }}">
+              <span>{{ cat.label }}</span>
+            </label>
+          {% endfor %}
+        </div>
+
+        {# Level filter #}
+        <div class="lms-catalog__filter-group">
+          <h4>{{ 'LEVEL'|t }}</h4>
+          {% for level in ['Beginner', 'Intermediate', 'Advanced'] %}
+            <label class="lms-catalog__checkbox">
+              <input type="checkbox" value="{{ level|lower }}">
+              <span>{{ level|t }}</span>
+            </label>
+          {% endfor %}
+        </div>
+
+        {# Price filter #}
+        <div class="lms-catalog__filter-group">
+          <h4>{{ 'PRICE'|t }}</h4>
+          <label class="lms-catalog__checkbox">
+            <input type="checkbox" value="free">
+            <span>{{ 'Free'|t }}</span>
+          </label>
+          <label class="lms-catalog__checkbox">
+            <input type="checkbox" value="paid">
+            <span>{{ 'Paid'|t }}</span>
+          </label>
+        </div>
+
+        {# Rating filter #}
+        <div class="lms-catalog__filter-group">
+          <h4>{{ 'RATING'|t }}</h4>
+          {% for r in [5, 4, 3, 2, 1] %}
+            <label class="lms-catalog__checkbox">
+              <input type="checkbox" value="{{ r }}">
+              <span>{{ r }}★ {{ 'Stars'|t }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </aside>
+
+      {# Main course grid #}
+      <div class="lms-catalog__main">
+        {# Sort by #}
+        <div class="lms-catalog__toolbar">
+          <span class="lms-catalog__count">{{ courses|length }} {{ 'courses found'|t }}</span>
+          <div class="lms-catalog__sort">
+            <label>{{ 'Sort by:'|t }}</label>
+            <select class="lms-select lms-select--sm" id="sort-courses">
+              <option>{{ 'Most Popular'|t }}</option>
+              <option>{{ 'Newest'|t }}</option>
+              <option>{{ 'Price Low-High'|t }}</option>
+            </select>
+          </div>
+        </div>
+
+        {# Course grid #}
+        {% if courses|length > 0 %}
+          <div class="grid-courses">
+            {% for card in courses %}
+              {{ { '#theme': 'lms_course_card', '#card': card } }}
+            {% endfor %}
+          </div>
+
+          {# Pagination #}
+          <nav class="lms-pagination">
+            <span class="lms-pagination__item lms-pagination__item--disabled">{{ '← Previous'|t }}</span>
+            <span class="lms-pagination__item lms-pagination__item--active">1</span>
+            <span class="lms-pagination__item">2</span>
+            <span class="lms-pagination__item">3</span>
+            <span class="lms-pagination__item">...</span>
+            <span class="lms-pagination__item">{{ 'Next →'|t }}</span>
+          </nav>
+        {% else %}
+          <div class="lms-empty-state">
+            <i class="fas fa-search"></i>
+            <h3>{{ 'No courses found'|t }}</h3>
+            <p>{{ 'Try adjusting your filters'|t }}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>

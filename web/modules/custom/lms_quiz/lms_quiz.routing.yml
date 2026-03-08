@@ -1,0 +1,32 @@
+# Quiz public routes
+lms_quiz.take:
+  path: '/quiz/{lms_quiz}/take'
+  defaults:
+    _controller: '\Drupal\lms_quiz\Controller\QuizController::takeQuiz'
+    _title: 'Take Quiz'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_quiz:
+        type: entity:lms_quiz
+
+lms_quiz.result:
+  path: '/quiz-result/{lms_quiz_result}'
+  defaults:
+    _controller: '\Drupal\lms_quiz\Controller\QuizController::viewResult'
+    _title: 'Quiz Result'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_quiz_result:
+        type: entity:lms_quiz_result
+
+lms_quiz.my_results:
+  path: '/my-quiz-results'
+  defaults:
+    _controller: '\Drupal\lms_quiz\Controller\QuizController::myResults'
+    _title: 'My Quiz Results'
+  requirements:
+    _user_is_logged_in: 'TRUE'

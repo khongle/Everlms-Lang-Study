@@ -1,0 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+function lms_notification_theme(): array {
+  return [
+    'lms_notifications' => [
+      'variables' => ['notifications' => []],
+      'template' => 'lms-notifications',
+    ],
+  ];
+}
