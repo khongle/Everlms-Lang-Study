@@ -1,0 +1,48 @@
+// Alerts
+.alert-lms {
+    padding: $spacer-md;
+    border-radius: $radius-md;
+    border: 1px solid;
+    margin-bottom: $spacer-md;
+
+    &--success {
+        background: rgba($color-accent-success, 0.1);
+        border-color: rgba($color-accent-success, 0.3);
+        color: $color-accent-success;
+    }
+
+    &--danger {
+        background: rgba($color-accent-danger, 0.1);
+        border-color: rgba($color-accent-danger, 0.3);
+        color: $color-accent-danger;
+    }
+
+    &--warning {
+        background: rgba(254, 225, 64, 0.1);
+        border-color: rgba(254, 225, 64, 0.3);
+        color: $color-accent-warning;
+    }
+
+    &--info {
+        background: rgba($color-accent-info, 0.1);
+        border-color: rgba($color-accent-info, 0.3);
+        color: $color-accent-info;
+    }
+}
+
+// Drupal messages override
+.messages {
+    @extend .alert-lms;
+}
+
+.messages--status {
+    @extend .alert-lms--success;
+}
+
+.messages--error {
+    @extend .alert-lms--danger;
+}
+
+.messages--warning {
+    @extend .alert-lms--warning;
+}

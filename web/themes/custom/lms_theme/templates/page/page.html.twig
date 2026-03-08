@@ -1,0 +1,109 @@
+{# EverLMS — Page template #}
+<div class="lms-page">
+  {# Navbar #}
+  <header class="lms-navbar">
+    <div class="lms-navbar__container">
+      <a href="{{ path('<front>') }}" class="lms-navbar__brand">
+        {% if page.header %}
+          {{ page.header }}
+        {% else %}
+          EverLMS
+        {% endif %}
+      </a>
+
+      <button class="lms-navbar__toggle" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      {% if page.primary_menu %}
+        <nav class="lms-navbar__nav" role="navigation">
+          {{ page.primary_menu }}
+        </nav>
+      {% endif %}
+
+      <div class="lms-navbar__actions">
+        {% if page.secondary_menu %}
+          {{ page.secondary_menu }}
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  {# Hero #}
+  {% if page.hero %}
+    <section class="lms-hero">
+      <div class="container">
+        {{ page.hero }}
+      </div>
+    </section>
+  {% endif %}
+
+  {# Breadcrumb #}
+  {% if page.breadcrumb %}
+    <div class="container">
+      {{ page.breadcrumb }}
+    </div>
+  {% endif %}
+
+  {# Highlighted #}
+  {% if page.highlighted %}
+    <div class="container">
+      {{ page.highlighted }}
+    </div>
+  {% endif %}
+
+  {# Main Content #}
+  <main id="main-content" class="lms-page__content">
+    {% if page.content_top %}
+      {{ page.content_top }}
+    {% endif %}
+
+    <div class="row">
+      {% if page.sidebar_first %}
+        <aside class="col-lg-3">
+          {{ page.sidebar_first }}
+        </aside>
+      {% endif %}
+
+      <div class="{{ page.sidebar_first or page.sidebar_second ? 'col-lg-' ~ (12 - (page.sidebar_first ? 3 : 0) - (page.sidebar_second ? 3 : 0)) : 'col-12' }}">
+        {{ page.content }}
+      </div>
+
+      {% if page.sidebar_second %}
+        <aside class="col-lg-3">
+          {{ page.sidebar_second }}
+        </aside>
+      {% endif %}
+    </div>
+
+    {% if page.content_bottom %}
+      {{ page.content_bottom }}
+    {% endif %}
+  </main>
+
+  {# Footer #}
+  <footer class="lms-footer">
+    <div class="lms-footer__container">
+      <div class="lms-footer__grid">
+        {% if page.footer_first %}
+          <div>{{ page.footer_first }}</div>
+        {% endif %}
+        {% if page.footer_second %}
+          <div>{{ page.footer_second }}</div>
+        {% endif %}
+        {% if page.footer_third %}
+          <div>{{ page.footer_third }}</div>
+        {% endif %}
+        {% if page.footer_fourth %}
+          <div>{{ page.footer_fourth }}</div>
+        {% endif %}
+      </div>
+
+      {% if page.footer_bottom %}
+        <div class="lms-footer__bottom">
+          {{ page.footer_bottom }}
+        </div>
+      {% endif %}
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,12 @@
+// Grid helpers
+.grid-courses {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: $spacer-lg;
+}
+
+.grid-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: $spacer-md;
+}

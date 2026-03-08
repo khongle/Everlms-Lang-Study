@@ -1,0 +1,6 @@
+name: 'LMS Base'
+type: module
+description: 'Foundation module: shared services, taxonomies, base utilities.'
+core_version_requirement: ^11
+package: EverLMS
+lifecycle: stable

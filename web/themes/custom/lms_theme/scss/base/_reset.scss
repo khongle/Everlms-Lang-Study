@@ -1,0 +1,73 @@
+// ========================================
+// Reset & Base Styles
+// ========================================
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: $font-family-base;
+    font-size: $font-size-base;
+    font-weight: $font-weight-normal;
+    line-height: $line-height-base;
+    color: $color-text-primary;
+    background-color: $color-bg-primary;
+    overflow-x: hidden;
+}
+
+a {
+    color: $color-text-link;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+        color: lighten($color-text-link, 10%);
+        text-decoration: none;
+    }
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+::selection {
+    background: rgba($color-accent-primary, 0.3);
+    color: $color-text-primary;
+}
+
+// Scrollbar
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: $color-bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+    background: $color-bg-tertiary;
+    border-radius: $radius-sm;
+
+    &:hover {
+        background: $color-text-muted;
+    }
+}
+
+// Focus styles
+:focus-visible {
+    outline: 2px solid $color-accent-primary;
+    outline-offset: 2px;
+}

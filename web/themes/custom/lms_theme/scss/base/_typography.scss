@@ -1,0 +1,62 @@
+// ========================================
+// Typography
+// ========================================
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: $font-weight-bold;
+    line-height: $line-height-heading;
+    color: $color-text-primary;
+    margin-bottom: $spacer-sm;
+}
+
+h1 {
+    font-size: $font-size-h1;
+}
+
+h2 {
+    font-size: $font-size-h2;
+}
+
+h3 {
+    font-size: $font-size-h3;
+}
+
+h4 {
+    font-size: $font-size-h4;
+}
+
+p {
+    margin-bottom: $spacer-md;
+    color: $color-text-secondary;
+}
+
+.text-gradient {
+    background: $gradient-primary;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-muted {
+    color: $color-text-muted !important;
+}
+
+.text-accent {
+    color: $color-accent-primary;
+}
+
+small,
+.small {
+    font-size: $font-size-sm;
+}
+
+.lead {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-light;
+    color: $color-text-secondary;
+}

@@ -1,0 +1,154 @@
+// ========================================
+// Cards — Glassmorphism Card System
+// ========================================
+
+.card-lms {
+    background: $color-bg-card;
+    backdrop-filter: $glass-blur;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    transition: all $transition-normal;
+
+    &:hover {
+        border-color: $color-border-hover;
+        transform: translateY(-4px);
+        box-shadow: $shadow-lg;
+    }
+
+    &__image {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform $transition-slow;
+        }
+
+        &:hover img {
+            transform: scale(1.05);
+        }
+    }
+
+    &__badge {
+        position: absolute;
+        top: $spacer-sm;
+        left: $spacer-sm;
+        padding: 0.25rem 0.625rem;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+        color: #fff;
+        background: $gradient-primary;
+        border-radius: $radius-sm;
+    }
+
+    &__wishlist {
+        position: absolute;
+        top: $spacer-sm;
+        right: $spacer-sm;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: $radius-full;
+        color: $color-text-secondary;
+        cursor: pointer;
+        transition: all $transition-fast;
+
+        &:hover,
+        &.active {
+            color: $color-accent-danger;
+            background: rgba(0, 0, 0, 0.7);
+        }
+    }
+
+    &__body {
+        padding: $spacer-md;
+    }
+
+    &__title {
+        font-size: $font-size-base;
+        font-weight: $font-weight-semibold;
+        color: $color-text-primary;
+        margin-bottom: $spacer-xs;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        gap: $spacer-sm;
+        font-size: $font-size-sm;
+        color: $color-text-muted;
+        margin-bottom: $spacer-sm;
+    }
+
+    &__rating {
+        color: $color-accent-warning;
+        font-size: $font-size-sm;
+    }
+
+    &__price {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-bold;
+        color: $color-text-primary;
+
+        &--original {
+            font-size: $font-size-sm;
+            color: $color-text-muted;
+            text-decoration: line-through;
+            margin-left: $spacer-xs;
+        }
+
+        &--free {
+            color: $color-accent-success;
+        }
+    }
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: $spacer-sm $spacer-md;
+        border-top: 1px solid $color-border;
+    }
+}
+
+// Glass Card (for KPI, stats)
+.card-glass {
+    background: $glass-bg;
+    backdrop-filter: $glass-blur;
+    border: 1px solid $glass-border;
+    border-radius: $radius-lg;
+    padding: $spacer-lg;
+
+    &__icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $radius-md;
+        font-size: 1.25rem;
+        margin-bottom: $spacer-sm;
+    }
+
+    &__value {
+        font-size: $font-size-h2;
+        font-weight: $font-weight-extrabold;
+        color: $color-text-primary;
+    }
+
+    &__label {
+        font-size: $font-size-sm;
+        color: $color-text-muted;
+    }
+}

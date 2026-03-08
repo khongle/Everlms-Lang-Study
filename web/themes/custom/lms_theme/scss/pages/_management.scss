@@ -1,0 +1,42 @@
+// Management pages
+.lms-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: $color-bg-card;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    border: 1px solid $color-border;
+
+    th {
+        padding: 0.75rem 1rem;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+        color: $color-text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        background: $color-bg-tertiary;
+        border-bottom: 1px solid $color-border;
+        text-align: left;
+    }
+
+    td {
+        padding: 0.75rem 1rem;
+        font-size: $font-size-base;
+        color: $color-text-primary;
+        border-bottom: 1px solid $color-border;
+        vertical-align: middle;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+    }
+}
+
+// Drupal tables override
+table {
+    @extend .lms-table;
+}

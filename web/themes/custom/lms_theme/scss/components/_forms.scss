@@ -1,0 +1,73 @@
+// Forms
+.form-lms {
+    &__group {
+        margin-bottom: $spacer-md;
+    }
+
+    &__label {
+        display: block;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+        color: $color-text-secondary;
+        margin-bottom: $spacer-xs;
+    }
+
+    &__input {
+        width: 100%;
+        padding: 0.625rem 0.875rem;
+        font-size: $font-size-base;
+        color: $color-text-primary;
+        background: $color-bg-tertiary;
+        border: 1px solid $color-border;
+        border-radius: $radius-md;
+        transition: all $transition-fast;
+
+        &:focus {
+            outline: none;
+            border-color: $color-accent-primary;
+            box-shadow: 0 0 0 3px rgba($color-accent-primary, 0.15);
+        }
+
+        &::placeholder {
+            color: $color-text-muted;
+        }
+    }
+
+    &__select {
+        @extend .form-lms__input;
+        appearance: none;
+    }
+
+    &__textarea {
+        @extend .form-lms__input;
+        min-height: 120px;
+        resize: vertical;
+    }
+}
+
+// Drupal form overrides
+.form-item {
+    margin-bottom: $spacer-md;
+}
+
+.form-item label {
+    @extend .form-lms__label;
+}
+
+.form-text,
+.form-email,
+.form-url,
+.form-number,
+.form-tel,
+.form-search,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="url"],
+input[type="tel"],
+input[type="search"],
+select,
+textarea {
+    @extend .form-lms__input;
+}

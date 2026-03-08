@@ -1,0 +1,36 @@
+// Badges
+.badge-lms {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.625rem;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    border-radius: $radius-sm;
+    white-space: nowrap;
+
+    &--primary {
+        background: rgba($color-accent-primary, 0.15);
+        color: $color-accent-primary;
+    }
+
+    &--success {
+        background: rgba($color-accent-success, 0.15);
+        color: $color-accent-success;
+    }
+
+    &--danger {
+        background: rgba($color-accent-danger, 0.15);
+        color: $color-accent-danger;
+    }
+
+    &--warning {
+        background: rgba(254, 225, 64, 0.15);
+        color: $color-accent-warning;
+    }
+
+    &--info {
+        background: rgba($color-accent-info, 0.15);
+        color: $color-accent-info;
+    }
+}

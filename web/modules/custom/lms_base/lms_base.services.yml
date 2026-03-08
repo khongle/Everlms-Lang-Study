@@ -1,0 +1,4 @@
+services:
+  lms_base.helper:
+    class: Drupal\lms_base\Service\LmsHelper
+    arguments: ['@entity_type.manager', '@current_user']

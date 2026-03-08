@@ -1,0 +1,83 @@
+// ========================================
+// Buttons
+// ========================================
+
+.btn-lms-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacer-sm;
+    padding: 0.625rem 1.5rem;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: #fff;
+    background: $gradient-primary;
+    border: none;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: all $transition-normal;
+    text-decoration: none;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba($color-accent-primary, 0.4);
+        color: #fff;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+.btn-lms-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacer-sm;
+    padding: 0.625rem 1.5rem;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    background: transparent;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: all $transition-normal;
+    text-decoration: none;
+
+    &:hover {
+        border-color: $color-accent-primary;
+        color: $color-accent-primary;
+        background: rgba($color-accent-primary, 0.1);
+    }
+}
+
+.btn-lms-danger {
+    @extend .btn-lms-primary;
+    background: $gradient-secondary;
+
+    &:hover {
+        box-shadow: 0 4px 15px rgba($color-accent-danger, 0.4);
+    }
+}
+
+.btn-lms-success {
+    @extend .btn-lms-primary;
+    background: $gradient-success;
+    color: $color-bg-primary;
+
+    &:hover {
+        box-shadow: 0 4px 15px rgba($color-accent-success, 0.4);
+        color: $color-bg-primary;
+    }
+}
+
+.btn-lms-sm {
+    padding: 0.375rem 1rem;
+    font-size: $font-size-sm;
+}
+
+.btn-lms-lg {
+    padding: 0.875rem 2rem;
+    font-size: $font-size-lg;
+}

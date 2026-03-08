@@ -1,0 +1,113 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Install, update, and uninstall functions for lms_base.
+ */
+
+use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\taxonomy\Entity\Term;
+
+/**
+ * Implements hook_install().
+ */
+function lms_base_install(): void {
+  // Define vocabularies.
+  $vocabularies = [
+    'course_category' => 'Course Category',
+    'course_level' => 'Course Level',
+    'course_language' => 'Course Language',
+    'course_tags' => 'Course Tags',
+    'quiz_difficulty' => 'Quiz Difficulty',
+    'quiz_results' => 'Quiz Results',
+    'faq_category' => 'FAQ Category',
+    'badge_type' => 'Badge Type',
+  ];
+
+  foreach ($vocabularies as $vid => $name) {
+    if (!Vocabulary::load($vid)) {
+      Vocabulary::create([
+        'vid' => $vid,
+        'name' => $name,
+        'description' => "EverLMS: $name vocabulary.",
+      ])->save();
+    }
+  }
+
+  // Seed default terms.
+  $default_terms = [
+    'course_level' => ['Beginner', 'Intermediate', 'Advanced'],
+    'course_language' => ['English', 'Vietnamese', 'Japanese'],
+    'quiz_difficulty' => ['Easy', 'Medium', 'Hard'],
+    'quiz_results' => ['Passed', 'Failed'],
+    'faq_category' => ['General', 'Payment', 'Technical'],
+    'badge_type' => ['Completion', 'Streak', 'Quiz Master', 'Community Helper'],
+    'course_category' => [
+      'Programming' => [
+        'Frontend' => ['HTML/CSS', 'JavaScript', 'React'],
+        'Backend' => ['PHP', 'Node.js', 'Python'],
+        'Mobile' => ['Flutter', 'React Native'],
+      ],
+      'Business' => ['Marketing', 'Finance', 'Management'],
+      'Design' => ['UI/UX', 'Graphic Design', 'Video Production'],
+    ],
+  ];
+
+  foreach ($default_terms as $vid => $terms) {
+    _lms_base_create_terms($vid, $terms);
+  }
+}
+
+/**
+ * Helper to recursively create taxonomy terms.
+ */
+function _lms_base_create_terms(string $vid, array $terms, int $parent_id = 0, int &$weight = 0): void {
+  foreach ($terms as $key => $value) {
+    $weight++;
+    if (is_array($value)) {
+      // Parent term with children.
+      $term = Term::create([
+        'vid' => $vid,
+        'name' => $key,
+        'parent' => $parent_id,
+        'weight' => $weight,
+      ]);
+      $term->save();
+      _lms_base_create_terms($vid, $value, (int) $term->id(), $weight);
+    }
+    else {
+      // Leaf term.
+      Term::create([
+        'vid' => $vid,
+        'name' => $value,
+        'parent' => $parent_id,
+        'weight' => $weight,
+      ])->save();
+    }
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function lms_base_uninstall(): void {
+  $vocabularies = [
+    'course_category',
+    'course_level',
+    'course_language',
+    'course_tags',
+    'quiz_difficulty',
+    'quiz_results',
+    'faq_category',
+    'badge_type',
+  ];
+
+  foreach ($vocabularies as $vid) {
+    $vocabulary = Vocabulary::load($vid);
+    if ($vocabulary) {
+      $vocabulary->delete();
+    }
+  }
+}

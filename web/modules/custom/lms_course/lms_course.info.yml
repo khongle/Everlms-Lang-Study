@@ -1,0 +1,9 @@
+name: 'LMS Course'
+type: module
+description: 'Course management: CRUD, listing, search, category management.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+  - drupal:taxonomy
+lifecycle: stable
