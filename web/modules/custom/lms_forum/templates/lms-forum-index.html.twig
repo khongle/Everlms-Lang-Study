@@ -1,0 +1,40 @@
+{# Forum index — matches 10-forum.png #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <div class="lms-forum-header">
+      <h1>{{ 'Community Forum'|t }}</h1>
+      <a href="#" class="lms-btn lms-btn--primary"><i class="fas fa-plus"></i> {{ 'New Topic'|t }}</a>
+    </div>
+
+    {% if topics|length > 0 %}
+      <div class="lms-forum-list">
+        {% for topic in topics %}
+          <div class="lms-card lms-forum-item">
+            <div class="lms-forum-item__content">
+              <h3><a href="{{ topic.url }}">{{ topic.title }}</a></h3>
+              <p>{{ topic.body }}</p>
+              <div class="lms-forum-item__meta">
+                <span><i class="fas fa-user"></i> {{ topic.author }}</span>
+                <span><i class="fas fa-clock"></i> {{ topic.created|date('M d, Y') }}</span>
+              </div>
+            </div>
+            <div class="lms-forum-item__stats">
+              <div class="lms-forum-item__stat">
+                <span class="lms-forum-item__stat-value">{{ topic.reply_count }}</span>
+                <span class="lms-forum-item__stat-label">{{ 'Replies'|t }}</span>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="lms-empty-state">
+        <i class="fas fa-comments"></i>
+        <h3>{{ 'No topics yet'|t }}</h3>
+        <p>{{ 'Be the first to start a discussion!'|t }}</p>
+      </div>
+    {% endif %}
+  </div>
+</section>

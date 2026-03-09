@@ -1,0 +1,109 @@
+{# Admin Dashboard — matches 11-admin-dashboard.png #}
+{{ attach_library('lms_theme/global') }}
+
+<div class="lms-admin">
+  {# Admin sidebar #}
+  <aside class="lms-admin__sidebar">
+    <div class="lms-admin__sidebar-brand">
+      <i class="fas fa-graduation-cap"></i> {{ 'LMS Admin'|t }}
+    </div>
+    <nav class="lms-admin__nav">
+      <a href="{{ path('lms_course.admin_dashboard') }}" class="lms-admin__nav-item lms-admin__nav-item--active">
+        <i class="fas fa-tachometer-alt"></i> {{ 'Dashboard'|t }}
+      </a>
+      <a href="{{ path('lms_course.admin_courses') }}" class="lms-admin__nav-item">
+        <i class="fas fa-book"></i> {{ 'Courses'|t }}
+      </a>
+      <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-admin__nav-item">
+        <i class="fas fa-question-circle"></i> {{ 'Quizzes'|t }}
+      </a>
+      <a href="{{ path('lms_course.admin_users') }}" class="lms-admin__nav-item">
+        <i class="fas fa-users"></i> {{ 'Users'|t }}
+      </a>
+      <a href="{{ path('lms_course.admin_orders') }}" class="lms-admin__nav-item">
+        <i class="fas fa-shopping-cart"></i> {{ 'Orders'|t }}
+      </a>
+      <a href="{{ path('lms_course.admin_reports') }}" class="lms-admin__nav-item">
+        <i class="fas fa-chart-bar"></i> {{ 'Reports'|t }}
+      </a>
+    </nav>
+  </aside>
+
+  {# Main content #}
+  <div class="lms-admin__main">
+    <h1 class="lms-admin__title">{{ 'Admin Dashboard'|t }}</h1>
+
+    {# KPI Cards #}
+    <div class="lms-kpi-grid">
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon"><i class="fas fa-book"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__label">{{ 'Total Courses'|t }}</span>
+          <span class="lms-kpi-card__value">{{ stats.courses }}</span>
+        </div>
+      </div>
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--info"><i class="fas fa-users"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__label">{{ 'Active Learners'|t }}</span>
+          <span class="lms-kpi-card__value">{{ stats.learners|number_format }}</span>
+        </div>
+      </div>
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--success"><i class="fas fa-dollar-sign"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__label">{{ 'Revenue'|t }}</span>
+          <span class="lms-kpi-card__value">${{ stats.revenue|number_format(2) }}</span>
+        </div>
+      </div>
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--warning"><i class="fas fa-clipboard-check"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__label">{{ 'Quiz Completions'|t }}</span>
+          <span class="lms-kpi-card__value">{{ stats.quiz_results }}</span>
+        </div>
+      </div>
+    </div>
+
+    {# Recent Orders Table #}
+    <div class="lms-card">
+      <h3 class="lms-card__title">{{ 'Recent Orders'|t }}</h3>
+      <div class="lms-table-responsive">
+        <table class="lms-table">
+          <thead>
+            <tr>
+              <th>{{ 'Order ID'|t }}</th>
+              <th>{{ 'Learner'|t }}</th>
+              <th>{{ 'Amount'|t }}</th>
+              <th>{{ 'Date'|t }}</th>
+              <th>{{ 'Status'|t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in recent_orders %}
+              <tr>
+                <td>#{{ order.id }}</td>
+                <td>{{ order.learner }}</td>
+                <td>${{ order.total|number_format(2) }}</td>
+                <td>{{ order.created|date('M d, Y') }}</td>
+                <td>
+                  {% set status_class = {
+                    'paid': 'lms-badge--success',
+                    'completed': 'lms-badge--success',
+                    'pending': 'lms-badge--warning',
+                    'failed': 'lms-badge--danger',
+                  } %}
+                  <span class="lms-badge {{ status_class[order.status] ?? 'lms-badge--secondary' }}">
+                    {{ order.status|capitalize }}
+                  </span>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="5" class="lms-text-center">{{ 'No orders yet'|t }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

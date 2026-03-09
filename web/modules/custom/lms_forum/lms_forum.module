@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_theme().
+ */
+function lms_forum_theme(): array {
+  return [
+    'lms_forum_index' => [
+      'variables' => ['topics' => []],
+      'template' => 'lms-forum-index',
+    ],
+    'lms_forum_topic' => [
+      'variables' => ['topic' => [], 'replies' => []],
+      'template' => 'lms-forum-topic',
+    ],
+  ];
+}

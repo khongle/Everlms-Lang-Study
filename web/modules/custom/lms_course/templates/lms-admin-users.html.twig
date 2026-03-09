@@ -1,0 +1,30 @@
+{# Admin Users — matches 14-admin-users.png #}
+{{ attach_library('lms_theme/global') }}
+<div class="lms-admin">
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'users' } only %}
+  <div class="lms-admin__main">
+    <h1 class="lms-admin__title">{{ 'Manage Users'|t }}</h1>
+    <div class="lms-card">
+      <div class="lms-table-responsive">
+        <table class="lms-table">
+          <thead><tr><th>{{ 'ID'|t }}</th><th>{{ 'Name'|t }}</th><th>{{ 'Email'|t }}</th><th>{{ 'Roles'|t }}</th><th>{{ 'Enrolled'|t }}</th><th>{{ 'Joined'|t }}</th><th>{{ 'Status'|t }}</th></tr></thead>
+          <tbody>
+            {% for user in users %}
+              <tr>
+                <td>#{{ user.uid }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.roles }}</td>
+                <td>{{ user.enrolled }}</td>
+                <td>{{ user.created|date('M d, Y') }}</td>
+                <td><span class="lms-badge {{ user.status == 'Active' ? 'lms-badge--success' : 'lms-badge--danger' }}">{{ user.status }}</span></td>
+              </tr>
+            {% else %}
+              <tr><td colspan="7" class="lms-text-center">{{ 'No users'|t }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

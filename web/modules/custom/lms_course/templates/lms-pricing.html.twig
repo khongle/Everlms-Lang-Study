@@ -1,0 +1,42 @@
+{# Pricing — matches 19-pricing.png #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <div class="lms-pricing-header">
+      <h1>{{ 'Choose Your Plan'|t }}</h1>
+      <p>{{ 'Get unlimited access to courses and certifications'|t }}</p>
+    </div>
+
+    <div class="lms-pricing-grid">
+      {% for plan in plans %}
+        <div class="lms-card lms-pricing-card {{ plan.recommended ? 'lms-pricing-card--recommended' }}">
+          {% if plan.recommended %}
+            <div class="lms-pricing-card__badge">{{ 'Most Popular'|t }}</div>
+          {% endif %}
+          <h3 class="lms-pricing-card__name">{{ plan.name }}</h3>
+          <div class="lms-pricing-card__price">
+            {% if plan.price > 0 %}
+              <span class="lms-pricing-card__amount">${{ plan.price|number_format(2) }}</span>
+              <span class="lms-pricing-card__period">/{{ 'month'|t }}</span>
+            {% else %}
+              <span class="lms-pricing-card__amount">{{ 'Free'|t }}</span>
+            {% endif %}
+          </div>
+
+          <ul class="lms-pricing-card__features">
+            {% for feature in plan.features|split("\n") %}
+              {% if feature|trim %}
+                <li><i class="fas fa-check"></i> {{ feature|trim }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+
+          <a href="#" class="lms-btn {{ plan.recommended ? 'lms-btn--primary' : 'lms-btn--outline' }} lms-btn--block">
+            {{ plan.price > 0 ? 'Get Started'|t : 'Start Free'|t }}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -19,11 +19,11 @@
           'Mobile': 'fa-mobile-alt',
         } %}
         {% for category in categories %}
-          <a href="{{ path('lms_course.category_detail', {'taxonomy_term': category.tid}) }}" class="lms-category-card">
-            <i class="fas {{ icons[category.name] ?? 'fa-book' }}"></i>
-            <h3>{{ category.name }}</h3>
-            {% if category.description__value %}
-              <p>{{ category.description__value|striptags }}</p>
+          <a href="{{ path('lms_course.category_detail', {'taxonomy_term': category.id}) }}" class="lms-category-card">
+            <i class="fas {{ icons[category.label] ?? 'fa-book' }}"></i>
+            <h3>{{ category.label }}</h3>
+            {% if category.description.value %}
+              <p>{{ category.description.value|striptags }}</p>
             {% endif %}
           </a>
         {% endfor %}

@@ -44,3 +44,86 @@ lms_course.category_detail:
     parameters:
       taxonomy_term:
         type: entity:taxonomy_term
+
+# Static pages
+lms_course.about:
+  path: '/about'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\PageController::about'
+    _title: 'About Us'
+  requirements:
+    _permission: 'access content'
+
+lms_course.pricing:
+  path: '/pricing'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\PageController::pricing'
+    _title: 'Pricing'
+  requirements:
+    _permission: 'access content'
+
+lms_course.contact:
+  path: '/contact'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\PageController::contact'
+    _title: 'Contact Us'
+  requirements:
+    _permission: 'access content'
+
+# Admin/Management routes
+lms_course.admin_dashboard:
+  path: '/manage'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::dashboard'
+    _title: 'Admin Dashboard'
+  requirements:
+    _permission: 'administer site configuration'
+
+lms_course.admin_courses:
+  path: '/manage/courses'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::courseList'
+    _title: 'Manage Courses'
+  requirements:
+    _permission: 'administer site configuration'
+
+lms_course.admin_quizzes:
+  path: '/manage/quizzes'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::quizList'
+    _title: 'Manage Quizzes'
+  requirements:
+    _permission: 'administer site configuration'
+
+lms_course.admin_orders:
+  path: '/manage/orders'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::orderList'
+    _title: 'Manage Orders'
+  requirements:
+    _permission: 'administer site configuration'
+
+lms_course.admin_users:
+  path: '/manage/users'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::userList'
+    _title: 'Manage Users'
+  requirements:
+    _permission: 'administer site configuration'
+
+lms_course.admin_reports:
+  path: '/manage/reports'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::reports'
+    _title: 'Reports & Analytics'
+  requirements:
+    _permission: 'administer site configuration'
+
+# User Profile
+lms_course.profile:
+  path: '/profile'
+  defaults:
+    _controller: '\Drupal\lms_progress\Controller\UserPortalController::profile'
+    _title: 'My Profile'
+  requirements:
+    _user_is_logged_in: 'TRUE'

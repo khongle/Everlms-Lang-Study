@@ -1,0 +1,19 @@
+# Forum routes
+lms_forum.index:
+  path: '/forum'
+  defaults:
+    _controller: '\Drupal\lms_forum\Controller\ForumController::index'
+    _title: 'Community Forum'
+  requirements:
+    _permission: 'access content'
+
+lms_forum.topic:
+  path: '/forum/{lms_forum_topic}'
+  defaults:
+    _controller: '\Drupal\lms_forum\Controller\ForumController::viewTopic'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      lms_forum_topic:
+        type: entity:lms_forum_topic

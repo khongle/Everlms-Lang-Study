@@ -1,0 +1,33 @@
+{# Admin Quizzes — matches 13-admin-quizzes.png #}
+{{ attach_library('lms_theme/global') }}
+<div class="lms-admin">
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'quizzes' } only %}
+  <div class="lms-admin__main">
+    <div class="lms-admin__header">
+      <h1 class="lms-admin__title">{{ 'Manage Quizzes'|t }}</h1>
+      <a href="#" class="lms-btn lms-btn--primary"><i class="fas fa-plus"></i> {{ 'Create Quiz'|t }}</a>
+    </div>
+    <div class="lms-card">
+      <div class="lms-table-responsive">
+        <table class="lms-table">
+          <thead><tr><th>{{ 'ID'|t }}</th><th>{{ 'Quiz Name'|t }}</th><th>{{ 'Questions'|t }}</th><th>{{ 'Time'|t }}</th><th>{{ 'Pass Score'|t }}</th><th>{{ 'Status'|t }}</th><th>{{ 'Actions'|t }}</th></tr></thead>
+          <tbody>
+            {% for quiz in quizzes %}
+              <tr>
+                <td>#{{ quiz.id }}</td>
+                <td>{{ quiz.name }}</td>
+                <td>{{ quiz.question_count }}</td>
+                <td>{{ quiz.time_limit > 0 ? quiz.time_limit ~ 'min' : 'Unlimited'|t }}</td>
+                <td>{{ quiz.pass_score }}%</td>
+                <td><span class="lms-badge {{ quiz.status == 'Active' ? 'lms-badge--success' : 'lms-badge--secondary' }}">{{ quiz.status }}</span></td>
+                <td><a href="{{ quiz.edit_url }}" class="lms-btn lms-btn--sm lms-btn--outline">{{ 'Edit'|t }}</a></td>
+              </tr>
+            {% else %}
+              <tr><td colspan="7" class="lms-text-center">{{ 'No quizzes'|t }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

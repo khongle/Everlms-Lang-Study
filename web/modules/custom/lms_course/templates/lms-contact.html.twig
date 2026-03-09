@@ -1,0 +1,62 @@
+{# Contact — simple contact page #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <div class="lms-contact-layout">
+      <div class="lms-contact-layout__info">
+        <h1>{{ 'Get in Touch'|t }}</h1>
+        <p>{{ 'Have questions? We would love to hear from you.'|t }}</p>
+
+        <div class="lms-contact-items">
+          <div class="lms-contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <h4>{{ 'Address'|t }}</h4>
+              <p>{{ 'Company Headquarters, District, City'|t }}</p>
+            </div>
+          </div>
+          <div class="lms-contact-item">
+            <i class="fas fa-phone"></i>
+            <div>
+              <h4>{{ 'Phone'|t }}</h4>
+              <p>+01 00 200 0000</p>
+            </div>
+          </div>
+          <div class="lms-contact-item">
+            <i class="fas fa-envelope"></i>
+            <div>
+              <h4>{{ 'Email'|t }}</h4>
+              <p>everlms@gmail.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lms-contact-layout__form">
+        <div class="lms-card">
+          <h3>{{ 'Send us a Message'|t }}</h3>
+          <form method="post">
+            <div class="form-item">
+              <label>{{ 'Name'|t }}</label>
+              <input type="text" class="lms-input" placeholder="{{ 'Your name'|t }}">
+            </div>
+            <div class="form-item">
+              <label>{{ 'Email'|t }}</label>
+              <input type="email" class="lms-input" placeholder="{{ 'your@email.com'|t }}">
+            </div>
+            <div class="form-item">
+              <label>{{ 'Subject'|t }}</label>
+              <input type="text" class="lms-input" placeholder="{{ 'How can we help?'|t }}">
+            </div>
+            <div class="form-item">
+              <label>{{ 'Message'|t }}</label>
+              <textarea class="lms-input lms-textarea" rows="5" placeholder="{{ 'Your message...'|t }}"></textarea>
+            </div>
+            <button type="submit" class="lms-btn lms-btn--primary lms-btn--block">{{ 'Send Message'|t }}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

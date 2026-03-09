@@ -1,0 +1,39 @@
+{# Admin Reports — matches 14-admin-reports.png #}
+{{ attach_library('lms_theme/global') }}
+<div class="lms-admin">
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'reports' } only %}
+  <div class="lms-admin__main">
+    <h1 class="lms-admin__title">{{ 'Reports & Analytics'|t }}</h1>
+
+    <div class="lms-kpi-grid">
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon"><i class="fas fa-user-graduate"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__label">{{ 'Total Enrollments'|t }}</span>
+          <span class="lms-kpi-card__value">{{ metrics.total_enrollments }}</span>
+        </div>
+      </div>
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--success"><i class="fas fa-check-circle"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__label">{{ 'Completions'|t }}</span>
+          <span class="lms-kpi-card__value">{{ metrics.completions }}</span>
+        </div>
+      </div>
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--info"><i class="fas fa-certificate"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__label">{{ 'Certificates Issued'|t }}</span>
+          <span class="lms-kpi-card__value">{{ metrics.certificates_issued }}</span>
+        </div>
+      </div>
+      <div class="lms-card lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--warning"><i class="fas fa-percentage"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__label">{{ 'Completion Rate'|t }}</span>
+          <span class="lms-kpi-card__value">{{ metrics.completion_rate }}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

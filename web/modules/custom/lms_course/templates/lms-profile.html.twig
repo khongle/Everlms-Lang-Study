@@ -1,0 +1,32 @@
+{# User Profile — matches 08-user-profile.png #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <div class="lms-profile">
+      <div class="lms-card lms-profile__card">
+        <div class="lms-profile__avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <h2>{{ user_data.name }}</h2>
+        <p class="lms-text-muted">{{ user_data.email }}</p>
+        <p class="lms-text-muted">{{ 'Member since'|t }} {{ user_data.created|date('M Y') }}</p>
+
+        <div class="lms-profile__stats">
+          <div class="lms-profile__stat">
+            <span class="lms-profile__stat-value">{{ enrollment_count }}</span>
+            <span class="lms-profile__stat-label">{{ 'Courses'|t }}</span>
+          </div>
+          <div class="lms-profile__stat">
+            <span class="lms-profile__stat-value">{{ certificate_count }}</span>
+            <span class="lms-profile__stat-label">{{ 'Certificates'|t }}</span>
+          </div>
+        </div>
+
+        <a href="{{ path('entity.user.edit_form', {'user': user_data.uid}) }}" class="lms-btn lms-btn--outline lms-btn--block">
+          <i class="fas fa-edit"></i> {{ 'Edit Profile'|t }}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

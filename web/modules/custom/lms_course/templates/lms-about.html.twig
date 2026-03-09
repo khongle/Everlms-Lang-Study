@@ -1,0 +1,60 @@
+{# About Us — matches 19-about-us.png #}
+{{ attach_library('lms_theme/global') }}
+
+{# Hero #}
+<section class="lms-about-hero">
+  <div class="container">
+    <h1>{{ 'About EverLMS'|t }}</h1>
+    <p>{{ 'We believe in the power of education to transform lives. Our platform connects passionate instructors with eager learners worldwide.'|t }}</p>
+  </div>
+</section>
+
+{# Stats #}
+<section class="lms-section">
+  <div class="container">
+    <div class="lms-stats-grid">
+      {% for stat in stats %}
+        <div class="lms-stat-card">
+          <div class="lms-stat-card__value">{{ stat.value }}</div>
+          <div class="lms-stat-card__label">{{ stat.label }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# Mission + Vision #}
+<section class="lms-section lms-section--alt">
+  <div class="container">
+    <div class="lms-about-grid">
+      <div class="lms-card lms-about-card">
+        <div class="lms-about-card__icon"><i class="fas fa-bullseye"></i></div>
+        <h3>{{ 'Our Mission'|t }}</h3>
+        <p>{{ 'To democratize education by providing affordable, high-quality online learning experiences accessible to everyone, regardless of their background or location.'|t }}</p>
+      </div>
+      <div class="lms-card lms-about-card">
+        <div class="lms-about-card__icon"><i class="fas fa-eye"></i></div>
+        <h3>{{ 'Our Vision'|t }}</h3>
+        <p>{{ 'A world where every individual has the opportunity to learn, grow, and achieve their full potential through technology-enabled education.'|t }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# Team #}
+<section class="lms-section">
+  <div class="container">
+    <h2 class="lms-section__title lms-section__title--center">{{ 'Meet Our Team'|t }}</h2>
+    <div class="lms-team-grid">
+      {% for member in team %}
+        <div class="lms-card lms-team-card">
+          <div class="lms-team-card__avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <h4>{{ member.name }}</h4>
+          <p>{{ member.role }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

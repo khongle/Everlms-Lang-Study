@@ -230,4 +230,38 @@ final class UserPortalController extends ControllerBase {
     ];
   }
 
+  /**
+   * User profile page.
+   */
+  public function profile(): array {
+    $uid = (int) $this->currentUser->id();
+    $account = $this->entityTypeManager->getStorage('user')->load($uid);
+
+    $enrollment_count = (int) $this->entityTypeManager->getStorage('lms_user_course')
+      ->getQuery()
+      ->condition('uid', $uid)
+      ->accessCheck(FALSE)
+      ->count()
+      ->execute();
+
+    $cert_count = (int) $this->entityTypeManager->getStorage('lms_user_certificate')
+      ->getQuery()
+      ->condition('uid', $uid)
+      ->accessCheck(FALSE)
+      ->count()
+      ->execute();
+
+    return [
+      '#theme' => 'lms_profile',
+      '#user_data' => [
+        'uid' => $uid,
+        'name' => $account?->getDisplayName() ?? '',
+        'email' => $account?->getEmail() ?? '',
+        'created' => $account?->getCreatedTime() ?? 0,
+      ],
+      '#enrollment_count' => $enrollment_count,
+      '#certificate_count' => $cert_count,
+    ];
+  }
+
 }

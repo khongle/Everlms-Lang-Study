@@ -1,0 +1,50 @@
+{# Forum topic detail with replies #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container">
+    <nav class="lms-breadcrumb">
+      <a href="{{ path('lms_forum.index') }}">{{ 'Forum'|t }}</a>
+      <span>/</span>
+      <span>{{ topic.title }}</span>
+    </nav>
+
+    {# Original post #}
+    <div class="lms-card lms-forum-post lms-forum-post--original">
+      <div class="lms-forum-post__header">
+        <div class="lms-forum-post__avatar"><i class="fas fa-user-circle"></i></div>
+        <div>
+          <strong>{{ topic.author }}</strong>
+          <span class="lms-text-muted">{{ topic.created|date('M d, Y H:i') }}</span>
+        </div>
+      </div>
+      <h1>{{ topic.title }}</h1>
+      <div class="lms-forum-post__body">{{ topic.body|raw }}</div>
+    </div>
+
+    {# Replies #}
+    <h3 class="lms-forum-replies-title">{{ replies|length }} {{ 'Replies'|t }}</h3>
+
+    {% for reply in replies %}
+      <div class="lms-card lms-forum-post">
+        <div class="lms-forum-post__header">
+          <div class="lms-forum-post__avatar"><i class="fas fa-user-circle"></i></div>
+          <div>
+            <strong>{{ reply.author }}</strong>
+            <span class="lms-text-muted">{{ reply.created|date('M d, Y H:i') }}</span>
+          </div>
+        </div>
+        <div class="lms-forum-post__body">{{ reply.body|raw }}</div>
+      </div>
+    {% endfor %}
+
+    {# Reply form #}
+    <div class="lms-card lms-forum-reply-form">
+      <h4>{{ 'Leave a Reply'|t }}</h4>
+      <div class="form-item">
+        <textarea class="lms-input lms-textarea" rows="4" placeholder="{{ 'Write your reply...'|t }}"></textarea>
+      </div>
+      <button class="lms-btn lms-btn--primary">{{ 'Post Reply'|t }}</button>
+    </div>
+  </div>
+</section>

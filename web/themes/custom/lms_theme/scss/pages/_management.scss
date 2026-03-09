@@ -1,42 +1,246 @@
-// Management pages
-.lms-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: $color-bg-card;
-    border-radius: $radius-lg;
-    overflow: hidden;
-    border: 1px solid $color-border;
+// Admin panel — matches 11-admin-dashboard.png
 
-    th {
-        padding: 0.75rem 1rem;
-        font-size: $font-size-sm;
-        font-weight: $font-weight-semibold;
-        color: $color-text-muted;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        background: $color-bg-tertiary;
-        border-bottom: 1px solid $color-border;
-        text-align: left;
+.lms-admin {
+    display: flex;
+    min-height: calc(100vh - $navbar-height);
+
+    &__sidebar {
+        width: 240px;
+        min-width: 240px;
+        background: $color-bg-secondary;
+        border-right: 1px solid $color-border;
+        padding: $spacer-lg 0;
+        position: sticky;
+        top: $navbar-height;
+        height: calc(100vh - $navbar-height);
+        overflow-y: auto;
+
+        @media (max-width: $breakpoint-md) {
+            display: none;
+        }
     }
 
-    td {
-        padding: 0.75rem 1rem;
-        font-size: $font-size-base;
+    &__sidebar-brand {
+        padding: 0 $spacer-lg $spacer-lg;
+        font-size: 1.125rem;
+        font-weight: $font-weight-extrabold;
         color: $color-text-primary;
-        border-bottom: 1px solid $color-border;
-        vertical-align: middle;
+
+        i {
+            color: $color-primary;
+            margin-right: $spacer-xs;
+        }
     }
 
-    tr:last-child td {
-        border-bottom: none;
+    &__nav {
+        display: flex;
+        flex-direction: column;
     }
 
-    tr:hover td {
-        background: rgba(255, 255, 255, 0.02);
+    &__nav-item {
+        display: flex;
+        align-items: center;
+        gap: $spacer-sm;
+        padding: 0.625rem $spacer-lg;
+        color: $color-text-secondary;
+        text-decoration: none;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+        transition: all $transition-fast;
+        border-left: 3px solid transparent;
+
+        &:hover {
+            color: $color-text-primary;
+            background: $glass-bg;
+        }
+
+        &--active {
+            color: $color-primary;
+            background: rgba($color-primary, 0.1);
+            border-left-color: $color-primary;
+        }
+
+        i {
+            width: 20px;
+            text-align: center;
+        }
+    }
+
+    &__main {
+        flex: 1;
+        padding: $spacer-xl;
+        min-width: 0;
+    }
+
+    &__title {
+        font-size: $font-size-h2;
+        font-weight: $font-weight-extrabold;
+        margin-bottom: $spacer-xl;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $spacer-xl;
     }
 }
 
-// Drupal tables override
-table {
-    @extend .lms-table;
+// KPI cards grid
+.lms-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacer-md;
+    margin-bottom: $spacer-xl;
+
+    @media (max-width: $breakpoint-lg) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: $breakpoint-sm) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.lms-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: $spacer-md;
+    padding: $spacer-lg;
+
+    &__icon {
+        width: 48px;
+        height: 48px;
+        border-radius: $radius-lg;
+        background: rgba($color-primary, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: $color-primary;
+
+        &--info {
+            background: rgba(#00b4d8, 0.15);
+            color: #00b4d8;
+        }
+
+        &--success {
+            background: rgba($color-success, 0.15);
+            color: $color-success;
+        }
+
+        &--warning {
+            background: rgba(#fca311, 0.15);
+            color: #fca311;
+        }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__label {
+        font-size: $font-size-xs;
+        color: $color-text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    &__value {
+        font-size: $font-size-h3;
+        font-weight: $font-weight-extrabold;
+        color: $color-text-primary;
+    }
+}
+
+// Data tables
+.lms-table-responsive {
+    overflow-x: auto;
+}
+
+.lms-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+        padding: 0.75rem $spacer-md;
+        text-align: left;
+        font-size: $font-size-sm;
+        border-bottom: 1px solid $color-border;
+    }
+
+    th {
+        color: $color-text-muted;
+        font-weight: $font-weight-semibold;
+        text-transform: uppercase;
+        font-size: $font-size-xs;
+        letter-spacing: 0.05em;
+    }
+
+    td {
+        color: $color-text-secondary;
+    }
+
+    tbody tr:hover {
+        background: rgba($color-primary, 0.03);
+    }
+}
+
+.lms-text-center {
+    text-align: center;
+}
+
+.lms-text-muted {
+    color: $color-text-muted;
+}
+
+// Profile page
+.lms-profile {
+    display: flex;
+    justify-content: center;
+
+    &__card {
+        max-width: 400px;
+        width: 100%;
+        padding: $spacer-xxl;
+        text-align: center;
+
+        h2 {
+            margin-bottom: $spacer-xs;
+        }
+    }
+
+    &__avatar {
+        font-size: 5rem;
+        color: $color-text-muted;
+        margin-bottom: $spacer-md;
+    }
+
+    &__stats {
+        display: flex;
+        justify-content: center;
+        gap: $spacer-xxl;
+        margin: $spacer-xl 0;
+        padding: $spacer-lg 0;
+        border-top: 1px solid $color-border;
+        border-bottom: 1px solid $color-border;
+    }
+
+    &__stat {
+        text-align: center;
+    }
+
+    &__stat-value {
+        display: block;
+        font-size: $font-size-h2;
+        font-weight: $font-weight-extrabold;
+        color: $color-primary;
+    }
+
+    &__stat-label {
+        font-size: $font-size-sm;
+        color: $color-text-muted;
+    }
 }

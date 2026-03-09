@@ -1,0 +1,26 @@
+{# Admin sidebar partial — reused across all admin pages #}
+<aside class="lms-admin__sidebar">
+  <div class="lms-admin__sidebar-brand">
+    <i class="fas fa-graduation-cap"></i> {{ 'LMS Admin'|t }}
+  </div>
+  <nav class="lms-admin__nav">
+    <a href="{{ path('lms_course.admin_dashboard') }}" class="lms-admin__nav-item {{ active == 'dashboard' ? 'lms-admin__nav-item--active' }}">
+      <i class="fas fa-tachometer-alt"></i> {{ 'Dashboard'|t }}
+    </a>
+    <a href="{{ path('lms_course.admin_courses') }}" class="lms-admin__nav-item {{ active == 'courses' ? 'lms-admin__nav-item--active' }}">
+      <i class="fas fa-book"></i> {{ 'Courses'|t }}
+    </a>
+    <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-admin__nav-item {{ active == 'quizzes' ? 'lms-admin__nav-item--active' }}">
+      <i class="fas fa-question-circle"></i> {{ 'Quizzes'|t }}
+    </a>
+    <a href="{{ path('lms_course.admin_users') }}" class="lms-admin__nav-item {{ active == 'users' ? 'lms-admin__nav-item--active' }}">
+      <i class="fas fa-users"></i> {{ 'Users'|t }}
+    </a>
+    <a href="{{ path('lms_course.admin_orders') }}" class="lms-admin__nav-item {{ active == 'orders' ? 'lms-admin__nav-item--active' }}">
+      <i class="fas fa-shopping-cart"></i> {{ 'Orders'|t }}
+    </a>
+    <a href="{{ path('lms_course.admin_reports') }}" class="lms-admin__nav-item {{ active == 'reports' ? 'lms-admin__nav-item--active' }}">
+      <i class="fas fa-chart-bar"></i> {{ 'Reports'|t }}
+    </a>
+  </nav>
+</aside>

@@ -1,0 +1,175 @@
+// Auth pages (login/register) — matches 06-auth-login-register.png
+
+.lms-auth {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $spacer-xl;
+    background: $color-bg-primary;
+
+    &__container {
+        width: 100%;
+        max-width: 440px;
+    }
+
+    &__card {
+        @include glass-card;
+        padding: $spacer-xxl;
+
+        @media (max-width: $breakpoint-sm) {
+            padding: $spacer-xl;
+        }
+    }
+
+    &__header {
+        text-align: center;
+        margin-bottom: $spacer-xl;
+
+        h1 {
+            font-size: $font-size-h2;
+            font-weight: $font-weight-extrabold;
+            margin-bottom: $spacer-xs;
+        }
+
+        p {
+            color: $color-text-secondary;
+            font-size: $font-size-sm;
+        }
+    }
+
+    &__logo {
+        display: inline-flex;
+        align-items: center;
+        gap: $spacer-sm;
+        font-size: 1.5rem;
+        font-weight: $font-weight-extrabold;
+        color: $color-text-primary;
+        text-decoration: none;
+        margin-bottom: $spacer-lg;
+    }
+
+    &__social {
+        display: flex;
+        flex-direction: column;
+        gap: $spacer-sm;
+        margin-bottom: $spacer-lg;
+    }
+
+    &__divider {
+        display: flex;
+        align-items: center;
+        gap: $spacer-md;
+        margin-bottom: $spacer-lg;
+        color: $color-text-muted;
+        font-size: $font-size-sm;
+
+        &::before,
+        &::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: $color-border;
+        }
+    }
+
+    &__footer {
+        text-align: center;
+        margin-top: $spacer-lg;
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+
+        a {
+            color: $color-primary;
+            font-weight: $font-weight-semibold;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    // Style Drupal form elements inside auth card
+    .form-item {
+        margin-bottom: $spacer-md;
+    }
+
+    label {
+        display: block;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+        color: $color-text-secondary;
+        margin-bottom: $spacer-xs;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        width: 100%;
+        padding: 0.625rem 0.875rem;
+        background: $color-bg-tertiary;
+        border: 1px solid $color-border;
+        border-radius: $radius-md;
+        color: $color-text-primary;
+        font-size: $font-size-sm;
+        transition: border-color $transition-fast;
+
+        &:focus {
+            outline: none;
+            border-color: $color-primary;
+        }
+
+        &::placeholder {
+            color: $color-text-muted;
+        }
+    }
+
+    input[type="submit"],
+    .button {
+        width: 100%;
+        padding: 0.75rem;
+        background: $gradient-primary;
+        color: #fff;
+        border: none;
+        border-radius: $radius-md;
+        font-size: $font-size-base;
+        font-weight: $font-weight-semibold;
+        cursor: pointer;
+        transition: opacity $transition-fast;
+        margin-top: $spacer-sm;
+
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+}
+
+// Social buttons
+.lms-btn--social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacer-sm;
+    padding: 0.625rem;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: $color-bg-tertiary;
+    color: $color-text-primary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    text-decoration: none;
+    transition: all $transition-fast;
+
+    &:hover {
+        border-color: $color-primary;
+    }
+}
+
+.lms-btn--google i {
+    color: #ea4335;
+}
+
+.lms-btn--facebook i {
+    color: #1877f2;
+}
