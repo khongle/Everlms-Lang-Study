@@ -23,7 +23,7 @@
             <i class="fas {{ icons[category.label] ?? 'fa-book' }}"></i>
             <h3>{{ category.label }}</h3>
             {% if category.description.value %}
-              <p>{{ category.description.value|striptags }}</p>
+              <p>{{ category.description.value|render|striptags }}</p>
             {% endif %}
           </a>
         {% endfor %}

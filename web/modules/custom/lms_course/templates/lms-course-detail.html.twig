@@ -59,8 +59,8 @@
         {# Overview Tab #}
         <div class="lms-tab-panel" id="overview">
           <h2 class="lms-tab-panel__title">{{ 'Overview'|t }}</h2>
-          {% if course.field_body.value %}
-            <div class="lms-course-body">{{ course.field_body.value|raw }}</div>
+          {% if course.field_description.value %}
+            <div class="lms-course-body">{{ course.field_description.value|raw }}</div>
           {% endif %}
 
           {% if course.field_what_learn.value %}
@@ -72,7 +72,16 @@
 
           {% if course.field_prerequisites.value %}
             <h3>{{ 'Prerequisites'|t }}</h3>
-            <p>{{ course.field_prerequisites.value }}</p>
+            <div class="lms-learn-list">
+              {{ course.field_prerequisites.value|raw }}
+            </div>
+          {% endif %}
+
+          {% if course.field_who_for.value %}
+            <h3>{{ 'Who This Course Is For'|t }}</h3>
+            <div class="lms-learn-list">
+              {{ course.field_who_for.value|raw }}
+            </div>
           {% endif %}
 
           {% if level %}
@@ -91,7 +100,7 @@
         </div>
 
         {# Curriculum Tab (shown below in mobile) #}
-        <div class="lms-tab-panel" id="curriculum">
+        <div class="lms-tab-panel" id="curriculum" style="display:none">
           <h2 class="lms-tab-panel__title">{{ 'Curriculum'|t }}</h2>
           {% for item in curriculum %}
             <div class="lms-curriculum__chapter">

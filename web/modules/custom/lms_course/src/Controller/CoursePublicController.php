@@ -198,6 +198,17 @@ final class CoursePublicController extends ControllerBase {
       $level = $course->get('field_level')->entity;
       $duration = (int) $course->get('field_duration')->value;
 
+      $instructor_refs = $course->get('field_instructor')->referencedEntities();
+      $instructor_entity = !empty($instructor_refs) ? reset($instructor_refs) : $course->getOwner();
+      $instructor_name = $instructor_entity ? $instructor_entity->getDisplayName() : '';
+      $instructor_avatar = '';
+      if ($instructor_entity && $instructor_entity->hasField('user_picture') && !$instructor_entity->get('user_picture')->isEmpty()) {
+        $file = $instructor_entity->get('user_picture')->entity;
+        if ($file) {
+           $instructor_avatar = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+        }
+      }
+
       $cards[] = [
         'id' => $course->id(),
         'name' => $course->label(),
@@ -211,6 +222,8 @@ final class CoursePublicController extends ControllerBase {
         'featured' => (bool) $course->get('field_featured')->value,
         'thumbnail' => $course->get('field_thumbnail')->entity,
         'url' => $course->toUrl()->toString(),
+        'instructor_name' => $instructor_name,
+        'instructor_avatar' => $instructor_avatar,
       ];
     }
     return $cards;

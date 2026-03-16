@@ -1,0 +1,6 @@
+services:
+  lms_base.commands:
+    class: \Drupal\lms_base\Commands\LmsDemoContentCommand
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: drush.command }

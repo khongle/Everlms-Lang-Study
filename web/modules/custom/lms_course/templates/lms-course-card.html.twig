@@ -1,50 +1,64 @@
 {# Course card partial — reusable across pages #}
-<div class="lms-card lms-card--course">
+<div class="card-lms card-lms--course">
   {% if card.thumbnail %}
-    <div class="lms-card__image">
+    <div class="card-lms__image">
+      {% if card.category %}
+        <span class="card-lms__category">{{ card.category }}</span>
+      {% endif %}
       <img src="{{ file_url(card.thumbnail.uri.value) }}" alt="{{ card.name }}" loading="lazy">
       {% if card.bestseller %}
-        <span class="lms-badge lms-badge--warning">Bestseller</span>
+        <span class="badge-lms badge-lms--warning" style="position: absolute; top: 12px; right: 12px; z-index: 10;">Bestseller</span>
       {% endif %}
       {% if card.price_raw == 0 %}
-        <span class="lms-badge lms-badge--success">Free</span>
+        <span class="badge-lms badge-lms--success" style="position: absolute; bottom: 12px; left: 12px; z-index: 10;">Free</span>
       {% endif %}
     </div>
   {% else %}
-    <div class="lms-card__image lms-card__image--placeholder">
+    <div class="card-lms__image card-lms__image--placeholder">
+      {% if card.category %}
+        <span class="card-lms__category">{{ card.category }}</span>
+      {% endif %}
       <i class="fas fa-graduation-cap"></i>
     </div>
   {% endif %}
 
-  <div class="lms-card__body">
-    {% if card.category %}
-      <span class="lms-card__category">{{ card.category }}</span>
-    {% endif %}
-
-    <h3 class="lms-card__title">
+  <div class="card-lms__body">
+    <h3 class="card-lms__title">
       <a href="{{ card.url }}">{{ card.name }}</a>
     </h3>
 
-    {% if card.short_description %}
-      <p class="lms-card__desc">{{ card.short_description|striptags|length > 80 ? card.short_description|striptags|slice(0, 80) ~ '…' : card.short_description|striptags }}</p>
+    {% if card.instructor_name %}
+      <div class="card-lms__instructor" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        {% if card.instructor_avatar %}
+          <img src="{{ card.instructor_avatar }}" alt="{{ card.instructor_name }}" class="card-lms__instructor-avatar" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+        {% else %}
+          <div class="card-lms__instructor-avatar-fallback" style="width: 24px; height: 24px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff;">
+            <i class="fas fa-user"></i>
+          </div>
+        {% endif %}
+        <span class="card-lms__instructor-name" style="font-size: 0.85rem; color: #a1a1aa;">{{ card.instructor_name }}</span>
+      </div>
     {% endif %}
 
-    <div class="lms-card__meta">
+    {% if card.short_description %}
+      <div class="card-lms__desc">
+        {{ card.short_description }}
+      </div>
+    {% endif %}
+
+    <div class="card-lms__meta">
       {% if card.level %}
-        <span class="lms-card__level"><i class="fas fa-signal"></i> {{ card.level }}</span>
+        <span class="card-lms__level"><i class="fas fa-signal"></i> {{ card.level }}</span>
       {% endif %}
       {% if card.duration %}
-        <span class="lms-card__duration"><i class="fas fa-clock"></i> {{ card.duration }}</span>
+        <span class="card-lms__duration"><i class="fas fa-clock"></i> {{ card.duration }}</span>
       {% endif %}
     </div>
 
-    <div class="lms-card__footer">
-      <span class="lms-card__price {% if card.price_raw == 0 %}lms-card__price--free{% endif %}">
+    <div class="card-lms__footer">
+      <span class="card-lms__price {% if card.price_raw == 0 %}card-lms__price--free{% endif %}">
         {{ card.price }}
       </span>
-      <a href="{{ card.url }}" class="lms-btn lms-btn--sm lms-btn--outline">
-        {{ 'View Course'|t }}
-      </a>
     </div>
   </div>
 </div>

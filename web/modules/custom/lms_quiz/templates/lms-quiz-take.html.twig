@@ -6,7 +6,7 @@
     <div class="lms-quiz__header">
       <h1>{{ quiz.label }}</h1>
       {% if quiz.field_body.value %}
-        <p class="lms-quiz__instructions">{{ quiz.field_body.value|striptags }}</p>
+        <p class="lms-quiz__instructions">{{ quiz.field_body.value|render|striptags }}</p>
       {% endif %}
 
       <div class="lms-quiz__meta">

@@ -102,6 +102,36 @@ class Course extends ContentEntityBase implements EntityOwnerInterface {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['field_what_learn'] = BaseFieldDefinition::create('text_long')
+      ->setLabel(new TranslatableMarkup('What You\'ll Learn'))
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'text_textarea',
+        'weight' => -7,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['field_prerequisites'] = BaseFieldDefinition::create('text_long')
+      ->setLabel(new TranslatableMarkup('Prerequisites'))
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'text_textarea',
+        'weight' => -6,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['field_who_for'] = BaseFieldDefinition::create('text_long')
+      ->setLabel(new TranslatableMarkup('Who This Course Is For'))
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'text_textarea',
+        'weight' => -5,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['field_thumbnail'] = BaseFieldDefinition::create('image')
       ->setLabel(new TranslatableMarkup('Thumbnail'))
       ->setDescription(new TranslatableMarkup('Card thumbnail image.'))
