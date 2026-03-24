@@ -1,0 +1,110 @@
+{# lms-admin-certificates.html.twig #}
+{{ attach_library('lms_theme/global') }}
+<div class="lms-admin">
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'certificates' } %}
+
+  <div class="lms-admin__main">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div>
+        <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ 'Certificate Management'|t }}</h1>
+        <p class="lms-admin__subtitle" style="margin-top: 0.5rem; margin-bottom: 0; color: #94a3b8;">
+          {{ 'View and manage all issued certificates and their physical PDFs.'|t }}
+        </p>
+      </div>
+    </div>
+
+    {# Quick Stats Area #}
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+      <div class="lms-admin-card" style="padding: 1.5rem; flex: none; border-radius: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <div style="color: #94a3b8; font-size: 0.8125rem; font-weight: 600; text-transform: uppercase;">Total Issued</div>
+        <div style="font-size: 2rem; font-weight: 700; color: #fff; margin-top: 0.5rem;">{{ stats.total_issued }}</div>
+      </div>
+      <div class="lms-admin-card" style="padding: 1.5rem; flex: none; border-radius: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <div style="color: #94a3b8; font-size: 0.8125rem; font-weight: 600; text-transform: uppercase;">Revoked</div>
+        <div style="font-size: 2rem; font-weight: 700; color: #f5576c; margin-top: 0.5rem;">{{ stats.revoked }}</div>
+      </div>
+      <div class="lms-admin-card" style="padding: 1.5rem; flex: none; border-radius: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <div style="color: #94a3b8; font-size: 0.8125rem; font-weight: 600; text-transform: uppercase;">Issued This Week</div>
+        <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-top: 0.5rem;">{{ stats.recent }}</div>
+      </div>
+    </div>
+
+    {# Filter Bar #}
+    <form method="GET" action="{{ path('<current>') }}" class="lms-admin-filter">
+      <div class="lms-admin-filter__group" style="flex: 2;">
+        <label class="lms-admin-filter__label">{{ 'Search Certificate'|t }}</label>
+        <input type="text" name="search" class="lms-admin-filter__input" placeholder="{{ 'Enter code or student name...'|t }}">
+      </div>
+      <div class="lms-admin-filter__group">
+        <label class="lms-admin-filter__label">{{ 'Status'|t }}</label>
+        <select name="status" class="lms-admin-filter__select">
+          <option value="all">{{ 'All Statuses'|t }}</option>
+          <option value="valid">{{ 'Valid'|t }}</option>
+          <option value="revoked">{{ 'Revoked'|t }}</option>
+        </select>
+      </div>
+      <div class="lms-admin-filter__group" style="flex: 0 0 auto;">
+        <button type="submit" class="lms-btn btn-lms-primary" style="height: 42px; display: inline-flex; align-items: center;">
+          {{ 'Filter'|t }}
+        </button>
+      </div>
+    </form>
+
+    {# Data Table #}
+    <div class="lms-admin-card">
+      <div class="lms-table-responsive">
+        <table class="lms-table">
+          <thead>
+            <tr>
+              <th>{{ 'Recipient'|t }}</th>
+              <th>{{ 'Course'|t }}</th>
+              <th>{{ 'Date'|t }}</th>
+              <th>{{ 'Code'|t }}</th>
+              <th>{{ 'Status'|t }}</th>
+              <th style="text-align: right;">{{ 'Actions'|t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cert in certificates %}
+              <tr>
+                <td>
+                  <div style="font-weight: 600; color: #fff;">{{ cert.user_name }}</div>
+                </td>
+                <td>{{ cert.course_name }}</td>
+                <td>{{ cert.issue_date }}</td>
+                <td><span style="font-family: monospace; color: #94a3b8;">{{ cert.code }}</span></td>
+                <td>
+                  {% if cert.status == 'Valid' %}
+                    <span class="lms-status lms-status--published">{{ 'Valid'|t }}</span>
+                  {% else %}
+                    <span class="lms-status" style="background: rgba(245, 87, 108, 0.1); color: #f5576c; border-color: rgba(245, 87, 108, 0.2);">{{ 'Revoked'|t }}</span>
+                  {% endif %}
+                </td>
+                <td style="text-align: right;">
+                  <a href="{{ cert.pdf_url }}" target="_blank" class="btn-lms-primary" style="padding: 0.35rem 0.75rem; font-size: 0.8125rem; display: inline-flex; align-items: center; gap: 0.25rem; text-decoration: none;">
+                    <i class="fas fa-file-pdf"></i> {{ 'View PDF'|t }}
+                  </a>
+                  {% if cert.status == 'Valid' %}
+                    <a href="{{ cert.revoke_url }}" class="use-ajax" data-dialog-type="modal" data-dialog-options="{&quot;width&quot;:600}" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.35rem 0.75rem; font-size: 0.8125rem; font-weight: 600; border-radius: 0.5rem; background: rgba(245, 87, 108, 0.1); color: #f5576c; border: 1px solid rgba(245, 87, 108, 0.2); text-decoration: none; margin-left: 0.5rem;">
+                      <i class="fas fa-ban"></i> {{ 'Revoke'|t }}
+                    </a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 3rem; color: #94a3b8;">
+                  <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5; display: block;"></i>
+                  {{ 'No certificates found.'|t }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="lms-admin-footer">
+        <div style="color: #64748b;">{{ 'Showing'|t }} {{ certificates|length }} {{ 'entries'|t }}</div>
+      </div>
+    </div>
+  </div>
+</div>

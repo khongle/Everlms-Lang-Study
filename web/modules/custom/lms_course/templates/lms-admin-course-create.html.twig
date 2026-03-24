@@ -1,0 +1,379 @@
+{# Admin Create Course Wizard — matches mockup #}
+{{ attach_library('lms_theme/global') }}
+
+<style>
+  /* Local overrides for the Create Course Wizard */
+  .lms-wizard-stepper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .lms-wizard-step {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .lms-wizard-step__number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #1e293b;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .lms-wizard-step__number--active {
+    background: #1d70f5;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(29, 112, 245, 0.4);
+  }
+  .lms-wizard-step__text {
+    display: flex;
+    flex-direction: column;
+  }
+  .lms-wizard-step__label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .lms-wizard-step__title {
+    font-size: 0.875rem;
+    color: #94a3b8;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .lms-wizard-step__title--active {
+    color: #fff;
+  }
+  .lms-wizard-stepper__line {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.05);
+  }
+
+  /* Form Styles */
+  .lms-wizard-form {
+    background: #1e293b;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 2rem;
+  }
+  .lms-form-group {
+    margin-bottom: 1.5rem;
+  }
+  .lms-form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin-bottom: 0.5rem;
+  }
+  .lms-form-input, .lms-form-select {
+    width: 100%;
+    background: #0b0f19;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #e2e8f0;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .lms-form-input:focus, .lms-form-select:focus {
+    border-color: #1d70f5;
+  }
+
+  /* Rich Text Editor Mock */
+  .lms-rte {
+    background: #0b0f19;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  .lms-rte__toolbar {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #161b22;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .lms-rte__btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 0.25rem;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lms-rte__btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: #e2e8f0;
+  }
+  .lms-rte__content {
+    min-height: 120px;
+    padding: 1rem;
+    color: #94a3b8;
+    font-size: 0.9375rem;
+  }
+
+  /* Pills/Tags inside inputs */
+  .lms-pill-input {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background: #0b0f19;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+  }
+  .lms-pill {
+    background: #1e293b;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #cbd5e1;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .lms-pill i {
+    cursor: pointer;
+    color: #64748b;
+  }
+  .lms-pill i:hover { color: #f5576c; }
+
+  /* Upload Area */
+  .lms-upload-area {
+    border: 2px dashed rgba(255,255,255,0.1);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lms-upload-area:hover {
+    border-color: #1d70f5;
+    background: rgba(29, 112, 245, 0.05);
+  }
+  .lms-upload-area i {
+    font-size: 1.5rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+  .lms-upload-area__title {
+    color: #e2e8f0;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+  .lms-upload-area__desc {
+    color: #64748b;
+    font-size: 0.75rem;
+  }
+
+  /* AI Builder Card */
+  .lms-ai-builder {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid rgba(29, 112, 245, 0.3);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .lms-ai-builder::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -50%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(29, 112, 245, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+</style>
+
+<div class="lms-admin">
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'courses' } %}
+
+  <div class="lms-admin__main">
+    <div class="lms-admin__header" style="margin-bottom: 2rem;">
+      <h1 class="lms-admin__title">{{ 'Create New Course'|t }}</h1>
+    </div>
+
+    <div class="lms-wizard-stepper">
+      <div class="lms-wizard-step">
+        <div class="lms-wizard-step__number lms-wizard-step__number--active">1</div>
+        <div class="lms-wizard-step__text">
+          <span class="lms-wizard-step__label">Step 1</span>
+          <span class="lms-wizard-step__title lms-wizard-step__title--active">Basic Info</span>
+        </div>
+      </div>
+      <div class="lms-wizard-stepper__line"></div>
+      
+      <div class="lms-wizard-step">
+        <div class="lms-wizard-step__number">2</div>
+        <div class="lms-wizard-step__text">
+          <span class="lms-wizard-step__label">Step 2</span>
+          <span class="lms-wizard-step__title">Curriculum</span>
+        </div>
+      </div>
+      <div class="lms-wizard-stepper__line"></div>
+      
+      <div class="lms-wizard-step">
+        <div class="lms-wizard-step__number">3</div>
+        <div class="lms-wizard-step__text">
+          <span class="lms-wizard-step__label">Step 3</span>
+          <span class="lms-wizard-step__title">Pricing</span>
+        </div>
+      </div>
+      <div class="lms-wizard-stepper__line"></div>
+
+      <div class="lms-wizard-step">
+        <div class="lms-wizard-step__number">4</div>
+        <div class="lms-wizard-step__text">
+          <span class="lms-wizard-step__label">Step 4</span>
+          <span class="lms-wizard-step__title">Settings</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 2rem;">
+      <!-- Main Form Area -->
+      <div class="lms-wizard-form" style="flex: 1; min-width: 0;">
+        
+        <div class="lms-form-group">
+          <label class="lms-form-label">Course Title</label>
+          <input type="text" class="lms-form-input" placeholder="Enter a catchy title for your course...">
+        </div>
+
+        <div class="lms-form-group">
+          <label class="lms-form-label">Description</label>
+          <div class="lms-rte">
+            <div class="lms-rte__toolbar">
+              <button class="lms-rte__btn"><i class="fas fa-bold"></i></button>
+              <button class="lms-rte__btn"><i class="fas fa-italic"></i></button>
+              <button class="lms-rte__btn"><i class="fas fa-underline"></i></button>
+              <button class="lms-rte__btn"><i class="fas fa-strikethrough"></i></button>
+              <div style="width: 1px; background: rgba(255,255,255,0.05); margin: 0 0.25rem;"></div>
+              <button class="lms-rte__btn"><i class="fas fa-link"></i></button>
+              <button class="lms-rte__btn"><i class="fas fa-image"></i></button>
+              <div style="width: 1px; background: rgba(255,255,255,0.05); margin: 0 0.25rem;"></div>
+              <button class="lms-rte__btn"><i class="fas fa-list-ul"></i></button>
+              <button class="lms-rte__btn"><i class="fas fa-list-ol"></i></button>
+            </div>
+            <div class="lms-rte__content" contenteditable="true">
+              Write a detailed course overview to capture creativity and content.
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+           <div class="lms-form-group" style="grid-column: 1 / -1;">
+             <label class="lms-form-label">Category</label>
+             <div class="lms-pill-input">
+               <div style="flex: 1; min-width: 120px;">Select Category</div>
+               <div style="margin-left: auto;">
+                 <i class="fas fa-times" style="color: #64748b; margin-right: 0.5rem; cursor: pointer;"></i>
+                 <i class="fas fa-chevron-up" style="color: #64748b; cursor: pointer;"></i>
+               </div>
+             </div>
+             <!-- Mock Tags below input -->
+             <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+               <div class="lms-pill">Technology <i class="fas fa-times"></i></div>
+               <div class="lms-pill">Design <i class="fas fa-times"></i></div>
+               <div class="lms-pill">Business <i class="fas fa-times"></i></div>
+             </div>
+           </div>
+
+           <!-- Mock Dropdown inside grid for spatial realism -->
+           <div style="position: relative; top: -65px; left: 50%; grid-column: 2; z-index: 10;">
+              <div style="background: #161b22; border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; position: absolute; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                 <div style="padding: 0.5rem 1rem; color: #cbd5e1; font-size: 0.875rem; cursor: pointer;">Beginner</div>
+                 <div style="padding: 0.5rem 1rem; color: #cbd5e1; font-size: 0.875rem; cursor: pointer; background: rgba(255,255,255,0.05);">Intermediate</div>
+                 <div style="padding: 0.5rem 1rem; color: #cbd5e1; font-size: 0.875rem; cursor: pointer;">Advanced</div>
+              </div>
+           </div>
+
+           <div class="lms-form-group" style="margin-top: -65px;">
+             <label class="lms-form-label">Level</label>
+             <select class="lms-form-select">
+               <option>Beginner</option>
+             </select>
+           </div>
+
+           <div class="lms-form-group" style="margin-top: -65px;">
+             <label class="lms-form-label">Language</label>
+             <select class="lms-form-select">
+               <option>English</option>
+             </select>
+           </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+          <div>
+            <label class="lms-form-label">Course Thumbnail</label>
+            <div class="lms-upload-area">
+              <i class="fas fa-arrow-up-from-bracket"></i>
+              <div class="lms-upload-area__title">Drag & Drop or Click to Upload</div>
+              <div class="lms-upload-area__desc">Accepted formats: PNG, JPG, Max size 5MB</div>
+            </div>
+          </div>
+          <div>
+            <label class="lms-form-label">Banner Image</label>
+            <div class="lms-upload-area">
+              <i class="fas fa-arrow-up-from-bracket"></i>
+              <div class="lms-upload-area__title">Drag & Drop or Click to Upload</div>
+              <div class="lms-upload-area__desc">Accepted formats: PNG, JPG, Max size 5MB</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lms-form-group">
+          <label class="lms-form-label">Tags</label>
+          <div class="lms-pill-input" style="display: block;">
+            <input type="text" placeholder="Add tags (e.g., Python, Marketing)..." style="background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 0.9375rem; margin-bottom: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem;">
+              <div class="lms-pill">Coding <i class="fas fa-times"></i></div>
+              <div class="lms-pill">React <i class="fas fa-times"></i></div>
+              <div class="lms-pill">Web Dev <i class="fas fa-times"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;">
+          <button style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer;">Save Draft</button>
+          <button class="btn-lms-primary">Next: Curriculum <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i></button>
+        </div>
+
+      </div>
+
+      <!-- Right Sidebar Area -->
+      <div style="width: 300px; min-width: 300px;">
+        <div class="lms-ai-builder">
+          <div style="width: 64px; height: 64px; background: rgba(29, 112, 245, 0.15); border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+            <i class="fas fa-wand-magic-sparkles" style="color: #60a5fa; font-size: 1.75rem;"></i>
+          </div>
+          <h3 style="color: #fff; font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">AI Course Builder</h3>
+          <p style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 1.5rem; line-height: 1.6;">Let our AI generate a complete course structure, descriptions, and quizzes based on a single prompt.</p>
+          <button style="width: 100%; background: #1d70f5; color: #fff; border: none; border-radius: 0.5rem; font-weight: 600; padding: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(29, 112, 245, 0.4);">
+            <i class="fas fa-wand-magic-sparkles"></i> Generate with AI
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

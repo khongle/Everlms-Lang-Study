@@ -1,3 +1,4 @@
 services:
-  lms_payment.gateway_manager:
-    class: Drupal\lms_payment\Service\PaymentManager
+  plugin.manager.payment_gateway:
+    class: Drupal\lms_payment\Plugin\PaymentGatewayManager
+    parent: default_plugin_manager

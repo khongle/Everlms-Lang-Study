@@ -1,0 +1,16 @@
+{# web/themes/custom/lms_theme/templates/navigation/breadcrumb.html.twig #}
+{% if breadcrumb %}
+  <nav class="lms-breadcrumb" role="navigation" aria-labelledby="system-breadcrumb" style="font-size: 1rem; padding-bottom: 2rem;">
+    <h2 id="system-breadcrumb" class="visually-hidden">{{ 'Breadcrumb'|t }}</h2>
+    {% for item in breadcrumb %}
+      {% if item.url %}
+        <a href="{{ item.url }}">{{ item.text }}</a>
+      {% else %}
+        <span style="color: #e6edf3; font-weight: 600;">{{ item.text }}</span>
+      {% endif %}
+      {% if not loop.last %}
+        <span style="margin: 0 0.5rem;">/</span>
+      {% endif %}
+    {% endfor %}
+  </nav>
+{% endif %}

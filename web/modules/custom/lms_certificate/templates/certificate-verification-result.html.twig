@@ -1,0 +1,49 @@
+{#
+/**
+ * @file
+ * Theme implementation for displaying certificate verification result.
+ *
+ * Available variables:
+ * - certificate: The UserCertificate entity.
+ * - user: The user who owns the certificate.
+ * - course: The course the certificate is for.
+ * - is_revoked: Boolean indicating if it was revoked.
+ */
+#}
+<div class="certificate-verification-board">
+  {% if is_revoked %}
+    <div class="alert alert-danger">
+      <strong>{{ 'REVOKED'|t }}</strong><br>
+      {{ 'This certificate has been revoked and is no longer valid.'|t }}
+      {% if certificate.field_revoke_reason.value %}
+        <p><em>{{ 'Reason:'|t }} {{ certificate.field_revoke_reason.value }}</em></p>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="alert alert-success">
+      <strong>{{ 'VALID CERTIFICATE'|t }}</strong><br>
+      {{ 'This is a valid and authentic certificate.'|t }}
+    </div>
+  {% endif %}
+
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <th>{{ 'Recipient Name'|t }}</th>
+        <td>{{ user.getDisplayName() }}</td>
+      </tr>
+      <tr>
+        <th>{{ 'Course'|t }}</th>
+        <td>{{ course.label() }}</td>
+      </tr>
+      <tr>
+        <th>{{ 'Certificate Code'|t }}</th>
+        <td>{{ certificate.field_certificate_number.value }}</td>
+      </tr>
+      <tr>
+        <th>{{ 'Issue Date'|t }}</th>
+        <td>{{ certificate.field_issued_at.value|date('F j, Y') }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

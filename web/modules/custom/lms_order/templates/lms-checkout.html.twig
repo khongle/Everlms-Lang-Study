@@ -1,0 +1,191 @@
+{# lms-checkout.html.twig #}
+{{ attach_library('lms_theme/global') }}
+
+<style>
+  .lms-checkout {
+    max-width: 1100px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+    color: #cbd5e1;
+    font-family: 'Inter', sans-serif;
+  }
+  .lms-checkout__title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .lms-checkout__grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2.5rem;
+  }
+  
+  /* Form styling overrides */
+  .lms-checkout__payment fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+  .lms-checkout__payment legend {
+    display: none;
+  }
+  .form-type-radio {
+    display: flex;
+    align-items: center;
+    background: #1e293b;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .form-type-radio:hover {
+    border-color: rgba(255,255,255,0.2);
+    background: #273445;
+  }
+  .form-type-radio label {
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-weight: 600;
+  }
+  .form-radio {
+    width: 20px;
+    height: 20px;
+    margin-right: 1rem;
+    accent-color: #1d70f5;
+    cursor: pointer;
+  }
+  .lms-checkout__summary {
+    background: #1e293b;
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    align-self: start;
+    position: sticky;
+    top: 2rem;
+  }
+  .lms-checkout__course {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .lms-checkout__thumb {
+    width: 120px;
+    height: 80px;
+    border-radius: 0.5rem;
+    object-fit: cover;
+    background: #0b0f19;
+  }
+  .lms-checkout__course-title {
+    font-weight: 700;
+    color: #fff;
+    font-size: 1.125rem;
+    margin-bottom: 0.25rem;
+  }
+  .lms-checkout__row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+  .lms-checkout__total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  
+  @media(max-width: 768px) {
+    .lms-checkout__grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="lms-checkout">
+  <h1 class="lms-checkout__title">{{ 'Secure Checkout'|t }}</h1>
+  
+  <div class="lms-checkout__grid">
+    <div class="lms-checkout__payment">
+      <h2 style="font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 1.5rem;">
+        <i class="fas fa-lock" style="color: #1d70f5; margin-right: 0.5rem;"></i> {{ 'Payment Method'|t }}
+      </h2>
+      
+      {{ form }}
+    </div>
+    
+    <div class="lms-checkout__summary">
+      <h2 style="font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 1.5rem;">{{ 'Order Summary'|t }}</h2>
+      
+      <div class="lms-checkout__course">
+        <img src="{{ thumbnail|default('https://ui-avatars.com/api/?name=C&background=1d70f5&color=fff') }}" class="lms-checkout__thumb" alt="">
+        <div>
+          <div class="lms-checkout__course-title">{{ course.label() }}</div>
+          <div style="color: #94a3b8; font-size: 0.875rem;">{{ 'Lifetime access'|t }}</div>
+        </div>
+      </div>
+      
+      <div class="lms-checkout__row">
+        <span style="color: #94a3b8;">{{ 'Original Price'|t }}</span>
+        <span style="color: #fff; font-weight: 600;">${{ price|number_format(2) }}</span>
+      </div>
+      
+      <div class="lms-checkout__total">
+        <span>{{ 'Total'|t }}</span>
+        <span style="color: #10b981;">${{ price|number_format(2) }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const $paymentMethods = jQuery('input[name="payment_method"]');
+  const submitBtn = document.getElementById('submit-button');
+  const paypalContainer = document.getElementById('paypal-button-container');
+
+  function toggleButtons() {
+    const selected = jQuery('input[name="payment_method"]:checked').val();
+    if (selected === 'paypal') {
+      submitBtn.style.display = 'none';
+      paypalContainer.style.display = 'block';
+    } else {
+      submitBtn.style.display = 'flex';
+      paypalContainer.style.display = 'none';
+    }
+  }
+
+  $paymentMethods.on('change', toggleButtons);
+  toggleButtons();
+
+  if (window.paypal) {
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: { value: '{{ price|number_format(2, ".", "") }}' }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          jQuery('#paypal-order-id').val(data.orderID);
+          jQuery('#lms-checkout-form')[0].submit();
+        });
+      }
+    }).render('#paypal-button-container');
+  }
+});
+</script>

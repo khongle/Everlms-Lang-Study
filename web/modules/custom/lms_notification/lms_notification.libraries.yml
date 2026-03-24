@@ -1,0 +1,21 @@
+list:
+  version: 1.x
+  css:
+    theme:
+      css/lms-notification.css: {}
+  dependencies:
+    - core/drupal.dialog.ajax
+
+preferences:
+  version: 1.x
+  css:
+    theme:
+      css/lms-notification-prefs.css: {}
+
+bell:
+  version: 1.x
+  css:
+    theme:
+      css/lms-notification-bell.css: {}
+  js:
+    js/lms-notification-bell.js: {}

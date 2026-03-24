@@ -1,0 +1,95 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the lms_course module.
+ */
+
+/**
+ * Install the field_rating base field for lms_course.
+ */
+function lms_course_update_10001(&$sandbox) {
+  $field_storage_definition = \Drupal\Core\Field\BaseFieldDefinition::create('decimal')
+    ->setLabel(new \Drupal\Core\StringTranslation\TranslatableMarkup('Rating'))
+    ->setDescription(new \Drupal\Core\StringTranslation\TranslatableMarkup('Average rating or manual rating out of 5.0.'))
+    ->setDefaultValue(5.0)
+    ->setSetting('precision', 3)
+    ->setSetting('scale', 1)
+    ->setDisplayOptions('form', [
+      'type' => 'number',
+      'weight' => 2,
+    ])
+    ->setDisplayConfigurable('form', TRUE)
+    ->setDisplayConfigurable('view', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_rating', 'lms_course', 'lms_course', $field_storage_definition);
+
+  return 'Installed the field_rating field on the Course entity.';
+}
+
+/**
+ * Create manager_edit form mode and entity form display for lms_course.
+ */
+function lms_course_update_10002(&$sandbox) {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  
+  // Create Form Mode.
+  $form_mode_storage = $entity_type_manager->getStorage('entity_form_mode');
+  if (!$form_mode_storage->load('lms_course.manager_edit')) {
+    $form_mode = $form_mode_storage->create([
+      'id' => 'lms_course.manager_edit',
+      'label' => 'Manager Edit',
+      'targetEntityType' => 'lms_course',
+    ]);
+    $form_mode->save();
+  }
+
+  // Create Entity Form Display.
+  $form_display_storage = $entity_type_manager->getStorage('entity_form_display');
+  $form_display = $form_display_storage->load('lms_course.lms_course.manager_edit');
+  if (!$form_display) {
+    $form_display = $form_display_storage->create([
+      'targetEntityType' => 'lms_course',
+      'bundle' => 'lms_course',
+      'mode' => 'manager_edit',
+      'status' => TRUE,
+    ]);
+  }
+
+  // Enable fields for manager edit by copying setting from the default display.
+  $fields = [
+    'name', 'field_description', 'field_short_description', 'field_thumbnail', 'field_banner',
+    'field_what_learn', 'field_prerequisites', 'field_who_for',
+    'field_category', 'field_tags', 'field_level', 'field_language', 'field_instructor',
+    'field_price', 'field_price_type', 'field_duration', 'field_bestseller', 'field_featured',
+    'field_chapters', 'status'
+  ];
+
+  $default_display = \Drupal::service('entity_display.repository')->getFormDisplay('lms_course', 'lms_course', 'default');
+  
+  foreach ($fields as $field_name) {
+    $component = $default_display->getComponent($field_name);
+    if ($component) {
+      $form_display->setComponent($field_name, $component);
+    }
+  }
+  
+  $form_display->save();
+
+  return 'Created manager_edit form mode and configured display for Course.';
+}
+
+/**
+ * Grant text format permissions to the manager role.
+ */
+function lms_course_update_10003(&$sandbox) {
+  $role = \Drupal\user\Entity\Role::load('manager');
+  if ($role) {
+    $role->grantPermission('use text format full_html');
+    $role->grantPermission('use text format basic_html');
+    $role->save();
+    return 'Granted text format permissions to manager role.';
+  }
+  return 'Manager role not found.';
+}

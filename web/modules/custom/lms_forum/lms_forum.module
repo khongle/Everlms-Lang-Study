@@ -2,18 +2,28 @@
 
 declare(strict_types=1);
 
+use Drupal\Core\Url;
+
 /**
  * Implements hook_theme().
  */
 function lms_forum_theme(): array {
   return [
     'lms_forum_index' => [
-      'variables' => ['topics' => []],
+      'variables' => ['topics' => [], 'new_topic_form' => NULL],
       'template' => 'lms-forum-index',
     ],
     'lms_forum_topic' => [
-      'variables' => ['topic' => [], 'replies' => []],
+      'variables' => ['topic' => [], 'replies' => [], 'reply_form' => NULL, 'is_teaser_mode' => FALSE, 'total_replies' => 0],
       'template' => 'lms-forum-topic',
+    ],
+    'lms_forum_new_topic_page' => [
+      'variables' => ['form' => NULL],
+      'template' => 'lms-forum-new-topic-page',
+    ],
+    'lms_forum_edit_reply_page' => [
+      'variables' => ['form' => NULL],
+      'template' => 'lms-forum-edit-reply-page',
     ],
   ];
 }

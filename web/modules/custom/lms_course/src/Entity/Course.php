@@ -43,6 +43,8 @@ use Drupal\views\EntityViewsData;
       'default' => 'Drupal\lms_course\Form\CourseForm',
       'add' => 'Drupal\lms_course\Form\CourseForm',
       'edit' => 'Drupal\lms_course\Form\CourseForm',
+      'manager_edit' => 'Drupal\lms_course\Form\CourseForm',
+      'admin_edit' => 'Drupal\lms_course\Form\CourseForm',
       'delete' => 'Drupal\Core\Entity\ContentEntityDeleteForm',
     ],
     'route_provider' => [
@@ -55,7 +57,7 @@ use Drupal\views\EntityViewsData;
     'add-form' => '/manage/courses/add',
     'edit-form' => '/manage/courses/{lms_course}/edit',
     'delete-form' => '/manage/courses/{lms_course}/delete',
-    'collection' => '/manage/courses',
+    'collection' => '/admin/structure/lms_course',
   ],
 )]
 class Course extends ContentEntityBase implements EntityOwnerInterface {
@@ -156,6 +158,17 @@ class Course extends ContentEntityBase implements EntityOwnerInterface {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['field_chapters'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(new TranslatableMarkup('Chapters'))
+      ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)
+      ->setSetting('target_type', 'lms_chapter')
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => -6,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['field_category'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(new TranslatableMarkup('Category'))
       ->setSetting('target_type', 'taxonomy_term')
@@ -244,6 +257,19 @@ class Course extends ContentEntityBase implements EntityOwnerInterface {
       ->setLabel(new TranslatableMarkup('Duration'))
       ->setDescription(new TranslatableMarkup('Total duration in minutes (auto-calculated).'))
       ->setDefaultValue(0)
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['field_rating'] = BaseFieldDefinition::create('decimal')
+      ->setLabel(new TranslatableMarkup('Rating'))
+      ->setDescription(new TranslatableMarkup('Average rating or manual rating out of 5.0.'))
+      ->setDefaultValue(5.0)
+      ->setSetting('precision', 3)
+      ->setSetting('scale', 1)
+      ->setDisplayOptions('form', [
+        'type' => 'number',
+        'weight' => 2,
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 

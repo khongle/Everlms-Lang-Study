@@ -38,10 +38,27 @@ class Notification extends ContentEntityBase implements EntityOwnerInterface {
     $fields['field_type'] = BaseFieldDefinition::create('list_string')
       ->setLabel(new TranslatableMarkup('Type'))
       ->setSetting('allowed_values', [
-        'enrollment' => 'Enrollment', 'quiz_result' => 'Quiz Result',
-        'certificate' => 'Certificate', 'payment' => 'Payment',
-        'forum_reply' => 'Forum Reply', 'system' => 'System',
+        'enrollment' => 'Enrollment',
+        'quiz_result' => 'Quiz Result',
+        'certificate' => 'Certificate',
+        'payment' => 'Payment',
+        'forum_reply' => 'Forum Reply',
+        'membership_expiry' => 'Membership Expiry',
+        'new_lesson' => 'New Lesson',
+        'announcement' => 'Announcement',
+        'reminder' => 'Reminder',
+        'system' => 'System',
       ]);
+
+    $fields['field_channel'] = BaseFieldDefinition::create('list_string')
+      ->setLabel(new TranslatableMarkup('Channel'))
+      ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)
+      ->setSetting('allowed_values', [
+        'in_app' => 'In App',
+        'email' => 'Email',
+        'push' => 'Push Notification',
+      ])
+      ->setDefaultValue(['in_app']);
 
     $fields['field_title'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup('Title'))
@@ -57,6 +74,15 @@ class Notification extends ContentEntityBase implements EntityOwnerInterface {
     $fields['field_read'] = BaseFieldDefinition::create('boolean')
       ->setLabel(new TranslatableMarkup('Read'))
       ->setDefaultValue(FALSE);
+
+    $fields['field_reference_type'] = BaseFieldDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Reference Entity Type'))
+      ->setSetting('max_length', 64)
+      ->setRequired(FALSE);
+
+    $fields['field_reference_id'] = BaseFieldDefinition::create('integer')
+      ->setLabel(new TranslatableMarkup('Reference Entity ID'))
+      ->setRequired(FALSE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Created'));

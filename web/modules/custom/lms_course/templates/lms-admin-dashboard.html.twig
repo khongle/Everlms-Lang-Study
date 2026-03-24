@@ -2,61 +2,41 @@
 {{ attach_library('lms_theme/global') }}
 
 <div class="lms-admin">
-  {# Admin sidebar #}
-  <aside class="lms-admin__sidebar">
-    <div class="lms-admin__sidebar-brand">
-      <i class="fas fa-graduation-cap"></i> {{ 'LMS Admin'|t }}
-    </div>
-    <nav class="lms-admin__nav">
-      <a href="{{ path('lms_course.admin_dashboard') }}" class="lms-admin__nav-item lms-admin__nav-item--active">
-        <i class="fas fa-tachometer-alt"></i> {{ 'Dashboard'|t }}
-      </a>
-      <a href="{{ path('lms_course.admin_courses') }}" class="lms-admin__nav-item">
-        <i class="fas fa-book"></i> {{ 'Courses'|t }}
-      </a>
-      <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-admin__nav-item">
-        <i class="fas fa-question-circle"></i> {{ 'Quizzes'|t }}
-      </a>
-      <a href="{{ path('lms_course.admin_users') }}" class="lms-admin__nav-item">
-        <i class="fas fa-users"></i> {{ 'Users'|t }}
-      </a>
-      <a href="{{ path('lms_course.admin_orders') }}" class="lms-admin__nav-item">
-        <i class="fas fa-shopping-cart"></i> {{ 'Orders'|t }}
-      </a>
-      <a href="{{ path('lms_course.admin_reports') }}" class="lms-admin__nav-item">
-        <i class="fas fa-chart-bar"></i> {{ 'Reports'|t }}
-      </a>
-    </nav>
-  </aside>
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'dashboard' } %}
 
   {# Main content #}
   <div class="lms-admin__main">
-    <h1 class="lms-admin__title">{{ 'Admin Dashboard'|t }}</h1>
+    <div class="lms-admin__header" style="margin-bottom: 2rem;">
+      <div>
+        <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ 'Workspace'|t }}</h1>
+        <div class="lms-admin__subtitle" style="color: #94a3b8; font-size: 0.875rem; margin-top: 0.35rem;">{{ 'Overview of your LMS platform performance'|t }}</div>
+      </div>
+    </div>
 
     {# KPI Cards #}
     <div class="lms-kpi-grid">
-      <div class="lms-card lms-kpi-card">
+      <div class="lms-kpi-card">
         <div class="lms-kpi-card__icon"><i class="fas fa-book"></i></div>
         <div class="lms-kpi-card__content">
           <span class="lms-kpi-card__label">{{ 'Total Courses'|t }}</span>
           <span class="lms-kpi-card__value">{{ stats.courses }}</span>
         </div>
       </div>
-      <div class="lms-card lms-kpi-card">
+      <div class="lms-kpi-card">
         <div class="lms-kpi-card__icon lms-kpi-card__icon--info"><i class="fas fa-users"></i></div>
         <div class="lms-kpi-card__content">
           <span class="lms-kpi-card__label">{{ 'Active Learners'|t }}</span>
           <span class="lms-kpi-card__value">{{ stats.learners|number_format }}</span>
         </div>
       </div>
-      <div class="lms-card lms-kpi-card">
+      <div class="lms-kpi-card">
         <div class="lms-kpi-card__icon lms-kpi-card__icon--success"><i class="fas fa-dollar-sign"></i></div>
         <div class="lms-kpi-card__content">
           <span class="lms-kpi-card__label">{{ 'Revenue'|t }}</span>
           <span class="lms-kpi-card__value">${{ stats.revenue|number_format(2) }}</span>
         </div>
       </div>
-      <div class="lms-card lms-kpi-card">
+      <div class="lms-kpi-card">
         <div class="lms-kpi-card__icon lms-kpi-card__icon--warning"><i class="fas fa-clipboard-check"></i></div>
         <div class="lms-kpi-card__content">
           <span class="lms-kpi-card__label">{{ 'Quiz Completions'|t }}</span>
@@ -66,40 +46,47 @@
     </div>
 
     {# Recent Orders Table #}
-    <div class="lms-card">
-      <h3 class="lms-card__title">{{ 'Recent Orders'|t }}</h3>
+    <div class="lms-admin-card" style="margin-bottom: 2.5rem; border-radius: 0.75rem;">
+      <div style="padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;">
+        <h3 style="margin: 0; color: #fff; font-size: 1.125rem;">{{ 'Recent Orders'|t }}</h3>
+      </div>
       <div class="lms-table-responsive">
         <table class="lms-table">
           <thead>
             <tr>
-              <th>{{ 'Order ID'|t }}</th>
-              <th>{{ 'Learner'|t }}</th>
-              <th>{{ 'Amount'|t }}</th>
-              <th>{{ 'Date'|t }}</th>
-              <th>{{ 'Status'|t }}</th>
+              <th style="color: #fff; width: 80px;">{{ 'Order ID'|t }}</th>
+              <th style="color: #fff;">{{ 'Learner'|t }}</th>
+              <th style="color: #fff;">{{ 'Amount'|t }}</th>
+              <th style="color: #fff;">{{ 'Date'|t }}</th>
+              <th style="color: #fff; text-align: right;">{{ 'Status'|t }}</th>
             </tr>
           </thead>
           <tbody>
             {% for order in recent_orders %}
               <tr>
-                <td>#{{ order.id }}</td>
-                <td>{{ order.learner }}</td>
-                <td>${{ order.total|number_format(2) }}</td>
+                <td style="font-weight: 600; color: #fff;">#{{ order.id }}</td>
+                <td style="color: #fff;">{{ order.learner }}</td>
+                <td style="font-weight: 600; color: #10b981;">${{ order.total|number_format(2) }}</td>
                 <td>{{ order.created|date('M d, Y') }}</td>
-                <td>
-                  {% set status_class = {
-                    'paid': 'lms-badge--success',
-                    'completed': 'lms-badge--success',
-                    'pending': 'lms-badge--warning',
-                    'failed': 'lms-badge--danger',
-                  } %}
-                  <span class="lms-badge {{ status_class[order.status] ?? 'lms-badge--secondary' }}">
+                <td style="text-align: right;">
+                  {% set status_color = '#64748b' %}
+                  {% set status_bg = 'rgba(100, 116, 139, 0.1)' %}
+                  
+                  {% if order.status == 'paid' or order.status == 'completed' %}
+                     {% set status_color = '#10b981' %}{% set status_bg = 'rgba(16, 185, 129, 0.15)' %}
+                  {% elseif order.status == 'pending' %}
+                     {% set status_color = '#f59e0b' %}{% set status_bg = 'rgba(245, 158, 11, 0.15)' %}
+                  {% elseif order.status == 'failed' %}
+                     {% set status_color = '#ef4444' %}{% set status_bg = 'rgba(239, 68, 68, 0.15)' %}
+                  {% endif %}
+                  
+                  <span style="color: {{ status_color }}; background: {{ status_bg }}; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(255,255,255,0.05);">
                     {{ order.status|capitalize }}
                   </span>
                 </td>
               </tr>
             {% else %}
-              <tr><td colspan="5" class="lms-text-center">{{ 'No orders yet'|t }}</td></tr>
+              <tr><td colspan="5" style="text-align: center; padding: 3rem;">{{ 'No orders yet'|t }}</td></tr>
             {% endfor %}
           </tbody>
         </table>

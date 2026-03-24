@@ -1,0 +1,54 @@
+lms_membership.my_membership:
+  path: '/my-membership'
+  defaults:
+    _controller: '\Drupal\lms_membership\Controller\MembershipController::myMembership'
+    _title: 'My Membership'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+lms_membership.cancel_membership:
+  path: '/my-membership/{lms_user_membership}/cancel'
+  defaults:
+    _controller: '\Drupal\lms_membership\Controller\MembershipController::cancelMembership'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+lms_membership.admin_pricing:
+  path: '/workspace/pricing'
+  defaults:
+    _controller: '\Drupal\lms_membership\Controller\MembershipAdminController::pricingList'
+    _title: 'Membership Pricing'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_membership.admin_pricing.add:
+  path: '/workspace/pricing/add'
+  defaults:
+    _controller: '\Drupal\lms_membership\Controller\MembershipAdminController::pricingAddForm'
+    _title: 'Add Pricing Plan'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_membership.admin_pricing.edit:
+  path: '/workspace/pricing/{lms_membership_plan}/edit'
+  defaults:
+    _controller: '\Drupal\lms_membership\Controller\MembershipAdminController::pricingEditForm'
+    _title: 'Edit Pricing Plan'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_membership.admin_pricing.toggle:
+  path: '/workspace/pricing/{lms_membership_plan}/toggle'
+  defaults:
+    _controller: '\Drupal\lms_membership\Controller\MembershipAdminController::toggleStatus'
+    _title: 'Toggle Plan Status'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE

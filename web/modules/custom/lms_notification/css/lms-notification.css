@@ -1,0 +1,402 @@
+.lms-notifications-wrapper {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.lms-notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 0.75rem;
+}
+
+.lms-notifications-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.lms-btn-settings {
+  background-color: transparent;
+  color: #94a3b8;
+  border: 1px solid #475569;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lms-btn-settings:hover {
+  background-color: #334155;
+  color: #e2e8f0;
+}
+
+
+
+.lms-notifications {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Filters */
+.lms-notification-filters {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.lms-notification-filters::-webkit-scrollbar {
+  height: 4px;
+}
+.lms-notification-filters::-webkit-scrollbar-thumb {
+  background-color: #475569;
+  border-radius: 4px;
+}
+
+.lms-filter-btn {
+  background-color: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+  border-radius: 9999px;
+  padding: 0.4rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.lms-filter-btn:hover {
+  background-color: #334155;
+  color: #f8fafc;
+}
+
+.lms-filter-btn.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+/* Pager */
+.lms-notifications-wrapper .pager {
+  margin-top: 3rem;
+}
+.lms-notifications-wrapper .pager__items {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.lms-notifications-wrapper .pager__item a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+.lms-notifications-wrapper .pager__item a:hover {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+.lms-notifications-wrapper .pager__item.is-active a {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+  font-weight: bold;
+}
+
+.lms-notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background-color: #1e293b; /* Dark card background */
+  border: 1px solid #334155;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  position: relative;
+}
+
+.lms-notification-item:hover {
+  background-color: #273549; /* Slightly lighter on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+  border-color: #475569;
+}
+
+.lms-notification-item--unread {
+  border-left: 4px solid #3b82f6;
+  background-color: #1e293b;
+}
+
+.lms-notification-item__icon {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.lms-notification-item--unread .lms-notification-item__icon {
+  background-color: rgba(59, 130, 246, 0.25);
+  color: #3b82f6;
+}
+
+.lms-notification-item__body {
+  flex: 1 1 auto;
+  min-width: 0; /* Prevents text overflow issues in flex */
+}
+
+.lms-notification-item__body h4 {
+  margin: 0 0 0.35rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f8fafc;
+  line-height: 1.4;
+}
+
+.lms-notification-item__body h4 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.lms-notification-item__body h4 a:hover {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+.lms-notification-item__body p {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.lms-notification-item__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.lms-notification-item__date {
+  font-size: 0.85rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.lms-notification-item__new-badge {
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.lms-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 2rem;
+  background-color: #1e293b;
+  border: 1px dashed #475569;
+  border-radius: 0.75rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.lms-empty-state i {
+  font-size: 3.5rem;
+  color: #475569;
+  margin-bottom: 1.25rem;
+}
+
+.lms-empty-state h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #cbd5e0;
+}
+
+/* Drupal jQuery UI Dialog Dark Theme Override for lms-theme-dark-form */
+.ui-dialog.lms-theme-dark-form {
+  background-color: #161b22 !important;
+  border: 1px solid #30363d !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+  border-radius: 12px !important;
+  color: #c9d1d9 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  z-index: 10000 !important; /* Force to be above header */
+  margin-top: 2rem !important; /* Push down slightly from header */
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar {
+  background: rgba(255,255,255,0.02) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+  padding: 1.5rem !important;
+  color: #e6edf3 !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-title {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close {
+  position: absolute !important;
+  right: 1.5rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  background: transparent !important;
+  border: none !important;
+  font-size: 0 !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close::before {
+  content: '\f00d' !important; /* FontAwesome times */
+  font-family: "Font Awesome 5 Free" !important;
+  font-weight: 900 !important;
+  font-size: 1.25rem !important;
+  color: #8b949e !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close:hover::before {
+  color: #e6edf3 !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close .ui-icon {
+  display: none !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-content {
+  background-color: #161b22 !important;
+  color: #c9d1d9 !important;
+  padding: 2rem !important;
+}
+
+/* Drupal moves buttons to this pane sometimes */
+.ui-dialog.lms-theme-dark-form .ui-dialog-buttonpane {
+  background-color: #161b22 !important;
+  border-top: 1px solid #30363d !important;
+  padding: 1.5rem !important;
+  margin: 0 !important;
+}
+
+/* Form inputs & tables inside dark modal */
+.ui-dialog.lms-theme-dark-form .lms-prefs-form {
+  color: #c9d1d9 !important;
+  background: transparent !important;
+}
+
+.ui-dialog.lms-theme-dark-form table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin-bottom: 1.5rem !important;
+  background-color: transparent !important;
+}
+
+.ui-dialog.lms-theme-dark-form th {
+  background: #0d1117 !important;
+  border-bottom: 1px solid #30363d !important;
+  color: #8b949e !important;
+  padding: 1rem !important;
+  text-align: left !important;
+}
+
+.ui-dialog.lms-theme-dark-form td {
+  border-bottom: 1px solid #21262d !important;
+  padding: 1rem !important;
+  color: #c9d1d9 !important;
+  background: transparent !important;
+}
+
+.ui-dialog.lms-theme-dark-form .form-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  background-color: #161b22 !important;
+  padding-top: 1.5rem !important;
+  border-top: 1px solid #30363d !important;
+  margin: 1.5rem -2rem -2rem -2rem !important;
+  padding: 1.5rem 2rem !important;
+}
+
+.ui-dialog.lms-theme-dark-form .lms-btn-cancel {
+  background: transparent !important;
+  color: #8b949e !important;
+  border: 1px solid transparent !important;
+  padding: 0.6rem 1.2rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  margin-right: 1rem !important;
+  transition: all 0.2s !important;
+}
+
+.ui-dialog.lms-theme-dark-form .lms-btn-cancel:hover {
+  color: #e6edf3 !important;
+  background: rgba(255,255,255,0.05) !important;
+}
+
+.ui-dialog.lms-theme-dark-form .form-submit.button--primary,
+.ui-dialog.lms-theme-dark-form .ui-dialog-buttonpane button:not(.dialog-cancel) {
+  background-color: #238636 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(240, 246, 252, 0.1) !important;
+  border-radius: 6px !important;
+  padding: 0.6rem 1.75rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: .2s background-color !important;
+  box-shadow: none !important;
+}
+
+.ui-dialog.lms-theme-dark-form .form-submit.button--primary:hover,
+.ui-dialog.lms-theme-dark-form .ui-dialog-buttonpane button:not(.dialog-cancel):hover {
+  background-color: #2ea043 !important;
+}

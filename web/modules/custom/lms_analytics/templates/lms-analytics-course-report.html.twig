@@ -1,0 +1,118 @@
+{#
+/**
+ * @file
+ * Template for the LMS Analytics Course Report (Phase 3).
+ *
+ * Available variables:
+ * - stats: Array of course statistics.
+ * - filters: Array of active filters (search, status).
+ */
+#}
+
+<div class="lms-report-container">
+  <div class="report-header">
+    <h2>{{ 'Course Analytics Report'|t }}</h2>
+    <div class="report-actions">
+      <a href="{{ url('lms_analytics.course_report_export') }}" class="button button--primary">{{ 'Export to CSV'|t }}</a>
+    </div>
+  </div>
+
+  <div class="report-filters">
+    {# A placeholder for the actual Form API filter or simple GET form #}
+    <form method="get" action="{{ url('<current>') }}" class="form-inline">
+      <div class="form-item">
+        <label for="searchFilter">{{ 'Search'|t }}</label>
+        <input type="text" name="search" id="searchFilter" value="{{ filters.search }}" class="form-text" placeholder="Course name..." />
+      </div>
+      <div class="form-item">
+        <label for="statusFilter">{{ 'Status'|t }}</label>
+        <select name="status" id="statusFilter" class="form-select">
+          <option value="">{{ '- Any -'|t }}</option>
+          <option value="published" {% if filters.status == 'published' %}selected{% endif %}>{{ 'Published'|t }}</option>
+          <option value="draft" {% if filters.status == 'draft' %}selected{% endif %}>{{ 'Draft'|t }}</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <input type="submit" value="{{ 'Apply'|t }}" class="button" />
+        {% if filters.search or filters.status %}
+          <a href="{{ url('<current>') }}" class="button">{{ 'Reset'|t }}</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover admin-table lms-analytics-table">
+      <thead>
+        <tr>
+          <th>{{ 'Course'|t }}</th>
+          <th>{{ 'Category'|t }}</th>
+          <th>{{ 'Status'|t }}</th>
+          <th>{{ 'Price Type'|t }}</th>
+          <th class="text-right">{{ 'Enrollments'|t }}</th>
+          <th class="text-right">{{ 'Active'|t }}</th>
+          <th class="text-right">{{ 'Completed'|t }}</th>
+          <th class="text-right">{{ 'Rate (%)'|t }}</th>
+          <th class="text-right">{{ 'Revenue'|t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course in stats %}
+          <tr>
+            <td>
+              <strong>{{ course.title }}</strong>
+              <div class="text-xs text-muted">ID: {{ course.id }}</div>
+            </td>
+            <td>{{ course.category }}</td>
+            <td>
+              <span class="badge {{ course.status == 'Published' ? 'badge-success' : 'badge-warning' }}">{{ course.status }}</span>
+            </td>
+            <td><span class="text-uppercase">{{ course.price_type }}</span></td>
+            <td class="text-right"><strong>{{ course.enrollments }}</strong></td>
+            <td class="text-right">{{ course.active }}</td>
+            <td class="text-right text-success">{{ course.completed }}</td>
+            <td class="text-right">
+              <div class="progress-wrapper">
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill {{ course.completion_rate >= 50 ? 'bg-success' : 'bg-warning' }}" style="width: {{ course.completion_rate }}%"></div>
+                </div>
+                <div class="progress-text">{{ course.completion_rate }}%</div>
+              </div>
+            </td>
+            <td class="text-right font-weight-bold text-primary">
+              {# Replace with proper Drupal commerce format or custom macro #}
+              ${{ course.revenue|number_format(2) }}
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="9" class="text-center">{{ 'No course data available.'|t }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+/* Basic styles attached via Twig until library is fully defined */
+.lms-report-container { padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.report-filters .form-inline { display: flex; gap: 15px; align-items: flex-end; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 4px; }
+.lms-analytics-table th { background-color: #f1f3f5; padding: 12px; font-weight: 600; }
+.lms-analytics-table td { vertical-align: middle; padding: 12px; border-bottom: 1px solid #eee; }
+.text-right { text-align: right; }
+.text-xs { font-size: 0.8em; }
+.text-muted { color: #6c757d; }
+.font-weight-bold { font-weight: bold; }
+.text-primary { color: #007bff; }
+.text-success { color: #28a745; }
+.badge { padding: 4px 8px; border-radius: 4px; font-size: 0.85em; }
+.badge-success { background: #d4edda; color: #155724; }
+.badge-warning { background: #fff3cd; color: #856404; }
+.progress-wrapper { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.progress-bar-bg { width: 60px; height: 6px; background: #e9ecef; border-radius: 3px; overflow: hidden; }
+.progress-bar-fill { height: 100%; }
+.bg-success { background: #28a745; }
+.bg-warning { background: #ffc107; }
+</style>

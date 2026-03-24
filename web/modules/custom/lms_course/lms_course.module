@@ -12,6 +12,19 @@ declare(strict_types=1);
  */
 function lms_course_theme(): array {
   return [
+    'lms_instructor_profile' => [
+      'variables' => [
+        'instructor' => NULL,
+        'instructor_name' => '',
+        'instructor_avatar' => '',
+        'bio' => '',
+        'job_title' => '',
+        'social_links' => [],
+        'stats' => [],
+        'courses' => [],
+      ],
+      'template' => 'lms-instructor-profile',
+    ],
     'lms_homepage' => [
       'variables' => [
         'featured_courses' => [],
@@ -31,9 +44,21 @@ function lms_course_theme(): array {
     'lms_course_detail' => [
       'variables' => [
         'course' => NULL,
+        'thumbnail_url' => '',
+        'banner_url' => '',
         'curriculum' => [],
         'category' => NULL,
         'level' => NULL,
+        'instructor' => NULL,
+        'instructor_name' => '',
+        'instructor_url' => '',
+        'enrolled_students' => 0,
+        'instructor_courses_count' => 0,
+        'instructor_students_count' => 0,
+        'faqs' => [],
+        'logged_in' => FALSE,
+        'is_enrolled' => FALSE,
+        'continue_url' => '',
       ],
       'template' => 'lms-course-detail',
     ],
@@ -72,24 +97,64 @@ function lms_course_theme(): array {
       'template' => 'lms-admin-dashboard',
     ],
     'lms_admin_courses' => [
-      'variables' => ['courses' => []],
+      'variables' => [
+        'courses' => [],
+        'filters' => [],
+        'category_options' => [],
+        'instructor_options' => [],
+      ],
       'template' => 'lms-admin-courses',
     ],
     'lms_admin_quizzes' => [
-      'variables' => ['quizzes' => []],
+      'variables' => [
+        'quizzes' => [],
+        'quick_stats' => [],
+        'add_quiz_url' => '',
+      ],
       'template' => 'lms-admin-quizzes',
     ],
     'lms_admin_orders' => [
-      'variables' => ['orders' => []],
+      'variables' => ['orders' => [], 'filters' => []],
       'template' => 'lms-admin-orders',
     ],
     'lms_admin_users' => [
-      'variables' => ['users' => []],
+      'variables' => [
+        'users' => [],
+        'add_user_url' => '',
+        'current_search' => '',
+        'current_role' => 'All',
+        'current_status' => 'All',
+      ],
       'template' => 'lms-admin-users',
     ],
-    'lms_admin_reports' => [
-      'variables' => ['metrics' => []],
+    'lms_admin_reports_v2' => [
+      'variables' => [
+        'metrics' => [],
+        'course_stats' => [],
+        'user_stats' => [],
+        'quiz_stats' => [],
+      ],
       'template' => 'lms-admin-reports',
+    ],
+    'lms_admin_course_create' => [
+      'variables' => [],
+      'template' => 'lms-admin-course-create',
+    ],
+    'lms_admin_entity_form' => [
+      'variables' => [
+        'form' => [],
+        'title' => '',
+        'active_menu' => 'dashboard',
+      ],
+      'template' => 'lms-admin-entity-form',
+    ],
+    'lms_admin_user_form' => [
+      'variables' => [
+        'form' => [],
+        'title' => '',
+        'active_menu' => 'users',
+      ],
+      'template' => 'lms-admin-user-form',
     ],
     // Profile
     'lms_profile' => [
@@ -98,3 +163,105 @@ function lms_course_theme(): array {
     ],
   ];
 }
+
+/**
+ * Implements hook_preprocess().
+ * Injects generic variables like current_user_name to all admin templates.
+ */
+function lms_course_preprocess(&$variables, $hook) {
+  if (strpos($hook, 'lms_admin_') === 0) {
+    $uid = \Drupal::currentUser()->id();
+    if ($uid) {
+      $user = \Drupal\user\Entity\User::load($uid);
+      $first_name = $user->hasField('field_first_name') ? $user->get('field_first_name')->value : '';
+      $last_name = $user->hasField('field_last_name') ? $user->get('field_last_name')->value : '';
+      $full_name = trim("$first_name $last_name");
+      $variables['current_user_name'] = $full_name ?: $user->getDisplayName();
+    } else {
+      $variables['current_user_name'] = 'Guest';
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function lms_course_entity_type_alter(array &$entity_types) {
+  if (isset($entity_types['lms_course'])) {
+    $entity_types['lms_course']->setFormClass('admin_edit', 'Drupal\lms_course\Form\CourseForm');
+  }
+  if (isset($entity_types['lms_chapter'])) {
+    $entity_types['lms_chapter']->setFormClass('admin_edit', 'Drupal\lms_chapter\Form\ChapterForm');
+  }
+  if (isset($entity_types['lms_lesson'])) {
+    $entity_types['lms_lesson']->setFormClass('admin_edit', 'Drupal\lms_lesson\Form\LessonForm');
+  }
+  if (isset($entity_types['user'])) {
+    $entity_types['user']->setFormClass('admin_create', 'Drupal\user\RegisterForm');
+    $entity_types['user']->setFormClass('manager_create', 'Drupal\user\RegisterForm');
+    $entity_types['user']->setFormClass('admin_edit', 'Drupal\user\ProfileForm');
+    $entity_types['user']->setFormClass('manager_edit', 'Drupal\user\ProfileForm');
+  }
+}
+
+/**
+ * Implements hook_entity_access().
+ */
+function lms_course_entity_access(\Drupal\Core\Entity\EntityInterface $entity, $operation, \Drupal\Core\Session\AccountInterface $account) {
+  if ($entity->getEntityTypeId() === 'user' && in_array($operation, ['view', 'update', 'delete'])) {
+    if (in_array('manager', $account->getRoles())) {
+      // Prevent managers from viewing/editing/deleting administrators to ensure security.
+      if (in_array('administrator', $entity->getRoles())) {
+        return \Drupal\Core\Access\AccessResult::forbidden('Managers cannot modify or view administrators.')->cachePerUser()->addCacheableDependency($entity);
+      }
+      return \Drupal\Core\Access\AccessResult::allowedIfHasPermission($account, 'administer lms_course')
+        ->cachePerUser()
+        ->addCacheableDependency($entity);
+    }
+  }
+
+  // Check membership access for courses and lessons
+  if ($operation === 'view' && in_array($entity->getEntityTypeId(), ['lms_course', 'lms_lesson'])) {
+    // If it's a lesson, find its parent course to check price type.
+    $course = NULL;
+    if ($entity->getEntityTypeId() === 'lms_lesson') {
+      if ($entity->hasField('field_chapter') && !$entity->get('field_chapter')->isEmpty()) {
+        $chapter = $entity->get('field_chapter')->entity;
+        if ($chapter && $chapter->hasField('field_course') && !$chapter->get('field_course')->isEmpty()) {
+          $course = $chapter->get('field_course')->entity;
+        }
+      }
+    } else {
+      $course = $entity;
+    }
+
+    if ($course && $course->hasField('field_price_type')) {
+      $price_type = $course->get('field_price_type')->value;
+      if ($price_type === 'membership') {
+        /** @var \Drupal\lms_membership\MembershipManager $membership_manager */
+        $membership_manager = \Drupal::service('lms_membership.manager');
+        if (!$membership_manager->hasActiveMembership($account)) {
+          return \Drupal\Core\Access\AccessResult::forbidden('Active membership required to access this content.')
+            ->cachePerUser()
+            ->addCacheableDependency($course);
+        }
+      }
+    }
+  }
+
+  return \Drupal\Core\Access\AccessResult::neutral();
+}
+
+/**
+ * Implements hook_entity_create_access().
+ */
+function lms_course_entity_create_access(\Drupal\Core\Session\AccountInterface $account, array $context, $entity_bundle) {
+  if ($context['entity_type_id'] === 'user') {
+    if (in_array('manager', $account->getRoles())) {
+      return \Drupal\Core\Access\AccessResult::allowedIfHasPermission($account, 'administer lms_course')->cachePerUser();
+    }
+  }
+  return \Drupal\Core\Access\AccessResult::neutral();
+}
+
+

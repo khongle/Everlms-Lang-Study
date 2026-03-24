@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for LMS Analytics module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function lms_analytics_theme(): array {
+  return [
+    'lms_analytics_course_report' => [
+      'variables' => [
+        'stats' => [],
+        'filters' => [],
+      ],
+      'template' => 'lms-analytics-course-report',
+    ],
+    'lms_analytics_user_report' => [
+      'variables' => [
+        'stats' => [],
+        'filters' => [],
+      ],
+      'template' => 'lms-analytics-user-report',
+    ],
+    'lms_analytics_quiz_report_list' => [
+      'variables' => [
+        'stats' => [],
+        'filters' => [],
+      ],
+      'template' => 'lms-analytics-quiz-report-list',
+    ],
+    'lms_analytics_quiz_report_detail' => [
+      'variables' => [
+        'quiz' => NULL,
+        'distribution' => [],
+        'hardest_questions' => [],
+      ],
+      'template' => 'lms-analytics-quiz-report-detail',
+    ],
+  ];
+}

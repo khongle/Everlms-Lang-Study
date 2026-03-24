@@ -1,13 +1,36 @@
 {# Admin Orders — matches 14-admin-orders.png #}
 {{ attach_library('lms_theme/global') }}
 <div class="lms-admin">
-  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'orders' } only %}
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'orders' } %}
   <div class="lms-admin__main">
-    <h1 class="lms-admin__title">{{ 'Manage Orders'|t }}</h1>
+    <h1 class="lms-admin__title" style="margin-bottom: 2rem;">{{ 'Manage Orders'|t }}</h1>
+
+    {# Filter Bar #}
+    <form method="GET" class="lms-admin-filter" action="{{ path('<current>') }}">
+      <div class="lms-admin-filter__group">
+        <label class="lms-admin-filter__label">{{ 'Search Orders'|t }}</label>
+        <input type="text" name="search" class="lms-admin-filter__input" placeholder="{{ 'Enter Order ID or Learner name...'|t }}" value="{{ filters.search }}">
+      </div>
+      <div class="lms-admin-filter__group">
+        <label class="lms-admin-filter__label">{{ 'Status'|t }}</label>
+        <select name="status" class="lms-admin-filter__select">
+          <option value="all" {% if filters.status == 'all' %}selected{% endif %}>{{ 'All Statuses'|t }}</option>
+          <option value="pending" {% if filters.status == 'pending' %}selected{% endif %}>{{ 'Pending'|t }}</option>
+          <option value="completed" {% if filters.status == 'completed' %}selected{% endif %}>{{ 'Completed'|t }}</option>
+          <option value="paid" {% if filters.status == 'paid' %}selected{% endif %}>{{ 'Paid'|t }}</option>
+          <option value="failed" {% if filters.status == 'failed' %}selected{% endif %}>{{ 'Failed'|t }}</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-lms-primary" style="height: 42px;">{{ 'Filter'|t }}</button>
+      {% if filters.search or filters.status != 'all' %}
+        <a href="{{ path('<current>') }}" style="margin-top: 1.5rem; color: #94a3b8; font-size: 0.8125rem; font-weight: 600; text-decoration: none;">{{ 'Clear'|t }}</a>
+      {% endif %}
+    </form>
+
     <div class="lms-card">
       <div class="lms-table-responsive">
         <table class="lms-table">
-          <thead><tr><th>{{ 'Order ID'|t }}</th><th>{{ 'Learner'|t }}</th><th>{{ 'Amount'|t }}</th><th>{{ 'Date'|t }}</th><th>{{ 'Status'|t }}</th></tr></thead>
+          <thead><tr><th>{{ 'Order ID'|t }}</th><th>{{ 'Learner'|t }}</th><th>{{ 'Amount'|t }}</th><th>{{ 'Date'|t }}</th><th>{{ 'Status'|t }}</th><th>{{ 'Actions'|t }}</th></tr></thead>
           <tbody>
             {% for order in orders %}
               <tr>
@@ -18,6 +41,9 @@
                 <td>
                   {% set sc = { 'paid': 'lms-badge--success', 'completed': 'lms-badge--success', 'pending': 'lms-badge--warning', 'failed': 'lms-badge--danger' } %}
                   <span class="lms-badge {{ sc[order.status] ?? 'lms-badge--secondary' }}">{{ order.status|capitalize }}</span>
+                </td>
+                <td>
+                  <a href="{{ order.edit_url }}" class="lms-btn lms-btn--outline" style="padding: 4px 12px; font-size: 13px;">{{ 'Edit'|t }}</a>
                 </td>
               </tr>
             {% else %}

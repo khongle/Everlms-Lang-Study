@@ -33,7 +33,7 @@ a {
     transition: color $transition-fast;
 
     &:hover {
-        color: lighten($color-text-link, 10%);
+        color: mix(white, $color-text-link, 10%);
         text-decoration: none;
     }
 }

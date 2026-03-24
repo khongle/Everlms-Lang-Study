@@ -20,7 +20,7 @@ use Drupal\views\EntityViewsData;
   label: new TranslatableMarkup('Membership Plan'),
   label_collection: new TranslatableMarkup('Membership Plans'),
   base_table: 'lms_membership_plan',
-  admin_permission: 'administer lms_order',
+  admin_permission: 'administer lms_course',
   entity_keys: [
     'id' => 'id',
     'uuid' => 'uuid',
@@ -29,6 +29,7 @@ use Drupal\views\EntityViewsData;
   handlers: [
     'view_builder' => EntityViewBuilder::class,
     'views_data' => EntityViewsData::class,
+    'list_builder' => 'Drupal\lms_membership\MembershipPlanListBuilder',
     'form' => [
       'default' => 'Drupal\Core\Entity\ContentEntityForm',
       'delete' => 'Drupal\Core\Entity\ContentEntityDeleteForm',
@@ -108,6 +109,18 @@ class MembershipPlan extends ContentEntityBase {
         'selected' => 'Selected Categories',
       ])
       ->setDisplayOptions('form', ['type' => 'options_select', 'weight' => -4])
+      ->setDisplayConfigurable('form', TRUE);
+
+    $fields['field_trial_days'] = BaseFieldDefinition::create('integer')
+      ->setLabel(new TranslatableMarkup('Trial Days'))
+      ->setDefaultValue(0)
+      ->setDisplayOptions('form', ['type' => 'number', 'weight' => -3])
+      ->setDisplayConfigurable('form', TRUE);
+
+    $fields['field_recommended'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(new TranslatableMarkup('Recommended Plan'))
+      ->setDefaultValue(FALSE)
+      ->setDisplayOptions('form', ['type' => 'boolean_checkbox', 'weight' => -2])
       ->setDisplayConfigurable('form', TRUE);
 
     $fields['status'] = BaseFieldDefinition::create('boolean')

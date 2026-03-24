@@ -23,7 +23,12 @@ final class LessonForm extends ContentEntityForm {
         ? $this->t('Lesson %label created.', ['%label' => $entity->label()])
         : $this->t('Lesson %label updated.', ['%label' => $entity->label()])
     );
-    $form_state->setRedirectUrl($entity->toUrl('collection'));
+    // Try to redirect to canonical or edit form instead of collection
+    try {
+      $form_state->setRedirectUrl($entity->toUrl('edit-form'));
+    } catch (\Exception $e) {
+      // Fallback
+    }
     return $result;
   }
 

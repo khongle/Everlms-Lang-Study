@@ -1,0 +1,13 @@
+services:
+  lms_notification.manager:
+    class: Drupal\lms_notification\NotificationManager
+    arguments:
+      - '@entity_type.manager'
+      - '@user.data'
+      - '@logger.factory'
+
+  lms_notification.event_subscriber:
+    class: Drupal\lms_notification\EventSubscriber\NotificationEventSubscriber
+    arguments: ['@lms_notification.manager']
+    tags:
+      - { name: event_subscriber }

@@ -1,5 +1,5 @@
 {# Course card partial — reusable across pages #}
-<div class="card-lms card-lms--course">
+<div class="card-lms card-lms--course" data-category="{{ card.category_id }}" data-level="{{ card.level_id }}" data-price="{{ card.price_raw }}" data-rating="{{ card.rating|default(5.0) }}">
   {% if card.thumbnail %}
     <div class="card-lms__image">
       {% if card.category %}
@@ -7,8 +7,13 @@
       {% endif %}
       <img src="{{ file_url(card.thumbnail.uri.value) }}" alt="{{ card.name }}" loading="lazy">
       {% if card.bestseller %}
-        <span class="badge-lms badge-lms--warning" style="position: absolute; top: 12px; right: 12px; z-index: 10;">Bestseller</span>
+        <span class="badge-lms badge-lms--warning" style="position: absolute; top: 12px; left: 12px; z-index: 10;">Bestseller</span>
       {% endif %}
+      
+      <button class="lms-wishlist-toggle lms-btn-icon" data-course-id="{{ card.id }}" style="position: absolute; top: 12px; right: 12px; z-index: 10; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; padding: 0;" aria-label="Toggle Wishlist">
+        <i class="{{ card.is_wishlisted ? 'fas' : 'far' }} fa-heart" {% if card.is_wishlisted %}style="color: #ff7b72;"{% endif %}></i>
+      </button>
+
       {% if card.price_raw == 0 %}
         <span class="badge-lms badge-lms--success" style="position: absolute; bottom: 12px; left: 12px; z-index: 10;">Free</span>
       {% endif %}
@@ -30,19 +35,19 @@
     {% if card.instructor_name %}
       <div class="card-lms__instructor" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
         {% if card.instructor_avatar %}
-          <img src="{{ card.instructor_avatar }}" alt="{{ card.instructor_name }}" class="card-lms__instructor-avatar" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+          <a href="{{ card.instructor_url|default('#') }}"><img src="{{ card.instructor_avatar }}" alt="{{ card.instructor_name }}" class="card-lms__instructor-avatar" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"></a>
         {% else %}
-          <div class="card-lms__instructor-avatar-fallback" style="width: 24px; height: 24px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff;">
+          <a href="{{ card.instructor_url|default('#') }}"><div class="card-lms__instructor-avatar-fallback" style="width: 24px; height: 24px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff;">
             <i class="fas fa-user"></i>
-          </div>
+          </div></a>
         {% endif %}
-        <span class="card-lms__instructor-name" style="font-size: 0.85rem; color: #a1a1aa;">{{ card.instructor_name }}</span>
+        <span class="card-lms__instructor-name" style="font-size: 0.85rem; color: #a1a1aa;"><a href="{{ card.instructor_url|default('#') }}" style="color: inherit; text-decoration: none;">{{ card.instructor_name }}</a></span>
       </div>
     {% endif %}
 
     {% if card.short_description %}
       <div class="card-lms__desc">
-        {{ card.short_description }}
+        {{ card.short_description|striptags }}
       </div>
     {% endif %}
 
@@ -53,12 +58,51 @@
       {% if card.duration %}
         <span class="card-lms__duration"><i class="fas fa-clock"></i> {{ card.duration }}</span>
       {% endif %}
+      <span class="card-lms__rating" style="margin-left: auto; color: #fee140;">
+        {% set rating_floor = card.rating|default(5.0)|round(0, 'floor') %}
+        {% set has_half = (card.rating|default(5.0) - rating_floor) >= 0.5 %}
+        {% set empty_stars = 5 - rating_floor - (has_half ? 1 : 0) %}
+        
+        {% if rating_floor > 0 %}
+          {% for i in 1..rating_floor %}
+            <i class="fas fa-star"></i>
+          {% endfor %}
+        {% endif %}
+        
+        {% if has_half %}
+          <i class="fas fa-star-half-alt"></i>
+        {% endif %}
+        
+        {% if empty_stars > 0 %}
+          {% for i in 1..empty_stars %}
+            <i class="far fa-star"></i>
+          {% endfor %}
+        {% endif %}
+        <span style="color: #a1a1aa; margin-left: 4px;">{{ card.rating|default(5.0)|number_format(1) }}</span>
+      </span>
     </div>
 
-    <div class="card-lms__footer">
-      <span class="card-lms__price {% if card.price_raw == 0 %}card-lms__price--free{% endif %}">
-        {{ card.price }}
-      </span>
+    <div class="card-lms__footer" style="display: flex; align-items: center; justify-content: space-between;">
+      {% if card.is_enrolled %}
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+           <span style="font-size: 0.7rem; color: #34d399; font-weight: 700; text-transform: uppercase; text-shadow: 0 0 10px rgba(52, 211, 153, 0.3);"><i class="fas fa-unlock"></i> Unlocked</span>
+           {% if card.price_raw > 0 %}
+             <span class="card-lms__price" style="font-size: 0.9rem; color: #52525b; text-decoration: line-through;">{{ card.price }}</span>
+           {% else %}
+             <span class="card-lms__price" style="font-size: 0.9rem; color: #52525b;">{{ card.price }}</span>
+           {% endif %}
+        </div>
+        <a href="{{ card.continue_url }}" class="btn-lms-primary btn-lms-sm" style="border-radius: 2rem; box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);">
+          {{ 'Continue Learning'|t }}
+        </a>
+      {% else %}
+        <span class="card-lms__price {% if card.price_raw == 0 %}card-lms__price--free{% endif %}" style="font-size: 1.25rem;">
+          {{ card.price }}
+        </span>
+        <a href="{{ card.url }}" class="btn-lms-outline btn-lms-sm" style="border-radius: 2rem;">
+          {{ 'Enroll Now'|t }}
+        </a>
+      {% endif %}
     </div>
   </div>
 </div>

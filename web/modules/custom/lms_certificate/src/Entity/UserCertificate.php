@@ -61,6 +61,18 @@ class UserCertificate extends ContentEntityBase implements EntityOwnerInterface 
     $fields['field_issued_at'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Issued At'));
 
+    $fields['field_expiry_date'] = BaseFieldDefinition::create('datetime')
+      ->setLabel(new TranslatableMarkup('Expiry Date'))
+      ->setSetting('datetime_type', 'date');
+
+    $fields['field_revoked'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(new TranslatableMarkup('Revoked'))
+      ->setDefaultValue(FALSE);
+
+    $fields['field_revoke_reason'] = BaseFieldDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Revocation Reason'))
+      ->setSetting('max_length', 255);
+
     return $fields;
   }
 

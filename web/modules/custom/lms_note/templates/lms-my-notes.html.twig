@@ -1,0 +1,65 @@
+{# My Notes page #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-my-notes">
+  <div class="container">
+    <div class="lms-section__header" style="margin-bottom: 2rem;">
+      <h1 class="lms-manage__title">{{ 'My Notes'|t }}</h1>
+      <p class="text-muted" style="color: #8b949e;">{{ 'Review your learning notes across all courses.'|t }}</p>
+    </div>
+
+    {% if grouped_notes is empty %}
+      <div class="lms-empty-state">
+        <i class="fas fa-edit"></i>
+        <h3>{{ "You haven't taken any notes yet."|t }}</h3>
+        <p>{{ "Go to a lesson and try creating your first note!"|t }}</p>
+        <a href="{{ path('lms_progress.my_courses') }}" class="lms-btn lms-btn--primary">
+          {{ 'Go to My Courses'|t }}
+        </a>
+      </div>
+    {% else %}
+      <div class="lms-notes-list" style="display: flex; flex-direction: column; gap: 2rem;">
+        {% for course_id, data in grouped_notes %}
+          <div class="lms-notes-course-group lms-card" style="background: #161b22; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.5rem;">
+            <div style="display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+              <h2 style="margin: 0; font-size: 1.25rem; color: #e6edf3;">
+                <i class="fas fa-book" style="color: #667eea; margin-right: 0.5rem;"></i>
+                {{ data.course.label }}
+              </h2>
+            </div>
+            
+            <div class="lms-notes-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+              {% for note in data.notes %}
+                <div class="lms-note-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem; display: flex; flex-direction: column;">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1rem; margin: 0; color: #e6edf3;">{{ note.lesson.label }}</h3>
+                    <span style="font-size: 0.75rem; color: #8b949e;">{{ note.last_updated|date('M d, Y') }}</span>
+                  </div>
+                  
+                  {% if note.timestamp > 0 %}
+                    <div style="margin-bottom: 0.75rem;">
+                      <span style="background: rgba(102, 126, 234, 0.15); color: #667eea; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.75rem; font-family: monospace;">
+                        <i class="fas fa-play-circle" style="margin-right: 0.25rem;"></i>
+                        {{ '%02d:%02d'|format(note.timestamp // 60, note.timestamp % 60) }}
+                      </span>
+                    </div>
+                  {% endif %}
+
+                  <div class="lms-note-content" style="font-size: 0.875rem; color: #c9d1d9; line-height: 1.6; flex: 1; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 0.375rem;">
+                    {{ note.text|raw }}
+                  </div>
+                  
+                  <div style="margin-top: 1.5rem; text-align: right;">
+                    <a href="{{ path('lms_progress.lesson_view', {'lms_course': data.course.id(), 'lms_lesson': note.lesson.id()}) }}" class="lms-btn lms-btn--outline lms-btn--sm" style="font-size: 0.75rem; padding: 0.3rem 0.8rem; border-radius: 1rem;">
+                      {{ 'Go to Lesson'|t }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>

@@ -1,0 +1,124 @@
+/* Fixes for LMS Custom Admin Dashboard when rendered inside Drupal Admin Theme */
+
+/* Hide Drupal default page titles and breadcrumbs on the custom dashboard */
+body.path-manage .region-header,
+body.path-manage .region-breadcrumb,
+body.path-manage .block-page-title-block,
+body.path-manage .page-header,
+body.path-manage .content-header,
+body.path-manage #toolbar-administration,
+body.path-manage #toolbar-item-administration-tray,
+body.path-manage [data-toolbar-tray="toolbar-item-administration-tray"] {
+  display: none !important;
+}
+
+/* Ensure the main content wrappers from Drupal do not constrain or whiten our dark dashboard */
+body.path-manage,
+body.path-manage .dialog-off-canvas-main-canvas,
+body.path-manage .page-wrapper,
+body.path-manage main,
+body.path-manage .page-content,
+body.path-manage .layout-container,
+body.path-manage .layout-main-wrapper,
+body.path-manage .layout-content,
+body.path-manage .region-content {
+  background-color: #0b0f19 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+}
+
+/* Adjust the lms-admin container */
+.lms-admin {
+  background-color: #0b0f19;
+  min-height: 100vh;
+  color: #e6edf3;
+}
+
+/* Fix Sidebar */
+.lms-admin__sidebar {
+  background-color: #161b22;
+  border-right: 1px solid #30363d;
+}
+
+/* Fix Filter Bar */
+.lms-admin-filter {
+  background: #161b22;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+  border: 1px solid #30363d;
+}
+.lms-admin-filter__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.lms-admin-filter__label {
+  font-size: 0.8125rem;
+  color: #8b949e;
+  font-weight: 600;
+}
+.lms-admin-filter__select,
+.lms-admin-filter__input {
+  background: #0b0f19 !important;
+  color: #e6edf3 !important;
+  border: 1px solid #30363d !important;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  min-width: 160px;
+}
+
+/* Fix Table overrides from Claro */
+.lms-admin .lms-table {
+  width: 100%;
+  background-color: #161b22;
+  border-radius: 0.5rem;
+  border: 1px solid #30363d;
+}
+.lms-admin .lms-table tr {
+  background-color: transparent !important;
+}
+.lms-admin .lms-table tbody tr {
+  border-bottom: 1px solid #30363d !important;
+}
+.lms-admin .lms-table tbody tr:hover {
+  background-color: rgba(102, 126, 234, 0.1) !important;
+}
+.lms-admin .lms-table th,
+.lms-admin .lms-table thead th {
+  background-color: #1d70f5 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  border: none !important;
+}
+.lms-admin .lms-table td {
+  color: #e6edf3 !important;
+  border: none !important;
+}
+
+/* Inputs and utilities */
+.lms-admin .lms-admin-filter__input::placeholder {
+  color: #8b949e;
+}
+.lms-admin .btn-lms-primary {
+  background: #1d70f5;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+}
+.lms-admin .btn-lms-primary:hover {
+  background: #1557c0;
+}
+
+/* Fix text colors inside elements that might be overridden by Drupal */
+.lms-admin__title {
+  color: #fff !important;
+}
+.lms-admin__subtitle {
+  color: #8b949e !important;
+}

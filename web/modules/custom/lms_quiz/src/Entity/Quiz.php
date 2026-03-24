@@ -39,6 +39,10 @@ use Drupal\views\EntityViewsData;
       'default' => 'Drupal\lms_quiz\Form\QuizForm',
       'add' => 'Drupal\lms_quiz\Form\QuizForm',
       'edit' => 'Drupal\lms_quiz\Form\QuizForm',
+      'admin_edit' => 'Drupal\lms_quiz\Form\QuizForm',
+      'admin_create' => 'Drupal\lms_quiz\Form\QuizForm',
+      'manager_edit' => 'Drupal\lms_quiz\Form\QuizForm',
+      'manager_create' => 'Drupal\lms_quiz\Form\QuizForm',
       'delete' => 'Drupal\Core\Entity\ContentEntityDeleteForm',
     ],
     'route_provider' => [
@@ -133,6 +137,14 @@ class Quiz extends ContentEntityBase implements EntityOwnerInterface {
       ->setDefaultValue(0)
       ->setDisplayOptions('form', ['type' => 'number', 'weight' => -2])
       ->setDisplayConfigurable('form', TRUE);
+
+    $fields['field_prerequisite_quizzes'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(new TranslatableMarkup('Prerequisite Quizzes'))
+      ->setSetting('target_type', 'lms_quiz')
+      ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)
+      ->setDisplayOptions('form', ['type' => 'entity_reference_autocomplete', 'weight' => -1])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Created'));

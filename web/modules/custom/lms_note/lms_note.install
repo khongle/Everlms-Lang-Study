@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the lms_note module.
+ */
+
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
+/**
+ * Add field_course to lms_note entity.
+ */
+function lms_note_update_10001() {
+  $field_storage_definition = BaseFieldDefinition::create('entity_reference')
+    ->setLabel(new TranslatableMarkup('Course'))
+    ->setRequired(TRUE)
+    ->setSetting('target_type', 'lms_course');
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_course', 'lms_note', 'lms_note', $field_storage_definition);
+
+  return 'Added field_course to lms_note entity.';
+}

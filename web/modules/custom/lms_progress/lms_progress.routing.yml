@@ -35,3 +35,11 @@ lms_progress.certificates:
     _title: 'My Certificates'
   requirements:
     _user_is_logged_in: 'TRUE'
+
+lms_progress.api_mark_complete:
+  path: '/api/lms/progress/mark-complete'
+  defaults:
+    _controller: '\Drupal\lms_progress\Controller\ProgressApiController::markComplete'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]

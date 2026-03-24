@@ -1,0 +1,62 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the lms_certificate module.
+ */
+
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
+/**
+ * Add new fields to lms_certificate_template and lms_user_certificate entities.
+ */
+function lms_certificate_update_10001(&$sandbox) {
+  $entity_update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  // Template fields
+  $logo_storage = BaseFieldDefinition::create('image')
+    ->setLabel(new TranslatableMarkup('Logo Image'))
+    ->setSetting('file_directory', 'certificates/logos')
+    ->setDisplayOptions('form', ['type' => 'image_image', 'weight' => -5])
+    ->setDisplayConfigurable('form', TRUE);
+  $entity_update_manager->installFieldStorageDefinition('field_logo', 'lms_certificate_template', 'lms_certificate', $logo_storage);
+
+  $orientation_storage = BaseFieldDefinition::create('list_string')
+    ->setLabel(new TranslatableMarkup('Orientation'))
+    ->setDefaultValue('landscape')
+    ->setSetting('allowed_values', [
+      'landscape' => 'Landscape', 'portrait' => 'Portrait',
+    ])
+    ->setDisplayOptions('form', ['type' => 'options_select', 'weight' => -4])
+    ->setDisplayConfigurable('form', TRUE);
+  $entity_update_manager->installFieldStorageDefinition('field_orientation', 'lms_certificate_template', 'lms_certificate', $orientation_storage);
+
+  $layout_storage = BaseFieldDefinition::create('string_long')
+    ->setLabel(new TranslatableMarkup('Layout Config (JSON)'))
+    ->setDisplayOptions('form', ['type' => 'string_textarea', 'weight' => -3])
+    ->setDisplayConfigurable('form', TRUE);
+  $entity_update_manager->installFieldStorageDefinition('field_layout', 'lms_certificate_template', 'lms_certificate', $layout_storage);
+
+  $color_scheme_storage = BaseFieldDefinition::create('string')
+    ->setLabel(new TranslatableMarkup('Color Scheme'))
+    ->setDisplayOptions('form', ['type' => 'string_textfield', 'weight' => -2])
+    ->setDisplayConfigurable('form', TRUE);
+  $entity_update_manager->installFieldStorageDefinition('field_color_scheme', 'lms_certificate_template', 'lms_certificate', $color_scheme_storage);
+
+  // User certificate fields
+  $expiry_storage = BaseFieldDefinition::create('datetime')
+    ->setLabel(new TranslatableMarkup('Expiry Date'))
+    ->setSetting('datetime_type', 'date');
+  $entity_update_manager->installFieldStorageDefinition('field_expiry_date', 'lms_user_certificate', 'lms_certificate', $expiry_storage);
+
+  $revoked_storage = BaseFieldDefinition::create('boolean')
+    ->setLabel(new TranslatableMarkup('Revoked'))
+    ->setDefaultValue(FALSE);
+  $entity_update_manager->installFieldStorageDefinition('field_revoked', 'lms_user_certificate', 'lms_certificate', $revoked_storage);
+
+  $revoke_reason_storage = BaseFieldDefinition::create('string')
+    ->setLabel(new TranslatableMarkup('Revocation Reason'))
+    ->setSetting('max_length', 255);
+  $entity_update_manager->installFieldStorageDefinition('field_revoke_reason', 'lms_user_certificate', 'lms_certificate', $revoke_reason_storage);
+}

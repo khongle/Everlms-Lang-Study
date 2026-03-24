@@ -1,0 +1,23 @@
+lms_wishlist.toggle:
+  path: '/api/lms/wishlist/toggle'
+  defaults:
+    _controller: '\Drupal\lms_wishlist\Controller\WishlistController::toggle'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_wishlist.status:
+  path: '/api/lms/wishlist/status'
+  defaults:
+    _controller: '\Drupal\lms_wishlist\Controller\WishlistController::getStatus'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [GET]
+
+lms_wishlist.my_wishlist:
+  path: '/my-wishlist'
+  defaults:
+    _title: 'My Wishlist'
+    _controller: '\Drupal\lms_wishlist\Controller\WishlistController::myWishlist'
+  requirements:
+    _user_is_logged_in: 'TRUE'

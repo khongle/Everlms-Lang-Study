@@ -1,0 +1,5 @@
+services:
+  lms_forum.route_subscriber:
+    class: Drupal\lms_forum\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

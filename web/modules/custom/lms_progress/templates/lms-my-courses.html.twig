@@ -3,39 +3,108 @@
 
 <section class="lms-section">
   <div class="container">
-    <h1 class="lms-manage__title">{{ 'My Courses'|t }}</h1>
+    <div class="lms-manage__header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h1 class="lms-manage__title" style="margin: 0;">{{ 'My Courses'|t }}</h1>
+      
+      {# Filter Tabs #}
+      <div class="lms-course-filters" style="display: flex; gap: 0.5rem; background: #161b22; padding: 0.25rem; border-radius: 0.5rem; border: 1px solid hsla(0,0%,100%,0.1);">
+        <button class="lms-filter-btn active" data-filter="all" style="background: #667eea; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">{{ 'All'|t }}</button>
+        <button class="lms-filter-btn" data-filter="in_progress" style="background: transparent; color: #8b949e; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.2s;">{{ 'In Progress'|t }}</button>
+        <button class="lms-filter-btn" data-filter="completed" style="background: transparent; color: #8b949e; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.2s;">{{ 'Completed'|t }}</button>
+      </div>
+    </div>
 
     {% if courses|length > 0 %}
-      <div class="row g-4">
-        {% for course in courses %}
-          <div class="col-lg-4 col-md-6">
-            <div class="lms-card lms-card--course">
-              {% if course.thumbnail %}
-                <div class="lms-card__image">
-                  <img src="{{ file_url(course.thumbnail.uri.value) }}" alt="{{ course.name }}" loading="lazy">
-                  <span class="lms-badge lms-badge--{{ course.status == 'completed' ? 'success' : (course.status == 'in_progress' ? 'warning' : 'primary') }}">
-                    {{ course.status|replace({'_': ' '})|capitalize }}
+      <div class="grid-courses" id="course-grid">
+        {% for item in courses %}
+          <div class="course-item card-lms card-lms--course" data-status="{{ item.status }}" style="display: flex; flex-direction: column; height: 100%; transition: opacity 0.3s ease;">
+            {% if item.thumbnail_url %}
+              <div class="card-lms__image">
+                {% if item.category %}
+                  <span class="card-lms__category">{{ item.category }}</span>
+                {% endif %}
+                <img src="{{ item.thumbnail_url }}" alt="{{ item.name }}" loading="lazy">
+              </div>
+            {% else %}
+              <div class="card-lms__image card-lms__image--placeholder">
+                {% if item.category %}
+                  <span class="card-lms__category">{{ item.category }}</span>
+                {% endif %}
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+            {% endif %}
+
+            <div class="card-lms__body" style="flex: 1; display: flex; flex-direction: column;">
+              <h3 class="card-lms__title" style="margin-bottom: 1rem;">
+                <a href="{{ item.url }}" style="color: #e6edf3; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#e6edf3'">{{ item.name }}</a>
+              </h3>
+              
+              <div style="margin-top: auto; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span style="font-size: 0.8125rem; color: #8b949e; font-weight: 500;">
+                    {% if item.status == 'completed' %}
+                      <span style="color: #43e97b;"><i class="fas fa-check-circle"></i> {{ 'Completed'|t }}</span>
+                    {% else %}
+                      {{ 'Progress'|t }}
+                    {% endif %}
                   </span>
+                  <span style="font-size: 0.8125rem; color: #e6edf3; font-weight: 600;">{{ item.progress|number_format(0) }}%</span>
                 </div>
-              {% endif %}
-              <div class="lms-card__body">
-                <h3 class="lms-card__title">
-                  <a href="{{ course.url }}">{{ course.name }}</a>
-                </h3>
-                <div class="lms-progress-bar">
-                  <div class="lms-progress-bar__fill" style="width: {{ course.progress }}%"></div>
-                </div>
-                <div class="lms-card__footer">
-                  <span class="lms-progress-bar__label">{{ course.progress|number_format(0) }}%</span>
-                  <a href="{{ course.url }}" class="lms-btn lms-btn--sm lms-btn--primary">
-                    {{ course.status == 'completed' ? 'Review'|t : 'Continue'|t }}
-                  </a>
+                <div class="lms-progress-bar" style="background: rgba(102, 126, 234, 0.15); height: 8px; border-radius: 1rem; overflow: hidden; margin: 0;">
+                  <div class="lms-progress-bar__fill" style="width: {{ item.progress }}%; height: 100%; {% if item.status == 'completed' %}background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);{% else %}background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);{% endif %} border-radius: 1rem; transition: width 0.3s ease;"></div>
                 </div>
               </div>
+
+              <a href="{{ item.url }}" class="btn-lms-primary btn-lms-sm" style="border-radius: 2rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; {% if item.status == 'completed' %}background: rgba(255,255,255,0.05); color: #8b949e; border: 1px solid rgba(255,255,255,0.1);{% endif %}">
+                {% if item.status == 'completed' %}
+                  {{ 'Review Course'|t }} <i class="fas fa-redo" style="font-size: 0.85em;"></i>
+                {% else %}
+                  {{ 'Continue Learning'|t }} <i class="fas fa-play" style="font-size: 0.85em;"></i>
+                {% endif %}
+              </a>
             </div>
           </div>
         {% endfor %}
       </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const filterBtns = document.querySelectorAll('.lms-filter-btn');
+          const courseItems = document.querySelectorAll('.course-item');
+
+          filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+              // Update active button styles
+              filterBtns.forEach(b => {
+                b.classList.remove('active');
+                b.style.background = 'transparent';
+                b.style.color = '#8b949e';
+                b.style.fontWeight = '500';
+              });
+              
+              this.classList.add('active');
+              this.style.background = '#667eea';
+              this.style.color = '#fff';
+              this.style.fontWeight = '600';
+
+              const filterValue = this.getAttribute('data-filter');
+
+              // Filter items
+              courseItems.forEach(item => {
+                item.style.opacity = '0';
+                setTimeout(() => {
+                  if (filterValue === 'all' || item.getAttribute('data-status') === filterValue) {
+                    item.style.display = 'flex';
+                    setTimeout(() => item.style.opacity = '1', 50);
+                  } else {
+                    item.style.display = 'none';
+                  }
+                }, 300);
+              });
+            });
+          });
+        });
+      </script>
     {% else %}
       <div class="lms-empty-state">
         <i class="fas fa-book-open"></i>

@@ -1,0 +1,9 @@
+stripe_elements:
+  version: VERSION
+  js:
+    https://js.stripe.com/v3/: { type: external, minified: true }
+    js/stripe_elements.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupalSettings
+    - core/drupal

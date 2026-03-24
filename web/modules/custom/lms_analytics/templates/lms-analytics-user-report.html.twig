@@ -1,0 +1,91 @@
+{#
+/**
+ * @file
+ * Template for the LMS Analytics User Report (Phase 3).
+ *
+ * Available variables:
+ * - stats: Array of user statistics.
+ * - filters: Array of active filters (search, inactive_days).
+ */
+#}
+
+<div class="lms-report-container">
+  <div class="report-header">
+    <h2>{{ 'User Analytics Report'|t }}</h2>
+    <div class="report-actions">
+      <a href="{{ url('lms_analytics.user_report_export', {'search': filters.search, 'inactive_days': filters.inactive_days}) }}" class="button button--primary">{{ 'Export to CSV'|t }}</a>
+    </div>
+  </div>
+
+  <div class="report-filters">
+    <form method="get" action="{{ url('<current>') }}" class="form-inline">
+      <div class="form-item">
+        <label for="searchFilter">{{ 'Search User'|t }}</label>
+        <input type="text" name="search" id="searchFilter" value="{{ filters.search }}" class="form-text" placeholder="Name or Email..." />
+      </div>
+      <div class="form-item">
+        <label for="inactiveFilter">{{ 'Inactive for'|t }}</label>
+        <select name="inactive_days" id="inactiveFilter" class="form-select">
+          <option value="">{{ '- Any -'|t }}</option>
+          <option value="7" {% if filters.inactive_days == '7' %}selected{% endif %}>{{ '> 7 days'|t }}</option>
+          <option value="30" {% if filters.inactive_days == '30' %}selected{% endif %}>{{ '> 30 days'|t }}</option>
+          <option value="90" {% if filters.inactive_days == '90' %}selected{% endif %}>{{ '> 90 days'|t }}</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <input type="submit" value="{{ 'Apply'|t }}" class="button" />
+        {% if filters.search or filters.inactive_days %}
+          <a href="{{ url('<current>') }}" class="button">{{ 'Reset'|t }}</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover admin-table lms-analytics-table">
+      <thead>
+        <tr>
+          <th>{{ 'User'|t }}</th>
+          <th>{{ 'Registration Date'|t }}</th>
+          <th>{{ 'Last Active'|t }}</th>
+          <th class="text-center">{{ 'Enrolled Courses'|t }}</th>
+          <th class="text-center">{{ 'Completed Courses'|t }}</th>
+          <th class="text-center">{{ 'Quizzes Taken'|t }}</th>
+          <th class="text-center">{{ 'Avg Quiz Score'|t }}</th>
+          <th class="text-center">{{ 'Certificates'|t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in stats %}
+          <tr>
+            <td>
+              <strong>{{ user.name }}</strong>
+              <div class="text-xs text-muted">{{ user.email }} | ID: {{ user.uid }}</div>
+            </td>
+            <td>{{ user.created|format_date('short') }}</td>
+            <td>
+              {% if user.last_login %}
+                {{ user.last_login|format_date('short') }}
+              {% else %}
+                <span class="text-muted">{{ 'Never'|t }}</span>
+              {% endif %}
+            </td>
+            <td class="text-center"><strong>{{ user.enrolled }}</strong></td>
+            <td class="text-center text-success"><strong>{{ user.completed }}</strong></td>
+            <td class="text-center">{{ user.quizzes }}</td>
+            <td class="text-center">
+              <span class="badge {{ user.avg_score >= 50 ? 'badge-success' : (user.avg_score > 0 ? 'badge-warning' : '') }}">
+                {{ user.avg_score }}
+              </span>
+            </td>
+            <td class="text-center text-primary"><strong>{{ user.certs }}</strong></td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="8" class="text-center">{{ 'No user data available for the given criteria.'|t }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

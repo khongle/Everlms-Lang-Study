@@ -23,10 +23,11 @@ use Drupal\views\EntityViewsData;
   admin_permission: 'administer lms_course',
   entity_keys: ['id' => 'id', 'uuid' => 'uuid', 'label' => 'name'],
   handlers: [
+    'list_builder' => '\Drupal\lms_certificate\CertificateTemplateListBuilder',
     'view_builder' => EntityViewBuilder::class,
     'views_data' => EntityViewsData::class,
     'form' => [
-      'default' => 'Drupal\Core\Entity\ContentEntityForm',
+      'default' => '\Drupal\lms_certificate\Form\CertificateTemplateForm',
       'delete' => 'Drupal\Core\Entity\ContentEntityDeleteForm',
     ],
     'route_provider' => ['html' => 'Drupal\Core\Entity\Routing\AdminHtmlRouteProvider'],
@@ -54,8 +55,8 @@ class CertificateTemplate extends ContentEntityBase {
     $fields['field_body'] = BaseFieldDefinition::create('text_long')
       ->setLabel(new TranslatableMarkup('Certificate Body'))
       ->setDescription(new TranslatableMarkup('Use tokens: [user:name], [course:name], [date:completed].'))
-      ->setDisplayOptions('form', ['type' => 'text_textarea', 'weight' => -9])
-      ->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
+      ->setDisplayOptions('form', ['type' => 'hidden'])
+      ->setDisplayConfigurable('form', FALSE)->setDisplayConfigurable('view', TRUE);
 
     $fields['field_design'] = BaseFieldDefinition::create('list_string')
       ->setLabel(new TranslatableMarkup('Design'))
@@ -77,6 +78,32 @@ class CertificateTemplate extends ContentEntityBase {
       ->setLabel(new TranslatableMarkup('Signature Image'))
       ->setSetting('file_directory', 'certificates/signatures')
       ->setDisplayOptions('form', ['type' => 'image_image', 'weight' => -6])
+      ->setDisplayConfigurable('form', TRUE);
+
+    $fields['field_logo'] = BaseFieldDefinition::create('image')
+      ->setLabel(new TranslatableMarkup('Logo Image'))
+      ->setSetting('file_directory', 'certificates/logos')
+      ->setDisplayOptions('form', ['type' => 'image_image', 'weight' => -5])
+      ->setDisplayConfigurable('form', TRUE);
+
+    $fields['field_orientation'] = BaseFieldDefinition::create('list_string')
+      ->setLabel(new TranslatableMarkup('Orientation'))
+      ->setDefaultValue('landscape')
+      ->setSetting('allowed_values', [
+        'landscape' => 'Landscape', 'portrait' => 'Portrait',
+      ])
+      ->setDisplayOptions('form', ['type' => 'options_select', 'weight' => -4])
+      ->setDisplayConfigurable('form', TRUE);
+
+    $fields['field_layout'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(new TranslatableMarkup('Twig Template'))
+      ->setDescription(new TranslatableMarkup('Input the full HTML/Twig structure for the certificate here.'))
+      ->setDisplayOptions('form', ['type' => 'string_textarea', 'weight' => -9])
+      ->setDisplayConfigurable('form', TRUE);
+
+    $fields['field_color_scheme'] = BaseFieldDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Color Scheme'))
+      ->setDisplayOptions('form', ['type' => 'string_textfield', 'weight' => -2])
       ->setDisplayConfigurable('form', TRUE);
 
     $fields['status'] = BaseFieldDefinition::create('boolean')

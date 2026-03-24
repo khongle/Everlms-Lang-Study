@@ -1,0 +1,167 @@
+<?php
+
+/**
+ * @file
+ * Functions to support theming in the EverLMS theme.
+ */
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function lms_theme_preprocess_page(&$variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  $variables['current_route'] = $route_name;
+
+  $variables['logged_in'] = \Drupal::currentUser()->isAuthenticated();
+  if ($variables['logged_in']) {
+    // Inject Notification Bell built array.
+    if (\Drupal::moduleHandler()->moduleExists('lms_notification')) {
+      $block_manager = \Drupal::service('plugin.manager.block');
+      $plugin_block = $block_manager->createInstance('lms_notification_bell_block', []);
+      if ($plugin_block && $plugin_block->access(\Drupal::currentUser())) {
+        $variables['notification_bell'] = $plugin_block->build();
+      }
+    }
+
+    $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+    if ($user) {
+      $variables['is_manager'] = !empty(array_intersect(['administrator', 'manager', 'instructor'], $user->getRoles()));
+      $first_name = $user->hasField('field_first_name') ? trim((string) $user->get('field_first_name')->value) : '';
+      $last_name = $user->hasField('field_last_name') ? trim((string) $user->get('field_last_name')->value) : '';
+      if ($first_name || $last_name) {
+        $variables['current_user_name'] = trim("$first_name $last_name");
+      } else {
+        $variables['current_user_name'] = $user->getDisplayName();
+      }
+    } else {
+      $variables['current_user_name'] = \Drupal::currentUser()->getDisplayName();
+    }
+    if ($user && $user->hasField('user_picture') && !$user->get('user_picture')->isEmpty()) {
+      $file = \Drupal\file\Entity\File::load($user->get('user_picture')->target_id);
+      if ($file) {
+        $variables['current_user_picture'] = \Drupal::service('file_url_generator')->generateString($file->getFileUri());
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function lms_theme_theme($existing, $type, $theme, $path) {
+  return [
+    'lms_course_manager_edit' => [
+      'render element' => 'form',
+      'template' => 'form/lms-course-manager-edit-form',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function lms_theme_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  if ($form_id === 'lms_course_manager_edit_form') {
+    $form['#theme'] = ['lms_course_manager_edit'];
+  }
+}
+
+/**
+ * Implements hook_preprocess_input().
+ */
+function lms_theme_preprocess_input(&$variables) {
+  $element = $variables['element'];
+  $type = $element['#type'] ?? '';
+  if (in_array($type, ['textfield', 'email', 'number', 'password', 'search', 'tel', 'url', 'date'])) {
+    $variables['attributes']['class'][] = 'form-control';
+  } elseif (in_array($type, ['checkbox', 'radio'])) {
+    $variables['attributes']['class'][] = 'form-check-input';
+  } elseif ($type === 'submit' || $type === 'button') {
+    $variables['attributes']['class'][] = 'btn';
+  }
+}
+
+/**
+ * Implements hook_preprocess_select().
+ */
+function lms_theme_preprocess_select(&$variables) {
+  $variables['attributes']['class'][] = 'form-select';
+}
+
+/**
+ * Implements hook_preprocess_textarea().
+ */
+function lms_theme_preprocess_textarea(&$variables) {
+  $variables['attributes']['class'][] = 'form-control';
+}
+
+/**
+ * Implements hook_preprocess_user().
+ */
+function lms_theme_preprocess_user(&$variables) {
+  $user = $variables['user'];
+  $uid = $user->id();
+
+  $entity_type_manager = \Drupal::entityTypeManager();
+
+  // Enrolled Courses
+  $enrolled_count = $entity_type_manager->getStorage('lms_user_course')
+    ->getQuery()
+    ->condition('uid', $uid)
+    ->accessCheck(FALSE)
+    ->count()
+    ->execute();
+  $variables['courses_enrolled'] = $enrolled_count;
+
+  // Completed Courses
+  $completed_count = $entity_type_manager->getStorage('lms_user_course')
+    ->getQuery()
+    ->condition('uid', $uid)
+    ->condition('field_status', 'completed')
+    ->accessCheck(FALSE)
+    ->count()
+    ->execute();
+  $variables['courses_completed'] = $completed_count;
+
+  // Certificates
+  $certificates_count = 0;
+  if ($entity_type_manager->hasDefinition('lms_certificate')) {
+    $certificates_count = $entity_type_manager->getStorage('lms_certificate')
+      ->getQuery()
+      ->condition('uid', $uid)
+      ->accessCheck(FALSE)
+      ->count()
+      ->execute();
+  }
+  $variables['certificates_count'] = $certificates_count;
+
+  // Quiz Average (Placeholder logic if lms_quiz_result exists)
+  $quiz_average = '0%';
+  if ($entity_type_manager->hasDefinition('lms_quiz_result')) {
+    $results = $entity_type_manager->getStorage('lms_quiz_result')
+      ->loadByProperties(['uid' => $uid]);
+    if (!empty($results)) {
+      $total_score = 0;
+      foreach ($results as $result) {
+        $total_score += (float) $result->get('field_score')->value;
+      }
+      $quiz_average = round($total_score / count($results)) . '%';
+    }
+  }
+  $variables['quiz_average'] = $quiz_average;
+  
+  // Member since raw timestamp for custom formatting
+  $variables['member_since_timestamp'] = $user->getCreatedTime();
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for the user entity.
+ */
+function lms_theme_theme_suggestions_user_alter(array &$suggestions, array $variables) {
+  // Force the full feature-rich dashboard template on the canonical profile route
+  // regardless of the active view mode configured in the admin backend.
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if ($route_name === 'entity.user.canonical') {
+    $suggestions[] = 'user__full';
+  }
+}

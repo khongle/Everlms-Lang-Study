@@ -11,6 +11,19 @@ lms_quiz.take:
       lms_quiz:
         type: entity:lms_quiz
 
+lms_quiz.submit:
+  path: '/quiz/{lms_quiz}/submit'
+  defaults:
+    _controller: '\Drupal\lms_quiz\Controller\QuizController::submitQuiz'
+    _title: 'Submit Quiz'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+  options:
+    parameters:
+      lms_quiz:
+        type: entity:lms_quiz
+
 lms_quiz.result:
   path: '/quiz-result/{lms_quiz_result}'
   defaults:

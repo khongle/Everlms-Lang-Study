@@ -18,7 +18,12 @@
           <div class="lms-pricing-card__price">
             {% if plan.price > 0 %}
               <span class="lms-pricing-card__amount">${{ plan.price|number_format(2) }}</span>
-              <span class="lms-pricing-card__period">/{{ 'month'|t }}</span>
+              {% set period = plan.billing_cycle == 'yearly' ? 'year' : (plan.billing_cycle == 'monthly' ? 'month' : plan.billing_cycle) %}
+              {% if period != 'lifetime' %}
+                <span class="lms-pricing-card__period">/{{ period|t }}</span>
+              {% else %}
+                <span class="lms-pricing-card__period"> {{ 'lifetime access'|t }}</span>
+              {% endif %}
             {% else %}
               <span class="lms-pricing-card__amount">{{ 'Free'|t }}</span>
             {% endif %}
@@ -32,7 +37,7 @@
             {% endfor %}
           </ul>
 
-          <a href="#" class="lms-btn {{ plan.recommended ? 'lms-btn--primary' : 'lms-btn--outline' }} lms-btn--block">
+          <a href="{{ url('lms_order.checkout_membership', {'plan_id': plan.id}) }}" class="lms-btn {{ plan.recommended ? 'lms-btn--primary' : 'lms-btn--outline' }} lms-btn--block">
             {{ plan.price > 0 ? 'Get Started'|t : 'Start Free'|t }}
           </a>
         </div>

@@ -1,0 +1,11 @@
+entity.lms_membership_plan.add_form:
+  route_name: entity.lms_membership_plan.add_form
+  title: 'Add membership plan'
+  appears_on:
+    - entity.lms_membership_plan.collection
+
+entity.lms_user_membership.add_form:
+  route_name: entity.lms_user_membership.add_form
+  title: 'Add user membership'
+  appears_on:
+    - entity.lms_user_membership.collection

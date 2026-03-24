@@ -164,6 +164,15 @@ body {
     padding-top: $navbar-height;
 }
 
+// Drupal Admin Toolbar Fix
+body.toolbar-horizontal .lms-navbar {
+    top: 39px !important;
+    z-index: 400 !important;
+}
+body.toolbar-horizontal.toolbar-tray-open .lms-navbar {
+    top: 79px !important;
+}
+
 // Mobile toggle
 .lms-navbar__toggle {
     display: none;

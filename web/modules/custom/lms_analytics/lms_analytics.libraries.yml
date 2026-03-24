@@ -1,0 +1,7 @@
+admin_report:
+  version: 1.0
+  js:
+    https://cdn.jsdelivr.net/npm/chart.js: { type: external, minified: true }
+  css:
+    component:
+      css/lms-analytics-admin.css: {}

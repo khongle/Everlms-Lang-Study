@@ -126,7 +126,9 @@
     }
 
     input[type="submit"],
-    .button {
+    button[type="submit"],
+    .button,
+    .form-submit {
         width: 100%;
         padding: 0.75rem;
         background: $gradient-primary;
@@ -142,6 +144,16 @@
         &:hover {
             opacity: 0.9;
         }
+    }
+
+    // Drupal specific form wrappers
+    form#user-login-form {
+        width: 100%;
+    }
+
+    .form-actions {
+        margin-top: $spacer-lg;
+        margin-bottom: 0;
     }
 }
 

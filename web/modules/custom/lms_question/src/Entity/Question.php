@@ -44,6 +44,7 @@ use Drupal\views\EntityViewsData;
       'html' => 'Drupal\Core\Entity\Routing\AdminHtmlRouteProvider',
     ],
     'access' => 'Drupal\lms_question\Access\QuestionAccessControlHandler',
+    'inline_form' => 'Drupal\inline_entity_form\Form\EntityInlineForm',
   ],
   links: [
     'canonical' => '/manage/questions/{lms_question}',

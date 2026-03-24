@@ -76,11 +76,16 @@ class Chapter extends ContentEntityBase {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
-    $fields['field_course'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(new TranslatableMarkup('Course'))
-      ->setRequired(TRUE)
-      ->setSetting('target_type', 'lms_course')
-      ->setDisplayOptions('form', ['type' => 'entity_reference_autocomplete', 'weight' => -8])
+
+
+    $fields['field_lessons'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(new TranslatableMarkup('Lessons'))
+      ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)
+      ->setSetting('target_type', 'lms_lesson')
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => -7,
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 

@@ -1,30 +1,172 @@
-{# Admin Users — matches 14-admin-users.png #}
+{# Admin User List — matches mockup #}
 {{ attach_library('lms_theme/global') }}
+
 <div class="lms-admin">
-  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'users' } only %}
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'users' } %}
+
   <div class="lms-admin__main">
-    <h1 class="lms-admin__title">{{ 'Manage Users'|t }}</h1>
-    <div class="lms-card">
-      <div class="lms-table-responsive">
-        <table class="lms-table">
-          <thead><tr><th>{{ 'ID'|t }}</th><th>{{ 'Name'|t }}</th><th>{{ 'Email'|t }}</th><th>{{ 'Roles'|t }}</th><th>{{ 'Enrolled'|t }}</th><th>{{ 'Joined'|t }}</th><th>{{ 'Status'|t }}</th></tr></thead>
+    <form method="get" action="{{ url('<current>') }}">
+      <div class="lms-admin__header">
+        <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ 'User Management'|t }}</h1>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <div style="position: relative;">
+            <input type="text" name="search" value="{{ current_search }}" class="lms-admin-filter__input" placeholder="{{ 'Search users by name, email...'|t }}" style="padding-right: 2.5rem; width: 280px; border-radius: 2rem;">
+            <button type="submit" style="background: none; border: none; padding: 0; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #64748b; cursor: pointer;">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <a href="{{ add_user_url }}" class="btn-lms-primary"><i class="fas fa-plus"></i> {{ 'Add User'|t }}</a>
+          <a href="#" class="lms-admin-filter__select" style="display: inline-flex; align-items: center; justify-content: center; width: auto; background: rgba(255,255,255,0.05); color: #e2e8f0; text-decoration: none; padding: 0.625rem 1.25rem;">{{ 'Bulk Import'|t }}</a>
+        </div>
+      </div>
+
+      <div class="lms-admin-card">
+        <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          <div style="display: flex; gap: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="color: #94a3b8; font-size: 0.875rem; font-weight: 500;">Role:</span>
+              <select name="role" class="lms-admin-filter__select" style="width: 140px; padding: 0.35rem 0.75rem;">
+                <option value="All" {% if current_role == 'All' %}selected{% endif %}>All</option>
+                <option value="Student" {% if current_role == 'Student' %}selected{% endif %}>Student</option>
+                <option value="Instructor" {% if current_role == 'Instructor' %}selected{% endif %}>Instructor</option>
+                <option value="Manager" {% if current_role == 'Manager' %}selected{% endif %}>Manager</option>
+                <option value="Admin" {% if current_role == 'Admin' %}selected{% endif %}>Admin</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="color: #94a3b8; font-size: 0.875rem; font-weight: 500;">Status:</span>
+              <select name="status" class="lms-admin-filter__select" style="width: 140px; padding: 0.35rem 0.75rem;">
+                <option value="All" {% if current_status == 'All' %}selected{% endif %}>All</option>
+                <option value="Active" {% if current_status == 'Active' %}selected{% endif %}>Active</option>
+                <option value="Inactive" {% if current_status == 'Inactive' %}selected{% endif %}>Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <button type="submit" class="btn-lms-primary" style="padding: 0.35rem 1rem; font-size: 0.875rem;">Filters</button>
+            <a href="{{ url('<current>') }}" class="lms-admin-filter__select" style="background: transparent; color: #cbd5e1; padding: 0.35rem 1rem; font-size: 0.875rem; cursor: pointer; text-decoration: none;">Reset</a>
+          </div>
+        </div>
+    </form>
+
+      <form id="lms-bulk-users-form" method="post" action="{{ url('lms_course.admin.users.bulk') }}">
+        <div class="lms-table-responsive">
+          <table class="lms-table">
+            <thead>
+              <tr style="background: #0b0f19;">
+                <th style="width: 48px; text-align: center;"><input type="checkbox" id="bulk-select-all" style="accent-color: #1d70f5;"></th>
+                <th>{{ 'User'|t }}</th>
+                <th>{{ 'Email'|t }}</th>
+              <th>{{ 'Role'|t }}</th>
+              <th>{{ 'Courses Enrolled'|t }}</th>
+              <th>{{ 'Last Login'|t }}</th>
+              <th>{{ 'Status'|t }}</th>
+              <th style="text-align: right;">{{ 'Actions'|t }}</th>
+            </tr>
+          </thead>
           <tbody>
             {% for user in users %}
               <tr>
-                <td>#{{ user.uid }}</td>
-                <td>{{ user.name }}</td>
+                <td style="text-align: center;"><input type="checkbox" name="users[]" value="{{ user.uid }}" class="bulk-user-checkbox" style="accent-color: #1d70f5;"></td>
+                <td style="display: flex; align-items: center; gap: 0.75rem;">
+                  {% if user.avatar_url %}
+                    <img src="{{ user.avatar_url }}" alt="{{ user.name }}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                  {% else %}
+                    <img src="https://ui-avatars.com/api/?name={{ user.name|url_encode }}&background=21262d&color=cbd5e1" alt="{{ user.name }}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                  {% endif %}
+                  <span style="font-weight: 600; color: #fff;">{{ user.name }}</span>
+                </td>
                 <td>{{ user.email }}</td>
-                <td>{{ user.roles }}</td>
-                <td>{{ user.enrolled }}</td>
-                <td>{{ user.created|date('M d, Y') }}</td>
-                <td><span class="lms-badge {{ user.status == 'Active' ? 'lms-badge--success' : 'lms-badge--danger' }}">{{ user.status }}</span></td>
+                <td>
+                  {% set role_color = '#64748b' %}
+                  {% set role_bg = 'rgba(100, 116, 139, 0.1)' %}
+                  
+                  {% if user.role == 'Student' %}
+                     {% set role_color = '#3b82f6' %}{% set role_bg = 'rgba(59, 130, 246, 0.15)' %}
+                  {% elseif user.role == 'Instructor' %}
+                     {% set role_color = '#f59e0b' %}{% set role_bg = 'rgba(245, 158, 11, 0.15)' %}
+                  {% elseif user.role == 'Manager' %}
+                     {% set role_color = '#d946ef' %}{% set role_bg = 'rgba(217, 70, 239, 0.15)' %}
+                  {% elseif user.role == 'Administrator' or user.role == 'Admin' %}
+                     {% set role_color = '#ef4444' %}{% set role_bg = 'rgba(239, 68, 68, 0.15)' %}
+                  {% endif %}
+                  
+                  <span style="color: {{ role_color }}; background: {{ role_bg }}; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.05);">
+                     {{ user.role }}
+                  </span>
+                </td>
+                <td style="text-align: center;">{{ user.enrolled }}</td>
+                <td>{{ user.last_login ? user.last_login|date('M d, Y') : 'Never' }}</td>
+                <td>
+                  <span class="lms-status {{ user.status == 'Active' ? 'lms-status--active' : 'lms-status--inactive' }}">
+                    {{ user.status }}
+                  </span>
+                </td>
+                <td style="text-align: right; white-space: nowrap;">
+                  <a href="{{ user.edit_url }}" style="color: #64748b; margin-right: 0.75rem; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'"><i class="fas fa-edit"></i></a>
+                  <a href="{{ user.view_url }}" style="color: #64748b; margin-right: 0.75rem; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'"><i class="fas fa-eye"></i></a>
+                  <a href="#" style="color: #64748b; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'"><i class="fas fa-cog"></i></a>
+                </td>
               </tr>
             {% else %}
-              <tr><td colspan="7" class="lms-text-center">{{ 'No users'|t }}</td></tr>
+              <tr><td colspan="8" style="text-align: center; padding: 3rem;">{{ 'No users found.'|t }}</td></tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
+      
+      <div style="padding: 1.5rem; background: #0b0f19; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+           <span style="font-size: 0.875rem; color: #94a3b8;"><b>Bulk Action</b></span>
+           <span id="bulk-selected-count" style="font-size: 0.875rem; color: #64748b;">0 selected users</span>
+           <button type="submit" name="action" value="activate" class="btn-lms-primary" style="padding: 0.35rem 1rem; font-size: 0.875rem; border: none; cursor: pointer;">Activate</button>
+           <button type="submit" name="action" value="deactivate" style="padding: 0.35rem 1rem; font-size: 0.875rem; background: transparent; border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; border-radius: 0.5rem; cursor: pointer;">Deactivate</button>
+           <button type="submit" name="action" value="export" class="lms-admin-filter__select" style="padding: 0.35rem 1rem; font-size: 0.875rem; width: auto; background: rgba(255,255,255,0.05); cursor: pointer; border: none;">Export</button>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #94a3b8;">
+           <span>Showing 1-8 of {{ users|length }} users</span>
+           <div class="lms-pagination" style="gap: 0.25rem;">
+             <button class="lms-pagination__item">Previous</button>
+             <button class="lms-pagination__item lms-pagination__item--active">1</button>
+             <button class="lms-pagination__item">2</button>
+             <button class="lms-pagination__item">3</button>
+             <span style="padding: 0.35rem 0.5rem; color: #64748b;">...</span>
+             <button class="lms-pagination__item">18</button>
+             <button class="lms-pagination__item">Next</button>
+           </div>
+        </div>
+      </div>
+      </form>
     </div>
+
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const selectAllBtn = document.getElementById('bulk-select-all');
+    const userCheckboxes = document.querySelectorAll('.bulk-user-checkbox');
+    const selectedCountText = document.getElementById('bulk-selected-count');
+
+    function updateCount() {
+      const count = document.querySelectorAll('.bulk-user-checkbox:checked').length;
+      selectedCountText.textContent = count === 1 ? '1 selected user' : count + ' selected users';
+      
+      if(selectAllBtn) {
+        selectAllBtn.checked = (count === userCheckboxes.length && userCheckboxes.length > 0);
+      }
+    }
+
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener('change', function(e) {
+        userCheckboxes.forEach(cb => cb.checked = e.target.checked);
+        updateCount();
+      });
+    }
+
+    userCheckboxes.forEach(cb => {
+      cb.addEventListener('change', updateCount);
+    });
+  });
+</script>

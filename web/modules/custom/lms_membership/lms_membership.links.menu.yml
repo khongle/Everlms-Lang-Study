@@ -1,0 +1,13 @@
+entity.lms_membership_plan.collection:
+  title: 'Membership Plans'
+  route_name: entity.lms_membership_plan.collection
+  description: 'Manage Membership Plans'
+  parent: system.admin_structure
+  weight: 100
+
+entity.lms_user_membership.collection:
+  title: 'User Memberships'
+  route_name: entity.lms_user_membership.collection
+  description: 'Manage User Memberships'
+  parent: system.admin_structure
+  weight: 101

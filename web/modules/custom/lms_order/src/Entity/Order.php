@@ -30,6 +30,7 @@ use Drupal\views\EntityViewsData;
   ],
   handlers: [
     'view_builder' => EntityViewBuilder::class,
+    'list_builder' => 'Drupal\lms_order\OrderListBuilder',
     'views_data' => EntityViewsData::class,
     'form' => [
       'default' => 'Drupal\Core\Entity\ContentEntityForm',
@@ -119,6 +120,22 @@ class Order extends ContentEntityBase implements EntityOwnerInterface {
     $fields['field_reminder_sent'] = BaseFieldDefinition::create('boolean')
       ->setLabel(new TranslatableMarkup('Reminder Sent'))
       ->setDefaultValue(FALSE);
+
+    $fields['field_payment_receipt'] = BaseFieldDefinition::create('image')
+      ->setLabel(new TranslatableMarkup('Payment Receipt'))
+      ->setSetting('target_type', 'file')
+      ->setSetting('file_directory', 'payment_receipts/[date:custom:Y]-[date:custom:m]')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'image',
+        'weight' => 0,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'image_image',
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('view', TRUE)
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Created'));

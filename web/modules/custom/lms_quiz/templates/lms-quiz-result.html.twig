@@ -1,44 +1,275 @@
-{# Quiz Result Page #}
-{{ attach_library('lms_theme/global') }}
+{# Premium Quiz Result Page #}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.lms-result-wrapper {
+  background-color: #0d1117;
+  color: #c9d1d9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  padding: 4rem 1rem;
+}
+.lms-result-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.lms-result-hero {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.lms-result-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 4px;
+  background: linear-gradient(90deg, #58a6ff, #3fb950);
+}
+.lms-result-title {
+  font-size: 2.2rem;
+  color: #fff;
+  margin-bottom: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.lms-score-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #fff;
+  border: 8px solid #30363d;
+  box-shadow: 0 0 30px rgba(0,0,0,0.3) inset, 0 10px 20px rgba(0,0,0,0.2);
+  transition: all 0.5s ease;
+}
+.lms-score-circle--pass {
+  border-color: #238636;
+  text-shadow: 0 0 10px rgba(35,134,54,0.5);
+  box-shadow: 0 0 30px rgba(35,134,54,0.2) inset, 0 0 20px rgba(35,134,54,0.3);
+}
+.lms-score-circle--fail {
+  border-color: #ff7b72;
+  text-shadow: 0 0 10px rgba(255,123,114,0.6);
+  box-shadow: 0 0 30px rgba(255,123,114,0.2) inset, 0 0 20px rgba(255,123,114,0.3);
+}
+.lms-result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+.lms-result-badge--pass {
+  background: rgba(35, 134, 54, 0.1);
+  color: #3fb950;
+  border: 1px solid rgba(63, 185, 80, 0.3);
+}
+.lms-result-badge--fail {
+  background: rgba(255, 123, 114, 0.1);
+  color: #ff7b72;
+  border: 1px solid rgba(255, 123, 114, 0.3);
+}
+.lms-responses-title {
+  font-size: 1.6rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #30363d;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.lms-response-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.lms-response-card:hover {
+  transform: translateX(6px);
+  border-color: #8b949e;
+}
+.lms-response-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+.lms-response-icon {
+  font-size: 1.75rem;
+  margin-top: 0.1rem;
+}
+.lms-icon-correct { color: #3fb950; }
+.lms-icon-incorrect { color: #ff7b72; }
+.lms-icon-pending { color: #d29922; }
 
-<section class="lms-section">
-  <div class="container">
-    <div class="lms-quiz-result">
-      {# Score header #}
-      <div class="lms-quiz-result__header text-center">
-        <div class="lms-quiz-result__score-circle {% if score >= 70 %}lms-quiz-result__score-circle--pass{% else %}lms-quiz-result__score-circle--fail{% endif %}">
-          <span class="lms-quiz-result__score-value">{{ score|number_format(0) }}%</span>
-        </div>
-        <h1>{{ quiz ? quiz.label : 'Quiz Result'|t }}</h1>
-        <span class="lms-badge lms-badge--{{ score >= 70 ? 'success' : 'danger' }}">
-          {{ result_label }}
-        </span>
+.lms-response-question {
+  flex: 1;
+  font-size: 1.15rem;
+  color: #e6edf3;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.lms-response-points {
+  font-size: 0.95rem;
+  color: #c9d1d9;
+  background: #21262d;
+  padding: 0.35rem 0.85rem;
+  border-radius: 15px;
+  white-space: nowrap;
+  border: 1px solid #30363d;
+  font-weight: 600;
+}
+.lms-response-correct .lms-response-points {
+  background: rgba(35, 134, 54, 0.1);
+  border-color: rgba(35, 134, 54, 0.3);
+  color: #3fb950;
+}
+.lms-response-incorrect .lms-response-points {
+  background: rgba(255, 123, 114, 0.1);
+  border-color: rgba(255, 123, 114, 0.3);
+  color: #ff7b72;
+}
+
+.lms-response-answer {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed #30363d;
+  color: #8b949e;
+  padding-left: 3rem; /* aligns with text */
+}
+.lms-answer-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #58a6ff;
+  margin-bottom: 0.75rem;
+  display: block;
+  font-weight: 600;
+}
+.lms-answer-text {
+  background: #0d1117;
+  padding: 1.25rem;
+  border-radius: 8px;
+  border: 1px solid #21262d;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #c9d1d9;
+}
+.lms-btn-actions {
+  text-align: center;
+  margin-top: 3rem;
+  padding-bottom: 4rem;
+}
+.lms-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #21262d;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.lms-btn-back:hover {
+  background: #30363d;
+  color: #fff;
+  border-color: #8b949e;
+  transform: translateY(-2px);
+}
+</style>
+
+<div class="lms-result-wrapper">
+  <div class="lms-result-container">
+    
+    <div class="lms-result-hero">
+      <h1 class="lms-result-title">{{ quiz ? quiz.label : 'Quiz Result'|t }}</h1>
+      
+      {% set is_pass = (result_label|lower == 'passed' or score >= 70) %}
+      <div class="lms-score-circle {{ is_pass ? 'lms-score-circle--pass' : 'lms-score-circle--fail' }}">
+        {{ score|number_format(0) }}%
       </div>
-
-      {# Responses #}
-      {% if responses|length > 0 %}
-        <h2 class="lms-section__title">{{ 'Your Answers'|t }}</h2>
-        {% for response in responses %}
-          <div class="lms-card lms-quiz-result__response {{ response.correct ? 'lms-quiz-result__response--correct' : 'lms-quiz-result__response--incorrect' }}">
-            <div class="lms-quiz-result__response-header">
-              <i class="fas {{ response.correct ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
-              <span>{{ response.question }}</span>
-              <span class="lms-quiz-result__points">{{ response.score }} {{ 'pts'|t }}</span>
-            </div>
-            {% if response.text_answer %}
-              <p class="lms-quiz-result__answer">{{ response.text_answer }}</p>
-            {% endif %}
-            {% if response.pending %}
-              <span class="lms-badge lms-badge--warning">{{ 'Pending Review'|t }}</span>
-            {% endif %}
-            {% if response.feedback %}
-              <div class="lms-quiz-result__feedback">
-                <strong>{{ 'Feedback:'|t }}</strong> {{ response.feedback }}
-              </div>
-            {% endif %}
-          </div>
-        {% endfor %}
-      {% endif %}
+      
+      <div class="lms-result-badge {{ is_pass ? 'lms-result-badge--pass' : 'lms-result-badge--fail' }}">
+        {% if is_pass %}
+          <i class="fas fa-trophy"></i> {{ 'Passed'|t }}
+        {% else %}
+          <i class="fas fa-skull-crossbones"></i> {{ 'Failed'|t }}
+        {% endif %}
+      </div>
     </div>
+
+    {% if responses|length > 0 %}
+      <h2 class="lms-responses-title"><i class="fas fa-clipboard-list" style="color: #58a6ff;"></i> {{ 'Your Answers Breakdown'|t }}</h2>
+      
+      {% for response in responses %}
+        <div class="lms-response-card {{ response.correct ? 'lms-response-correct' : 'lms-response-incorrect' }}">
+          <div class="lms-response-header">
+            {% if response.pending %}
+              <div class="lms-response-icon lms-icon-pending"><i class="fas fa-clock"></i></div>
+            {% elseif response.correct %}
+              <div class="lms-response-icon lms-icon-correct"><i class="fas fa-check-circle"></i></div>
+            {% else %}
+              <div class="lms-response-icon lms-icon-incorrect"><i class="fas fa-times-circle"></i></div>
+            {% endif %}
+            
+            <div class="lms-response-question">
+              {{ response.question }}
+            </div>
+            
+            <div class="lms-response-points">
+              {{ response.score|number_format(0) }} {{ 'pts'|t }}
+            </div>
+          </div>
+          
+          {% if response.text_answer %}
+            <div class="lms-response-answer">
+              <span class="lms-answer-label"><i class="fas fa-pen-nib"></i> {{ 'Your Submission'|t }}</span>
+              <div class="lms-answer-text">{{ response.text_answer }}</div>
+            </div>
+          {% endif %}
+          
+          {% if response.pending %}
+            <div class="lms-response-answer" style="border-top-color: #d29922;">
+              <span class="lms-result-badge" style="font-size: 0.85rem; padding: 0.35rem 1rem; background: rgba(210, 153, 34, 0.15); color: #d29922; border-color: rgba(210, 153, 34, 0.4);"><i class="fas fa-hourglass-half"></i> {{ 'Pending Manual Review'|t }}</span>
+            </div>
+          {% endif %}
+          
+          {% if response.feedback %}
+             <div class="lms-response-answer" style="border-top-color: #3fb950;">
+              <span class="lms-answer-label" style="color: #3fb950;"><i class="fas fa-comment-dots"></i> {{ 'Instructor Feedback'|t }}</span>
+              <div class="lms-answer-text" style="color: #e6edf3;">{{ response.feedback }}</div>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="lms-btn-actions">
+      <a href="/user/portal" class="lms-btn-back"><i class="fas fa-forward"></i> {{ 'Continue Learning'|t }}</a>
+    </div>
+    
   </div>
-</section>
+</div>

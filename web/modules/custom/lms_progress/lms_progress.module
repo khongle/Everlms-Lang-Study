@@ -31,6 +31,12 @@ function lms_progress_theme(): array {
         'lesson' => NULL,
         'curriculum' => [],
         'video_position' => 0,
+        'video_embed_url' => '',
+        'quiz_id' => NULL,
+        'is_admin' => FALSE,
+        'rendered_attachments' => [],
+        'comments' => [],
+        'existing_note' => '',
       ],
       'template' => 'lms-lesson-view',
     ],
@@ -41,4 +47,180 @@ function lms_progress_theme(): array {
       'template' => 'lms-my-certificates',
     ],
   ];
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for comment forms.
+ */
+function lms_progress_form_comment_lesson_comment_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  // Failsafe: Ensure authenticated users have access to ALL text formats
+  // Without this, Drupal silently hides the rich text editor (comment_body) entirely!
+  $role = \Drupal\user\Entity\Role::load('authenticated');
+  if ($role) {
+    try {
+      $formats = \Drupal::entityTypeManager()->getStorage('filter_format')->getQuery()->accessCheck(FALSE)->execute();
+      $changed = FALSE;
+      foreach ($formats as $format_id) {
+        if (!$role->hasPermission("use text format $format_id")) {
+          $role->grantPermission("use text format $format_id");
+          $changed = TRUE;
+        }
+      }
+      if ($changed) {
+        $role->save();
+      }
+    } catch (\Exception $e) {}
+  }
+
+  // Attach after_build to reliably hide nested format elements
+  $form['#after_build'][] = 'lms_progress_comment_form_after_build';
+
+  // Hide Subject
+  if (isset($form['subject'])) {
+    $form['subject']['#access'] = FALSE;
+  }
+  // Hide Author name input if present
+  if (isset($form['author']['name'])) {
+    $form['author']['name']['#access'] = FALSE;
+  }
+  // Hide Author name input if present
+  if (isset($form['author']['name'])) {
+    $form['author']['name']['#access'] = FALSE;
+  }
+
+  // Print all root keys to see what field the user ACTUALLY created for the comment text!
+  if (!\Drupal\field\Entity\FieldConfig::loadByName('comment', 'lesson_comment', 'comment_body')) {
+    try {
+      \Drupal::moduleHandler()->loadInclude('comment', 'module');
+      if (function_exists('comment_add_body_field')) {
+        comment_add_body_field('lesson_comment');
+        
+        // Also ensure form display uses text_textarea
+        $form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('comment.lesson_comment.default');
+        if ($form_display) {
+          $form_display->setComponent('comment_body', [
+            'type' => 'text_textarea',
+            'settings' => ['rows' => 5],
+            'weight' => 10,
+          ]);
+          $form_display->save();
+        }
+        
+        \Drupal::messenger()->addWarning('Đã khôi phục lõi dữ liệu comment_body bị xoá! VUI LÒNG F5 LẠI ĐỂ TẢI FORM!');
+      }
+    } catch (\Exception $e) {}
+  }
+  
+  // Clean up formatting
+  if (isset($form['comment_body'])) {
+    $form['comment_body']['#access'] = TRUE;
+    if (isset($form['comment_body']['widget'][0])) {
+      $form['comment_body']['widget'][0]['#type'] = 'text_format';
+      $form['comment_body']['widget'][0]['format']['#access'] = FALSE;
+    }
+  }
+  
+  // Style the Save button and hide Preview
+  if (isset($form['actions']['submit'])) {
+    $form['actions']['submit']['#attributes']['class'][] = 'jfc-save-btn';
+    $form['actions']['submit']['#value'] = t('Save');
+  }
+  if (isset($form['actions']['preview'])) {
+    $form['actions']['preview']['#access'] = FALSE;
+  }
+  
+  // Allow Drupal content type widget settings to naturally handle CKEditor attachment.
+}
+
+/**
+ * Custom after_build to hide the format selector.
+ * TextFormat expands itself during process, so we must hide it after build.
+ */
+function lms_progress_comment_form_after_build(array $form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  if (isset($form['comment_body']['widget'][0]['format'])) {
+    $form['comment_body']['widget'][0]['format']['#access'] = FALSE;
+  }
+  // Wrap the form for AJAX validation error replacement
+  $form['#prefix'] = '<div id="lesson-comment-form-ajax-wrapper">';
+  $form['#suffix'] = '</div>';
+  return $form;
+}
+
+/**
+ * Custom submit handler to redirect the comment form back to the Learn page.
+ */
+function lms_progress_comment_form_submit_redirect($form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  if (\Drupal::request()->isXmlHttpRequest()) {
+    $form_state->disableRedirect();
+    
+    $entity = $form_state->getFormObject()->getEntity();
+    if ($entity && $entity->id()) {
+      $form_state->set('lms_progress_saved_cid', $entity->id());
+      
+      // Because we rebuild the exact same object instance, we must strip the newly saved 
+      // values off the entity, otherwise the fresh form will prepopulate with the prior text.
+      if ($entity->hasField('comment_body')) {
+        $entity->set('comment_body', NULL);
+      }
+    }
+    
+    // Clear raw POST user input so FormBuilder prefers the (now empty) entity values
+    $input = $form_state->getUserInput();
+    unset($input['comment_body']);
+    $form_state->setUserInput($input);
+    
+    // Natively instruct Drupal to hand back a rebuilt, clean form to the AJAX callback!
+    $form_state->setRebuild(TRUE);
+    return;
+  }
+
+  /** @var \Drupal\comment\CommentInterface $comment */
+  $comment = $form_state->getFormObject()->getEntity();
+  if (!$comment) return;
+  
+  $lesson = $comment->getCommentedEntity();
+  if ($lesson && $lesson->getEntityTypeId() === 'lms_lesson') {
+    // Find the course ID by querying top-down hierarchy
+    $course_id = NULL;
+    $chapter_ids = \Drupal::entityQuery('lms_chapter')
+      ->condition('field_lessons', $lesson->id())
+      ->accessCheck(FALSE)
+      ->execute();
+    
+    if (!empty($chapter_ids)) {
+      $chapter_id = reset($chapter_ids);
+      $course_ids = \Drupal::entityQuery('lms_course')
+        ->condition('field_chapters', $chapter_id)
+        ->accessCheck(FALSE)
+        ->execute();
+      
+      if (!empty($course_ids)) {
+        $course_id = reset($course_ids);
+      }
+    }
+    
+    if ($course_id) {
+      $form_state->setRedirect('lms_progress.lesson_view', [
+        'lms_course' => $course_id,
+        'lms_lesson' => $lesson->id(),
+      ], [
+        'fragment' => 'comment-' . $comment->id(),
+      ]);
+    }
+  }
+  return $response;
+}
+
+/**
+ * Custom submit handler to set the parent ID (pid) before comment is saved.
+ */
+function lms_progress_set_comment_parent($form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  $pid = $form_state->getValue('lms_reply_pid');
+  if (!empty($pid)) {
+    /** @var \Drupal\comment\CommentInterface $comment */
+    $comment = $form_state->getFormObject()->getEntity();
+    if ($comment) {
+      $comment->set('pid', $pid);
+    }
+  }
 }

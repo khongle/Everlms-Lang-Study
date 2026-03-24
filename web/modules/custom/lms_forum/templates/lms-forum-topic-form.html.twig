@@ -1,0 +1,74 @@
+{# Custom Twig Template for New Forum Topic Form #}
+<div class="lms-page__content lms-forum-form-page py-4">
+  <div class="container" style="max-width: 800px; margin: 0 auto;">
+    
+    <div class="mb-4">
+      <a href="{{ path('lms_forum.index') }}" class="lms-btn lms-btn--outline lms-btn--sm" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+        <i class="fas fa-arrow-left"></i> {{ 'Back to Community'|t }}
+      </a>
+    </div>
+
+    <div class="lms-card lms-card--flat lms-card--dark" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; background: #161b22;">
+      <div class="lms-card__header" style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.5rem;">
+        <h2 class="lms-card__title m-0" style="color: #e6edf3; font-size: 1.5rem; font-weight: 600;">
+          <i class="fas fa-pen-nib text-primary me-2"></i> {{ 'Create New Topic'|t }}
+        </h2>
+        <p style="color: #8b949e; margin-top: 0.5rem; font-size: 0.9rem;">{{ 'Start a new discussion with the community.'|t }}</p>
+      </div>
+      
+      <div class="lms-card__body lms-form lms-form--full lms-theme-dark-form" style="padding: 2rem;">
+        {{ form }}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* Additional inline styling to ensure the form adopts the dark mode aesthetic seamlessly */
+.lms-theme-dark-form .form-item label {
+  color: #e6edf3;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.lms-theme-dark-form .form-text,
+.lms-theme-dark-form .form-textarea,
+.lms-theme-dark-form .form-select {
+  background-color: #0d1117;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  border-radius: 6px;
+  padding: 0.75rem;
+  width: 100%;
+}
+
+.lms-theme-dark-form .form-text:focus,
+.lms-theme-dark-form .form-textarea:focus {
+  border-color: #58a6ff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+}
+
+.lms-theme-dark-form .ck-editor__editable {
+  background-color: #0d1117 !important;
+  color: #c9d1d9 !important;
+  border-color: #30363d !important;
+}
+
+.lms-theme-dark-form .form-submit.button--primary {
+  background-color: #238636;
+  color: #ffffff;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  border-radius: 6px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: .2s background-color cubic-bezier(0.3, 0, 0.5, 1);
+}
+
+.lms-theme-dark-form .form-submit.button--primary:hover {
+  background-color: #2ea043;
+}
+</style>

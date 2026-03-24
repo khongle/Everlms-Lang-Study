@@ -1,33 +1,144 @@
-{# Admin Quizzes — matches 13-admin-quizzes.png #}
+{# Admin Quiz List — matches mockup #}
 {{ attach_library('lms_theme/global') }}
+
 <div class="lms-admin">
-  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'quizzes' } only %}
-  <div class="lms-admin__main">
-    <div class="lms-admin__header">
-      <h1 class="lms-admin__title">{{ 'Manage Quizzes'|t }}</h1>
-      <a href="#" class="lms-btn lms-btn--primary"><i class="fas fa-plus"></i> {{ 'Create Quiz'|t }}</a>
-    </div>
-    <div class="lms-card">
-      <div class="lms-table-responsive">
-        <table class="lms-table">
-          <thead><tr><th>{{ 'ID'|t }}</th><th>{{ 'Quiz Name'|t }}</th><th>{{ 'Questions'|t }}</th><th>{{ 'Time'|t }}</th><th>{{ 'Pass Score'|t }}</th><th>{{ 'Status'|t }}</th><th>{{ 'Actions'|t }}</th></tr></thead>
-          <tbody>
-            {% for quiz in quizzes %}
-              <tr>
-                <td>#{{ quiz.id }}</td>
-                <td>{{ quiz.name }}</td>
-                <td>{{ quiz.question_count }}</td>
-                <td>{{ quiz.time_limit > 0 ? quiz.time_limit ~ 'min' : 'Unlimited'|t }}</td>
-                <td>{{ quiz.pass_score }}%</td>
-                <td><span class="lms-badge {{ quiz.status == 'Active' ? 'lms-badge--success' : 'lms-badge--secondary' }}">{{ quiz.status }}</span></td>
-                <td><a href="{{ quiz.edit_url }}" class="lms-btn lms-btn--sm lms-btn--outline">{{ 'Edit'|t }}</a></td>
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'quizzes' } %}
+
+  <div class="lms-admin__main" style="display: flex; gap: 2rem;">
+    
+    <div style="flex: 1; min-width: 0;">
+      <div class="lms-admin__header" style="margin-bottom: 1.5rem;">
+        <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ 'Quiz Management'|t }}</h1>
+        <div class="lms-admin-header__actions">
+          <a href="{{ add_quiz_url }}" class="btn-lms-primary"><i class="fas fa-plus"></i> {{ 'Create New Quiz'|t }}</a>
+        </div>
+      </div>
+      
+
+
+      <div class="lms-admin-card" style="margin-bottom: 3rem;">
+        <div class="lms-table-responsive">
+          <table class="lms-table">
+            <thead>
+              <tr style="background: #0b0f19;">
+                <th>{{ 'Quiz Title'|t }}</th>
+                <th>{{ 'Linked Course'|t }}</th>
+                <th>{{ 'Question Count'|t }}</th>
+                <th>{{ 'Time Limit'|t }}</th>
+                <th>{{ 'Pass Score'|t }}</th>
+                <th>{{ 'Attempts'|t }}</th>
+                <th>{{ 'Status'|t }}</th>
+                <th style="text-align: right;">{{ 'Actions'|t }}</th>
               </tr>
-            {% else %}
-              <tr><td colspan="7" class="lms-text-center">{{ 'No quizzes'|t }}</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {% for quiz in quizzes %}
+                <tr>
+                  <td style="font-weight: 600; color: #fff;">{{ quiz.name }}</td>
+                  <td>{{ quiz.course }}</td>
+                  <td>{{ quiz.question_count }} Qs</td>
+                  <td>{{ quiz.time_limit }} min</td>
+                  <td>{{ quiz.pass_score }}%</td>
+                  <td>{{ quiz.attempts }}</td>
+                  <td>
+                    {% set status_class = 'lms-status--archived' %}
+                    {% if quiz.status == 'Active' %}{% set status_class = 'lms-status--active' %}{% endif %}
+                    {% if quiz.status == 'Draft' %}{% set status_class = 'lms-status--draft' %}{% endif %}
+                    <span class="lms-status {{ status_class }}">{{ quiz.status }}</span>
+                  </td>
+                  <td style="text-align: right; white-space: nowrap;">
+                    <a href="{{ quiz.edit_url }}" style="color: #64748b; margin-right: 0.75rem; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'"><i class="fas fa-edit"></i></a>
+                    <a href="#" style="color: #64748b; transition: color 0.15s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#64748b'"><i class="fas fa-trash"></i></a>
+                  </td>
+                </tr>
+              {% else %}
+                <tr><td colspan="8" style="text-align: center; padding: 3rem;">{{ 'No quizzes found.'|t }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: #fff;">{{ 'Question Bank Preview'|t }}</h3>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+        
+        <div class="lms-admin-card" style="padding: 1.5rem;">
+          <div style="width: 48px; height: 48px; background: rgba(29, 112, 245, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+            <i class="fas fa-list-ul" style="color: #1d70f5; font-size: 1.25rem;"></i>
+          </div>
+          <div style="font-weight: 600; color: #fff; margin-bottom: 0.25rem;">Multiple Choice</div>
+          <div style="font-size: 0.8125rem; color: #94a3b8;">145 items</div>
+        </div>
+        
+        <div class="lms-admin-card" style="padding: 1.5rem;">
+          <div style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+            <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.25rem;"></i>
+          </div>
+          <div style="font-weight: 600; color: #fff; margin-bottom: 0.25rem;">True/False</div>
+          <div style="font-size: 0.8125rem; color: #94a3b8;">68 items</div>
+        </div>
+
+        <div class="lms-admin-card" style="padding: 1.5rem;">
+          <div style="width: 48px; height: 48px; background: rgba(245, 158, 11, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+            <i class="fas fa-i-cursor" style="color: #f59e0b; font-size: 1.25rem;"></i>
+          </div>
+          <div style="font-weight: 600; color: #fff; margin-bottom: 0.25rem;">Fill in Blanks</div>
+          <div style="font-size: 0.8125rem; color: #94a3b8;">55 items</div>
+        </div>
+
+        <div class="lms-admin-card" style="padding: 1.5rem;">
+          <div style="width: 48px; height: 48px; background: rgba(217, 70, 239, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+            <i class="fas fa-code" style="color: #d946ef; font-size: 1.25rem;"></i>
+          </div>
+          <div style="font-weight: 600; color: #fff; margin-bottom: 0.25rem;">Coding Exercise</div>
+          <div style="font-size: 0.8125rem; color: #94a3b8;">44 items</div>
+        </div>
+        
+      </div>
+
+    </div>
+
+    <!-- Quick Stats Sidebar -->
+    <div style="width: 300px; min-width: 300px;">
+      <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: #fff;">Quick Stats</h3>
+      <div class="lms-admin-card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <div style="width: 48px; height: 48px; background: rgba(29, 112, 245, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-clipboard-list" style="color: #1d70f5; font-size: 1.25rem;"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.8125rem; color: #94a3b8; font-weight: 500;">Total Quizzes</div>
+            <div style="font-size: 1.5rem; color: #fff; font-weight: 700; line-height: 1.2;">{{ quick_stats.total_quizzes|default(24) }}</div>
+          </div>
+        </div>
+        
+        <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.05);"></div>
+        
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <div style="width: 48px; height: 48px; background: rgba(245, 158, 11, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-question-circle" style="color: #f59e0b; font-size: 1.25rem;"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.8125rem; color: #94a3b8; font-weight: 500;">Questions in Bank</div>
+            <div style="font-size: 1.5rem; color: #fff; font-weight: 700; line-height: 1.2;">{{ quick_stats.bank_questions|default(312) }}</div>
+          </div>
+        </div>
+
+        <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.05);"></div>
+
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <div style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-file-signature" style="color: #10b981; font-size: 1.25rem;"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.8125rem; color: #94a3b8; font-weight: 500;">Pending Grading</div>
+            <div style="font-size: 1.5rem; color: #fff; font-weight: 700; line-height: 1.2;">{{ quick_stats.pending_grading|default(5) }}</div>
+          </div>
+        </div>
+
       </div>
     </div>
+
   </div>
 </div>

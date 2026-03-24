@@ -1,0 +1,63 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for LMS Certificate module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function lms_certificate_theme($existing, $type, $theme, $path) {
+  return [
+    'certificate_pdf' => [
+      'variables' => [
+        'template' => NULL,
+        'user' => NULL,
+        'course' => NULL,
+        'code' => NULL,
+        'date' => NULL,
+      ],
+      'template' => 'certificate-pdf',
+    ],
+    'certificate_verification_result' => [
+      'variables' => [
+        'certificate' => NULL,
+        'user' => NULL,
+        'course' => NULL,
+        'is_revoked' => FALSE,
+      ],
+      'template' => 'certificate-verification-result',
+    ],
+    'lms_admin_certificates' => [
+      'variables' => [
+        'stats' => [],
+        'certificates' => [],
+      ],
+      'template' => 'lms-admin-certificates',
+    ],
+    'lms_admin_certificate_templates' => [
+      'variables' => [
+        'templates' => [],
+        'add_template_url' => NULL,
+      ],
+      'template' => 'lms-admin-certificate-templates',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_entity_operation().
+ */
+function lms_certificate_entity_operation(\Drupal\Core\Entity\EntityInterface $entity) {
+  $operations = [];
+  if ($entity->getEntityTypeId() === 'lms_user_certificate' && \Drupal::currentUser()->hasPermission('revoke any certificate')) {
+    $operations['revoke'] = [
+      'title' => t('Revoke'),
+      'weight' => 50,
+      'url' => \Drupal\Core\Url::fromRoute('lms_certificate.revoke', ['lms_user_certificate' => $entity->id()]),
+    ];
+  }
+  return $operations;
+}
+

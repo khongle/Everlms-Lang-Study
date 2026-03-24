@@ -4,6 +4,9 @@ description: 'Lesson management: multi-type content handling, media processing.'
 core_version_requirement: ^11
 package: EverLMS
 dependencies:
+  - drupal:datetime
+  - drupal:file
+  - drupal:comment
   - lms_base:lms_base
   - lms_chapter:lms_chapter
 lifecycle: stable

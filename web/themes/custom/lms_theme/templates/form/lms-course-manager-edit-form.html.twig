@@ -1,0 +1,70 @@
+<div class="row g-4 mt-3">
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+         <h5 class="card-title fw-bold border-bottom pb-2 mb-4">Nội dung Khóa Học</h5>
+         {{ form.name }}
+         {{ form.field_short_description }}
+         {{ form.field_description }}
+         {{ form.field_what_learn }}
+         {{ form.field_prerequisites }}
+         {{ form.field_who_for }}
+      </div>
+    </div>
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+         <h5 class="card-title fw-bold border-bottom pb-2 mb-4">Chương Trình (Chapters)</h5>
+         <div class="alert alert-info py-2">Quản lý kéo thả các chương bên dưới.</div>
+         {{ form.field_chapters }}
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-lg-4">
+    <!-- Phân loại & Cài đặt -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body bg-light rounded">
+         <h5 class="card-title fw-bold border-bottom pb-2 mb-4 text-primary">Phân loại & Cài đặt</h5>
+         {{ form.status }}
+         <hr>
+         {{ form.field_category }}
+         {{ form.field_tags }}
+         {{ form.field_level }}
+         {{ form.field_language }}
+         {{ form.field_instructor }}
+      </div>
+    </div>
+
+    <!-- Học phí -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+         <h5 class="card-title fw-bold border-bottom pb-2 mb-4 text-success">Học phí & Doanh thu</h5>
+         {{ form.field_price_type }}
+         {{ form.field_price }}
+      </div>
+    </div>
+
+    <!-- Media -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+         <h5 class="card-title fw-bold border-bottom pb-2 mb-4">Hình ảnh (Ảnh Bìa)</h5>
+         {{ form.field_thumbnail }}
+         {{ form.field_banner }}
+         {{ form.field_bestseller }}
+         {{ form.field_featured }}
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="card border-primary shadow mb-4">
+      <div class="card-body text-center">
+         {{ form.actions }}
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Render hidden elements to ensure the form submits properly #}
+<div class="d-none">
+  {{ form|without('name', 'field_short_description', 'field_description', 'field_what_learn', 'field_prerequisites', 'field_who_for', 'field_chapters', 'status', 'field_category', 'field_tags', 'field_level', 'field_language', 'field_instructor', 'field_price_type', 'field_price', 'field_thumbnail', 'field_banner', 'field_bestseller', 'field_featured', 'actions') }}
+</div>

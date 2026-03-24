@@ -1,186 +1,396 @@
-{# Course Detail — matches 03-course-detail.png: banner + tabs + curriculum + enrollment sidebar #}
+{# Course Detail — Enhanced professional layout #}
 {{ attach_library('lms_theme/global') }}
 
 {# Course Banner #}
-<section class="lms-course-banner">
-  <div class="container">
-    {% if course.field_thumbnail.entity %}
-      <div class="lms-course-banner__image">
-        <img src="{{ file_url(course.field_thumbnail.entity.uri.value) }}" alt="{{ course.label }}">
+<section class="lms-course-banner" style="padding: 4rem 0; background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-bottom: 1px solid hsla(0,0%,100%,0.1); position: relative; overflow: hidden; display: flex; align-items: center;">
+  <!-- Optional subtle background decoration -->
+  <div style="position: absolute; top: -50%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(102,126,234,0.1) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; pointer-events: none;"></div>
+  
+  <div class="container" style="display: flex; gap: 4rem; align-items: center; position: relative; z-index: 1;">
+    
+    <div class="lms-course-banner__info" style="flex: 1;">
+      <div style="margin-bottom: 1.5rem;">
+        <span class="badge-lms badge-lms--primary" style="font-size: 0.85rem; padding: 0.4rem 1rem; border-radius: 2rem;">
+          {{ course.field_category.entity.name.value ?? 'Uncategorized' }}
+        </span>
       </div>
-    {% endif %}
+      <h1 style="font-size: 3rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; color: #fff;">{{ course.label }}</h1>
+      
+      <p style="font-size: 1.125rem; color: #8b949e; margin-bottom: 2rem; max-width: 600px; line-height: 1.6;">
+        {{ course.field_short_description.value|striptags }}
+      </p>
 
-    <div class="lms-course-banner__info">
-      <h1>{{ course.label }}</h1>
-      <div class="lms-course-banner__meta">
-        <span class="lms-course-banner__instructor">
-          <i class="fas fa-user"></i> {{ course.field_instructor_name.value ?? 'Instructor'|t }}
-        </span>
-        <span class="lms-course-banner__rating">
-          <i class="fas fa-star" style="color: #fee140"></i> 4.5
-        </span>
-        <span>{{ '359 Enrollments'|t }}</span>
-      </div>
-      <div class="lms-course-banner__price-row">
-        {% set price = course.field_price.value|default(0) %}
-        <span class="lms-course-banner__price">
-          {% if price > 0 %}
-            ${{ price|number_format(2) }}
-          {% else %}
-            {{ 'Free'|t }}
+      <div class="lms-course-banner__meta" style="display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; color: #e6edf3; font-size: 0.9375rem; margin-bottom: 0;">
+        <span class="lms-course-banner__instructor" style="display: flex; align-items: center; gap: 0.6rem;">
+          {% set banner_avatar_url = '' %}
+          {% if instructor and instructor.hasField('user_picture') and not instructor.get('user_picture').isEmpty() %}
+            {% set file = instructor.get('user_picture').entity %}
+            {% if file %}
+              {% set banner_avatar_url = file_url(file.uri.value) %}
+            {% endif %}
           {% endif %}
+          
+          {% if banner_avatar_url %}
+            <a href="{{ instructor_url|default('#') }}"><img src="{{ banner_avatar_url }}" alt="{{ instructor_name|default(instructor.getDisplayName() ?? 'Instructor'|t) }}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid hsla(0,0%,100%,.1);"></a>
+          {% else %}
+            <a href="{{ instructor_url|default('#') }}"><div style="width: 32px; height: 32px; border-radius: 50%; background: #21262d; display: flex; align-items: center; justify-content: center; color: #8b949e; font-size: 12px; border: 1px solid hsla(0,0%,100%,.1);">
+              <i class="fas fa-user-tie"></i>
+            </div></a>
+          {% endif %}
+          <a href="{{ instructor_url|default('#') }}" style="color: inherit; text-decoration: none;"><strong style="font-weight: 600;">{{ instructor_name|default(instructor ? instructor.getDisplayName() : course.field_instructor_name.value ?? 'Instructor'|t) }}</strong></a>
         </span>
-        <a href="#" class="lms-btn lms-btn--primary">{{ 'Enroll Now'|t }}</a>
+        {% set course_rating = course.field_rating.value|default(5.0) %}
+        {% set rating_floor = course_rating|round(0, 'floor') %}
+        {% set has_half = (course_rating - rating_floor) >= 0.5 %}
+        {% set empty_stars = 5 - rating_floor - (has_half ? 1 : 0) %}
+        
+        <span class="lms-course-banner__rating" style="display: flex; align-items: center; gap: 0.25rem;">
+          <div style="color: #fee140; font-size: 0.9rem;">
+            {% if rating_floor > 0 %}{% for i in 1..rating_floor %}<i class="fas fa-star"></i>{% endfor %}{% endif %}
+            {% if has_half %}<i class="fas fa-star-half-alt"></i>{% endif %}
+            {% if empty_stars > 0 %}{% for i in 1..empty_stars %}<i class="far fa-star"></i>{% endfor %}{% endif %}
+          </div>
+          <strong style="color: #fff; margin-left: 4px;">{{ course_rating|number_format(1) }}</strong> 
+          <span style="color: #8b949e; text-decoration: underline;">(0 {{ 'reviews'|t }})</span>
+        </span>
+        <span style="display: flex; align-items: center; gap: 0.5rem; color: #8b949e;">
+          <i class="fas fa-users" style="color: #667eea;"></i> 
+          <strong style="color: #fff;">{{ enrolled_students|number_format }}</strong> {{ 'students'|t }}
+        </span>
+        <span style="display: flex; align-items: center; gap: 0.5rem; color: #8b949e;">
+          <i class="fas fa-globe" style="color: #4facfe;"></i> 
+          <strong style="color: #fff;">{{ course.field_language.value ?? 'English'|t }}</strong>
+        </span>
       </div>
     </div>
+    
+    {% if thumbnail_url %}
+      <div class="lms-course-banner__image-wrapper" style="width: 440px; min-width: 440px; position: relative; margin: 0;">
+        <!-- Glowing shadow behind image -->
+        <div style="position: absolute; top: 10px; left: 10px; right: -10px; bottom: -10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; opacity: 0.3; filter: blur(20px); z-index: 0;"></div>
+        
+        <div class="card-lms card-lms--image-only" style="position: relative; z-index: 1; border-radius: 1rem; overflow: hidden; border: 1px solid hsla(0,0%,100%,0.2); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); aspect-ratio: 16/10; background: #000;">
+          <img src="{{ thumbnail_url }}" alt="{{ course.label }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          
+          <!-- Play Button Overlay -->
+          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.2); pointer-events: none;">
+            <div style="width: 72px; height: 72px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.75rem; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+              <i class="fas fa-play" style="margin-left: 6px;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
   </div>
 </section>
 
 {# Tab Navigation #}
-<div class="lms-course-tabs">
+<div class="lms-course-tabs" style="background: #161b22; position: sticky; top: 64px; z-index: 20; border-bottom: 1px solid hsla(0,0%,100%,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
   <div class="container">
-    <ul class="lms-tabs" role="tablist">
-      <li><a href="#overview" class="lms-tabs__link lms-tabs__link--active" data-tab="overview">{{ 'Overview'|t }}</a></li>
-      <li><a href="#curriculum" class="lms-tabs__link" data-tab="curriculum">{{ 'Curriculum'|t }}</a></li>
-      <li><a href="#instructor" class="lms-tabs__link" data-tab="instructor">{{ 'Instructor'|t }}</a></li>
-      <li><a href="#reviews" class="lms-tabs__link" data-tab="reviews">{{ 'Reviews'|t }}</a></li>
-      <li><a href="#faq" class="lms-tabs__link" data-tab="faq">{{ 'FAQ'|t }}</a></li>
+    <ul class="lms-tabs" role="tablist" style="display: flex; gap: 2rem; margin: 0; padding: 0; list-style: none;">
+      <li><a href="#overview" class="lms-tabs__link lms-tabs__link--active" data-tab="overview" style="display: block; padding: 1.25rem 0; font-weight: 600; font-size: 0.9375rem;">{{ 'Overview'|t }}</a></li>
+      <li><a href="#curriculum" class="lms-tabs__link" data-tab="curriculum" style="display: block; padding: 1.25rem 0; font-weight: 500; font-size: 0.9375rem;">{{ 'Curriculum'|t }}</a></li>
+      <li><a href="#instructor" class="lms-tabs__link" data-tab="instructor" style="display: block; padding: 1.25rem 0; font-weight: 500; font-size: 0.9375rem;">{{ 'Instructor'|t }}</a></li>
+      <li><a href="#reviews" class="lms-tabs__link" data-tab="reviews" style="display: block; padding: 1.25rem 0; font-weight: 500; font-size: 0.9375rem;">{{ 'Reviews'|t }}</a></li>
+      <li><a href="#faq" class="lms-tabs__link" data-tab="faq" style="display: block; padding: 1.25rem 0; font-weight: 500; font-size: 0.9375rem;">{{ 'FAQ'|t }}</a></li>
     </ul>
   </div>
 </div>
 
 {# Content area with sidebar #}
-<section class="lms-section">
+<section class="lms-section" style="padding: 3rem 0; background: #0d1117;">
   <div class="container">
-    <div class="lms-course-layout">
+    <div class="lms-course-layout" style="display: flex; gap: 3rem;">
       {# Left: Tab content #}
-      <div class="lms-course-layout__main">
+      <div class="lms-course-layout__main" style="flex: 1; min-width: 0;">
 
         {# Overview Tab #}
         <div class="lms-tab-panel" id="overview">
-          <h2 class="lms-tab-panel__title">{{ 'Overview'|t }}</h2>
+          <h2 class="lms-tab-panel__title" style="font-size: 1.75rem; margin-bottom: 1.5rem; color: #fff;">{{ 'About This Course'|t }}</h2>
           {% if course.field_description.value %}
-            <div class="lms-course-body">{{ course.field_description.value|raw }}</div>
+            <div class="lms-course-body" style="font-size: 1.05rem; line-height: 1.8; color: #8b949e; margin-bottom: 3rem;">
+              {{ course.field_description.value|raw }}
+            </div>
           {% endif %}
 
           {% if course.field_what_learn.value %}
-            <h3>{{ "What You'll Learn"|t }}</h3>
-            <div class="lms-learn-list">
-              {{ course.field_what_learn.value|raw }}
+            <div class="card-glass" style="margin-bottom: 3rem; background: rgba(22, 27, 34, 0.5); border: 1px solid hsla(0,0%,100%,0.05);">
+              <h3 style="font-size: 1.375rem; margin-bottom: 1.5rem; color: #fff;"><i class="fas fa-check-circle text-success" style="margin-right: 0.5rem; color: #43e97b;"></i> {{ "What You'll Learn"|t }}</h3>
+              <div class="lms-learn-list" style="columns: 2; column-gap: 2rem;">
+                {{ course.field_what_learn.value|raw }}
+              </div>
             </div>
           {% endif %}
 
           {% if course.field_prerequisites.value %}
-            <h3>{{ 'Prerequisites'|t }}</h3>
-            <div class="lms-learn-list">
+            <h3 style="font-size: 1.375rem; margin-bottom: 1rem; color: #fff;">{{ 'Prerequisites'|t }}</h3>
+            <div class="lms-learn-list lms-course-body" style="margin-bottom: 3rem; color: #8b949e; line-height: 1.7;">
               {{ course.field_prerequisites.value|raw }}
             </div>
           {% endif %}
 
           {% if course.field_who_for.value %}
-            <h3>{{ 'Who This Course Is For'|t }}</h3>
-            <div class="lms-learn-list">
+            <h3 style="font-size: 1.375rem; margin-bottom: 1rem; color: #fff;">{{ 'Who This Course Is For'|t }}</h3>
+            <div class="lms-learn-list lms-course-body" style="margin-bottom: 3rem; color: #8b949e; line-height: 1.7;">
               {{ course.field_who_for.value|raw }}
             </div>
           {% endif %}
-
-          {% if level %}
-            <div class="lms-course-meta-item">
-              <i class="fas fa-signal"></i> <strong>{{ 'Course Level'|t }}</strong>: {{ level.label }}
-            </div>
-          {% endif %}
-
-          <div class="lms-course-meta-item">
-            <i class="fas fa-globe"></i> <strong>{{ 'Language'|t }}</strong>: {{ course.field_language.value ?? 'English'|t }}
-          </div>
-
-          <div class="lms-course-meta-item">
-            <i class="fas fa-clock"></i> <strong>{{ 'Duration'|t }}</strong>: {{ course.field_duration.value ?? '0' }} {{ 'min'|t }}
-          </div>
         </div>
 
         {# Curriculum Tab (shown below in mobile) #}
-        <div class="lms-tab-panel" id="curriculum" style="display:none">
-          <h2 class="lms-tab-panel__title">{{ 'Curriculum'|t }}</h2>
-          {% for item in curriculum %}
-            <div class="lms-curriculum__chapter">
-              <div class="lms-curriculum__chapter-header" data-bs-toggle="collapse" data-bs-target="#chapter-{{ loop.index }}">
-                <h3>
-                  <i class="fas fa-chevron-down"></i>
-                  {{ item.chapter.label }}
-                </h3>
-                <span class="lms-curriculum__count">{{ item.lessons|length }} {{ 'lessons'|t }}</span>
+        <div class="lms-tab-panel" id="curriculum">
+          <h2 class="lms-tab-panel__title" style="font-size: 1.75rem; margin-bottom: 1.5rem; color: #fff;">{{ 'Course Curriculum'|t }}</h2>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; color: #8b949e; font-size: 0.9375rem;">
+            <span>{{ curriculum|length }} {{ 'sections'|t }} <span style="margin: 0 0.5rem;">•</span> 12 {{ 'lectures'|t }} <span style="margin: 0 0.5rem;">•</span> 5h 30m {{ 'total length'|t }}</span>
+            <a href="#" style="color: #667eea; text-decoration: none; font-weight: 500;">{{ 'Expand all sections'|t }}</a>
+          </div>
+
+          <div style="border: 1px solid hsla(0,0%,100%,0.1); border-radius: 0.75rem; overflow: hidden; background: #161b22; margin-bottom: 3rem;">
+            {% for item in curriculum %}
+              <div class="lms-curriculum__chapter" style="border-bottom: 1px solid hsla(0,0%,100%,0.1);">
+                <div class="lms-curriculum__chapter-header" data-bs-toggle="collapse" data-bs-target="#chapter-{{ loop.index }}" style="padding: 1.25rem 1.5rem; background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; cursor: pointer; transition: background 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                  <h3 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: #e6edf3; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-chevron-down" style="font-size: 0.85rem; color: #8b949e;"></i>
+                    {{ item.chapter.label }}
+                  </h3>
+                  <span class="lms-curriculum__count" style="font-size: 0.85rem; color: #8b949e;">{{ item.lessons|length }} {{ 'lessons'|t }}</span>
+                </div>
+                <div class="collapse show" id="chapter-{{ loop.index }}">
+                  <ul class="lms-curriculum__lessons" style="list-style: none; margin: 0; padding: 0;">
+                    {% for lesson in item.lessons %}
+                      <li class="lms-curriculum__lesson" style="padding: 1rem 1.5rem 1rem 3rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;" onmouseover="this.style.background='rgba(102,126,234,0.05)'" onmouseout="this.style.background='transparent'">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                          {% set type_icons = {
+                            'video': 'fa-play-circle',
+                            'text': 'fa-file-alt',
+                            'quiz': 'fa-question-circle',
+                            'h5p': 'fa-puzzle-piece',
+                            'scorm': 'fa-code',
+                            'zoom': 'fa-video'
+                          } %}
+                          <i class="fas {{ type_icons[lesson.field_type.value] ?? 'fa-play-circle' }}" style="color: #667eea; font-size: 1.1rem;"></i>
+                          {% if is_enrolled %}
+                            <a href="{{ path('lms_progress.lesson_view', {'lms_course': course.id(), 'lms_lesson': lesson.id()}) }}" style="color: #c9d1d9; font-size: 0.9375rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#c9d1d9'">{{ lesson.label }}</a>
+                          {% else %}
+                            <span style="color: #c9d1d9; font-size: 0.9375rem; text-decoration: none;">{{ lesson.label }}</span>
+                          {% endif %}
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1.5rem;">
+                          {% if lesson.field_duration.value > 0 %}
+                            <span class="lms-curriculum__lesson-duration" style="font-size: 0.85rem; color: #8b949e;">{{ lesson.field_duration.value }}m</span>
+                          {% endif %}
+                          {% if is_enrolled %}
+                            <i class="fas fa-chevron-right lms-curriculum__lock" style="color: #484f58; font-size: 0.85rem;"></i>
+                          {% else %}
+                            <i class="fas fa-lock lms-curriculum__lock" style="color: #484f58; font-size: 0.85rem;"></i>
+                          {% endif %}
+                        </div>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
               </div>
-              <div class="collapse show" id="chapter-{{ loop.index }}">
-                <ul class="lms-curriculum__lessons">
-                  {% for lesson in item.lessons %}
-                    <li class="lms-curriculum__lesson">
-                      {% set type_icons = {
-                        'video': 'fa-play-circle',
-                        'text': 'fa-file-alt',
-                        'quiz': 'fa-question-circle',
-                        'h5p': 'fa-puzzle-piece',
-                        'scorm': 'fa-code',
-                        'zoom': 'fa-video',
-                      } %}
-                      <i class="fas {{ type_icons[lesson.field_type.value] ?? 'fa-circle' }}"></i>
-                      <span class="lms-curriculum__lesson-title">{{ lesson.label }}</span>
-                      {% if lesson.field_duration.value > 0 %}
-                        <span class="lms-curriculum__lesson-duration">{{ lesson.field_duration.value }}m</span>
-                      {% endif %}
-                      <i class="fas fa-lock lms-curriculum__lock"></i>
-                    </li>
-                  {% endfor %}
-                </ul>
-              </div>
-            </div>
-          {% endfor %}
+            {% endfor %}
+          </div>
         </div>
 
         {# Instructor Tab #}
-        <div class="lms-tab-panel" id="instructor" style="display:none">
-          <h2 class="lms-tab-panel__title">{{ 'Instructor'|t }}</h2>
-          <p>{{ 'Instructor details will be displayed here.'|t }}</p>
+        <div class="lms-tab-panel" id="instructor" style="margin-bottom: 3rem;">
+          <h2 class="lms-tab-panel__title" style="font-size: 1.75rem; margin-bottom: 1.5rem; color: #fff;">{{ 'Your Instructor'|t }}</h2>
+          <div style="display: flex; gap: 2rem; background: #161b22; padding: 2rem; border-radius: 0.75rem; border: 1px solid hsla(0,0%,100%,0.1);">
+            
+            {% set instructor_avatar_url = '' %}
+            {% if instructor and instructor.hasField('user_picture') and not instructor.get('user_picture').isEmpty() %}
+              {% set file = instructor.get('user_picture').entity %}
+              {% if file %}
+                {% set instructor_avatar_url = file_url(file.uri.value) %}
+              {% endif %}
+            {% endif %}
+
+            {% if instructor_avatar_url %}
+              <a href="{{ instructor_url|default('#') }}" style="text-decoration: none; color: inherit;">
+                <div style="width: 120px; height: 120px; min-width: 120px; border-radius: 50%; overflow: hidden; border: 2px solid hsla(0,0%,100%,0.1);">
+                  <img src="{{ instructor_avatar_url }}" alt="{{ instructor_name|default(instructor.getDisplayName() ?? 'Instructor'|t) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+              </a>
+            {% else %}
+              <a href="{{ instructor_url|default('#') }}" style="text-decoration: none; color: inherit;">
+                <div style="width: 120px; height: 120px; min-width: 120px; border-radius: 50%; background: #21262d; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #8b949e; border: 2px solid hsla(0,0%,100%,0.1);">
+                  <i class="fas fa-user-tie"></i>
+                </div>
+              </a>
+            {% endif %}
+
+            <div>
+              <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem; color: #fff;"><a href="{{ instructor_url|default('#') }}" style="color: inherit; text-decoration: none;">{{ instructor_name|default(instructor ? instructor.getDisplayName() : course.field_instructor_name.value ?? 'Instructor Name'|t) }}</a></h3>
+              <p style="color: #667eea; font-size: 0.9375rem; margin-bottom: 1rem;">{{ instructor.field_title.value ?? 'Expert Instructor'|t }}</p>
+              <div style="display: flex; gap: 1.5rem; margin-bottom: 1rem; color: #8b949e; font-size: 0.875rem;">
+                <span><i class="fas fa-star" style="color: #fee140; margin-right: 4px;"></i> 4.7 Instructor Rating</span>
+                <span><i class="fas fa-certificate" style="color: #667eea; margin-right: 4px;"></i> {{ instructor_students_count|number_format }} Students</span>
+                <span><i class="fas fa-play-circle" style="color: #f5576c; margin-right: 4px;"></i> {{ instructor_courses_count|number_format }} Courses</span>
+              </div>
+              <p style="color: #8b949e; line-height: 1.6; font-size: 0.9375rem; margin-bottom: 1.5rem;">
+                {{ instructor.field_bio.value ?? 'Passionate about teaching cutting-edge technologies to empower the next generation of developers. Experience working at top tech companies scaling architectures for millions of users.'|t }}
+              </p>
+              <div style="display: flex; gap: 1rem;">
+                <a href="#" class="lms-social-btn" style="width: 36px; height: 36px; border-radius: 50%; background: #21262d; border: 1px solid hsla(0,0%,100%,0.1); display: flex; align-items: center; justify-content: center; color: #8b949e; text-decoration: none;" onmouseover="this.style.background='#0a66c2'; this.style.color='#fff';" onmouseout="this.style.background='#21262d'; this.style.color='#8b949e';"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="lms-social-btn" style="width: 36px; height: 36px; border-radius: 50%; background: #21262d; border: 1px solid hsla(0,0%,100%,0.1); display: flex; align-items: center; justify-content: center; color: #8b949e; text-decoration: none;" onmouseover="this.style.background='#1da1f2'; this.style.color='#fff';" onmouseout="this.style.background='#21262d'; this.style.color='#8b949e';"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="lms-social-btn" style="width: 36px; height: 36px; border-radius: 50%; background: #21262d; border: 1px solid hsla(0,0%,100%,0.1); display: flex; align-items: center; justify-content: center; color: #8b949e; text-decoration: none;" onmouseover="this.style.background='#fb1147'; this.style.color='#fff';" onmouseout="this.style.background='#21262d'; this.style.color='#8b949e';"><i class="fab fa-youtube"></i></a>
+              </div>
+            </div>
+          </div>
         </div>
 
         {# Reviews Tab #}
-        <div class="lms-tab-panel" id="reviews" style="display:none">
-          <h2 class="lms-tab-panel__title">{{ 'Reviews'|t }}</h2>
-          <p>{{ 'Student reviews will be displayed here.'|t }}</p>
+        <div class="lms-tab-panel" id="reviews" style="margin-bottom: 3rem;">
+          <h2 class="lms-tab-panel__title" style="font-size: 1.75rem; margin-bottom: 1.5rem; color: #fff;">{{ 'Student Feedback'|t }}</h2>
+          <div style="display: flex; gap: 3rem; align-items: center; margin-bottom: 2rem;">
+            <div style="text-align: center;">
+              <div style="font-size: 4rem; font-weight: 800; color: #fff; line-height: 1;">{{ course_rating|number_format(1) }}</div>
+              <div style="color: #fee140; font-size: 1.25rem; margin: 0.5rem 0;">
+                {% if rating_floor > 0 %}{% for i in 1..rating_floor %}<i class="fas fa-star"></i>{% endfor %}{% endif %}
+                {% if has_half %}<i class="fas fa-star-half-alt"></i>{% endif %}
+                {% if empty_stars > 0 %}{% for i in 1..empty_stars %}<i class="far fa-star"></i>{% endfor %}{% endif %}
+              </div>
+              <div style="color: #8b949e; font-size: 0.9375rem;">Course Rating</div>
+            </div>
+            <div style="flex: 1;">
+              {% for i, pct in {5: 65, 4: 25, 3: 7, 2: 2, 1: 1} %}
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                  <div style="width: 48px; display: flex; background: rgba(0,0,0,0); border: none; font-size: 0.85rem; color: #8b949e;">
+                    {{ i }} <i class="fas fa-star" style="color: #fee140; margin-left: auto;"></i>
+                  </div>
+                  <div style="flex: 1; height: 8px; background: #21262d; border-radius: 4px; overflow: hidden;">
+                    <div style="width: {{ pct }}%; height: 100%; background: #6e7681;"></div>
+                  </div>
+                  <div style="width: 40px; font-size: 0.85rem; color: #8b949e;">{{ pct }}%</div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
         </div>
 
         {# FAQ Tab #}
-        <div class="lms-tab-panel" id="faq" style="display:none">
-          <h2 class="lms-tab-panel__title">{{ 'FAQ'|t }}</h2>
-          <p>{{ 'Frequently asked questions.'|t }}</p>
+        <div class="lms-tab-panel" id="faq" style="margin-bottom: 3rem;">
+          <h2 class="lms-tab-panel__title" style="font-size: 1.75rem; margin-bottom: 1.5rem; color: #fff;">{{ 'Frequently Asked Questions'|t }}</h2>
+          <div style="border: 1px solid hsla(0,0%,100%,0.1); border-radius: 0.75rem; overflow: hidden;">
+            {% if faqs is not empty %}
+              {% for faq in faqs %}
+                <div style="border-bottom: 1px solid hsla(0,0%,100%,0.1);">
+                  <div style="padding: 1.25rem 1.5rem; background: #161b22; cursor: pointer; display: flex; justify-content: space-between;" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
+                    <h3 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: #e6edf3;">{{ faq.question.value }}</h3>
+                    <i class="fas fa-plus" style="color: #8b949e;"></i>
+                  </div>
+                  <div style="padding: 1.5rem; background: #0d1117; color: #8b949e; line-height: 1.7; display: {% if loop.first %}block{% else %}none{% endif %};">
+                    {{ faq.field_answer.value|raw }}
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div style="padding: 1.5rem; background: #0d1117; color: #8b949e; line-height: 1.7;">
+                {{ 'No frequently asked questions available for this course yet.'|t }}
+              </div>
+            {% endif %}
+          </div>
         </div>
+
       </div>
 
       {# Right sidebar — Enrollment card #}
-      <aside class="lms-course-layout__sidebar">
-        <div class="lms-card lms-enroll-card">
-          <div class="lms-enroll-card__price">
-            {% if price > 0 %}
-              ${{ price|number_format(2) }}
+      <aside class="lms-course-layout__sidebar" style="width: 360px; min-width: 360px;">
+        <div class="card-lms lms-enroll-card" style="position: sticky; top: 140px; padding: 2.5rem 2rem; border-color: hsla(0,0%,100%,0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+          
+          {% set price = course.field_price.value|default(0) %}
+          
+          <div class="lms-enroll-card__price" style="font-size: 2.5rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; text-align: center;">
+            {% if is_enrolled %}
+              <div style="font-size: 1rem; color: #34d399; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; text-shadow: 0 0 10px rgba(52, 211, 153, 0.4);"><i class="fas fa-unlock"></i> Unlocked</div>
+              {% if price > 0 %}
+                 <div style="color: #6e7681; text-decoration: line-through; font-size: 1.5rem;">${{ price|number_format(2) }}</div>
+              {% else %}
+                 <div style="color: #6e7681; font-size: 1.5rem;">{{ 'Free'|t }}</div>
+              {% endif %}
             {% else %}
-              {{ 'Free'|t }}
+              {% if price > 0 %}
+                ${{ price|number_format(2) }}
+              {% else %}
+                {{ 'Free'|t }}
+              {% endif %}
             {% endif %}
           </div>
-          <a href="#" class="lms-btn lms-btn--primary lms-btn--block">{{ 'Enroll Now'|t }}</a>
 
-          <h4>{{ "What's Included"|t }}</h4>
-          <ul class="lms-enroll-card__includes">
-            <li><i class="fas fa-check"></i> {{ 'Lifetime access'|t }}</li>
-            <li><i class="fas fa-check"></i> {{ 'Lifetime complete'|t }}</li>
-            <li><i class="fas fa-check"></i> {{ 'Certificate'|t }}</li>
+          {% if not is_enrolled and price > 0 %}
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+              <span style="color: #8b949e; text-decoration: line-through; font-size: 1.1rem;">${{ (price * 1.5)|number_format(2) }}</span>
+              <span style="color: #43e97b; font-weight: 600; font-size: 0.9rem; background: rgba(67,233,123,0.15); padding: 0.2rem 0.6rem; border-radius: 0.25rem;">33% OFF</span>
+            </div>
+            <div style="text-align: center; color: #f5576c; font-size: 0.85rem; margin-bottom: 1.5rem;">
+              <i class="far fa-clock"></i> <strong>2 {{ 'hours left at this price!'|t }}</strong>
+            </div>
+          {% elseif is_enrolled %}
+            <div style="margin-bottom: 1.5rem;"></div>
+          {% endif %}
+
+          {% if logged_in %}
+            {% if is_enrolled %}
+               {% if continue_url %}
+                 <a href="{{ continue_url }}" class="btn-lms-primary" style="width: 100%; justify-content: center; padding: 1.125rem; font-size: 1.125rem; border-radius: 0.75rem; margin-bottom: 1rem; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(102,126,234,0.4);">
+                   {{ 'Continue Learning'|t }}
+                 </a>
+               {% else %}
+                 <a href="{{ path('lms_course.detail', {'lms_course': course.id()}) }}" class="btn-lms-primary" style="width: 100%; justify-content: center; padding: 1.125rem; font-size: 1.125rem; border-radius: 0.75rem; margin-bottom: 1rem; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(102,126,234,0.4);">
+                   {{ 'Continue Learning'|t }}
+                 </a>
+               {% endif %}
+            {% else %}
+               <a href="{{ path('lms_order.checkout', {'course_id': course.id()}) }}" class="btn-lms-primary" style="width: 100%; justify-content: center; padding: 1.125rem; font-size: 1.125rem; border-radius: 0.75rem; margin-bottom: 1rem; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(102,126,234,0.4);">
+                 {{ 'Enroll Now'|t }}
+               </a>
+            {% endif %}
+          {% else %}
+            <a href="{{ path('user.login') }}?destination={{ path('lms_order.checkout', {'course_id': course.id()}) }}" class="btn-lms-outline" style="width: 100%; justify-content: center; padding: 1.125rem; font-size: 1.125rem; border-radius: 0.75rem; margin-bottom: 1rem; letter-spacing: 0.5px;">
+              {{ 'Log in to Enroll'|t }}
+            </a>
+          {% endif %}
+          
+          <button class="btn-lms-outline lms-wishlist-toggle" data-course-id="{{ course.id() }}" style="width: 100%; justify-content: center; padding: 0.875rem; font-size: 1rem; border-radius: 0.75rem; margin-bottom: 1.5rem; transition: all 0.2s ease;">
+             <i class="far fa-heart" style="margin-right: 0.5rem; transition: transform 0.2s ease, color 0.2s ease;"></i> <span class="wishlist-text">{{ 'Add to Wishlist'|t }}</span>
+          </button>
+          
+          <p style="text-align: center; font-size: 0.75rem; color: #6e7681; margin-bottom: 2rem;">
+            {{ '30-Day Money-Back Guarantee'|t }}
+          </p>
+
+          <h4 style="font-size: 1rem; font-weight: 700; color: #e6edf3; margin-bottom: 1rem; border-bottom: 1px solid hsla(0,0%,100%,0.1); padding-bottom: 0.5rem;">{{ "This course includes:"|t }}</h4>
+          <ul class="lms-enroll-card__includes" style="list-style: none; padding: 0; margin-bottom: 2rem;">
+            <li style="display: flex; align-items: center; gap: 1rem; font-size: 0.9rem; color: #8b949e; margin-bottom: 1rem;">
+              <i class="fas fa-video" style="color: #667eea; width: 16px; text-align: center;"></i> 
+              <span>5.5 {{ 'hours on-demand video'|t }}</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 1rem; font-size: 0.9rem; color: #8b949e; margin-bottom: 1rem;">
+              <i class="fas fa-file-alt" style="color: #667eea; width: 16px; text-align: center;"></i> 
+              <span>24 {{ 'articles and resources'|t }}</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 1rem; font-size: 0.9rem; color: #8b949e; margin-bottom: 1rem;">
+              <i class="fas fa-mobile-alt" style="color: #667eea; width: 16px; text-align: center;"></i> 
+              <span>{{ 'Access on mobile and TV'|t }}</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 1rem; font-size: 0.9rem; color: #8b949e; margin-bottom: 1rem;">
+              <i class="fas fa-infinity" style="color: #667eea; width: 16px; text-align: center;"></i> 
+              <span>{{ 'Full lifetime access'|t }}</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 1rem; font-size: 0.9rem; color: #8b949e; margin-bottom: 1rem;">
+              <i class="fas fa-certificate" style="color: #667eea; width: 16px; text-align: center;"></i> 
+              <span>{{ 'Certificate of completion'|t }}</span>
+            </li>
           </ul>
 
-          <h4>{{ 'Social Share'|t }}</h4>
-          <div class="lms-enroll-card__share">
-            <a href="#" class="lms-social-btn lms-social-btn--fb"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="lms-social-btn lms-social-btn--tw"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="lms-social-btn lms-social-btn--li"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#" class="lms-social-btn"><i class="fas fa-link"></i></a>
+          <h4 style="font-size: 0.9rem; color: #e6edf3; margin-bottom: 1rem;">{{ 'Share this course'|t }}</h4>
+          <div class="lms-enroll-card__share" style="display: flex; gap: 0.75rem;">
+            <a href="#" class="lms-social-btn" style="width: 40px; height: 40px; border-radius: 50%; background: #21262d; border: 1px solid hsla(0,0%,100%,0.1); display: flex; align-items: center; justify-content: center; color: #8b949e; text-decoration: none; transition: 0.2s;" onmouseover="this.style.background='#1877f2'; this.style.color='#fff'; this.style.borderColor='#1877f2';" onmouseout="this.style.background='#21262d'; this.style.color='#8b949e'; this.style.borderColor='hsla(0,0%,100%,0.1)';"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="lms-social-btn" style="width: 40px; height: 40px; border-radius: 50%; background: #21262d; border: 1px solid hsla(0,0%,100%,0.1); display: flex; align-items: center; justify-content: center; color: #8b949e; text-decoration: none; transition: 0.2s;" onmouseover="this.style.background='#1da1f2'; this.style.color='#fff'; this.style.borderColor='#1da1f2';" onmouseout="this.style.background='#21262d'; this.style.color='#8b949e'; this.style.borderColor='hsla(0,0%,100%,0.1)';"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="lms-social-btn" style="width: 40px; height: 40px; border-radius: 50%; background: #21262d; border: 1px solid hsla(0,0%,100%,0.1); display: flex; align-items: center; justify-content: center; color: #8b949e; text-decoration: none; transition: 0.2s;" onmouseover="this.style.background='#0a66c2'; this.style.color='#fff'; this.style.borderColor='#0a66c2';" onmouseout="this.style.background='#21262d'; this.style.color='#8b949e'; this.style.borderColor='hsla(0,0%,100%,0.1)';"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="lms-social-btn" style="width: 40px; height: 40px; border-radius: 50%; background: #21262d; border: 1px solid hsla(0,0%,100%,0.1); display: flex; align-items: center; justify-content: center; color: #8b949e; text-decoration: none; transition: 0.2s;" onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#8b949e';"><i class="fas fa-link"></i></a>
           </div>
         </div>
       </aside>

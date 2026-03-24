@@ -1,42 +1,361 @@
-{# Quiz Taking Page #}
+{# Quiz Taking Page - Premium Revamp #}
 {{ attach_library('lms_theme/global') }}
 
-<div class="lms-quiz">
-  <div class="container">
-    <div class="lms-quiz__header">
-      <h1>{{ quiz.label }}</h1>
+<style>
+/* Scoped CSS for Premium Quiz UI */
+.lms-quiz-wrapper {
+  background-color: #0d1117;
+  color: #c9d1d9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  padding: 3rem 1rem;
+  min-height: 100vh;
+}
+.lms-quiz-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.lms-quiz__header-card {
+  background: linear-gradient(145deg, #161b22 0%, #0d1117 100%);
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 2.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.lms-quiz__title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+.lms-quiz__desc {
+  font-size: 1.1rem;
+  color: #8b949e;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+.lms-quiz__meta {
+  display: flex;
+  gap: 1.5rem;
+  background: rgba(88, 166, 255, 0.1);
+  border: 1px solid rgba(88, 166, 255, 0.2);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #58a6ff;
+}
+.lms-quiz__meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Question Cards */
+.lms-quiz__card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.lms-quiz__card:hover {
+  border-color: #8b949e;
+}
+.lms-quiz__q-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #30363d;
+}
+.lms-quiz__q-num {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #58a6ff;
+}
+.lms-quiz__q-pts {
+  font-size: 0.9rem;
+  background: #21262d;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  color: #8b949e;
+  border: 1px solid #30363d;
+}
+.lms-quiz__q-title {
+  font-size: 1.3rem;
+  color: #fff;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+.lms-quiz__q-body {
+  font-size: 1rem;
+  color: #8b949e;
+  margin-bottom: 1.5rem;
+}
+
+/* Choices styling (Radio/Checkbox) */
+.lms-quiz__choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.lms-quiz__choice-box {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lms-quiz__choice-box:hover {
+  background: rgba(88, 166, 255, 0.05);
+  border-color: #58a6ff;
+}
+.lms-quiz__choice-box input {
+  margin: 0;
+  margin-right: 1rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  cursor: pointer;
+  accent-color: #58a6ff;
+}
+.lms-quiz__choice-box span {
+  font-size: 1.05rem;
+  color: #e6edf3;
+  user-select: none;
+}
+.lms-quiz__choice-box:has(input:checked) {
+  background: rgba(88, 166, 255, 0.1);
+  border-color: #58a6ff;
+}
+
+/* Text Inputs */
+.lms-quiz-input {
+  width: 100%;
+  padding: 1rem;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.05rem;
+  transition: border-color 0.2s ease;
+}
+.lms-quiz-input:focus {
+  outline: none;
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+}
+
+/* Matching */
+.lms-quiz__match-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  background: rgba(255,255,255,0.02);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+}
+.lms-quiz__match-left {
+  flex: 1;
+  font-weight: 600;
+  color: #fff;
+}
+.lms-quiz__match-select {
+  flex: 1;
+  padding: 0.75rem;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  color: #fff;
+  border-radius: 6px;
+}
+
+/* Ordering (Drag & Drop) */
+.lms-sortable-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.lms-sortable-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  cursor: grab;
+  color: #e6edf3;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+.lms-sortable-item:active {
+  cursor: grabbing;
+}
+.lms-sortable-item:hover {
+  border-color: #58a6ff;
+}
+.lms-drag-handle {
+  color: #8b949e;
+  cursor: grab;
+}
+
+/* Submit Button */
+.lms-quiz__submit-wrap {
+  text-align: center;
+  margin-top: 3rem;
+  padding-bottom: 5rem;
+}
+.lms-quiz__btn-submit {
+  background: #238636;
+  color: #fff;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  padding: 1rem 3rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4);
+}
+.lms-quiz__btn-submit:hover {
+  background: #2ea043;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(35, 134, 54, 0.6);
+}
+.lms-quiz__btn-submit:active {
+  transform: translateY(0);
+}
+
+/* Modal Styling */
+.lms-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(13, 17, 23, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.lms-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.lms-modal-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+.lms-modal-overlay.active .lms-modal-card {
+  transform: translateY(0);
+}
+.lms-modal-icon {
+  font-size: 3rem;
+  color: #58a6ff;
+  margin-bottom: 1rem;
+}
+.lms-modal-title {
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.lms-modal-body {
+  color: #8b949e;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+.lms-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+.lms-btn-cancel {
+  background: #21262d;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+.lms-btn-cancel:hover {
+  background: #30363d;
+  border-color: #8b949e;
+}
+.lms-btn-confirm {
+  background: #238636;
+  color: #fff;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+.lms-btn-confirm:hover {
+  background: #2ea043;
+}
+</style>
+
+<div class="lms-quiz-wrapper">
+  <div class="lms-quiz-container">
+    
+    <div class="lms-quiz__header-card">
+      <h1 class="lms-quiz__title">{{ quiz.label }}</h1>
       {% if quiz.field_body.value %}
-        <p class="lms-quiz__instructions">{{ quiz.field_body.value|render|striptags }}</p>
+        <p class="lms-quiz__desc">{{ quiz.field_body.value|render|striptags }}</p>
       {% endif %}
 
       <div class="lms-quiz__meta">
-        <span><i class="fas fa-question-circle"></i> {{ questions|length }} {{ 'questions'|t }}</span>
+        <span><i class="fas fa-list-ol"></i> {{ questions|length }} {{ 'questions'|t }}</span>
         {% if time_limit > 0 %}
-          <span><i class="fas fa-clock"></i> {{ time_limit }} {{ 'minutes'|t }}</span>
+          <span><i class="fas fa-stopwatch"></i> <span id="lms-quiz-timer" data-minutes="{{ time_limit }}">--:--</span></span>
         {% endif %}
-        <span><i class="fas fa-trophy"></i> {{ 'Pass:'|t }} {{ quiz.field_threshold.value ?? 70 }}%</span>
+        <span><i class="fas fa-check-circle"></i> {{ 'Pass:'|t }} {{ quiz.field_threshold.value ?? 70 }}%</span>
       </div>
     </div>
 
-    <form class="lms-quiz__form" method="post">
+    <form class="lms-quiz__form" method="post" id="lms-quiz-actual-form" action="{{ url('lms_quiz.submit', {'lms_quiz': quiz.id()}) }}">
       {% for index, question in questions %}
-        <div class="lms-card lms-quiz__question" data-question="{{ question.id }}">
-          <div class="lms-quiz__question-header">
-            <span class="lms-quiz__question-num">{{ 'Q'|t }}{{ index + 1 }}</span>
-            <span class="lms-quiz__question-points">{{ question.points }} {{ 'pts'|t }}</span>
+        <div class="lms-quiz__card" data-question="{{ question.id }}">
+          <div class="lms-quiz__q-header">
+            <span class="lms-quiz__q-num">{{ 'Question '|t }}{{ index + 1 }}</span>
+            <span class="lms-quiz__q-pts">{{ question.points }} {{ 'pts'|t }}</span>
           </div>
 
-          <h3 class="lms-quiz__question-title">{{ question.name }}</h3>
+          <h3 class="lms-quiz__q-title">{{ question.name }}</h3>
 
           {% if question.body %}
-            <div class="lms-quiz__question-body">{{ question.body|raw }}</div>
+            <div class="lms-quiz__q-body">{{ question.body|raw }}</div>
           {% endif %}
 
           {# Multiple Choice #}
           {% if question.type == 'multiple_choice' and question.choices is defined %}
             <div class="lms-quiz__choices">
               {% for choice in question.choices %}
-                <label class="lms-quiz__choice">
+                <label class="lms-quiz__choice-box">
                   <input type="checkbox" name="q_{{ question.id }}[]" value="{{ choice.id }}">
                   <span>{{ choice.text }}</span>
                 </label>
@@ -48,7 +367,7 @@
           {% if question.type == 'single_choice' and question.choices is defined %}
             <div class="lms-quiz__choices">
               {% for choice in question.choices %}
-                <label class="lms-quiz__choice">
+                <label class="lms-quiz__choice-box">
                   <input type="radio" name="q_{{ question.id }}" value="{{ choice.id }}">
                   <span>{{ choice.text }}</span>
                 </label>
@@ -59,11 +378,11 @@
           {# True False #}
           {% if question.type == 'true_false' %}
             <div class="lms-quiz__choices">
-              <label class="lms-quiz__choice">
+              <label class="lms-quiz__choice-box">
                 <input type="radio" name="q_{{ question.id }}" value="1">
                 <span>{{ 'True'|t }}</span>
               </label>
-              <label class="lms-quiz__choice">
+              <label class="lms-quiz__choice-box">
                 <input type="radio" name="q_{{ question.id }}" value="0">
                 <span>{{ 'False'|t }}</span>
               </label>
@@ -72,22 +391,23 @@
 
           {# Fill Blank / Short Answer #}
           {% if question.type in ['fill_blank', 'short_answer'] %}
-            <input type="text" name="q_{{ question.id }}" class="form-control" placeholder="{{ 'Your answer...'|t }}">
+            <input type="text" name="q_{{ question.id }}" class="lms-quiz-input" placeholder="{{ 'Type your answer here...'|t }}">
           {% endif %}
 
           {# Essay #}
           {% if question.type == 'essay' %}
-            <textarea name="q_{{ question.id }}" class="form-control" rows="6" placeholder="{{ 'Write your answer...'|t }}"></textarea>
+            <textarea name="q_{{ question.id }}" class="lms-quiz-input" rows="8" placeholder="{{ 'Construct your essay response...'|t }}"></textarea>
           {% endif %}
 
           {# Matching #}
           {% if question.type == 'matching' and question.pairs is defined %}
             <div class="lms-quiz__matching">
+              <p style="color: #58a6ff; font-size: 0.9rem; margin-bottom: 1rem;"><i class="fas fa-hand-pointer"></i> Select the matching term for each item.</p>
               {% for pair in question.pairs %}
                 <div class="lms-quiz__match-row">
                   <span class="lms-quiz__match-left">{{ pair.left }}</span>
-                  <select name="q_{{ question.id }}_{{ loop.index0 }}" class="form-control">
-                    <option value="">{{ '— Select —'|t }}</option>
+                  <select name="q_{{ question.id }}_{{ loop.index0 }}" class="lms-quiz__match-select">
+                    <option value="">{{ '— Select Match —'|t }}</option>
                     {% for p in question.pairs %}
                       <option value="{{ p.right }}">{{ p.right }}</option>
                     {% endfor %}
@@ -96,14 +416,239 @@
               {% endfor %}
             </div>
           {% endif %}
+
+          {# Ordering (Missing feature implemented) #}
+          {% if question.type == 'ordering' and question.items is defined %}
+            <div class="lms-quiz__ordering">
+              <p style="color: #58a6ff; font-size: 0.9rem; margin-bottom: 1rem;"><i class="fas fa-arrows-alt-v"></i> Drag and drop the items below to reorder them correctly.</p>
+              <ul class="lms-sortable-list" id="sortable-{{ question.id }}">
+                {% for item in question.items %}
+                  <li class="lms-sortable-item" draggable="true">
+                    <i class="fas fa-grip-lines lms-drag-handle"></i>
+                    <span>{{ item }}</span>
+                    <input type="hidden" name="q_{{ question.id }}[]" value="{{ item }}">
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
         </div>
       {% endfor %}
 
-      <div class="lms-quiz__submit">
-        <button type="submit" class="lms-btn lms-btn--primary lms-btn--lg">
-          <i class="fas fa-paper-plane"></i> {{ 'Submit Quiz'|t }}
+      <div class="lms-quiz__submit-wrap">
+        <button type="submit" class="lms-quiz__btn-submit" id="btn-trigger-modal">
+          <i class="fas fa-paper-plane"></i> {{ 'Submit Final Answers'|t }}
         </button>
       </div>
     </form>
   </div>
 </div>
+
+<!-- Custom Confirm Modal -->
+<div class="lms-modal-overlay" id="lms-submit-modal">
+  <div class="lms-modal-card">
+    <div class="lms-modal-icon"><i class="fas fa-paper-plane"></i></div>
+    <h3 class="lms-modal-title">{{ 'Ready to Submit?'|t }}</h3>
+    <p class="lms-modal-body">Bạn sắp nộp bài thi. Hệ thống đang được cập nhật phần chấm điểm tự động. Chắc chắn muốn nộp chứ?</p>
+    <div class="lms-modal-actions">
+      <button type="button" class="lms-btn-cancel" id="btn-modal-cancel">{{ 'Review Answers'|t }}</button>
+      <button type="button" class="lms-btn-confirm" id="btn-modal-confirm">{{ 'Yes, Submit Now'|t }}</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const quizForm = document.getElementById('lms-quiz-actual-form');
+
+  // 1. Auto-save form draft using LocalStorage
+  const draftKey = 'lms_quiz_draft_' + window.location.pathname;
+  
+  function updateDraft() {
+    if (!quizForm) return;
+    const formData = new FormData(quizForm);
+    const draft = {};
+    for (let [key, val] of formData.entries()) {
+      if (draft[key]) {
+        if (!Array.isArray(draft[key])) draft[key] = [draft[key]];
+        draft[key].push(val);
+      } else {
+        if (key.endsWith('[]')) draft[key] = [val];
+        else draft[key] = val;
+      }
+    }
+    localStorage.setItem(draftKey, JSON.stringify(draft));
+  }
+
+  if (quizForm) {
+    // Restore draft on load
+    try {
+      const draftJSON = localStorage.getItem(draftKey);
+      if (draftJSON) {
+        const draft = JSON.parse(draftJSON);
+        Object.keys(draft).forEach(name => {
+          const value = draft[name];
+          const inputs = quizForm.querySelectorAll(`[name="${name}"]`);
+          if (inputs.length === 0) return;
+
+          if (Array.isArray(value)) {
+            inputs.forEach(input => {
+              if (input.type === 'checkbox') {
+                input.checked = value.includes(input.value);
+              }
+            });
+            // Reorder DOM for drag & drop
+            if (inputs[0].type === 'hidden') {
+               const ul = inputs[0].closest('.lms-sortable-list');
+               if (ul) {
+                 value.forEach(val => {
+                   // Instead of exact match, just select the input with that value and move its parent LI to end
+                   const elList = ul.querySelectorAll(`input[value="${val}"]`);
+                   elList.forEach(el => ul.appendChild(el.closest('li')));
+                 });
+               }
+            }
+          } else {
+            inputs.forEach(input => {
+              if (input.type === 'radio') {
+                if (input.value === value) input.checked = true;
+              } else {
+                input.value = value;
+              }
+            });
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('Could not restore quiz draft', e);
+    }
+
+    // Save draft on any change
+    quizForm.addEventListener('input', updateDraft);
+    quizForm.addEventListener('change', updateDraft);
+  }
+
+  // 2. Vanilla JS logic for the new Ordering Drop-and-Drag capabilities
+  document.querySelectorAll('.lms-sortable-list').forEach(list => {
+    let draggedItem = null;
+    
+    list.querySelectorAll('.lms-sortable-item').forEach(item => {
+      item.addEventListener('dragstart', function(e) {
+        draggedItem = this;
+        setTimeout(() => this.style.opacity = '0.4', 0);
+      });
+      
+      item.addEventListener('dragend', function() {
+        setTimeout(() => {
+          this.style.opacity = '1';
+          draggedItem = null;
+        }, 0);
+      });
+      
+      item.addEventListener('dragover', function(e) { e.preventDefault(); });
+      
+      item.addEventListener('dragenter', function(e) {
+        e.preventDefault();
+        this.style.border = '1px dashed #58a6ff';
+      });
+      
+      item.addEventListener('dragleave', function() {
+        this.style.border = '1px solid #30363d';
+      });
+      
+      item.addEventListener('drop', function() {
+        this.style.border = '1px solid #30363d';
+        if (this !== draggedItem) {
+          let allItems = [...list.querySelectorAll('.lms-sortable-item')];
+          let draggedIndex = allItems.indexOf(draggedItem);
+          let droppedIndex = allItems.indexOf(this);
+          
+          if (draggedIndex < droppedIndex) {
+            this.parentNode.insertBefore(draggedItem, this.nextSibling);
+          } else {
+            this.parentNode.insertBefore(draggedItem, this);
+          }
+          // Force save draft
+          updateDraft();
+        }
+      });
+    });
+  });
+
+  // 3. Timer Countdown Logic
+  const timerElement = document.getElementById('lms-quiz-timer');
+  if (timerElement) {
+    let initialMinutes = parseInt(timerElement.getAttribute('data-minutes'));
+    
+    // Fallback if time limit is invalid
+    if (isNaN(initialMinutes) || initialMinutes <= 0) {
+      timerElement.textContent = "Unlimited";
+    } else {
+      const storageKey = 'lms_quiz_end_time_' + window.location.pathname;
+      let endTime = localStorage.getItem(storageKey);
+      let now = Math.floor(Date.now() / 1000);
+
+      // If no end time exists, or we want a fresh start, we set it.
+      if (!endTime) {
+        endTime = now + (initialMinutes * 60);
+        localStorage.setItem(storageKey, endTime);
+      }
+
+      const updateTimer = () => {
+        let currentNow = Math.floor(Date.now() / 1000);
+        let timeLeft = endTime - currentNow;
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerElement.textContent = "00:00";
+          timerElement.style.color = "#ff7b72"; // Alert red
+          localStorage.removeItem(storageKey); // Clear tracking
+          localStorage.removeItem(draftKey); // Clear draft
+          alert('Hết giờ! Hệ thống sẽ tự động nộp bài.');
+          if(quizForm) quizForm.submit(); // Submit to backend
+        } else {
+          const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+          const s = (timeLeft % 60).toString().padStart(2, '0');
+          timerElement.textContent = `${m}:${s}`;
+          if (timeLeft <= 60) {
+            timerElement.style.color = "#ffa657"; // Warning orange in last minute
+          }
+        }
+      };
+      
+      updateTimer(); // Initial call
+      const timerInterval = setInterval(updateTimer, 1000);
+    }
+  }
+
+  // 4. Custom Submit Modal Logic
+  const modal = document.getElementById('lms-submit-modal');
+  const btnCancel = document.getElementById('btn-modal-cancel');
+  const btnConfirm = document.getElementById('btn-modal-confirm');
+
+  if(quizForm && modal) {
+    quizForm.addEventListener('submit', function(e) {
+      e.preventDefault(); // Stop normal form submit to show modal
+      modal.classList.add('active');
+    });
+
+    if(btnCancel) {
+      btnCancel.addEventListener('click', function() {
+        modal.classList.remove('active');
+      });
+    }
+
+    if(btnConfirm) {
+      btnConfirm.addEventListener('click', function() {
+        const storageKey = 'lms_quiz_end_time_' + window.location.pathname;
+        localStorage.removeItem(storageKey); 
+        localStorage.removeItem(draftKey); // Clear draft on submit
+        
+        // Actually submit the form to the backend
+        quizForm.submit();
+      });
+    }
+  }
+});
+</script>

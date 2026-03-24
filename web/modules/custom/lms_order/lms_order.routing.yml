@@ -1,0 +1,29 @@
+lms_order.checkout:
+  path: '/checkout/{course_id}'
+  defaults:
+    _controller: '\Drupal\lms_order\Controller\CheckoutController::checkout'
+    _title: 'Checkout'
+  requirements:
+    _access: 'TRUE'
+    course_id: '\d+'
+
+lms_order.checkout_membership:
+  path: '/checkout/membership/{plan_id}'
+  defaults:
+    _controller: '\Drupal\lms_order\Controller\CheckoutController::checkoutMembership'
+    _title: 'Checkout Membership'
+  requirements:
+    _access: 'TRUE'
+    plan_id: '\d+'
+
+lms_order.bank_transfer:
+  path: '/checkout/bank-transfer/{lms_order}'
+  defaults:
+    _controller: '\Drupal\lms_order\Controller\CheckoutController::bankTransferInstruction'
+    _title: 'Payment Instructions'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      lms_order:
+        type: entity:lms_order

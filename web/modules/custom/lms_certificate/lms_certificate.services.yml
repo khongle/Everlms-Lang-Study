@@ -1,0 +1,12 @@
+services:
+  lms_certificate.generator:
+    class: Drupal\lms_certificate\Service\CertificateGenerator
+    arguments: ['@entity_type.manager', '@renderer', '@file_system']
+  lms_certificate.manager:
+    class: Drupal\lms_certificate\Service\CertificateManager
+    arguments: ['@lms_certificate.generator', '@entity_type.manager']
+  lms_certificate.event_listener:
+    class: Drupal\lms_certificate\EventSubscriber\CertificateEventListener
+    arguments: ['@lms_certificate.manager']
+    tags:
+      - { name: event_subscriber }

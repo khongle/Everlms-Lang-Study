@@ -2,3 +2,15 @@ services:
   lms_analytics.service:
     class: Drupal\lms_analytics\Service\AnalyticsService
     arguments: ['@entity_type.manager', '@database']
+
+  lms_analytics.course_report:
+    class: Drupal\lms_analytics\Service\CourseReportManager
+    arguments: ['@database', '@entity_type.manager', '@current_user']
+
+  lms_analytics.user_report:
+    class: Drupal\lms_analytics\Service\UserReportManager
+    arguments: ['@database', '@entity_type.manager']
+
+  lms_analytics.quiz_analytics:
+    class: Drupal\lms_analytics\Service\QuizAnalyticsManager
+    arguments: ['@database', '@entity_type.manager', '@current_user']

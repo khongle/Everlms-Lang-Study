@@ -1,0 +1,99 @@
+{#
+/**
+ * @file
+ * Template for Quiz Analytics Detail (Phase 3).
+ *
+ * Available variables:
+ * - quiz: Basic quiz stats array.
+ * - distribution: Array of score distribution buckets.
+ * - hardest_questions: Array of hardest questions.
+ */
+#}
+
+<div class="lms-report-container">
+  <div class="report-header">
+    <h2>{{ 'Quiz Item Analysis:'|t }} {{ quiz.title }}</h2>
+    <div class="report-actions">
+      <a href="{{ url('lms_analytics.quiz_report_list') }}" class="button">{{ 'Back to List'|t }}</a>
+      <a href="{{ url('lms_analytics.quiz_report_export', {'quiz_id': quiz.id}) }}" class="button button--primary">{{ 'Export Item Analysis'|t }}</a>
+    </div>
+  </div>
+
+  <div class="report-summary-cards" style="display: flex; gap: 20px; margin-bottom: 30px;">
+    <div class="card" style="flex: 1; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+      <h3 style="margin-top: 0;">{{ 'Total Attempts'|t }}</h3>
+      <div style="font-size: 2em; font-weight: bold; color: #007bff;">{{ quiz.attempts }}</div>
+    </div>
+    <div class="card" style="flex: 1; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+      <h3 style="margin-top: 0;">{{ 'Average Score'|t }}</h3>
+      <div style="font-size: 2em; font-weight: bold; color: #28a745;">{{ quiz.avg_score|number_format(1) }}</div>
+    </div>
+    <div class="card" style="flex: 1; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+      <h3 style="margin-top: 0;">{{ 'Pass Rate'|t }}</h3>
+      <div style="font-size: 2em; font-weight: bold; color: #6f42c1;">{{ quiz.pass_rate }}%</div>
+    </div>
+  </div>
+
+  <div class="report-panels" style="display: flex; gap: 30px; flex-wrap: wrap;">
+    <div class="panel" style="flex: 1; min-width: 300px;">
+      <h3>{{ 'Score Distribution'|t }}</h3>
+      <div class="distribution-chart">
+        {# A simple CSS bar chart representation. ChartJS can be initialized here instead. #}
+        {% set max_count = 1 %}
+        {% for count in distribution %}
+          {% if count > max_count %}{% set max_count = count %}{% endif %}
+        {% endfor %}
+
+        <div style="display: flex; align-items: flex-end; height: 200px; gap: 10px; border-bottom: 2px solid #ccc; padding-bottom: 10px;">
+          {% for label, count in distribution %}
+            {% set height_pct = (count / max_count) * 100 %}
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
+              <div title="{{ count }} attempts" style="background: rgba(54, 162, 235, 0.8); width: 80%; height: {{ height_pct }}%; min-height: 2px; border-radius: 4px 4px 0 0; transition: height 0.5s ease-out;"></div>
+              <span style="font-size: 0.8em; margin-top: 8px;">{{ label }}</span>
+              <span style="font-size: 0.8em; font-weight: bold;">{{ count }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="flex: 2; min-width: 400px;">
+      <h3>{{ 'Hardest Questions (Bottom 10)'|t }}</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>{{ 'Question'|t }}</th>
+            <th>{{ 'Type'|t }}</th>
+            <th class="text-center">{{ 'Total Answers'|t }}</th>
+            <th class="text-center">{{ 'Correct Rate'|t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for q in hardest_questions %}
+            <tr>
+              <td>
+                <div><strong>{{ q.title }}</strong></div>
+                <div class="text-xs text-muted">ID: {{ q.id }}</div>
+              </td>
+              <td><span class="badge badge-secondary">{{ q.type }}</span></td>
+              <td class="text-center">{{ q.total }}</td>
+              <td class="text-center">
+                <span class="{{ q.rate < 50 ? 'text-danger' : 'text-warning' }}">
+                  {{ q.rate|number_format(1) }}%
+                </span>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="4">{{ 'Not enough response data to analyze questions.'|t }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+.badge-secondary { background: #6c757d; color: white; }
+</style>

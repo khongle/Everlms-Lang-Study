@@ -1,0 +1,85 @@
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\file\Entity\File;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Session\AccountInterface;
+
+/**
+ * Implements hook_entity_access().
+ */
+function lms_lesson_entity_access(EntityInterface $entity, $operation, AccountInterface $account) {
+  if ($entity->getEntityTypeId() === 'lms_lesson' && $operation === 'view') {
+    return AccessResult::allowedIfHasPermission($account, 'access content');
+  }
+  return AccessResult::neutral();
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function lms_lesson_entity_insert(EntityInterface $entity) {
+  _lms_lesson_extract_scorm($entity);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function lms_lesson_entity_update(EntityInterface $entity) {
+  _lms_lesson_extract_scorm($entity);
+}
+
+function _lms_lesson_extract_scorm(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() !== 'lms_lesson') {
+    return;
+  }
+  
+  if ($entity->get('field_type')->value !== 'scorm') {
+    return;
+  }
+
+  $scorm_field = $entity->get('field_scorm_package');
+  if ($scorm_field->isEmpty()) {
+    return;
+  }
+
+  $file = File::load($scorm_field->target_id);
+  if (!$file) {
+    return;
+  }
+
+  $zip_uri = $file->getFileUri();
+  $zip_path = \Drupal::service('file_system')->realpath($zip_uri);
+
+  if (!file_exists($zip_path)) {
+    return;
+  }
+
+  $extract_dir = 'public://scorm_extracted/' . $entity->id();
+  $file_system = \Drupal::service('file_system');
+  $file_system->deleteRecursive($extract_dir); // Clear old scorm files that might pollute the new ones
+  $file_system->prepareDirectory($extract_dir, \Drupal\Core\File\FileSystemInterface::CREATE_DIRECTORY | \Drupal\Core\File\FileSystemInterface::MODIFY_PERMISSIONS);
+
+  $extract_path = $file_system->realpath($extract_dir);
+
+  $zip = new ZipArchive();
+  if ($zip->open($zip_path) === TRUE) {
+    $zip->extractTo($extract_path);
+    $zip->close();
+    
+    // Attempt to auto-detect the real launch file
+    $manifest_path = $extract_path . '/imsmanifest.xml';
+    if (file_exists($manifest_path)) {
+      $xml = file_get_contents($manifest_path);
+      // find the first href attribute in <resource ...>
+      if (preg_match('/<resource[^>]*?href=["\']([^"\']+)["\']/i', $xml, $matches)) {
+        $entry_file = $matches[1];
+        // If the SCORM doesn't have an index.html but we require it, create a redirect
+        if (!file_exists($extract_path . '/index.html')) {
+          $html = '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=' . $entry_file . '" /></head><body style="background:#21262d;"></body></html>';
+          file_put_contents($extract_path . '/index.html', $html);
+        }
+      }
+    }
+  }
+}

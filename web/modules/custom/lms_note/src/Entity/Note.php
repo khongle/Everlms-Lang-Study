@@ -29,6 +29,10 @@ class Note extends ContentEntityBase implements EntityOwnerInterface {
     $fields = parent::baseFieldDefinitions($entity_type);
     $fields += static::ownerBaseFieldDefinitions($entity_type);
 
+    $fields['field_course'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(new TranslatableMarkup('Course'))
+      ->setRequired(TRUE)->setSetting('target_type', 'lms_course');
+
     $fields['field_lesson'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(new TranslatableMarkup('Lesson'))
       ->setRequired(TRUE)->setSetting('target_type', 'lms_lesson');

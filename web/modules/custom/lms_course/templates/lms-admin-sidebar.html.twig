@@ -1,26 +1,439 @@
-{# Admin sidebar partial — reused across all admin pages #}
+{# lms-admin-sidebar.html.twig #}
+{% set active_bg = '#1d70f5' %}
+{% set sidebar_bg = '#161b22' %}
+
+<style>
+  /* Force hide all Drupal Admin UI and reset padding */
+  #toolbar-administration,
+  #toolbar-item-administration-tray,
+  [data-toolbar-tray="toolbar-item-administration-tray"],
+  .region-header,
+  .region-breadcrumb,
+  .block-page-title-block,
+  .page-header,
+  .content-header {
+    display: none !important;
+  }
+  
+  body {
+    padding-top: 0 !important;
+    background-color: #0b0f19 !important;
+    overflow: hidden !important;
+  }
+
+  .dialog-off-canvas-main-canvas,
+  main,
+  .page-content,
+  .layout-container,
+  .layout-main-wrapper,
+  .layout-content,
+  body, .dialog-off-canvas-main-canvas {
+    background-color: #0b0f19 !important;
+    color: #e2e8f0;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Custom Scrollbar for sleek Dark Theme */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent; 
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15); 
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25); 
+  }
+
+  .lms-admin {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #0b0f19; /* Deep dark bg for main area */
+    color: #cbd5e1;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .lms-admin__sidebar {
+    width: 260px;
+    min-width: 260px;
+    background-color: {{ sidebar_bg }};
+    border-right: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+  }
+  
+  .lms-admin__sidebar-brand {
+    padding: 1.5rem;
+  }
+  .lms-admin__sidebar-brand a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #e6edf3;
+    text-decoration: none;
+    outline: none;
+  }
+  .lms-admin__sidebar-brand i { 
+    color: inherit; 
+    font-size: 1.5rem; 
+  }
+  
+  .lms-admin__nav {
+    flex: 1;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .lms-admin__nav-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 1rem 0.5rem 0.5rem;
+  }
+  
+  .lms-admin__nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+  
+  .lms-admin__nav-item:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.05);
+  }
+  
+  .lms-admin__nav-item--active {
+    background-color: {{ active_bg }} !important;
+    color: #fff !important;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(29, 112, 245, 0.3);
+  }
+  
+  .lms-admin__nav-item i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+  }
+
+  /* User Profile Snippet in Sidebar */
+  .lms-admin__sidebar-profile {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  
+  .lms-admin__profile-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .lms-admin__profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .lms-admin__profile-text {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .lms-admin__profile-role {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 0.2em;
+  }
+  
+  .lms-admin__profile-name {
+    font-size: 0.9375rem;
+    color: #fff;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  /* Admin Main Area Common Styles */
+  .lms-admin__main {
+    flex: 1;
+    padding: 2.5rem;
+    padding-bottom: 0;
+    min-width: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .lms-admin__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+  }
+  .lms-admin__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.25rem;
+  }
+  .lms-admin__subtitle {
+    color: #94a3b8;
+    font-size: 0.9375rem;
+  }
+  
+  /* Buttons */
+  .btn-lms-primary {
+    background-color: {{ active_bg }} !important;
+    background: none; /* override gradient */
+    color: #fff;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    padding: 0.625rem 1.25rem;
+    box-shadow: 0 4px 12px rgba(29, 112, 245, 0.2);
+  }
+  .btn-lms-primary:hover {
+    background-color: #1558c4 !important;
+  }
+
+  /* Filter Bar */
+  .lms-admin-filter {
+    background: #1e293b;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    align-items: flex-end;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .lms-admin-filter__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+  .lms-admin-filter__label {
+    font-size: 0.8125rem;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+  .lms-admin-filter__select, .lms-admin-filter__input {
+    background: #0f172a;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #e2e8f0;
+    padding: 0.625rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    width: 100%;
+    outline: none;
+  }
+  .lms-admin-filter__select:focus, .lms-admin-filter__input:focus {
+    border-color: {{ active_bg }};
+  }
+  
+  /* Tables */
+  .lms-admin-card {
+    background: #1e293b;
+    border-radius: 0.75rem 0.75rem 0 0;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-bottom: none;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%; /* Prevent flex shifting */
+    min-height: 0;
+  }
+  .lms-table-responsive {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: auto;
+    position: relative;
+  }
+  .lms-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent !important;
+  }
+  .lms-table tbody, .lms-table tr {
+    background: transparent !important;
+  }
+  .lms-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .lms-table thead th {
+    background-color: #1d70f5 !important;
+    background-clip: padding-box;
+    border-bottom: 2px solid rgba(0,0,0,0.1) !important;
+  }
+  .lms-table th {
+    background: #273445;
+    padding: 1rem 1.5rem;
+    color: #e2e8f0;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .lms-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #cbd5e1 !important;
+    font-size: 0.9375rem;
+    vertical-align: middle;
+    background: transparent !important;
+  }
+  .lms-table tbody tr:hover {
+    background: rgba(29, 112, 245, 0.05);
+  }
+  
+  /* Status Badges */
+  .lms-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid transparent;
+  }
+  .lms-status--published, .lms-status--active {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+  .lms-status--draft, .lms-status--pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.2);
+  }
+  .lms-status--archived, .lms-status--inactive {
+    background: rgba(100, 116, 139, 0.1);
+    color: #94a3b8;
+    border-color: rgba(100, 116, 139, 0.2);
+  }
+  
+  /* Pagination Footer */
+  .lms-admin-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: #1e293b;
+    font-size: 0.875rem;
+    color: #94a3b8;
+  }
+  .lms-pagination {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0;
+  }
+  .lms-pagination__item {
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.25rem;
+    color: #94a3b8;
+    background: transparent;
+    cursor: pointer;
+  }
+  .lms-pagination__item:hover {
+    background: rgba(255,255,255,0.05);
+  }
+  .lms-pagination__item--active {
+    background: {{ active_bg }} !important;
+    color: #fff !important;
+  }
+</style>
+
 <aside class="lms-admin__sidebar">
   <div class="lms-admin__sidebar-brand">
-    <i class="fas fa-graduation-cap"></i> {{ 'LMS Admin'|t }}
+    <a href="{{ path('<front>') }}">
+      <i class="fas fa-graduation-cap"></i> {{ 'EverLMS'|t }}
+    </a>
   </div>
+  
   <nav class="lms-admin__nav">
+    <div class="lms-admin__nav-label">Admin Navigation</div>
     <a href="{{ path('lms_course.admin_dashboard') }}" class="lms-admin__nav-item {{ active == 'dashboard' ? 'lms-admin__nav-item--active' }}">
-      <i class="fas fa-tachometer-alt"></i> {{ 'Dashboard'|t }}
+      <i class="fas fa-home"></i> {{ 'Dashboard'|t }}
     </a>
     <a href="{{ path('lms_course.admin_courses') }}" class="lms-admin__nav-item {{ active == 'courses' ? 'lms-admin__nav-item--active' }}">
-      <i class="fas fa-book"></i> {{ 'Courses'|t }}
-    </a>
-    <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-admin__nav-item {{ active == 'quizzes' ? 'lms-admin__nav-item--active' }}">
-      <i class="fas fa-question-circle"></i> {{ 'Quizzes'|t }}
+      <i class="fas fa-book-open"></i> {{ 'Courses'|t }}
     </a>
     <a href="{{ path('lms_course.admin_users') }}" class="lms-admin__nav-item {{ active == 'users' ? 'lms-admin__nav-item--active' }}">
-      <i class="fas fa-users"></i> {{ 'Users'|t }}
+      <i class="fas fa-user-friends"></i> {{ 'User Management'|t }}
     </a>
+    <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-admin__nav-item {{ active == 'quizzes' ? 'lms-admin__nav-item--active' }}">
+      <i class="fas fa-clipboard-check"></i> {{ 'Quiz Management'|t }}
+    </a>
+    <a href="{{ path('lms_certificate.admin_dashboard') }}" class="lms-admin__nav-item {{ active == 'certificates' ? 'lms-admin__nav-item--active' }}">
+      <i class="fas fa-award"></i> {{ 'Certificate Management'|t }}
+    </a>
+    {# Certificate Templates #}
+    <a href="{{ path('lms_certificate.admin_templates') }}" class="lms-admin__nav-item {{ active == 'certificate_templates' ? 'lms-admin__nav-item--active' }}">
+      <i class="far fa-file-alt"></i> {{ 'Certificate Templates'|t }}
+    </a>
+    <!-- Orders -->
     <a href="{{ path('lms_course.admin_orders') }}" class="lms-admin__nav-item {{ active == 'orders' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-shopping-cart"></i> {{ 'Orders'|t }}
     </a>
+    <!-- Pricing -->
+    <a href="{{ path('lms_membership.admin_pricing') }}" class="lms-admin__nav-item {{ active == 'pricing' ? 'lms-admin__nav-item--active' }}">
+      <i class="fas fa-tags"></i> {{ 'Pricing'|t }}
+    </a>
     <a href="{{ path('lms_course.admin_reports') }}" class="lms-admin__nav-item {{ active == 'reports' ? 'lms-admin__nav-item--active' }}">
-      <i class="fas fa-chart-bar"></i> {{ 'Reports'|t }}
+      <i class="fas fa-chart-line"></i> {{ 'Reports'|t }}
+    </a>
+    <a href="#" class="lms-admin__nav-item {{ active == 'settings' ? 'lms-admin__nav-item--active' }}">
+      <i class="fas fa-cog"></i> {{ 'Settings'|t }}
+    </a>
+    <a href="#" class="lms-admin__nav-item {{ active == 'support' ? 'lms-admin__nav-item--active' }}">
+      <i class="far fa-question-circle"></i> {{ 'Support'|t }}
     </a>
   </nav>
+
+  <div class="lms-admin__sidebar-profile">
+    <div class="lms-admin__profile-info">
+      {% set name_to_show = current_user_name|default(user.displayname)|default('Manager User') %}
+      <img src="https://ui-avatars.com/api/?name={{ name_to_show|url_encode }}&background=1d70f5&color=fff" alt="Avatar" class="lms-admin__profile-avatar">
+      <div class="lms-admin__profile-text">
+        <span class="lms-admin__profile-role">{{ 'Manager'|t }}</span>
+        <span class="lms-admin__profile-name" style="max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ name_to_show }}</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding: 0 1.5rem 1.5rem;">
+    <a href="{{ path('user.logout') }}" style="display: block; text-align: center; padding: 0.75rem; background: rgba(245, 87, 108, 0.1); color: #f5576c; border-radius: 0.5rem; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: all 0.2s ease;">
+      <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i> {{ 'Logout'|t }}
+    </a>
+  </div>
 </aside>

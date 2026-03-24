@@ -2,18 +2,68 @@
 lms_forum.index:
   path: '/forum'
   defaults:
-    _controller: '\Drupal\lms_forum\Controller\ForumController::index'
-    _title: 'Community Forum'
+    _controller: '\Drupal\lms_forum\Controller\LmsForumController::index'
+    _title: 'Community'
   requirements:
     _permission: 'access content'
 
-lms_forum.topic:
-  path: '/forum/{lms_forum_topic}'
+lms_forum.topic.add:
+  path: '/forum/new'
   defaults:
-    _controller: '\Drupal\lms_forum\Controller\ForumController::viewTopic'
+    _controller: '\Drupal\lms_forum\Controller\LmsForumController::addTopic'
+    _title: 'New Topic'
+  requirements:
+    _entity_create_access: 'lms_forum_topic'
+  options:
+    _admin_route: FALSE
+
+
+
+lms_forum.reply.add:
+  path: '/forum/{lms_forum_topic}/reply'
+  defaults:
+    _controller: '\Drupal\lms_forum\Controller\LmsForumController::reply'
+  requirements:
+    _entity_create_access: 'lms_forum_reply'
+  options:
+    parameters:
+      lms_forum_topic:
+        type: entity:lms_forum_topic
+
+lms_forum.reply.best_answer:
+  path: '/forum/{lms_forum_topic}/reply/{lms_forum_reply}/best'
+  defaults:
+    _controller: '\Drupal\lms_forum\Controller\LmsForumController::markBestAnswer'
   requirements:
     _permission: 'access content'
   options:
     parameters:
       lms_forum_topic:
         type: entity:lms_forum_topic
+      lms_forum_reply:
+        type: entity:lms_forum_reply
+
+entity.lms_forum_reply.delete_form:
+  path: '/forum/reply/{lms_forum_reply}/delete'
+  defaults:
+    _entity_form: 'lms_forum_reply.delete'
+    _title: 'Delete Reply'
+  requirements:
+    _entity_access: 'lms_forum_reply.delete'
+  options:
+    _admin_route: FALSE
+    parameters:
+      lms_forum_reply:
+        type: entity:lms_forum_reply
+
+lms_forum.reply.edit:
+  path: '/forum/reply/{lms_forum_reply}/edit'
+  defaults:
+    _controller: '\Drupal\lms_forum\Controller\LmsForumController::editReply'
+    _title: 'Edit Reply'
+  requirements:
+    _entity_access: 'lms_forum_reply.update'
+  options:
+    parameters:
+      lms_forum_reply:
+        type: entity:lms_forum_reply

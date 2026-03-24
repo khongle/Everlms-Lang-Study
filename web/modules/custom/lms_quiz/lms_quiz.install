@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the lms_quiz module.
+ */
+
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
+/**
+ * Add field_prerequisite_quizzes to lms_quiz entity.
+ */
+function lms_quiz_update_10001(&$sandbox) {
+  $field_storage_definition = BaseFieldDefinition::create('entity_reference')
+    ->setLabel(new TranslatableMarkup('Prerequisite Quizzes'))
+    ->setSetting('target_type', 'lms_quiz')
+    ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)
+    ->setDisplayOptions('form', ['type' => 'entity_reference_autocomplete', 'weight' => -1])
+    ->setDisplayConfigurable('form', TRUE)
+    ->setDisplayConfigurable('view', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_prerequisite_quizzes', 'lms_quiz', 'lms_quiz', $field_storage_definition);
+}

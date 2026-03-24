@@ -20,12 +20,17 @@ use Drupal\views\EntityViewsData;
   id: 'lms_forum_reply',
   label: new TranslatableMarkup('Forum Reply'),
   base_table: 'lms_forum_reply',
-  admin_permission: 'administer lms_course',
   entity_keys: ['id' => 'id', 'uuid' => 'uuid', 'owner' => 'uid'],
   handlers: [
     'views_data' => EntityViewsData::class,
-    'form' => ['default' => 'Drupal\Core\Entity\ContentEntityForm', 'delete' => 'Drupal\Core\Entity\ContentEntityDeleteForm'],
-    'access' => 'Drupal\Core\Entity\EntityAccessControlHandler',
+    'form' => [
+      'default' => '\Drupal\lms_forum\Form\ForumReplyForm', 
+      'delete' => '\Drupal\lms_forum\Form\ForumReplyDeleteForm'
+    ],
+    'access' => 'Drupal\lms_forum\ForumReplyAccessControlHandler',
+  ],
+  links: [
+    'delete-form' => '/forum/reply/{lms_forum_reply}/delete',
   ],
 )]
 class ForumReply extends ContentEntityBase implements EntityOwnerInterface {
@@ -53,6 +58,10 @@ class ForumReply extends ContentEntityBase implements EntityOwnerInterface {
     $fields['field_best_answer'] = BaseFieldDefinition::create('boolean')
       ->setLabel(new TranslatableMarkup('Best Answer'))
       ->setDefaultValue(FALSE);
+
+    $fields['field_upvotes'] = BaseFieldDefinition::create('integer')
+      ->setLabel(new TranslatableMarkup('Upvotes'))
+      ->setDefaultValue(0);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Created'));

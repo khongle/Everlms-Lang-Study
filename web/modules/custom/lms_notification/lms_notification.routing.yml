@@ -6,3 +6,26 @@ lms_notification.list:
     _title: 'Notifications'
   requirements:
     _user_is_logged_in: 'TRUE'
+
+lms_notification.preferences:
+  path: '/manage/settings/notifications'
+  defaults:
+    _form: '\Drupal\lms_notification\Form\NotificationPreferencesForm'
+    _title: 'Notification Preferences'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+lms_notification.broadcast:
+  path: '/admin/lms/notifications/broadcast'
+  defaults:
+    _form: '\Drupal\lms_notification\Form\BroadcastForm'
+    _title: 'Broadcast Announcement'
+  requirements:
+    _permission: 'administer lms_course'
+
+lms_notification.api_unread_count:
+  path: '/api/lms/notifications/unread-count'
+  defaults:
+    _controller: '\Drupal\lms_notification\Controller\NotificationController::apiUnreadCount'
+  requirements:
+    _access: 'TRUE'

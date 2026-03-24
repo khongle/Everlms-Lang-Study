@@ -35,6 +35,57 @@ final class QuizController extends ControllerBase {
    * Take quiz — shows questions.
    */
   public function takeQuiz(Quiz $lms_quiz): array {
+    $uid = (int) $this->currentUser->id();
+
+    // 1. Check Max Attempts
+    $max_attempts = (int) $lms_quiz->get('field_take_quiz_number')->value;
+    if ($max_attempts > 0) {
+      $attempt_count = $this->entityTypeManager->getStorage('lms_quiz_result')
+        ->getQuery()
+        ->condition('uid', $uid)
+        ->condition('field_quiz', $lms_quiz->id())
+        ->accessCheck(FALSE)
+        ->count()
+        ->execute();
+
+      if ($attempt_count >= $max_attempts) {
+        return [
+          '#markup' => $this->t('You have reached the maximum number of attempts (@max) for this quiz.', ['@max' => $max_attempts]),
+        ];
+      }
+    }
+
+    // 2. Check Prerequisites
+    $prereqs = $lms_quiz->get('field_prerequisite_quizzes')->referencedEntities();
+    if (!empty($prereqs)) {
+      $term_passed = $this->entityTypeManager->getStorage('taxonomy_term')
+        ->loadByProperties(['vid' => 'quiz_results', 'name' => 'Passed']);
+      $term_passed = reset($term_passed);
+
+      foreach ($prereqs as $prereq_quiz) {
+        $has_passed = FALSE;
+        if ($term_passed) {
+          $passed_results = $this->entityTypeManager->getStorage('lms_quiz_result')
+            ->getQuery()
+            ->condition('uid', $uid)
+            ->condition('field_quiz', $prereq_quiz->id())
+            ->condition('field_result', $term_passed->id())
+            ->accessCheck(FALSE)
+            ->count()
+            ->execute();
+          if ($passed_results > 0) {
+            $has_passed = TRUE;
+          }
+        }
+
+        if (!$has_passed) {
+          return [
+            '#markup' => $this->t('You must pass the quiz "@quiz" before taking this quiz.', ['@quiz' => $prereq_quiz->label()]),
+          ];
+        }
+      }
+    }
+
     $question_ids = [];
     foreach ($lms_quiz->get('field_questions') as $item) {
       $question_ids[] = $item->target_id;
@@ -111,6 +162,124 @@ final class QuizController extends ControllerBase {
       '#questions' => $quiz_questions,
       '#time_limit' => (int) $lms_quiz->get('field_time_limit')->value,
     ];
+  }
+
+  /**
+   * Process quiz submission.
+   */
+  public function submitQuiz(Quiz $lms_quiz, \Symfony\Component\HttpFoundation\Request $request) {
+    if (!$request->isMethod('POST')) {
+      return $this->redirect('lms_quiz.take', ['lms_quiz' => $lms_quiz->id()]);
+    }
+
+    $uid = (int) $this->currentUser->id();
+    $total_score = 0.0;
+    $max_score = 0.0;
+    $responses = [];
+    $storage = $this->entityTypeManager->getStorage('lms_question_response');
+    $has_pending_review = FALSE;
+
+    foreach ($lms_quiz->get('field_questions') as $item) {
+      $question = $item->entity;
+      if (!$question) continue;
+
+      $qid = $question->id();
+      $bundle = $question->bundle();
+      $base_key = 'q_' . $qid;
+
+      // Extract submission data based on UI input naming convention.
+      $user_submission = NULL;
+      if ($bundle === 'matching') {
+        $submission = [];
+        $i = 0;
+        // Symfony HttpFoundation Request query/request parameters can be retrieved safely
+        while ($request->request->has($base_key . '_' . $i) || $request->request->has($base_key . '_' . $i . '[]')) {
+          $submission[$i] = $request->request->get($base_key . '_' . $i);
+          $i++;
+        }
+        $user_submission = $submission;
+      } else {
+        $user_submission = $request->request->all()[$base_key] ?? $request->request->get($base_key);
+      }
+
+      $strategy = \Drupal\lms_quiz\Grading\GradingStrategyFactory::getStrategy($bundle);
+      if ($strategy) {
+        $max_score += $strategy->getMaxScore($question);
+        $result = $strategy->grade($question, $user_submission);
+
+        // Create the QuestionResponse entity.
+        $response_entity = $storage->create([
+          'field_question' => $qid,
+          'field_quiz' => $lms_quiz->id(),
+          'field_correct' => $result['is_correct'],
+          'field_score' => $result['score'],
+          'field_text_answer' => $result['text_answer'],
+          'field_pending_review' => $result['pending_review'],
+          'field_answers' => $result['answer_ids'] ?? [],
+        ]);
+        $response_entity->save();
+
+        if (!empty($result['pending_review'])) {
+          $has_pending_review = TRUE;
+        }
+
+        $responses[] = ['target_id' => $response_entity->id()];
+        $total_score += $result['score'];
+      }
+    }
+
+    // Calculate final percentage score.
+    $percentage = $max_score > 0 ? ($total_score / $max_score) * 100 : 0;
+    $threshold = (float) $lms_quiz->get('field_threshold')->value;
+    
+    // Determine Result Term (Passed/Failed/Pending)
+    $vocab = 'quiz_results';
+    $term_name = ($percentage >= $threshold) ? 'Passed' : 'Failed';
+    if ($has_pending_review) {
+      $term_name = 'Pending';
+    }
+
+    $terms = $this->entityTypeManager->getStorage('taxonomy_term')->loadByProperties([
+      'vid' => $vocab,
+      'name' => $term_name,
+    ]);
+    $result_term = reset($terms);
+
+    // Fallback: If 'Pending' term doesn't exist, create it.
+    if (!$result_term && $term_name === 'Pending') {
+      $result_term = $this->entityTypeManager->getStorage('taxonomy_term')->create([
+        'vid' => $vocab,
+        'name' => 'Pending',
+      ]);
+      $result_term->save();
+    }
+
+    $now = \Drupal::time()->getRequestTime();
+    
+    // Create the QuizResult entity.
+    $quiz_result = $this->entityTypeManager->getStorage('lms_quiz_result')->create([
+      'uid' => $uid,
+      'field_quiz' => $lms_quiz->id(),
+      'field_score' => $percentage,
+      'field_responses' => $responses,
+      'field_start_time' => $now - 60,
+      'field_end_time' => $now,
+    ]);
+    
+    if ($result_term) {
+      $quiz_result->set('field_result', $result_term->id());
+    }
+    
+    $quiz_result->save();
+
+    if ($result_term && $result_term->label() === 'Passed') {
+      if (class_exists('\Drupal\lms_quiz\Event\QuizPassedEvent')) {
+        $event = new \Drupal\lms_quiz\Event\QuizPassedEvent($quiz_result, $lms_quiz, $this->currentUser);
+        \Drupal::service('event_dispatcher')->dispatch($event, \Drupal\lms_quiz\Event\QuizPassedEvent::EVENT_NAME);
+      }
+    }
+
+    return $this->redirect('lms_quiz.result', ['lms_quiz_result' => $quiz_result->id()]);
   }
 
   /**

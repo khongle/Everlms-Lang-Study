@@ -1,0 +1,95 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for lms_membership module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function lms_membership_theme($existing, $type, $theme, $path) {
+  return [
+    'lms_my_membership' => [
+      'variables' => [
+        'memberships' => [],
+      ],
+    ],
+    'lms_admin_pricing' => [
+      'variables' => [
+        'plans' => [],
+        'filters' => [],
+        'add_url' => '',
+      ],
+      'template' => 'lms-admin-pricing',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_cron().
+ */
+function lms_membership_cron() {
+  $storage = \Drupal::entityTypeManager()->getStorage('lms_user_membership');
+  $now = time();
+
+  // Find active/trial memberships that have expired
+  $query = $storage->getQuery()
+    ->condition('field_status', ['active', 'trial'], 'IN')
+    ->condition('field_end_date', $now, '<=')
+    ->accessCheck(FALSE);
+  
+  $mids = $query->execute();
+
+  if (!empty($mids)) {
+    $memberships = $storage->loadMultiple($mids);
+    $mailManager = \Drupal::service('plugin.manager.mail');
+
+    foreach ($memberships as $membership) {
+      if (!$membership->get('field_auto_renew')->value) {
+        // Did not auto-renew -> expire it
+        $membership->set('field_status', 'expired');
+        $membership->save();
+
+        // Send Email
+        $user = $membership->getOwner();
+        if ($user) {
+          $to = $user->getEmail();
+          $langcode = $user->getPreferredLangcode();
+          $params['membership'] = $membership;
+          $mailManager->mail('lms_membership', 'membership_expired', $to, $langcode, $params, NULL, TRUE);
+          
+          \Drupal::logger('lms_membership')->notice('Membership @mid expired for user @uid.', [
+            '@mid' => $membership->id(),
+            '@uid' => $user->id(),
+          ]);
+        }
+      } else {
+        // Auto-renew is TRUE. In a full Stripe billing setup, Stripe webhooks
+        // would take care of extending this date or marking as failed.
+        // We log it and leave it to the Grace Period / Webhooks.
+        \Drupal::logger('lms_membership')->info('Membership @mid is past end_date but set to auto-renew. Pending payment gateway webhook.', [
+          '@mid' => $membership->id(),
+        ]);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function lms_membership_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'membership_expired':
+      $membership = $params['membership'];
+      $plan = $membership->get('field_plan')->entity;
+      $plan_name = $plan ? $plan->label() : 'your plan';
+
+      $message['subject'] = t('Your membership has expired');
+      $message['body'][] = t('Dear @name,', ['@name' => $membership->getOwner()->getDisplayName()]);
+      $message['body'][] = t('Your subscription to @plan has expired.', ['@plan' => $plan_name]);
+      $message['body'][] = t('To continue accessing the courses and features, please visit our pricing page to renew your membership.');
+      break;
+  }
+}

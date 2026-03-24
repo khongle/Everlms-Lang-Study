@@ -40,6 +40,10 @@ class OrderItem extends ContentEntityBase {
       ->setLabel(new TranslatableMarkup('Course'))
       ->setSetting('target_type', 'lms_course');
 
+    $fields['field_membership_plan'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(new TranslatableMarkup('Membership Plan'))
+      ->setSetting('target_type', 'lms_membership_plan');
+
     $fields['field_price'] = BaseFieldDefinition::create('decimal')
       ->setLabel(new TranslatableMarkup('Price'))
       ->setDefaultValue(0)

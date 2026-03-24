@@ -1,0 +1,31 @@
+lms_note.save:
+  path: '/api/lms/note/save'
+  defaults:
+    _controller: '\Drupal\lms_note\Controller\NoteController::save'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_note.delete:
+  path: '/api/lms/note/delete'
+  defaults:
+    _controller: '\Drupal\lms_note\Controller\NoteController::delete'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_note.get:
+  path: '/api/lms/note/get'
+  defaults:
+    _controller: '\Drupal\lms_note\Controller\NoteController::getNote'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [GET]
+
+lms_note.my_notes:
+  path: '/my-notes'
+  defaults:
+    _controller: '\Drupal\lms_note\Controller\NoteController::myNotes'
+    _title: 'My Notes'
+  requirements:
+    _user_is_logged_in: 'TRUE'

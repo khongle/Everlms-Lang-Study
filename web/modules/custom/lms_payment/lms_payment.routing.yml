@@ -1,0 +1,7 @@
+lms_payment.settings:
+  path: '/admin/config/everlms/payment'
+  defaults:
+    _form: '\Drupal\lms_payment\Form\PaymentSettingsForm'
+    _title: 'Payment Gateway Settings'
+  requirements:
+    _permission: 'administer site configuration'

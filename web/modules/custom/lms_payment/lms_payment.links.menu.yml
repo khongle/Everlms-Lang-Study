@@ -1,0 +1,6 @@
+lms_payment.settings:
+  title: 'Payment Gateway Settings'
+  description: 'Configure API keys for Stripe, PayPal, ZaloPay, etc.'
+  parent: system.admin_config
+  route_name: lms_payment.settings
+  weight: 99

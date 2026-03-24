@@ -1,0 +1,153 @@
+{#
+/**
+ * @file
+ * Theme override to present all user data in FULL view mode.
+ */
+#}
+{%
+  set classes = [
+    'lms-profile',
+    user.isBlocked() ? 'is-blocked',
+    'clearfix',
+  ]
+%}
+
+<article{{ attributes.addClass(classes) }}>
+  <div class="lms-profile__layout-redesign">
+    
+    {# Cover & Avatar Header #}
+    <div class="lms-profile__header">
+      <div class="lms-profile__cover">
+        <!-- Optional Cover Photo Placeholder -->
+        <div class="lms-profile__cover-bg"></div>
+      </div>
+      
+      <div class="lms-profile__header-content">
+        <div class="lms-profile__avatar-wrapper">
+          {% if content.user_picture|render %}
+            {{ content.user_picture }}
+          {% else %}
+            <div class="lms-profile__avatar-placeholder">
+              <i class="fas fa-user"></i>
+            </div>
+          {% endif %}
+        </div>
+        
+        <h1 class="lms-profile__name">
+           {% if content.field_first_name|render or content.field_last_name|render %}
+             {{ content.field_first_name.0 }} {{ content.field_last_name.0 }}
+           {% else %}
+             {{ user.getDisplayName() }}
+           {% endif %}
+        </h1>
+        
+        {% if content.field_job_title|render %}
+          <div class="lms-profile__job">
+            {{ content.field_job_title.0 }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# 2-Column Grid #}
+    <div class="lms-profile__body">
+      
+      {# Left Column (Details) #}
+      <div class="lms-profile__details">
+        
+        <div class="lms-profile-bio-card">
+          <h2 class="lms-profile__section-title">{{ 'Bio'|t }}</h2>
+          <div class="lms-profile__bio-content">
+            {% if content.field_bio|render %}
+              {{ content.field_bio.0 }}
+            {% else %}
+              <p class="lms-text-muted"><em>{{ 'This user has not provided a biography yet.'|t }}</em></p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="lms-profile-info-grid">
+          <div class="lms-profile-info-item">
+            <span class="lms-profile-info-label">{{ 'Email'|t }}</span>
+            <span class="lms-profile-info-value">{{ user.getEmail() }}</span>
+          </div>
+          {% if content.field_location|render %}
+            <div class="lms-profile-info-item">
+              <span class="lms-profile-info-label">{{ 'Location'|t }}</span>
+              <span class="lms-profile-info-value">{{ content.field_location.0 }}</span>
+            </div>
+          {% endif %}
+          {% if content.field_company|render %}
+            <div class="lms-profile-info-item">
+              <span class="lms-profile-info-label">{{ 'Company'|t }}</span>
+              <span class="lms-profile-info-value">{{ content.field_company.0 }}</span>
+            </div>
+          {% endif %}
+          {% if content.field_receive_system_notificati|render %}
+             <div class="lms-profile-info-item">
+                <span class="lms-profile-info-label">{{ 'Notifications'|t }}</span>
+                <span class="lms-profile-info-value">{{ content.field_receive_system_notificati.0 }}</span>
+             </div>
+          {% endif %}
+          {% if content.field_social_links|render %}
+            <div class="lms-profile-info-item lms-profile-info-item--full">
+              <span class="lms-profile-info-label">{{ 'Social Links'|t }}</span>
+              <span class="lms-profile-info-value">{{ content.field_social_links.0 }}</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      {# Right Column (Learning Statistics) #}
+      <div class="lms-profile__stats-sidebar">
+        <div class="lms-sidebar-card">
+          <h3 class="lms-sidebar-card__title">{{ 'Learning Statistics'|t }}</h3>
+          
+          <div class="lms-stat-item">
+            <div class="lms-stat-item__info">
+              <span class="lms-stat-item__label">{{ 'Courses Enrolled'|t }}</span>
+              <span class="lms-stat-item__val">{{ courses_enrolled|default('0') }}</span>
+            </div>
+          </div>
+          
+          <div class="lms-stat-item">
+            <div class="lms-stat-item__info">
+              <span class="lms-stat-item__label">{{ 'Courses Completed'|t }}</span>
+              <span class="lms-stat-item__val">{{ courses_completed|default('0') }}</span>
+            </div>
+            <div class="lms-stat-item__icon lms-stat-item__icon--primary">
+              <i class="fas fa-check"></i>
+            </div>
+          </div>
+
+          <div class="lms-stat-item">
+            <div class="lms-stat-item__info">
+              <span class="lms-stat-item__label">{{ 'Certificates'|t }}</span>
+              <span class="lms-stat-item__val">{{ certificates_count|default('0') }}</span>
+            </div>
+            <div class="lms-stat-item__icon lms-stat-item__icon--purple">
+              <i class="fas fa-medal"></i>
+            </div>
+          </div>
+
+          <div class="lms-stat-item">
+            <div class="lms-stat-item__info">
+              <span class="lms-stat-item__label">{{ 'Quiz Average'|t }}</span>
+              <span class="lms-stat-item__val">{{ quiz_average|default('0%') }}</span>
+            </div>
+            <div class="lms-stat-item__icon lms-stat-item__icon--warning">
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          
+          <div class="lms-stat-member-since">
+            <span class="lms-stat-member-label">{{ 'Member Since'|t }}</span>
+            <span class="lms-stat-member-val">{{ member_since_timestamp|format_date('custom', 'M d, Y') }}</span>
+          </div>
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</article>

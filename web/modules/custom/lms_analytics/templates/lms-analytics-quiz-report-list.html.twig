@@ -1,0 +1,78 @@
+{#
+/**
+ * @file
+ * Template for the LMS Analytics Quiz Report List.
+ *
+ * Available variables:
+ * - stats: Array of quiz statistics.
+ * - filters: Array of active filters (search).
+ */
+#}
+
+<div class="lms-report-container">
+  <div class="report-header">
+    <h2>{{ 'Quiz Analytics Report'|t }}</h2>
+  </div>
+
+  <div class="report-filters">
+    <form method="get" action="{{ url('<current>') }}" class="form-inline">
+      <div class="form-item">
+        <label for="searchFilter">{{ 'Search Quiz'|t }}</label>
+        <input type="text" name="search" id="searchFilter" value="{{ filters.search }}" class="form-text" placeholder="Quiz name..." />
+      </div>
+      <div class="form-actions">
+        <input type="submit" value="{{ 'Apply'|t }}" class="button" />
+        {% if filters.search %}
+          <a href="{{ url('<current>') }}" class="button">{{ 'Reset'|t }}</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover admin-table lms-analytics-table">
+      <thead>
+        <tr>
+          <th>{{ 'Quiz'|t }}</th>
+          <th class="text-center">{{ 'Pass Threshold'|t }}</th>
+          <th class="text-center">{{ 'Total Attempts'|t }}</th>
+          <th class="text-center">{{ 'Unique Attempts'|t }}</th>
+          <th class="text-center">{{ 'Avg. Score'|t }}</th>
+          <th class="text-center">{{ 'Pass Rate'|t }}</th>
+          <th class="text-center">{{ 'Fail Rate'|t }}</th>
+          <th class="text-right">{{ 'Details'|t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for quiz in stats %}
+          <tr>
+            <td>
+              <strong>{{ quiz.title }}</strong>
+            </td>
+            <td class="text-center">{{ quiz.pass_threshold }}%</td>
+            <td class="text-center"><strong>{{ quiz.attempts }}</strong></td>
+            <td class="text-center">{{ quiz.unique_attempts }}</td>
+            <td class="text-center text-primary"><strong>{{ quiz.avg_score|number_format(1) }}</strong></td>
+            <td class="text-center">
+              <span class="text-success">{{ quiz.pass_rate }}%</span>
+            </td>
+            <td class="text-center">
+              <span class="text-danger">{{ quiz.fail_rate }}%</span>
+            </td>
+            <td class="text-right">
+              <a href="{{ url('lms_analytics.quiz_report_detail', {'quiz_id': quiz.id}) }}" class="button button--small">{{ 'Drill Down'|t }}</a>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="8" class="text-center">{{ 'No quiz data available.'|t }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+.text-danger { color: #dc3545; }
+</style>

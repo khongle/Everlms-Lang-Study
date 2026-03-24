@@ -3,31 +3,64 @@
 
 <section class="lms-section">
   <div class="container">
-    <div class="lms-section__header">
-      <h1 class="lms-section__title">{{ 'Course Categories'|t }}</h1>
+    <div class="lms-manage__header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+      <h1 class="lms-section__title" style="margin: 0;">{{ 'Course Categories'|t }}</h1>
+      <div class="lms-search-box" style="position: relative; width: 100%; max-width: 320px;">
+        <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #8b949e;"></i>
+        <input type="text" id="category-search-input" placeholder="{{ 'Search categories...'|t }}" style="width: 100%; background: #161b22; border: 1px solid hsla(0,0%,100%,0.1); color: #e6edf3; padding: 0.6rem 1rem 0.6rem 2.5rem; border-radius: 2rem; font-size: 0.9rem; transition: all 0.3s ease; outline: none;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102,126,234,0.2)'" onblur="this.style.borderColor='hsla(0,0%,100%,0.1)'; this.style.boxShadow='none'">
+      </div>
     </div>
 
     {% if categories|length > 0 %}
       <div class="lms-categories-grid">
-        {% set icons = {
-          'Programming': 'fa-code',
-          'Business': 'fa-chart-line',
-          'Design': 'fa-palette',
-          'Marketing': 'fa-bullhorn',
-          'Frontend': 'fa-laptop-code',
-          'Backend': 'fa-server',
-          'Mobile': 'fa-mobile-alt',
-        } %}
         {% for category in categories %}
-          <a href="{{ path('lms_course.category_detail', {'taxonomy_term': category.id}) }}" class="lms-category-card">
-            <i class="fas {{ icons[category.label] ?? 'fa-book' }}"></i>
-            <h3>{{ category.label }}</h3>
-            {% if category.description.value %}
-              <p>{{ category.description.value|render|striptags }}</p>
-            {% endif %}
+          {% set term = category.entity %}
+          {% set count = category.course_count %}
+          <a href="{{ path('lms_course.category_detail', {'taxonomy_term': term.id()}) }}" class="lms-category-card">
+            <div class="lms-category-card__icon">
+              {% if category.thumbnail_url %}
+                 <img src="{{ category.thumbnail_url }}" alt="{{ term.label }}" />
+              {% else %}
+                 <i class="fas fa-book"></i>
+              {% endif %}
+            </div>
+            <div class="lms-category-card__content">
+              <h3 class="lms-category-card__title">{{ term.label }}</h3>
+              {% if term.description.value %}
+                <p class="lms-category-card__desc">{{ term.description.value|render|striptags }}</p>
+              {% endif %}
+            </div>
+            <div class="lms-category-card__meta">
+              <span class="lms-badge">{{ count }} {{ count == 1 ? 'Course'|t : 'Courses'|t }}</span>
+            </div>
           </a>
         {% endfor %}
       </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const searchInput = document.getElementById('category-search-input');
+          const categoryCards = document.querySelectorAll('.lms-category-card');
+
+          if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+              const term = e.target.value.toLowerCase().trim();
+              
+              categoryCards.forEach(card => {
+                const title = card.querySelector('.lms-category-card__title').textContent.toLowerCase();
+                const descEl = card.querySelector('.lms-category-card__desc');
+                const desc = descEl ? descEl.textContent.toLowerCase() : '';
+                
+                if (title.includes(term) || desc.includes(term)) {
+                  card.style.display = 'flex';
+                } else {
+                  card.style.display = 'none';
+                }
+              });
+            });
+          }
+        });
+      </script>
     {% else %}
       <div class="lms-empty-state">
         <i class="fas fa-folder-open"></i>

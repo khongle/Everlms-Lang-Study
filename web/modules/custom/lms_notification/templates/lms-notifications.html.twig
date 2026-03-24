@@ -1,49 +1,79 @@
 {# Notification center #}
 {{ attach_library('lms_theme/global') }}
+{{ attach_library('lms_notification/list') }}
 
 <section class="lms-section">
   <div class="container">
-    <h1 class="lms-manage__title">{{ 'Notifications'|t }}</h1>
+    <div class="lms-notifications-wrapper">
+      <div class="lms-notifications-header">
+        <h1 class="lms-notifications-title">
+          <i class="fas fa-bell" style="margin-right: 0.5rem; color: #60a5fa;"></i>{{ 'Notifications'|t }}
+        </h1>
+        <a href="{{ path('lms_notification.preferences') }}" class="lms-btn-settings use-ajax" data-dialog-type="modal" data-dialog-options='{"width": "800", "title": "Notification Preferences", "dialogClass": "lms-theme-dark-form"}'>
+          <i class="fas fa-sliders-h"></i> {{ 'Settings'|t }}
+        </a>
+      </div>
 
-    {% if notifications|length > 0 %}
-      <div class="lms-notifications">
-        {% set type_icons = {
-          'enrollment': 'fa-user-plus',
-          'quiz_result': 'fa-clipboard-check',
-          'certificate': 'fa-certificate',
-          'payment': 'fa-credit-card',
-          'forum_reply': 'fa-comment',
-          'system': 'fa-bell',
-        } %}
-        {% for notif in notifications %}
-          <div class="lms-card lms-notification-item {{ not notif.read ? 'lms-notification-item--unread' }}">
-            <div class="lms-notification-item__icon">
-              <i class="fas {{ type_icons[notif.type] ?? 'fa-bell' }}"></i>
-            </div>
-            <div class="lms-notification-item__body">
-              <h4>
-                {% if notif.link %}
-                  <a href="{{ notif.link }}">{{ notif.title }}</a>
-                {% else %}
-                  {{ notif.title }}
+      <div class="lms-notification-filters">
+        <a href="?type=all" class="lms-filter-btn {{ current_type == 'all' ? 'active' : '' }}">{{ 'All'|t }}</a>
+        <a href="?type=announcement" class="lms-filter-btn {{ current_type == 'announcement' ? 'active' : '' }}">{{ 'Announcements'|t }}</a>
+        <a href="?type=forum_reply" class="lms-filter-btn {{ current_type == 'forum_reply' ? 'active' : '' }}">{{ 'Community Replies'|t }}</a>
+        <a href="?type=enrollment" class="lms-filter-btn {{ current_type == 'enrollment' ? 'active' : '' }}">{{ 'Enrollments'|t }}</a>
+        <a href="?type=quiz_result" class="lms-filter-btn {{ current_type == 'quiz_result' ? 'active' : '' }}">{{ 'Quiz Results'|t }}</a>
+        <a href="?type=system" class="lms-filter-btn {{ current_type == 'system' ? 'active' : '' }}">{{ 'System'|t }}</a>
+      </div>
+
+      {% if notifications|length > 0 %}
+        <div class="lms-notifications">
+          {% set type_icons = {
+            'enrollment': 'fa-user-plus',
+            'quiz_result': 'fa-clipboard-check',
+            'certificate': 'fa-certificate',
+            'payment': 'fa-credit-card',
+            'forum_reply': 'fa-comment',
+            'system': 'fa-bell',
+            'announcement': 'fa-bullhorn',
+            'reminder': 'fa-clock',
+          } %}
+          {% for notif in notifications %}
+            <div class="lms-notification-item {{ not notif.read ? 'lms-notification-item--unread' }}">
+              <div class="lms-notification-item__icon">
+                <i class="fas {{ type_icons[notif.type] ?? 'fa-bell' }}"></i>
+              </div>
+              <div class="lms-notification-item__body">
+                <h4>
+                  {% if notif.link %}
+                    <a href="{{ notif.link }}">{{ notif.title }}</a>
+                  {% else %}
+                    {{ notif.title }}
+                  {% endif %}
+                </h4>
+                {% if notif.message %}
+                  <p>{{ notif.message|striptags }}</p>
                 {% endif %}
-              </h4>
-              {% if notif.message %}
-                <p>{{ notif.message|striptags }}</p>
-              {% endif %}
-              <small>{{ notif.created|date('M d, Y H:i') }}</small>
+                <div class="lms-notification-item__meta">
+                  <span class="lms-notification-item__date">
+                    <i class="far fa-clock"></i> {{ notif.created|date('M d, Y - H:i') }}
+                  </span>
+                  {% if not notif.read %}
+                    <span class="lms-notification-item__new-badge">{{ 'New'|t }}</span>
+                  {% endif %}
+                </div>
+              </div>
             </div>
-            {% if not notif.read %}
-              <span class="lms-badge lms-badge--primary lms-badge--sm">{{ 'New'|t }}</span>
-            {% endif %}
-          </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <div class="lms-empty-state">
-        <i class="fas fa-bell-slash"></i>
-        <h3>{{ 'No notifications'|t }}</h3>
-      </div>
-    {% endif %}
+          {% endfor %}
+        </div>
+        
+        {% if pager %}
+          {{ pager }}
+        {% endif %}
+      {% else %}
+        <div class="lms-empty-state">
+          <i class="fas fa-bell-slash"></i>
+          <h3>{{ 'You have no notifications'|t }}</h3>
+          <p>{{ current_type == 'all' ? 'When you receive notifications, they will appear here.'|t : 'No notifications of this type found.'|t }}</p>
+        </div>
+      {% endif %}
+    </div>
   </div>
 </section>

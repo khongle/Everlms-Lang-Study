@@ -1,0 +1,110 @@
+{# Admin User Form Wrapper #}
+{{ attach_library('lms_theme/global') }}
+
+<div class="lms-admin">
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: active_menu } %}
+
+  <div class="lms-admin__main">
+    <div class="lms-admin__header" style="padding-top: 3rem;">
+      <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ title }}</h1>
+    </div>
+
+    <div class="lms-admin-card" style="padding: 2.5rem; background: #0b0f19; border-top: 1px solid rgba(255,255,255,0.05); min-height: calc(100vh - 100px);">
+      <style>
+        /* HIDE GLOBAL NAVBAR IN WORKSPACE TO SAVE VERTICAL SPACE */
+        .lms-navbar {
+           display: none !important;
+        }
+
+        /* Professional Light Mode Form */
+        .lms-admin-user-form-wrapper {
+          background: #ffffff; /* Clean white */
+          border-radius: 0.5rem;
+          padding: 2.5rem;
+          color: #334155;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Soft premium shadow */
+        }
+
+        /* Form Item Typography & Spacing */
+        .lms-form-content .form-item {
+          margin-bottom: 1.5rem;
+          width: 100%;
+        }
+        .lms-form-content .form-item label {
+          display: block;
+          color: #334155;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+          font-size: 0.95rem;
+        }
+
+        /* Light Inputs */
+        .lms-form-content input[type="text"], 
+        .lms-form-content input[type="email"], 
+        .lms-form-content input[type="password"], 
+        .lms-form-content input[type="number"], 
+        .lms-form-content textarea, 
+        .lms-form-content select {
+          width: 100%;
+          background: #f8fafc !important; 
+          border: 1px solid #cbd5e1 !important; 
+          color: #1e293b !important;
+          padding: 0.75rem 1rem;
+          border-radius: 0.5rem;
+          transition: all 0.2s;
+          font-family: inherit;
+        }
+        .lms-form-content input[type="text"]:focus, 
+        .lms-form-content textarea:focus,
+        .lms-form-content select:focus {
+          outline: none !important;
+          border-color: #3b82f6 !important; /* EverLMS Blue */
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+          background: #ffffff !important;
+        }
+        
+        /* Form Actions (Save button area) */
+        .lms-form-content .form-actions {
+          margin-top: 3rem;
+          padding-top: 1.5rem;
+          border-top: 1px solid #e2e8f0;
+          display: flex;
+          gap: 1rem;
+        }
+        .lms-form-content input[type="submit"],
+        .lms-form-content .button {
+          background: #3b82f6 !important; /* EverLMS Blue */
+          color: white !important;
+          padding: 0.75rem 2.5rem !important;
+          border-radius: 0.5rem !important;
+          border: none !important;
+          font-weight: 600 !important;
+          cursor: pointer !important;
+          transition: all 0.2s ease !important;
+          font-size: 1rem !important;
+        }
+        .lms-form-content input[type="submit"]:hover,
+        .lms-form-content .button:hover {
+          background: #2563eb !important;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        /* Profile Image Field Overrides */
+        .lms-form-content .image-preview {
+            border-radius: 50%;
+            overflow: hidden;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+      </style>
+      
+      <div class="lms-admin-user-form-wrapper" id="lms-admin-form-app">
+        <div class="lms-form-content">
+          {{ form }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,50 +1,556 @@
 {# Forum topic detail with replies #}
 {{ attach_library('lms_theme/global') }}
+{{ attach_library('core/drupal.dialog.ajax') }}
 
 <section class="lms-section">
   <div class="container">
-    <nav class="lms-breadcrumb">
-      <a href="{{ path('lms_forum.index') }}">{{ 'Forum'|t }}</a>
-      <span>/</span>
-      <span>{{ topic.title }}</span>
+    <nav class="lms-breadcrumb" style="margin-bottom: 1.5rem; background: rgba(22,27,34,0.5); padding: 0.75rem 1.25rem; border-radius: 0.5rem; border: 1px solid rgba(240,246,252,0.1); display: inline-flex; align-items: center; max-width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+      <a href="{{ path('lms_forum.index') }}" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 500; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;"><i class="fas fa-comments"></i> {{ 'Community'|t }}</a>
+      <span style="margin: 0 0.75rem; opacity: 0.3; display: flex; align-items: center;"><i class="fas fa-chevron-right" style="font-size: 0.65rem;"></i></span>
+      <span style="color: #e6edf3; font-weight: 600; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ topic.title }}</span>
     </nav>
 
-    {# Original post #}
-    <div class="lms-card lms-forum-post lms-forum-post--original">
-      <div class="lms-forum-post__header">
-        <div class="lms-forum-post__avatar"><i class="fas fa-user-circle"></i></div>
-        <div>
-          <strong>{{ topic.author }}</strong>
-          <span class="lms-text-muted">{{ topic.created|date('M d, Y H:i') }}</span>
+    <div class="lms-forum-thread">
+      {# Topic Main Post #}
+      <div class="lms-forum-thread__main lms-forum-comment">
+        <div class="lms-forum-comment__avatar">
+          {% if topic.author_avatar %}
+            <img src="{{ topic.author_avatar }}" alt="{{ topic.author }}">
+          {% else %}
+            <i class="fas fa-user-circle" style="font-size: 24px;"></i>
+          {% endif %}
         </div>
-      </div>
-      <h1>{{ topic.title }}</h1>
-      <div class="lms-forum-post__body">{{ topic.body|raw }}</div>
-    </div>
-
-    {# Replies #}
-    <h3 class="lms-forum-replies-title">{{ replies|length }} {{ 'Replies'|t }}</h3>
-
-    {% for reply in replies %}
-      <div class="lms-card lms-forum-post">
-        <div class="lms-forum-post__header">
-          <div class="lms-forum-post__avatar"><i class="fas fa-user-circle"></i></div>
-          <div>
-            <strong>{{ reply.author }}</strong>
-            <span class="lms-text-muted">{{ reply.created|date('M d, Y H:i') }}</span>
+        <div class="lms-forum-comment__content">
+          <div class="lms-forum-comment__meta">
+            <strong>{{ topic.author }}</strong>
+            <span class="lms-text-muted">{{ topic.created|date('M d, Y H:i') }}</span>
+            {% if topic.resolved %}
+               <span class="lms-badge lms-badge--success"><i class="fas fa-check"></i> {{ 'Resolved'|t }}</span>
+            {% endif %}
+          </div>
+          <h1 style="font-size: 1.5rem; font-weight: 700; margin: 0.5rem 0; color: #e6edf3; line-height: 1.3;">{{ topic.title }}</h1>
+          <div class="lms-forum-comment__body">{{ topic.body|raw }}</div>
+          
+          <div class="lms-forum-thread-actions">
+            {% if reply_form %}
+            <button type="button" class="lms-action-badge btn-quote-reply" title="{{ 'Quote and Reply'|t }}"><i class="fas fa-reply"></i> {{ 'Reply'|t }}</button>
+            {% endif %}
+            <button type="button" class="lms-action-badge" style="opacity: 0.5; cursor: not-allowed;"><i class="far fa-heart"></i> {{ 'Like'|t }}</button>
+            <button type="button" class="lms-action-badge" style="opacity: 0.5; cursor: not-allowed;"><i class="fas fa-share-alt"></i> {{ 'Share'|t }}</button>
           </div>
         </div>
-        <div class="lms-forum-post__body">{{ reply.body|raw }}</div>
       </div>
-    {% endfor %}
 
-    {# Reply form #}
-    <div class="lms-card lms-forum-reply-form">
-      <h4>{{ 'Leave a Reply'|t }}</h4>
-      <div class="form-item">
-        <textarea class="lms-input lms-textarea" rows="4" placeholder="{{ 'Write your reply...'|t }}"></textarea>
-      </div>
-      <button class="lms-btn lms-btn--primary">{{ 'Post Reply'|t }}</button>
+      {# Replies List #}
+      {% if not is_teaser_mode %}
+        <div class="lms-forum-thread__replies">
+        {% for reply in replies %}
+          <div id="forum-reply-{{ reply.id }}" class="lms-forum-comment {% if reply.is_answer %}lms-forum-comment--best-answer{% endif %}">
+            <div class="lms-forum-comment__avatar">
+              {% if reply.author_avatar %}
+                <img src="{{ reply.author_avatar }}" alt="{{ reply.author }}">
+              {% else %}
+                <i class="fas fa-user-circle" style="font-size: 24px;"></i>
+              {% endif %}
+            </div>
+            <div class="lms-forum-comment__content">
+              <div class="lms-forum-comment__meta">
+                <strong>{{ reply.author }}</strong>
+                <span class="lms-text-muted">{{ reply.created|date('M d, Y H:i') }}</span>
+                {% if reply.is_answer %}
+                  <span style="color: #43e97b; font-size: 0.8rem; font-weight: 600; margin-left: 8px;"><i class="fas fa-check-circle"></i> {{ 'Best Answer'|t }}</span>
+                {% endif %}
+                
+                <div class="lms-forum-comment__actions">
+                  {% if reply_form %}
+                  <button type="button" class="lms-forum-comment__action-icon btn-quote-reply" title="{{ 'Reply'|t }}"><i class="fas fa-reply"></i></button>
+                  {% endif %}
+                  
+                  {% if not topic.resolved and topic.owner_id == render_var(user.id) %}
+                       <a href="{{ reply.mark_best_url }}" class="lms-forum-comment__action-icon text-success" title="{{ 'Mark as Best Answer'|t }}"><i class="fas fa-check"></i></a>
+                  {% endif %}
+                  
+                  {% if reply.edit_url %}
+                       <a href="{{ reply.edit_url }}" class="lms-forum-comment__action-icon text-warning use-ajax" data-dialog-type="modal" data-dialog-options='{"width":800, "dialogClass": "lms-theme-dark-form"}' title="{{ 'Edit Reply'|t }}"><i class="fas fa-edit"></i></a>
+                  {% endif %}
+                  
+                  {% if reply.delete_url %}
+                       <a href="{{ reply.delete_url }}" class="lms-forum-comment__action-icon text-danger use-ajax" data-dialog-type="modal" data-dialog-options='{"width":500, "dialogClass": "lms-theme-dark-form"}' title="{{ 'Delete Reply'|t }}"><i class="fas fa-trash"></i></a>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="lms-forum-comment__body">{{ reply.body|raw }}</div>
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+      {% endif %}
+
+      {# Reply form or Teaser CTA #}
+      {% if is_teaser_mode %}
+        <div class="lms-forum-teaser-cta" style="margin-top: 2rem; background: linear-gradient(145deg, rgba(88, 166, 255, 0.05) 0%, rgba(31, 111, 235, 0.1) 100%); border: 1px solid rgba(88, 166, 255, 0.2); border-radius: 12px; padding: 2.5rem 1.5rem; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+          <div style="font-size: 3rem; color: #58a6ff; margin-bottom: 1rem; opacity: 0.8;"><i class="fas fa-comments"></i></div>
+          <h3 style="color: #e6edf3; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">
+            {{ 'Join the Discussion'|t }}
+          </h3>
+          <p style="color: #8b949e; margin-bottom: 1.5rem; font-size: 0.95rem;">
+            {% trans %}
+              There are <strong>{{ total_replies }} replies</strong> in this topic. You must hop in to view and participate in the community discussion!
+            {% endtrans %}
+          </p>
+          <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a href="{{ path('user.login') }}" class="button button--primary" style="background: #238636; border: 1px solid rgba(240, 246, 252, 0.1); border-radius: 6px; padding: 0.6rem 2rem; color: #fff; text-decoration: none; font-weight: 600; transition: background 0.2s;"><i class="fas fa-sign-in-alt me-2"></i> {{ 'Log In'|t }}</a>
+            <a href="{{ path('user.register') }}" class="button" style="background: #21262d; border: 1px solid rgba(240, 246, 252, 0.1); border-radius: 6px; padding: 0.6rem 2rem; color: #c9d1d9; text-decoration: none; font-weight: 600; transition: background 0.2s;"><i class="fas fa-user-plus me-2"></i> {{ 'Register'|t }}</a>
+          </div>
+        </div>
+      {% elseif topic.resolved %}
+        <div class="lms-alert lms-alert--success" style="margin-top: 2rem;">
+          <i class="fas fa-check-circle"></i> {{ 'This topic has been marked as resolved and closed for new replies.'|t }}
+        </div>
+      {% elseif reply_form %}
+        <div class="lms-forum-thread__form lms-forum-reply-form lms-form lms-form--full lms-theme-dark-form">
+          <div style="display: flex; gap: 1rem;">
+             <div class="lms-forum-comment__avatar" style="margin-top: 5px;">
+                <i class="fas fa-user-circle" style="font-size: 24px;"></i>
+             </div>
+             <div style="flex: 1; min-width: 0;">
+                {{ reply_form }}
+             </div>
+          </div>
+        </div>
+      {% endif %}
     </div>
   </div>
 </section>
+
+<style>
+/* Synchronized dark theme stylings for forms */
+.lms-theme-dark-form .form-item label {
+  color: #e6edf3;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.lms-theme-dark-form .form-text,
+.lms-theme-dark-form .form-textarea,
+.lms-theme-dark-form .form-select {
+  background-color: #0d1117;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  border-radius: 6px;
+  padding: 0.75rem;
+  width: 100%;
+}
+
+.lms-theme-dark-form .form-text:focus,
+.lms-theme-dark-form .form-textarea:focus {
+  border-color: #58a6ff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+}
+
+.lms-theme-dark-form .ck-editor__editable {
+  background-color: #0d1117 !important;
+  color: #c9d1d9 !important;
+  border-color: #30363d !important;
+}
+
+.lms-theme-dark-form .form-submit.button--primary {
+  background-color: #238636;
+  color: #ffffff;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  border-radius: 6px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: .2s background-color cubic-bezier(0.3, 0, 0.5, 1);
+}
+
+.lms-theme-dark-form .form-submit.button--primary:hover {
+  background-color: #2ea043;
+}
+
+/* Hide redundant ckeditor labels and tips */
+.lms-theme-dark-form .filter-wrapper { display: none !important; }
+.lms-theme-dark-form .ckeditor-description { display: none !important; }
+.lms-theme-dark-form .form-item-field-body-0-value > label,
+.lms-theme-dark-form .form-item-field-body-0-value .filter-guidelines { display: none !important; }
+.lms-theme-dark-form label[for^="edit-field-body"] { display: none !important; }
+
+/* Drupal Core AJAX Dialog Overrides for Dark Theme */
+.ui-dialog.lms-theme-dark-form {
+  background: #161b22 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+  padding: 0 !important;
+  z-index: 10000 !important; /* Ensure it stays above other elements */
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar {
+  background: rgba(255,255,255,0.02) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+  padding: 1.2rem 1.5rem !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-title {
+  color: #e6edf3 !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close {
+  background: transparent !important;
+  border: none !important;
+  color: #8b949e !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: absolute !important;
+  right: 1.5rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  transition: color 0.2s;
+  width: 24px;
+  height: 24px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close::before {
+  content: "\f00d";
+  font-family: "Font Awesome 5 Free", "FontAwesome";
+  font-weight: 900;
+  font-size: 1.25rem;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close .ui-button-icon-space,
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close .ui-button-icon,
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close .ui-button-text {
+  display: none !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close:hover {
+  color: #e6edf3 !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-content {
+  padding: 1.5rem !important;
+  background: transparent !important;
+  color: #c9d1d9 !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-widget-content {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+/* Modal Actions Styling */
+.ui-dialog.lms-theme-dark-form .form-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.ui-dialog.lms-theme-dark-form .button {
+  background-color: #21262d;
+  color: #c9d1d9;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  border-radius: 6px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: .2s background-color cubic-bezier(0.3, 0, 0.5, 1);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.5;
+}
+
+.ui-dialog.lms-theme-dark-form .button:hover {
+  background-color: #30363d;
+  color: #ffffff;
+}
+
+.ui-dialog.lms-theme-dark-form .button--primary {
+  background-color: #238636 !important;
+  color: #ffffff !important;
+  border-color: rgba(240, 246, 252, 0.1) !important;
+}
+
+.ui-dialog.lms-theme-dark-form .button--primary:hover {
+  background-color: #2ea043 !important;
+}
+
+.ui-dialog.lms-theme-dark-form .button--danger {
+  background-color: #da3633 !important;
+  color: #ffffff !important;
+  border-color: rgba(240, 246, 252, 0.1) !important;
+}
+
+.ui-dialog.lms-theme-dark-form .button--danger:hover {
+  background-color: #f85149 !important;
+}
+
+/* Fix for confirm form description text */
+.ui-dialog.lms-theme-dark-form .ui-dialog-content {
+  color: #c9d1d9 !important;
+}
+
+.ui-dialog.lms-theme-dark-form .ui-dialog-content p,
+.ui-dialog.lms-theme-dark-form .ui-dialog-content div {
+  color: #e6edf3 !important;
+  font-size: 1rem;
+}
+
+/* Ensure empty backgrounds behind the modal are darkened */
+.ui-widget-overlay {
+  background: rgba(0,0,0,0.7) !important;
+  backdrop-filter: blur(4px) !important;
+  opacity: 1 !important;
+}
+
+/* New Seamless Thread View */
+.lms-forum-thread {
+  background: #161b22;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.lms-forum-thread__main {
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(240, 246, 252, 0.1);
+  margin-bottom: 2rem;
+}
+
+.lms-action-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgba(240, 246, 252, 0.15);
+  border-radius: 999px;
+  background: transparent;
+  color: #c9d1d9;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.lms-action-badge:hover {
+  background: hsla(0,0%,100%,0.05);
+  color: #e6edf3;
+  border-color: rgba(240, 246, 252, 0.3);
+}
+
+.lms-forum-thread-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Comment Level */
+.lms-forum-comment {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.lms-forum-comment:last-child {
+  margin-bottom: 0;
+}
+
+.lms-forum-comment__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #21262d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6e7681;
+  overflow: hidden;
+}
+
+.lms-forum-comment__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lms-forum-comment__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.lms-forum-comment__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.lms-forum-comment__meta strong {
+  font-size: 0.9375rem;
+  color: #e6edf3;
+}
+
+.lms-forum-comment__actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.lms-forum-comment:hover .lms-forum-comment__actions {
+  opacity: 1;
+}
+
+.lms-forum-comment__action-icon {
+  color: #8b949e;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.15s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.lms-forum-comment__action-icon:hover { color: #e6edf3; }
+.lms-forum-comment__action-icon.text-danger:hover { color: #f5576c; }
+.lms-forum-comment__action-icon.text-warning:hover { color: #fee140; }
+.lms-forum-comment__action-icon.text-success:hover { color: #43e97b; }
+
+.lms-forum-comment__body {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: #c9d1d9;
+}
+.lms-forum-comment__body p { margin-top: 0; margin-bottom: 0.75rem; }
+.lms-forum-comment__body p:last-child { margin-bottom: 0; }
+.lms-forum-comment__body code {
+  background: #21262d;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+.lms-forum-comment__body blockquote {
+  border-left: 4px solid #667eea;
+  margin: 1rem 0;
+  background: rgba(255,255,255,0.05);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  color: #8b949e;
+  font-style: italic;
+}
+.lms-forum-comment__body blockquote strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #c9d1d9;
+  font-style: normal;
+}
+
+.lms-forum-comment--best-answer {
+  background: rgba(67, 233, 123, 0.05);
+  border: 1px solid rgba(67, 233, 123, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.lms-forum-thread__form {
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(240,246,252,0.1);
+  padding-top: 1.5rem;
+}
+</style>
+
+<script>
+  (function() {
+    function initQuoteReply() {
+      if (window.lmsQuoteBinded) return;
+      window.lmsQuoteBinded = true;
+      document.body.addEventListener('click', function(e) {
+        var btn = e.target.closest('.btn-quote-reply');
+        if (!btn) return;
+        
+        e.preventDefault();
+        var post = btn.closest('.lms-forum-comment');
+        if (!post) return;
+        
+        var authorEl = post.querySelector('strong');
+        var author = authorEl ? authorEl.textContent.trim() : 'Someone';
+        
+        var bodyEl = post.querySelector('.lms-forum-comment__body');
+        var rawBody = bodyEl ? bodyEl.innerHTML.trim() : '';
+        
+        // Remove style attributes just in case, let our global CSS handle it
+        var quoteHtml = '<blockquote><strong>@' + author + ' wrote:</strong><br/>' + rawBody + '</blockquote><p><br/></p>';
+        
+        var editorSet = false;
+        
+        if (typeof window.CKEDITOR !== 'undefined' && window.CKEDITOR.instances) {
+          var instances = Object.keys(window.CKEDITOR.instances);
+          if (instances.length > 0 && window.CKEDITOR.instances[instances[0]]) {
+            window.CKEDITOR.instances[instances[0]].insertHtml(quoteHtml);
+            editorSet = true;
+          }
+        }
+        
+        if (!editorSet && typeof Drupal !== 'undefined' && typeof Drupal.CKEditor5Instances !== 'undefined' && Drupal.CKEditor5Instances.size > 0) {
+          var editorObj = Array.from(Drupal.CKEditor5Instances.values())[0];
+          if (editorObj) {
+            editorObj.model.change(writer => {
+              var viewFragment = editorObj.data.processor.toView(quoteHtml);
+              var modelFragment = editorObj.data.toModel(viewFragment);
+              editorObj.model.insertContent(modelFragment);
+            });
+            editorSet = true;
+          }
+        }
+        
+        var textarea = document.querySelector('.lms-forum-reply-form textarea[name^="field_body"]');
+        if (!editorSet) {
+          if (textarea) {
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = quoteHtml;
+            textarea.value = textarea.value + '\n> @' + author + ' wrote:\n' + tempDiv.innerText.trim() + '\n\n';
+          }
+        }
+        
+        var formContainer = document.querySelector('.lms-forum-reply-form');
+        if (formContainer) {
+          window.scrollTo({
+            top: formContainer.getBoundingClientRect().top + window.scrollY - 100,
+            behavior: 'smooth'
+          });
+          if (textarea && !editorSet) textarea.focus();
+        }
+      });
+    }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initQuoteReply);
+    } else {
+      initQuoteReply();
+    }
+  })();
+</script>

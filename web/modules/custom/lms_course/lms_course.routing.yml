@@ -26,6 +26,17 @@ lms_course.detail:
       lms_course:
         type: entity:lms_course
 
+lms_course.enroll_free:
+  path: '/courses/{lms_course}/enroll-free'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\CourseEnrollmentController::enrollFree'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      lms_course:
+        type: entity:lms_course
+
 lms_course.category:
   path: '/categories'
   defaults:
@@ -72,52 +83,104 @@ lms_course.contact:
 
 # Admin/Management routes
 lms_course.admin_dashboard:
-  path: '/manage'
+  path: '/workspace'
   defaults:
     _controller: '\Drupal\lms_course\Controller\AdminController::dashboard'
     _title: 'Admin Dashboard'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_course.admin_course_create:
+  path: '/workspace/courses/create'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::courseCreateWizard'
+    _title: 'Create New Course'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
 
 lms_course.admin_courses:
-  path: '/manage/courses'
+  path: '/workspace/courses'
   defaults:
     _controller: '\Drupal\lms_course\Controller\AdminController::courseList'
     _title: 'Manage Courses'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
 
 lms_course.admin_quizzes:
-  path: '/manage/quizzes'
+  path: '/workspace/quizzes'
   defaults:
     _controller: '\Drupal\lms_course\Controller\AdminController::quizList'
     _title: 'Manage Quizzes'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
 
 lms_course.admin_orders:
-  path: '/manage/orders'
+  path: '/workspace/orders'
   defaults:
     _controller: '\Drupal\lms_course\Controller\AdminController::orderList'
     _title: 'Manage Orders'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
 
 lms_course.admin_users:
-  path: '/manage/users'
+  path: '/workspace/users'
   defaults:
     _controller: '\Drupal\lms_course\Controller\AdminController::userList'
     _title: 'Manage Users'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_course.admin_quiz.create:
+  path: '/workspace/quizzes/create'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::quizCreateForm'
+    _title: 'Create Quiz'
+  requirements:
+    _entity_create_access: 'lms_quiz'
+
+lms_course.admin_quiz.edit:
+  path: '/workspace/quizzes/{lms_quiz}/edit'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::quizEditForm'
+    _title: 'Edit Quiz'
+  requirements:
+    _entity_access: 'lms_quiz.update'
+  options:
+    parameters:
+      lms_quiz:
+        type: entity:lms_quiz
+
+lms_course.admin.users.bulk:
+  path: '/workspace/users/bulk'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::bulkUsers'
+  requirements:
+    _permission: 'administer lms_course'
+  methods: [POST]
+  options:
+    _admin_route: TRUE
 
 lms_course.admin_reports:
-  path: '/manage/reports'
+  path: '/workspace/reports'
   defaults:
     _controller: '\Drupal\lms_course\Controller\AdminController::reports'
     _title: 'Reports & Analytics'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
 
 # User Profile
 lms_course.profile:
@@ -127,3 +190,85 @@ lms_course.profile:
     _title: 'My Profile'
   requirements:
     _user_is_logged_in: 'TRUE'
+
+# Admin Edit specific form mode routes
+lms_course.admin.course.edit:
+  path: '/workspace/courses/{lms_course}/edit'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::courseEditForm'
+    _title: 'Edit Course'
+  requirements:
+    _entity_access: 'lms_course.update'
+  options:
+    parameters:
+      lms_course:
+        type: entity:lms_course
+
+lms_course.admin.user.create:
+  path: '/workspace/users/create'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::userCreateForm'
+    _title: 'Create User'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_course.admin.user.edit:
+  path: '/workspace/users/{user}/admin-edit'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::userEditForm'
+    _title: 'Edit User'
+  requirements:
+    _entity_access: 'user.update'
+  options:
+    parameters:
+      user:
+        type: entity:user
+
+lms_course.admin_order.edit:
+  path: '/workspace/orders/{lms_order}/edit'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\AdminController::orderEditForm'
+    _title: 'Edit Order'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    parameters:
+      lms_order:
+        type: entity:lms_order
+lms_course.admin.chapter.edit:
+  path: '/workspace/chapters/{lms_chapter}/admin-edit'
+  defaults:
+    _entity_form: 'lms_chapter.admin_edit'
+    _title: 'Edit Chapter'
+  requirements:
+    _entity_access: 'lms_chapter.update'
+  options:
+    parameters:
+      lms_chapter:
+        type: entity:lms_chapter
+
+lms_course.admin.lesson.edit:
+  path: '/workspace/lessons/{lms_lesson}/admin-edit'
+  defaults:
+    _entity_form: 'lms_lesson.admin_edit'
+    _title: 'Edit Lesson'
+  requirements:
+    _entity_access: 'lms_lesson.update'
+  options:
+    parameters:
+      lms_lesson:
+        type: entity:lms_lesson
+
+lms_course.instructor_profile:
+  path: '/instructor/{user}'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\CoursePublicController::instructorProfile'
+    _title: 'Instructor Profile'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      user:
+        type: entity:user

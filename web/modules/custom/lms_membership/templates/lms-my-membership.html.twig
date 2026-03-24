@@ -1,0 +1,181 @@
+{# My Membership Template #}
+{{ attach_library('lms_theme/global') }}
+
+<style>
+  .lms-my-membership {
+    max-width: 1100px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+    color: #cbd5e1;
+    font-family: 'Inter', sans-serif;
+  }
+  .lms-my-membership h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 2rem;
+  }
+  .lms-membership-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+  .lms-membership-card {
+    background: #1e293b;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .lms-membership-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    border-color: rgba(255,255,255,0.1);
+  }
+  .lms-membership-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .lms-membership-card__title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .lms-membership-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 1.125rem;
+  }
+  .lms-membership-card__header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+  }
+  .lms-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .lms-badge--active {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+  }
+  .lms-badge--expired {
+    background: rgba(244, 63, 94, 0.2);
+    color: #fb7185;
+  }
+  .lms-badge--trial {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+  }
+  .lms-membership-card__body p {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.75rem 0;
+    font-size: 0.9375rem;
+  }
+  .lms-membership-card__body strong {
+    color: #94a3b8;
+    font-weight: 500;
+  }
+  .lms-membership-card__value {
+    color: #fff;
+    font-weight: 600;
+  }
+  .lms-membership-card__actions {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .lms-btn--danger {
+    background: rgba(244, 63, 94, 0.1);
+    color: #fb7185;
+    border: 1px solid rgba(244, 63, 94, 0.3);
+    width: 100%;
+    text-align: center;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .lms-btn--danger:hover {
+    background: rgba(244, 63, 94, 0.2);
+    color: #fff;
+    border-color: rgba(244, 63, 94, 0.5);
+  }
+</style>
+
+<div class="lms-my-membership">
+  <h2>{{ 'My Memberships'|t }}</h2>
+  
+  {% if memberships is empty %}
+    <div style="background: #1e293b; border-radius: 1rem; padding: 3rem; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+      <i class="fas fa-crown" style="font-size: 3rem; color: #475569; margin-bottom: 1.5rem;"></i>
+      <h3 style="color: #fff; margin-bottom: 1rem;">{{ 'No Active Plans'|t }}</h3>
+      <p style="color: #94a3b8; margin-bottom: 2rem;">{{ 'Unlock unlimited access to all courses by subscribing to a membership plan.'|t }}</p>
+      <a href="{{ url('lms_course.pricing') }}" class="btn-lms-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; background: #1d70f5; color: white; text-decoration: none; font-weight: 600;">
+        {{ 'View Pricing Plans'|t }} <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  {% else %}
+    <div class="lms-membership-list">
+      {% for membership in memberships %}
+        <div class="lms-membership-card">
+          <div class="lms-membership-card__header">
+            <div class="lms-membership-card__title">
+              <div class="lms-membership-icon">
+                {{ membership.plan_name[:2]|upper }}
+              </div>
+              <h3>{{ membership.plan_name }}</h3>
+            </div>
+            <span class="lms-badge lms-badge--{{ membership.status }}">{{ membership.status }}</span>
+          </div>
+          
+          <div class="lms-membership-card__body">
+            <p>
+              <strong>{{ 'Start Date'|t }}</strong> 
+              <span class="lms-membership-card__value"><i class="far fa-calendar-alt" style="margin-right: 0.25rem; color: #64748b;"></i> {{ membership.start_date|date('M d, Y') }}</span>
+            </p>
+            <p>
+              <strong>{{ 'End Date'|t }}</strong> 
+              <span class="lms-membership-card__value"><i class="far fa-calendar-check" style="margin-right: 0.25rem; color: #64748b;"></i> {{ membership.end_date|date('M d, Y') }}</span>
+            </p>
+            <p>
+              <strong>{{ 'Auto Renew'|t }}</strong> 
+              {% if membership.auto_renew %}
+                <span class="lms-membership-card__value" style="color: #34d399;"><i class="fas fa-sync-alt" style="margin-right: 0.25rem;"></i> {{ 'Enabled'|t }}</span>
+              {% else %}
+                <span class="lms-membership-card__value" style="color: #94a3b8;"><i class="fas fa-ban" style="margin-right: 0.25rem;"></i> {{ 'Disabled'|t }}</span>
+              {% endif %}
+            </p>
+          </div>
+          
+          {% if membership.auto_renew and (membership.status == 'active' or membership.status == 'trial') %}
+            <div class="lms-membership-card__actions">
+              <a href="{{ url('lms_membership.cancel_membership', {'lms_user_membership': membership.id}) }}" class="lms-btn--danger" onclick="return confirm('{{ 'Are you sure you want to cancel auto-renewal? You will still have access until the end date.'|t }}');">
+                <i class="fas fa-times-circle" style="margin-right: 0.25rem;"></i> {{ 'Cancel Auto-Renewal'|t }}
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

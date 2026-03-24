@@ -69,13 +69,7 @@ class Lesson extends ContentEntityBase {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
-    $fields['field_chapter'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(new TranslatableMarkup('Chapter'))
-      ->setRequired(TRUE)
-      ->setSetting('target_type', 'lms_chapter')
-      ->setDisplayOptions('form', ['type' => 'entity_reference_autocomplete', 'weight' => -9])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
+
 
     $fields['field_content'] = BaseFieldDefinition::create('text_long')
       ->setLabel(new TranslatableMarkup('Content'))
@@ -94,10 +88,18 @@ class Lesson extends ContentEntityBase {
         'quiz' => 'Quiz',
         'h5p' => 'H5P Interactive',
         'scorm' => 'SCORM',
+        'pdf' => 'PDF Document',
+        'pptx' => 'PowerPoint',
         'zoom' => 'Zoom Live',
         'mixed' => 'Mixed',
       ])
       ->setDisplayOptions('form', ['type' => 'options_select', 'weight' => -7])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['field_h5p_embed'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(new TranslatableMarkup('H5P Embed Code'))
+      ->setDisplayOptions('form', ['type' => 'string_textarea', 'weight' => -6])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
@@ -138,6 +140,14 @@ class Lesson extends ContentEntityBase {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['field_pptx_attachment'] = BaseFieldDefinition::create('file')
+      ->setLabel(new TranslatableMarkup('PowerPoint File'))
+      ->setSetting('file_directory', 'lessons/pptx')
+      ->setSetting('file_extensions', 'ppt pptx')
+      ->setDisplayOptions('form', ['type' => 'file_generic', 'weight' => -1])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['field_attachments'] = BaseFieldDefinition::create('file')
       ->setLabel(new TranslatableMarkup('Attachments'))
       ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)
@@ -169,6 +179,31 @@ class Lesson extends ContentEntityBase {
       ->setDefaultValue(0)
       ->setDisplayOptions('form', ['type' => 'number', 'weight' => 2])
       ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['field_quiz'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(new TranslatableMarkup('Quiz'))
+      ->setSetting('target_type', 'lms_quiz')
+      ->setDisplayOptions('form', ['type' => 'entity_reference_autocomplete', 'weight' => 3])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['field_comments'] = BaseFieldDefinition::create('comment')
+      ->setLabel(new TranslatableMarkup('Comments'))
+      ->setDescription(new TranslatableMarkup('Lesson comments and Q&A.'))
+      ->setDefaultValue([
+        'status' => \Drupal\comment\Plugin\Field\FieldType\CommentItemInterface::OPEN,
+      ])
+      ->setSetting('comment_type', 'lesson_comment')
+      ->setDisplayOptions('form', [
+        'type' => 'comment_default',
+        'weight' => 4,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'comment_default',
+        'weight' => 4,
+      ])
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['weight'] = BaseFieldDefinition::create('integer')

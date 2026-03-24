@@ -1,0 +1,126 @@
+/* Notification Header Bell Dropdown */
+.lms-bell-dropdown {
+  position: absolute;
+  top: 100%;
+  right: -10px;
+  width: 350px;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
+  z-index: 1000;
+  margin-top: 12px;
+}
+
+.lms-bell-icon-wrapper:hover .lms-bell-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.lms-bell-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 22px;
+  width: 12px;
+  height: 12px;
+  background-color: #1e293b;
+  border-left: 1px solid #334155;
+  border-top: 1px solid #334155;
+  transform: rotate(45deg);
+}
+
+.lms-bell-dropdown__header {
+  padding: 1rem;
+  border-bottom: 1px solid #334155;
+  font-weight: 600;
+  color: #f8fafc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lms-bell-dropdown__body {
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.lms-bell-dropdown-item {
+  display: flex;
+  padding: 1rem;
+  border-bottom: 1px solid #334155;
+  gap: 1rem;
+  text-decoration: none;
+  color: #cbd5e1;
+  transition: background-color 0.2s;
+}
+
+.lms-bell-dropdown-item:hover {
+  background-color: #273549;
+  color: #f8fafc;
+}
+
+.lms-bell-dropdown-item--unread {
+  background-color: rgba(59, 130, 246, 0.05);
+  border-left: 3px solid #3b82f6;
+  padding-left: calc(1rem - 3px);
+}
+
+.lms-bell-dropdown-item__icon {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.lms-bell-dropdown-item__content h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f8fafc;
+  line-height: 1.3;
+}
+
+.lms-bell-dropdown-item__content p {
+  margin: 0 0 0.4rem 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lms-bell-dropdown-item__time {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.lms-bell-dropdown__footer {
+  padding: 0.75rem;
+  text-align: center;
+  border-top: 1px solid #334155;
+}
+
+.lms-bell-dropdown__footer a {
+  color: #60a5fa;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.lms-bell-dropdown__footer a:hover {
+  text-decoration: underline;
+}

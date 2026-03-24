@@ -1,0 +1,184 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for LMS Order module.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\lms_order\Entity\Order;
+
+/**
+ * Implements hook_entity_insert().
+ */
+function lms_order_entity_insert(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() === 'lms_order') {
+    if ($entity->get('field_status')->value === 'completed') {
+      _lms_order_process_completed_order($entity);
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function lms_order_entity_update(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() === 'lms_order') {
+    /** @var \Drupal\lms_order\Entity\Order $entity */
+    $status = $entity->get('field_status')->value;
+    $original_status = $entity->original ? $entity->original->get('field_status')->value : '';
+
+    if ($status === 'completed' && $original_status !== 'completed') {
+      _lms_order_process_completed_order($entity);
+    }
+  }
+}
+
+/**
+ * Helper function to process enrollment and notifications for completed orders.
+ */
+function _lms_order_process_completed_order(EntityInterface $entity) {
+  // Order has just been completed! Trigger enrollment.
+  $items = $entity->get('field_items')->referencedEntities();
+  $user_id = $entity->get('uid')->target_id;
+
+  foreach ($items as $item) {
+    /** @var \Drupal\lms_order\Entity\OrderItem $item */
+    $course_id = $item->hasField('field_course') ? $item->get('field_course')->target_id : NULL;
+    $plan_id = $item->hasField('field_membership_plan') ? $item->get('field_membership_plan')->target_id : NULL;
+
+    if ($course_id && $user_id) {
+      // Trigger course enrollment.
+      \Drupal::logger('lms_order')->notice('Auto-enrolling user @user into course @course following order @order payment.', [
+        '@user' => $user_id,
+        '@course' => $course_id,
+        '@order' => $entity->id(),
+      ]);
+
+      // Formal enrollment!
+      $storage = \Drupal::entityTypeManager()->getStorage('lms_user_course');
+      $user_course = $storage->create([
+        'uid' => $user_id,
+        'field_course' => $course_id,
+        'field_status' => 'enrolled',
+        'field_progress' => 0.0,
+        'field_enrolled_at' => time(),
+      ]);
+      $user_course->save();
+    }
+
+    if ($plan_id && $user_id) {
+      \Drupal::logger('lms_order')->notice('Auto-assigning membership plan @plan to user @user following order @order payment.', [
+        '@user' => $user_id,
+        '@plan' => $plan_id,
+        '@order' => $entity->id(),
+      ]);
+
+      $plan = \Drupal::entityTypeManager()->getStorage('lms_membership_plan')->load($plan_id);
+      if ($plan) {
+        $days = (int) $plan->get('field_duration_days')->value ?: 30;
+        $start_date = time();
+        $end_date = $start_date + ($days * 86400);
+
+        $storage = \Drupal::entityTypeManager()->getStorage('lms_user_membership');
+        $user_membership = $storage->create([
+          'uid' => $user_id,
+          'field_plan' => $plan_id,
+          'field_status' => 'active',
+          'field_start_date' => $start_date,
+          'field_end_date' => $end_date,
+          'field_auto_renew' => TRUE,
+        ]);
+        $user_membership->save();
+      }
+    }
+  }
+      
+  $user = \Drupal\user\Entity\User::load($user_id);
+  if ($user) {
+    // 1. Send Email Notification
+    $mailManager = \Drupal::service('plugin.manager.mail');
+    $module = 'lms_order';
+    $key = 'order_completed';
+    $to = $user->getEmail();
+    $params = [
+      'order_id' => $entity->id(),
+      'user_name' => $user->getDisplayName(),
+      'dashboard_url' => \Drupal\Core\Url::fromRoute('<front>', [], ['absolute' => TRUE])->toString() . 'my-courses',
+    ];
+    $langcode = $user->getPreferredLangcode();
+    $mailManager->mail($module, $key, $to, $langcode, $params, NULL, TRUE);
+
+    // 2. Create In-App Notification
+    $storage = \Drupal::entityTypeManager()->getStorage('lms_notification');
+    $notification = $storage->create([
+      'uid' => $user_id,
+      'field_type' => 'payment',
+      'field_channel' => ['value' => 'in_app'],
+      'field_title' => t('Order #@order_id Completed', ['@order_id' => $entity->id()]),
+      'field_message' => [
+        'value' => t('Your payment for Order #@order_id was successful. You can now access your purchased contents.', ['@order_id' => $entity->id()]),
+        'format' => 'basic_html',
+      ],
+      'field_link' => '/my-courses',
+      'field_read' => FALSE,
+      'field_reference_type' => 'lms_order',
+      'field_reference_id' => $entity->id(),
+    ]);
+    $notification->save();
+        
+    \Drupal::logger('lms_order')->notice('Sent approval email and web notification for Order @order to user @user.', [
+      '@order' => $entity->id(),
+      '@user' => $user->id(),
+    ]);
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function lms_order_theme() {
+  return [
+    'lms_checkout' => [
+      'variables' => [
+        'form' => NULL,
+        'course' => NULL,
+        'price' => 0.00,
+        'thumbnail' => '',
+      ],
+      'template' => 'lms-checkout',
+    ],
+    'lms_bank_transfer' => [
+      'variables' => [
+        'order' => NULL,
+        'amount' => 0.00,
+        'bank_bin' => '',
+        'bank_account_no' => '',
+        'bank_account_name' => '',
+        'instructions' => '',
+        'order_number' => '',
+      ],
+      'template' => 'lms-bank-transfer',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_mail().
+ */
+function lms_order_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'order_completed':
+      $message['subject'] = t('Your EverLMS Order #@order_id has been approved!', ['@order_id' => $params['order_id']]);
+      $message['body'][] = t('Dear @name,', ['@name' => $params['user_name']]);
+      $message['body'][] = '';
+      $message['body'][] = t('Great news! Your payment for Order #@order_id has been successfully verified and approved.', ['@order_id' => $params['order_id']]);
+      $message['body'][] = t('Your purchased items have been successfully activated on your account. You can now log in and access your content immediately.');
+      $message['body'][] = '';
+      $message['body'][] = t('Visit your dashboard: @url', ['@url' => $params['dashboard_url']]);
+      $message['body'][] = '';
+      $message['body'][] = t('Thank you for learning with us!');
+      $message['body'][] = t('The EverLMS Team');
+      break;
+  }
+}

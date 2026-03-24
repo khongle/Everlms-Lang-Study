@@ -5,8 +5,43 @@ declare(strict_types=1);
 function lms_notification_theme(): array {
   return [
     'lms_notifications' => [
-      'variables' => ['notifications' => []],
+      'variables' => [
+        'notifications' => [],
+        'current_type' => 'all',
+        'pager' => [],
+      ],
       'template' => 'lms-notifications',
     ],
+    'lms_notification_bell' => [
+      'variables' => [
+        'unread_count' => 0,
+        'notifications_url' => '',
+        'latest_notifications' => [],
+      ],
+      'template' => 'lms-notification-bell',
+    ],
   ];
+}
+
+/**
+ * Implements hook_cron().
+ */
+function lms_notification_cron(): void {
+  // Auto-cleanup: delete notifications read and older than 90 days.
+  $storage = \Drupal::entityTypeManager()->getStorage('lms_notification');
+  
+  $timestamp_90_days_ago = \Drupal::time()->getRequestTime() - (90 * 24 * 60 * 60);
+
+  $query = $storage->getQuery()
+    ->condition('field_read', TRUE)
+    ->condition('created', $timestamp_90_days_ago, '<')
+    ->accessCheck(FALSE)
+    ->range(0, 100); // 100 per cron run to avoid timeout.
+    
+  $ids = $query->execute();
+  
+  if (!empty($ids)) {
+    $notifications = $storage->loadMultiple($ids);
+    $storage->delete($notifications);
+  }
 }

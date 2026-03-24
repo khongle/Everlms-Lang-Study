@@ -1,0 +1,52 @@
+{# EverLMS — User Login Page template #}
+<div class="lms-page">
+  {# Navbar — matches mockup #}
+  <header class="lms-navbar">
+    <div class="lms-navbar__container">
+      <a href="{{ path('<front>') }}" class="lms-navbar__brand">
+        <i class="fas fa-graduation-cap"></i> {{ 'EverLMS'|t }}
+      </a>
+      <div class="lms-navbar__actions">
+        <a href="{{ path('user.register') }}" class="lms-navbar__link">{{ 'Register'|t }}</a>
+        <a href="{{ path('<front>') }}" class="lms-btn lms-btn--sm lms-btn--outline">{{ 'Back to Home'|t }}</a>
+      </div>
+    </div>
+  </header>
+
+  {# Main Content #}
+  <main id="main-content" class="lms-page__content lms-auth">
+    <div class="lms-auth__container">
+      <div class="lms-auth__card">
+        <div class="lms-auth__header">
+          <div class="lms-auth__logo">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <h1>{{ 'Welcome Back'|t }}</h1>
+          <p>{{ 'Sign in to access your courses and dashboard.'|t }}</p>
+        </div>
+        <div class="lms-auth__social mb-4" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <a href="/user/login/google" class="lms-btn lms-btn--outline w-100" style="justify-content: center; display: flex; align-items: center;">
+            <i class="fab fa-google text-danger" style="margin-right: 0.5rem;"></i> {{ 'Continue with Google'|t }}
+          </a>
+          <a href="/user/login/facebook" class="lms-btn lms-btn--outline w-100" style="justify-content: center; display: flex; align-items: center;">
+            <i class="fab fa-facebook text-primary" style="margin-right: 0.5rem;"></i> {{ 'Continue with Facebook'|t }}
+          </a>
+        </div>
+        
+        <div class="text-center my-3 position-relative">
+          <hr class="text-muted" style="border-color: rgba(255,255,255,0.1) !important;">
+          <span class="position-absolute top-50 start-50 translate-middle px-3 text-muted" style="background: var(--lms-card-bg, #161b22); font-size: 0.85rem;">{{ 'or'|t }}</span>
+        </div>
+
+        <div class="lms-auth__form-wrapper mt-4">
+          {{ page.content }}
+        </div>
+        
+        <div class="lms-auth__footer mt-4 text-center">
+          <p class="mb-2" style="color: #8b949e; font-size: 0.9rem;">{{ "Don't have an account?"|t }} <a href="{{ path('user.register') }}" style="color: var(--lms-primary-color); font-weight: 500;">{{ 'Sign up here'|t }}</a></p>
+          <p style="font-size: 0.9rem;"><a href="{{ path('user.pass') }}" style="color: var(--lms-primary-color);">{{ 'Forgot your password?'|t }}</a></p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

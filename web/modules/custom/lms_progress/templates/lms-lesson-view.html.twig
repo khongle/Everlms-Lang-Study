@@ -5,32 +5,147 @@
   <div class="lms-learn__main">
     {# Content area #}
     <div class="lms-learn__content">
+      {# Back Button & Lesson info #}
+      <div class="lms-learn__top-bar" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <a href="{{ path('lms_course.detail', {'lms_course': course.id()}) }}" class="btn-lms-outline btn-lms-sm" style="border-radius: 2rem; padding: 0.5rem 1rem;">
+          <i class="fas fa-arrow-left"></i> {{ 'Back to Course'|t }}
+        </a>
+        {% if is_admin %}
+          <a href="{{ path('entity.lms_lesson.edit_form', {'lms_lesson': lesson.id()}) }}" class="btn-lms-primary btn-lms-sm" style="border-radius: 2rem; padding: 0.5rem 1rem;">
+            <i class="fas fa-pencil-alt"></i> {{ 'Edit Lesson'|t }}
+          </a>
+        {% endif %}
+      </div>
+
       {# Video / Content #}
       <div class="lms-learn__player">
         {% set type = lesson.field_type.value %}
 
         {% if type == 'video' %}
-          {% if lesson.field_video_url.value %}
-            <div class="lms-learn__video-wrapper">
-              <iframe src="{{ lesson.field_video_url.value }}"
+          {% if video_embed_url %}
+            <div class="lms-learn__video-wrapper" style="padding-top: 56.25%;">
+              <iframe src="{{ video_embed_url }}"
                 allowfullscreen
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 class="lms-learn__iframe">
               </iframe>
             </div>
+          {% elseif rendered_attachments %}
+            <div class="video-container" style="background: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; text-align: center;">
+              <style>
+                .video-container video {
+                   width: 100% !important;
+                   height: auto !important;
+                   max-height: 80vh;
+                   display: block;
+                   margin: 0 auto;
+                }
+                .video-container .file--mime-video-mp4 {
+                   display: block;
+                   width: 100%;
+                }
+              </style>
+              {{ rendered_attachments }}
+            </div>
           {% else %}
-            <div class="lms-learn__placeholder">
-              <i class="fas fa-play-circle"></i>
-              <p>{{ 'Video content will appear here.'|t }}</p>
+            <div class="lms-learn__placeholder" style="padding: 4rem 2rem;">
+              <i class="fas fa-video-slash" style="font-size: 3rem; color: #8b949e; margin-bottom: 1rem;"></i>
+              <h3 style="color: white;">Chưa có Video tĩnh được tải lên</h3>
+              <p style="color: #8b949e; margin-top: 0.5rem;">Vui lòng upload tệp .mp4 trong phần chỉnh sửa bài học.</p>
             </div>
           {% endif %}
         {% elseif type == 'text' %}
           <div class="lms-learn__text-content">
-            {{ lesson.field_text_content.value|raw }}
+            {{ lesson.field_content.value|raw }}
+          </div>
+        {% elseif type == 'scorm' %}
+          <script>
+            // Dummy SCORM 1.2 API to suppress "unable to acquire LMS API" errors during Demo
+            window.API = {
+              LMSInitialize: function() { return "true"; },
+              LMSFinish: function() { return "true"; },
+              LMSGetValue: function(varname) { return ""; },
+              LMSSetValue: function(varname, varvalue) { console.log("SCORM SetValue: " + varname + " = " + varvalue); return "true"; },
+              LMSCommit: function() { return "true"; },
+              LMSGetLastError: function() { return "0"; },
+              LMSGetErrorString: function() { return "No error"; },
+              LMSGetDiagnostic: function() { return "No error"; }
+            };
+            // Dummy SCORM 2004 API just in case
+            window.API_1484_11 = {
+              Initialize: function() { return "true"; },
+              Terminate: function() { return "true"; },
+              GetValue: function() { return ""; },
+              SetValue: function() { console.log("SCORM2004 SetValue"); return "true"; },
+              Commit: function() { return "true"; },
+              GetLastError: function() { return "0"; },
+              GetErrorString: function() { return "No error"; },
+              GetDiagnostic: function() { return "No error"; }
+            };
+          </script>
+          <div class="lms-learn__video-wrapper" style="padding-top: 60%;">
+            <iframe class="lms-learn__iframe" src="{{ file_url('public://scorm_extracted/' ~ lesson.id() ~ '/index.html') }}?v={{ random() }}" allowfullscreen></iframe>
+          </div>
+        {% elseif type == 'h5p' %}
+          <div class="lms-learn__h5p-wrapper" style="padding: 1rem; background: #21262d; border-radius: 8px; min-height: 400px;">
+            {% if rendered_attachments %}
+              {{ rendered_attachments }}
+            {% elseif lesson.field_h5p_embed.value %}
+              <div class="lms-learn__video-wrapper" style="padding-top: 56.25%;">
+                {{ lesson.field_h5p_embed.value|raw }}
+              </div>
+            {% else %}
+              <div class="lms-learn__placeholder" style="padding: 4rem 2rem;">
+                <i class="fas fa-cubes" style="font-size: 3rem; color: #8b949e; margin-bottom: 1rem;"></i>
+                <h3 style="color: white;">Chưa có nội dung H5P</h3>
+                <p style="color: #8b949e; margin-top: 0.5rem;">Vui lòng upload tệp .h5p trong phần chỉnh sửa bài học.</p>
+              </div>
+            {% endif %}
+          </div>
+        {% elseif type == 'pdf' %}
+          <div class="lms-learn__pdf-wrapper" style="background: #21262d; min-height: 600px; display: flex; flex-direction: column;">
+            {% if rendered_attachments|length > 0 %}
+              {{ rendered_attachments }}
+            {% else %}
+              <div class="lms-learn__placeholder">
+                <i class="fas fa-file-pdf"></i>
+                <h3>{{ 'No PDF Attachment Found'|t }}</h3>
+              </div>
+            {% endif %}
+          </div>
+        {% elseif type == 'pptx' %}
+          <div class="lms-learn__video-wrapper" style="padding-top: 70%; background: #21262d;">
+            {% if rendered_attachments|length > 0 %}
+               {{ rendered_attachments }}
+               <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; z-index: 100;">
+                  <i class="fas fa-info-circle text-warning"></i> Demo note: Microsoft viewer requires a public URL (localhost won't work).
+               </div>
+            {% else %}
+              <div class="lms-learn__placeholder">
+                <i class="fas fa-file-powerpoint"></i>
+                <h3>{{ 'No PPTX Attachment Found'|t }}</h3>
+              </div>
+            {% endif %}
+          </div>
+
+        {% elseif type == 'quiz' %}
+          <div class="lms-learn__placeholder">
+            <i class="fas fa-question-circle" style="color: #58a6ff;"></i>
+            <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem;">{{ lesson.label }}</h3>
+            {% if quiz_id %}
+              <a href="{{ path('lms_quiz.take', {'lms_quiz': quiz_id}) }}" class="btn-lms-primary" style="padding: 0.75rem 2rem; border-radius: 2rem; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 0.5rem; color: white; background: #238636; text-decoration: none;">
+                <i class="fas fa-play"></i> Bắt đầu bài thi (Take Quiz)
+              </a>
+              <p style="margin-top: 1rem; color: #8b949e; font-size: 0.9rem;">
+                Hệ thống sẽ chuyển hướng bạn đến trang làm bài thi. Xin lưu ý tính năng chấm điểm hiện đang được xây dựng.
+              </p>
+            {% else %}
+              <p style="color: #ff7b72;">Chưa có bài Quiz nào được gắn vào bài học này.</p>
+            {% endif %}
           </div>
         {% else %}
           <div class="lms-learn__placeholder">
-            <i class="fas fa-{{ type == 'quiz' ? 'question-circle' : (type == 'h5p' ? 'puzzle-piece' : (type == 'zoom' ? 'video' : 'file-alt')) }}"></i>
+            <i class="fas fa-{{ type == 'h5p' ? 'puzzle-piece' : (type == 'zoom' ? 'video' : 'file-alt') }}"></i>
             <p>{{ type|capitalize }} {{ 'content'|t }}</p>
           </div>
         {% endif %}
@@ -38,69 +153,446 @@
 
       {# Lesson info #}
       <div class="lms-learn__info">
-        <h1 class="lms-learn__title">{{ lesson.label }}</h1>
+        <h1 class="lms-learn__title" style="font-size: 2rem; font-weight: 800; color: #fff;">{{ lesson.label }}</h1>
         <div class="lms-learn__actions">
-          <button class="lms-btn lms-btn--success" id="lms-mark-complete">
-            <i class="fas fa-check"></i> {{ 'Mark Complete'|t }}
-          </button>
+          {% set current_lesson_completed = false %}
+          {% for item in curriculum %}
+            {% for l in item.lessons %}
+              {% if l.entity.id() == lesson.id() and l.is_completed %}
+                {% set current_lesson_completed = true %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+
+          {% if current_lesson_completed %}
+            <button class="btn-lms-outline" disabled style="color: #4ade80; border-color: rgba(74, 222, 128, 0.4); cursor: not-allowed; border-radius: 2rem;">
+              <i class="fas fa-check-double"></i> <span>{{ 'Completed!'|t }}</span>
+            </button>
+          {% else %}
+            <button id="lms-mark-complete" 
+                    class="btn-lms-success"
+                    data-course-id="{{ course.id() }}"
+                    data-lesson-id="{{ lesson.id() }}"
+                    style="border-radius: 2rem;">
+              <i class="fas fa-check"></i> <span>{{ 'Mark Complete'|t }}</span>
+            </button>
+          {% endif %}
         </div>
       </div>
 
-      {# Description #}
-      {% if lesson.field_body.value %}
-        <div class="lms-learn__description">
-          {{ lesson.field_body.value|raw }}
-        </div>
-      {% endif %}
+      {# Lesson Tabs Section #}
+      <div class="lms-learn__tabs-container" style="margin-top: 3rem;">
+        <ul class="lms-nav-tabs" style="display: flex; list-style: none; padding: 0; margin: 0; border-bottom: 1px solid hsla(0,0%,100%,0.1); gap: 2rem;">
+          <li class="lms-tab-item active" data-tab="overview" style="padding-bottom: 1rem; cursor: pointer; color: #fff; font-weight: 600; border-bottom: 2px solid #58a6ff; transition: all 0.2s ease;">{{ 'Overview'|t }}</li>
+          <li class="lms-tab-item" data-tab="resources" style="padding-bottom: 1rem; cursor: pointer; color: #8b949e; font-weight: 500; border-bottom: 2px solid transparent; transition: all 0.2s ease;">{{ 'Resources'|t }}</li>
+          <li class="lms-tab-item" data-tab="notes" style="padding-bottom: 1rem; cursor: pointer; color: #8b949e; font-weight: 500; border-bottom: 2px solid transparent; transition: all 0.2s ease;">{{ 'My Notes'|t }}</li>
+          <li class="lms-tab-item" data-tab="qna" style="padding-bottom: 1rem; cursor: pointer; color: #8b949e; font-weight: 500; border-bottom: 2px solid transparent; transition: all 0.2s ease;">{{ 'Q&A Discussion'|t }}</li>
+        </ul>
 
-      {# Attachments #}
-      {% if lesson.field_attachments|length > 0 %}
-        <div class="lms-learn__attachments">
-          <h3><i class="fas fa-paperclip"></i> {{ 'Resources'|t }}</h3>
-          <ul>
-            {% for file in lesson.field_attachments %}
-              <li>
-                <a href="{{ file_url(file.entity.uri.value) }}" target="_blank">
-                  <i class="fas fa-download"></i> {{ file.entity.filename.value }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
+        <div class="lms-tab-content" style="padding-top: 2rem;">
+          {# Tab 1: Overview #}
+          <div id="tab-overview" class="lms-tab-pane" style="display: block; animation: fadeIn 0.3s ease;">
+            {% if lesson.field_content.value and type != 'text' %}
+              <div class="lms-learn__description" style="line-height: 1.8; color: #c9d1d9; font-size: 1rem;">
+                {{ lesson.field_content.value|raw }}
+              </div>
+            {% else %}
+               <div class="lms-learn__placeholder" style="padding: 2rem; color: #8b949e; font-style: italic;">
+                 {{ 'No overview description available for this lesson.'|t }}
+               </div>
+            {% endif %}
+          </div>
+
+          {# Tab 2: Resources #}
+          <div id="tab-resources" class="lms-tab-pane" style="display: none; animation: fadeIn 0.3s ease;">
+            {% if lesson.field_attachments|length > 0 %}
+              <div class="lms-learn__attachments">
+                <h3 style="margin-bottom: 1.5rem; color: #fff; font-size: 1.25rem;"><i class="fas fa-paperclip" style="color: #58a6ff; margin-right: 0.5rem;"></i> {{ 'Downloadable Materials'|t }}</h3>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                  {% for file in lesson.field_attachments %}
+                    <li style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,0.1); transition: background 0.2s;">
+                      <div style="display: flex; align-items: center; gap: 1rem;">
+                        <i class="fas fa-file-alt" style="color: #8b949e; font-size: 1.5rem;"></i>
+                        <span style="color: #c9d1d9; font-weight: 500;">{{ file.entity.filename.value }}</span>
+                      </div>
+                      <a href="{{ file_url(file.entity.uri.value) }}" target="_blank" class="btn-lms-outline btn-lms-sm" style="color: #58a6ff; border-color: rgba(88,166,255,0.4); border-radius: 2rem; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                        <i class="fas fa-download"></i> {{ 'Download'|t }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% else %}
+              <div class="lms-learn__placeholder" style="padding: 3rem 2rem; text-align: center; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+                <i class="fas fa-folder-open" style="font-size: 2.5rem; color: #8b949e; margin-bottom: 1rem; display: block;"></i>
+                <h4 style="color: #c9d1d9; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">{{ 'No resources available'|t }}</h4>
+                <p style="color: #8b949e; font-size: 0.95rem; margin: 0;">{{ 'There are no materials attached to this lesson.'|t }}</p>
+              </div>
+            {% endif %}
+          </div>
+
+          {# Tab 2: Notes #}
+          <div id="tab-notes" class="lms-tab-pane" style="display: none; animation: fadeIn 0.3s ease;">
+            <div class="lms-learn__notes">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0; font-size: 1.25rem;"><i class="fas fa-edit" style="color: #667eea; margin-right: 0.5rem;"></i> {{ 'My Notes'|t }}</h3>
+                <span id="lms-note-status" style="font-size: 0.8125rem; color: #8b949e; display: none;"></span>
+              </div>
+              <textarea id="lms-note-textarea" class="lms-form-control" rows="8" placeholder="{{ 'Loading...'|t }}" style="width: 100%; box-sizing: border-box; background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; padding: 1rem; font-family: inherit; resize: vertical; margin-bottom: 1rem;" disabled></textarea>
+              
+              <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button id="lms-note-delete-btn" class="lms-btn" style="display: none; align-items: center; gap: 0.5rem; font-weight: 500; background: rgba(255,123,114,0.1); color: #ff7b72; border: 1px solid rgba(255,123,114,0.3); padding: 0.5rem 1.25rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                  <i class="fas fa-trash-alt"></i> {{ 'Delete Note'|t }}
+                </button>
+                <button id="lms-note-save-btn" class="lms-btn" style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 500; background: #238636; color: white; border: 1px solid #2ea043; padding: 0.5rem 1.5rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;" disabled>
+                  <i class="fas fa-save"></i> {{ 'Save Note'|t }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {# Tab 3: Q&A #}
+          <div id="tab-qna" class="lms-tab-pane" style="display: none; animation: fadeIn 0.3s ease;">
+            <div class="lms-learn__discussion">
+              <div style="margin-bottom: 2rem;">
+                <h3 style="margin: 0; font-size: 1.5rem; font-weight: 700; color: #fff;"><i class="fas fa-comments" style="color: #667eea; margin-right: 0.75rem;"></i> {{ 'Q&A Discussion'|t }}</h3>
+                <p style="color: #8b949e; font-size: 0.9375rem; margin-top: 0.5rem;">{{ 'Have a question or want to discuss this lesson? Leave a comment below.'|t }}</p>
+              </div>
+              <div class="lms-comments-wrapper" style="border-radius: 12px; padding: 0.5rem 0;">
+                <div id="lms-comments-ajax-wrapper">
+                  {{ comments }}
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
-      {% endif %}
+      </div>
+
     </div>
   </div>
 
   {# Sidebar — Curriculum #}
   <aside class="lms-learn__sidebar">
-    <div class="lms-learn__sidebar-header">
-      <h2>{{ course.label }}</h2>
-    </div>
-    <nav class="lms-learn__nav">
+    <div class="lms-learn__sidebar-header" style="border-bottom: 1px solid hsla(0,0%,100%,0.1); padding-bottom: 1rem; margin-bottom: 0.5rem;">
+      <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff; line-height: 1.4; margin-bottom: 1rem;">{{ course.label }}</h2>
+      
+      {% set total_lessons = 0 %}
+      {% set completed_lessons = 0 %}
       {% for item in curriculum %}
-        <div class="lms-learn__chapter">
-          <h4 class="lms-learn__chapter-title">{{ item.chapter.label }}</h4>
+        {% for l in item.lessons %}
+          {% set total_lessons = total_lessons + 1 %}
+          {% if l.is_completed %}
+            {% set completed_lessons = completed_lessons + 1 %}
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+      {% set progress_percent = total_lessons > 0 ? (completed_lessons / total_lessons * 100)|round : 0 %}
+      
+      <div class="lms-learn__progress-wrapper">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; margin-bottom: 0.35rem;">
+          <span style="color: #8b949e; font-weight: 500;">Course Progress</span>
+          <span style="color: #fff; font-weight: 600;">{{ progress_percent }}%</span>
+        </div>
+        <div class="progress-bar-bg" style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+          <div class="progress-bar-fill" style="width: {{ progress_percent }}%; height: 100%; background: linear-gradient(90deg, #238636, #2ea043); border-radius: 4px; transition: width 0.8s ease;"></div>
+        </div>
+        <div style="font-size: 0.75rem; color: #8b949e; margin-top: 0.4rem; text-align: right;">
+          {{ completed_lessons }} / {{ total_lessons }} lessons
+        </div>
+      </div>
+    </div>
+    <nav class="lms-learn__nav" style="padding: 1rem 0;">
+      {% for item in curriculum %}
+        {% set is_active_chapter = false %}
+        {% for l in item.lessons %}
+          {% if l.entity.id() == lesson.id() %}
+            {% set is_active_chapter = true %}
+          {% endif %}
+        {% endfor %}
+
+        <details class="lms-learn__chapter-accordion" {% if is_active_chapter %}open{% endif %}>
+          <summary class="lms-learn__chapter-summary" style="border-top: 1px solid hsla(0,0%,100%,0.05); margin-top: 0.5rem;">
+            <h4 class="lms-learn__chapter-title">{{ item.chapter.label }}</h4>
+            <i class="fas fa-chevron-down toggle-icon"></i>
+          </summary>
           <ul class="lms-learn__lesson-list">
             {% for l in item.lessons %}
-              <li class="lms-learn__lesson-item {% if l.id == lesson.id %}lms-learn__lesson-item--active{% endif %}">
-                <a href="{{ path('lms_progress.lesson_view', {'lms_course': course.id, 'lms_lesson': l.id}) }}">
-                  {% set type_icons = {
-                    'video': 'fa-play-circle',
-                    'text': 'fa-file-alt',
-                    'quiz': 'fa-question-circle',
-                    'h5p': 'fa-puzzle-piece',
-                  } %}
-                  <i class="fas {{ type_icons[l.field_type.value] ?? 'fa-circle' }}"></i>
-                  <span>{{ l.label }}</span>
-                  {% if l.field_duration.value > 0 %}
-                    <small>{{ l.field_duration.value }}m</small>
+              <li class="lms-learn__lesson-item {% if l.entity.id() == lesson.id() %}lms-learn__lesson-item--active{% endif %}">
+                <a href="{{ path('lms_progress.lesson_view', {'lms_course': course.id(), 'lms_lesson': l.entity.id()}) }}" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0;">
+                    {% if l.is_completed %}
+                      <i class="fas fa-check-circle" style="color: #238636;"></i>
+                    {% else %}
+                      {% set type_icons = {
+                        'video': 'fa-play-circle',
+                        'text': 'fa-file-alt',
+                        'quiz': 'fa-question-circle',
+                        'h5p': 'fa-puzzle-piece',
+                      } %}
+                      <i class="fas {{ type_icons[l.entity.field_type.value] ?? 'fa-circle' }}" style="color: #8b949e;"></i>
+                    {% endif %}
+                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ l.entity.label }}</span>
+                  </div>
+                  {% if l.entity.field_duration.value > 0 %}
+                    <small style="color: #8b949e; flex-shrink: 0; margin-left: auto; padding-left: 0.5rem;">{{ l.entity.field_duration.value }}m</small>
                   {% endif %}
                 </a>
               </li>
             {% endfor %}
           </ul>
-        </div>
+        </details>
       {% endfor %}
     </nav>
   </aside>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const markCompleteBtn = document.getElementById('lms-mark-complete');
+  if (markCompleteBtn) {
+    markCompleteBtn.addEventListener('click', async () => {
+      const courseId = markCompleteBtn.getAttribute('data-course-id');
+      const lessonId = markCompleteBtn.getAttribute('data-lesson-id');
+      
+      const originalText = markCompleteBtn.innerHTML;
+      markCompleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+      markCompleteBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/lms/progress/mark-complete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ course_id: courseId, lesson_id: lessonId })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+          markCompleteBtn.innerHTML = '<i class="fas fa-check-double"></i> Completed!';
+          markCompleteBtn.classList.remove('lms-btn--success');
+          markCompleteBtn.style.backgroundColor = '#238636'; 
+          markCompleteBtn.style.color = '#fff';
+          
+          // Auto-redirect to next lesson if available
+          if (data.next_lesson_url) {
+            setTimeout(() => {
+              window.location.href = data.next_lesson_url;
+            }, 1000);
+          } else if (data.course_completed) {
+            setTimeout(() => {
+              alert('Congratulations! You have completed the course!');
+              window.location.href = '/my-courses';
+            }, 1000);
+          }
+        } else {
+          markCompleteBtn.innerHTML = originalText;
+          markCompleteBtn.disabled = false;
+          alert('Error: ' + data.error);
+        }
+      } catch (err) {
+        markCompleteBtn.innerHTML = originalText;
+        markCompleteBtn.disabled = false;
+        console.error(err);
+      }
+    });
+  }
+
+  // Student Notes Manual Save Logic
+  const noteTextarea = document.getElementById('lms-note-textarea');
+  const noteSaveBtn = document.getElementById('lms-note-save-btn');
+  const noteDeleteBtn = document.getElementById('lms-note-delete-btn');
+  const noteStatus = document.getElementById('lms-note-status');
+  const lessonIdStr = '{{ lesson.id() }}';
+  const courseIdStr = '{{ course.id() }}';
+  
+  let originalNoteText = '';
+  let hasUnsavedChanges = false;
+
+  // Unsaved changes warning
+  window.addEventListener('beforeunload', (e) => {
+    if (hasUnsavedChanges) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  if (noteTextarea) {
+    if (noteSaveBtn) {
+      noteTextarea.addEventListener('input', () => {
+        if (noteTextarea.value !== originalNoteText) {
+          hasUnsavedChanges = true;
+          noteSaveBtn.disabled = false;
+          noteSaveBtn.style.opacity = '1';
+        } else {
+          hasUnsavedChanges = false;
+          noteSaveBtn.disabled = true;
+          noteSaveBtn.style.opacity = '0.6';
+        }
+      });
+    }
+
+    // Fetch exact note on load to bypass ANY cache
+    fetch('/api/lms/note/get?lesson_id=' + lessonIdStr)
+      .then(r => r.json())
+      .then(data => {
+        noteTextarea.disabled = false;
+        noteTextarea.placeholder = '{{ "Type your notes here..."|t }}';
+        if (data.status === 'found') {
+          noteTextarea.value = data.note_text;
+          originalNoteText = data.note_text;
+          if (noteDeleteBtn) noteDeleteBtn.style.display = 'inline-flex';
+        } else {
+          originalNoteText = '';
+        }
+        if (noteSaveBtn) {
+          noteSaveBtn.disabled = true;
+          noteSaveBtn.style.opacity = '0.6';
+        }
+      })
+      .catch(e => {
+        noteTextarea.disabled = false;
+        noteTextarea.placeholder = '{{ "Type your notes here..."|t }}';
+      });
+  }
+
+  if (noteSaveBtn && noteTextarea) {
+    noteSaveBtn.addEventListener('click', async () => {
+      noteStatus.style.display = 'inline-block';
+      noteStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ "Saving..."|t }}';
+      noteStatus.style.color = '#8b949e';
+      noteSaveBtn.disabled = true;
+
+      const text = noteTextarea.value;
+      const courseId = '{{ course.id() }}';
+      const lessonId = '{{ lesson.id() }}';
+      
+      try {
+        const response = await fetch('/api/lms/note/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ 
+            course_id: courseIdStr, 
+            lesson_id: lessonIdStr,
+            note_text: text,
+            video_timestamp: 0 
+          })
+        });
+        
+        if (response.ok) {
+          noteStatus.innerHTML = '<i class="fas fa-check-circle" style="color: #43e97b;"></i> {{ "Saved successfully!"|t }}';
+          if (noteDeleteBtn) noteDeleteBtn.style.display = 'inline-flex';
+          setTimeout(() => { noteStatus.style.display = 'none'; }, 2000);
+          
+          originalNoteText = text;
+          hasUnsavedChanges = false;
+          noteSaveBtn.disabled = true;
+          noteSaveBtn.style.opacity = '0.6';
+        } else {
+          noteStatus.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: #ff7b72;"></i> {{ "Error saving"|t }}';
+          noteSaveBtn.disabled = false;
+        }
+      } catch (err) {
+        noteStatus.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: #ff7b72;"></i> {{ "Network error"|t }}';
+        console.error(err);
+        noteSaveBtn.disabled = false;
+      }
+    });
+  }
+
+  if (noteDeleteBtn) {
+    noteDeleteBtn.addEventListener('click', async () => {
+      if (!confirm('{{ "Are you sure you want to delete this note?"|t }}')) return;
+
+      noteStatus.style.display = 'inline-block';
+      noteStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ "Deleting..."|t }}';
+      noteDeleteBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/lms/note/delete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ lesson_id: lessonIdStr })
+        });
+        
+        if (response.ok) {
+          noteStatus.innerHTML = '<i class="fas fa-trash-alt" style="color: #ff7b72;"></i> {{ "Deleted successfully!"|t }}';
+          noteTextarea.value = '';
+          noteDeleteBtn.style.display = 'none';
+          setTimeout(() => { noteStatus.style.display = 'none'; }, 2000);
+          
+          originalNoteText = '';
+          hasUnsavedChanges = false;
+          noteSaveBtn.disabled = true;
+          noteSaveBtn.style.opacity = '0.6';
+        } else {
+          noteStatus.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: #ff7b72;"></i> {{ "Error deleting"|t }}';
+          noteDeleteBtn.disabled = false;
+        }
+      } catch (err) {
+        noteStatus.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: #ff7b72;"></i> {{ "Network error"|t }}';
+        console.error(err);
+        noteDeleteBtn.disabled = false;
+      }
+    });
+  }
+
+  // Tab Switching Logic
+  const tabItems = document.querySelectorAll('.lms-tab-item');
+  const tabPanes = document.querySelectorAll('.lms-tab-pane');
+
+  tabItems.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active states
+      tabItems.forEach(t => {
+        t.style.color = '#8b949e';
+        t.style.fontWeight = '500';
+        t.style.borderBottomColor = 'transparent';
+        t.classList.remove('active');
+      });
+      tabPanes.forEach(pane => {
+        pane.style.display = 'none';
+      });
+
+      // Add active state to clicked
+      tab.style.color = '#fff';
+      tab.style.fontWeight = '600';
+      tab.style.borderBottomColor = '#58a6ff';
+      tab.classList.add('active');
+
+      const targetId = 'tab-' + tab.getAttribute('data-tab');
+      const targetPane = document.getElementById(targetId);
+      if (targetPane) {
+        targetPane.style.display = 'block';
+      }
+    });
+
+    // Hover effects via JS since inline styles override CSS classes
+    tab.addEventListener('mouseenter', () => {
+      if (!tab.classList.contains('active')) {
+        tab.style.color = '#c9d1d9';
+      }
+    });
+    tab.addEventListener('mouseleave', () => {
+      if (!tab.classList.contains('active')) {
+        tab.style.color = '#8b949e';
+      }
+    });
+  });
+
+});
+</script>
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Install, update and uninstall functions for the lms_notification module.
+ */
+
+/**
+ * Add new fields for notifications (channel, reference_type, reference_id).
+ */
+function lms_notification_update_10001(): void {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  
+  $fields = [
+    'field_channel',
+    'field_reference_type',
+    'field_reference_id',
+  ];
+
+  foreach ($fields as $field_name) {
+    // If the field hasn't been installed yet.
+    if (!$update_manager->getFieldStorageDefinition($field_name, 'lms_notification')) {
+      $field_definition = \Drupal::service('entity_field.manager')->getBaseFieldDefinitions('lms_notification')[$field_name];
+      $update_manager->installFieldStorageDefinition($field_name, 'lms_notification', 'lms_notification', $field_definition);
+    }
+  }
+}

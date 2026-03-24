@@ -1,52 +1,133 @@
-{# Admin Course List — matches 12-admin-courses.png #}
+{# Admin Course List — matches mockup #}
 {{ attach_library('lms_theme/global') }}
 
 <div class="lms-admin">
-  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'courses' } only %}
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'courses' } %}
 
   <div class="lms-admin__main">
-    <div class="lms-admin__header">
-      <h1 class="lms-admin__title">{{ 'Manage Courses'|t }}</h1>
-      <a href="#" class="lms-btn lms-btn--primary"><i class="fas fa-plus"></i> {{ 'Create Course'|t }}</a>
-    </div>
+    <form method="GET" action="{{ path('lms_course.admin_courses') }}">
+      <div class="lms-admin__header">
+        <div>
+          <h1 class="lms-admin__title">{{ 'Course Management'|t }}</h1>
+          <div class="lms-admin__subtitle">{{ 'Manage and overview all learning courses'|t }}</div>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <a href="{{ add_course_url }}" class="btn-lms-primary"><i class="fas fa-plus"></i> {{ 'Add New Course'|t }}</a>
+          <div style="position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #64748b;"></i>
+            <input type="text" name="search" value="{{ filters.search }}" class="lms-admin-filter__input" placeholder="{{ 'Search courses...'|t }}" style="padding-left: 2.5rem; width: 250px; border-radius: 2rem;">
+          </div>
+        </div>
+      </div>
 
-    <div class="lms-card">
+      <div class="lms-admin-filter">
+        <div class="lms-admin-filter__group">
+          <label class="lms-admin-filter__label">{{ 'Status'|t }}</label>
+          <select name="status" class="lms-admin-filter__select" onchange="this.form.submit()">
+            <option value="all" {% if filters.status == 'all' %}selected{% endif %}>{{ 'All'|t }}</option>
+            <option value="published" {% if filters.status == 'published' %}selected{% endif %}>{{ 'Published'|t }}</option>
+            <option value="draft" {% if filters.status == 'draft' %}selected{% endif %}>{{ 'Draft'|t }}</option>
+            <option value="archived" {% if filters.status == 'archived' %}selected{% endif %}>{{ 'Archived'|t }}</option>
+          </select>
+        </div>
+        <div class="lms-admin-filter__group">
+          <label class="lms-admin-filter__label">{{ 'Category'|t }}</label>
+          <select name="category" class="lms-admin-filter__select" onchange="this.form.submit()">
+            <option value="all" {% if filters.category == 'all' %}selected{% endif %}>{{ 'All Categories'|t }}</option>
+            {% for id, label in category_options %}
+              <option value="{{ id }}" {% if filters.category == id %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="lms-admin-filter__group">
+          <label class="lms-admin-filter__label">{{ 'Instructor'|t }}</label>
+          <select name="instructor" class="lms-admin-filter__select" onchange="this.form.submit()">
+            <option value="all" {% if filters.instructor == 'all' %}selected{% endif %}>{{ 'All Instructors'|t }}</option>
+            {% for id, label in instructor_options %}
+              <option value="{{ id }}" {% if filters.instructor == id %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <button type="submit" class="lms-admin-filter__select" style="background: rgba(255,255,255,0.05); cursor: pointer; color: #fff; font-weight: 500;">
+            {{ 'Apply Filters'|t }}
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div class="lms-admin-card">
       <div class="lms-table-responsive">
         <table class="lms-table">
           <thead>
-            <tr>
-              <th>{{ 'ID'|t }}</th>
-              <th>{{ 'Course Name'|t }}</th>
-              <th>{{ 'Category'|t }}</th>
-              <th>{{ 'Price'|t }}</th>
-              <th>{{ 'Status'|t }}</th>
-              <th>{{ 'Created'|t }}</th>
-              <th>{{ 'Actions'|t }}</th>
+            <tr style="background: #1d70f5; color: #fff;">
+              <th style="width: 48px; text-align: center; color: #fff;"><input type="checkbox" style="accent-color: #1d70f5;"></th>
+              <th style="color: #fff;">{{ 'Thumbnail'|t }}</th>
+              <th style="color: #fff;">{{ 'Course Title'|t }}</th>
+              <th style="color: #fff;">{{ 'Category'|t }}</th>
+              <th style="color: #fff;">{{ 'Instructor'|t }}</th>
+              <th style="color: #fff;">{{ 'Enrolled'|t }}</th>
+              <th style="color: #fff;">{{ 'Price'|t }}</th>
+              <th style="color: #fff;">{{ 'Status'|t }}</th>
+              <th style="text-align: right; color: #fff;">{{ 'Actions'|t }}</th>
             </tr>
           </thead>
           <tbody>
             {% for course in courses %}
               <tr>
-                <td>#{{ course.id }}</td>
-                <td>{{ course.name }}</td>
-                <td>{{ course.category }}</td>
-                <td>${{ course.price|number_format(2) }}</td>
-                <td>
-                  <span class="lms-badge {{ course.status == 'Published' ? 'lms-badge--success' : 'lms-badge--secondary' }}">
-                    {{ course.status }}
-                  </span>
+                <td style="text-align: center;"><input type="checkbox" style="accent-color: #1d70f5;"></td>
+                <td style="width: 80px;">
+                  <div style="width: 64px; height: 40px; border-radius: 0.375rem; overflow: hidden; background: #0b0f19;">
+                    {% if course.thumbnail_url %}
+                      <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                      <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#64748b;"><i class="fas fa-image"></i></div>
+                    {% endif %}
+                  </div>
                 </td>
-                <td>{{ course.created|date('M d, Y') }}</td>
+                <td style="font-weight: 600; color: #fff;">{{ course.name }}</td>
+                <td>{{ course.category }}</td>
+                <td>{{ course.instructor }}</td>
+                <td>{{ course.enrolled }}</td>
+                <td style="font-weight: 600; color: #fff;">
+                  {% if course.price > 0 %}
+                    ${{ course.price|number_format(0) }}
+                  {% else %}
+                    <span style="color: #10b981;">Free</span>
+                  {% endif %}
+                </td>
                 <td>
-                  <a href="{{ course.edit_url }}" class="lms-btn lms-btn--sm lms-btn--outline">{{ 'Edit'|t }}</a>
+                  {% set status_class = 'lms-status--archived' %}
+                  {% if course.status == 'Published' %}{% set status_class = 'lms-status--published' %}{% endif %}
+                  {% if course.status == 'Draft' %}{% set status_class = 'lms-status--draft' %}{% endif %}
+                  <span class="lms-status {{ status_class }}">{{ course.status }}</span>
+                </td>
+                <td style="text-align: right; white-space: nowrap;">
+                  <a href="{{ path('lms_course.detail', {'lms_course': course.id}) }}" style="color: #64748b; margin-right: 0.75rem; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'"><i class="fas fa-eye"></i></a>
+                  <a href="{{ course.edit_url }}" style="color: #64748b; margin-right: 0.75rem; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'"><i class="fas fa-edit"></i></a>
+                  <a href="#" style="color: #64748b; transition: color 0.15s;" onmouseover="this.style.color='#f5576c'" onmouseout="this.style.color='#64748b'"><i class="fas fa-trash"></i></a>
                 </td>
               </tr>
             {% else %}
-              <tr><td colspan="7" class="lms-text-center">{{ 'No courses'|t }}</td></tr>
+              <tr><td colspan="9" style="text-align: center; padding: 3rem;">{{ 'No courses found.'|t }}</td></tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
+      
+      <div class="lms-admin-footer">
+        <div>{{ 'Showing 1-8 of'|t }} {{ courses|length }} {{ 'entries'|t }}</div>
+        <div class="lms-pagination">
+          <button class="lms-pagination__item">{{ 'Prev'|t }}</button>
+          <button class="lms-pagination__item lms-pagination__item--active">1 (active)</button>
+          <button class="lms-pagination__item">2</button>
+          <button class="lms-pagination__item">3</button>
+          <span style="padding: 0.35rem 0.5rem; color: #64748b;">...</span>
+          <button class="lms-pagination__item">6</button>
+          <button class="lms-pagination__item">{{ 'Next'|t }}</button>
+        </div>
+      </div>
     </div>
+
   </div>
 </div>

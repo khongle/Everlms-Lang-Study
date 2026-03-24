@@ -1,0 +1,6 @@
+services:
+  lms_notification.commands:
+    class: \Drupal\lms_notification\Commands\LmsNotificationCommands
+    arguments: ['@lms_notification.manager']
+    tags:
+      - { name: drush.command }

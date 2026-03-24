@@ -1,0 +1,72 @@
+{# Edit reply page wrapper #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section">
+  <div class="container" style="max-width: 800px; margin: 2rem auto;">
+    <nav class="lms-breadcrumb" style="margin-bottom: 1.5rem; background: rgba(22,27,34,0.5); padding: 0.75rem 1.25rem; border-radius: 0.5rem; border: 1px solid rgba(240,246,252,0.1); display: inline-flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+      <a href="{{ path('lms_forum.index') }}" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 500; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;"><i class="fas fa-comments"></i> {{ 'Community'|t }}</a>
+      <span style="margin: 0 0.75rem; opacity: 0.3; display: flex; align-items: center;"><i class="fas fa-chevron-right" style="font-size: 0.65rem;"></i></span>
+      <span style="color: #e6edf3; font-weight: 600; font-size: 0.85rem;">{{ 'Edit Reply'|t }}</span>
+    </nav>
+    <div class="lms-card lms-form lms-form--full lms-theme-dark-form">
+      <h4>{{ 'Edit Your Reply'|t }}</h4>
+      {{ form }}
+    </div>
+  </div>
+</section>
+
+<style>
+/* Synchronized dark theme stylings for forms */
+.lms-theme-dark-form .form-item label {
+  color: #e6edf3;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.lms-theme-dark-form .form-text,
+.lms-theme-dark-form .form-textarea,
+.lms-theme-dark-form .form-select {
+  background-color: #0d1117;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  border-radius: 6px;
+  padding: 0.75rem;
+  width: 100%;
+}
+
+.lms-theme-dark-form .form-text:focus,
+.lms-theme-dark-form .form-textarea:focus {
+  border-color: #58a6ff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+}
+
+.lms-theme-dark-form .ck-editor__editable {
+  background-color: #0d1117 !important;
+  color: #c9d1d9 !important;
+  border-color: #30363d !important;
+}
+
+.lms-theme-dark-form .form-submit.button--primary {
+  background-color: #238636;
+  color: #ffffff;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  border-radius: 6px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: .2s background-color cubic-bezier(0.3, 0, 0.5, 1);
+}
+
+.lms-theme-dark-form .form-submit.button--primary:hover {
+  background-color: #2ea043;
+}
+
+/* Hide redundant ckeditor labels and tips */
+.lms-theme-dark-form .filter-wrapper { display: none !important; }
+.lms-theme-dark-form .ckeditor-description { display: none !important; }
+.lms-theme-dark-form .form-item-field-body-0-value > label,
+.lms-theme-dark-form .form-item-field-body-0-value .filter-guidelines { display: none !important; }
+.lms-theme-dark-form label[for^="edit-field-body"] { display: none !important; }
+</style>

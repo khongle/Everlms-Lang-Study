@@ -1,0 +1,26 @@
+{# My Wishlist page template #}
+<div class="lms-my-wishlist-page">
+  <div class="lms-container" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h1 style="margin: 0; font-size: 2rem;">{{ 'My Wishlist'|t }}</h1>
+      <a href="/courses" class="lms-btn lms-btn-outline" style="border: 1px solid rgba(255,255,255,0.2); background: transparent; color: white; border-radius: 4px; padding: 0.5rem 1rem;">
+        {{ 'Browse Courses'|t }}
+      </a>
+    </div>
+
+    {% if cards|length > 0 %}
+      <div class="lms-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+        {% for card in cards %}
+          {{ { '#theme': 'lms_course_card', '#card': card } }}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="lms-empty-state" style="text-align: center; padding: 4rem 2rem; background: #0d1117; border: 1px dashed rgba(255,255,255,0.1); border-radius: 8px;">
+        <i class="fas fa-heart-broken" style="font-size: 3rem; color: #484f58; margin-bottom: 1rem;"></i>
+        <h3 style="margin-top: 0; margin-bottom: 0.5rem;">{{ 'Your wishlist is empty'|t }}</h3>
+        <p style="color: #8b949e; margin-bottom: 1.5rem;">{{ "You haven't added any courses to your wishlist yet."|t }}</p>
+        <a href="/courses" class="lms-btn" style="background: #238636; color: white; border-radius: 4px; padding: 0.5rem 1.5rem;">{{ 'Explore Courses'|t }}</a>
+      </div>
+    {% endif %}
+  </div>
+</div>

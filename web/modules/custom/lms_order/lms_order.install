@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the lms_order module.
+ */
+
+use Drupal\Core\Field\BaseFieldDefinition;
+
+/**
+ * Add field_payment_receipt to lms_order.
+ */
+function lms_order_update_10001() {
+  $field_storage_definition = BaseFieldDefinition::create('image')
+    ->setLabel(t('Payment Receipt'))
+    ->setSetting('target_type', 'file')
+    ->setSetting('file_directory', 'payment_receipts/[date:custom:Y]-[date:custom:m]')
+    ->setDisplayOptions('view', [
+      'label' => 'hidden',
+      'type' => 'image',
+      'weight' => 0,
+    ])
+    ->setDisplayOptions('form', [
+      'type' => 'image_image',
+      'weight' => 0,
+    ])
+    ->setDisplayConfigurable('view', TRUE)
+    ->setDisplayConfigurable('form', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_payment_receipt', 'lms_order', 'lms_order', $field_storage_definition);
+}

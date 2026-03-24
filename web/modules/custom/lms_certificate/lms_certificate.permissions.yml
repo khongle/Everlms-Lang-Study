@@ -1,0 +1,15 @@
+manage certificate templates:
+  title: 'Manage certificate templates'
+  description: 'Create, edit, and delete certificate templates.'
+issue any certificate:
+  title: 'Issue any certificate'
+  description: 'Manually issue certificates to any user in the system.'
+issue own course certificate:
+  title: 'Issue own course certificate'
+  description: 'Manually issue certificates to users enrolled in courses managed by the user.'
+revoke any certificate:
+  title: 'Revoke any certificate'
+  description: 'Revoke issued certificates from users.'
+view any certificate:
+  title: 'View any certificate'
+  description: 'View any issued certificate in the system.'

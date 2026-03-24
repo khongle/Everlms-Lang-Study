@@ -1,0 +1,10 @@
+services:
+  lms_membership.manager:
+    class: Drupal\lms_membership\MembershipManager
+    arguments: ['@entity_type.manager']
+
+  lms_membership.access_subscriber:
+    class: Drupal\lms_membership\EventSubscriber\MembershipAccessSubscriber
+    arguments: ['@messenger']
+    tags:
+      - { name: event_subscriber }

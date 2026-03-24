@@ -4,19 +4,34 @@
 <section class="lms-section">
   <div class="container">
     <div class="lms-forum-header">
-      <h1>{{ 'Community Forum'|t }}</h1>
-      <a href="#" class="lms-btn lms-btn--primary"><i class="fas fa-plus"></i> {{ 'New Topic'|t }}</a>
+      <h1>{{ 'Community'|t }}</h1>
+      {% if new_topic_form %}
+        <button id="openNewTopicModal" class="lms-forum-new-btn"><i class="fas fa-plus"></i> {{ 'New Topic'|t }}</button>
+      {% endif %}
     </div>
 
     {% if topics|length > 0 %}
       <div class="lms-forum-list">
         {% for topic in topics %}
-          <div class="lms-card lms-forum-item">
+          <div class="lms-card lms-forum-item {% if topic.resolved %}lms-forum-item--resolved{% endif %}">
             <div class="lms-forum-item__content">
-              <h3><a href="{{ topic.url }}">{{ topic.title }}</a></h3>
+              <h3>
+                {% if topic.resolved %}<i class="fas fa-check-circle text-success" title="{{ 'Resolved'|t }}"></i> {% endif %}
+                <a href="{{ topic.url }}">{{ topic.title }}</a>
+              </h3>
+              {% if topic.category %}
+                <span class="lms-badge lms-badge--primary">{{ topic.category }}</span>
+              {% endif %}
               <p>{{ topic.body }}</p>
-              <div class="lms-forum-item__meta">
-                <span><i class="fas fa-user"></i> {{ topic.author }}</span>
+              <div class="lms-forum-item__meta" style="display: flex; align-items: center; gap: 1rem;">
+                <span style="display: flex; align-items: center; gap: 0.5rem;">
+                  {% if topic.author_avatar %}
+                    <img src="{{ topic.author_avatar }}" alt="{{ topic.author }}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+                  {% else %}
+                    <i class="fas fa-user-circle"></i>
+                  {% endif %}
+                  {{ topic.author }}
+                </span>
                 <span><i class="fas fa-clock"></i> {{ topic.created|date('M d, Y') }}</span>
               </div>
             </div>
@@ -24,6 +39,10 @@
               <div class="lms-forum-item__stat">
                 <span class="lms-forum-item__stat-value">{{ topic.reply_count }}</span>
                 <span class="lms-forum-item__stat-label">{{ 'Replies'|t }}</span>
+              </div>
+              <div class="lms-forum-item__stat">
+                <span class="lms-forum-item__stat-value">{{ topic.views }}</span>
+                <span class="lms-forum-item__stat-label">{{ 'Views'|t }}</span>
               </div>
             </div>
           </div>
@@ -38,3 +57,110 @@
     {% endif %}
   </div>
 </section>
+
+<!-- New Topic Modal -->
+<div id="newTopicModal" class="lms-modal lms-modal--dark" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
+  <div class="lms-modal__dialog" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 800px; padding: 1rem;">
+    <div class="lms-card lms-card--flat lms-card--dark" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; background: #161b22; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+      <div class="lms-card__header" style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h2 class="lms-card__title m-0" style="color: #e6edf3; font-size: 1.5rem; font-weight: 600;">
+            <i class="fas fa-pen-nib text-primary me-2"></i> {{ 'Create New Topic'|t }}
+          </h2>
+          <p style="color: #8b949e; margin-top: 0.5rem; font-size: 0.9rem; margin-bottom: 0;">{{ 'Start a new discussion with the community.'|t }}</p>
+        </div>
+        <button id="closeNewTopicModal" style="background: none; border: none; color: #8b949e; font-size: 1.5rem; cursor: pointer; transition: color 0.2s;"><i class="fas fa-times"></i></button>
+      </div>
+      
+      <div class="lms-card__body lms-form lms-form--full lms-theme-dark-form" style="padding: 2rem; max-height: 70vh; overflow-y: auto;">
+        {% if new_topic_form %}
+          {{ new_topic_form }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Modal and Dark Form Styles */
+.lms-modal--dark .lms-theme-dark-form .form-item label { color: #e6edf3; font-weight: 500; margin-bottom: 0.5rem; display: block; }
+.lms-modal--dark .lms-theme-dark-form .form-text,
+.lms-modal--dark .lms-theme-dark-form .form-textarea,
+.lms-modal--dark .lms-theme-dark-form .form-select {
+  background-color: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; padding: 0.75rem; width: 100%;
+}
+.lms-modal--dark .lms-theme-dark-form .form-text:focus,
+.lms-modal--dark .lms-theme-dark-form .form-textarea:focus { border-color: #58a6ff; outline: none; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3); }
+.lms-modal--dark .lms-theme-dark-form .ck-editor__editable { background-color: #0d1117 !important; color: #c9d1d9 !important; border-color: #30363d !important; }
+.lms-modal--dark .lms-theme-dark-form .form-submit.button--primary { background-color: #238636; color: #ffffff; border: 1px solid rgba(240, 246, 252, 0.1); border-radius: 6px; padding: 0.5rem 1.5rem; font-weight: 500; cursor: pointer; transition: .2s background-color; }
+.lms-modal--dark .lms-theme-dark-form .form-submit.button--primary:hover { background-color: #2ea043; }
+#closeNewTopicModal:hover { color: #e6edf3 !important; }
+
+/* Premium New Topic Button */
+.lms-forum-new-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #1f6feb 0%, #1255cc 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom-color: rgba(255, 255, 255, 0.05); /* Creates a subtle 3D effect */
+  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(31, 111, 235, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.3px;
+}
+.lms-forum-new-btn i {
+  font-size: 0.85rem;
+}
+.lms-forum-new-btn:hover {
+  background: linear-gradient(135deg, #2a7af5 0%, #1864e6 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(31, 111, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+.lms-forum-new-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px rgba(31, 111, 235, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Hide redundant ckeditor labels and tips */
+.lms-theme-dark-form .filter-wrapper { display: none !important; }
+.lms-theme-dark-form .ckeditor-description { display: none !important; }
+.lms-theme-dark-form .form-item-field-body-0-value > label,
+.lms-theme-dark-form .form-item-field-body-0-value .filter-guidelines { display: none !important; }
+.lms-theme-dark-form label[for^="edit-field-body"] { display: none !important; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('newTopicModal');
+  const btnOpen = document.getElementById('openNewTopicModal');
+  const btnClose = document.getElementById('closeNewTopicModal');
+
+  if (btnOpen && modal && btnClose) {
+    btnOpen.addEventListener('click', function(e) {
+      e.preventDefault();
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden'; // prevent background scrolling
+    });
+
+    btnClose.addEventListener('click', function() {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    });
+
+    // Close on outside click
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+  }
+});
+</script>

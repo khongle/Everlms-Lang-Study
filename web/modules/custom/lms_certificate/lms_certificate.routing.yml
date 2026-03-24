@@ -1,0 +1,62 @@
+lms_certificate.verify:
+  path: '/certificate/verify'
+  defaults:
+    _form: '\Drupal\lms_certificate\Form\VerificationForm'
+    _title: 'Verify Certificate'
+  requirements:
+    _access: 'TRUE'
+
+lms_certificate.revoke:
+  path: '/admin/lms/certificates/{lms_user_certificate}/revoke'
+  defaults:
+    _form: '\Drupal\lms_certificate\Form\RevokeCertificateForm'
+    _title: 'Revoke Certificate'
+  requirements:
+    _permission: 'revoke any certificate'
+  options:
+    parameters:
+      lms_user_certificate:
+        type: entity:lms_user_certificate
+
+lms_certificate.admin_dashboard:
+  path: '/workspace/certificates'
+  defaults:
+    _controller: '\Drupal\lms_certificate\Controller\CertificateAdminController::adminDashboard'
+    _title: 'Certificate Management'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_certificate.admin_templates:
+  path: '/workspace/certificate-templates'
+  defaults:
+    _controller: '\Drupal\lms_certificate\Controller\CertificateAdminController::adminTemplates'
+    _title: 'Certificate Templates'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_certificate.admin_template.add:
+  path: '/workspace/certificate-templates/add'
+  defaults:
+    _controller: '\Drupal\lms_certificate\Controller\CertificateAdminController::templateAddForm'
+    _title: 'Add Certificate Template'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_certificate.admin_template.edit:
+  path: '/workspace/certificate-templates/{lms_certificate_template}/edit'
+  defaults:
+    _controller: '\Drupal\lms_certificate\Controller\CertificateAdminController::templateEditForm'
+    _title: 'Edit Certificate Template'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+    parameters:
+      lms_certificate_template:
+        type: entity:lms_certificate_template

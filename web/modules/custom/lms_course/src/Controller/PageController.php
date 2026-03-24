@@ -55,6 +55,7 @@ final class PageController extends ControllerBase {
     $plan_ids = $this->entityTypeManager->getStorage('lms_membership_plan')
       ->getQuery()
       ->accessCheck(FALSE)
+      ->sort('field_price', 'ASC')
       ->execute();
     $plans = $plan_ids
       ? $this->entityTypeManager->getStorage('lms_membership_plan')->loadMultiple($plan_ids)
@@ -62,12 +63,17 @@ final class PageController extends ControllerBase {
 
     $items = [];
     foreach ($plans as $plan) {
+      $features = [];
+      foreach ($plan->get('field_features') as $feature_item) {
+        $features[] = $feature_item->value;
+      }
+
       $items[] = [
         'id' => $plan->id(),
         'name' => $plan->label(),
         'price' => (float) $plan->get('field_price')->value,
-        'duration' => $plan->get('field_duration_months')->value ?? 1,
-        'features' => $plan->get('field_features')->value ?? '',
+        'billing_cycle' => $plan->get('field_billing_cycle')->value ?? 'monthly',
+        'features' => implode("\n", $features),
         'recommended' => (bool) ($plan->get('field_recommended')->value ?? FALSE),
       ];
     }
@@ -76,23 +82,26 @@ final class PageController extends ControllerBase {
     if (empty($items)) {
       $items = [
         [
+          'id' => 1,
           'name' => 'Free',
           'price' => 0,
-          'duration' => 0,
+          'billing_cycle' => 'monthly',
           'features' => "Access to free courses\nBasic quizzes\nCommunity forum",
           'recommended' => FALSE,
         ],
         [
+          'id' => 2,
           'name' => 'Pro',
           'price' => 19.99,
-          'duration' => 1,
+          'billing_cycle' => 'monthly',
           'features' => "All free features\nUnlimited courses\nCertificates\nPriority support\nOffline downloads",
           'recommended' => TRUE,
         ],
         [
+          'id' => 3,
           'name' => 'Enterprise',
           'price' => 49.99,
-          'duration' => 1,
+          'billing_cycle' => 'monthly',
           'features' => "All Pro features\nTeam management\nCustom branding\nAPI access\nDedicated support",
           'recommended' => FALSE,
         ],

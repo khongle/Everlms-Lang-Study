@@ -1,0 +1,37 @@
+{#
+/**
+ * @file
+ * Default theme implementation for the certificate PDF layout.
+ *
+ * Available variables:
+ * - template: The CertificateTemplate entity.
+ * - user: The User entity receiving the certificate.
+ * - course: The Course entity.
+ * - code: The unique certificate number.
+ * - date: The issue date string.
+ */
+#}
+
+{# Bóc tách URL hình ảnh vật lý nếu Admin có upload #}
+{% set background_uri = template.field_background.entity.getFileUri() %}
+{% set background_url = background_uri ? file_url(background_uri) : '' %}
+
+{% set logo_uri = template.field_logo.entity.getFileUri() %}
+{% set logo_url = logo_uri ? file_url(logo_uri) : '' %}
+
+{% set signature_uri = template.field_signature.entity.getFileUri() %}
+{% set signature_url = signature_uri ? file_url(signature_uri) : '' %}
+
+{# Chuẩn bị danh sách Token map với Data thật #}
+{% set placeholders = {
+  '[student_name]': user.getDisplayName(),
+  '[course_name]': course.label(),
+  '[issue_date]': date,
+  '[certificate_code]': code,
+  '[logo]': logo_url,
+  '[signature]': signature_url,
+  '[background]': background_url
+} %}
+
+{# Output toàn bộ nội dung Admin tự thiết kế từ field_layout #}
+{{ template.field_layout.value|replace(placeholders)|raw }}

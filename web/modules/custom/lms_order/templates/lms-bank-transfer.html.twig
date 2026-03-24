@@ -1,0 +1,132 @@
+{# lms-bank-transfer.html.twig #}
+{{ attach_library('lms_theme/global') }}
+
+<style>
+  .lms-bt {
+    max-width: 600px;
+    margin: 4rem auto;
+    background: #1e293b;
+    border-radius: 1rem;
+    padding: 3rem;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+    font-family: 'Inter', sans-serif;
+  }
+  .lms-bt__icon {
+    font-size: 3rem;
+    color: #10b981;
+    margin-bottom: 1rem;
+  }
+  .lms-bt__title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+  }
+  .lms-bt__subtitle {
+    color: #94a3b8;
+    margin-bottom: 2rem;
+  }
+  .lms-bt__qr {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 1rem;
+    display: inline-block;
+    margin-bottom: 2rem;
+  }
+  .lms-bt__qr img {
+    max-width: 250px;
+    height: auto;
+    display: block;
+  }
+  .lms-bt__details {
+    background: #0f172a;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    text-align: left;
+    margin-bottom: 2rem;
+  }
+  .lms-bt__row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px dashed rgba(255,255,255,0.05);
+    padding-bottom: 0.75rem;
+  }
+  .lms-bt__row:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .lms-bt__label {
+    color: #94a3b8;
+  }
+  .lms-bt__value {
+    font-weight: 600;
+  }
+  .lms-bt__instructions {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    background: rgba(29, 112, 245, 0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid #1d70f5;
+    text-align: left;
+  }
+  .lms-bt__btn {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.75rem 2rem;
+    background: #1d70f5;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .lms-bt__btn:hover {
+    background: #165acc;
+  }
+</style>
+
+<div class="lms-bt">
+  <div class="lms-bt__icon"><i class="fas fa-check-circle"></i></div>
+  <div class="lms-bt__title">{{ 'Order Pending'|t }}</div>
+  <div class="lms-bt__subtitle">{{ 'Please complete your payment via Bank Transfer.'|t }}</div>
+
+  <div class="lms-bt__qr">
+    <img src="https://img.vietqr.io/image/{{ bank_bin|url_encode }}-{{ bank_account_no|url_encode }}-compact2.png?amount={{ amount }}&addInfo={{ order_number|url_encode }}&accountName={{ bank_account_name|url_encode }}" alt="VietQR Code">
+  </div>
+
+  <div class="lms-bt__details">
+    <div class="lms-bt__row">
+      <span class="lms-bt__label">{{ 'Bank'|t }}</span>
+      <span class="lms-bt__value">{{ bank_bin }}</span>
+    </div>
+    <div class="lms-bt__row">
+      <span class="lms-bt__label">{{ 'Account Number'|t }}</span>
+      <span class="lms-bt__value">{{ bank_account_no }}</span>
+    </div>
+    <div class="lms-bt__row">
+      <span class="lms-bt__label">{{ 'Account Name'|t }}</span>
+      <span class="lms-bt__value">{{ bank_account_name }}</span>
+    </div>
+    <div class="lms-bt__row">
+      <span class="lms-bt__label">{{ 'Amount'|t }}</span>
+      <span class="lms-bt__value" style="color: #10b981;">${{ amount|number_format(2) }}</span>
+    </div>
+    <div class="lms-bt__row">
+      <span class="lms-bt__label">{{ 'Transfer Content'|t }}</span>
+      <span class="lms-bt__value" style="color: #f59e0b;">{{ order_number }}</span>
+    </div>
+  </div>
+
+  {% if instructions %}
+  <div class="lms-bt__instructions">
+    {{ instructions|nl2br }}
+  </div>
+  {% endif %}
+
+</div>

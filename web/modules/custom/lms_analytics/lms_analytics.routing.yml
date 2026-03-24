@@ -1,0 +1,52 @@
+lms_analytics.course_report:
+  path: '/admin/lms/reports/courses'
+  defaults:
+    _controller: '\Drupal\lms_analytics\Controller\CourseReportController::build'
+    _title: 'Course Analytics & Report'
+  requirements:
+    _permission: 'administer lms_course'
+
+lms_analytics.course_report_export:
+  path: '/admin/lms/reports/courses/export'
+  defaults:
+    _controller: '\Drupal\lms_analytics\Controller\CourseReportController::export'
+  requirements:
+    _permission: 'administer lms_course'
+
+lms_analytics.user_report:
+  path: '/admin/lms/reports/users'
+  defaults:
+    _controller: '\Drupal\lms_analytics\Controller\UserReportController::build'
+    _title: 'User Analytics & Report'
+  requirements:
+    _permission: 'administer users'
+
+lms_analytics.user_report_export:
+  path: '/admin/lms/reports/users/export'
+  defaults:
+    _controller: '\Drupal\lms_analytics\Controller\UserReportController::export'
+  requirements:
+    _permission: 'administer users'
+
+lms_analytics.quiz_report_list:
+  path: '/admin/lms/reports/quizzes'
+  defaults:
+    _controller: '\Drupal\lms_analytics\Controller\QuizReportController::buildList'
+    _title: 'Quiz Analytics & Report'
+  requirements:
+    _permission: 'administer lms_quiz'
+
+lms_analytics.quiz_report_detail:
+  path: '/admin/lms/reports/quizzes/{quiz_id}'
+  defaults:
+    _controller: '\Drupal\lms_analytics\Controller\QuizReportController::buildDetail'
+    _title: 'Quiz Item Analysis'
+  requirements:
+    _permission: 'administer lms_quiz'
+
+lms_analytics.quiz_report_export:
+  path: '/admin/lms/reports/quizzes/{quiz_id}/export'
+  defaults:
+    _controller: '\Drupal\lms_analytics\Controller\QuizReportController::exportItemAnalysis'
+  requirements:
+    _permission: 'administer lms_quiz'
