@@ -17,15 +17,28 @@
     "require": {
         "composer/installers": "^2.3",
         "drupal/admin_toolbar": "^3.6",
+        "drupal/ajax_comments": "^1.0@alpha",
         "drupal/core-composer-scaffold": "^11.3",
         "drupal/core-project-message": "^11.3",
         "drupal/core-recipe-unpack": "^11.3",
         "drupal/core-recommended": "^11.3",
+        "drupal/h5p": "^2.0@alpha",
+        "drupal/ief_popup": "^2.2",
+        "drupal/inline_entity_form": "^3.0@RC",
+        "drupal/md_viewer": "^2.0",
         "drupal/metatag": "^2.2",
+        "drupal/password_policy": "^4.0",
         "drupal/pathauto": "^1.14",
+        "drupal/pdf": "^1.3",
+        "drupal/smtp": "^1.4",
+        "drupal/social_api": "^4.0",
         "drupal/social_auth": "^4.1",
+        "drupal/social_auth_facebook": "^4.0",
+        "drupal/social_auth_google": "^4.0",
         "drupal/token": "^1.17",
-        "drush/drush": "^13.7"
+        "drush/drush": "^13.7",
+        "mpdf/mpdf": "^8.3",
+        "stripe/stripe-php": "^19.4"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -104,5 +117,8 @@
                 "      composer remove drupal/core-project-message"
             ]
         }
+    },
+    "require-dev": {
+        "drupal/devel_entity_updates": "^5.0"
     }
 }
