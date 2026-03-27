@@ -23,6 +23,14 @@ function lms_membership_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'lms-admin-pricing',
     ],
+    'lms_admin_user_memberships' => [
+      'variables' => [
+        'memberships' => [],
+        'filters' => [],
+        'add_url' => '',
+      ],
+      'template' => 'lms-admin-user-memberships',
+    ],
   ];
 }
 

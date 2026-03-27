@@ -1,0 +1,9 @@
+name: 'LMS AI Platform'
+type: module
+description: 'Core AI logic provider using Drupal Plugin system.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+  - key:key
+lifecycle: stable

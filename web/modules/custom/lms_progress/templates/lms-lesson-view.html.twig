@@ -5,16 +5,26 @@
   <div class="lms-learn__main">
     {# Content area #}
     <div class="lms-learn__content">
-      {# Back Button & Lesson info #}
+      {# Moved Lesson Title to Top #}
+      <div style="margin-bottom: 1.5rem;">
+        <h1 class="lms-learn__title" style="font-size: 2.25rem; font-weight: 800; color: #fff; margin: 0;">{{ lesson.label }}</h1>
+      </div>
+
+      {# Back Button & Theater Mode #}
       <div class="lms-learn__top-bar" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
         <a href="{{ path('lms_course.detail', {'lms_course': course.id()}) }}" class="btn-lms-outline btn-lms-sm" style="border-radius: 2rem; padding: 0.5rem 1rem;">
           <i class="fas fa-arrow-left"></i> {{ 'Back to Course'|t }}
         </a>
-        {% if is_admin %}
-          <a href="{{ path('entity.lms_lesson.edit_form', {'lms_lesson': lesson.id()}) }}" class="btn-lms-primary btn-lms-sm" style="border-radius: 2rem; padding: 0.5rem 1rem;">
-            <i class="fas fa-pencil-alt"></i> {{ 'Edit Lesson'|t }}
-          </a>
-        {% endif %}
+        <div class="lms-learn__top-actions" style="display: flex; gap: 1rem; align-items: center;">
+          {% if is_admin %}
+            <a href="{{ path('entity.lms_lesson.edit_form', {'lms_lesson': lesson.id()}) }}" class="btn-lms-primary btn-lms-sm" style="border-radius: 2rem; padding: 0.5rem 1rem;">
+              <i class="fas fa-pencil-alt"></i> {{ 'Edit Lesson'|t }}
+            </a>
+          {% endif %}
+          <button id="lms-sidebar-toggle" class="btn-lms-outline btn-lms-sm" style="border-radius: 2rem; padding: 0.5rem 1rem; transition: all 0.3s;" title="{{ 'Toggle Sidebar'|t }}">
+            <i class="fas fa-expand-arrows-alt"></i> Theater Mode
+          </button>
+        </div>
       </div>
 
       {# Video / Content #}
@@ -143,6 +153,18 @@
               <p style="color: #ff7b72;">Chưa có bài Quiz nào được gắn vào bài học này.</p>
             {% endif %}
           </div>
+        {% elseif type == 'zoom' %}
+          <div class="lms-learn__zoom-wrapper" style="width: 100%; display: block; background: #0d1117;">
+            {% if rendered_attachments %}
+              {{ rendered_attachments }}
+            {% else %}
+              <div class="lms-learn__placeholder" style="padding: 4rem 2rem;">
+                <i class="fas fa-video-slash" style="font-size: 3rem; color: #ff7b72; margin-bottom: 1rem;"></i>
+                <h3 style="color: white;">Phòng Zoom chưa sẵn sàng</h3>
+                <p style="color: #8b949e; margin-top: 0.5rem;">Cấu hình Zoom có thể đang lỗi hoặc chưa sinh ra Meeting ID.</p>
+              </div>
+            {% endif %}
+          </div>
         {% else %}
           <div class="lms-learn__placeholder">
             <i class="fas fa-{{ type == 'h5p' ? 'puzzle-piece' : (type == 'zoom' ? 'video' : 'file-alt') }}"></i>
@@ -151,9 +173,8 @@
         {% endif %}
       </div>
 
-      {# Lesson info #}
-      <div class="lms-learn__info">
-        <h1 class="lms-learn__title" style="font-size: 2rem; font-weight: 800; color: #fff;">{{ lesson.label }}</h1>
+      {# Lesson Action Logic #}
+      <div class="lms-learn__info" style="margin-top: 1.5rem;">
         <div class="lms-learn__actions">
           {% set current_lesson_completed = false %}
           {% for item in curriculum %}
@@ -274,6 +295,10 @@
 
   {# Sidebar — Curriculum #}
   <aside class="lms-learn__sidebar">
+    <button id="lms-floating-sidebar-toggle" class="lms-floating-sidebar-toggle" title="Toggle Sidebar">
+       <i class="fas fa-chevron-right"></i>
+    </button>
+    
     <div class="lms-learn__sidebar-header" style="border-bottom: 1px solid hsla(0,0%,100%,0.1); padding-bottom: 1rem; margin-bottom: 0.5rem;">
       <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff; line-height: 1.4; margin-bottom: 1rem;">{{ course.label }}</h2>
       
@@ -588,6 +613,80 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Sidebar Toggle Logic
+  const sidebarToggleBtn = document.getElementById('lms-sidebar-toggle');
+  const floatingToggleBtn = document.getElementById('lms-floating-sidebar-toggle');
+  const lmsLearnContainer = document.querySelector('.lms-learn');
+  
+  const toggleSidebar = () => {
+    lmsLearnContainer.classList.toggle('lms-learn--sidebar-collapsed');
+    const isCollapsed = lmsLearnContainer.classList.contains('lms-learn--sidebar-collapsed');
+    localStorage.setItem('lms_sidebar_collapsed', isCollapsed);
+    
+    if (sidebarToggleBtn) {
+      const topIcon = sidebarToggleBtn.querySelector('i');
+      if (topIcon) {
+        if (isCollapsed) {
+          topIcon.classList.remove('fa-expand-arrows-alt');
+          topIcon.classList.add('fa-compress-arrows-alt');
+        } else {
+          topIcon.classList.remove('fa-compress-arrows-alt');
+          topIcon.classList.add('fa-expand-arrows-alt');
+        }
+      }
+    }
+    
+    if (floatingToggleBtn) {
+      const floatIcon = floatingToggleBtn.querySelector('i');
+      if (floatIcon) {
+        if (isCollapsed) {
+           floatIcon.classList.remove('fa-chevron-right');
+           floatIcon.classList.add('fa-chevron-left');
+           floatingToggleBtn.style.left = '-20px'; // move completely inside when expanded
+           floatingToggleBtn.style.transform = 'translateY(-50%) rotate(180deg)';
+        } else {
+           floatIcon.classList.remove('fa-chevron-left');
+           floatIcon.classList.add('fa-chevron-right');
+           floatingToggleBtn.style.left = '-16px'; 
+           floatingToggleBtn.style.transform = 'translateY(-50%) rotate(0deg)';
+        }
+      }
+    }
+  };
+
+  if (lmsLearnContainer) {
+    // Check saved state
+    if (localStorage.getItem('lms_sidebar_collapsed') === 'true') {
+      // Force immediate collapse without animation overhead visually locking
+      lmsLearnContainer.classList.add('lms-learn--sidebar-collapsed');
+      
+      if(sidebarToggleBtn) {
+        const topIcon = sidebarToggleBtn.querySelector('i');
+        if(topIcon) {
+          topIcon.classList.remove('fa-expand-arrows-alt');
+          topIcon.classList.add('fa-compress-arrows-alt');
+        }
+      }
+      
+      if(floatingToggleBtn) {
+        const floatIcon = floatingToggleBtn.querySelector('i');
+        if(floatIcon) {
+          floatIcon.classList.remove('fa-chevron-right');
+          floatIcon.classList.add('fa-chevron-left');
+          floatingToggleBtn.style.left = '-16px';
+          floatingToggleBtn.style.transform = 'translateY(-50%) rotate(180deg)';
+        }
+      }
+    }
+    
+    if (sidebarToggleBtn) {
+      sidebarToggleBtn.addEventListener('click', toggleSidebar);
+    }
+    if (floatingToggleBtn) {
+      floatingToggleBtn.addEventListener('click', toggleSidebar);
+    }
+  }
+
 });
 </script>
 <style>
@@ -595,4 +694,75 @@ document.addEventListener('DOMContentLoaded', () => {
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  /* Sidebar Toggle Animation & Styles */
+  .lms-learn {
+    transition: all 0.3s ease;
+  }
+  .lms-learn__sidebar {
+    transition: min-width 0.3s ease, width 0.3s ease, margin 0.3s ease, opacity 0.2s ease;
+  }
+  .lms-learn__player {
+    transition: max-width 0.3s ease;
+  }
+
+  /* Collapsed State */
+  .lms-learn--sidebar-collapsed .lms-learn__sidebar {
+    transform: translateX(100%);
+    width: 0 !important;
+    min-width: 0 !important;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Make floating toggle visible when collapsed by breaking it out of the hidden sidebar */
+  .lms-learn--sidebar-collapsed .lms-floating-sidebar-toggle {
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    right: 0 !important;
+    left: auto !important;
+    top: 50% !important;
+    transform: translateY(-50%) rotate(180deg) !important;
+    z-index: 1000 !important;
+    border-radius: 8px 0 0 8px !important;
+  }
+
+  .lms-learn--sidebar-collapsed .lms-learn__player {
+    max-width: 1400px; /* Expand for SCORM/Video/PPTX theater mode */
+  }
+  
+  /* Protect basic text content from getting too wide in theater mode for readability */
+  .lms-learn__text-content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  /* Fixed Floating toggle styling */
+  .lms-floating-sidebar-toggle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: -16px; 
+    width: 32px;
+    height: 64px;
+    background: #21262d;
+    border: 1px solid hsla(0,0%,100%,0.1);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    color: #8b949e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+  }
+  
+  .lms-floating-sidebar-toggle:hover {
+    color: #58a6ff;
+    background: #30363d;
+  }
+
 </style>

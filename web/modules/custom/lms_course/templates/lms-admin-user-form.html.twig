@@ -38,25 +38,67 @@
           font-size: 0.95rem;
         }
 
-        /* Light Inputs */
-        .lms-form-content input[type="text"], 
-        .lms-form-content input[type="email"], 
-        .lms-form-content input[type="password"], 
-        .lms-form-content input[type="number"], 
-        .lms-form-content textarea, 
-        .lms-form-content select {
+        /* Light Inputs - Overriding _workspace-admin.scss bleeding dark mode */
+        #lms-admin-form-app .lms-form-content label,
+        #lms-admin-form-app .lms-form-content .form-item > label {
+          color: #334155 !important;
+        }
+
+        #lms-admin-form-app .lms-form-content input:not([type="submit"]):not([type="button"]):not([value="Edit"]):not([value="Remove"]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), 
+        #lms-admin-form-app .lms-form-content select, 
+        #lms-admin-form-app .lms-form-content textarea,
+        #lms-admin-form-app .lms-form-content .form-element, 
+        #lms-admin-form-app .lms-form-content .form-select, 
+        #lms-admin-form-app .lms-form-content .form-textarea, 
+        #lms-admin-form-app .lms-form-content .form-text, 
+        #lms-admin-form-app .lms-form-content .form-date, 
+        #lms-admin-form-app .lms-form-content .form-time, 
+        #lms-admin-form-app .lms-form-content .form-autocomplete, 
+        #lms-admin-form-app .lms-form-content .form-number, 
+        #lms-admin-form-app .lms-form-content .form-email, 
+        #lms-admin-form-app .lms-form-content .form-password,
+        #lms-admin-form-app .lms-form-content .ck-editor__editable,
+        #lms-admin-form-app .lms-form-content .ck-editor__main {
           width: 100%;
           background: #f8fafc !important; 
           border: 1px solid #cbd5e1 !important; 
           color: #1e293b !important;
-          padding: 0.75rem 1rem;
-          border-radius: 0.5rem;
+          padding: 0.75rem 1rem !important;
+          border-radius: 0.5rem !important;
           transition: all 0.2s;
           font-family: inherit;
+          box-sizing: border-box;
         }
-        .lms-form-content input[type="text"]:focus, 
-        .lms-form-content textarea:focus,
-        .lms-form-content select:focus {
+        
+        /* CKEditor Toolbar Light Mode */
+        #lms-admin-form-app .lms-form-content .ck.ck-toolbar {
+          background: #f1f5f9 !important;
+          border: 1px solid #cbd5e1 !important;
+          border-bottom: none !important;
+          border-top-left-radius: 0.5rem !important;
+          border-top-right-radius: 0.5rem !important;
+        }
+        #lms-admin-form-app .lms-form-content .ck.ck-toolbar *,
+        #lms-admin-form-app .lms-form-content .ck.ck-button {
+          color: #334155 !important;
+        }
+        #lms-admin-form-app .lms-form-content .ck.ck-toolbar .ck-button:hover {
+          background: #e2e8f0 !important;
+        }
+        
+        #lms-admin-form-app .lms-form-content .ck.ck-editor__main > .ck-editor__editable {
+          border-top-left-radius: 0 !important;
+          border-top-right-radius: 0 !important;
+          min-height: 150px;
+          background: #f8fafc !important;
+          color: #1e293b !important;
+        }
+
+        #lms-admin-form-app .lms-form-content input:focus, 
+        #lms-admin-form-app .lms-form-content textarea:focus,
+        #lms-admin-form-app .lms-form-content select:focus,
+        #lms-admin-form-app .lms-form-content .form-element:focus,
+        #lms-admin-form-app .lms-form-content .ck-editor__editable.ck-focused {
           outline: none !important;
           border-color: #3b82f6 !important; /* EverLMS Blue */
           box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;

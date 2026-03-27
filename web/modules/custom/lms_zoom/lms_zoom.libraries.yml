@@ -1,0 +1,27 @@
+countdown:
+  version: 1.x
+  js:
+    js/zoom-countdown.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
+    - core/drupalSettings
+
+websdk:
+  version: 1.x
+  css:
+    component:
+      https://source.zoom.us/3.1.6/css/bootstrap.css: { type: external, minified: true }
+      https://source.zoom.us/3.1.6/css/react-select.css: { type: external, minified: true }
+  js:
+    https://source.zoom.us/3.1.6/lib/vendor/react.min.js: { type: external, minified: true }
+    https://source.zoom.us/3.1.6/lib/vendor/react-dom.min.js: { type: external, minified: true }
+    https://source.zoom.us/3.1.6/lib/vendor/redux.min.js: { type: external, minified: true }
+    https://source.zoom.us/3.1.6/lib/vendor/redux-thunk.min.js: { type: external, minified: true }
+    https://source.zoom.us/3.1.6/lib/vendor/lodash.min.js: { type: external, minified: true }
+    https://source.zoom.us/zoom-meeting-3.1.6.min.js: { type: external, minified: true }
+    js/zoom-websdk-runner.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
+    - core/drupalSettings

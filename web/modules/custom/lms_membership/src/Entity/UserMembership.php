@@ -35,6 +35,7 @@ use Drupal\views\EntityViewsData;
       'add' => 'Drupal\Core\Entity\ContentEntityForm',
       'edit' => 'Drupal\Core\Entity\ContentEntityForm',
       'delete' => 'Drupal\Core\Entity\ContentEntityDeleteForm',
+      'manager' => 'Drupal\Core\Entity\ContentEntityForm',
     ],
     'route_provider' => [
       'html' => 'Drupal\Core\Entity\Routing\AdminHtmlRouteProvider',
@@ -59,6 +60,19 @@ class UserMembership extends ContentEntityBase implements EntityOwnerInterface {
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type): array {
     $fields = parent::baseFieldDefinitions($entity_type);
     $fields += static::ownerBaseFieldDefinitions($entity_type);
+
+    $fields['uid']
+      ->setLabel(new TranslatableMarkup('Assign User'))
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => 0,
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'placeholder' => '',
+        ],
+      ])
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['field_plan'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(new TranslatableMarkup('Plan'))

@@ -1,0 +1,28 @@
+Tôi muốn xây dựng một website training online với chủ đề là "{{training_program}}", xây dựng trên sản phẩm EverLMS.
+Đây là langcodes của toàn bộ website {{langcodes_list}}.
+Chương trình toàn bộ bằng ngôn ngữ có langcode là {{langcode}}.
+Đây là cấu trúc category và course của tôi
+{{categories_courses}}  
+
+Giờ tôi muốn tạo lesson detail cho Lesson "{{lesson_name}}"
+Để bạn hiểu hơn đây là cấu trức chapter và lesson của course này "{{chapters_lessons_tree}}"
+Chỉ trả ra JSON và không được bỏ machine nào vào như langcode.
+Cấu trúc trả ra sẽ là:
+{
+  "chapter_id": {{chapter_id}},
+  "lesson": [
+    {
+      "{{langcode}}": {
+          "lesson_title": {{lesson_name}},
+          "lesson_detail": long text, // chứa nội dung của lesson phải đầy đủ, rõ ràng, dùng html, nội dung nên chia làm nhiều đoạn với các tag như <h>, <p>, <ul>, <ol>,<li>, <br/>, ... để hiển thị, không dùng \n, mỗi đoạn không quá dài, không quá 100 word để người đọc dễ đọc dễ nắm bắt,
+          "lesson_description": long text,
+          "youtube_link": "một số từ khóa mô tả chi tiết để tìm video phù hợp cho nội dung của lesson này trên youtube, riêng field này hãy cung cấp giúp tôi từ khóa tiếng anh để có thể dễ video youtube phù hợp nhất, cố gắng cho tôi từ khóa có nghĩa, phù hợp với nội dung và phù hợp với ý nghĩa của hệ thống và đảm bảo tôi có thể dễ dàng tìm được những youtube video phù hợp,"
+          "meta_abstract": string, // Tóm tắt ngắn gọn và súc tích về nội dung của trang, tốt nhất là tối đa 150 ký tự. Trong khi thẻ meta mô tả có thể được các công cụ tìm kiếm sử dụng để hiển thị một đoạn trích về trang trong kết quả tìm kiếm, thì thẻ tóm tắt có thể được sử dụng để lưu trữ tóm tắt về trang
+          "meta_description": string, // Tóm tắt ngắn gọn và súc tích về nội dung trang, tối đa 160 ký tự. Thẻ meta mô tả có thể được các công cụ tìm kiếm sử dụng để hiển thị đoạn trích về trang trong kết quả tìm kiếm
+          "meta_keywords": string, // Danh sách các từ khóa được phân cách bằng dấu phẩy về trang.
+          "og_description": string, // Mô tả nội dung từ một đến hai câu.
+          "og_determiner": string, // Từ xuất hiện trước tiêu đề nội dung trong câu.
+        },
+    }
+  ]
+}

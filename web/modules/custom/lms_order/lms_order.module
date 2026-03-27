@@ -110,14 +110,25 @@ function _lms_order_process_completed_order(EntityInterface $entity) {
     $mailManager->mail($module, $key, $to, $langcode, $params, NULL, TRUE);
 
     // 2. Create In-App Notification
+    $order_total = $entity->hasField('field_total') ? (float) $entity->get('field_total')->value : 0.00;
+    $is_free = $order_total <= 0;
+
+    $title = $is_free 
+      ? t('Enrollment Successful') 
+      : t('Order #@order_id Completed', ['@order_id' => $entity->id()]);
+      
+    $body = $is_free 
+      ? t('You have successfully enrolled in the free content. You can now access your courses.') 
+      : t('Your payment for Order #@order_id was successful. You can now access your purchased contents.', ['@order_id' => $entity->id()]);
+
     $storage = \Drupal::entityTypeManager()->getStorage('lms_notification');
     $notification = $storage->create([
       'uid' => $user_id,
       'field_type' => 'payment',
       'field_channel' => ['value' => 'in_app'],
-      'field_title' => t('Order #@order_id Completed', ['@order_id' => $entity->id()]),
+      'field_title' => $title,
       'field_message' => [
-        'value' => t('Your payment for Order #@order_id was successful. You can now access your purchased contents.', ['@order_id' => $entity->id()]),
+        'value' => $body,
         'format' => 'basic_html',
       ],
       'field_link' => '/my-courses',
@@ -169,10 +180,24 @@ function lms_order_theme() {
 function lms_order_mail($key, &$message, $params) {
   switch ($key) {
     case 'order_completed':
-      $message['subject'] = t('Your EverLMS Order #@order_id has been approved!', ['@order_id' => $params['order_id']]);
+      $order = \Drupal::entityTypeManager()->getStorage('lms_order')->load($params['order_id']);
+      $is_free = FALSE;
+      if ($order) {
+        $order_total = $order->hasField('field_total') ? (float) $order->get('field_total')->value : 0.00;
+        $is_free = $order_total <= 0;
+      }
+
+      $message['subject'] = $is_free 
+        ? t('Your EverLMS Enrollment is confirmed!') 
+        : t('Your EverLMS Order #@order_id has been approved!', ['@order_id' => $params['order_id']]);
+        
       $message['body'][] = t('Dear @name,', ['@name' => $params['user_name']]);
       $message['body'][] = '';
-      $message['body'][] = t('Great news! Your payment for Order #@order_id has been successfully verified and approved.', ['@order_id' => $params['order_id']]);
+      
+      $message['body'][] = $is_free 
+        ? t('Great news! Your enrollment has been successfully processed.') 
+        : t('Great news! Your payment for Order #@order_id has been successfully verified and approved.', ['@order_id' => $params['order_id']]);
+        
       $message['body'][] = t('Your purchased items have been successfully activated on your account. You can now log in and access your content immediately.');
       $message['body'][] = '';
       $message['body'][] = t('Visit your dashboard: @url', ['@url' => $params['dashboard_url']]);

@@ -1,0 +1,40 @@
+Tôi muốn xây dựng một hệ thống trainining  với chủ đề là "{{training_program}}", xây dựng trên sản phẩm EverLMS.
+Nội dung chỉ tập trung nói về đề tài "{{training_program}}" chứ đừng giới thiệu hay quảng bá gì về EverLMS cả nhé.
+
+Cấu trúc chương trình gồm: Course => Chapter => Lesson. Tôi đã có sẵn cấu trúc này. Giờ tôi cần bạn tạo nội dung slide content cho từng lesson.
+
+  Nhiệm vụ của bạn:
+  - Tạo nội dung cho Lesson "{{lesson_name}}" trong Chapter "{{chapter_name}}" của Course "{{course_name}}".
+  - Để tham khảo, đây là danh sách tất cả course: "{{courses_list}}"
+  - Đây là danh sách các chapter trong course "{{course_name}}": "{{chapter_list}}"
+  - Đây là danh sách các lesson trong chapter "{{chapter_name}}": "{{lesson_list}}"
+
+Yêu cầu khi viết:
+- Nội dung bằng ngôn ngữ có langcode là **{{langcode}}**, phong cách **chuyên nghiệp, dễ hiểu, thực tế **.
+- Về tổng thể, nội dung phải đầy đủ, rõ ràng, có bố cục:
+  + Giới thiệu
+  + Nội dung chính
+  + Ví dụ minh họa
+  + Ứng dụng thực tế
+  + Kết luận & thảo luận
+  + Và bạn chủ động thấy cần thêm bớt gì phù hợp với bài học thì cứ thêm
+
+- Chia thành **5–50 slide** tùy theo nội dung của lesson dài hay ngắn, 
+- Mỗi slide được chia thành nhiều line/paragraph với mỗi line/paragraph thì không quá dài, với nội dung độc lập, tinh gọn để dễ truyền tải, gợi mở cho người đọc và cũng là ý để người trình bày có thể giải thích thêm.
+- Dùng HTML để trình bày nội dung ví dụ <strong>, <p>, <ul>, <ol>, <li>, <p>, …
+- Lấy ví dụ, số liệu, tình huống thực tế từ môi trường "{{training_program}}".
+
+Output chỉ trả về JSON theo chuẩn dưới đây, không kèm text ngoài JSON:
+{
+  "slide_content": [
+    {
+      "title": "...",
+      "html": "<p>...</p><ul><li>...</li><li>...</li><li>...</li>...</ul><p>...</p>...."
+    },
+    {
+      "title": "...",
+      "html": "<p>...</p><ul><li>...</li><li>...</li><li>...</li>...</ul><p>...</p>...."
+    },
+    …
+  ]
+}

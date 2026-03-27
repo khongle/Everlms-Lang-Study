@@ -1,0 +1,91 @@
+{# Admin User Memberships #}
+{{ attach_library('lms_theme/global') }}
+<div class="lms-admin">
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'user_memberships' } %}
+  <div class="lms-admin__main">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ 'User Memberships'|t }}</h1>
+      <a href="{{ add_url }}" class="lms-btn btn-lms-primary">
+        <i class="fas fa-plus" style="margin-right: 8px;"></i> {{ 'Add Membership'|t }}
+      </a>
+    </div>
+
+    <!-- Filter Bar -->
+    <form method="GET" action="{{ path('<current>') }}" class="lms-admin-filter">
+      <div class="lms-admin-filter__group" style="flex: 2;">
+        <label class="lms-admin-filter__label">{{ 'Search'|t }}</label>
+        <input type="text" name="search" value="{{ filters.search }}" class="lms-admin-filter__input" placeholder="{{ 'Search...'|t }}">
+      </div>
+      <div class="lms-admin-filter__group">
+        <label class="lms-admin-filter__label">{{ 'Status'|t }}</label>
+        <select name="status" class="lms-admin-filter__select">
+          <option value="all" {% if filters.status == 'all' %}selected{% endif %}>{{ 'All Statuses'|t }}</option>
+          <option value="active" {% if filters.status == 'active' %}selected{% endif %}>{{ 'Active'|t }}</option>
+          <option value="trial" {% if filters.status == 'trial' %}selected{% endif %}>{{ 'Trial'|t }}</option>
+          <option value="expired" {% if filters.status == 'expired' %}selected{% endif %}>{{ 'Expired'|t }}</option>
+          <option value="cancelled" {% if filters.status == 'cancelled' %}selected{% endif %}>{{ 'Cancelled'|t }}</option>
+        </select>
+      </div>
+      <div class="lms-admin-filter__group" style="flex: 0 0 auto;">
+        <button type="submit" class="lms-btn btn-lms-primary" style="height: 42px; display: inline-flex; align-items: center;">
+          {{ 'Filter'|t }}
+        </button>
+      </div>
+    </form>
+
+    <div class="lms-admin-card">
+      <div class="lms-table-responsive">
+        <table class="lms-table">
+          <thead>
+            <tr>
+              <th>{{ 'USER'|t }}</th>
+              <th>{{ 'PLAN'|t }}</th>
+              <th>{{ 'START DATE'|t }}</th>
+              <th>{{ 'END DATE'|t }}</th>
+              <th>{{ 'STATUS'|t }}</th>
+              <th>{{ 'AUTO RENEW'|t }}</th>
+              <th>{{ 'ACTIONS'|t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for m in memberships %}
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <img src="{{ m.user_avatar }}" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; flex-direction: column; gap: 0.125rem;">
+                      <span style="font-weight: 600; color: #fff;">{{ m.user_name }}</span>
+                      {% if m.email %}
+                        <span style="font-size: 0.75rem; color: #64748b;">{{ m.email }}</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+                <td>{{ m.plan_name }}</td>
+                <td>{{ m.start_date }}</td>
+                <td>{{ m.end_date }}</td>
+                <td>
+                  <span class="lms-badge {{ m.status in ['active', 'trial'] ? 'lms-badge--success' : (m.status == 'cancelled' ? 'lms-badge--warning' : 'lms-badge--danger') }}" style="text-transform: capitalize;">
+                    {{ m.status }}
+                  </span>
+                </td>
+                <td>
+                  {{ m.auto_renew }}
+                </td>
+                <td>
+                  <a href="{{ m.edit_url }}" class="lms-btn btn-lms-primary" style="padding: 6px 14px; font-size: 13px;">{{ 'Edit'|t }}</a>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="7" class="lms-text-center" style="padding: 2rem; color: #94a3b8;">
+                  {{ 'No user memberships found.'|t }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

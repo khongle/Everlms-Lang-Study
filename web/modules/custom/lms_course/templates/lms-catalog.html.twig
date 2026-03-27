@@ -8,7 +8,7 @@
 
         {# Title search #}
         <div class="lms-catalog__filter-group">
-          <input type="text" class="form-control lms-input" placeholder="{{ 'Title'|t }}" id="course-search">
+          <input type="text" class="form-control lms-input" placeholder="{{ 'Title'|t }}" id="course-search" value="{{ filters.search|default('') }}">
         </div>
 
         {# Category filter #}
@@ -17,12 +17,12 @@
           <select class="form-control lms-select" id="category-filter">
             <option value="">{{ 'All Categories'|t }}</option>
             {% for cat in categories %}
-              <option value="{{ cat.id }}">{{ cat.label }}</option>
+              <option value="{{ cat.id }}" {% if cat.id in filters.category %}selected{% endif %}>{{ cat.label }}</option>
             {% endfor %}
           </select>
           {% for cat in categories[:6] %}
             <label class="lms-catalog__checkbox">
-              <input type="checkbox" value="{{ cat.id }}" data-filter-type="category">
+              <input type="checkbox" value="{{ cat.id }}" data-filter-type="category" {% if cat.id in filters.category %}checked{% endif %}>
               <span>{{ cat.label }}</span>
             </label>
           {% endfor %}
@@ -33,7 +33,7 @@
           <h4>{{ 'LEVEL'|t }}</h4>
           {% for level in ['Beginner', 'Intermediate', 'Advanced'] %}
             <label class="lms-catalog__checkbox">
-              <input type="checkbox" value="{{ level|lower }}" data-filter-type="level">
+              <input type="checkbox" value="{{ level|lower }}" data-filter-type="level" {% if level|lower in filters.level %}checked{% endif %}>
               <span>{{ level|t }}</span>
             </label>
           {% endfor %}
@@ -43,11 +43,11 @@
         <div class="lms-catalog__filter-group">
           <h4>{{ 'PRICE'|t }}</h4>
           <label class="lms-catalog__checkbox">
-            <input type="checkbox" value="free" data-filter-type="price">
+            <input type="checkbox" value="free" data-filter-type="price" {% if 'free' in filters.price %}checked{% endif %}>
             <span>{{ 'Free'|t }}</span>
           </label>
           <label class="lms-catalog__checkbox">
-            <input type="checkbox" value="paid" data-filter-type="price">
+            <input type="checkbox" value="paid" data-filter-type="price" {% if 'paid' in filters.price %}checked{% endif %}>
             <span>{{ 'Paid'|t }}</span>
           </label>
         </div>
@@ -57,7 +57,7 @@
           <h4>{{ 'RATING'|t }}</h4>
           {% for r in [5, 4, 3, 2, 1] %}
             <label class="lms-catalog__checkbox">
-              <input type="checkbox" value="{{ r }}" data-filter-type="rating">
+              <input type="checkbox" value="{{ r }}" data-filter-type="rating" {% if r in filters.rating %}checked{% endif %}>
               <span class="lms-rating-stars">
                 {% for i in 1..5 %}
                   <i class="fas fa-star {% if i <= r %}text-warning{% else %}text-muted{% endif %}"></i>
@@ -77,9 +77,9 @@
           <div class="lms-catalog__sort" style="display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
             <label style="margin: 0;">{{ 'Sort by:'|t }}</label>
             <select class="lms-select lms-select--sm" id="sort-courses" style="width: auto;">
-              <option>{{ 'Most Popular'|t }}</option>
-              <option>{{ 'Newest'|t }}</option>
-              <option>{{ 'Price Low-High'|t }}</option>
+              <option {% if filters.sort == 'Most Popular' %}selected{% endif %}>{{ 'Most Popular'|t }}</option>
+              <option {% if filters.sort == 'Newest' %}selected{% endif %}>{{ 'Newest'|t }}</option>
+              <option {% if filters.sort == 'Price Low-High' %}selected{% endif %}>{{ 'Price Low-High'|t }}</option>
             </select>
           </div>
         </div>
@@ -93,14 +93,7 @@
           </div>
 
           {# Pagination #}
-          <nav class="lms-pagination">
-            <span class="lms-pagination__item lms-pagination__item--disabled">{{ '← Previous'|t }}</span>
-            <span class="lms-pagination__item lms-pagination__item--active">1</span>
-            <span class="lms-pagination__item">2</span>
-            <span class="lms-pagination__item">3</span>
-            <span class="lms-pagination__item">...</span>
-            <span class="lms-pagination__item">{{ 'Next →'|t }}</span>
-          </nav>
+          {{ pager }}
         {% else %}
           <div class="lms-empty-state">
             <i class="fas fa-search"></i>

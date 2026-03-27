@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Primary module hooks for LMS Blog module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function lms_blog_theme($existing, $type, $theme, $path) {
+  return [
+    'lms_blog_list' => [
+      'variables' => [
+        'articles' => [],
+      ],
+      'template' => 'lms-blog-list',
+    ],
+    'lms_blog_single' => [
+      'variables' => [
+        'article' => NULL,
+        'is_teaser_mode' => FALSE,
+      ],
+      'template' => 'lms-blog-single',
+    ],
+  ];
+}

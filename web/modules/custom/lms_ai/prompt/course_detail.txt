@@ -1,0 +1,35 @@
+Tôi muốn xây dựng một website training online với chủ đề là "{{training_program}}", xây dựng trên sản phẩm EverLMS.
+Đây là langcodes của toàn bộ website {{langcodes_list}}.
+Chương trình toàn bộ bằng ngôn ngữ có langcode là "{{langcode}}".
+Nội dung chỉ tập trung nói về đề tài "{{training_program}}" chứ đừng giới thiệu hay quảng bá gì về EverLMS cả nhé.
+Đây là danh sách category -> course -> chapter -> lesson tôi đã nhờ chatGPT tạo:
+{{courses_list_suggestion}}
+
+Đây là cấu trúc category và course của tôi đã tạo
+{{categories_courses}}
+Gio tôi cần tạo content cho course "{{course_name}}" trong category "{{category_name}}"
+Chỉ trả ra JSON. 
+Cấu trúc trả ra sẽ là:
+[
+{
+""{{langcode}}"": {
+""course_title"": {{course_name}}, // Thay placeholder này bằng tên khóa học.
+""short_description"": long text, // Text ngắn tóm tắt khóa học.
+""description"": long text, // Mô tả đầy đủ chi tiết, trực quan và sâu sắc, CÓ THỂ BỌC THẺ HTML cho đẹp.
+""what_you_will_learn"": long text, // Danh sách mục tiêu khóa học.
+""prerequisites"": long text, // Yêu cầu đầu vào của khóa học.
+""who_is_this_for"": long text, // Khóa học dành cho đối tượng nào.
+""category"": string is category name,
+""price_type"": string, // Nhận giá trị "free", "paid", hoặc "membership". Có ít nhất 5 course free.
+""price"": number, // Giá của course (in USD). Nếu price_type là free thì price trả về 0.
+""is_featured"": boolean, // Có ít nhất 4 course is_featured = true.
+""is_bestseller"": boolean, // Bestseller course flag.
+""duration_minutes"": integer, // Tổng thời lượng của khóa học TÍNH BẰNG PHÚT.
+""meta_abstract"": string, // Tóm tắt ngắn gọn xuất hiện trong thẻ meta (tối đa 150 ký tự).
+""meta_description"": string, // Tóm tắt meta description chuẩn SEO (tối đa 160 ký tự).
+""meta_keywords"": string, // Danh sách các từ khóa chuẩn SEO cách nhau bằng dấu phẩy.
+""og_description"": string, // Mô tả og:description (1-2 câu).
+""og_determiner"": string // Từ xuất hiện trước tiêu đề.
+}
+}
+]"

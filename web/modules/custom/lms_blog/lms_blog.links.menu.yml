@@ -1,0 +1,5 @@
+entity.lms_article.collection:
+  title: 'Blog Articles'
+  parent: system.admin_content
+  route_name: entity.lms_article.collection
+  weight: 10

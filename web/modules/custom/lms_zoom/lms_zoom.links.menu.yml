@@ -1,0 +1,6 @@
+lms_zoom.settings:
+  title: 'Zoom Integration'
+  description: 'Configure Server-to-Server OAuth for Zoom API.'
+  parent: system.admin_config
+  route_name: lms_zoom.settings
+  weight: 50

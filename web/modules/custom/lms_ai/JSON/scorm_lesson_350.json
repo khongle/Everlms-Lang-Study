@@ -1,0 +1,58 @@
+{
+    "course_id": "26",
+    "chapter_id": "83",
+    "lesson_id": "350",
+    "course_title": "Introduction to AI for Business Leaders",
+    "lesson_title": "What is AI and Why it Matters for Business?",
+    "slides": [
+        {
+            "slide_index": 1,
+            "slide_type": "title_slide",
+            "heading": "What is AI and Why it Matters for Business?",
+            "sub_heading": "Chapter 1: Understanding Artificial Intelligence",
+            "content": "Welcome to the first lesson. In this session, we will demystify the concept of AI in a way that is easy to understand from a management perspective, and decode why AI has become an indispensable strategic weapon in the digital era.",
+            "image_keyword": "Modern glowing AI brain connected to a global business network"
+        },
+        {
+            "slide_index": 2,
+            "slide_type": "content_slide",
+            "heading": "Defining Artificial Intelligence (AI)",
+            "content": "Unlike traditional software systems that run on pre-programmed 'rules' (if/then logic), AI represents computer systems capable of performing tasks that typically require human intelligence (such as learning, reasoning, speech recognition, and self-correction).",
+            "bullet_points": [
+                "It is not a single technology, but an ecosystem (Machine Learning, NLP, Vision...).",
+                "It is Data-driven rather than Rule-based.",
+                "It has the ability to improve over time as it is exposed to more data."
+            ],
+            "image_keyword": "Comparison between rule based code gears and a dynamic data driven neural network"
+        },
+        {
+            "slide_index": 3,
+            "slide_type": "content_slide",
+            "heading": "Why is AI Important for Businesses Now?",
+            "content": "AI is no longer a sci-fi concept confined to laboratories. Leading organizations worldwide are leveraging AI to profoundly and comprehensively reshape their competitive advantage.",
+            "bullet_points": [
+                "Cost Optimization: Automating highly repetitive tasks with high accuracy.",
+                "Revenue Growth: Personalizing the customer experience at an unprecedented depth.",
+                "Risk Management: Predicting and detecting fraud based on real-time behavior."
+            ]
+        },
+        {
+            "slide_index": 4,
+            "slide_type": "quote_slide",
+            "heading": "Leadership in the AI Era",
+            "content": "The manager's task is not to know how to program AI, but to know how to pose the right business problems for AI to solve.",
+            "author": "The Strategist's Perspective"
+        },
+        {
+            "slide_index": 5,
+            "slide_type": "summary_slide",
+            "heading": "Lesson Summary",
+            "content": "In this lesson, you grasped the core definition of AI and its role in shaping the business landscape.",
+            "bullet_points": [
+                "AI fundamentally shifts how systems learn from data.",
+                "AI provides advantages in cost, revenue, and risk management.",
+                "The key to success is aligning business goals with technological capabilities."
+            ]
+        }
+    ]
+}

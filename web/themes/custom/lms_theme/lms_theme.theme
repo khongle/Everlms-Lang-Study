@@ -137,9 +137,35 @@ function lms_theme_preprocess_user(&$variables) {
 
   // Quiz Average (Placeholder logic if lms_quiz_result exists)
   $quiz_average = '0%';
+  $recent_quizzes = [];
   if ($entity_type_manager->hasDefinition('lms_quiz_result')) {
     $results = $entity_type_manager->getStorage('lms_quiz_result')
       ->loadByProperties(['uid' => $uid]);
+      
+    // Fetch Recent Quizzes
+    $recent_result_ids = $entity_type_manager->getStorage('lms_quiz_result')
+      ->getQuery()
+      ->condition('uid', $uid)
+      ->sort('id', 'DESC')
+      ->range(0, 5)
+      ->accessCheck(FALSE)
+      ->execute();
+    
+    if ($recent_result_ids) {
+      $recent_result_entities = $entity_type_manager->getStorage('lms_quiz_result')->loadMultiple($recent_result_ids);
+      foreach ($recent_result_entities as $r) {
+        $quiz = $r->hasField('field_quiz') ? $r->get('field_quiz')->entity : NULL;
+        $score = $r->hasField('field_score') ? (float) $r->get('field_score')->value : 0;
+        $passed = $score >= 80; // Basic assumption, could be dynamic
+        $recent_quizzes[] = [
+          'title' => $quiz ? $quiz->label() : 'Unknown Quiz',
+          'score' => $score,
+          'passed' => $passed,
+          'date' => \Drupal::service('date.formatter')->format($r->get('created')->value, 'short'),
+        ];
+      }
+    }
+
     if (!empty($results)) {
       $total_score = 0;
       foreach ($results as $result) {
@@ -149,7 +175,44 @@ function lms_theme_preprocess_user(&$variables) {
     }
   }
   $variables['quiz_average'] = $quiz_average;
+  $variables['recent_quizzes'] = $recent_quizzes;
   
+  // Active Courses
+  $active_courses = [];
+  if ($entity_type_manager->hasDefinition('lms_user_course')) {
+    $enrollment_ids = $entity_type_manager->getStorage('lms_user_course')
+      ->getQuery()
+      ->condition('uid', $uid)
+      ->sort('id', 'DESC')
+      ->range(0, 3)
+      ->accessCheck(FALSE)
+      ->execute();
+
+    if ($enrollment_ids) {
+      $enrollments = $entity_type_manager->getStorage('lms_user_course')->loadMultiple($enrollment_ids);
+      foreach ($enrollments as $enrollment) {
+        $course = $enrollment->hasField('field_course') ? $enrollment->get('field_course')->entity : NULL;
+        if ($course) {
+          $progress = $enrollment->hasField('field_progress') && !$enrollment->get('field_progress')->isEmpty() ? (int) $enrollment->get('field_progress')->value : 0;
+          $thumbnail = '';
+          if ($course->hasField('field_thumbnail') && !$course->get('field_thumbnail')->isEmpty()) {
+            $file = $course->get('field_thumbnail')->entity;
+            if ($file) {
+              $thumbnail = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+            }
+          }
+          $active_courses[] = [
+            'title' => $course->label(),
+            'url' => $course->toUrl()->toString(),
+            'thumbnail' => $thumbnail,
+            'progress' => $progress,
+          ];
+        }
+      }
+    }
+  }
+  $variables['active_courses'] = $active_courses;
+
   // Member since raw timestamp for custom formatting
   $variables['member_since_timestamp'] = $user->getCreatedTime();
 }

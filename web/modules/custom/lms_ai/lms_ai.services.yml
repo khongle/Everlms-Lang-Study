@@ -1,0 +1,20 @@
+services:
+  plugin.manager.lms_ai_provider:
+    class: Drupal\lms_ai\Plugin\AiProviderManager
+    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler']
+
+  logger.channel.lms_ai:
+    parent: logger.channel_base
+    arguments: ['lms_ai']
+
+  lms_ai.course_builder:
+    class: Drupal\lms_ai\Service\CourseBuilderService
+    arguments: ['@plugin.manager.lms_ai_provider', '@entity_type.manager', '@queue', '@logger.channel.lms_ai']
+
+  lms_ai.scorm_builder:
+    class: Drupal\lms_ai\Service\ScormBuilderService
+    arguments: ['@entity_type.manager', '@file_system', '@logger.channel.lms_ai']
+
+  lms_ai.google_slide_builder:
+    class: Drupal\lms_ai\Service\GoogleSlideBuilderService
+    arguments: ['@logger.factory', '@config.factory', '@entity_type.manager']

@@ -1,0 +1,7 @@
+engine_admin:
+  version: 1.x
+  js:
+    js/engine.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupalSettings

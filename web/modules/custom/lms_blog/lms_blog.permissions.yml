@@ -1,0 +1,23 @@
+administer lms_blog:
+  title: 'Administer LMS Blog'
+  description: 'Manage settings and advanced features of the blog.'
+  restrict access: true
+
+create lms_article:
+  title: 'Create Blog Articles'
+
+edit own lms_article:
+  title: 'Edit own Blog Articles'
+
+edit any lms_article:
+  title: 'Edit any Blog Articles'
+
+delete own lms_article:
+  title: 'Delete own Blog Articles'
+
+delete any lms_article:
+  title: 'Delete any Blog Articles'
+
+publish lms_article:
+  title: 'Publish Blog Articles'
+  description: 'Allow users to change article status to published.'

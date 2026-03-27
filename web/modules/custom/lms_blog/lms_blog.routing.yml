@@ -1,0 +1,51 @@
+entity.lms_article.collection:
+  path: '/manage/blog'
+  defaults:
+    _entity_list: 'lms_article'
+    _title: 'Blog Articles'
+  requirements:
+    _permission: 'administer lms_blog'
+
+entity.lms_article.add_form:
+  path: '/manage/blog/add'
+  defaults:
+    _entity_form: 'lms_article.add'
+    _title: 'Add Article'
+  requirements:
+    _entity_create_access: 'lms_article'
+
+entity.lms_article.edit_form:
+  path: '/manage/blog/{lms_article}/edit'
+  defaults:
+    _entity_form: 'lms_article.edit'
+    _title: 'Edit Article'
+  requirements:
+    _entity_access: 'lms_article.update'
+
+entity.lms_article.delete_form:
+  path: '/manage/blog/{lms_article}/delete'
+  defaults:
+    _entity_form: 'lms_article.delete'
+    _title: 'Delete Article'
+  requirements:
+    _entity_access: 'lms_article.delete'
+
+lms_blog.frontend.collection:
+  path: '/news'
+  defaults:
+    _controller: '\Drupal\lms_blog\Controller\LmsBlogController::index'
+    _title: 'Latest News & Insights'
+  requirements:
+    _access: 'TRUE'
+
+lms_blog.frontend.canonical:
+  path: '/news/{lms_article}'
+  defaults:
+    _controller: '\Drupal\lms_blog\Controller\LmsBlogController::view'
+    _title_callback: '\Drupal\lms_blog\Controller\LmsBlogController::viewTitle'
+  requirements:
+    _access: 'TRUE'
+  options:
+    parameters:
+      lms_article:
+        type: entity:lms_article

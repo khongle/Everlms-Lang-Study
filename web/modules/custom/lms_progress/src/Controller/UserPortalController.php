@@ -482,6 +482,22 @@ final class UserPortalController extends ControllerBase {
       $rendered_attachments = $lms_lesson->get('field_video_file')->view('default');
     } elseif ($lesson_type === 'h5p' && $lms_lesson->hasField('field_h5p_upload') && !$lms_lesson->get('field_h5p_upload')->isEmpty()) {
       $rendered_attachments = $lms_lesson->get('field_h5p_upload')->view('default');
+    } elseif ($lesson_type === 'zoom') {
+      $meetingId = $lms_lesson->get('field_zoom_meeting_id')->value;
+      $scheduleTime = (int) $lms_lesson->get('field_zoom_schedule')->value;
+      if ($meetingId && $scheduleTime) {
+        $rendered_attachments = [
+          '#theme' => 'lms_zoom_join_block',
+          '#lesson' => $lms_lesson,
+          '#meeting_id' => $meetingId,
+          '#schedule_time' => $scheduleTime,
+          '#attached' => [
+            'library' => [
+              'lms_zoom/countdown',
+            ],
+          ],
+        ];
+      }
     }
 
     // Get existing note for this lesson.
@@ -540,6 +556,10 @@ final class UserPortalController extends ControllerBase {
       ),
       'contexts' => ['user', 'url.query_args'],
     ];
+
+    if ($lesson_type === 'zoom') {
+      $build['#attached']['library'][] = 'lms_zoom/countdown';
+    }
 
     return $build;
   }

@@ -1,0 +1,11 @@
+I want to build an online training website with the theme "{{training_program}}", developed on the EverLMS platform. Please help me create a complete list of courses needed for this system and categorize the courses appropriately. The categorization should make the program look professional, with each category containing at least 4 to 8 courses. I want these to be purely the essential courses for a business in "{{training_program}}". Each course should be substantial enough to include about 10 to 20 lessons, not too small. There’s no need to include content related to promoting EverLMS unless necessary. The entire program will be in the language "{{langcode}}".
+
+The output structure should be simple — please return it in code block format so I can copy it easily, like this:
+
+- Tên category
+        +        Tên khóa
+        +        Tên khóa
+        +        ...
+- Tên category
+        +        ...
+- ...

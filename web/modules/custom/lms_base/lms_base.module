@@ -95,3 +95,23 @@ function lms_base_user_login_validate(&$form, \Drupal\Core\Form\FormStateInterfa
     }
   }
 }
+
+/**
+ * Implements hook_user_login().
+ */
+function lms_base_user_login(\Drupal\Core\Session\AccountInterface $account) {
+  // Clear any lingering login error messages to prevent them from showing
+  // up after a successful login (e.g., from previous failed AJAX/multitab attempts).
+  $messenger = \Drupal::messenger();
+  $error_messages = $messenger->deleteByType('error');
+  
+  if (!empty($error_messages)) {
+    foreach ($error_messages as $message) {
+      $message_str = (string) $message;
+      // Re-add errors that are NOT the typical unrecognized password errors.
+      if (strpos($message_str, 'Unrecognized username or password') === FALSE && strpos($message_str, 'Tên đăng nhập hoặc mật khẩu không đúng') === FALSE) {
+        $messenger->addError($message);
+      }
+    }
+  }
+}

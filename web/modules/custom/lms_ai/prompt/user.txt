@@ -1,0 +1,24 @@
+Tôi muốn xây dựng một website training online với chủ đề là "{{training_program}}" cho thị trường ngôn ngữ {{langcode}}, xây dựng trên sản phẩm EverLMS.
+Đây là langcodes của toàn bộ website: {{langcodes_list}}.
+Chương trình toàn bộ bằng ngôn ngữ {{langcode}}.
+Nội dung chỉ tập trung nói về đề tài "{{training_program}}" chứ đừng giới thiệu hay quảng bá gì về EverLMS cả nhé.
+
+Hãy tạo giúp tôi 10 user cho hệ thống, phân chia vào các role khác nhau, mỗi user 1 role và không lấy role authenticated hay administrator, trong đó ít nhất 5 user có role là teacher (hoặc instructor). Đây là danh sách roles hợp lệ trên hệ thống:
+{{roles_list}}
+Chương trình toàn bộ bằng ngôn ngữ: {{langcode}}.
+
+Tôi muốn bạn tạo giúp tôi nội dung từng user và gửi trả đúng duy nhất một mảng JSON thuần túy (không bọc trong markdown ```json). Format chính xác các cột như bên dưới:
+[
+  {
+    "field_first_name": "string (Tên thật, ví dụ: John)",
+    "field_last_name": "string (Họ, ví dụ: Doe)",
+    "mail": "string (Email thực tế, duy nhất mạng tính học thuật)",
+    "name": "string (Username viết liền không dấu, ví dụ: johndoe)",
+    "pass": "string (Mật khẩu bảo mật, ví dụ: Secret@123)",
+    "field_job_title": "string (Chức danh chuyên gia, ví dụ: Senior Data Scientist)",
+    "field_company": "string (Tên công ty hoặc trường học)",
+    "field_location": "string (Thành phố, Quốc gia)",
+    "field_bio": "string long (Viết tiểu sử chi tiết phù hợp với role của user, dùng html <p> nếu đoạn văn dài)",
+    "roles": ["string"]
+  }
+]

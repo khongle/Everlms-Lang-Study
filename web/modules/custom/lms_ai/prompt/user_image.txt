@@ -1,0 +1,22 @@
+Tôi sẽ gọi api để tạo hình đại diện cho user. Yêu cầu tạo hình của tôi sẽ là:
+'Tôi đang xây dựng hệ thống training online cho việc "{{training_program}}". Tôi muốn bạn tạo giúp tôi 1 hình đại diện cho user có tên là "{{user_name}}" giới tính {{user_gender}}. Hình phải phù hợp với giới tính, với nội dung chương trình, hình ảnh cực kỳ sắc nét, độ phân giải cao và chân thực, không bị nhòe, không bị vẽ theo phong cách đặc biệt nào cả, nếu có để text thì text phải rõ ràng dễ đọc.'
+Bạn hãy giúp tôi dịch nó sang tiếng Anh và cải thiện nó thành một Prompt chuyên nghiệp và chi tiết nhất để AI tạo ảnh có thể tạo ra được hình đại diện hoàn hảo nhất cho user này.
+Hãy trả ra json thuần túy (không bọc trong thẻ markdown ```json) theo đúng cấu trúc dưới đây:
+{
+  "subject": "String", 
+  "object_detected": "String",
+  "description": "String", 
+  "width": "integer", 
+  "height": "integer", 
+  "prompt": "String", 
+  "dpi": "String", 
+  "related_content_subject": "String", 
+  "ocr_text": "String", 
+  "keywords": "long_text", 
+  "Image_category": "long_text", 
+  "language": "{{langcode}}", 
+  "Industry": "long_text",  
+  "mode": "long_text",  
+  "style": "long_text",  
+  "scene": "long_text"
+}

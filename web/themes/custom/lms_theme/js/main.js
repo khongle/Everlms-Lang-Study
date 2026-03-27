@@ -105,113 +105,76 @@
                 const priceChecks = catalog.querySelectorAll('input[type="checkbox"][data-filter-type="price"]');
                 const ratingChecks = catalog.querySelectorAll('input[type="checkbox"][data-filter-type="rating"]');
                 const sortSelect = catalog.querySelector('#sort-courses');
-                const grid = catalog.querySelector('.grid-courses');
-                const countElem = catalog.querySelector('.lms-catalog__count');
-                const emptyState = catalog.querySelector('.lms-empty-state');
                 
-                if (!grid && !emptyState) return;
-                
-                // Allow recovering cards if initially empty
-                const cards = grid ? Array.from(grid.querySelectorAll('.card-lms--course')) : [];
+                let timeoutId = null;
 
-                function filterCourses() {
-                    const searchText = searchInput ? searchInput.value.toLowerCase() : '';
-                    const selectedCatObj = categorySelect ? categorySelect.value : '';
+                function buildQueryAndRedirect() {
+                    const url = new URL(window.location.href);
+                    const params = url.searchParams;
                     
-                    const checkedCats = Array.from(categoryChecks).filter(c => c.checked).map(c => c.value);
-                    if (selectedCatObj) checkedCats.push(selectedCatObj);
-                    
-                    const checkedLevels = Array.from(levelChecks).filter(c => c.checked).map(c => c.value);
-                    const checkedPrices = Array.from(priceChecks).filter(c => c.checked).map(c => c.value);
-                    const checkedRatings = Array.from(ratingChecks).filter(c => c.checked).map(c => parseInt(c.value, 10));
+                    // Clear existing filters
+                    params.delete('search');
+                    params.delete('category[]');
+                    params.delete('level[]');
+                    params.delete('price[]');
+                    params.delete('rating[]');
+                    params.delete('sort');
+                    // Reset pagination if filtering
+                    params.delete('page');
 
-                    let visibleCount = 0;
-
-                    cards.forEach(card => {
-                        const title = card.querySelector('.card-lms__title').textContent.toLowerCase();
-                        const cat = card.dataset.category;
-                        const level = card.dataset.level;
-                        const priceRaw = parseFloat(card.dataset.price || '0');
-                        const rating = parseInt(card.dataset.rating || '5', 10);
-                        
-                        let match = true;
-
-                        // Search
-                        if (searchText && !title.includes(searchText)) match = false;
-                        
-                        // Category
-                        if (match && checkedCats.length > 0 && !checkedCats.includes(cat)) match = false;
-                        
-                        // Level
-                        if (match && checkedLevels.length > 0 && !checkedLevels.includes(level)) match = false;
-
-                        // Price
-                        if (match && checkedPrices.length > 0) {
-                            const isFree = priceRaw === 0;
-                            const isPaid = priceRaw > 0;
-                            if (checkedPrices.includes('free') && !isFree && !checkedPrices.includes('paid')) match = false;
-                            if (checkedPrices.includes('paid') && !isPaid && !checkedPrices.includes('free')) match = false;
-                            if (!checkedPrices.includes('free') && checkedPrices.includes('paid') && !isPaid) match = false;
-                            if (!checkedPrices.includes('paid') && checkedPrices.includes('free') && !isFree) match = false;
-                        }
-
-                        // Rating
-                        if (match && checkedRatings.length > 0) {
-                            if (!checkedRatings.includes(Math.floor(rating))) {
-                                match = false;
-                            }
-                        }
-
-                        if (match) {
-                            card.style.display = '';
-                            visibleCount++;
-                        } else {
-                            card.style.display = 'none';
+                    if (searchInput && searchInput.value.trim() !== '') {
+                        params.set('search', searchInput.value.trim());
+                    }
+                    if (categorySelect && categorySelect.value) {
+                        params.append('category[]', categorySelect.value);
+                    }
+                    Array.from(categoryChecks).forEach(c => {
+                        if (c.checked && (!categorySelect || categorySelect.value !== c.value)) {
+                            params.append('category[]', c.value);
                         }
                     });
-
-                    // Update count
-                    if (countElem) {
-                        countElem.textContent = `${visibleCount} courses found`;
-                    }
+                    Array.from(levelChecks).forEach(c => { if (c.checked) params.append('level[]', c.value); });
+                    Array.from(priceChecks).forEach(c => { if (c.checked) params.append('price[]', c.value); });
+                    Array.from(ratingChecks).forEach(c => { if (c.checked) params.append('rating[]', c.value); });
                     
-                    // Handle empty state manually if we don't reload page
-                    if (grid) {
-                       grid.style.display = visibleCount > 0 ? 'grid' : 'none';
+                    if (sortSelect && sortSelect.value !== 'Most Popular') {
+                        params.set('sort', sortSelect.value);
+                    }
+
+                    // To avoid endless reloading, only redirect if URL has changed.
+                    const currentUrl = window.location.href;
+                    const newUrl = url.toString();
+                    if (currentUrl !== newUrl) {
+                        window.location.href = newUrl;
                     }
                 }
 
-                function sortCourses() {
-                    if (!sortSelect || !grid) return;
-                    const val = sortSelect.value;
-                    const allCards = Array.from(grid.querySelectorAll('.card-lms--course'));
-                    
-                    allCards.sort((a, b) => {
-                       if (val.includes('Low-High')) {
-                           const pa = parseFloat(a.dataset.price || '0');
-                           const pb = parseFloat(b.dataset.price || '0');
-                           return pa - pb;
-                       } else if (val.includes('Newest')) {
-                           // Assume original DOM order was newest, but without a date field we just reverse or mock
-                           return -1; 
-                       }
-                       return -1; // Popular (mock)
+                function handleInputWithDebounce() {
+                    if (timeoutId) clearTimeout(timeoutId);
+                    timeoutId = setTimeout(buildQueryAndRedirect, 800);
+                }
+
+                function handleChange() {
+                    if (timeoutId) clearTimeout(timeoutId);
+                    buildQueryAndRedirect();
+                }
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', handleInputWithDebounce);
+                    searchInput.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (timeoutId) clearTimeout(timeoutId);
+                            buildQueryAndRedirect();
+                        }
                     });
-                    
-                    allCards.forEach(c => grid.appendChild(c));
                 }
-
-                const inputs = [searchInput, categorySelect, ...categoryChecks, ...levelChecks, ...priceChecks, ...ratingChecks];
-                inputs.forEach(input => {
-                    if (input) {
-                        input.addEventListener('input', filterCourses);
-                        input.addEventListener('change', filterCourses);
-                    }
-                });
-
-                if (sortSelect) {
-                    sortSelect.addEventListener('change', sortCourses);
-                }
+                
+                if (categorySelect) categorySelect.addEventListener('change', handleChange);
+                if (sortSelect) sortSelect.addEventListener('change', handleChange);
+                
+                const checkboxes = [...Array.from(categoryChecks), ...Array.from(levelChecks), ...Array.from(priceChecks), ...Array.from(ratingChecks)];
+                checkboxes.forEach(chk => chk.addEventListener('change', handleChange));
             });
         }
     };

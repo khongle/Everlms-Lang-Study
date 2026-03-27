@@ -1,0 +1,158 @@
+<?php
+
+declare(strict_types=1);
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\lms_lesson\Entity\Lesson;
+
+/**
+ * Implements hook_entity_presave().
+ */
+function lms_zoom_entity_presave(EntityInterface $entity): void {
+  if ($entity instanceof Lesson) {
+    if ($entity->get('field_type')->value === 'zoom') {
+      /** @var \Drupal\lms_zoom\Service\ZoomMeetingManager $meetingManager */
+      $meetingManager = \Drupal::service('lms_zoom.meeting_manager');
+      $meetingManager->syncMeeting($entity);
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function lms_zoom_entity_delete(EntityInterface $entity): void {
+  if ($entity instanceof Lesson) {
+    if ($entity->get('field_type')->value === 'zoom') {
+      /** @var \Drupal\lms_zoom\Service\ZoomMeetingManager $meetingManager */
+      $meetingManager = \Drupal::service('lms_zoom.meeting_manager');
+      $meetingManager->deleteMeeting($entity);
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function lms_zoom_theme($existing, $type, $theme, $path): array {
+  return [
+    'html__lms_zoom_web_player' => [
+      'base hook' => 'html',
+      'template' => 'html--lms-zoom-web-player',
+    ],
+    'page__lms_zoom_web_player' => [
+      'base hook' => 'page',
+      'template' => 'page--lms-zoom-web-player',
+    ],
+    'lms_zoom_join_block' => [
+      'variables' => [
+        'lesson' => NULL,
+        'meeting_id' => NULL,
+        'schedule_time' => NULL,
+      ],
+      'template' => 'lms-zoom-join-block',
+    ],
+    'lms_zoom_web_player' => [
+      'variables' => [
+        'meeting_id' => NULL,
+        'passcode' => NULL,
+        'user_name' => NULL,
+        'user_email' => NULL,
+      ],
+      'template' => 'lms-zoom-web-player',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_cron().
+ */
+function lms_zoom_cron(): void {
+  try {
+    /** @var \Drupal\lms_zoom\Service\ZoomAiService $zoomAiService */
+    $zoomAiService = \Drupal::service('lms_zoom.ai_service');
+    $zoomAiService->processSummaries();
+  } catch (\Exception $e) {
+    \Drupal::logger('lms_zoom')->error('Zoom Cron Error: ' . $e->getMessage());
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function lms_zoom_form_lms_lesson_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id): void {
+  // Inject AI Agenda Generator into Zoom lessons.
+  $form['ai_agenda'] = [
+    '#type' => 'details',
+    '#title' => t('✨ Generate Zoom Agenda with AI'),
+    '#open' => TRUE,
+    '#weight' => -9,
+    '#states' => [
+      'visible' => [
+        ':input[name="field_type"]' => ['value' => 'zoom'],
+      ],
+    ],
+  ];
+
+  $form['ai_agenda']['generate_btn'] = [
+    '#type' => 'button',
+    '#value' => t('Generate Agenda'),
+    '#ajax' => [
+      'callback' => 'lms_zoom_agenda_ajax_callback',
+      'event' => 'click',
+      'progress' => [
+        'type' => 'throbber',
+        'message' => t('AI is thinking...'),
+      ],
+    ],
+  ];
+}
+
+/**
+ * AJAX callback to generate agenda.
+ */
+function lms_zoom_agenda_ajax_callback(array &$form, \Drupal\Core\Form\FormStateInterface $form_state): \Drupal\Core\Ajax\AjaxResponse {
+  $response = new \Drupal\Core\Ajax\AjaxResponse();
+  $topic = $form_state->getValue(['name', 0, 'value']);
+
+  if (empty($topic)) {
+    $response->addCommand(new \Drupal\Core\Ajax\MessageCommand('Please enter a Lesson Name first.', NULL, ['type' => 'error']));
+    return $response;
+  }
+
+  try {
+    /** @var \Drupal\lms_zoom\Service\ZoomAiService $aiService */
+    $aiService = \Drupal::service('lms_zoom.ai_service');
+    $agendaHtml = $aiService->generateAgenda($topic);
+
+    if ($agendaHtml) {
+      $response->addCommand(new \Drupal\Core\Ajax\InvokeCommand('textarea[name="field_content[0][value]"]', 'val', [$agendaHtml]));
+      $response->addCommand(new \Drupal\Core\Ajax\MessageCommand('Agenda generated successfully!', NULL, ['type' => 'status']));
+    } else {
+      $response->addCommand(new \Drupal\Core\Ajax\MessageCommand('AI Failed to generate agenda.', NULL, ['type' => 'error']));
+    }
+  } catch (\Exception $e) {
+    $response->addCommand(new \Drupal\Core\Ajax\MessageCommand('Error: ' . $e->getMessage(), NULL, ['type' => 'error']));
+  }
+
+  return $response;
+}
+
+/**
+ * Implements hook_theme_suggestions_html_alter().
+ */
+function lms_zoom_theme_suggestions_html_alter(array &$suggestions, array $variables): void {
+  if (\Drupal::routeMatch()->getRouteName() === 'lms_zoom.join_meeting') {
+    $suggestions[] = 'html__lms_zoom_web_player';
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_page_alter().
+ */
+function lms_zoom_theme_suggestions_page_alter(array &$suggestions, array $variables): void {
+  if (\Drupal::routeMatch()->getRouteName() === 'lms_zoom.join_meeting') {
+    $suggestions[] = 'page__lms_zoom_web_player';
+  }
+}
+

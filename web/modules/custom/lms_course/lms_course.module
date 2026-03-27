@@ -38,6 +38,7 @@ function lms_course_theme(): array {
         'courses' => [],
         'categories' => [],
         'title' => NULL,
+        'pager' => NULL,
       ],
       'template' => 'lms-catalog',
     ],

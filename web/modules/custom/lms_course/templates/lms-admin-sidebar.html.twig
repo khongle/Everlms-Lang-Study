@@ -11,14 +11,16 @@
   .region-breadcrumb,
   .block-page-title-block,
   .page-header,
-  .content-header {
+  .content-header,
+  .lms-navbar,
+  .lms-footer,
+  footer {
     display: none !important;
   }
   
   body {
     padding-top: 0 !important;
     background-color: #0b0f19 !important;
-    overflow: hidden !important;
   }
 
   .dialog-off-canvas-main-canvas,
@@ -27,12 +29,24 @@
   .layout-container,
   .layout-main-wrapper,
   .layout-content,
-  body, .dialog-off-canvas-main-canvas {
+  body {
     background-color: #0b0f19 !important;
     color: #e2e8f0;
     margin: 0;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+  }
+
+  /* Override frontend container limits to ensure admin workspace reaches full width */
+  .lms-page,
+  .lms-page__content,
+  .layout-main-wrapper,
+  .layout-container,
+  .region-content,
+  .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   /* Custom Scrollbar for sleek Dark Theme */
@@ -53,8 +67,7 @@
 
   .lms-admin {
     display: flex;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
     background-color: #0b0f19; /* Deep dark bg for main area */
     color: #cbd5e1;
     font-family: 'Inter', sans-serif;
@@ -67,9 +80,11 @@
     border-right: 1px solid rgba(255,255,255,0.05);
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    height: 100vh !important;
+    z-index: 1000;
     overflow-y: auto;
   }
   
@@ -133,6 +148,28 @@
     box-shadow: 0 4px 12px rgba(29, 112, 245, 0.3);
   }
   
+  .lms-admin__subnav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem 0.5rem 3.25rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    margin-bottom: 0.25rem;
+  }
+  .lms-admin__subnav-item:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.05);
+  }
+  .lms-admin__subnav-item--active {
+    color: #fff !important;
+    font-weight: 600;
+    background: rgba(29, 112, 245, 0.15) !important;
+    border-left: 3px solid #1d70f5;
+  }
+  
   .lms-admin__nav-item i {
     font-size: 1.1rem;
     width: 20px;
@@ -185,13 +222,12 @@
   /* Admin Main Area Common Styles */
   .lms-admin__main {
     flex: 1;
+    margin-left: 260px;
     padding: 2.5rem;
-    padding-bottom: 0;
+    padding-bottom: 2.5rem;
     min-width: 0;
-    height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
   }
   .lms-admin__header {
     display: flex;
@@ -395,21 +431,48 @@
     <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-admin__nav-item {{ active == 'quizzes' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-clipboard-check"></i> {{ 'Quiz Management'|t }}
     </a>
-    <a href="{{ path('lms_certificate.admin_dashboard') }}" class="lms-admin__nav-item {{ active == 'certificates' ? 'lms-admin__nav-item--active' }}">
-      <i class="fas fa-award"></i> {{ 'Certificate Management'|t }}
-    </a>
-    {# Certificate Templates #}
-    <a href="{{ path('lms_certificate.admin_templates') }}" class="lms-admin__nav-item {{ active == 'certificate_templates' ? 'lms-admin__nav-item--active' }}">
-      <i class="far fa-file-alt"></i> {{ 'Certificate Templates'|t }}
-    </a>
+    <!-- Certificate Dropdown -->
+    {% set certificate_active = (active == 'certificates' or active == 'certificate_templates') %}
+    <div class="lms-admin__nav-dropdown" style="display: flex; flex-direction: column;">
+      <a href="#" class="lms-admin__nav-item" style="color: {{ certificate_active ? '#fff' : '#94a3b8' }}; justify-content: space-between; {% if certificate_active %} background: rgba(255,255,255,0.03); {% endif %}"
+         onclick="const menu = this.nextElementSibling; const icon = this.querySelector('.lms-dropdown-icon'); if(menu.style.display === 'none') { menu.style.display = 'flex'; icon.style.transform = 'rotate(180deg)'; } else { menu.style.display = 'none'; icon.style.transform = 'rotate(0deg)'; } return false;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <i class="fas fa-award" style="width: 20px; text-align: center;"></i> <span style="font-weight: {{ certificate_active ? '600' : '500' }};">{{ 'Certificate'|t }}</span>
+        </div>
+        <i class="fas fa-chevron-down lms-dropdown-icon" style="font-size: 0.8rem; transition: transform 0.2s; transform: rotate({{ certificate_active ? '180' : '0' }}deg);"></i>
+      </a>
+      <div class="lms-admin__dropdown-menu" style="display: {{ certificate_active ? 'flex' : 'none' }}; flex-direction: column; margin-top: 0.125rem;">
+        <a href="{{ path('lms_certificate.admin_dashboard') }}" class="lms-admin__subnav-item {{ active == 'certificates' ? 'lms-admin__subnav-item--active' }}">
+          {{ 'Certificate Management'|t }}
+        </a>
+        <a href="{{ path('lms_certificate.admin_templates') }}" class="lms-admin__subnav-item {{ active == 'certificate_templates' ? 'lms-admin__subnav-item--active' }}">
+          {{ 'Certificate Templates'|t }}
+        </a>
+      </div>
+    </div>
     <!-- Orders -->
     <a href="{{ path('lms_course.admin_orders') }}" class="lms-admin__nav-item {{ active == 'orders' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-shopping-cart"></i> {{ 'Orders'|t }}
     </a>
-    <!-- Pricing -->
-    <a href="{{ path('lms_membership.admin_pricing') }}" class="lms-admin__nav-item {{ active == 'pricing' ? 'lms-admin__nav-item--active' }}">
-      <i class="fas fa-tags"></i> {{ 'Pricing'|t }}
-    </a>
+    <!-- Membership Dropdown -->
+    {% set membership_active = (active == 'pricing' or active == 'user_memberships') %}
+    <div class="lms-admin__nav-dropdown" style="display: flex; flex-direction: column;">
+      <a href="#" class="lms-admin__nav-item" style="color: {{ membership_active ? '#fff' : '#94a3b8' }}; justify-content: space-between; {% if membership_active %} background: rgba(255,255,255,0.03); {% endif %}"
+         onclick="const menu = this.nextElementSibling; const icon = this.querySelector('.lms-dropdown-icon'); if(menu.style.display === 'none') { menu.style.display = 'flex'; icon.style.transform = 'rotate(180deg)'; } else { menu.style.display = 'none'; icon.style.transform = 'rotate(0deg)'; } return false;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <i class="fas fa-tags" style="width: 20px; text-align: center;"></i> <span style="font-weight: {{ membership_active ? '600' : '500' }};">{{ 'Membership'|t }}</span>
+        </div>
+        <i class="fas fa-chevron-down lms-dropdown-icon" style="font-size: 0.8rem; transition: transform 0.2s; transform: rotate({{ membership_active ? '180' : '0' }}deg);"></i>
+      </a>
+      <div class="lms-admin__dropdown-menu" style="display: {{ membership_active ? 'flex' : 'none' }}; flex-direction: column; margin-top: 0.125rem;">
+        <a href="{{ path('lms_membership.admin_pricing') }}" class="lms-admin__subnav-item {{ active == 'pricing' ? 'lms-admin__subnav-item--active' }}">
+          {{ 'Pricing'|t }}
+        </a>
+        <a href="{{ path('lms_membership.admin_user_memberships') }}" class="lms-admin__subnav-item {{ active == 'user_memberships' ? 'lms-admin__subnav-item--active' }}">
+          {{ 'User Memberships'|t }}
+        </a>
+      </div>
+    </div>
     <a href="{{ path('lms_course.admin_reports') }}" class="lms-admin__nav-item {{ active == 'reports' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-chart-line"></i> {{ 'Reports'|t }}
     </a>

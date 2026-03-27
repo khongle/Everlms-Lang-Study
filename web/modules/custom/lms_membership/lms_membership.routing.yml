@@ -52,3 +52,33 @@ lms_membership.admin_pricing.toggle:
     _permission: 'administer lms_course'
   options:
     _admin_route: TRUE
+
+lms_membership.admin_user_memberships:
+  path: '/workspace/user-memberships'
+  defaults:
+    _controller: '\Drupal\lms_membership\Controller\MembershipAdminController::userMembershipsList'
+    _title: 'User Memberships'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_membership.admin_user_memberships.add:
+  path: '/workspace/user-memberships/add'
+  defaults:
+    _controller: '\Drupal\lms_membership\Controller\MembershipAdminController::userMembershipAddForm'
+    _title: 'Add User Membership'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_membership.admin_user_memberships.edit:
+  path: '/workspace/user-memberships/{lms_user_membership}/edit'
+  defaults:
+    _controller: '\Drupal\lms_membership\Controller\MembershipAdminController::userMembershipEditForm'
+    _title: 'Edit User Membership'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE

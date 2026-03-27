@@ -1,0 +1,13 @@
+{{ attach_library('lms_zoom/websdk') }}
+
+<div id="lms-zoom-meeting-container" 
+     data-meeting-id="{{ meeting_id }}" 
+     data-passcode="{{ passcode }}" 
+     data-user-name="{{ user_name }}" 
+     data-user-email="{{ user_email }}" 
+     style="width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: 99999; background: #000; display: flex; align-items: center; justify-content: center; color: white;">
+     <div id="zmmtg-loading-indicator">
+       <h3 style="font-family: inherit;"><i class="fas fa-spinner fa-spin" style="margin-right: 15px; color: #3b82f6;"></i> Initializing Virtual Class...</h3>
+     </div>
+</div>
+<!-- Zoom Meeting Web SDK will automatically create #zmmtg-root -->

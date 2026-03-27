@@ -9,6 +9,9 @@
     border-radius: $radius-lg;
     overflow: hidden;
     transition: all $transition-normal;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
     &:hover {
         border-color: $color-border-hover;

@@ -56,27 +56,136 @@ final class CoursePublicController extends ControllerBase {
       ? $this->entityTypeManager->getStorage('lms_course')->loadMultiple($featured)
       : [];
 
-    // Categories.
+    // Categories with course count and thumbnail.
     $categories = $this->lmsHelper->getTermsByVocabulary('course_category');
-    $top_categories = array_filter($categories, fn($term) => empty($term->parents) || $term->parents === [0] || (is_array($term->parents) && $term->parents[0] == 0));
-    $top_categories = array_slice($top_categories, 0, 8);
+    $top_term_objects = array_filter($categories, fn($term) => empty($term->parents) || $term->parents === [0] || (is_array($term->parents) && $term->parents[0] == 0));
+    $top_term_objects = array_slice($top_term_objects, 0, 8);
+    
+    $top_categories = [];
+    $course_storage = $this->entityTypeManager->getStorage('lms_course');
+    foreach ($top_term_objects as $term) {
+      $count = $course_storage->getQuery()
+        ->condition('field_category', $term->id())
+        ->condition('status', TRUE)
+        ->accessCheck(FALSE)
+        ->count()
+        ->execute();
+
+      $thumbnail_url = '';
+      if ($term->hasField('field_category_thumbnail') && !$term->get('field_category_thumbnail')->isEmpty()) {
+        $file = $term->get('field_category_thumbnail')->entity;
+        if ($file) {
+           $thumbnail_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+        }
+      }
+      
+      $top_categories[] = [
+        'entity' => $term,
+        'name' => $term->label(),
+        'course_count' => $count,
+        'thumbnail_url' => $thumbnail_url,
+      ];
+    }
 
     // Stats.
-    $course_count = (int) $this->entityTypeManager->getStorage('lms_course')
-      ->getQuery()
+    $course_count = (int) $course_storage->getQuery()
       ->condition('status', TRUE)
       ->accessCheck(FALSE)
       ->count()
       ->execute();
 
+    // User Progress (My Courses) - 3 items max.
+    $my_courses = [];
+    $user = \Drupal::currentUser();
+    if ($user->isAuthenticated()) {
+      $uid = $user->id();
+      $enrollment_ids = $this->entityTypeManager->getStorage('lms_user_course')
+        ->getQuery()
+        ->condition('uid', $uid)
+        ->sort('id', 'DESC')
+        ->range(0, 3)
+        ->accessCheck(FALSE)
+        ->execute();
+        
+      if ($enrollment_ids) {
+        $enrollments = $this->entityTypeManager->getStorage('lms_user_course')->loadMultiple($enrollment_ids);
+        foreach ($enrollments as $enrollment) {
+          $course = $enrollment->get('field_course')->entity;
+          if ($course) {
+            $progress = 0;
+            if ($enrollment->hasField('field_progress') && !$enrollment->get('field_progress')->isEmpty()) {
+              $progress = (int) $enrollment->get('field_progress')->value;
+            }
+            $card = $this->buildCourseCards([$course])[0] ?? null;
+            if ($card) {
+              $my_courses[] = [
+                'course' => $card,
+                'progress' => $progress,
+              ];
+            }
+          }
+        }
+      }
+    }
+
+    // Popular Bundles.
+    $bundles = [];
+    if (\Drupal::entityTypeManager()->hasDefinition('lms_bundle')) {
+      $bundle_ids = \Drupal::entityTypeManager()->getStorage('lms_bundle')
+        ->getQuery()
+        ->condition('status', TRUE)
+        ->range(0, 4)
+        ->accessCheck(FALSE)
+        ->execute();
+        
+      if ($bundle_ids) {
+        $bundles = \Drupal::entityTypeManager()->getStorage('lms_bundle')->loadMultiple($bundle_ids);
+      }
+    }
+
+    // Mock Testimonials (since entity does not exist yet)
+    $testimonials = [
+      [
+        'name' => 'Sarah Nguyen',
+        'role' => 'Software Engineer',
+        'content' => 'Khóa học cực kỳ sát với thực tế doanh nghiệp. Mình đã ứng dụng bài giảng vào công việc ngay trong ngày đầu tiên.',
+        'rating' => 5,
+        'avatar' => 'https://i.pravatar.cc/150?u=sarah' 
+      ],
+      [
+        'name' => 'Michael Tran',
+        'role' => 'Data Analyst',
+        'content' => 'Giao diện cực kỳ đẹp và trải nghiệm học tập tuyệt vời. Tiến trình học được theo dõi chi tiết.',
+        'rating' => 5,
+        'avatar' => 'https://i.pravatar.cc/150?u=michael'
+      ],
+      [
+        'name' => 'Emily Le',
+        'role' => 'UX/UI Designer',
+        'content' => 'Tôi rất ấn tượng với chất lượng khóa học và hệ thống đánh giá. Đây là một trải nghiệm học tập hoàn hảo.',
+        'rating' => 4,
+        'avatar' => 'https://i.pravatar.cc/150?u=emily'
+      ]
+    ];
+
     return [
       '#theme' => 'lms_homepage',
       '#featured_courses' => $this->buildCourseCards($featured_courses),
       '#categories' => $top_categories,
+      '#my_courses' => $my_courses,
+      '#bundles' => $bundles,
+      '#testimonials' => $testimonials,
+      '#logged_in' => $user->isAuthenticated(),
       '#stats' => [
-        'courses' => $course_count ?: '100+',
-        'students' => '50,000+',
+        'courses' => $course_count ?: '10+ ',
+        'students' => '5.000+',
         'satisfaction' => '98%',
+      ],
+      '#attached' => [
+        'library' => [
+          // Will define this library for homepage aesthetics
+          'lms_theme/homepage',
+        ],
       ],
     ];
   }
@@ -84,23 +193,108 @@ final class CoursePublicController extends ControllerBase {
   /**
    * Course catalog.
    */
-  public function catalog(): array {
-    $ids = $this->entityTypeManager->getStorage('lms_course')
+  public function catalog(\Symfony\Component\HttpFoundation\Request $request): array {
+    $search = trim($request->query->get('search', ''));
+    $query_all = $request->query->all();
+
+    $categories_input = $query_all['category'] ?? [];
+    $categories = is_array($categories_input) ? $categories_input : [$categories_input];
+    $categories = array_filter($categories);
+
+    $levels_input = $query_all['level'] ?? [];
+    $levels = is_array($levels_input) ? $levels_input : [$levels_input];
+    $levels = array_filter($levels);
+
+    $prices_input = $query_all['price'] ?? [];
+    $prices = is_array($prices_input) ? $prices_input : [$prices_input];
+    $prices = array_filter($prices);
+
+    $ratings_input = $query_all['rating'] ?? [];
+    $ratings = is_array($ratings_input) ? $ratings_input : [$ratings_input];
+    $ratings = array_filter($ratings);
+
+    $sort = $request->query->get('sort', 'Most Popular');
+
+    $query = $this->entityTypeManager->getStorage('lms_course')
       ->getQuery()
       ->condition('status', TRUE)
-      ->sort('created', 'DESC')
-      ->accessCheck(FALSE)
-      ->execute();
+      ->accessCheck(FALSE);
+
+    if ($search !== '') {
+      $query->condition('title', $search, 'CONTAINS');
+    }
+
+    if (!empty($categories)) {
+      $query->condition('field_category', $categories, 'IN');
+    }
+
+    if (!empty($levels)) {
+      $level_terms = $this->lmsHelper->getTermsByVocabulary('course_level');
+      $level_tids = [];
+      foreach ($level_terms as $term) {
+        if (in_array(strtolower($term->label()), $levels)) {
+          $level_tids[] = $term->id();
+        }
+      }
+      if (!empty($level_tids)) {
+        $query->condition('field_level', $level_tids, 'IN');
+      }
+    }
+
+    if (!empty($prices) && count($prices) < 2) {
+      if (in_array('free', $prices)) {
+        $query->condition('field_price', 0);
+      }
+      elseif (in_array('paid', $prices)) {
+        $query->condition('field_price', 0, '>');
+      }
+    }
+
+    if (!empty($ratings)) {
+      $rating_group = $query->orConditionGroup();
+      foreach ($ratings as $r) {
+        $r = (int) $r;
+        $and = $query->andConditionGroup()
+          ->condition('field_rating', $r, '>=')
+          ->condition('field_rating', $r + 1, '<');
+        $rating_group->condition($and);
+      }
+      $query->condition($rating_group);
+    }
+
+    if ($sort === 'Newest') {
+      $query->sort('created', 'DESC');
+    } elseif ($sort === 'Price Low-High') {
+      $query->sort('field_price', 'ASC');
+    } else {
+      $query->sort('id', 'DESC');
+    }
+
+    $query->pager(12);
+    $ids = $query->execute();
+
     $courses = $ids
       ? $this->entityTypeManager->getStorage('lms_course')->loadMultiple($ids)
       : [];
 
-    $categories = $this->lmsHelper->getTermsByVocabulary('course_category');
+    $all_categories = $this->lmsHelper->getTermsByVocabulary('course_category');
 
     return [
       '#theme' => 'lms_catalog',
       '#courses' => $this->buildCourseCards($courses),
-      '#categories' => $categories,
+      '#categories' => $all_categories,
+      '#pager' => ['#type' => 'pager'],
+      '#filters' => [
+        'search' => $search,
+        'category' => $categories,
+        'level' => $levels,
+        'price' => $prices,
+        'rating' => $ratings,
+        'sort' => $sort,
+      ],
+      '#cache' => [
+        'contexts' => ['url.query_args'],
+      ],
     ];
   }
 
@@ -498,6 +692,7 @@ final class CoursePublicController extends ControllerBase {
       ->condition('field_category', $taxonomy_term->id())
       ->condition('status', TRUE)
       ->sort('created', 'DESC')
+      ->pager(12)
       ->accessCheck(FALSE)
       ->execute();
     $courses = $ids
@@ -509,6 +704,7 @@ final class CoursePublicController extends ControllerBase {
       '#courses' => $this->buildCourseCards($courses),
       '#categories' => [],
       '#title' => $taxonomy_term->label(),
+      '#pager' => ['#type' => 'pager'],
     ];
   }
 
@@ -650,6 +846,14 @@ final class CoursePublicController extends ControllerBase {
         }
       }
 
+      $thumbnail_url = '';
+      if ($course->hasField('field_thumbnail') && !$course->get('field_thumbnail')->isEmpty()) {
+        $file = $course->get('field_thumbnail')->entity;
+        if ($file && file_exists($file->getFileUri())) {
+          $thumbnail_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+        }
+      }
+
       $cards[] = [
         'id' => $course->id(),
         'name' => $course->label(),
@@ -664,7 +868,8 @@ final class CoursePublicController extends ControllerBase {
         'duration' => $this->lmsHelper->formatDuration($duration),
         'bestseller' => (bool) $course->get('field_bestseller')->value,
         'featured' => (bool) $course->get('field_featured')->value,
-        'thumbnail' => $course->get('field_thumbnail')->entity,
+        'has_thumbnail' => !empty($thumbnail_url),
+        'thumbnail_url' => $thumbnail_url,
         'url' => \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $course->id()])->toString(),
         'continue_url' => $continue_url,
         'instructor_name' => $instructor_name,

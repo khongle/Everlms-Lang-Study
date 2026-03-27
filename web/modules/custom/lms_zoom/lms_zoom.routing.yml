@@ -1,0 +1,23 @@
+lms_zoom.settings:
+  path: '/admin/config/lms/zoom'
+  defaults:
+    _form: '\Drupal\lms_zoom\Form\ZoomSettingsForm'
+    _title: 'Zoom Configuration'
+  requirements:
+    _permission: 'administer site configuration'
+
+lms_zoom.join_meeting:
+  path: '/zoom/join/{meeting_id}'
+  defaults:
+    _controller: '\Drupal\lms_zoom\Controller\ZoomController::joinMeeting'
+    _title: 'Joining Class...'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+lms_zoom.generate_signature:
+  path: '/api/lms/websdk/signature'
+  defaults:
+    _controller: '\Drupal\lms_zoom\Controller\ZoomController::generateSignature'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]

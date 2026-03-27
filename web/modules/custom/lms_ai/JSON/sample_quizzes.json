@@ -1,0 +1,134 @@
+[
+    {
+        "course_title": "Introduction to AI for Business Leaders",
+        "lesson_title": "What is AI and Why it Matters for Business?",
+        "quiz_data": [
+            {
+                "type": "single_choice",
+                "question": "Theo bài học, đặc điểm cốt lõi của Trí tuệ Nhân tạo (AI) là gì?",
+                "options": [
+                    "Các hệ thống chỉ xử lý dữ liệu số.",
+                    "Các hệ thống có khả năng thực hiện các nhiệm vụ thường đòi hỏi trí tuệ con người.",
+                    "Các hệ thống thay thế hoàn toàn tất cả nhân viên con người.",
+                    "Các hệ thống chỉ có thể tự động hóa các tác vụ đơn giản, lặp đi lặp lại."
+                ],
+                "correct_answer": "Các hệ thống có khả năng thực hiện các nhiệm vụ thường đòi hỏi trí tuệ con người.",
+                "explanation": "Bài học định nghĩa AI là 'sự phát triển của các hệ thống máy tính có khả năng thực hiện các nhiệm vụ thường đòi hỏi trí tuệ con người, như ra quyết định, giải quyết vấn đề và hiểu ngôn ngữ.'"
+            },
+            {
+                "type": "single_choice",
+                "question": "Lợi ích chính nào của AI đối với doanh nghiệp được nêu bật trong bài học?",
+                "options": [
+                    "Tăng cường sự phức tạp trong hoạt động.",
+                    "Loại bỏ hoàn toàn nhu cầu về nhân viên con người.",
+                    "Nâng cao hiệu quả, giảm chi phí và tạo ra cơ hội mới.",
+                    "Chỉ tập trung vào nghiên cứu khoa học tiên tiến."
+                ],
+                "correct_answer": "Nâng cao hiệu quả, giảm chi phí và tạo ra cơ hội mới.",
+                "explanation": "Bài học nhấn mạnh rằng AI quan trọng đối với doanh nghiệp vì nó 'có tiềm năng nâng cao hiệu quả, giảm chi phí và tạo ra cơ hội mới'."
+            }
+        ]
+    },
+    {
+        "course_title": "Understanding AI Technologies and Their Business Impact",
+        "lesson_title": "How AI Algorithms Work: A Simplified View",
+        "quiz_data": [
+            {
+                "type": "single_choice",
+                "question": "Đặc điểm nào sau đây phân biệt thuật toán học có giám sát (Supervised learning) với học không giám sát (Unsupervised learning)?",
+                "options": [
+                    "Sử dụng dữ liệu được gán nhãn",
+                    "Khả năng tương tác với môi trường",
+                    "Số lượng tham số mô hình",
+                    "Tốc độ xử lý dữ liệu"
+                ],
+                "correct_answer": "Sử dụng dữ liệu được gán nhãn",
+                "explanation": "Học có giám sát yêu cầu dữ liệu được gán nhãn để huấn luyện mô hình, trong khi học không giám sát không dựa vào dữ liệu được gán nhãn."
+            },
+            {
+                "type": "single_choice",
+                "question": "Mục đích chính của các thuật toán AI là gì?",
+                "options": [
+                    "Lưu trữ lượng lớn dữ liệu",
+                    "Xử lý dữ liệu và học hỏi từ nó",
+                    "Tạo giao diện người dùng đồ họa",
+                    "Quản lý kết nối mạng"
+                ],
+                "correct_answer": "Xử lý dữ liệu và học hỏi từ nó",
+                "explanation": "Các thuật toán AI được thiết kế để xử lý dữ liệu, nhận dạng các mẫu và đưa ra quyết định dựa trên dữ liệu đầu vào."
+            },
+            {
+                "type": "single_choice",
+                "question": "Loại thuật toán AI nào học thông qua tương tác với một môi trường và dựa vào kết quả của các quyết định đã đưa ra?",
+                "options": [
+                    "Học có giám sát (Supervised learning)",
+                    "Học không giám sát (Unsupervised learning)",
+                    "Học tăng cường (Reinforcement learning)",
+                    "Phân tích dự đoán (Predictive analytics)"
+                ],
+                "correct_answer": "Học tăng cường (Reinforcement learning)",
+                "explanation": "Thuật toán học tăng cường học hỏi thông qua tương tác với một môi trường, đưa ra quyết định và học hỏi từ kết quả của những quyết định đó."
+            }
+        ]
+    },
+    {
+        "course_title": "Ethical AI and Responsible Implementation",
+        "lesson_title": "What Defines Ethical AI?",
+        "quiz_data": [
+            {
+                "type": "single_choice",
+                "question": "Theo bài học, điều gì định nghĩa Trí tuệ nhân tạo có đạo đức (Ethical AI)?",
+                "options": [
+                    "Phát triển AI nhanh nhất có thể.",
+                    "Sử dụng AI chỉ cho mục đích kinh doanh.",
+                    "Phát triển và sử dụng AI theo cách phù hợp với các nguyên tắc và giá trị đạo đức, đảm bảo hệ thống công bằng, minh bạch và có trách nhiệm giải trình.",
+                    "Tạo ra AI có khả năng tự học mà không cần sự can thiệp của con người."
+                ],
+                "correct_answer": "Phát triển và sử dụng AI theo cách phù hợp với các nguyên tắc và giá trị đạo đức, đảm bảo hệ thống công bằng, minh bạch và có trách nhiệm giải trình.",
+                "explanation": "Trí tuệ nhân tạo có đạo đức được định nghĩa là việc phát triển và sử dụng AI phù hợp với các nguyên tắc và giá trị đạo đức, đảm bảo hệ thống công bằng, minh bạch và có trách nhiệm giải trình."
+            },
+            {
+                "type": "single_choice",
+                "question": "Nguyên tắc nào sau đây KHÔNG phải là một trong những nguyên tắc cốt lõi định nghĩa Trí tuệ nhân tạo có đạo đức (Ethical AI) theo bài học?",
+                "options": [
+                    "Công bằng (Fairness)",
+                    "Minh bạch (Transparency)",
+                    "Khả năng mở rộng (Scalability)",
+                    "Trách nhiệm giải trình (Accountability)"
+                ],
+                "correct_answer": "Khả năng mở rộng (Scalability)",
+                "explanation": "Bài học nêu rõ ba nguyên tắc cốt lõi của Trí tuệ nhân tạo có đạo đức là Công bằng, Minh bạch và Trách nhiệm giải trình. Khả năng mở rộng không được đề cập là một trong số đó."
+            }
+        ]
+    },
+    {
+        "course_title": "Developing an AI Strategy for Your Organization",
+        "lesson_title": "Assessing Organizational Readiness for AI",
+        "quiz_data": [
+            {
+                "type": "single_choice",
+                "question": "Yếu tố nào sau đây KHÔNG phải là một trong những cân nhắc chính (Key Considerations) khi đánh giá sự sẵn sàng của tổ chức đối với AI?",
+                "options": [
+                    "Cơ sở hạ tầng công nghệ",
+                    "Quản lý dữ liệu",
+                    "Nguồn nhân lực",
+                    "Chiến lược marketing sản phẩm hiện có"
+                ],
+                "correct_answer": "Chiến lược marketing sản phẩm hiện có",
+                "explanation": "Các cân nhắc chính để đánh giá sự sẵn sàng của tổ chức đối với AI bao gồm Cơ sở hạ tầng công nghệ, Quản lý dữ liệu và Nguồn nhân lực. Chiến lược marketing sản phẩm hiện có không được đề cập là một cân nhắc chính trong bài học này."
+            },
+            {
+                "type": "single_choice",
+                "question": "Sự sẵn sàng về văn hóa (Cultural Readiness) trong ngữ cảnh triển khai AI chủ yếu đề cập đến khía cạnh nào?",
+                "options": [
+                    "Đánh giá khả năng tương thích của phần mềm hiện có",
+                    "Đo lường sự cởi mở của tổ chức đối với sự thay đổi và đổi mới",
+                    "Xác định ngân sách dành cho các giải pháp AI",
+                    "Phân tích chất lượng và tính khả dụng của dữ liệu"
+                ],
+                "correct_answer": "Đo lường sự cởi mở của tổ chức đối với sự thay đổi và đổi mới",
+                "explanation": "Sự sẵn sàng về văn hóa liên quan đến việc đo lường sự cởi mở của tổ chức đối với sự thay đổi và đổi mới, bao gồm sự hỗ trợ của lãnh đạo, sự tham gia của nhân viên và các chiến lược truyền thông."
+            }
+        ]
+    }
+]

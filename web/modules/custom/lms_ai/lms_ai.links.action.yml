@@ -1,0 +1,6 @@
+lms_ai.course_builder_action:
+  route_name: lms_ai.course_builder_form
+  title: '✨ Build with AI'
+  appears_on:
+    - entity.lms_course.collection
+  weight: -10

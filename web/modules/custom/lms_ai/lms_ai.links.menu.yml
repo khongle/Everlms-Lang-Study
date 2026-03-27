@@ -1,0 +1,6 @@
+lms_ai.engine_users_form:
+  title: 'EverLMS AI Engine'
+  description: 'Manage prompt-based AI generation for Users and general entities.'
+  parent: system.admin_config
+  route_name: lms_ai.engine_users_form
+  weight: 100

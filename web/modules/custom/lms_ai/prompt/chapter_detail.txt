@@ -1,0 +1,20 @@
+Tôi muốn xây dựng một website training online với chủ đề là "{{training_program}}", xây dựng trên sản phẩm EverLMS.
+Đây là langcodes của toàn bộ website {{langcodes_list}}.
+Chương trình toàn bộ bằng ngôn ngữ có langcode là {{langcode}}.
+Đây là cấu trúc category và course của tôi
+{{categories_courses}}
+
+Giờ tôi muốn tạo chapter detail cho Chapter "{{chapter_name}}"
+Chỉ trả ra JSON.
+Cấu trúc trả ra sẽ là:
+{
+  "course_id": {{course_id}}, 
+  "chapter" : [
+    {
+      "{{langcode}}": {
+        "chapter_title": {{chapter_name}},
+        "chapter_description": string,
+      },
+    } 
+  ]
+} 

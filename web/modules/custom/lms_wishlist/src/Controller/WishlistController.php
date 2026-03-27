@@ -198,6 +198,14 @@ class WishlistController extends ControllerBase {
     $continue_url = \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $course->id()])->toString();
 
     $lmsHelper = \Drupal::service('lms_base.helper');
+      $thumbnail_url = '';
+      if ($course->hasField('field_thumbnail') && !$course->get('field_thumbnail')->isEmpty()) {
+        $file = $course->get('field_thumbnail')->entity;
+        if ($file && file_exists($file->getFileUri())) {
+          $thumbnail_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+        }
+      }
+
     return [
       'id' => $course->id(),
       'name' => $course->label(),
@@ -212,7 +220,8 @@ class WishlistController extends ControllerBase {
       'duration' => $lmsHelper->formatDuration($duration),
       'bestseller' => (bool) $course->get('field_bestseller')->value,
       'featured' => (bool) $course->get('field_featured')->value,
-      'thumbnail' => $course->get('field_thumbnail')->entity,
+      'has_thumbnail' => !empty($thumbnail_url),
+      'thumbnail_url' => $thumbnail_url,
       'url' => \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $course->id()])->toString(),
       'continue_url' => $continue_url,
       'instructor_name' => $instructor_name,

@@ -1,3 +1,16 @@
 services:
   lms_zoom.service:
     class: Drupal\lms_zoom\Service\ZoomService
+    arguments: ['@http_client', '@config.factory', '@logger.channel.lms_zoom', '@state']
+
+  lms_zoom.meeting_manager:
+    class: Drupal\lms_zoom\Service\ZoomMeetingManager
+    arguments: ['@lms_zoom.service', '@logger.channel.lms_zoom']
+
+  lms_zoom.ai_service:
+    class: Drupal\lms_zoom\Service\ZoomAiService
+    arguments: ['@lms_zoom.service', '@plugin.manager.lms_ai_provider', '@http_client', '@entity_type.manager', '@logger.channel.lms_zoom']
+
+  logger.channel.lms_zoom:
+    parent: logger.channel_base
+    arguments: ['lms_zoom']

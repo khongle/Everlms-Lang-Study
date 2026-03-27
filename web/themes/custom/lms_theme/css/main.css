@@ -333,3 +333,266 @@
   background: rgba(67, 233, 123, 0.1);
   border-radius: 50%;
 }
+
+/* =========================================================================
+   WORKSPACE ADMIN THEME OVERRIDES (Dark Mode for Forms)
+   ========================================================================= */
+body.path-workspace {
+  background-color: #0d1117 !important;
+  color: #c9d1d9 !important;
+}
+body.path-workspace .claro-details {
+  background: transparent !important;
+  border: 1px solid hsla(0,0%,100%,0.1) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+body.path-workspace .claro-details__summary {
+  color: #c9d1d9 !important;
+  background: rgba(22, 27, 34, 0.85) !important;
+  border-bottom: 1px solid hsla(0,0%,100%,0.1) !important;
+}
+body.path-workspace .claro-details__wrapper {
+  background: transparent !important;
+}
+body.path-workspace .form-item label,
+body.path-workspace label {
+  color: #e6edf3 !important;
+  font-weight: 500 !important;
+}
+body.path-workspace input[type="text"],
+body.path-workspace input[type="email"],
+body.path-workspace input[type="password"],
+body.path-workspace input[type="number"],
+body.path-workspace textarea,
+body.path-workspace select {
+  background: #0d1117 !important;
+  border: 1px solid hsla(0,0%,100%,0.2) !important;
+  color: #c9d1d9 !important;
+  border-radius: 6px !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.2s ease !important;
+}
+body.path-workspace input:focus,
+body.path-workspace textarea:focus,
+body.path-workspace select:focus {
+  border-color: #58a6ff !important;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3) !important;
+  outline: none !important;
+}
+body.path-workspace .ck-editor__editable {
+  background: #0d1117 !important;
+  color: #c9d1d9 !important;
+  border-color: hsla(0,0%,100%,0.2) !important;
+}
+body.path-workspace .ck.ck-editor__main > .ck-editor__editable {
+  background: #0d1117 !important;
+}
+body.path-workspace .ck.ck-toolbar {
+  background: #161b22 !important;
+  border-color: hsla(0,0%,100%,0.2) !important;
+}
+body.path-workspace .ck.ck-button {
+  color: #c9d1d9 !important;
+}
+body.path-workspace .ck.ck-button:hover {
+  background: #30363d !important;
+}
+body.path-workspace .description {
+  color: #8b949e !important;
+}
+body.path-workspace table {
+  background: transparent !important;
+}
+body.path-workspace table th {
+  background: rgba(22, 27, 34, 0.85) !important;
+  color: #c9d1d9 !important;
+  border-bottom: 1px solid hsla(0,0%,100%,0.1) !important;
+}
+body.path-workspace table td {
+  border-bottom: 1px solid hsla(0,0%,100%,0.05) !important;
+  color: #8b949e !important;
+}
+body.path-workspace .page-wrapper {
+  background-color: #0d1117 !important;
+}
+body.path-workspace .main-content {
+  background-color: #0d1117 !important;
+}
+
+/* =========================================================================
+   LESSON DETAIL THEATER MODE & UI FIXES
+   ========================================================================= */
+.lms-learn--sidebar-collapsed .lms-learn__sidebar {
+  transform: translateX(100%);
+  width: 0 !important;
+  min-width: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+}
+.lms-learn--sidebar-collapsed .lms-floating-sidebar-toggle {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  position: fixed !important;
+  right: 0 !important;
+  left: auto !important;
+  top: 50% !important;
+  transform: translateY(-50%) rotate(180deg) !important;
+  z-index: 1000 !important;
+  border-radius: 8px 0 0 8px !important;
+}
+.lms-learn--sidebar-collapsed .lms-learn__player {
+  max-width: 1400px;
+}
+.lms-floating-sidebar-toggle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -16px; 
+  width: 32px;
+  height: 64px;
+  background: #21262d;
+  border: 1px solid hsla(0,0%,100%,0.1);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  color: #8b949e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+.lms-floating-sidebar-toggle:hover {
+  color: #58a6ff;
+  background: #30363d;
+}
+
+/* Fix PDF Dialog Close Button and Disabled Buttons */
+.ui-dialog .ui-dialog-titlebar-close {
+  margin-right: 15px !important;
+  right: 15px !important;
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  border: none !important;
+}
+.ui-dialog button:disabled, 
+.ui-dialog .button:disabled, 
+.ui-dialog button[disabled] {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+/* Recover lost pricing card styles from earlier */
+.lms-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+  align-items: center;
+}
+@media (min-width: 992px) {
+  .lms-pricing-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.lms-pricing-card {
+  position: relative;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border: 1px solid hsla(0,0%,100%,0.1);
+  background: rgba(22, 27, 34, 0.85);
+  border-radius: 1rem;
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+.lms-pricing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  border-color: #667eea;
+}
+.lms-pricing-card--recommended {
+  border-color: #667eea;
+  background: linear-gradient(180deg, rgba(102, 126, 234, 0.05) 0%, rgba(22, 27, 34, 0.85) 100%);
+  transform: scale(1.05);
+  z-index: 1;
+}
+.lms-pricing-card--recommended:hover {
+  transform: scale(1.05) translateY(-5px);
+}
+.lms-pricing-card__badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.lms-pricing-card__name {
+  font-size: 1.375rem;
+  color: #e6edf3;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+.lms-pricing-card__price {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+.lms-pricing-card__amount {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #e6edf3;
+  line-height: 1;
+}
+.lms-pricing-card__period {
+  font-size: 0.9375rem;
+  color: #8b949e;
+  margin-left: 0.25rem;
+}
+.lms-pricing-card__features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+  text-align: left;
+}
+.lms-pricing-card__features li {
+  padding: 0.5rem 0;
+  color: #8b949e;
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid hsla(0,0%,100%,0.05);
+}
+.lms-pricing-card__features li:last-child {
+  border-bottom: none;
+}
+.lms-pricing-card__features li i {
+  color: #43e97b;
+  margin-right: 0.5rem;
+  margin-top: 4px;
+  font-size: 0.8125rem;
+}
+.lms-pricing-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+.lms-pricing-header h1 {
+  font-size: 2.25rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.lms-pricing-header p {
+  color: #8b949e;
+  font-size: 1.125rem;
+}

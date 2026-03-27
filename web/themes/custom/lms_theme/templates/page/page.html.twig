@@ -17,6 +17,7 @@
         <a href="{{ path('lms_course.category') }}" class="lms-navbar__link {{ current_route in ['lms_course.category', 'lms_course.category_detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Categories'|t }}</a>
         <a href="{{ path('lms_forum.index') }}" class="lms-navbar__link {{ current_route in ['lms_forum.index', 'entity.lms_forum_topic.canonical'] ? 'lms-navbar__link--active' : '' }}">{{ 'Community'|t }}</a>
         <a href="{{ path('lms_course.pricing') }}" class="lms-navbar__link {{ current_route == 'lms_course.pricing' ? 'lms-navbar__link--active' : '' }}">{{ 'Pricing'|t }}</a>
+        <a href="{{ path('lms_blog.frontend.collection') }}" class="lms-navbar__link {{ current_route == 'lms_blog.frontend.collection' or current_route == 'lms_blog.frontend.canonical' ? 'lms-navbar__link--active' : '' }}">{{ 'News'|t }}</a>
         {# <a href="#" class="lms-navbar__link">{{ 'Blog'|t }}</a> #}
         {# <a href="#" class="lms-navbar__link">{{ 'Contact'|t }}</a> #}
       </nav>
@@ -95,6 +96,7 @@
           <ul>
             <li><a href="#">{{ 'News & Notices'|t }}</a></li>
             <li><a href="{{ path('lms_course.pricing') }}">{{ 'Pricing'|t }}</a></li>
+            <li><a href="{{ path('lms_blog.frontend.collection') }}">{{ 'News'|t }}</a></li>
             <li><a href="#">{{ 'Course Guides'|t }}</a></li>
           </ul>
         </div>
