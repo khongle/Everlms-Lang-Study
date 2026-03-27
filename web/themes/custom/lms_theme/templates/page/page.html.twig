@@ -27,14 +27,9 @@
           <div style="display: flex; align-items: center; gap: 1rem;">
             {{ notification_bell }}
             
-            <a href="{{ path('lms_wishlist.my_wishlist') }}" class="lms-navbar__link" style="position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; margin-right: 0.5rem; transition: background 0.2s ease;" title="{{ 'My Wishlist'|t }}" onmouseover="this.style.background='rgba(255,255,255,0.05)';" onmouseout="this.style.background='transparent';">
-              <div style="position: relative; width: 1.15rem; height: 1.15rem; display: flex; justify-content: center; align-items: center;">
-                <i class="far fa-heart" id="lms-wishlist-outline" style="font-size: 1.15rem; color: #8b949e; position: absolute; transition: color 0.3s ease;"></i>
-                <div id="lms-wishlist-fill-wrapper" style="position: absolute; bottom: 0; left: 0; right: 0; height: 0%; overflow: hidden; transition: height 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                  <i class="fas fa-heart" style="font-size: 1.15rem; color: #f5576c; position: absolute; bottom: 0; left: 0; right: 0; text-align: center; line-height: 1.15rem; height: 1.15rem; display: flex; align-items: flex-end; justify-content: center;"></i>
-                </div>
-              </div>
-              <span id="lms-wishlist-counter" style="display: none;">0</span>
+            <a href="{{ path('lms_wishlist.my_wishlist') }}" class="lms-navbar__link" style="position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; margin-right: 0.5rem; transition: all 0.2s ease;" title="{{ 'My Wishlist'|t }}" onmouseover="this.style.background='rgba(255,255,255,0.05)';" onmouseout="this.style.background='transparent';">
+              <i class="far fa-heart" id="lms-wishlist-icon" style="font-size: 1.15rem; color: #8b949e; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);"></i>
+              <span id="lms-wishlist-counter" style="position: absolute; top: -3px; right: -4px; background: #f5576c; color: white; border-radius: 50%; font-size: 0.65rem; font-weight: bold; min-width: 16px; height: 16px; display: none; align-items: center; justify-content: center; border: 2px solid #0d1117; box-sizing: content-box; z-index: 2;">0</span>
             </a>
             
             <a href="{{ path('user.page') }}" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;" class="lms-user-profile-link">
@@ -141,16 +136,20 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(data => {
         // Update counter & visual fill
         if (data.count !== undefined) {
-          const fillWrapper = document.getElementById('lms-wishlist-fill-wrapper');
-          const outlineIcon = document.getElementById('lms-wishlist-outline');
-          if (fillWrapper && outlineIcon) {
+          if (counterBatch) {
+            counterBatch.textContent = data.count;
+            counterBatch.style.display = data.count > 0 ? 'flex' : 'none';
+          }
+          const mainIcon = document.getElementById('lms-wishlist-icon');
+          if (mainIcon) {
             if (data.count > 0) {
-              let fillPercent = data.count === 1 ? '50%' : '100%';
-              fillWrapper.style.height = fillPercent;
-              outlineIcon.style.color = '#f5576c';
+              mainIcon.classList.remove('far');
+              mainIcon.classList.add('fas');
+              mainIcon.style.color = '#f5576c';
             } else {
-              fillWrapper.style.height = '0%';
-              outlineIcon.style.color = '#8b949e';
+              mainIcon.classList.remove('fas');
+              mainIcon.classList.add('far');
+              mainIcon.style.color = '#8b949e';
             }
           }
         }
@@ -193,11 +192,14 @@ document.addEventListener('DOMContentLoaded', () => {
           let c = parseInt(counterBatch.textContent) || 0;
           c = Math.max(0, c - 1);
           counterBatch.textContent = c;
-          const fillWrapper = document.getElementById('lms-wishlist-fill-wrapper');
-          const outlineIcon = document.getElementById('lms-wishlist-outline');
-          if (fillWrapper && outlineIcon) {
-            fillWrapper.style.height = c === 0 ? '0%' : (c === 1 ? '50%' : '100%');
-            outlineIcon.style.color = c === 0 ? '#8b949e' : '#f5576c';
+          counterBatch.style.display = c > 0 ? 'flex' : 'none';
+          const mainIcon = document.getElementById('lms-wishlist-icon');
+          if (mainIcon) {
+            if (c > 0) {
+              mainIcon.classList.remove('far'); mainIcon.classList.add('fas'); mainIcon.style.color = '#f5576c';
+            } else {
+              mainIcon.classList.remove('fas'); mainIcon.classList.add('far'); mainIcon.style.color = '#8b949e';
+            }
           }
         }
       } else {
@@ -210,11 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
           let c = parseInt(counterBatch.textContent) || 0;
           c += 1;
           counterBatch.textContent = c;
-          const fillWrapper = document.getElementById('lms-wishlist-fill-wrapper');
-          const outlineIcon = document.getElementById('lms-wishlist-outline');
-          if (fillWrapper && outlineIcon) {
-            fillWrapper.style.height = c === 1 ? '50%' : '100%';
-            outlineIcon.style.color = '#f5576c';
+          counterBatch.style.display = c > 0 ? 'flex' : 'none';
+          const mainIcon = document.getElementById('lms-wishlist-icon');
+          if (mainIcon) {
+            mainIcon.classList.remove('far'); mainIcon.classList.add('fas'); mainIcon.style.color = '#f5576c';
           }
         }
       }

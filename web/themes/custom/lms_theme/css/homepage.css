@@ -99,6 +99,11 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.lms-hero__content-col {
+  padding-left: 40px;
+  padding-right: 20px;
+}
+
 /* Hero Content Split */
 .lms-hero__badge {
   display: inline-block;
