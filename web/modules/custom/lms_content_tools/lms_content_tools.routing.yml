@@ -1,0 +1,29 @@
+lms_content_tools.dashboard:
+  path: '/workspace/content-tools'
+  defaults:
+    _controller: '\Drupal\lms_content_tools\Controller\ContentToolsController::dashboard'
+    _title: 'Content Tools'
+  requirements:
+    _permission: 'administer lms content tools'
+  options:
+    _admin_route: TRUE
+
+lms_content_tools.clean:
+  path: '/workspace/content-tools/clean'
+  defaults:
+    _form: '\Drupal\lms_content_tools\Form\CleanContentForm'
+    _title: 'Clean Content'
+  requirements:
+    _permission: 'administer lms content tools'
+  options:
+    _admin_route: TRUE
+
+lms_content_tools.seed_input:
+  path: '/workspace/content-tools/seed-input'
+  defaults:
+    _form: '\Drupal\lms_content_tools\Form\SeedInputForm'
+    _title: 'Seed Input'
+  requirements:
+    _permission: 'administer lms content tools'
+  options:
+    _admin_route: TRUE

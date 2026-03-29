@@ -1,0 +1,8 @@
+name: 'LMS Content Tools'
+type: module
+description: 'Content tools: clean data, seed input, AI content generation.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+lifecycle: stable

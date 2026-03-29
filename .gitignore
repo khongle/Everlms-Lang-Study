@@ -80,6 +80,7 @@ yarn-error.log*
 # Ignore DDEV (if using DDEV)
 .ddev
 .agent
+.claude
 .backup-agent
 
 # Ignore Behat

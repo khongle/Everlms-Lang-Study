@@ -1,0 +1,6 @@
+lms_content_tools.dashboard:
+  title: 'Content Tools'
+  description: 'Clean data, seed input, AI content generation.'
+  route_name: lms_content_tools.dashboard
+  parent: system.admin_structure
+  weight: 110

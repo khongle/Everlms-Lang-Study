@@ -1,0 +1,4 @@
+services:
+  lms_content_tools.manager:
+    class: Drupal\lms_content_tools\Service\ContentToolsManager
+    arguments: ['@entity_type.manager', '@file_system']

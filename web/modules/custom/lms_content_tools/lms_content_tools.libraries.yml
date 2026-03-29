@@ -1,0 +1,7 @@
+clean_confirm:
+  version: 1.x
+  js:
+    js/clean-confirm.js: {}
+  dependencies:
+    - core/drupal
+    - core/once

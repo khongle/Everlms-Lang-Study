@@ -1,0 +1,4 @@
+administer lms content tools:
+  title: 'Administer LMS Content Tools'
+  description: 'Access content tools: clean data, seed input, import.'
+  restrict access: true
