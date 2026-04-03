@@ -1196,14 +1196,24 @@ final class CoursePublicController extends ControllerBase {
         }
       }
       
+      $body_value = '';
+      $body_format = 'full_html';
+      if ($node->hasField('body') && !$node->get('body')->isEmpty()) {
+        $body_value = $node->get('body')->value;
+        $body_format = $node->get('body')->format ?? 'full_html';
+      } elseif ($node->hasField('field_definition') && !$node->get('field_definition')->isEmpty()) {
+        $body_value = $node->get('field_definition')->value;
+        $body_format = $node->get('field_definition')->format ?? 'full_html';
+      }
+
       $terms[$first_letter][] = [
         'id' => $node->id(),
         'title' => $title,
         'anchor' => strtolower(str_replace(' ', '-', $title)),
         'body' => [
           '#type' => 'processed_text',
-          '#text' => $node->get('body')->value,
-          '#format' => $node->get('body')->format,
+          '#text' => $body_value,
+          '#format' => $body_format,
         ],
         'category' => $category,
         'related' => $related,
