@@ -14,18 +14,45 @@
         {# Category filter #}
         <div class="lms-catalog__filter-group">
           <h4>{{ 'CATEGORY'|t }}</h4>
-          <select class="form-control lms-select" id="category-filter">
-            <option value="">{{ 'All Categories'|t }}</option>
+          <div class="lms-category-list">
+            {% set visible_count = 0 %}
+            {% set hidden_count = 0 %}
+            {% set wrapper_opened = false %}
+            
             {% for cat in categories %}
-              <option value="{{ cat.id }}" {% if cat.id in filters.category %}selected{% endif %}>{{ cat.label }}</option>
+              {% set is_checked = cat.id in filters.category %}
+              {% set is_hidden = not is_checked and visible_count >= 5 %}
+              
+              {% if not is_hidden %}
+                {% set visible_count = visible_count + 1 %}
+                <label class="lms-catalog__checkbox">
+                  <input type="checkbox" value="{{ cat.id }}" data-filter-type="category" {% if is_checked %}checked{% endif %}>
+                  <span>{{ cat.label }}</span>
+                </label>
+              {% else %}
+                {% if not wrapper_opened %}
+                  <div class="lms-js-hidden-cats" style="display: none;">
+                  {% set wrapper_opened = true %}
+                {% endif %}
+                
+                {% set hidden_count = hidden_count + 1 %}
+                <label class="lms-catalog__checkbox">
+                  <input type="checkbox" value="{{ cat.id }}" data-filter-type="category" {% if is_checked %}checked{% endif %}>
+                  <span>{{ cat.label }}</span>
+                </label>
+              {% endif %}
             {% endfor %}
-          </select>
-          {% for cat in categories[:6] %}
-            <label class="lms-catalog__checkbox">
-              <input type="checkbox" value="{{ cat.id }}" data-filter-type="category" {% if cat.id in filters.category %}checked{% endif %}>
-              <span>{{ cat.label }}</span>
-            </label>
-          {% endfor %}
+
+            {% if wrapper_opened %}
+              </div>
+            {% endif %}
+
+            {% if hidden_count > 0 %}
+               <button type="button" class="lms-catalog__show-more" data-hidden-count="{{ hidden_count }}" style="color: #6366f1; font-size: 0.85rem; padding: 6px 12px; margin-top: 4px; border: none; background: transparent; cursor: pointer; transition: color 0.2s;">
+                   + {{ hidden_count }} {{ 'More Categories'|t }}
+               </button>
+            {% endif %}
+          </div>
         </div>
 
         {# Level filter #}
@@ -71,15 +98,16 @@
 
       {# Main course grid #}
       <div class="lms-catalog__main">
-        {# Sort by #}
-        <div class="lms-catalog__toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        {# Sort by & Top Pagination #}
+        <div class="lms-catalog__toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
           <span class="lms-catalog__count">{{ courses|length }} {{ 'courses found'|t }}</span>
-          <div class="lms-catalog__sort" style="display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
-            <label style="margin: 0;">{{ 'Sort by:'|t }}</label>
-            <select class="lms-select lms-select--sm" id="sort-courses" style="width: auto;">
-              <option {% if filters.sort == 'Most Popular' %}selected{% endif %}>{{ 'Most Popular'|t }}</option>
-              <option {% if filters.sort == 'Newest' %}selected{% endif %}>{{ 'Newest'|t }}</option>
-              <option {% if filters.sort == 'Price Low-High' %}selected{% endif %}>{{ 'Price Low-High'|t }}</option>
+          
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <select class="form-control lms-select" id="sort-courses">
+              <option value="Most Popular" {% if filters.sort == 'Most Popular' %}selected{% endif %}>{{ 'Most Popular'|t }}</option>
+              <option value="Newest" {% if filters.sort == 'Newest' %}selected{% endif %}>{{ 'Newest'|t }}</option>
+              <option value="Highest Rated" {% if filters.sort == 'Highest Rated' %}selected{% endif %}>{{ 'Highest Rated'|t }}</option>
+              <option value="Price Low-High" {% if filters.sort == 'Price Low-High' %}selected{% endif %}>{{ 'Price Low-High'|t }}</option>
             </select>
           </div>
         </div>

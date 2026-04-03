@@ -1,0 +1,159 @@
+// Introduction Component - Z-Pattern / Split Layout
+
+.lms-introduction {
+    padding: $spacer-xxl * 1.5 0;
+    overflow: hidden;
+
+    // Background color dynamically set by Twig
+    &.lms-intro-bg--white {
+        background-color: $color-bg-primary;
+    }
+    
+    &.lms-intro-bg--gray {
+        background-color: $color-bg-secondary;
+    }
+
+    &.lms-intro-bg--dark {
+        background-color: $color-bg-tertiary;
+        .lms-intro__subheading {
+            color: lighten($color-primary, 15%);
+        }
+    }
+}
+
+.lms-intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacer-xxl;
+    align-items: center;
+
+    @media (max-width: $breakpoint-lg) {
+        gap: $spacer-xl;
+    }
+
+    @media (max-width: $breakpoint-md) {
+        grid-template-columns: 1fr;
+        gap: $spacer-lg;
+        text-align: center;
+    }
+
+    // Alignment logic
+    &--img-left {
+        .lms-intro__visual {
+            order: 1;
+        }
+        .lms-intro__content {
+            order: 2;
+        }
+
+        @media (max-width: $breakpoint-md) {
+            .lms-intro__visual {
+                order: 1; // On mobile, image is always on top
+            }
+            .lms-intro__content {
+                order: 2;
+            }
+        }
+    }
+
+    &--img-right {
+        .lms-intro__content {
+            order: 1;
+        }
+        .lms-intro__visual {
+            order: 2;
+        }
+
+        @media (max-width: $breakpoint-md) {
+            .lms-intro__visual {
+                order: 1; // On mobile, image is always on top
+            }
+            .lms-intro__content {
+                order: 2;
+            }
+        }
+    }
+}
+
+.lms-intro__content {
+    h2.lms-intro__title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: $spacer-lg;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+
+        @media (max-width: $breakpoint-md) {
+            font-size: 2rem;
+        }
+    }
+
+    .lms-intro__subheading {
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-weight: 700;
+        margin-bottom: $spacer-sm;
+        background: $gradient-primary;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .lms-intro__body {
+        font-size: 1.125rem;
+        color: $color-text-secondary;
+        line-height: 1.8;
+        
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .lms-intro__action {
+        .lms-btn {
+            padding: 0.875rem 2rem;
+        }
+    }
+}
+
+.lms-intro__visual {
+    position: relative;
+    padding: $spacer-md;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 120%;
+        height: 120%;
+        background: radial-gradient(circle, rgba($color-primary, 0.15) 0%, rgba(0,0,0,0) 70%);
+        transform: translate(-50%, -50%);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .lms-glass-image-wrapper {
+        position: relative;
+        z-index: 1;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1); // Glass rim
+        transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+        &:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 50px rgba($color-primary, 0.25);
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            aspect-ratio: 4/3; // Consistent shape
+        }
+    }
+}

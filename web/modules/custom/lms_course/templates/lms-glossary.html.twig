@@ -1,0 +1,202 @@
+{#
+/**
+ * @file
+ * Theme implementation for the Glossary.
+ *
+ * Available variables:
+ * - terms: Array of glossary terms grouped by starting letter.
+ * - alphabet: Array of letters A-Z.
+ */
+#}
+<div class="lms-page lms-glossary-page py-5">
+  <div class="container">
+    
+    {# Header Section #}
+    <div class="row justify-content-center mb-5">
+      <div class="col-12 col-md-8 text-center">
+        <h1 class="display-4 fw-bold mb-3">{{ 'Glossary'|t }}</h1>
+        <p class="lead text-muted">{{ 'Explore our comprehensive glossary to understand the terminology used across our platform.'|t }}</p>
+        
+        <div class="lms-glossary-search position-relative mt-4">
+          <input type="text" class="form-control form-control-lg rounded-pill ps-5 lms-glass-input" id="glossary-search" placeholder="{{ 'Search terms...'|t }}">
+          <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-4 text-muted"></i>
+        </div>
+      </div>
+    </div>
+
+    {# Alphabet Index #}
+    <div class="lms-glossary-alphabet-nav text-center mb-5 flex-wrap d-flex justify-content-center gap-2">
+      {% for letter in alphabet %}
+        {% set has_terms = terms[letter] is not empty %}
+        <a href="#letter-{{ letter }}" class="lms-letter-btn {% if not has_terms %}disabled{% endif %}">{{ letter }}</a>
+      {% endfor %}
+      <a href="#letter-hash" class="lms-letter-btn {% if terms['#'] is empty %}disabled{% endif %}">#</a>
+    </div>
+
+    {# Terms Content #}
+    <div class="lms-glossary-content row g-5">
+      
+      {% for letter, items in terms %}
+        {% if items is not empty %}
+          <div class="col-12 glossary-group-section" id="letter-{% if letter == '#' %}hash{% else %}{{ letter }}{% endif %}">
+            <h2 class="lms-letter-heading text-primary fw-bold display-6">{{ letter }}</h2>
+            <hr class="lms-letter-divider mb-4">
+            
+            <div class="row g-4">
+              {% for item in items %}
+                <div class="col-12 col-lg-6 glossary-item-card" data-term="{{ item.title|lower }}">
+                  <div class="card lms-glass-card h-100 p-4 border-0 shadow-sm transition-all" id="term-{{ item.anchor }}">
+                    <div class="card-body d-flex flex-column">
+                      <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h3 class="card-title fw-bold lms-text-gradient mb-0">{{ item.title }}</h3>
+                        {% if item.category %}
+                          <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 ms-2 fs-7">{{ item.category }}</span>
+                        {% endif %}
+                      </div>
+                      
+                      <div class="card-text text-muted mb-4 lms-glossary-definition fw-normal lh-base">
+                        {{ item.body }}
+                      </div>
+                      
+                      {% if item.related is not empty %}
+                        <div class="lms-related-terms mt-auto pt-3 border-top">
+                          <span class="text-muted small fw-semibold me-2"><i class="fas fa-link me-1"></i>{{ 'See also:'|t }}</span>
+                          {% for rel in item.related %}
+                            <a href="#term-{{ rel.anchor }}" class="text-decoration-none small badge bg-light text-dark fw-normal border me-1">{{ rel.title }}</a>
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            
+          </div>
+        {% endif %}
+      {% endfor %}
+
+    </div>
+    
+    {# Empty State fallback (in case search yields no results) #}
+    <div id="glossary-empty-state" class="text-center py-5" style="display: none;">
+      <div class="mb-4 text-muted"><i class="fas fa-search fa-3x" style="opacity: 0.2"></i></div>
+      <h3 class="fw-bold">{{ 'No terms found'|t }}</h3>
+      <p class="text-muted">{{ 'Try adjusting your search query.'|t }}</p>
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* Scoped styles inline because they strictly belong to this very module representation */
+.lms-glossary-page {
+  background: #f8f9fa;
+  min-height: 80vh;
+}
+.lms-glass-input {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  transition: all 0.3s ease;
+}
+.lms-glass-input:focus {
+  background: #fff !important;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+.lms-letter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: white;
+  color: #1e293b;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: all 0.2s;
+}
+.lms-letter-btn:hover:not(.disabled) {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+}
+.lms-letter-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.lms-glass-card {
+  background: white;
+  border-radius: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.lms-glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important;
+}
+.lms-text-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.lms-related-terms a:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+.lms-glossary-definition p:last-child {
+  margin-bottom: 0;
+}
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('glossary-search');
+    const emptyState = document.getElementById('glossary-empty-state');
+    
+    if(searchInput) {
+      searchInput.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.glossary-item-card');
+        const sections = document.querySelectorAll('.glossary-group-section');
+        let totalVisibleCards = 0;
+        
+        cards.forEach(card => {
+          const term = card.getAttribute('data-term');
+          if (term.includes(query)) {
+            card.style.display = 'block';
+            card.classList.add('is-visible');
+          } else {
+            card.style.display = 'none';
+            card.classList.remove('is-visible');
+          }
+        });
+        
+        sections.forEach(section => {
+          const visibleCards = section.querySelectorAll('.glossary-item-card.is-visible, .glossary-item-card:not([style*="display: none"])');
+          
+          if (visibleCards.length === 0 && query !== '') {
+            section.style.display = 'none';
+          } else {
+            section.style.display = 'block';
+            totalVisibleCards += visibleCards.length;
+          }
+        });
+        
+        if (totalVisibleCards === 0 && query !== '') {
+           emptyState.style.display = 'block';
+        } else {
+           emptyState.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>

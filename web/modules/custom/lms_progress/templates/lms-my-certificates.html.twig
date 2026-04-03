@@ -1,39 +1,205 @@
 {# My Certificates page #}
 {{ attach_library('lms_theme/global') }}
 
-<section class="lms-section">
+<style>
+/* Premium SaaS Certificates Layout */
+.lms-certs-container {
+  padding-top: 3rem;
+  padding-bottom: 5rem;
+}
+.lms-certs-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.lms-certs-title i {
+  color: #0ea5e9;
+  font-size: 1.75rem;
+}
+.lms-cert-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.lms-cert-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+/* Subtle patterned background for the card header */
+.lms-cert-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 120px;
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(56, 189, 248, 0) 100%);
+  border-radius: 20px 20px 0 0;
+  z-index: 0;
+}
+.lms-cert-icon-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 70px;
+  height: 70px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 20px rgba(14, 165, 233, 0.25);
+  margin-bottom: 1.5rem;
+}
+.lms-cert-icon-wrapper i {
+  font-size: 1.75rem;
+  color: white;
+}
+.lms-cert-content {
+  position: relative;
+  z-index: 1;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+.lms-cert-course-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+.lms-cert-template-name {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+.lms-cert-meta {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px dashed #e2e8f0;
+}
+.lms-cert-id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  background: #f8fafc;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #f1f5f9;
+}
+.lms-cert-action a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #f0f9ff;
+  color: #0284c7;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.lms-cert-action a:hover {
+  background: #e0f2fe;
+  color: #0369a1;
+  transform: translateY(-1px);
+}
+.lms-cert-date {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lms-cert-date i {
+  color: #cbd5e1;
+}
+
+/* Empty State Styling */
+.lms-cert-empty {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: #f8fafc;
+  border-radius: 24px;
+  border: 2px dashed #e2e8f0;
+}
+.lms-cert-empty i {
+  font-size: 4rem;
+  color: #cbd5e1;
+  margin-bottom: 1.5rem;
+}
+.lms-cert-empty h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+.lms-cert-empty p {
+  color: #64748b;
+  font-size: 1.1rem;
+}
+</style>
+
+<section class="lms-certs-container">
   <div class="container">
-    <h1 class="lms-manage__title">{{ 'My Certificates'|t }}</h1>
+    <h1 class="lms-certs-title">
+      <i class="fas fa-certificate"></i> {{ 'My Achievements'|t }}
+    </h1>
 
     {% if certificates|length > 0 %}
       <div class="row g-4">
         {% for cert in certificates %}
           <div class="col-lg-4 col-md-6">
-            <div class="lms-card lms-card--certificate">
-              <div class="lms-card__body text-center">
-                <div class="lms-certificate-icon">
-                  <i class="fas fa-award"></i>
+            <div class="lms-cert-card">
+              <div class="lms-cert-icon-wrapper">
+                <i class="fas fa-award"></i>
+              </div>
+              <div class="lms-cert-content">
+                <h3 class="lms-cert-course-name">{{ cert.course_name }}</h3>
+                <p class="lms-cert-template-name">{{ cert.template_name }}</p>
+                
+                <div class="lms-cert-date">
+                  <i class="far fa-calendar-alt"></i> 
+                  {{ cert.issued_at|date('M d, Y') }}
                 </div>
-                <h3 class="lms-card__title">{{ cert.course_name }}</h3>
-                <p class="lms-card__desc">{{ cert.template_name }}</p>
-                <small class="text-muted">
-                  #{{ cert.certificate_number }}
-                </small>
-                {% if cert.pdf %}
-                  <a href="{{ file_url(cert.pdf.uri.value) }}" class="lms-btn lms-btn--primary lms-btn--sm lms-btn--block" target="_blank">
-                    <i class="fas fa-download"></i> {{ 'Download PDF'|t }}
-                  </a>
-                {% endif %}
+
+                <div class="lms-cert-meta">
+                  <div class="lms-cert-id">#{{ cert.certificate_number }}</div>
+                  <div class="lms-cert-action">
+                    {% if cert.pdf %}
+                      <a href="{{ file_url(cert.pdf.uri.value) }}" target="_blank">
+                        {{ 'Download'|t }} <i class="fas fa-download"></i>
+                      </a>
+                    {% endif %}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         {% endfor %}
       </div>
     {% else %}
-      <div class="lms-empty-state">
-        <i class="fas fa-certificate"></i>
+      <div class="lms-cert-empty">
+        <i class="fas fa-award"></i>
         <h3>{{ 'No certificates yet'|t }}</h3>
-        <p>{{ 'Complete a course to earn your first certificate!'|t }}</p>
+        <p>{{ 'Complete a course to earn your first prestigious certificate!'|t }}</p>
       </div>
     {% endif %}
   </div>

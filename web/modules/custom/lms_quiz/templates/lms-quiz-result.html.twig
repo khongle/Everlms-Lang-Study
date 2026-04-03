@@ -244,10 +244,22 @@
             </div>
           </div>
           
-          {% if response.text_answer %}
+          {% if response.text_answer or response.choices|length > 0 %}
             <div class="lms-response-answer">
               <span class="lms-answer-label"><i class="fas fa-pen-nib"></i> {{ 'Your Submission'|t }}</span>
-              <div class="lms-answer-text">{{ response.text_answer }}</div>
+              <div class="lms-answer-text">
+                {% if response.text_answer %}
+                  {{ response.text_answer }}
+                {% endif %}
+                
+                {% if response.choices|length > 0 %}
+                  <ul style="margin: 0; padding-left: 1.25rem;">
+                    {% for choice in response.choices %}
+                      <li>{{ choice }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
             </div>
           {% endif %}
           

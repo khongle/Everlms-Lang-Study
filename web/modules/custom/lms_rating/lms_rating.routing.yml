@@ -1,0 +1,20 @@
+lms_rating.admin_list:
+  path: '/workspace/ratings'
+  defaults:
+    _controller: '\Drupal\lms_rating\Controller\RatingManagerController::list'
+    _title: 'Manage Reviews'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_rating.admin_action:
+  path: '/workspace/ratings/{lms_rating}/{action}'
+  defaults:
+    _controller: '\Drupal\lms_rating\Controller\RatingManagerController::executeAction'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    parameters:
+      lms_rating:
+        type: entity:lms_rating

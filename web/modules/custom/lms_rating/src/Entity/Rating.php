@@ -23,6 +23,7 @@ use Drupal\views\EntityViewsData;
   admin_permission: 'administer lms_course',
   entity_keys: ['id' => 'id', 'uuid' => 'uuid', 'owner' => 'uid'],
   handlers: [
+    'list_builder' => 'Drupal\lms_rating\RatingListBuilder',
     'views_data' => EntityViewsData::class,
     'form' => ['default' => 'Drupal\Core\Entity\ContentEntityForm', 'delete' => 'Drupal\Core\Entity\ContentEntityDeleteForm'],
     'access' => 'Drupal\Core\Entity\EntityAccessControlHandler',
@@ -54,7 +55,13 @@ class Rating extends ContentEntityBase implements EntityOwnerInterface {
 
     $fields['field_approved'] = BaseFieldDefinition::create('boolean')
       ->setLabel(new TranslatableMarkup('Approved'))
-      ->setDefaultValue(TRUE);
+      ->setDefaultValue(TRUE)
+      ->setDisplayConfigurable('form', TRUE);
+
+    $fields['field_is_featured'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(new TranslatableMarkup('Featured on Homepage'))
+      ->setDefaultValue(FALSE)
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Created'));

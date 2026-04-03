@@ -1,0 +1,15 @@
+open_switcher.switch_form:
+  title: 'Switch User'
+  description: 'Impersonate another user account'
+  route_name: open_switcher.frontend
+  menu_name: account
+  parent: user.page
+  weight: 90
+
+open_switcher.switch_back:
+  title: '⬅ Switch Back'
+  description: 'Return to your original account'
+  route_name: open_switcher.switch_back
+  menu_name: account
+  parent: user.page
+  weight: 91

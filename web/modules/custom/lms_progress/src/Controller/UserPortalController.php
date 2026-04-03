@@ -166,7 +166,9 @@ final class UserPortalController extends ControllerBase {
       }
 
       $accurate_progress = 0;
-      if (!empty($course_lesson_ids)) {
+      if ($status === 'completed') {
+        $accurate_progress = 100;
+      } elseif (!empty($course_lesson_ids)) {
          $completed_progress_count = $this->entityTypeManager->getStorage('lms_user_lesson')
            ->getQuery()
            ->condition('uid', $uid)
@@ -334,7 +336,9 @@ final class UserPortalController extends ControllerBase {
       }
 
       $accurate_progress = 0;
-      if (!empty($course_lesson_ids)) {
+      if ($status === 'completed') {
+        $accurate_progress = 100;
+      } elseif (!empty($course_lesson_ids)) {
          $completed_progress_count = $this->entityTypeManager->getStorage('lms_user_lesson')
            ->getQuery()
            ->condition('uid', $uid)
@@ -500,6 +504,15 @@ final class UserPortalController extends ControllerBase {
       }
     }
 
+    // Check if SCORM package exists.
+    $scorm_url = '';
+    if ($lesson_type === 'scorm') {
+      $scorm_path = 'public://scorm_extracted/' . $lms_lesson->id() . '/index.html';
+      if (is_string($scorm_path) && file_exists($scorm_path)) {
+        $scorm_url = \Drupal::service('file_url_generator')->generateString($scorm_path);
+      }
+    }
+
     // Get existing note for this lesson.
     $existing_note_text = '';
     $note_ids = $this->entityTypeManager->getStorage('lms_note')
@@ -522,6 +535,7 @@ final class UserPortalController extends ControllerBase {
       '#curriculum' => $curriculum,
       '#video_position' => $video_position,
       '#video_embed_url' => $video_embed_url,
+      '#scorm_url' => $scorm_url,
       '#quiz_id' => $quiz_id,
       '#is_admin' => $this->currentUser->hasPermission('administer lms_course'),
       '#rendered_attachments' => $rendered_attachments,
@@ -607,31 +621,11 @@ final class UserPortalController extends ControllerBase {
     $uid = (int) $this->currentUser->id();
     $account = $this->entityTypeManager->getStorage('user')->load($uid);
 
-    $enrollment_count = (int) $this->entityTypeManager->getStorage('lms_user_course')
-      ->getQuery()
-      ->condition('uid', $uid)
-      ->accessCheck(FALSE)
-      ->count()
-      ->execute();
+    if ($account) {
+      return $this->entityTypeManager->getViewBuilder('user')->view($account, 'full');
+    }
 
-    $cert_count = (int) $this->entityTypeManager->getStorage('lms_user_certificate')
-      ->getQuery()
-      ->condition('uid', $uid)
-      ->accessCheck(FALSE)
-      ->count()
-      ->execute();
-
-    return [
-      '#theme' => 'lms_profile',
-      '#user_data' => [
-        'uid' => $uid,
-        'name' => $account?->getDisplayName() ?? '',
-        'email' => $account?->getEmail() ?? '',
-        'created' => $account?->getCreatedTime() ?? 0,
-      ],
-      '#enrollment_count' => $enrollment_count,
-      '#certificate_count' => $cert_count,
-    ];
+    return [];
   }
 
 }

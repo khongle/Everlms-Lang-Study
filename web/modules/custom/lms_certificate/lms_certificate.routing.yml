@@ -60,3 +60,16 @@ lms_certificate.admin_template.edit:
     parameters:
       lms_certificate_template:
         type: entity:lms_certificate_template
+
+lms_certificate.admin_template.preview:
+  path: '/workspace/certificate-templates/{lms_certificate_template}/preview'
+  defaults:
+    _controller: '\Drupal\lms_certificate\Controller\CertificateAdminController::templatePreview'
+    _title: 'Preview Certificate Template'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+    parameters:
+      lms_certificate_template:
+        type: entity:lms_certificate_template

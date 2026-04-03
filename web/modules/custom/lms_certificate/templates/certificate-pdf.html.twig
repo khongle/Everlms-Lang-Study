@@ -29,9 +29,25 @@
   '[issue_date]': date,
   '[certificate_code]': code,
   '[logo]': logo_url,
+  '[seal]': template.field_seal.entity ? file_url(template.field_seal.entity.getFileUri()) : '',
   '[signature]': signature_url,
   '[background]': background_url
 } %}
 
 {# Output toàn bộ nội dung Admin tự thiết kế từ field_layout #}
+<style>
+    @page {
+        {% if background_url %}
+        background-image: url('{{ background_url }}');
+        background-image-resize: 6;
+        {% endif %}
+        margin: 0;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+        /* Default generic styling to prevent any mPDF default collapse */
+        font-family: 'Times New Roman', Georgia, serif;
+    }
+</style>
 {{ template.field_layout.value|replace(placeholders)|raw }}

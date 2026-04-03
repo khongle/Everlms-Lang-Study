@@ -54,7 +54,7 @@ class CertificateTemplate extends ContentEntityBase {
 
     $fields['field_body'] = BaseFieldDefinition::create('text_long')
       ->setLabel(new TranslatableMarkup('Certificate Body'))
-      ->setDescription(new TranslatableMarkup('Use tokens: [user:name], [course:name], [date:completed].'))
+      ->setDescription(new TranslatableMarkup('Use tokens: [student_name], [course_name], [issue_date].'))
       ->setDisplayOptions('form', ['type' => 'hidden'])
       ->setDisplayConfigurable('form', FALSE)->setDisplayConfigurable('view', TRUE);
 
@@ -83,6 +83,12 @@ class CertificateTemplate extends ContentEntityBase {
     $fields['field_logo'] = BaseFieldDefinition::create('image')
       ->setLabel(new TranslatableMarkup('Logo Image'))
       ->setSetting('file_directory', 'certificates/logos')
+      ->setDisplayOptions('form', ['type' => 'image_image', 'weight' => -5])
+      ->setDisplayConfigurable('form', TRUE);
+
+    $fields['field_seal'] = BaseFieldDefinition::create('image')
+      ->setLabel(new TranslatableMarkup('Seal Image (Con dấu)'))
+      ->setSetting('file_directory', 'certificates/seals')
       ->setDisplayOptions('form', ['type' => 'image_image', 'weight' => -5])
       ->setDisplayConfigurable('form', TRUE);
 

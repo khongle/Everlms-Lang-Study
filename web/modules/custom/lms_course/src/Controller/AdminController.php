@@ -103,7 +103,7 @@ final class AdminController extends ControllerBase {
   /**
    * Course management list.
    */
-  public function courseList(): array {
+  public function courseList() {
     $request = \Drupal::request();
     $status_filter = $request->query->get('status');
     $category_filter = $request->query->get('category');
@@ -112,7 +112,8 @@ final class AdminController extends ControllerBase {
 
     $query = $this->entityTypeManager->getStorage('lms_course')->getQuery()
       ->sort('created', 'DESC')
-      ->accessCheck(FALSE);
+      ->accessCheck(FALSE)
+      ->pager(10);
 
     if ($status_filter && $status_filter !== 'all') {
       $query->condition('status', $status_filter === 'published' ? 1 : 0);
@@ -231,10 +232,11 @@ final class AdminController extends ControllerBase {
       }
     }
 
-    return [
+    $build = [
       '#theme' => 'lms_admin_courses',
       '#add_course_url' => \Drupal\Core\Url::fromRoute('lms_course.admin_course_create', [], ['query' => ['destination' => '/workspace/courses']])->toString(),
       '#courses' => $items,
+      '#pager' => ['#type' => 'pager'],
       '#filters' => [
         'status' => $status_filter,
         'category' => $category_filter,
@@ -244,6 +246,14 @@ final class AdminController extends ControllerBase {
       '#category_options' => $category_options,
       '#instructor_options' => $instructor_options,
     ];
+
+    if ($request->query->get('ajax') == '1') {
+      $build['#theme'] = 'lms_admin_courses_table';
+      $html = \Drupal::service('renderer')->renderRoot($build);
+      return new \Symfony\Component\HttpFoundation\Response((string) $html);
+    }
+
+    return $build;
   }
 
   /**
@@ -380,7 +390,7 @@ final class AdminController extends ControllerBase {
   /**
    * User management list.
    */
-  public function userList(\Symfony\Component\HttpFoundation\Request $request): array {
+  public function userList(\Symfony\Component\HttpFoundation\Request $request) {
     $search = $request->query->get('search', '');
     $role_filter = strtolower($request->query->get('role', 'all'));
     $status_filter = strtolower($request->query->get('status', 'all'));
@@ -420,20 +430,18 @@ final class AdminController extends ControllerBase {
       $query->condition('roles', 'administrator', 'NOT IN');
     }
 
+    if (!empty($search)) {
+      $group = $query->orConditionGroup()
+        ->condition('mail', $search, 'CONTAINS')
+        ->condition('name', $search, 'CONTAINS')
+        ->condition('field_first_name', $search, 'CONTAINS')
+        ->condition('field_last_name', $search, 'CONTAINS');
+      $query->condition($group);
+    }
+
+    $query->pager(10);
     $ids = $query->execute();
     $users = $ids ? $this->entityTypeManager->getStorage('user')->loadMultiple($ids) : [];
-
-    // Memory filter for 'search' by Name or Email since name/email are on base table but search is loose.
-    if (!empty($search)) {
-      $users = array_filter($users, function($user) use ($search) {
-        $email = $user->getEmail() ?? '';
-        $first_name = $user->hasField('field_first_name') ? $user->get('field_first_name')->value : '';
-        $last_name = $user->hasField('field_last_name') ? $user->get('field_last_name')->value : '';
-        $full_name = trim("$first_name $last_name") ?: $user->getDisplayName();
-
-        return stripos($email, $search) !== FALSE || stripos($full_name, $search) !== FALSE;
-      });
-    }
 
     $items = [];
     foreach ($users as $user) {
@@ -463,6 +471,14 @@ final class AdminController extends ControllerBase {
       $roles = $user->getRoles(TRUE);
       $primary_role = !empty($roles) ? reset($roles) : 'student';
 
+      $switch_url = '';
+      if (\Drupal::moduleHandler()->moduleExists('open_switcher')) {
+        // Protect Super Admin if the current user isn't. Protect self-impersonation.
+        if (!((int) $user->id() === 1 && (int) \Drupal::currentUser()->id() !== 1) && (int) $user->id() !== (int) \Drupal::currentUser()->id()) {
+          $switch_url = \Drupal\Core\Url::fromRoute('open_switcher.switch_to', ['user' => $user->id()])->toString();
+        }
+      }
+
       $items[] = [
         'uid' => $user->id(),
         'avatar_url' => $avatar_url,
@@ -472,19 +488,29 @@ final class AdminController extends ControllerBase {
         'enrolled' => $enrollment_count,
         'last_login' => $user->getLastLoginTime(),
         'status' => $user->isActive() ? 'Active' : 'Inactive',
+        'switch_url' => $switch_url,
         'edit_url' => \Drupal\Core\Url::fromRoute('lms_course.admin.user.edit', ['user' => $user->id()], ['query' => ['destination' => '/workspace/users']])->toString(),
         'view_url' => $user->toUrl('canonical')->toString(),
       ];
     }
 
-    return [
+    $build = [
       '#theme' => 'lms_admin_users',
       '#users' => $items,
+      '#pager' => ['#type' => 'pager'],
       '#add_user_url' => \Drupal\Core\Url::fromRoute('lms_course.admin.user.create', [], ['query' => ['destination' => '/workspace/users']])->toString(),
       '#current_search' => $search,
       '#current_role' => ucfirst($role_filter),
       '#current_status' => ucfirst($status_filter),
     ];
+
+    if ($request->query->get('ajax') == '1') {
+      $build['#theme'] = 'lms_admin_users_table';
+      $html = \Drupal::service('renderer')->renderRoot($build);
+      return new \Symfony\Component\HttpFoundation\Response((string) $html);
+    }
+
+    return $build;
   }
 
   /**
@@ -498,6 +524,32 @@ final class AdminController extends ControllerBase {
       if (!empty($user_ids)) {
         $users = $this->entityTypeManager->getStorage('user')->loadMultiple($user_ids);
         $count = 0;
+
+        if ($action === 'export') {
+          if (!class_exists('\Shuchkin\SimpleXLSXGen')) {
+            \Drupal::messenger()->addError($this->t('Thư viện tạo file Excel chưa được cài đặt. Vào dự án gõ lệnh sau để mở tính năng Export: ddev composer require shuchkin/simplexlsxgen'));
+            return $this->redirect('lms_course.admin_users', $request->query->all());
+          }
+
+          $data = [
+            ['ID', 'Full Name', 'Email', 'Roles', 'Status', 'Last Login']
+          ];
+
+          foreach ($users as $user) {
+            $data[] = [
+              $user->id(),
+              $user->getAccountName(),
+              $user->getEmail(),
+              implode(', ', $user->getRoles()),
+              $user->isActive() ? 'Active' : 'Blocked',
+              $user->getLastAccessedTime() ? date('Y-m-d H:i:s', (int) $user->getLastAccessedTime()) : 'Never'
+            ];
+          }
+
+          $xlsx = \Shuchkin\SimpleXLSXGen::fromArray($data);
+          $xlsx->downloadAs('EverLMS-Users-' . date('Y-m-d') . '.xlsx');
+          exit; // Terminate Drupal process immediately to flush raw downloaded file bytes.
+        }
 
         foreach ($users as $user) {
           // Deny updating admin if current user is not admin

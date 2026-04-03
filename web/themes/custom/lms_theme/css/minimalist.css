@@ -1,0 +1,49 @@
+/* =========================================================
+   STYLE 2: MINIMALIST CLEAN OVERRIDES
+   Attached via lms-homepage.html.twig Router.
+========================================================= */
+body.layout-minimalist {
+  background-color: #ffffff;
+  color: #1a1e23;
+}
+
+/* Section styling */
+body.layout-minimalist section {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* Cards */
+body.layout-minimalist .minimal-course-card {
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  border-color: #e2e8f0 !important;
+}
+body.layout-minimalist .minimal-course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  border-color: #cbd5e1 !important;
+}
+body.layout-minimalist .minimal-course-card a {
+  text-decoration: none !important;
+}
+
+/* Buttons */
+body.layout-minimalist .btn-outline-dark {
+  border-color: #1a1e23;
+  color: #1a1e23;
+}
+body.layout-minimalist .btn-outline-dark:hover {
+  background-color: #1a1e23;
+  color: #ffffff;
+}
+
+/* Forms */
+body.layout-minimalist input.form-control,
+body.layout-minimalist .btn-dark {
+  border-radius: 0px !important;
+  color: #1a1e23;
+}
+body.layout-minimalist .btn-dark {
+  color: #ffffff;
+}

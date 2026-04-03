@@ -16,6 +16,18 @@ class ContentToolsManager {
    * Entity type groups with their entity type IDs, in deletion order.
    */
   protected const ENTITY_GROUPS = [
+    'introductions' => [
+      'label' => 'Introduction Sections',
+      'types' => ['node:introduction'],
+    ],
+    'slideshows' => [
+      'label' => 'Slideshow Banners',
+      'types' => ['node:slideshow'],
+    ],
+    'glossaries' => [
+      'label' => 'Glossary Terms',
+      'types' => ['node:glossary'],
+    ],
     'notes' => [
       'label' => 'Student Notes',
       'types' => ['lms_note'],
@@ -78,7 +90,19 @@ class ContentToolsManager {
     ],
     'articles' => [
       'label' => 'Blog Articles',
-      'types' => ['lms_article'],
+      'types' => ['node:blog'],
+    ],
+    'course_taxonomies' => [
+      'label' => 'Course Categories, Levels & Languages',
+      'types' => [
+        'taxonomy_term:course_category',
+        'taxonomy_term:course_level',
+        'taxonomy_term:course_language'
+      ],
+    ],
+    'community' => [
+      'label' => 'Community (Forums & Badges)',
+      'types' => ['lms_forum_topic', 'lms_forum_reply', 'lms_badge'],
     ],
   ];
 
@@ -99,12 +123,24 @@ class ContentToolsManager {
    */
   public function countEntities(string $entityTypeId): int {
     try {
-      return (int) $this->entityTypeManager
-        ->getStorage($entityTypeId)
+      $parts = explode(':', $entityTypeId);
+      $type = $parts[0];
+      $bundle = $parts[1] ?? NULL;
+
+      $query = $this->entityTypeManager
+        ->getStorage($type)
         ->getQuery()
-        ->accessCheck(FALSE)
-        ->count()
-        ->execute();
+        ->accessCheck(FALSE);
+
+      if ($bundle) {
+        $entityDef = $this->entityTypeManager->getDefinition($type);
+        $bundleKey = $entityDef->getKey('bundle');
+        if ($bundleKey) {
+          $query->condition($bundleKey, $bundle);
+        }
+      }
+
+      return (int) $query->count()->execute();
     }
     catch (\Exception) {
       return 0;
@@ -131,8 +167,22 @@ class ContentToolsManager {
    */
   public function deleteEntities(string $entityTypeId): int {
     try {
-      $storage = $this->entityTypeManager->getStorage($entityTypeId);
-      $ids = $storage->getQuery()->accessCheck(FALSE)->execute();
+      $parts = explode(':', $entityTypeId);
+      $type = $parts[0];
+      $bundle = $parts[1] ?? NULL;
+
+      $storage = $this->entityTypeManager->getStorage($type);
+      $query = $storage->getQuery()->accessCheck(FALSE);
+
+      if ($bundle) {
+        $entityDef = $this->entityTypeManager->getDefinition($type);
+        $bundleKey = $entityDef->getKey('bundle');
+        if ($bundleKey) {
+          $query->condition($bundleKey, $bundle);
+        }
+      }
+
+      $ids = $query->execute();
       if (empty($ids)) {
         return 0;
       }

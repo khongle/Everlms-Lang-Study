@@ -1,0 +1,4 @@
+switch users:
+  title: 'Switch to another user'
+  description: 'Allows the user to impersonate other accounts and switch back.'
+  restrict access: true

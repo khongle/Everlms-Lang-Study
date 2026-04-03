@@ -1,0 +1,40 @@
+open_switcher.switch_form:
+  path: '/admin/switch-user'
+  defaults:
+    _form: '\Drupal\open_switcher\Form\SwitchUserForm'
+    _title: 'Switch User'
+  requirements:
+    _permission: 'switch users'
+
+open_switcher.switch_to:
+  path: '/admin/switch-user/{user}'
+  defaults:
+    _controller: '\Drupal\open_switcher\Controller\SwitchController::switchTo'
+  requirements:
+    _permission: 'switch users'
+    user: \d+
+
+open_switcher.switch_back:
+  path: '/admin/switch-back'
+  defaults:
+    _controller: '\Drupal\open_switcher\Controller\SwitchController::switchBack'
+    _title: 'Switch Back'
+  requirements:
+    _custom_access: '\Drupal\open_switcher\Controller\SwitchController::canSwitchBack'
+
+# ===== Frontend Routes =====
+
+open_switcher.frontend:
+  path: '/app/switch-user'
+  defaults:
+    _controller: '\Drupal\open_switcher\Controller\SwitchFrontendController::page'
+  requirements:
+    _permission: 'switch users'
+
+open_switcher.frontend_switch:
+  path: '/app/switch-user/{user}'
+  defaults:
+    _controller: '\Drupal\open_switcher\Controller\SwitchController::switchTo'
+  requirements:
+    _permission: 'switch users'
+    user: \d+

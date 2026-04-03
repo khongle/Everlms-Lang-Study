@@ -1,0 +1,29 @@
+name: EverLMS Classic Prestige
+type: theme
+description: 'Dark premium LMS theme with Bootstrap 5.3, glassmorphism design.'
+core_version_requirement: ^11
+base theme: false
+
+regions:
+  header: 'Header'
+  primary_menu: 'Primary Menu'
+  secondary_menu: 'Secondary Menu'
+  hero: 'Hero Section'
+  breadcrumb: 'Breadcrumb'
+  highlighted: 'Highlighted'
+  content_top: 'Content Top'
+  content: 'Content'
+  content_bottom: 'Content Bottom'
+  sidebar_first: 'Sidebar First'
+  sidebar_second: 'Sidebar Second'
+  footer_first: 'Footer First'
+  footer_second: 'Footer Second'
+  footer_third: 'Footer Third'
+  footer_fourth: 'Footer Fourth'
+  footer_bottom: 'Footer Bottom'
+
+libraries:
+  - lms_classic/global
+
+libraries-override:
+  classy/base: false

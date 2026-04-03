@@ -1,0 +1,225 @@
+{# Classic Prestige Homepage template #}
+{{ attach_library('lms_classic/global') }}
+{{ attach_library('lms_classic/homepage') }}
+
+{# 1. Hero Section #}
+<section class="lms-hero">
+  <div class="container lms-hero__container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 lms-hero__content-col" data-aos="fade-right">
+        <div class="lms-hero__badge">{{ '🏛️ Classic Elegance'|t }}</div>
+        <h1 class="lms-hero__title">
+          {{ 'Master Your Future With'|t }}<br>
+          <span class="lms-text-gold">{{ 'EverLMS Platform'|t }}</span>
+        </h1>
+        <p class="lms-hero__subtitle">
+          {{ 'Discover premium online courses designed to accelerate your career. Learn from industry experts and achieve your goals faster with our prestigious platform.'|t }}
+        </p>
+
+        {# Classic Search bar #}
+        <div class="lms-hero__search">
+          <form action="{{ path('lms_course.catalog') }}" method="get">
+            <div class="lms-search-bar">
+              <i class="fas fa-search lms-search-icon"></i>
+              <input type="text" name="search" placeholder="{{ 'Search our library...'|t }}" class="lms-search-input">
+              <button type="submit" class="lms-btn">
+                {{ 'Search'|t }}
+              </button>
+            </div>
+          </form>
+        </div>
+        
+        {# Stats #}
+        <div class="lms-hero__stats" data-aos="fade-up" data-aos-delay="200">
+          <div class="lms-stat-item">
+            <h3 class="lms-stat-number">{{ stats.courses|default('100+') }}</h3>
+            <span class="lms-stat-label">{{ 'Premium<br>Courses'|raw }}</span>
+          </div>
+          <div class="lms-stat-divider"></div>
+          <div class="lms-stat-item">
+            <h3 class="lms-stat-number">{{ stats.students|default('10k+') }}</h3>
+            <span class="lms-stat-label">{{ 'Enrolled<br>Students'|raw }}</span>
+          </div>
+          <div class="lms-stat-divider"></div>
+          <div class="lms-stat-item">
+            <h3 class="lms-stat-number">{{ stats.satisfaction|default('99%') }}</h3>
+            <span class="lms-stat-label">{{ 'Satisfaction<br>Rate'|raw }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-6 lms-hero__image-col" data-aos="fade-left" data-aos-delay="100">
+        <div class="lms-hero__image-wrapper">
+          <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Prestigious University" class="lms-hero-img">
+          <div class="lms-hero__floating-card">
+            <div class="lms-floating-icon"><i class="fas fa-university"></i></div>
+            <div class="lms-floating-text">
+              <strong>{{ 'Ivy League Quality'|t }}</strong>
+              <span>{{ 'Academic Excellence'|t }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# 2. Continue Learning Widget (Only for logged-in users) #}
+{% if logged_in and my_courses|length > 0 %}
+<section class="lms-section lms-section--my-learning" data-aos="fade-up" style="background:var(--lms-bg-cream);">
+  <div class="container">
+    <div class="lms-section-header">
+      <h2 class="lms-section-title"><i class="fas fa-book-reader" style="color:var(--lms-primary-burgundy);"></i> {{ 'Continue Learning'|t }}</h2>
+      <a href="{{ path('lms_progress.dashboard')|default('#') }}" class="lms-link-more">{{ 'My Dashboard'|t }} <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="lms-progress-cards" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+      {% for item in my_courses %}
+        <div class="lms-progress-card lms-classic-card">
+          <div class="lms-progress-card__thumb" style="height:150px; overflow:hidden;">
+            {% if item.course.thumbnail_url %}
+              <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}" style="width:100%; height:100%; object-fit:cover;">
+            {% else %}
+              <div class="lms-thumb-placeholder" style="background:#e0dcd3; height:100%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-video"></i></div>
+            {% endif %}
+          </div>
+          <div class="lms-progress-card__info" style="padding:15px;">
+            <h4 class="lms-course-title" style="color:var(--lms-primary-navy); margin:0 0 15px 0;">{{ item.course.name }}</h4>
+            <div class="lms-progress-wrapper">
+              <div class="lms-progress-bar" style="background:rgba(0,0,0,0.1); height:8px; border-radius:4px; overflow:hidden; margin-bottom:5px;">
+                <div class="lms-progress-fill" style="background:var(--lms-accent-gold); height:100%; width: {{ item.progress }}%;"></div>
+              </div>
+              <span class="lms-progress-text" style="color:var(--lms-text-muted); font-size:0.85rem;">{{ item.progress }}% {{ 'Completed'|t }}</span>
+            </div>
+          </div>
+          <div class="lms-progress-card__action" style="padding:15px; border-top:1px solid rgba(0,0,0,0.05);">
+            <a href="{{ item.course.continue_url }}" class="lms-btn lms-btn--outline" style="width:100%; padding:8px;">{{ 'Resume'|t }}</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# 3. Popular Categories #}
+{% if categories|length > 0 %}
+<section class="lms-section lms-bg-darker" data-aos="fade-up" style="background:var(--lms-bg-dark-cream);">
+  <div class="container">
+    <div class="lms-section-header text-center">
+      <h2 class="lms-section-title">{{ 'Explore Popular Fields'|t }}</h2>
+      <p class="lms-section-subtitle">{{ 'Find the perfect topic to boost your skills and career'|t }}</p>
+    </div>
+    <div class="lms-categories-grid">
+      {% for cat in categories %}
+        <a href="{{ path('lms_course.category_detail', {'taxonomy_term': cat.entity.id})|default('#') }}" class="lms-category-card lms-classic-card" style="text-align: center; display: flex; flex-direction: column; align-items: center; padding: 40px 20px;">
+          <div class="lms-category__large-icon" style="width: 120px; height: 120px; margin: 0 auto 20px auto; border-radius: 50%; overflow: hidden; border: 4px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); background: var(--lms-primary-navy); display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
+            {% if cat.thumbnail_url %}
+              <img src="{{ cat.thumbnail_url }}" alt="{{ cat.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+              <i class="fas fa-layer-group" style="font-size: 3rem; color: var(--lms-accent-gold);"></i>
+            {% endif %}
+          </div>
+          <div class="lms-category-card__content" style="width: 100%;">
+            <h3 class="lms-category-card__title" style="margin-bottom: 15px; font-size: 1.35rem; line-height: 1.4;">{{ cat.name }}</h3>
+            <p class="lms-category-card__desc" style="margin-bottom: 25px; line-height: 1.6;">{{ cat.description|striptags|slice(0, 80) }}...</p>
+            <div class="lms-category-card__meta" style="justify-content: center; margin-top: auto;">
+              <span class="lms-badge" style="background:var(--lms-accent-gold); color:var(--lms-primary-navy); font-weight:700; border-radius:2px; font-family:var(--font-heading); font-size: 0.9rem; padding: 6px 16px;">{{ cat.course_count }} {{ 'Courses'|t }}</span>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# 4. Featured Courses (Case Studies) #}
+{% if featured_courses|length > 0 %}
+<section class="lms-section" data-aos="fade-up" style="background:var(--lms-bg-cream);">
+  <div class="container">
+    <div class="lms-section-header">
+      <h2 class="lms-section-title">{{ 'Featured Courses'|t }}</h2>
+      <a href="{{ path('lms_course.catalog') }}" class="lms-link-more">{{ 'View All Courses'|t }} <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="grid-courses lms-courses-grid">
+      {% for card in featured_courses %}
+        <div class="lms-course-wrapper" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+          {{ { '#theme': 'lms_course_card', '#card': card } }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# 6. Core Values #}
+<section class="lms-section lms-bg-darker" data-aos="fade-up" style="background:var(--lms-bg-dark-cream);">
+  <div class="container">
+    <div class="lms-section-header text-center" style="margin-bottom: 50px;">
+      <h2 class="lms-section-title">{{ 'Why Choose EverLMS'|t }}</h2>
+    </div>
+    <div class="lms-values-grid">
+      {% set values = [
+        { icon: 'fa-university', title: 'Prestigious Education'|t, desc: 'Experience Ivy-League quality structure and rigorous curriculum standards.'|t },
+        { icon: 'fa-user-tie', title: 'Expert Scholars'|t, desc: 'Gain insights from vetted industry professionals and leading academics.'|t },
+        { icon: 'fa-award', title: 'Certified Excellence'|t, desc: 'Earn verified certificates that carry weight in the professional world.'|t },
+        { icon: 'fa-book-open', title: 'Rich Library'|t, desc: 'A massive archive of academic materials and premium exclusive content.'|t },
+      ] %}
+      {% for val in values %}
+        <div class="lms-value-card lms-classic-card">
+          <div class="lms-value-card__icon" style="background:transparent; border:1px solid rgba(0,0,0,0.1);">
+            <i class="fas {{ val.icon }}" style="color:var(--lms-primary-burgundy);"></i>
+          </div>
+          <h3>{{ val.title }}</h3>
+          <p>{{ val.desc }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# 7. Testimonials #}
+{% if testimonials|length > 0 %}
+<section class="lms-section" data-aos="fade-up" style="background:var(--lms-bg-cream);">
+  <div class="container">
+    <div class="lms-section-header text-center">
+      <h2 class="lms-section-title">{{ 'Alumni Voices'|t }}</h2>
+    </div>
+    <div class="lms-testimonials-carousel lms-values-grid">
+      {% for tm in testimonials %}
+        <div class="lms-testimonial-card lms-classic-card" style="padding:30px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div class="lms-testimonial-card__rating" style="margin-bottom:15px;">
+              {% for i in 1..tm.rating %}
+                <i class="fas fa-star" style="color:var(--lms-accent-gold);"></i>
+              {% endfor %}
+            </div>
+            <p class="lms-testimonial-card__content" style="font-family:var(--font-body); font-style:italic; font-size:1.05rem; color:var(--lms-text-dark);">"{{ tm.content }}"</p>
+          </div>
+          <div class="lms-testimonial-card__author" style="display:flex; gap:15px; align-items:center; margin-top:20px; border-top:1px solid rgba(0,0,0,0.1); padding-top:20px;">
+            <img src="{{ tm.avatar }}" alt="{{ tm.name }}" class="lms-author-avatar" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+            <div class="lms-author-info">
+              <h4 class="lms-author-name" style="margin:0; color:var(--lms-primary-navy); font-family:var(--font-heading);">{{ tm.name }}</h4>
+              <span class="lms-author-role" style="font-size:0.85rem; color:var(--lms-text-muted);">{{ tm.role }}</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# 8. Call to Action Banner #}
+<section class="lms-section" data-aos="zoom-in" style="margin-bottom:80px; padding-top:40px;">
+  <div class="container">
+    <div class="lms-classic-card" style="padding: 60px; text-align: center; border-top: 4px solid var(--lms-accent-gold);">
+      <h2 style="font-family: var(--font-heading); color: var(--lms-primary-navy); margin-bottom: 20px; font-size: 2.5rem;">{{ 'Ready to Begin Your Journey?'|t }}</h2>
+      <p style="color: var(--lms-text-muted); font-size: 1.15rem; margin-bottom: 40px;">{{ 'Join thousands of scholars and elevate your learning experience today.'|t }}</p>
+      <div class="lms-cta-actions">
+        <a href="{{ path('user.register')|default('#') }}" class="lms-btn">{{ 'Apply Now'|t }}</a>
+        <a href="{{ path('lms_course.catalog') }}" class="lms-btn lms-btn--outline" style="margin-left: 15px;">{{ 'Browse Library'|t }}</a>
+      </div>
+    </div>
+  </div>
+</section>

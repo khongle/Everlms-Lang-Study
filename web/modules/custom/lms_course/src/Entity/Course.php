@@ -293,6 +293,16 @@ class Course extends ContentEntityBase implements EntityOwnerInterface {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['field_certificate_template'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(new TranslatableMarkup('Certificate Template'))
+      ->setSetting('target_type', 'lms_certificate_template')
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => 5,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(new TranslatableMarkup('Published'))
       ->setDefaultValue(TRUE)

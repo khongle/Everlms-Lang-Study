@@ -1,0 +1,127 @@
+// EverLMS — Pricing Elements
+// ========================================
+
+.lms-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $spacer-xl;
+  margin-top: $spacer-xxl;
+  align-items: center;
+
+  // Make the middle/recommended card pop out slightly if it's a 3-column layout
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.lms-pricing-card {
+  position: relative;
+  text-align: center;
+  padding: $spacer-xxl $spacer-lg;
+  border: 1px solid $color-border;
+  background: $color-bg-card;
+  border-radius: $radius-xl;
+  transition: all $transition-normal;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $shadow-lg;
+    border-color: $color-primary;
+  }
+
+  &--recommended {
+    border-color: $color-primary;
+    background: linear-gradient(180deg, rgba($color-primary, 0.05) 0%, $color-bg-card 100%);
+    transform: scale(1.05);
+    z-index: 1;
+
+    &:hover {
+      transform: scale(1.05) translateY(-5px);
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    background: $gradient-primary;
+    color: #fff;
+    padding: $spacer-xs $spacer-sm;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  &__name {
+    font-size: $font-size-h3;
+    color: $color-text-primary;
+    margin-bottom: $spacer-md;
+    font-weight: $font-weight-semibold;
+  }
+
+  &__price {
+    margin-bottom: $spacer-xl;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+  }
+
+  &__amount {
+    font-size: 3rem;
+    font-weight: $font-weight-extrabold;
+    color: $color-text-primary;
+    line-height: 1;
+  }
+
+  &__period {
+    font-size: $font-size-base;
+    color: $color-text-secondary;
+    margin-left: $spacer-xs;
+  }
+
+  &__features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 $spacer-xl;
+    text-align: left;
+
+    li {
+      padding: $spacer-sm 0;
+      color: $color-text-secondary;
+      display: flex;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      i {
+        color: $color-success;
+        margin-right: $spacer-sm;
+        margin-top: 4px;
+        font-size: $font-size-sm;
+      }
+    }
+  }
+}
+
+.lms-pricing-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto $spacer-xl;
+
+  h1 {
+    font-size: $font-size-h1;
+    margin-bottom: $spacer-sm;
+    @include gradient-text;
+  }
+
+  p {
+    color: $color-text-secondary;
+    font-size: $font-size-lg;
+  }
+}

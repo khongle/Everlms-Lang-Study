@@ -44,6 +44,49 @@ final class CoursePublicController extends ControllerBase {
    * Homepage.
    */
   public function homepage(): array {
+    // 0. Slideshow Banner from Custom Node Type.
+    $slideshows = [];
+    $slide_nids = $this->entityTypeManager->getStorage('node')
+      ->getQuery()
+      ->condition('type', 'slideshow')
+      ->condition('status', 1)
+      ->accessCheck(FALSE)
+      ->execute();
+
+    if ($slide_nids) {
+      $slide_nodes = $this->entityTypeManager->getStorage('node')->loadMultiple($slide_nids);
+      foreach ($slide_nodes as $block) {
+        $image_url = '';
+        if ($block->hasField('field_slide_image') && !$block->get('field_slide_image')->isEmpty()) {
+          $file = $block->get('field_slide_image')->entity;
+          if ($file) {
+            $image_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+          }
+        }
+        
+        $link_url = '#';
+        $link_title = 'Explore Now';
+        if ($block->hasField('field_slide_link') && !$block->get('field_slide_link')->isEmpty()) {
+          $link_item = $block->get('field_slide_link')->first();
+          try {
+            $link_url = \Drupal\Core\Url::fromUri($link_item->uri)->toString();
+          } catch (\Exception $e) {
+            $link_url = $link_item->uri;
+          }
+          $link_title = $link_item->title ?: $link_title;
+        }
+
+        $slideshows[] = [
+          'heading' => $block->hasField('field_slide_heading') ? $block->get('field_slide_heading')->value : '',
+          'subheading' => $block->hasField('field_slide_subheading') ? $block->get('field_slide_subheading')->value : '',
+          'link_url' => $link_url,
+          'link_title' => $link_title,
+          'position' => $block->hasField('field_slide_position') ? $block->get('field_slide_position')->value : 'left',
+          'image_url' => $image_url,
+        ];
+      }
+    }
+
     // Featured courses.
     $featured = $this->entityTypeManager->getStorage('lms_course')
       ->getQuery()
@@ -143,38 +186,142 @@ final class CoursePublicController extends ControllerBase {
       }
     }
 
-    // Mock Testimonials (since entity does not exist yet)
-    $testimonials = [
-      [
-        'name' => 'Sarah Nguyen',
-        'role' => 'Software Engineer',
-        'content' => 'Khóa học cực kỳ sát với thực tế doanh nghiệp. Mình đã ứng dụng bài giảng vào công việc ngay trong ngày đầu tiên.',
-        'rating' => 5,
-        'avatar' => 'https://i.pravatar.cc/150?u=sarah' 
-      ],
-      [
-        'name' => 'Michael Tran',
-        'role' => 'Data Analyst',
-        'content' => 'Giao diện cực kỳ đẹp và trải nghiệm học tập tuyệt vời. Tiến trình học được theo dõi chi tiết.',
-        'rating' => 5,
-        'avatar' => 'https://i.pravatar.cc/150?u=michael'
-      ],
-      [
-        'name' => 'Emily Le',
-        'role' => 'UX/UI Designer',
-        'content' => 'Tôi rất ấn tượng với chất lượng khóa học và hệ thống đánh giá. Đây là một trải nghiệm học tập hoàn hảo.',
-        'rating' => 4,
-        'avatar' => 'https://i.pravatar.cc/150?u=emily'
-      ]
-    ];
+    // Fetch Featured Testimonials.
+    $testimonials = [];
+    if (\Drupal::entityTypeManager()->hasDefinition('lms_rating')) {
+      $rating_storage = $this->entityTypeManager->getStorage('lms_rating');
+      $rating_ids = $rating_storage->getQuery()
+        ->condition('field_approved', TRUE)
+        ->condition('field_is_featured', TRUE)
+        ->sort('created', 'DESC')
+        ->range(0, 10)
+        ->accessCheck(FALSE)
+        ->execute();
+
+      if ($rating_ids) {
+        $ratings = $rating_storage->loadMultiple($rating_ids);
+        foreach ($ratings as $rating) {
+          $owner = $rating->getOwner();
+          $name = $owner ? $owner->getDisplayName() : 'Anonymous';
+          $role = 'Student';
+          $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=random';
+          
+          if ($owner) {
+            $first_name = $owner->hasField('field_first_name') ? $owner->get('field_first_name')->value : '';
+            $last_name = $owner->hasField('field_last_name') ? $owner->get('field_last_name')->value : '';
+            $full_name = trim("$first_name $last_name");
+            if (!empty($full_name)) {
+              $name = $full_name;
+              $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=random';
+            }
+            if ($owner->hasField('field_job_title') && !$owner->get('field_job_title')->isEmpty()) {
+              $role = $owner->get('field_job_title')->value;
+            }
+            if ($owner->hasField('user_picture') && !$owner->get('user_picture')->isEmpty()) {
+              $file = $owner->get('user_picture')->entity;
+              if ($file) {
+                $avatar = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+              }
+            }
+          }
+
+          $testimonials[] = [
+            'name' => $name,
+            'role' => $role,
+            'content' => $rating->get('field_review')->value,
+            'rating' => (int) $rating->get('field_score')->value,
+            'avatar' => $avatar,
+          ];
+        }
+      }
+    }
+
+    // Introductions.
+    $introductions = [];
+    $intro_nids = $this->entityTypeManager->getStorage('node')
+      ->getQuery()
+      ->condition('type', 'introduction')
+      ->condition('status', 1)
+      ->sort('created', 'ASC')
+      ->accessCheck(FALSE)
+      ->execute();
+
+    if ($intro_nids) {
+      $intro_nodes = $this->entityTypeManager->getStorage('node')->loadMultiple($intro_nids);
+      foreach ($intro_nodes as $node) {
+        $image_url = '';
+        if ($node->hasField('field_intro_image') && !$node->get('field_intro_image')->isEmpty()) {
+          $file = $node->get('field_intro_image')->entity;
+          if ($file) {
+            $image_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+          }
+        }
+        
+        $link_url = '#';
+        $link_title = 'Learn More';
+        if ($node->hasField('field_call_to_action') && !$node->get('field_call_to_action')->isEmpty()) {
+          $link_item = $node->get('field_call_to_action')->first();
+          try {
+            $link_url = \Drupal\Core\Url::fromUri($link_item->uri)->toString();
+          } catch (\Exception $e) {
+            $link_url = $link_item->uri;
+          }
+          $link_title = $link_item->title ?: $link_title;
+        }
+
+        $bg_color_mapped = 'white';
+        $bg_raw = $node->hasField('field_background_color') ? $node->get('field_background_color')->value : '#f8f9fa';
+        if (str_contains(strtolower((string)$bg_raw), '#1e293b') || str_contains(strtolower((string)$bg_raw), 'dark')) {
+            $bg_color_mapped = 'dark';
+        } elseif (str_contains(strtolower((string)$bg_raw), '#f1f5f9') || str_contains(strtolower((string)$bg_raw), 'gray') || str_contains(strtolower((string)$bg_raw), '#f8f9fa')) {
+            $bg_color_mapped = 'gray';
+        }
+
+        $introductions[] = [
+          'title' => $node->label(),
+          'subheading' => $node->hasField('field_subheading') ? $node->get('field_subheading')->value : '',
+          'body' => $node->hasField('body') ? $node->get('body')->value : '',
+          'image_url' => $image_url,
+          'image_position' => $node->hasField('field_image_position') ? $node->get('field_image_position')->value : 'right',
+          'background_color' => $bg_color_mapped,
+          'link_url' => $link_url,
+          'link_title' => $link_title,
+        ];
+      }
+    }
+
+    // FAQs (Global)
+    $faq_ids = $this->entityTypeManager->getStorage('lms_faq')
+      ->getQuery()
+      ->condition('field_scope', 'global')
+      ->sort('weight', 'ASC')
+      ->range(0, 8)
+      ->accessCheck(FALSE)
+      ->execute();
+
+    $global_faqs = [];
+    if ($faq_ids) {
+      $faq_entities = $this->entityTypeManager->getStorage('lms_faq')->loadMultiple($faq_ids);
+      foreach ($faq_entities as $faq) {
+        $global_faqs[] = [
+          'id' => $faq->id(),
+          'question' => $faq->get('question')->value,
+          'answer' => $faq->hasField('field_answer') && !$faq->get('field_answer')->isEmpty() ? $faq->get('field_answer')->value : '',
+        ];
+      }
+    }
 
     return [
       '#theme' => 'lms_homepage',
+      '#homepage_style' => theme_get_setting('homepage_style', 'lms_theme') ?? 'glassmorphism',
+      '#introductions' => $introductions,
+      '#slideshows' => $slideshows,
       '#featured_courses' => $this->buildCourseCards($featured_courses),
       '#categories' => $top_categories,
       '#my_courses' => $my_courses,
       '#bundles' => $bundles,
       '#testimonials' => $testimonials,
+      '#faqs' => $global_faqs,
       '#logged_in' => $user->isAuthenticated(),
       '#stats' => [
         'courses' => $course_count ?: '10+ ',
@@ -186,6 +333,9 @@ final class CoursePublicController extends ControllerBase {
           // Will define this library for homepage aesthetics
           'lms_theme/homepage',
         ],
+      ],
+      '#cache' => [
+        'tags' => ['lms_rating_list'],
       ],
     ];
   }
@@ -221,7 +371,7 @@ final class CoursePublicController extends ControllerBase {
       ->accessCheck(FALSE);
 
     if ($search !== '') {
-      $query->condition('title', $search, 'CONTAINS');
+      $query->condition('name', $search, 'CONTAINS');
     }
 
     if (!empty($categories)) {
@@ -296,6 +446,118 @@ final class CoursePublicController extends ControllerBase {
         'contexts' => ['url.query_args'],
       ],
     ];
+  }
+
+  /**
+   * AJAX search endpoint for course catalog.
+   */
+  public function searchApi(\Symfony\Component\HttpFoundation\Request $request): \Symfony\Component\HttpFoundation\JsonResponse {
+    $search = trim($request->query->get('search', ''));
+    $query_all = $request->query->all();
+
+    $categories_input = $query_all['category'] ?? [];
+    $categories = is_array($categories_input) ? $categories_input : [$categories_input];
+    $categories = array_filter($categories);
+
+    $levels_input = $query_all['level'] ?? [];
+    $levels = is_array($levels_input) ? $levels_input : [$levels_input];
+    $levels = array_filter($levels);
+
+    $prices_input = $query_all['price'] ?? [];
+    $prices = is_array($prices_input) ? $prices_input : [$prices_input];
+    $prices = array_filter($prices);
+
+    $ratings_input = $query_all['rating'] ?? [];
+    $ratings = is_array($ratings_input) ? $ratings_input : [$ratings_input];
+    $ratings = array_filter($ratings);
+
+    $sort = $request->query->get('sort', 'Most Popular');
+
+    $query = $this->entityTypeManager->getStorage('lms_course')
+      ->getQuery()
+      ->condition('status', TRUE)
+      ->accessCheck(FALSE);
+
+    if ($search !== '') {
+      $query->condition('name', $search, 'CONTAINS');
+    }
+
+    if (!empty($categories)) {
+      $query->condition('field_category', $categories, 'IN');
+    }
+
+    if (!empty($levels)) {
+      $level_terms = $this->lmsHelper->getTermsByVocabulary('course_level');
+      $level_tids = [];
+      foreach ($level_terms as $term) {
+        if (in_array(strtolower($term->label()), $levels)) {
+          $level_tids[] = $term->id();
+        }
+      }
+      if (!empty($level_tids)) {
+        $query->condition('field_level', $level_tids, 'IN');
+      }
+    }
+
+    if (!empty($prices) && count($prices) < 2) {
+      if (in_array('free', $prices)) {
+        $query->condition('field_price', 0);
+      }
+      elseif (in_array('paid', $prices)) {
+        $query->condition('field_price', 0, '>');
+      }
+    }
+
+    if (!empty($ratings)) {
+      $rating_group = $query->orConditionGroup();
+      foreach ($ratings as $r) {
+        $r = (int) $r;
+        $and = $query->andConditionGroup()
+          ->condition('field_rating', $r, '>=')
+          ->condition('field_rating', $r + 1, '<');
+        $rating_group->condition($and);
+      }
+      $query->condition($rating_group);
+    }
+
+    if ($sort === 'Newest') {
+      $query->sort('created', 'DESC');
+    } elseif ($sort === 'Price Low-High') {
+      $query->sort('field_price', 'ASC');
+    } else {
+      $query->sort('id', 'DESC');
+    }
+
+    // Pagination logic
+    $limit = 12;
+    $page = (int) $request->query->get('page', 0);
+    $query_count = clone $query;
+    $total = (int) $query_count->count()->execute();
+
+    $query->range($page * $limit, $limit);
+    $ids = $query->execute();
+
+    $courses = $ids
+      ? $this->entityTypeManager->getStorage('lms_course')->loadMultiple($ids)
+      : [];
+
+    $cards = $this->buildCourseCards($courses);
+
+    // Prepare translation strings for the frontend
+    foreach ($cards as &$card) {
+      $card['t_continue_learning'] = (string) $this->t('Continue Learning');
+      $card['t_enroll_now'] = (string) $this->t('Enroll Now');
+    }
+
+    return new \Symfony\Component\HttpFoundation\JsonResponse([
+      'status' => 'success',
+      'total' => $total,
+      'courses' => $cards,
+      'pager' => [
+        'current_page' => $page,
+        'total_pages' => ceil($total / $limit),
+      ],
+    ]);
   }
 
   /**
@@ -382,6 +644,7 @@ final class CoursePublicController extends ControllerBase {
     // FAQs.
     $faq_ids = $this->entityTypeManager->getStorage('lms_faq')
       ->getQuery()
+      ->condition('field_scope', 'course')
       ->condition('field_course', $lms_course->id())
       ->sort('weight')
       ->accessCheck(FALSE)
@@ -416,14 +679,17 @@ final class CoursePublicController extends ControllerBase {
       ];
       $course_title = $lms_course->label();
       if (isset($demo_map[$course_title])) {
-         $thumbnail_url = '/agent_images/image_banner_course/' . $demo_map[$course_title] . '*.png';
-         $matches = glob(\Drupal::root() . $thumbnail_url);
+         $mapped_url = '/agent_images/image_banner_course/' . $demo_map[$course_title] . '*.png';
+         $matches = glob(\Drupal::root() . $mapped_url);
          if (!empty($matches)) {
             $thumbnail_url = '/agent_images/image_banner_course/' . basename($matches[0]);
-         } else {
-            $thumbnail_url = '';
          }
-         \Drupal::logger('lms_course')->notice('Course: ' . $course_title . ' Banner resolves to: ' . (empty($thumbnail_url) ? 'EMPTY' : $thumbnail_url) . ' Matches: ' . print_r($matches, TRUE) . ' Path Checked: ' . \Drupal::root() . '/agent_images/image_banner_course/' . $demo_map[$course_title] . '*.png');
+      }
+
+      // Universal fallback if still missing.
+      if (empty($thumbnail_url)) {
+        $encoded_title = urlencode(substr($course_title, 0, 40));
+        $thumbnail_url = 'https://picsum.photos/seed/' . $encoded_title . '/1200/630';
       }
     }
 
@@ -557,6 +823,7 @@ final class CoursePublicController extends ControllerBase {
       '#logged_in' => $logged_in,
       '#is_enrolled' => $is_enrolled,
       '#continue_url' => $continue_url,
+      '#rating_form' => $is_enrolled && \Drupal::moduleHandler()->moduleExists('lms_rating') ? \Drupal::formBuilder()->getForm('\Drupal\lms_rating\Form\RatingForm', $lms_course->id()) : NULL,
     ];
   }
 
@@ -854,6 +1121,11 @@ final class CoursePublicController extends ControllerBase {
         }
       }
 
+      if (empty($thumbnail_url)) {
+        $encoded_title = urlencode(substr($course->label(), 0, 40));
+        $thumbnail_url = 'https://picsum.photos/seed/' . $encoded_title . '/600/338';
+      }
+
       $cards[] = [
         'id' => $course->id(),
         'name' => $course->label(),
@@ -879,6 +1151,82 @@ final class CoursePublicController extends ControllerBase {
       ];
     }
     return $cards;
+  }
+
+  /**
+   * Glossary page.
+   */
+  public function glossary(): array {
+    $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['type' => 'glossary', 'status' => 1]);
+    
+    $terms = [];
+    $alphabet = range('A', 'Z');
+    
+    // Initialize standard alphabet categories
+    foreach ($alphabet as $letter) {
+      $terms[$letter] = [];
+    }
+    $terms['#'] = [];
+    
+    foreach ($nodes as $node) {
+      if (!$node->access('view')) {
+        continue;
+      }
+      $title = $node->getTitle();
+      $first_letter = strtoupper(substr($title, 0, 1));
+      
+      if (!in_array($first_letter, $alphabet)) {
+        $first_letter = '#';
+      }
+      
+      $category = '';
+      if ($node->hasField('field_glossary_category') && !$node->get('field_glossary_category')->isEmpty()) {
+          $category = $node->get('field_glossary_category')->entity->getName();
+      }
+      
+      $related = [];
+      if ($node->hasField('field_related_terms') && !$node->get('field_related_terms')->isEmpty()) {
+        foreach ($node->get('field_related_terms') as $item) {
+            if ($item->entity) {
+                $related[] = [
+                  'title' => $item->entity->getTitle(),
+                  'anchor' => strtolower(str_replace(' ', '-', $item->entity->getTitle())),
+                ];
+            }
+        }
+      }
+      
+      $terms[$first_letter][] = [
+        'id' => $node->id(),
+        'title' => $title,
+        'anchor' => strtolower(str_replace(' ', '-', $title)),
+        'body' => [
+          '#type' => 'processed_text',
+          '#text' => $node->get('body')->value,
+          '#format' => $node->get('body')->format,
+        ],
+        'category' => $category,
+        'related' => $related,
+      ];
+    }
+    
+    // Sort items within each letter
+    foreach ($terms as $letter => &$items) {
+      usort($items, function($a, $b) {
+        return strcmp($a['title'], $b['title']);
+      });
+    }
+
+    return [
+      '#theme' => 'lms_glossary',
+      '#terms' => $terms,
+      '#alphabet' => $alphabet,
+      '#attached' => [
+        'library' => [
+          'lms_theme/global',
+        ],
+      ],
+    ];
   }
 
 }

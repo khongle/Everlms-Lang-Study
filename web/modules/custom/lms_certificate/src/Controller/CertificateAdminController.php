@@ -87,6 +87,7 @@ class CertificateAdminController extends ControllerBase {
         'status' => $template->hasField('status') && $template->get('status')->value ? 'Active' : 'Disabled',
         'created' => $template->hasField('created') && $template->get('created')->value ? \Drupal::service('date.formatter')->format($template->get('created')->value, 'custom', 'M j, Y') : 'N/A',
         'edit_url' => \Drupal\Core\Url::fromRoute('lms_certificate.admin_template.edit', ['lms_certificate_template' => $template->id()])->toString(),
+        'preview_url' => \Drupal\Core\Url::fromRoute('lms_certificate.admin_template.preview', ['lms_certificate_template' => $template->id()])->toString(),
       ];
     }
 
@@ -104,6 +105,22 @@ class CertificateAdminController extends ControllerBase {
 
   public function templateEditForm(\Drupal\Core\Entity\EntityInterface $lms_certificate_template): array {
     return $this->buildTemplateForm($lms_certificate_template, 'Edit Certificate Template: ' . $lms_certificate_template->label());
+  }
+
+  public function templatePreview(\Drupal\Core\Entity\EntityInterface $lms_certificate_template) {
+    /** @var \Drupal\lms_certificate\Service\CertificateGenerator $generator */
+    $generator = \Drupal::service('lms_certificate.generator');
+    $pdf_string = $generator->preview($lms_certificate_template);
+
+    if (!$pdf_string) {
+      $this->messenger()->addError('Failed to generate preview PDF. Make sure mPDF is installed.');
+      return $this->redirect('lms_certificate.admin_templates');
+    }
+
+    return new \Symfony\Component\HttpFoundation\Response($pdf_string, 200, [
+      'Content-Type' => 'application/pdf',
+      'Content-Disposition' => 'inline; filename="preview.pdf"',
+    ]);
   }
 
   private function buildTemplateForm(\Drupal\Core\Entity\EntityInterface $template, string $title): array {

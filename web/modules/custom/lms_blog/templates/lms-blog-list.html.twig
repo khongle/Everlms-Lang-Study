@@ -20,8 +20,8 @@
                     transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
              onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.3)';"
              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.1)';">
-          {% if article.thumbnail.entity %}
-            <img src="{{ file_url(article.thumbnail.entity.uri.value) }}" class="card-img-top" alt="{{ article.title.value }}" style="height: 200px; object-fit: cover; border-bottom: 1px solid rgba(240, 246, 252, 0.05);">
+          {% if article.field_thumb.entity %}
+            <img src="{{ file_url(article.field_thumb.entity.uri.value) }}" class="card-img-top" alt="{{ article.title.value }}" style="height: 200px; object-fit: cover; object-position: center 25%; border-bottom: 1px solid rgba(240, 246, 252, 0.05);">
           {% else %}
             <div class="card-img-top d-flex align-items-center justify-content-center" style="background-color: #21262d; height: 200px;">
               <span class="text-muted"><i class="fas fa-image fa-3x"></i></span>
@@ -30,12 +30,12 @@
           
           <div class="card-body p-4 d-flex flex-column">
             <h5 class="card-title fw-bold mb-3">
-              <a href="{{ path('lms_blog.frontend.canonical', {'lms_article': article.id.value}) }}" class="text-decoration-none stretched-link" style="color: #e6edf3; transition: color 0.2s;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#e6edf3'">
+              <a href="{{ path('lms_blog.frontend.canonical', {'node': article.id()}) }}" class="text-decoration-none stretched-link" style="color: #e6edf3; transition: color 0.2s;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#e6edf3'">
                 {{ article.title.value }}
               </a>
             </h5>
             <p class="card-text text-muted mb-4" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-              {{ article.seo_description.value|default(article.content.value|striptags|slice(0, 150) ~ '...') }}
+              {{ article.body.summary|default(article.body.value|striptags|slice(0, 150) ~ '...') }}
             </p>
             <div class="mt-auto d-flex justify-content-between align-items-center">
               <small class="text-muted"><i class="far fa-calendar-alt me-2"></i>{{ article.created.value|date('M d, Y') }}</small>

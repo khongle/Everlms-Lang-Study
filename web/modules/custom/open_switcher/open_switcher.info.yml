@@ -1,0 +1,5 @@
+name: Open Switcher
+type: module
+description: 'Allows administrators to switch (impersonate) to any user account and switch back. Useful for testing and debugging.'
+core_version_requirement: ^10.3 || ^11
+package: Open Platform

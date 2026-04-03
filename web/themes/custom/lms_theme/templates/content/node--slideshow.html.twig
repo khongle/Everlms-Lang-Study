@@ -1,0 +1,84 @@
+{#
+/**
+ * @file
+ * Template override to display a single Slideshow Banner entity.
+ * This is accessed when a Manager views a banner from the content table.
+ */
+#}
+<article{{ attributes.addClass('node', 'node--type-slideshow', 'container', 'py-5') }}>
+  <div class="row mb-4">
+    <div class="col-12 text-center">
+      <span class="badge bg-primary px-3 py-2 rounded-pill shadow-sm mb-3">Live Preview</span>
+      <h1 class="display-5 fw-bold" style="color: #e6edf3;">{{ node.title.value }}</h1>
+      <p class="text-muted">This banner is configured to appear on the Homepage Carousel.</p>
+    </div>
+  </div>
+
+  <div class="lms-slide-preview mx-auto" style="position: relative; max-width: 1200px; height: 500px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    
+    <!-- Background Image -->
+    {% if node.field_slide_image.entity %}
+      <img src="{{ file_url(node.field_slide_image.entity.uri.value) }}" alt="{{ node.field_slide_image.alt|default('Slideshow Background') }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+    {% else %}
+      <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: #1f2937; z-index: 1;"></div>
+    {% endif %}
+
+    <!-- Gradient Overlay -->
+    {% set pos = node.field_slide_position.value|default('left') %}
+    {% if pos == 'right' %}
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%); z-index: 2;"></div>
+    {% elseif pos == 'center' %}
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2;"></div>
+    {% else %}
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%); z-index: 2;"></div>
+    {% endif %}
+
+    <!-- Content Positioning -->
+    {% set align = 'flex-start' %}
+    {% set txt_align = 'left' %}
+    {% if pos == 'right' %}
+      {% set align = 'flex-end' %}
+      {% set txt_align = 'right' %}
+    {% elseif pos == 'center' %}
+      {% set align = 'center' %}
+      {% set txt_align = 'center' %}
+    {% endif %}
+
+    <!-- Content Block -->
+    <div style="position: relative; z-index: 3; width: 100%; height: 100%; display: flex; align-items: center; justify-content: {{ align }}; padding: 3rem 5rem;">
+      <div style="max-width: 500px; text-align: {{ txt_align }};">
+        
+        {% if node.field_slide_subheading.value %}
+          <div style="color: #ffb020; font-family: 'DM Sans', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.9rem; margin-bottom: 1rem;">
+            {{ node.field_slide_subheading.value }}
+          </div>
+        {% endif %}
+
+        <h2 style="color: #ffffff; font-size: 3rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.5rem;">
+          {{ node.field_slide_heading.value|default(node.title.value) }}
+        </h2>
+
+        {% if node.body.value %}
+          <div style="color: #c9d1d9; font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem;">
+            {{ node.body.value|raw }}
+          </div>
+        {% endif %}
+
+        {% if node.field_slide_link.uri %}
+          <a href="#" onclick="event.preventDefault(); alert('Navigation disabled in Preview Mode.');" class="btn btn-primary btn-lg rounded-pill px-5 shadow" style="font-weight: 600; padding: 0.8rem 2rem;">
+            {{ node.field_slide_link.title|default('Learn More') }} <i class="fas fa-arrow-right ms-2"></i>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-5 pt-4 text-center border-top border-dark">
+    <a href="/workspace/content/slideshows" class="btn btn-outline-secondary rounded-pill px-4 me-3">
+      <i class="fas fa-arrow-left me-2"></i> Back to Slideshows
+    </a>
+    <a href="/node/{{ node.id() }}/edit" class="btn btn-primary rounded-pill px-4">
+      <i class="fas fa-pen me-2"></i> Edit This Banner
+    </a>
+  </div>
+</article>

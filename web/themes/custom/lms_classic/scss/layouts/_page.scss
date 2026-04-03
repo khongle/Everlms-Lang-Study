@@ -1,0 +1,36 @@
+// Page layout
+.lms-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    &__content {
+        flex: 1;
+        max-width: $container-max-width;
+        margin: 0 auto;
+        padding: $spacer-xl $container-padding;
+        width: 100%;
+    }
+}
+
+// Management layout
+.lms-manage {
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: $spacer-xl;
+        flex-wrap: wrap;
+        gap: $spacer-md;
+    }
+
+    &__title {
+        font-size: $font-size-h2;
+        font-weight: $font-weight-bold;
+    }
+
+    &__actions {
+        display: flex;
+        gap: $spacer-sm;
+    }
+}

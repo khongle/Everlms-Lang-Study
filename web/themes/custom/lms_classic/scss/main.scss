@@ -1,0 +1,35 @@
+// EverLMS — SCSS Entry Point
+// Only @import, no direct styles here.
+
+// Design tokens
+@import 'variables';
+
+// Base layer
+@import 'base/reset';
+@import 'base/typography';
+
+// Components
+@import 'components/buttons';
+@import 'components/cards';
+@import 'components/navbar';
+@import 'components/footer';
+@import 'components/forms';
+@import 'components/badges';
+@import 'components/alerts';
+@import 'components/dialog';
+
+// Layouts
+@import 'layouts/page';
+@import 'layouts/grid';
+
+// Pages
+@import 'pages/homepage';
+@import 'pages/management';
+@import 'pages/learn';
+@import 'pages/catalog';
+@import 'pages/course-detail';
+@import 'pages/categories';
+@import 'pages/auth';
+@import 'pages/profile';
+@import 'pages/forum';
+@import 'pages/pricing';

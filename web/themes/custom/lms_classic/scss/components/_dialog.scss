@@ -1,0 +1,24 @@
+// Minimal overrides for Drupal Dialog (jQuery UI Dialog)
+// to fix close button spacing and disabled button opacity without breaking admin themes.
+
+.ui-dialog {
+  // Fix: "nút x bị sát quá" (Close button too close to the edge)
+  .ui-dialog-titlebar-close {
+    margin-right: 10px !important;
+    right: 10px !important;
+    transform: translateY(-50%) !important;
+  }
+}
+
+// Fix: "màu nền disable này nhìn ghê quá" (Disabled background color looks ugly)
+// We only tweak opacity and cursor to ensure it works in both light and dark contexts
+// without forcefully applying dark theme colors that break light modals.
+.ui-dialog {
+  button:disabled, 
+  .button:disabled, 
+  button[disabled] {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+  }
+}

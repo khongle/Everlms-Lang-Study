@@ -56,7 +56,97 @@ lms_course.category_detail:
       taxonomy_term:
         type: entity:taxonomy_term
 
-# Static pages
+# Static pages & features
+lms_course.glossary:
+  path: '/glossary'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\CoursePublicController::glossary'
+    _title: 'Glossary'
+  requirements:
+    _permission: 'access content'
+
+# Workspace Content Management
+lms_course.workspace_content.list:
+  path: '/workspace/content/{content_type}'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\WorkspaceContentController::contentList'
+    _title: 'Manage Content'
+  requirements:
+    _permission: 'administer lms_course'
+
+lms_course.workspace_content.add:
+  path: '/workspace/content/{content_type}/add'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\WorkspaceContentController::contentCreateForm'
+    _title: 'Create Content'
+  requirements:
+    _permission: 'administer lms_course'
+
+lms_course.workspace_content.edit:
+  path: '/workspace/content/{content_type}/{node}/edit'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\WorkspaceContentController::contentEditForm'
+    _title: 'Edit Content'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    parameters:
+      node:
+        type: entity:node
+
+lms_course.workspace_faq.add:
+  path: '/workspace/content/faqs/add'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\WorkspaceContentController::faqCreateForm'
+    _title: 'Create FAQ'
+  requirements:
+    _permission: 'administer lms_course'
+
+lms_course.workspace_faq.edit:
+  path: '/workspace/content/faqs/{lms_faq}/edit'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\WorkspaceContentController::faqEditForm'
+    _title: 'Edit FAQ'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    parameters:
+      lms_faq:
+        type: entity:lms_faq
+
+lms_course.workspace_content.view:
+  path: '/workspace/content/{content_type}/{node}/view'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\WorkspaceContentController::contentView'
+    _title: 'View Content'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    parameters:
+      node:
+        type: entity:node
+
+lms_course.workspace_faq.view:
+  path: '/workspace/content/faqs/{lms_faq}/view'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\WorkspaceContentController::faqView'
+    _title: 'View FAQ'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    parameters:
+      lms_faq:
+        type: entity:lms_faq
+
+
+lms_course.workspace_content.bulk:
+  path: '/workspace/content/bulk'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\WorkspaceContentController::bulkAction'
+  requirements:
+    _permission: 'administer lms_course'
+  methods: [POST]
+
 lms_course.about:
   path: '/about'
   defaults:
@@ -65,19 +155,20 @@ lms_course.about:
   requirements:
     _permission: 'access content'
 
-lms_course.pricing:
-  path: '/pricing'
-  defaults:
-    _controller: '\Drupal\lms_course\Controller\PageController::pricing'
-    _title: 'Pricing'
-  requirements:
-    _permission: 'access content'
 
 lms_course.contact:
   path: '/contact'
   defaults:
     _controller: '\Drupal\lms_course\Controller\PageController::contact'
     _title: 'Contact Us'
+  requirements:
+    _permission: 'access content'
+
+lms_course.pricing:
+  path: '/pricing'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\PageController::pricing'
+    _title: 'Pricing'
   requirements:
     _permission: 'access content'
 
@@ -272,3 +363,10 @@ lms_course.instructor_profile:
     parameters:
       user:
         type: entity:user
+
+lms_course.api_search:
+  path: '/api/courses/search'
+  defaults:
+    _controller: '\Drupal\lms_course\Controller\CoursePublicController::searchApi'
+  requirements:
+    _permission: 'access content'

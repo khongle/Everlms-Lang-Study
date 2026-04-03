@@ -60,3 +60,13 @@ homepage:
     js/homepage.js: { attributes: { defer: true } }
   dependencies:
     - lms_theme/aos
+
+homepage_minimalist:
+  css:
+    theme:
+      css/minimalist.css: {}
+
+light_mode:
+  css:
+    theme:
+      css/light-mode.css: {}

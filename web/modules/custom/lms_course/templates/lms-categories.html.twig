@@ -3,11 +3,13 @@
 
 <section class="lms-section">
   <div class="container">
-    <div class="lms-manage__header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-      <h1 class="lms-section__title" style="margin: 0;">{{ 'Course Categories'|t }}</h1>
-      <div class="lms-search-box" style="position: relative; width: 100%; max-width: 320px;">
-        <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #8b949e;"></i>
-        <input type="text" id="category-search-input" placeholder="{{ 'Search categories...'|t }}" style="width: 100%; background: #161b22; border: 1px solid hsla(0,0%,100%,0.1); color: #e6edf3; padding: 0.6rem 1rem 0.6rem 2.5rem; border-radius: 2rem; font-size: 0.9rem; transition: all 0.3s ease; outline: none;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102,126,234,0.2)'" onblur="this.style.borderColor='hsla(0,0%,100%,0.1)'; this.style.boxShadow='none'">
+    <div class="lms-categories-hero" style="text-align: center; max-width: 700px; margin: 0 auto 4rem; padding-top: 2rem;">
+      <h1 class="lms-section__title" style="margin-bottom: 1rem; font-size: 2.5rem; background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{{ 'Course Categories'|t }}</h1>
+      <p style="color: #94a3b8; font-size: 1.1rem; margin-bottom: 2rem;">{{ 'Explore our comprehensive directory of courses tailored for modern professionals.'|t }}</p>
+      
+      <div class="lms-search-box" style="position: relative; width: 100%; max-width: 500px; margin: 0 auto; filter: drop-shadow(0 4px 20px rgba(99, 102, 241, 0.1));">
+        <i class="fas fa-search" style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); color: #818cf8; font-size: 1.1rem;"></i>
+        <input type="text" id="category-search-input" placeholder="{{ 'Search categories...'|t }}" style="width: 100%; background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(8px); border: 1px solid rgba(99, 102, 241, 0.3); color: #fff; padding: 1rem 1rem 1rem 3.5rem; border-radius: 3rem; font-size: 1rem; transition: all 0.3s ease; outline: none;" onfocus="this.style.borderColor='#818cf8'; this.style.boxShadow='0 0 0 4px rgba(99, 102, 241, 0.15)'; this.style.background='rgba(30, 41, 59, 0.9)';" onblur="this.style.borderColor='rgba(99, 102, 241, 0.3)'; this.style.boxShadow='none'; this.style.background='rgba(30, 41, 59, 0.6)';">
       </div>
     </div>
 
@@ -36,15 +38,23 @@
           </a>
         {% endfor %}
       </div>
+      
+      <div id="category-search-empty" style="display: none; text-align: center; padding: 4rem 1rem;">
+        <i class="fas fa-search" style="font-size: 3rem; color: #475569; margin-bottom: 1rem;"></i>
+        <h3 style="color: #cbd5e1; font-size: 1.25rem;">{{ 'No matching categories found'|t }}</h3>
+        <p style="color: #64748b;">{{ 'Try adjusting your search term.'|t }}</p>
+      </div>
 
       <script>
         document.addEventListener('DOMContentLoaded', function() {
           const searchInput = document.getElementById('category-search-input');
           const categoryCards = document.querySelectorAll('.lms-category-card');
+          const emptyState = document.getElementById('category-search-empty');
 
           if (searchInput) {
             searchInput.addEventListener('input', function(e) {
               const term = e.target.value.toLowerCase().trim();
+              let hasVisible = false;
               
               categoryCards.forEach(card => {
                 const title = card.querySelector('.lms-category-card__title').textContent.toLowerCase();
@@ -53,10 +63,22 @@
                 
                 if (title.includes(term) || desc.includes(term)) {
                   card.style.display = 'flex';
+                  card.style.opacity = '1';
+                  hasVisible = true;
                 } else {
                   card.style.display = 'none';
+                  card.style.opacity = '0';
                 }
               });
+              
+              if (emptyState) {
+                if (hasVisible) {
+                  emptyState.style.display = 'none';
+                } else {
+                  emptyState.style.display = 'block';
+                  emptyState.style.animation = 'fadeIn 0.3s ease forwards';
+                }
+              }
             });
           }
         });

@@ -100,4 +100,59 @@ class CertificateGenerator {
     }
   }
 
+  /**
+   * Generates a preview PDF string without saving a physical file.
+   *
+   * @param \Drupal\lms_certificate\Entity\CertificateTemplate $template
+   *   The certificate template.
+   *
+   * @return string|null
+   *   The raw PDF content string, or NULL on failure.
+   */
+  public function preview(CertificateTemplate $template) {
+    if (!class_exists('\Mpdf\Mpdf')) {
+      \Drupal::logger('lms_certificate')->error('mPDF library is missing. Please run composer require mpdf/mpdf.');
+      return NULL;
+    }
+
+    $orientation = $template->get('field_orientation')->value === 'portrait' ? 'P' : 'L';
+    
+    // Create mock objects for layout preview.
+    $user = \Drupal\user\Entity\User::create(['name' => 'John Doe (Preview)']);
+    $course = \Drupal\lms_course\Entity\Course::create(['name' => 'Sample Certificate Course Preview']);
+    $certificate_code = 'PREVIEW-' . rand(1000, 9999);
+
+    $build = [
+      '#theme' => 'certificate_pdf',
+      '#template' => $template,
+      '#user' => $user,
+      '#course' => $course,
+      '#code' => $certificate_code,
+      '#date' => \Drupal::service('date.formatter')->format(\Drupal::time()->getRequestTime(), 'custom', 'F j, Y'),
+    ];
+
+    $html = (string) $this->renderer->renderPlain($build);
+
+    try {
+      $mpdf = new \Mpdf\Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4',
+        'orientation' => $orientation,
+        'margin_left' => 0,
+        'margin_right' => 0,
+        'margin_top' => 0,
+        'margin_bottom' => 0,
+        'margin_header' => 0,
+        'margin_footer' => 0,
+      ]);
+
+      $mpdf->WriteHTML($html);
+      return $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+
+    } catch (\Exception $e) {
+      \Drupal::logger('lms_certificate')->error('Error generating Preview PDF: @message', ['@message' => $e->getMessage()]);
+      return NULL;
+    }
+  }
+
 }

@@ -1,0 +1,252 @@
+{# EverLMS — Page template — matches mockup navbar + footer #}
+<div class="lms-page">
+  {# Navbar — matches mockup: Logo | Nav | Login/Register #}
+  <header class="lms-navbar">
+    <div class="lms-navbar__container">
+      <a href="{{ path('<front>') }}" class="lms-navbar__brand">
+        <i class="fas fa-graduation-cap"></i> {{ 'EverLMS'|t }}
+      </a>
+
+      <button class="lms-navbar__toggle" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <nav class="lms-navbar__nav" role="navigation">
+        <a href="{{ path('<front>') }}" class="lms-navbar__link {{ current_route == 'lms_course.homepage' or current_route == '<front>' ? 'lms-navbar__link--active' : '' }}">{{ 'Home'|t }}</a>
+        <a href="{{ path('lms_course.catalog') }}" class="lms-navbar__link {{ current_route in ['lms_course.catalog', 'lms_course.detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Courses'|t }}</a>
+        <a href="{{ path('lms_course.category') }}" class="lms-navbar__link {{ current_route in ['lms_course.category', 'lms_course.category_detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Categories'|t }}</a>
+        <a href="{{ path('lms_forum.index') }}" class="lms-navbar__link {{ current_route in ['lms_forum.index', 'entity.lms_forum_topic.canonical'] ? 'lms-navbar__link--active' : '' }}">{{ 'Community'|t }}</a>
+        <a href="{{ path('lms_course.pricing') }}" class="lms-navbar__link {{ current_route == 'lms_course.pricing' ? 'lms-navbar__link--active' : '' }}">{{ 'Pricing'|t }}</a>
+        <a href="{{ path('lms_blog.frontend.collection') }}" class="lms-navbar__link {{ current_route == 'lms_blog.frontend.collection' or current_route == 'lms_blog.frontend.canonical' ? 'lms-navbar__link--active' : '' }}">{{ 'News'|t }}</a>
+        {# <a href="#" class="lms-navbar__link">{{ 'Blog'|t }}</a> #}
+        {# <a href="#" class="lms-navbar__link">{{ 'Contact'|t }}</a> #}
+      </nav>
+
+      <div class="lms-navbar__actions">
+        {% if logged_in %}
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            {{ notification_bell }}
+            
+            <a href="{{ path('lms_wishlist.my_wishlist') }}" class="lms-navbar__link" style="position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; margin-right: 0.5rem; transition: all 0.2s ease;" title="{{ 'My Wishlist'|t }}" onmouseover="this.style.background='rgba(255,255,255,0.05)';" onmouseout="this.style.background='transparent';">
+              <i class="far fa-heart" id="lms-wishlist-icon" style="font-size: 1.15rem; color: #8b949e; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);"></i>
+              <span id="lms-wishlist-counter" style="position: absolute; top: -3px; right: -4px; background: #f5576c; color: white; border-radius: 50%; font-size: 0.65rem; font-weight: bold; min-width: 16px; height: 16px; display: none; align-items: center; justify-content: center; border: 2px solid #0d1117; box-sizing: content-box; z-index: 2;">0</span>
+            </a>
+            
+            <a href="{{ path('user.page') }}" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;" class="lms-user-profile-link">
+              {% if current_user_picture %}
+                <img src="{{ current_user_picture }}" alt="{{ current_user_name }}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
+              {% else %}
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: #21262d; display: flex; align-items: center; justify-content: center; color: #8b949e; font-size: 14px; border: 1px solid hsla(0,0%,100%,.1);">
+                  <i class="fas fa-user"></i>
+                </div>
+              {% endif %}
+              <span style="color: #e6edf3; font-weight: 600; font-size: 0.9375rem;">{{ current_user_name }}</span>
+            </a>
+            
+            {% if is_impersonating %}
+              <a href="{{ switch_back_url }}" style="background: linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.25) 100%); color: #fecaca; border: 1px solid rgba(239,68,68,0.4); padding: 0.4rem 1.15rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.025em; display: flex; align-items: center; gap: 0.5rem; text-decoration: none; transition: all 0.25s ease; box-shadow: 0 0 12px rgba(239,68,68,0.1), inset 0 1px 0 rgba(255,255,255,0.1);" onmouseover="this.style.background='linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(220,38,38,0.35) 100%)'; this.style.boxShadow='0 0 20px rgba(239,68,68,0.2), inset 0 1px 0 rgba(255,255,255,0.2)'; this.style.color='#fff';" onmouseout="this.style.background='linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.25) 100%)'; this.style.boxShadow='0 0 12px rgba(239,68,68,0.1), inset 0 1px 0 rgba(255,255,255,0.1)'; this.style.color='#fecaca';">
+                <i class="fas fa-user-secret" style="font-size: 0.875rem;"></i> {{ 'Exit Impersonation'|t }}
+              </a>
+            {% elseif is_manager %}
+              <a href="{{ path('lms_course.admin_dashboard') }}" class="lms-btn lms-btn--sm lms-btn--outline"><i class="fas fa-briefcase"></i> {{ 'Workspace'|t }}</a>
+            {% else %}
+              <a href="{{ path('lms_progress.dashboard') }}" class="lms-btn lms-btn--sm lms-btn--outline">{{ 'Dashboard'|t }}</a>
+            {% endif %}
+            <a href="{{ path('user.logout') }}" class="lms-navbar__link" style="margin-left: 0.5rem;" title="{{ 'Logout'|t }}">
+              <i class="fas fa-sign-out-alt"></i>
+            </a>
+          </div>
+        {% else %}
+          <a href="{{ path('user.login') }}" class="lms-navbar__link">{{ 'Login'|t }}</a>
+          <a href="{{ path('user.register') }}" class="lms-btn lms-btn--sm lms-btn--primary">{{ 'Register'|t }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+
+
+  {# Main Content #}
+  <main id="main-content" class="lms-page__content">
+    {% if page.highlighted %}
+      <div class="lms-messages-wrapper" style="margin-bottom: 2rem;">
+        {{ page.highlighted }}
+      </div>
+    {% endif %}
+    {{ page.content }}
+  </main>
+
+  {# Footer — matches mockup: 4 columns + bottom #}
+  <footer class="lms-footer">
+    <div class="lms-footer__container">
+      <div class="lms-footer__grid">
+        <div class="lms-footer__col">
+          <h4>{{ 'Quick Links'|t }}</h4>
+          <ul>
+            <li><a href="{{ path('<front>') }}">{{ 'Home'|t }}</a></li>
+            <li><a href="{{ path('lms_course.catalog') }}">{{ 'Courses'|t }}</a></li>
+            <li><a href="{{ path('lms_course.category') }}">{{ 'Categories'|t }}</a></li>
+            <li><a href="{{ path('lms_forum.index') }}">{{ 'Community'|t }}</a></li>
+            <li><a href="#">{{ 'Blog'|t }}</a></li>
+          </ul>
+        </div>
+        <div class="lms-footer__col">
+          <h4>{{ 'Course'|t }}</h4>
+          <ul>
+            <li><a href="#">{{ 'News & Notices'|t }}</a></li>
+            <li><a href="{{ path('lms_course.pricing') }}">{{ 'Pricing'|t }}</a></li>
+            <li><a href="{{ path('lms_blog.frontend.collection') }}">{{ 'News'|t }}</a></li>
+            <li><a href="#">{{ 'Course Guides'|t }}</a></li>
+          </ul>
+        </div>
+        <div class="lms-footer__col">
+          <h4>{{ 'Supports'|t }}</h4>
+          <ul>
+            <li><a href="#">{{ 'About Us'|t }}</a></li>
+            <li><a href="#">{{ 'Supports'|t }}</a></li>
+            <li><a href="#">{{ 'FAQ'|t }}</a></li>
+            <li><a href="#">{{ 'Contact Us'|t }}</a></li>
+          </ul>
+        </div>
+        <div class="lms-footer__col">
+          <h4>{{ 'Contact Info'|t }}</h4>
+          <ul>
+            <li><i class="fas fa-map-marker-alt"></i> {{ 'Company Headquarters, District'|t }}</li>
+            <li><i class="fas fa-phone"></i> +01 00 200 0000</li>
+            <li><i class="fas fa-phone"></i> +01 00 200 0000</li>
+            <li><i class="fas fa-envelope"></i> everlms@gmail.com</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lms-footer__bottom">
+        <p>{{ 'Powered by'|t }} <a href="#">EverLMS</a></p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+{% if logged_in %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const wishlistToggleBtns = document.querySelectorAll('.lms-wishlist-toggle');
+  const courseIds = Array.from(wishlistToggleBtns).map(btn => btn.dataset.courseId).filter(Boolean);
+  const counterBatch = document.getElementById('lms-wishlist-counter');
+  
+  if (courseIds.length > 0 || counterBatch) {
+    const idsUnique = [...new Set(courseIds)].join(',');
+    fetch('/api/lms/wishlist/status?course_ids=' + idsUnique)
+      .then(r => r.json())
+      .then(data => {
+        // Update counter & visual fill
+        if (data.count !== undefined) {
+          if (counterBatch) {
+            counterBatch.textContent = data.count;
+            counterBatch.style.display = data.count > 0 ? 'flex' : 'none';
+          }
+          const mainIcon = document.getElementById('lms-wishlist-icon');
+          if (mainIcon) {
+            if (data.count > 0) {
+              mainIcon.classList.remove('far');
+              mainIcon.classList.add('fas');
+              mainIcon.style.color = '#f5576c';
+            } else {
+              mainIcon.classList.remove('fas');
+              mainIcon.classList.add('far');
+              mainIcon.style.color = '#8b949e';
+            }
+          }
+        }
+        
+        // Update cards
+        if (data.status) {
+          wishlistToggleBtns.forEach(btn => {
+            const cid = btn.dataset.courseId;
+            const icon = btn.querySelector('i');
+            const textSpan = btn.querySelector('.wishlist-text');
+            if (data.status[cid] === true) {
+              icon.classList.remove('far');
+              icon.classList.add('fas');
+              icon.style.color = '#ff7b72';
+              if (textSpan) textSpan.textContent = 'Remove from Wishlist';
+              btn.style.borderColor = 'rgba(255,123,114,0.3)';
+            }
+          });
+        }
+      });
+  }
+
+  wishlistToggleBtns.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const cid = btn.dataset.courseId;
+      const icon = btn.querySelector('i');
+      const textSpan = btn.querySelector('.wishlist-text');
+      
+      // Optimistic UI update
+      const isCurrentlyWishlisted = icon.classList.contains('fas');
+      if (isCurrentlyWishlisted) {
+        icon.classList.remove('fas');
+        icon.classList.add('far');
+        icon.style.color = '';
+        if (textSpan) textSpan.textContent = 'Add to Wishlist';
+        btn.style.borderColor = '';
+        if (counterBatch) {
+          let c = parseInt(counterBatch.textContent) || 0;
+          c = Math.max(0, c - 1);
+          counterBatch.textContent = c;
+          counterBatch.style.display = c > 0 ? 'flex' : 'none';
+          const mainIcon = document.getElementById('lms-wishlist-icon');
+          if (mainIcon) {
+            if (c > 0) {
+              mainIcon.classList.remove('far'); mainIcon.classList.add('fas'); mainIcon.style.color = '#f5576c';
+            } else {
+              mainIcon.classList.remove('fas'); mainIcon.classList.add('far'); mainIcon.style.color = '#8b949e';
+            }
+          }
+        }
+      } else {
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+        icon.style.color = '#ff7b72';
+        if (textSpan) textSpan.textContent = 'Remove from Wishlist';
+        btn.style.borderColor = 'rgba(255,123,114,0.3)';
+        if (counterBatch) {
+          let c = parseInt(counterBatch.textContent) || 0;
+          c += 1;
+          counterBatch.textContent = c;
+          counterBatch.style.display = c > 0 ? 'flex' : 'none';
+          const mainIcon = document.getElementById('lms-wishlist-icon');
+          if (mainIcon) {
+            mainIcon.classList.remove('far'); mainIcon.classList.add('fas'); mainIcon.style.color = '#f5576c';
+          }
+        }
+      }
+      
+      // Animate heartbeat effect
+      icon.style.transform = 'scale(1.3)';
+      setTimeout(() => { icon.style.transform = 'scale(1)'; }, 200);
+      
+      try {
+        await fetch('/api/lms/wishlist/toggle', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+          body: JSON.stringify({course_id: cid})
+        });
+      } catch (err) {
+        console.error('Failed to toggle wishlist', err);
+      }
+    });
+  });
+});
+</script>
+<style>
+.lms-wishlist-toggle i {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease;
+}
+.lms-wishlist-toggle:hover i {
+  color: #ff7b72;
+}
+</style>
+{% endif %}

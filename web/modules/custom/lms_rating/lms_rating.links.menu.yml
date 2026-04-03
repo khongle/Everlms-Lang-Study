@@ -1,0 +1,6 @@
+lms_rating.collection:
+  title: 'Course Ratings'
+  route_name: lms_rating.collection
+  description: 'Manage course ratings and testimonials.'
+  parent: system.admin_content
+  weight: 10

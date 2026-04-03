@@ -431,6 +431,37 @@
     <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-admin__nav-item {{ active == 'quizzes' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-clipboard-check"></i> {{ 'Quiz Management'|t }}
     </a>
+    <!-- Manage Content Dropdown -->
+    {% set content_active = (active in ['content_slideshows', 'content_introductions', 'content_faqs', 'content_glossaries', 'content_news', 'content_ratings']) %}
+    <div class="lms-admin__nav-dropdown" style="display: flex; flex-direction: column;">
+      <a href="#" class="lms-admin__nav-item" style="color: {{ content_active ? '#fff' : '#94a3b8' }}; justify-content: space-between; {% if content_active %} background: rgba(255,255,255,0.03); {% endif %}"
+         onclick="const menu = this.nextElementSibling; const icon = this.querySelector('.lms-dropdown-icon'); if(menu.style.display === 'none') { menu.style.display = 'flex'; icon.style.transform = 'rotate(180deg)'; } else { menu.style.display = 'none'; icon.style.transform = 'rotate(0deg)'; } return false;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <i class="fas fa-layer-group" style="width: 20px; text-align: center;"></i> <span style="font-weight: {{ content_active ? '600' : '500' }};">{{ 'Manage Content'|t }}</span>
+        </div>
+        <i class="fas fa-chevron-down lms-dropdown-icon" style="font-size: 0.8rem; transition: transform 0.2s; transform: rotate({{ content_active ? '180' : '0' }}deg);"></i>
+      </a>
+      <div class="lms-admin__dropdown-menu" style="display: {{ content_active ? 'flex' : 'none' }}; flex-direction: column; margin-top: 0.125rem;">
+        <a href="/workspace/content/slideshows" class="lms-admin__subnav-item {{ active == 'content_slideshows' ? 'lms-admin__subnav-item--active' }}">
+          {{ 'Slideshows'|t }}
+        </a>
+        <a href="/workspace/content/introductions" class="lms-admin__subnav-item {{ active == 'content_introductions' ? 'lms-admin__subnav-item--active' }}">
+          {{ 'Introductions'|t }}
+        </a>
+        <a href="/workspace/content/faqs" class="lms-admin__subnav-item {{ active == 'content_faqs' ? 'lms-admin__subnav-item--active' }}">
+          {{ 'FAQs'|t }}
+        </a>
+        <a href="/workspace/content/glossaries" class="lms-admin__subnav-item {{ active == 'content_glossaries' ? 'lms-admin__subnav-item--active' }}">
+          {{ 'Glossaries'|t }}
+        </a>
+        <a href="/workspace/content/news" class="lms-admin__subnav-item {{ active == 'content_news' ? 'lms-admin__subnav-item--active' }}">
+          {{ 'News'|t }}
+        </a>
+        <a href="{{ path('lms_rating.admin_list') }}" class="lms-admin__subnav-item {{ active == 'content_ratings' ? 'lms-admin__subnav-item--active' }}">
+          {{ 'Student Feedback'|t }}
+        </a>
+      </div>
+    </div>
     <!-- Certificate Dropdown -->
     {% set certificate_active = (active == 'certificates' or active == 'certificate_templates') %}
     <div class="lms-admin__nav-dropdown" style="display: flex; flex-direction: column;">

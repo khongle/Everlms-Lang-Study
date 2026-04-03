@@ -60,3 +60,18 @@ function lms_certificate_update_10001(&$sandbox) {
     ->setSetting('max_length', 255);
   $entity_update_manager->installFieldStorageDefinition('field_revoke_reason', 'lms_user_certificate', 'lms_certificate', $revoke_reason_storage);
 }
+
+/**
+ * Add field_seal to lms_certificate_template entity.
+ */
+function lms_certificate_update_10002(&$sandbox) {
+  $entity_update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  $seal_storage = BaseFieldDefinition::create('image')
+    ->setLabel(new TranslatableMarkup('Seal Image (Con dấu)'))
+    ->setSetting('file_directory', 'certificates/seals')
+    ->setDisplayOptions('form', ['type' => 'image_image', 'weight' => -5])
+    ->setDisplayConfigurable('form', TRUE);
+    
+  $entity_update_manager->installFieldStorageDefinition('field_seal', 'lms_certificate_template', 'lms_certificate', $seal_storage);
+}

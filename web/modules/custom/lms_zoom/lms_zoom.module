@@ -24,9 +24,16 @@ function lms_zoom_entity_presave(EntityInterface $entity): void {
 function lms_zoom_entity_delete(EntityInterface $entity): void {
   if ($entity instanceof Lesson) {
     if ($entity->get('field_type')->value === 'zoom') {
-      /** @var \Drupal\lms_zoom\Service\ZoomMeetingManager $meetingManager */
-      $meetingManager = \Drupal::service('lms_zoom.meeting_manager');
-      $meetingManager->deleteMeeting($entity);
+      try {
+        /** @var \Drupal\lms_zoom\Service\ZoomMeetingManager $meetingManager */
+        $meetingManager = \Drupal::service('lms_zoom.meeting_manager');
+        $meetingManager->deleteMeeting($entity);
+      } catch (\Exception $e) {
+        \Drupal::logger('lms_zoom')->warning('Failed to delete Zoom meeting for lesson @id: @msg', [
+          '@id' => $entity->id(),
+          '@msg' => $e->getMessage(),
+        ]);
+      }
     }
   }
 }

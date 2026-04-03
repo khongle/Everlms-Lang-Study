@@ -425,6 +425,34 @@ class ContentToolsCommands extends DrushCommands {
         $count = $this->importCommunity($data);
         break;
 
+      case 'user_data':
+        $count = $this->importUserData($filename, $data);
+        break;
+
+      case 'slideshows':
+        $count = $this->importSlideshows($data);
+        break;
+
+      case 'introductions':
+        $count = $this->importIntroductions($data);
+        break;
+
+      case 'glossaries':
+        $count = $this->importGlossaries($data);
+        break;
+
+      case 'blogs':
+        $count = $this->importBlogs($data);
+        break;
+
+      case 'faqs':
+        $count = $this->importFaqs($data);
+        break;
+
+      case 'category':
+        $count = $this->importCategories($data);
+        break;
+
       default:
         $this->logger()->warning(dt('Unknown import type: @type', ['@type' => $type]));
     }
@@ -443,17 +471,17 @@ class ContentToolsCommands extends DrushCommands {
     foreach ($users as $userData) {
       $existing = $userStorage->loadByProperties(['mail' => $userData['email']]);
       if (!empty($existing)) {
-        continue;
+        // Nếu user đã tồn tại, ta load lên để update (vd: gắn thêm hình ảnh mới tải)
+        $user = reset($existing);
+      } else {
+        $fields = [
+          'name' => $userData['username'] ?? $userData['email'],
+          'mail' => $userData['email'],
+          'pass' => $userData['password'] ?? 'ChangeMe@123',
+          'status' => 1,
+        ];
+        $user = $userStorage->create($fields);
       }
-
-      $fields = [
-        'name' => $userData['username'] ?? $userData['email'],
-        'mail' => $userData['email'],
-        'pass' => $userData['password'] ?? 'ChangeMe@123',
-        'status' => 1,
-      ];
-
-      $user = $userStorage->create($fields);
 
       // Safely set display name if field exists.
       $displayName = $userData['display_name'] ?? $userData['name'] ?? '';
@@ -476,7 +504,86 @@ class ContentToolsCommands extends DrushCommands {
         }
       }
 
+      // Map profile string fields.
+      if (!empty($userData['first_name']) && $user->hasField('field_first_name')) {
+        $user->set('field_first_name', $userData['first_name']);
+      }
+      if (!empty($userData['last_name']) && $user->hasField('field_last_name')) {
+        $user->set('field_last_name', $userData['last_name']);
+      }
+      if (!empty($userData['job_title']) && $user->hasField('field_job_title')) {
+        $user->set('field_job_title', $userData['job_title']);
+      }
+      if (!empty($userData['company']) && $user->hasField('field_company')) {
+        $user->set('field_company', $userData['company']);
+      }
+      if (!empty($userData['location']) && $user->hasField('field_location')) {
+        $user->set('field_location', $userData['location']);
+      }
+      if (!empty($userData['tax_number']) && $user->hasField('field_tax_number')) {
+        $user->set('field_tax_number', $userData['tax_number']);
+      }
+
+      // Map bio as rich text (text_long).
+      if (!empty($userData['bio']) && $user->hasField('field_bio')) {
+        $user->set('field_bio', [
+          'value' => $userData['bio'],
+          'format' => 'full_html',
+        ]);
+      }
+
+      // Map receive_notifications boolean.
+      if (isset($userData['notifications']) && $user->hasField('field_receive_notifications')) {
+        $user->set('field_receive_notifications', (bool) $userData['notifications']);
+      }
+
+      // Map social_links (link field, multi-value).
+      if (!empty($userData['social_links']) && $user->hasField('field_social_links')) {
+        $links = [];
+        foreach ($userData['social_links'] as $link) {
+          if (!empty($link['url'])) {
+            $links[] = [
+              'uri' => $link['url'],
+              'title' => $link['title'] ?? '',
+            ];
+          }
+        }
+        if (!empty($links)) {
+          $user->set('field_social_links', $links);
+        }
+      }
+
+      // Map preferred_categories (entity_reference → taxonomy terms).
+      if (!empty($userData['preferred_categories']) && $user->hasField('field_preferred_categories')) {
+        $termIds = [];
+        foreach ($userData['preferred_categories'] as $categoryName) {
+          $termId = $this->getOrCreateTerm('course_category', $categoryName);
+          if ($termId) {
+            $termIds[] = ['target_id' => $termId];
+          }
+        }
+        if (!empty($termIds)) {
+          $user->set('field_preferred_categories', $termIds);
+        }
+      }
+
       $user->save();
+
+      // Xử lý import hình ảnh đại diện (avatar)
+      if (!empty($userData['avatar_filename'])) {
+        // Đúng theo chuẩn tài liệu: ảnh avatar đã được copy thẳng vào thư mục public://generated/ 
+        // Bằng lệnh thủ công cp /*/* sang /generated/
+        $avatarPath = $userData['avatar_filename'];
+        $file = $this->createManagedFileFromGenerated($avatarPath, 'public://pictures/');
+        if ($file) {
+          $user->set('user_picture', [
+            'target_id' => $file->id(),
+            'alt' => $userData['username'],
+          ]);
+          $user->save();
+        }
+      }
+
       $count++;
     }
 
@@ -500,8 +607,20 @@ class ContentToolsCommands extends DrushCommands {
 
     $existing = $courseStorage->loadByProperties(['name' => $courseData['title']]);
     if (!empty($existing)) {
-      $this->logger()->warning(dt('Course already exists: @title — skipping.', ['@title' => $courseData['title']]));
-      return 0;
+      $this->logger()->notice(dt('Course already exists: @title — deleting to recreate with new content.', ['@title' => $courseData['title']]));
+      $course = reset($existing);
+      
+      // Delete existing chapters and lessons to prevent bloat.
+      $chapters = $course->get('field_chapters')->referencedEntities();
+      foreach ($chapters as $chapter) {
+        $lessons = $chapter->get('field_lessons')->referencedEntities();
+        foreach ($lessons as $lesson) {
+          $lesson->delete();
+        }
+        $chapter->delete();
+      }
+      // Finally, delete the course entity itself.
+      $course->delete();
     }
 
     // Find instructor by email.
@@ -540,8 +659,28 @@ class ContentToolsCommands extends DrushCommands {
           $lessonFields['field_video_url'] = $lessonData['video_url'];
         }
 
+        // Track SCORM filename so we can extract AFTER the lesson entity is saved
+        // (extraction needs the lesson ID which is only available post-save).
+        $scormFilenameToExtract = NULL;
+        if (($lessonData['type'] ?? '') === 'scorm' && !empty($lessonData['scorm_filename'])) {
+          $scormFilenameToExtract = $lessonData['scorm_filename'];
+          $scormFile = $this->createScormManagedFileFromAgent($scormFilenameToExtract);
+          if ($scormFile) {
+            $lessonFields['field_scorm_package'] = [
+              'target_id' => $scormFile->id(),
+              'display' => 1,
+            ];
+          }
+        }
+
         $lesson = $lessonStorage->create($lessonFields);
         $lesson->save();
+
+        // Now that the lesson ID exists, extract the SCORM ZIP.
+        if ($scormFilenameToExtract) {
+          $this->extractScormForLesson((int) $lesson->id(), $scormFilenameToExtract);
+        }
+
         $lessonIds[] = $lesson->id();
         $count++;
       }
@@ -582,6 +721,83 @@ class ContentToolsCommands extends DrushCommands {
     if (!empty($courseData['short_description'])) {
       $courseFields['field_short_description'] = [
         'value' => $courseData['short_description'],
+        'format' => 'full_html',
+      ];
+    }
+
+    // Map Category, Level, and Language to taxonomy terms
+    if (!empty($courseData['category'])) {
+      $term_id = $this->getOrCreateTerm('course_category', $courseData['category']);
+      if ($term_id) {
+        $courseFields['field_category'] = ['target_id' => $term_id];
+      }
+    }
+
+    if (!empty($courseData['level'])) {
+      $levelName = ucfirst($courseData['level']);
+      $term_id = $this->getOrCreateTerm('course_level', $levelName);
+      if ($term_id) {
+        $courseFields['field_level'] = ['target_id' => $term_id];
+      }
+    }
+
+    if (!empty($courseData['language'])) {
+      $term_id = $this->getOrCreateTerm('course_language', $courseData['language']);
+      if ($term_id) {
+        $courseFields['field_language'] = ['target_id' => $term_id];
+      }
+    }
+
+    // Map Certificate Template if course has certificate
+    if (!empty($courseData['has_certificate'])) {
+      $certStorage = $this->entityTypeManager->getStorage('lms_certificate_template');
+      $templates = $certStorage->loadByProperties(['status' => 1]);
+      if (!empty($templates)) {
+        // Pick a random template from available templates for variety
+        $random_key = array_rand($templates);
+        $template = $templates[$random_key];
+        $courseFields['field_certificate_template'] = ['target_id' => $template->id()];
+      }
+    }
+
+    if (!empty($courseData['thumbnail_filename'])) {
+      $file = $this->createManagedFileFromGenerated($courseData['thumbnail_filename']);
+      if ($file) {
+        $courseFields['field_thumbnail'] = [
+          'target_id' => $file->id(),
+          'alt' => $courseData['title'],
+        ];
+      }
+    }
+
+    if (!empty($courseData['banner_filename'])) {
+      $file = $this->createManagedFileFromGenerated($courseData['banner_filename']);
+      if ($file) {
+        $courseFields['field_banner'] = [
+          'target_id' => $file->id(),
+          'alt' => $courseData['title'],
+        ];
+      }
+    }
+
+    // Map the 3 new descriptive introduction fields.
+    if (!empty($courseData['what_you_will_learn'])) {
+      $courseFields['field_what_learn'] = [
+        'value' => $courseData['what_you_will_learn'],
+        'format' => 'full_html',
+      ];
+    }
+
+    if (!empty($courseData['prerequisites'])) {
+      $courseFields['field_prerequisites'] = [
+        'value' => $courseData['prerequisites'],
+        'format' => 'full_html',
+      ];
+    }
+
+    if (!empty($courseData['who_this_course_is_for'])) {
+      $courseFields['field_who_for'] = [
+        'value' => $courseData['who_this_course_is_for'],
         'format' => 'full_html',
       ];
     }
@@ -718,13 +934,92 @@ class ContentToolsCommands extends DrushCommands {
     $count = 0;
     $storage = $this->entityTypeManager->getStorage('lms_certificate_template');
 
+    // Helper to load images from .agent folder
+    $load_image = function($filename, $type) {
+      if (!$filename) return NULL;
+      $physicalPath = DRUPAL_ROOT . '/../.agent/images/image_' . $type . '/' . $filename;
+      if (file_exists($physicalPath)) {
+        $fileData = file_get_contents($physicalPath);
+        $fileRepo = \Drupal::service('file.repository');
+        // Extract just the filename to avoid nested directory creation issues
+        $basename = basename($filename);
+        // e.g. public://certificates/backgrounds/bg_1.png
+        $uri = 'public://certificates/' . $type . 's/' . $basename;
+        
+        // Ensure the base directory exists
+        $dir = 'public://certificates/' . $type . 's';
+        \Drupal::service('file_system')->prepareDirectory($dir, \Drupal\Core\File\FileSystemInterface::CREATE_DIRECTORY | \Drupal\Core\File\FileSystemInterface::MODIFY_PERMISSIONS);
+        
+        return $fileRepo->writeData($fileData, $uri, \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE);
+      }
+      return NULL;
+    };
+
     foreach ($data['templates'] ?? [] as $templateData) {
-      $template = $storage->create([
+      $design = strtolower($templateData['design'] ?? 'modern');
+      
+      // Load respective blueprint html
+      $blueprint_path = __DIR__ . '/../Blueprints/' . $design . '.html';
+      if (!file_exists($blueprint_path)) {
+        // Fallback to modern if specific design file doesn't exist
+        $blueprint_path = __DIR__ . '/../Blueprints/modern_certificate.html';
+      }
+      $blueprint_html = file_exists($blueprint_path) ? file_get_contents($blueprint_path) : '';
+
+      // Fix placeholder brackets according to the actual tokens supported
+      $body_text = $templateData['body_text'] ?? '';
+      $body_text = str_replace(
+        ['{student_name}', '{course_name}', '{completion_date}'], 
+        ['[student_name]', '[course_name]', '[issue_date]'], 
+        $body_text
+      );
+
+      // Inject JSON data into blueprint
+      // We ONLY replace text variables. We leave [logo], [background] and standard tokens intact.
+      $injected_html = str_replace(
+        ['%body_text%', '%issuer%', '%signature_label%'],
+        [
+          $body_text,
+          $templateData['issuer'] ?? '',
+          $templateData['signature_label'] ?? ''
+        ],
+        $blueprint_html
+      );
+
+      $bg_file = $load_image($templateData['background_filename'] ?? NULL, 'background');
+      $logo_file = $load_image($templateData['logo_filename'] ?? NULL, 'logo');
+      $sig_file = $load_image($templateData['signature_filename'] ?? NULL, 'signature');
+      $seal_file = $load_image($templateData['seal_filename'] ?? NULL, 'seal');
+
+      $fields = [
         'name' => $templateData['name'] ?? 'Certificate Template',
         'status' => 1,
         'field_orientation' => $templateData['layout'] ?? 'landscape',
-        'field_design' => 'modern',
-      ]);
+        'field_design' => $design,
+        'field_layout' => [
+          'value' => $injected_html,
+          'format' => 'full_html',
+        ],
+      ];
+
+      if ($bg_file) $fields['field_background'] = [
+        'target_id' => $bg_file->id(), 
+        'alt' => 'Background - ' . ($templateData['name'] ?? 'Template')
+      ];
+      if ($logo_file) $fields['field_logo'] = [
+        'target_id' => $logo_file->id(), 
+        'alt' => 'Logo - ' . ($templateData['issuer'] ?? 'Issuer')
+      ];
+      if ($sig_file) $fields['field_signature'] = [
+        'target_id' => $sig_file->id(), 
+        'alt' => 'Signature - ' . ($templateData['signature_label'] ?? 'Official')
+      ];
+      if ($seal_file) $fields['field_seal'] = [
+        'target_id' => $seal_file->id(), 
+        'alt' => 'Seal - ' . ($templateData['issuer'] ?? 'Official')
+      ];
+
+      $template = $storage->create($fields);
       $template->save();
       $count++;
     }
@@ -741,16 +1036,68 @@ class ContentToolsCommands extends DrushCommands {
     if (!empty($data['membership_plans'])) {
       $storage = $this->entityTypeManager->getStorage('lms_membership_plan');
       foreach ($data['membership_plans'] as $planData) {
-        $plan = $storage->create([
-          'name' => $planData['name'],
-          'status' => 1,
-          'field_price' => $planData['price'] ?? 0,
-          'field_duration' => $planData['duration'] ?? 'monthly',
-        ]);
-        // Only set fields that exist on the entity.
-        if ($plan->hasField('field_tier')) {
-          $plan->set('field_tier', $planData['tier'] ?? 'basic');
+        // Upsert: update existing plan if it already exists.
+        $existing = $storage->loadByProperties(['name' => $planData['name']]);
+        if (!empty($existing)) {
+          $plan = reset($existing);
+          $this->logger()->notice(dt('Updating existing membership plan: @name', ['@name' => $planData['name']]));
         }
+        else {
+          $plan = $storage->create(['name' => $planData['name']]);
+        }
+
+        // Core fields.
+        $plan->set('status', 1);
+        $plan->set('field_price', $planData['price'] ?? 0);
+
+        // field_description is text_long → needs value + format.
+        if (!empty($planData['description'])) {
+          $plan->set('field_description', [
+            'value'  => $planData['description'],
+            'format' => 'full_html',
+          ]);
+        }
+
+        // field_features is string with cardinality unlimited → array of values.
+        if (!empty($planData['features']) && is_array($planData['features'])) {
+          $featureValues = array_map(fn($f) => ['value' => $f], $planData['features']);
+          $plan->set('field_features', $featureValues);
+        }
+
+        // field_duration_days is integer (JSON key: duration_days).
+        if (isset($planData['duration_days'])) {
+          $plan->set('field_duration_days', (int) $planData['duration_days']);
+        }
+        elseif (isset($planData['duration'])) {
+          // Legacy fallback: map string "monthly" → 30 days.
+          $durationMap = ['monthly' => 30, 'quarterly' => 90, 'yearly' => 365, 'lifetime' => 36500];
+          $plan->set('field_duration_days', $durationMap[$planData['duration']] ?? 30);
+        }
+
+        // field_billing_cycle is list_string: monthly|quarterly|yearly|lifetime.
+        if (!empty($planData['billing_cycle'])) {
+          $plan->set('field_billing_cycle', $planData['billing_cycle']);
+        }
+        elseif (!empty($planData['duration'])) {
+          // Legacy fallback: duration string may be billing cycle.
+          $plan->set('field_billing_cycle', $planData['duration']);
+        }
+
+        // field_recommended is boolean.
+        if (isset($planData['recommended'])) {
+          $plan->set('field_recommended', (bool) $planData['recommended']);
+        }
+
+        // field_course_access is list_string: all|selected.
+        if (!empty($planData['course_access'])) {
+          $plan->set('field_course_access', $planData['course_access']);
+        }
+
+        // field_trial_days is integer.
+        if (isset($planData['trial_days'])) {
+          $plan->set('field_trial_days', (int) $planData['trial_days']);
+        }
+
         $plan->save();
         $count++;
       }
@@ -771,26 +1118,57 @@ class ContentToolsCommands extends DrushCommands {
       $replyStorage = $this->entityTypeManager->getStorage('lms_forum_reply');
 
       foreach ($data['forum_topics'] as $topicData) {
-        $topic = $topicStorage->create([
-          'name' => $topicData['title'],
-          'status' => 1,
-          'field_body' => [
+        $topicAuthorUid = 1;
+        if (!empty($topicData['author_email'])) {
+          if ($authorUsers = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['mail' => $topicData['author_email']])) {
+            $topicAuthorUid = reset($authorUsers)->id();
+          }
+        }
+
+        // Upsert logic for topics
+        $existingTopics = $topicStorage->loadByProperties(['name' => $topicData['title']]);
+        if (!empty($existingTopics)) {
+          $topic = reset($existingTopics);
+          $topic->set('field_body', [
             'value' => $topicData['body'] ?? '',
             'format' => 'full_html',
-          ],
-          'uid' => 1,
-        ]);
+          ]);
+          $topic->set('uid', $topicAuthorUid);
+          
+          // Delete existing replies so they don't duplicate on re-import
+          $oldReplies = $replyStorage->loadByProperties(['field_topic' => $topic->id()]);
+          if (!empty($oldReplies)) {
+            $replyStorage->delete($oldReplies);
+          }
+        } else {
+          $topic = $topicStorage->create([
+            'name' => $topicData['title'],
+            'status' => 1,
+            'field_body' => [
+              'value' => $topicData['body'] ?? '',
+              'format' => 'full_html',
+            ],
+            'uid' => $topicAuthorUid,
+          ]);
+        }
         $topic->save();
         $count++;
 
         foreach ($topicData['replies'] ?? [] as $replyData) {
+          $replyAuthorUid = $topicAuthorUid; // Default to topic author if no reply author.
+          if (!empty($replyData['author_email'])) {
+            if ($authorUsers = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['mail' => $replyData['author_email']])) {
+              $replyAuthorUid = reset($authorUsers)->id();
+            }
+          }
+
           $reply = $replyStorage->create([
             'field_topic' => $topic->id(),
             'field_body' => [
               'value' => $replyData['body'] ?? '',
               'format' => 'full_html',
             ],
-            'uid' => 1,
+            'uid' => $replyAuthorUid,
           ]);
           $reply->save();
           $count++;
@@ -815,7 +1193,464 @@ class ContentToolsCommands extends DrushCommands {
       }
     }
 
+    // Ratings.
+    if (!empty($data['ratings'])) {
+      $ratingStorage = $this->entityTypeManager->getStorage('lms_rating');
+      $userStorage = $this->entityTypeManager->getStorage('user');
+
+      // Load all valid students (uid > 1). We'll pick one randomly for each review.
+      $studentQuery = $userStorage->getQuery()->condition('uid', 1, '>')->accessCheck(FALSE)->execute();
+      $studentIds = array_values($studentQuery);
+
+      foreach ($data['ratings'] as $ratingData) {
+        // Use fuzzy lookup to handle title variations.
+        $course = $this->lookupCourseByTitle($ratingData['course_title'] ?? '');
+
+        if ($course) {
+          // Fallback to uid 1 if no students found.
+          $authorId = !empty($studentIds) ? $studentIds[array_rand($studentIds)] : 1;
+
+          // Prevent duplicates: check if this user already reviewed this course.
+          $existingRating = $ratingStorage->getQuery()
+            ->condition('field_course', $course->id())
+            ->condition('uid', $authorId)
+            ->accessCheck(FALSE)
+            ->execute();
+
+          if (empty($existingRating)) {
+            $rating = $ratingStorage->create([
+              'field_course' => $course->id(),
+              'field_score' => $ratingData['score'] ?? 5,
+              'field_review' => [
+                'value' => $ratingData['review'] ?? '',
+                'format' => 'plain_text',
+              ],
+              'field_is_featured' => $ratingData['is_featured'] ?? FALSE,
+              'field_approved' => TRUE,
+              'uid' => $authorId,
+            ]);
+            $rating->save();
+            $count++;
+          }
+        }
+      }
+    }
+
     return $count;
+  }
+
+  /**
+   * Import slideshows (node:slideshow).
+   */
+  protected function importSlideshows(array $data): int {
+    $count = 0;
+    $nodeStorage = $this->entityTypeManager->getStorage('node');
+
+    foreach ($data['slideshows'] ?? [] as $item) {
+      if (empty($item['title'])) {
+        continue;
+      }
+
+      $fields = [
+        'type'   => 'slideshow',
+        'title'  => $item['title'],
+        'status' => (isset($item['status']) && $item['status'] === 'published') ? 1 : 0,
+        'uid'    => 1,
+      ];
+
+      if (!empty($item['body'])) {
+        $fields['body'] = [
+          'value'  => $item['body'],
+          'format' => 'full_html',
+        ];
+      }
+      if (!empty($item['cta_text'])) {
+        $fields['field_slide_heading'] = $item['cta_text'];
+      }
+      if (!empty($item['cta_link'])) {
+        $fields['field_slide_link'] = ['uri' => $item['cta_link']];
+      }
+      if (!empty($item['heading'])) {
+        $fields['field_slide_heading'] = $item['heading'];
+      }
+      if (!empty($item['subheading'])) {
+        $fields['field_slide_subheading'] = $item['subheading'];
+      }
+      if (!empty($item['position'])) {
+        $fields['field_slide_position'] = $item['position'];
+      }
+
+      if (!empty($item['image_filename'])) {
+        $file = $this->createManagedFileFromGenerated($item['image_filename']);
+        if ($file) {
+          $fields['field_slide_image'] = [
+            'target_id' => $file->id(),
+            'alt'       => $item['image_alt'] ?? $item['title'],
+          ];
+        }
+      }
+
+      $node = $nodeStorage->create($fields);
+      $node->save();
+      $count++;
+    }
+
+    return $count;
+  }
+
+  /**
+   * Import introductions (node:introduction).
+   */
+  protected function importIntroductions(array $data): int {
+    $count = 0;
+    $nodeStorage = $this->entityTypeManager->getStorage('node');
+
+    foreach ($data['introductions'] ?? [] as $item) {
+      if (empty($item['title'])) {
+        continue;
+      }
+
+      $fields = [
+        'type'   => 'introduction',
+        'title'  => $item['title'],
+        'status' => (isset($item['status']) && $item['status'] === 'published') ? 1 : 0,
+        'uid'    => 1,
+      ];
+
+      if (!empty($item['body'])) {
+        $fields['body'] = [
+          'value'  => $item['body'],
+          'format' => 'full_html',
+        ];
+      }
+      if (!empty($item['subheading'])) {
+        $fields['field_subheading'] = $item['subheading'];
+      }
+      if (!empty($item['image_position'])) {
+        $fields['field_image_position'] = $item['image_position'];
+      }
+      if (!empty($item['background_color'])) {
+        $fields['field_background_color'] = $item['background_color'];
+      }
+      if (!empty($item['cta_text']) && !empty($item['cta_link'])) {
+        $fields['field_call_to_action'] = [
+          'title' => $item['cta_text'],
+          'uri'   => $item['cta_link'],
+        ];
+      }
+
+      if (!empty($item['image_filename'])) {
+        $file = $this->createManagedFileFromGenerated($item['image_filename']);
+        if ($file) {
+          $fields['field_intro_image'] = [
+            'target_id' => $file->id(),
+            'alt'       => $item['image_alt'] ?? $item['title'],
+          ];
+        }
+      }
+
+      $node = $nodeStorage->create($fields);
+      $node->save();
+      $count++;
+    }
+
+    return $count;
+  }
+
+  protected function importGlossaries(array $data): int {
+    $count = 0;
+    $nodeStorage = $this->entityTypeManager->getStorage('node');
+
+    foreach ($data['glossaries'] ?? [] as $item) {
+      // Support both 'term' key (AI output) or 'title' key.
+      $title = $item['term'] ?? $item['title'] ?? '';
+      if (empty($title)) {
+        continue;
+      }
+
+      $fields = [
+        'type'   => 'glossary',
+        'title'  => $title,
+        'status' => 1,
+        'uid'    => 1,
+      ];
+
+      $definition = $item['definition'] ?? $item['body'] ?? '';
+      if (!empty($definition)) {
+        $fields['body'] = [
+          'value'  => $definition,
+          'format' => 'full_html',
+        ];
+      }
+      if (!empty($item['synonyms'])) {
+        $fields['field_synonyms'] = $item['synonyms'];
+      }
+      // Optional course reference (field_course → lms_course).
+      if (!empty($item['course_title'])) {
+        $courseIds = $this->entityTypeManager->getStorage('lms_course')
+          ->loadByProperties(['name' => $item['course_title']]);
+        if (!empty($courseIds)) {
+          $fields['field_course'] = reset($courseIds)->id();
+        }
+      }
+
+      $node = $nodeStorage->create($fields);
+      $node->save();
+      $count++;
+    }
+
+    return $count;
+  }
+
+  /**
+   * Import blog articles (node:blog).
+   */
+  protected function importBlogs(array $data): int {
+    $count = 0;
+    $nodeStorage = $this->entityTypeManager->getStorage('node');
+
+    foreach ($data['blogs'] ?? [] as $item) {
+      if (empty($item['title'])) {
+        continue;
+      }
+
+      $fields = [
+        'type'   => 'blog',
+        'title'  => $item['title'],
+        'status' => 1,
+        'uid'    => 1,
+      ];
+
+      $content = $item['content'] ?? $item['body'] ?? '';
+      if (!empty($content)) {
+        $fields['body'] = [
+          'value'   => $content,
+          'summary' => $item['summary'] ?? '',
+          'format'  => 'full_html',
+        ];
+      }
+      // Tags: accept array of strings, create terms if needed.
+      if (!empty($item['tags'])) {
+        $termStorage = $this->entityTypeManager->getStorage('taxonomy_term');
+        $termIds = [];
+        foreach ((array) $item['tags'] as $tagName) {
+          $existing = $termStorage->loadByProperties([
+            'vid'  => 'blog_tags',
+            'name' => $tagName,
+          ]);
+          if (!empty($existing)) {
+            $termIds[] = reset($existing)->id();
+          }
+          else {
+            $term = $termStorage->create(['vid' => 'blog_tags', 'name' => $tagName]);
+            $term->save();
+            $termIds[] = $term->id();
+          }
+        }
+        $fields['field_blog_tags'] = $termIds;
+      }
+
+      if (!empty($item['image_filename'])) {
+        $file = $this->createManagedFileFromGenerated($item['image_filename']);
+        if ($file) {
+          $fields['field_thumb'] = [
+            'target_id' => $file->id(),
+            'alt'       => $item['image_alt'] ?? $item['title'],
+          ];
+        }
+      }
+
+      // Upsert: update existing node by title, or create new.
+      $existingNodes = $nodeStorage->loadByProperties([
+        'type'  => 'blog',
+        'title' => $item['title'],
+      ]);
+      if (!empty($existingNodes)) {
+        $node = reset($existingNodes);
+        foreach ($fields as $key => $value) {
+          $node->set($key, $value);
+        }
+      }
+      else {
+        $node = $nodeStorage->create($fields);
+      }
+
+      $node->save();
+      $count++;
+    }
+
+    return $count;
+  }
+
+  /**
+   * Creates a Drupal managed file entity from a file in public://generated/.
+   *
+   * @param string $filename
+   *   The filename (e.g. 'slide-welcome.png').
+   *
+   * @return \Drupal\file\FileInterface|null
+   *   The saved file entity, or NULL if the file does not exist.
+   */
+  protected function createManagedFileFromGenerated(string $filename): ?\Drupal\file\FileInterface {
+    $uri = 'public://generated/' . $filename;
+    /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
+    $fileSystem = \Drupal::service('file_system');
+    $realpath = $fileSystem->realpath($uri);
+    if (!$realpath || !file_exists($realpath)) {
+      $this->logger()->warning(dt('Image file not found: @uri', ['@uri' => $uri]));
+      return NULL;
+    }
+    try {
+      /** @var \Drupal\file\FileRepositoryInterface $fileRepo */
+      $fileRepo = \Drupal::service('file.repository');
+      return $fileRepo->writeData(
+        file_get_contents($realpath),
+        $uri,
+        \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE
+      );
+    }
+    catch (\Exception $e) {
+      $this->logger()->error(dt('Failed to create managed file for @filename: @msg', [
+        '@filename' => $filename,
+        '@msg'      => $e->getMessage(),
+      ]));
+      return NULL;
+    }
+  }
+
+  /**
+   * Import FAQs (lms_faq custom entity).
+   *
+   * field_scope: 'global' | 'course'
+   * field_course: entity reference to lms_course (required when scope=course)
+   */
+  protected function importFaqs(array $data): int {
+
+    $count = 0;
+    $faqStorage = $this->entityTypeManager->getStorage('lms_faq');
+
+    foreach ($data['faqs'] ?? [] as $weight => $item) {
+      $question = $item['question'] ?? '';
+      if (empty($question)) {
+        continue;
+      }
+
+      $fields = [
+        'question'       => $question,
+        'field_answer'   => [
+          'value'  => $item['answer'] ?? '',
+          'format' => 'full_html',
+        ],
+        'field_scope'    => $item['scope'] ?? 'global',
+        'weight'         => (int) ($item['weight'] ?? $weight),
+      ];
+
+      // Resolve course reference for scope=course.
+      if (($item['scope'] ?? '') === 'course' && !empty($item['course_title'])) {
+        $courseIds = $this->entityTypeManager->getStorage('lms_course')
+          ->loadByProperties(['name' => $item['course_title']]);
+        if (!empty($courseIds)) {
+          $fields['field_course'] = reset($courseIds)->id();
+        }
+      }
+
+      $existingFaqs = $faqStorage->loadByProperties(['question' => $question]);
+      if (!empty($existingFaqs)) {
+        $faq = reset($existingFaqs);
+        foreach ($fields as $key => $value) {
+          $faq->set($key, $value);
+        }
+      } else {
+        $faq = $faqStorage->create($fields);
+      }
+
+      $faq->save();
+      $count++;
+    }
+
+    return $count;
+  }
+
+  /**
+   * Import course categories (taxonomy:course_category).
+   */
+  protected function importCategories(array $data): int {
+    $count = 0;
+    foreach ($data['categories'] ?? [] as $item) {
+      if (empty($item['name'])) {
+        continue;
+      }
+      $imageFilename = $item['image_filename'] ?? NULL;
+      $description = $item['description'] ?? '';
+
+      $termId = $this->getOrCreateTerm('course_category', $item['name'], $imageFilename, $description);
+      if ($termId) {
+        $count++;
+      }
+    }
+    return $count;
+  }
+
+  /**
+   * Helper function to find or create a taxonomy term.
+   */
+  protected function getOrCreateTerm(string $vid, string $name, ?string $imageFilename = NULL, string $description = ''): ?int {
+    $termStorage = $this->entityTypeManager->getStorage('taxonomy_term');
+    $terms = $termStorage->loadByProperties([
+      'vid' => $vid,
+      'name' => $name,
+    ]);
+
+    if (!empty($terms)) {
+      $term = reset($terms);
+    }
+    else {
+      $termFields = [
+        'vid' => $vid,
+        'name' => $name,
+      ];
+      if (!empty($description)) {
+        $termFields['description'] = [
+          'value' => $description,
+          'format' => 'full_html',
+        ];
+      }
+      $term = $termStorage->create($termFields);
+    }
+
+    // Detect correct image field based on bundle.
+    $imageFieldName = NULL;
+    if ($term->hasField('field_category_thumbnail')) {
+      $imageFieldName = 'field_category_thumbnail';
+    } elseif ($term->hasField('field_image')) {
+      $imageFieldName = 'field_image';
+    }
+
+    if ($imageFilename && $imageFieldName) {
+      $physicalPath = DRUPAL_ROOT . '/../.agent/images/image_category/' . $imageFilename;
+      if (file_exists($physicalPath)) {
+        $fileData = file_get_contents($physicalPath);
+        /** @var \Drupal\file\FileRepositoryInterface $fileRepo */
+        $fileRepo = \Drupal::service('file.repository');
+        $file = $fileRepo->writeData($fileData, 'public://categories/' . $imageFilename, \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE);
+        if ($file) {
+          $term->set($imageFieldName, ['target_id' => $file->id()]);
+        }
+      }
+    }
+
+    try {
+      $term->save();
+      return (int) $term->id();
+    }
+    catch (\Exception $e) {
+      $this->logger()->error(dt('Failed to create/update term @name in @vid: @msg', [
+        '@name' => $name,
+        '@vid' => $vid,
+        '@msg' => $e->getMessage(),
+      ]));
+      return NULL;
+    }
   }
 
   /**
@@ -859,6 +1694,579 @@ class ContentToolsCommands extends DrushCommands {
     }
 
     return $errors;
+  }
+
+  /**
+   * Generates mock PDF certificates for users and courses to test the Certificate Manager UI.
+   *
+   * @command everlms:mock-certs
+   * @aliases lms-mock-certs
+   * @usage everlms:mock-certs
+   *   Generate random certificates for active users.
+   */
+  public function mockCertificates(): void {
+    $this->logger()->notice(dt('Starting Mock Certificate Generation...'));
+    
+    /** @var \Drupal\lms_certificate\Service\CertificateManager $certManager */
+    $certManager = \Drupal::service('lms_certificate.manager');
+
+    $user_ids = \Drupal::entityQuery('user')->condition('status', 1)->condition('uid', 1, '>')->accessCheck(FALSE)->execute();
+    if (empty($user_ids)) {
+      $this->logger()->error('No users found.');
+      return;
+    }
+    $users = \Drupal\user\Entity\User::loadMultiple($user_ids);
+
+    $course_ids = \Drupal::entityQuery('lms_course')->condition('status', 1)->accessCheck(FALSE)->execute();
+    if (empty($course_ids)) {
+      $this->logger()->error('No courses found.');
+      return;
+    }
+    $courses = \Drupal\lms_course\Entity\Course::loadMultiple($course_ids);
+
+    $success_count = 0;
+    $fail_count = 0;
+
+    foreach ($users as $user) {
+      $random_course_keys = (array) array_rand($courses, min(2, count($courses)));
+      foreach ($random_course_keys as $key) {
+        $course = $courses[$key];
+        try {
+          $userCert = $certManager->checkAndIssueCertificate($user, $course, NULL);
+          if ($userCert && $userCert->hasField('field_pdf_file') && !$userCert->get('field_pdf_file')->isEmpty()) {
+            $success_count++;
+            $this->logger()->notice(dt('Issued certificate for @user in @course', [
+              '@user' => $user->getDisplayName(),
+              '@course' => $course->label()
+            ]));
+          } else {
+            $fail_count++;
+          }
+        } catch (\Exception $e) {
+          $this->logger()->error($e->getMessage());
+          $fail_count++;
+        }
+      }
+    }
+
+    $this->logger()->notice(dt('Mock certificates complete: @success SUCCESS, @fail SKIPPED/FAILED.', [
+      '@success' => $success_count,
+      '@fail' => $fail_count
+    ]));
+  }
+
+  /**
+   * Import mock user transactional and interaction data.
+   */
+  protected function importUserData(string $filename, array $data): int {
+    $count = 0;
+    $basename = basename($filename);
+
+    switch ($basename) {
+      case 'notes.json':
+        $count = $this->importUserNotes($data['notes'] ?? []);
+        break;
+
+      case 'notifications.json':
+        $count = $this->importUserNotifications($data['notifications'] ?? []);
+        break;
+
+      case 'progress.json':
+        $count = $this->importUserProgress($data['progress'] ?? []);
+        break;
+
+      case 'quiz_results.json':
+        $count = $this->importQuizResults($data['results'] ?? []);
+        break;
+
+      case 'certificates.json':
+        $count = $this->importUserCertificates($data['certificates'] ?? []);
+        break;
+
+      case 'orders.json':
+        $count = $this->importUserOrders($data['orders'] ?? []);
+        break;
+
+      case 'memberships.json':
+        $count = $this->importUserMemberships($data['user_memberships'] ?? []);
+        break;
+
+      case 'wishlists.json':
+        $count = $this->importUserWishlists($data['wishlists'] ?? []);
+        break;
+    }
+
+    return $count;
+  }
+
+  /**
+   * Helper to find a user by email.
+   */
+  protected function getUserByEmail(string $email) {
+    if (empty($email)) return NULL;
+    $users = $this->entityTypeManager->getStorage('user')->loadByProperties(['mail' => $email]);
+    return !empty($users) ? reset($users) : NULL;
+  }
+
+  /**
+   * Lookup a course by title with fuzzy matching (3 tiers).
+   *
+   * Tier 1: Exact match via loadByProperties().
+   * Tier 2: CONTAINS match on the full title string.
+   * Tier 3: CONTAINS match on the longest significant word (>4 chars) in title.
+   *
+   * This handles AI-generated data where titles are sometimes shortened or
+   * slightly different from the canonical entity name.
+   */
+  protected function lookupCourseByTitle(string $title): ?object {
+    if (empty($title)) {
+      return NULL;
+    }
+    $storage = $this->entityTypeManager->getStorage('lms_course');
+
+    // Tier 1: exact match.
+    $results = $storage->loadByProperties(['name' => $title]);
+    if (!empty($results)) {
+      return reset($results);
+    }
+
+    // Tier 2: CONTAINS on full title.
+    $ids = $storage->getQuery()
+      ->condition('name', $title, 'CONTAINS')
+      ->accessCheck(FALSE)
+      ->range(0, 1)
+      ->execute();
+    if (!empty($ids)) {
+      return $storage->load(reset($ids));
+    }
+
+    // Tier 3: try each significant word (>4 chars), longest first.
+    $words = array_filter(explode(' ', $title), fn($w) => strlen($w) > 4);
+    usort($words, fn($a, $b) => strlen($b) - strlen($a));
+    foreach ($words as $word) {
+      $ids = $storage->getQuery()
+        ->condition('name', $word, 'CONTAINS')
+        ->accessCheck(FALSE)
+        ->range(0, 1)
+        ->execute();
+      if (!empty($ids)) {
+        return $storage->load(reset($ids));
+      }
+    }
+
+    $this->logger()->warning(dt('Course not found for title: "@title"', ['@title' => $title]));
+    return NULL;
+  }
+
+  /**
+   * Lookup a quiz by title with fuzzy matching (3 tiers).
+   *
+   * Same strategy as lookupCourseByTitle() but targets lms_quiz entity.
+   */
+  protected function lookupQuizByTitle(string $title): ?object {
+    if (empty($title)) {
+      return NULL;
+    }
+    $storage = $this->entityTypeManager->getStorage('lms_quiz');
+
+    // Tier 1: exact match.
+    $results = $storage->loadByProperties(['name' => $title]);
+    if (!empty($results)) {
+      return reset($results);
+    }
+
+    // Tier 2: CONTAINS on full title.
+    $ids = $storage->getQuery()
+      ->condition('name', $title, 'CONTAINS')
+      ->accessCheck(FALSE)
+      ->range(0, 1)
+      ->execute();
+    if (!empty($ids)) {
+      return $storage->load(reset($ids));
+    }
+
+    // Tier 3: try each significant word (>4 chars), longest first.
+    $words = array_filter(explode(' ', $title), fn($w) => strlen($w) > 4);
+    usort($words, fn($a, $b) => strlen($b) - strlen($a));
+    foreach ($words as $word) {
+      $ids = $storage->getQuery()
+        ->condition('name', $word, 'CONTAINS')
+        ->accessCheck(FALSE)
+        ->range(0, 1)
+        ->execute();
+      if (!empty($ids)) {
+        return $storage->load(reset($ids));
+      }
+    }
+
+    $this->logger()->warning(dt('Quiz not found for title: "@title"', ['@title' => $title]));
+    return NULL;
+  }
+
+  /**
+   * Import User Notes.
+   */
+  protected function importUserNotes(array $items): int {
+    $count = 0;
+    $storage = $this->entityTypeManager->getStorage('lms_note');
+
+    foreach ($items as $item) {
+      $user = $this->getUserByEmail($item['user_email']);
+      $course = $this->lookupCourseByTitle($item['course_title'] ?? '');
+
+      if ($user && $course) {
+        $storage->create([
+          'uid' => $user->id(),
+          'field_course' => $course->id(),
+          'field_body' => $item['content'],
+        ])->save();
+        $count++;
+      }
+    }
+    return $count;
+  }
+
+  /**
+   * Import User Notifications.
+   */
+  protected function importUserNotifications(array $items): int {
+    $count = 0;
+    $storage = $this->entityTypeManager->getStorage('lms_notification');
+
+    foreach ($items as $item) {
+      $user = $this->getUserByEmail($item['user_email']);
+      if ($user) {
+        $storage->create([
+          'uid' => $user->id(),
+          'field_title' => $item['title'],
+          'field_message' => $item['message'],
+          'field_type' => $item['type'],
+          'field_read' => $item['is_read'] ? 1 : 0,
+        ])->save();
+        $count++;
+      }
+    }
+    return $count;
+  }
+
+  /**
+   * Import User Progress.
+   */
+  protected function importUserProgress(array $items): int {
+    $count = 0;
+    $storage = $this->entityTypeManager->getStorage('lms_user_course');
+
+    foreach ($items as $item) {
+      $user = $this->getUserByEmail($item['user_email']);
+      $course = $this->lookupCourseByTitle($item['course_title'] ?? '');
+
+      if ($user && $course) {
+        $existing = $storage->loadByProperties([
+          'uid' => $user->id(),
+          'field_course' => $course->id(),
+        ]);
+        if (empty($existing)) {
+          $progressFields = [
+            'uid' => $user->id(),
+            'field_course' => $course->id(),
+            'field_progress' => $item['percentage'],
+            'field_status' => $item['status'],
+          ];
+
+          if (!empty($item['started_at'])) {
+            $progressFields['field_enrolled_at'] = strtotime($item['started_at']);
+          }
+          if (!empty($item['completed_at'])) {
+            $progressFields['field_completed_at'] = strtotime($item['completed_at']);
+          }
+
+          $progress = $storage->create($progressFields);
+          $progress->save();
+          $count++;
+        }
+      }
+    }
+    return $count;
+  }
+
+  /**
+   * Import User Quiz Results.
+   */
+  protected function importQuizResults(array $items): int {
+    $count = 0;
+    $storage = $this->entityTypeManager->getStorage('lms_quiz_result');
+
+    foreach ($items as $item) {
+      $user = $this->getUserByEmail($item['user_email']);
+      $quiz = $this->lookupQuizByTitle($item['quiz_title'] ?? '');
+
+      if ($user && $quiz) {
+        $resultLabel = !empty($item['is_passed']) ? 'Passed' : 'Failed';
+        $termId = $this->getOrCreateTerm('quiz_results', $resultLabel);
+
+        $fields = [
+          'uid' => $user->id(),
+          'field_quiz' => $quiz->id(),
+          'field_score' => $item['score'],
+        ];
+
+        if ($termId) {
+          $fields['field_result'] = ['target_id' => $termId];
+        }
+
+        $storage->create($fields)->save();
+        $count++;
+      }
+    }
+    return $count;
+  }
+
+  /**
+   * Import User Certificates.
+   */
+  protected function importUserCertificates(array $items): int {
+    $count = 0;
+    $storage = $this->entityTypeManager->getStorage('lms_user_certificate');
+
+    foreach ($items as $item) {
+      $user = $this->getUserByEmail($item['user_email']);
+      $course = $this->lookupCourseByTitle($item['course_title'] ?? '');
+
+      if ($user && $course) {
+        $code = $item['certificate_code'];
+        
+        // 1. Resolve Certificate Template
+        $template = NULL;
+        if ($course->hasField('field_certificate_template') && !$course->get('field_certificate_template')->isEmpty()) {
+          $template_id = $course->get('field_certificate_template')->target_id;
+          $template = $this->entityTypeManager->getStorage('lms_certificate_template')->load($template_id);
+        }
+        if (!$template) {
+          $templates = $this->entityTypeManager->getStorage('lms_certificate_template')->loadByProperties(['status' => 1]);
+          if (!empty($templates)) {
+            $template_keys = array_keys($templates);
+            // Distribute templates based on course ID so the same course gets the same beautiful template.
+            $index = (int)$course->id() % count($template_keys);
+            $template = $templates[$template_keys[$index]];
+          }
+        }
+
+        // 2. Generate PDF via Service
+        $pdf_id = NULL;
+        if ($template) {
+          /** @var \Drupal\lms_certificate\Service\CertificateGenerator $generator */
+          $generator = \Drupal::service('lms_certificate.generator');
+          $file = $generator->generate($template, $user, $course, $code);
+          if ($file) {
+            $pdf_id = $file->id();
+          }
+        }
+
+        // 3. Save Entity
+        $fields = [
+          'uid' => $user->id(),
+          'field_course' => $course->id(),
+          'field_certificate_number' => $code,
+        ];
+        if ($template) {
+          $fields['field_template'] = $template->id();
+        }
+        if ($pdf_id) {
+          $fields['field_pdf_file'] = $pdf_id;
+        }
+
+        $storage->create($fields)->save();
+        $count++;
+      }
+    }
+    return $count;
+  }
+
+  /**
+   * Import User Orders.
+   */
+  protected function importUserOrders(array $items): int {
+    $count = 0;
+    $orderStorage = $this->entityTypeManager->getStorage('lms_order');
+    $itemStorage = $this->entityTypeManager->getStorage('lms_order_item');
+
+    foreach ($items as $item) {
+      $user = $this->getUserByEmail($item['user_email']);
+      if (!$user) {
+        continue;
+      }
+
+      $order = $orderStorage->create([
+        'uid' => $user->id(),
+        'field_order_number' => $item['order_number'],
+        'field_total' => $item['total'],
+      ]);
+      $order->save();
+
+      foreach ($item['items'] as $oi) {
+        $itemType = $oi['type'] ?? 'course';
+        $newItem = $itemStorage->create([
+          'uid'        => $user->id(),
+          'field_price' => $oi['price'],
+          'field_type' => $itemType,
+        ]);
+
+        // Resolve and link the referenced entity.
+        if ($itemType === 'membership') {
+          $plans = $this->entityTypeManager->getStorage('lms_membership_plan')
+            ->loadByProperties(['name' => $oi['title'] ?? '']);
+          $plan = reset($plans);
+          if ($plan) {
+            $newItem->set('field_membership_plan', $plan->id());
+          }
+        }
+        else {
+          // Default: treat as course.
+          $course = $this->lookupCourseByTitle($oi['title'] ?? '');
+          if ($course) {
+            $newItem->set('field_course', $course->id());
+          }
+        }
+
+        $newItem->save();
+        $order->get('field_items')->appendItem($newItem);
+      }
+
+      $order->save();
+      $count++;
+    }
+    return $count;
+  }
+
+  /**
+   * Import User Memberships.
+   */
+  protected function importUserMemberships(array $items): int {
+    $count = 0;
+    $storage = $this->entityTypeManager->getStorage('lms_user_membership');
+    $planStorage = $this->entityTypeManager->getStorage('lms_membership_plan');
+
+    foreach ($items as $item) {
+      $user = $this->getUserByEmail($item['user_email']);
+      $plans = $planStorage->loadByProperties(['name' => $item['plan_name']]);
+      $plan = reset($plans);
+
+      if ($user && $plan) {
+        $storage->create([
+          'uid' => $user->id(),
+          'field_plan' => $plan->id(),
+          'field_status' => $item['status'] === 'active' ? 'active' : 'expired',
+        ])->save();
+        $count++;
+      }
+    }
+    return $count;
+  }
+
+  /**
+   * Import User Wishlists.
+   */
+  protected function importUserWishlists(array $items): int {
+    $count = 0;
+    $storage = $this->entityTypeManager->getStorage('lms_wishlist');
+
+    foreach ($items as $item) {
+      $user = $this->getUserByEmail($item['user_email']);
+      if (!$user) {
+        continue;
+      }
+
+      foreach ($item['items'] as $courseTitle) {
+        $course = $this->lookupCourseByTitle($courseTitle);
+        if ($course) {
+          $storage->create([
+            'uid' => $user->id(),
+            'field_course' => $course->id(),
+          ])->save();
+          $count++;
+        }
+      }
+    }
+    return $count;
+  }
+
+  /**
+   * Creates a Drupal managed file entity for a SCORM zip from the agent directory.
+   */
+  protected function createScormManagedFileFromAgent(string $filename): ?\Drupal\file\FileInterface {
+    $agentPath = $this->manager->getGeneratedPath() . '/lesson_scorm/' . $filename;
+    
+    if (!file_exists($agentPath)) {
+      $this->logger()->warning(dt('SCORM zip not found at path: @path', ['@path' => $agentPath]));
+      return NULL;
+    }
+    
+    $destinationUri = 'public://lessons/scorm_uploads/' . $filename;
+    
+    /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
+    $fileSystem = \Drupal::service('file_system');
+    $scormDir = 'public://lessons/scorm_uploads';
+    $fileSystem->prepareDirectory($scormDir, \Drupal\Core\File\FileSystemInterface::CREATE_DIRECTORY | \Drupal\Core\File\FileSystemInterface::MODIFY_PERMISSIONS);
+    
+    try {
+      /** @var \Drupal\file\FileRepositoryInterface $fileRepo */
+      $fileRepo = \Drupal::service('file.repository');
+      return $fileRepo->writeData(
+        file_get_contents($agentPath),
+        $destinationUri,
+        \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE
+      );
+    }
+    catch (\Exception $e) {
+      $this->logger()->error(dt('Failed to create managed SCORM file for @filename: @msg', [
+        '@filename' => $filename,
+        '@msg'      => $e->getMessage(),
+      ]));
+      return NULL;
+    }
+  }
+
+  /**
+   * Extracts a SCORM ZIP into public://scorm_extracted/{lessonId}/
+   * so the SCORM player can load index.html from the correct path.
+   */
+  protected function extractScormForLesson(int $lessonId, string $filename): void {
+    $agentPath = $this->manager->getGeneratedPath() . '/lesson_scorm/' . $filename;
+
+    if (!file_exists($agentPath)) {
+      $this->logger()->warning(dt('SCORM extract skipped — ZIP not found: @path', ['@path' => $agentPath]));
+      return;
+    }
+
+    /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
+    $fileSystem = \Drupal::service('file_system');
+    $publicReal = $fileSystem->realpath('public://');
+    $destDir    = $publicReal . '/scorm_extracted/' . $lessonId;
+
+    // Skip if already extracted.
+    if (is_file($destDir . '/index.html')) {
+      return;
+    }
+
+    if (!is_dir($destDir)) {
+      mkdir($destDir, 0755, true);
+    }
+
+    $zip = new \ZipArchive();
+    if ($zip->open($agentPath) === TRUE) {
+      $zip->extractTo($destDir);
+      $zip->close();
+      $this->logger()->info(dt('SCORM extracted: lesson @id → @dir', [
+        '@id'  => $lessonId,
+        '@dir' => $destDir,
+      ]));
+    }
+    else {
+      $this->logger()->error(dt('Failed to extract SCORM ZIP for lesson @id (@file)', [
+        '@id'   => $lessonId,
+        '@file' => $filename,
+      ]));
+    }
   }
 
 }

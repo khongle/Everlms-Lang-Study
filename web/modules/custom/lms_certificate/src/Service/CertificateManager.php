@@ -37,16 +37,25 @@ class CertificateManager {
       return FALSE; // Already issued.
     }
 
-    // Find the default template or a course-specific template.
-    // For now, get the first active template.
-    $templates = $this->entityTypeManager->getStorage('lms_certificate_template')
-      ->loadByProperties(['status' => 1]);
+    // Find a course-specific template or fallback to the default template.
+    $template = NULL;
+    if ($course->hasField('field_certificate_template') && !$course->get('field_certificate_template')->isEmpty()) {
+      $template_id = $course->get('field_certificate_template')->target_id;
+      $template = $this->entityTypeManager->getStorage('lms_certificate_template')->load($template_id);
+    }
     
-    if (empty($templates)) {
-      return FALSE; // No template available.
+    // Fallback if no course-specific template is set.
+    if (!$template) {
+      $templates = $this->entityTypeManager->getStorage('lms_certificate_template')
+        ->loadByProperties(['status' => 1]);
+      if (!empty($templates)) {
+        $template = reset($templates);
+      }
     }
 
-    $template = reset($templates);
+    if (!$template) {
+      return FALSE; // No template available.
+    }
 
     // Generate unique code.
     $code = strtoupper(substr(md5($user->id() . '-' . $course->id() . '-' . time()), 0, 10));

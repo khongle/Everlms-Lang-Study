@@ -42,6 +42,23 @@
     background-clip: text;
 }
 
+// Glowing Button
+.lms-btn-glow {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+    transition: all $transition-normal;
+    
+    &:hover {
+        box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+        transform: translateY(-2px);
+    }
+}
+
+// Ken Burns Animation
+@keyframes lms-kenburns {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+}
+
 // Search bar
 .lms-search-bar {
     display: flex;
@@ -259,4 +276,157 @@
     font-size: $font-size-h2;
     font-weight: $font-weight-extrabold;
     margin-bottom: $spacer-lg;
+}
+
+// Homepage Carousel Slideshow
+.lms-home-carousel {
+    height: 80vh;
+    min-height: 600px;
+    max-height: 850px;
+
+    @media (max-width: $breakpoint-md) {
+        height: 70vh;
+        min-height: 500px;
+    }
+
+    .carousel-inner {
+        height: 100%;
+    }
+
+    .carousel-item {
+        transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in-out;
+    }
+
+    .lms-carousel-image-wrapper {
+        overflow: hidden;
+        img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            transform-origin: center;
+        }
+    }
+    
+    .carousel-item.active .lms-kenburns-img {
+        animation: lms-kenburns 6.5s ease-out forwards;
+    }
+    
+    // Fallback normal overlay
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .carousel-caption {
+        bottom: 0;
+        top: 0;
+        z-index: 2;
+        padding-bottom: 8rem; // Make room for floating UI
+        left: 0; right: 0;
+
+        .lms-carousel-content {
+            max-width: 800px;
+            
+            .lms-glass-content-box {
+                background: rgba(15, 23, 42, 0.65);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                max-width: 680px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            }
+            
+            .lms-hero__title {
+                font-size: 3.5rem;
+                font-weight: $font-weight-extrabold;
+                line-height: $line-height-heading;
+                text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+                
+                @media (max-width: $breakpoint-md) {
+                    font-size: 2.5rem;
+                }
+            }
+
+            .lms-hero__subtitle {
+                text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+                font-size: 1.125rem;
+                line-height: 1.6;
+            }
+        }
+    }
+
+    .lms-carousel-control {
+        width: 8%;
+        z-index: 5;
+        
+        &-prev-icon,
+        &-next-icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            background-size: 40%;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all $transition-normal;
+        }
+
+        &:hover {
+            .carousel-control-prev-icon,
+            .carousel-control-next-icon {
+                background-color: $color-primary;
+                border-color: $color-primary;
+                transform: scale(1.1);
+            }
+        }
+    }
+}
+
+// Ensure the floating UI positions correctly over Carousel
+// Also break out of the .lms-page__content max-width constraint for true Edge-to-Edge
+.lms-hero--carousel {
+    padding: 0 !important;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    position: relative;
+
+    .lms-hero__floating-ui {
+        z-index: 10;
+        pointer-events: none; // let clicks pass through to slider if not on panel
+        
+        .lms-hero__floating-panel {
+            pointer-events: auto; // restore clicks on panel
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.65);
+        }
+
+        .lms-search-bar {
+            transition: all $transition-normal;
+            
+            &:focus-within {
+                box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+                background: rgba(0, 0, 0, 0.5) !important;
+            }
+        }
+
+        .lms-hero__floating-stats {
+            margin-top: 1rem;
+            .lms-stat-number {
+                font-family: $font-family-base;
+            }
+            .lms-stat-label {
+                opacity: 0.8;
+            }
+        }
+    }
+}
+
+// Global fix for 100vw breakout
+body {
+    overflow-x: hidden;
 }

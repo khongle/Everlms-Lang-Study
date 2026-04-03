@@ -1,0 +1,77 @@
+<?php
+
+/**
+ * @file
+ * Theme hooks for open_switcher module.
+ */
+
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_theme().
+ */
+function open_switcher_theme(): array {
+  return [
+    'open_switcher_page' => [
+      'variables' => [
+        'users' => [],
+        'role_options' => [],
+        'selected_role' => '',
+        'is_impersonating' => FALSE,
+        'original_name' => '',
+        'original_uid' => NULL,
+        'switch_back_url' => NULL,
+        'filter_url' => '',
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_menu().
+ *
+ * Injects impersonation state into the account menu template so
+ * "Switch Back" is visible even when the impersonated user does NOT
+ * have 'switch users' permission.
+ */
+function open_switcher_preprocess_menu(array &$variables): void {
+  // Only process the account menu.
+  if (($variables['menu_name'] ?? '') !== 'account') {
+    return;
+  }
+
+  $request = \Drupal::request();
+  if (!$request->hasSession()) {
+    return;
+  }
+
+  $session = $request->getSession();
+  $originalUid = $session->get('open_switcher_original_uid');
+
+  if (!empty($originalUid)) {
+    $variables['is_impersonating'] = TRUE;
+    $variables['switch_back_url'] = Url::fromRoute('open_switcher.switch_back')->toString();
+    $variables['original_user_name'] = $session->get('open_switcher_original_name', '');
+    $variables['original_user_uid'] = $originalUid;
+
+    // Get current (impersonated) user's roles for display.
+    $currentUser = \Drupal::currentUser();
+    $roles = $currentUser->getRoles(TRUE); // Exclude 'authenticated'.
+    $roleLabels = [];
+    $roleStorage = \Drupal::entityTypeManager()->getStorage('user_role');
+    foreach ($roles as $rid) {
+      $role = $roleStorage->load($rid);
+      if ($role) {
+        $roleLabels[] = $role->label();
+      }
+    }
+    $variables['impersonated_roles'] = $roleLabels;
+    $variables['impersonated_uid'] = $currentUser->id();
+  }
+  else {
+    $variables['is_impersonating'] = FALSE;
+    $variables['switch_back_url'] = NULL;
+    $variables['original_user_name'] = '';
+    $variables['original_user_uid'] = NULL;
+  }
+}

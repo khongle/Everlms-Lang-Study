@@ -1,0 +1,22 @@
+{#
+/**
+ * @file
+ * Theme override for local tasks.
+ */
+#}
+<div class="lms-course-tabs" style="margin-bottom: 2rem; background: transparent; border: none; position: relative; top: 0; z-index: 1;">
+  <div class="container" style="max-width: 1140px; margin: 0 auto; padding: 0 1.5rem;">
+    {% if primary %}
+      <h2 class="visually-hidden">{{ 'Primary tabs'|t }}</h2>
+      <ul class="lms-tabs" style="border-bottom: 1px solid hsla(0,0%,100%,.1); padding-bottom: 0;">
+        {{ primary }}
+      </ul>
+    {% endif %}
+    {% if secondary %}
+      <h2 class="visually-hidden">{{ 'Secondary tabs'|t }}</h2>
+      <ul class="lms-tabs lms-tabs--secondary" style="margin-top: 1rem;">
+        {{ secondary }}
+      </ul>
+    {% endif %}
+  </div>
+</div>

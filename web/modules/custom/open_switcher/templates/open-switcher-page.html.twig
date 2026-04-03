@@ -1,0 +1,92 @@
+{#
+/**
+ * @file
+ * Frontend Switch User page template.
+ */
+#}
+
+<div class="oc-page-header">
+  <h1 class="oc-page-header__title">🔀 {{ 'Switch User'|t }}</h1>
+  <p class="oc-text-muted">{{ 'Impersonate another user account for testing and support.'|t }}</p>
+</div>
+
+<div class="oc-switch-user">
+
+  {# Impersonation status banner #}
+  {% if is_impersonating %}
+    <div class="oc-alert oc-alert--warning">
+      <strong>⚠️ {{ 'You are impersonating another user.'|t }}</strong>
+      {{ 'Original account:'|t }} <strong>{{ original_name }}</strong> (uid: {{ original_uid }})
+      <a href="{{ switch_back_url }}" class="oc-btn oc-btn--sm oc-btn--outline" style="margin-left: 12px;">
+        ⬅ {{ 'Switch Back'|t }}
+      </a>
+    </div>
+  {% endif %}
+
+  {# Role filter #}
+  <div class="oc-card" style="margin-bottom: 24px;">
+    <div class="oc-card__body">
+      <form method="get" action="{{ filter_url }}" style="display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 200px;">
+          <label for="role-filter" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--oc-n-600); margin-bottom: 6px;">{{ 'Filter by Role'|t }}</label>
+          <select id="role-filter" name="role" style="width: 100%; padding: 10px 14px; border: 1px solid var(--oc-n-300); border-radius: 8px; font-size: 0.9375rem; background: var(--oc-n-0); color: var(--oc-n-800); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--oc-primary-400)'" onblur="this.style.borderColor='var(--oc-n-300)'">
+            <option value="">{{ '— All roles —'|t }}</option>
+            {% for rid, label in role_options %}
+              <option value="{{ rid }}" {{ selected_role == rid ? 'selected' }}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="oc-btn oc-btn--primary" style="height: 44px; padding: 0 24px;">{{ 'Filter'|t }}</button>
+      </form>
+    </div>
+  </div>
+
+  {# Users table #}
+  {% if users|length > 0 %}
+    <div class="oc-card">
+      <div class="oc-table-responsive">
+        <table class="oc-table">
+          <thead>
+            <tr>
+              <th>{{ 'UID'|t }}</th>
+              <th>{{ 'Username'|t }}</th>
+              <th>{{ 'Email'|t }}</th>
+              <th>{{ 'Roles'|t }}</th>
+              <th style="text-align: center;">{{ 'Action'|t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+              <tr>
+                <td style="color: var(--oc-n-400);">{{ user.uid }}</td>
+                <td><strong>{{ user.name }}</strong></td>
+                <td style="color: var(--oc-n-500);">{{ user.email }}</td>
+                <td>
+                  {% for role in user.roles %}
+                    <span class="oc-badge oc-badge--info">{{ role }}</span>
+                  {% else %}
+                    <span style="color: var(--oc-n-400); font-style: italic;">{{ '(authenticated)'|t }}</span>
+                  {% endfor %}
+                </td>
+                <td style="text-align: center;">
+                  {% if user.is_current %}
+                    <span class="oc-badge oc-badge--success">{{ '✓ Current'|t }}</span>
+                  {% else %}
+                    <a href="{{ user.switch_url }}" class="oc-btn oc-btn--sm" style="background: #2563eb; color: #fff; border: none; font-weight: 600;">
+                      🔀 {{ 'Switch'|t }}
+                    </a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% else %}
+    <div class="oc-empty-state">
+      <p>{{ 'No users found matching the selected filter.'|t }}</p>
+    </div>
+  {% endif %}
+
+</div>

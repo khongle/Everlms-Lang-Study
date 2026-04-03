@@ -1,0 +1,793 @@
+{# 
+  Style 2: Modern SaaS Professional
+  Light mode, clean cards, subtle shadows, colorful accents, container-aligned.
+#}
+
+<style>
+/* 1. Global Light Theme Overrides */
+body {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  overflow-x: hidden;
+}
+
+/* Fix main container padded look */
+.lms-page__content {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+
+
+/* 2. Breakout Backgrounds */
+.saas-section {
+  position: relative;
+  z-index: 1;
+  padding: 5rem 0;
+}
+.saas-bg-gray { background-color: #f8fafc; }
+.saas-bg-dark { background-color: #0f172a; color: #ffffff; }
+.saas-bg-gradient { background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%); }
+.saas-bg-blue { background-color: #2563eb; color: #ffffff; }
+.saas-section::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 50%; right: 50%;
+  margin-left: -50vw; margin-right: -50vw;
+  width: 100vw;
+  z-index: -1;
+  background: inherit;
+  border-top: inherit;
+  border-bottom: inherit;
+}
+
+/* 3. Typography & UI Components */
+.saas-display {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+}
+.saas-lead {
+  font-size: 1.25rem;
+  color: #475569;
+  line-height: 1.6;
+  font-weight: 400;
+  margin-bottom: 2rem;
+}
+.saas-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+.saas-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff !important;
+  padding: 0.875rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39);
+  border: none;
+}
+.saas-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+.saas-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #0f172a !important;
+  padding: 0.875rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid #cbd5e1;
+}
+.saas-btn-outline:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+/* Search Box */
+.saas-search {
+  position: relative;
+  max-width: 500px;
+  display: flex;
+  background: #ffffff;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  border: 1px solid #e2e8f0;
+}
+.saas-search input {
+  flex: 1;
+  border: none;
+  padding: 0.75rem 1rem;
+  font-size: 1.05rem;
+  outline: none;
+  background: transparent;
+  color: #0f172a;
+}
+.saas-search input::placeholder { color: #94a3b8; }
+.saas-search button {
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 0 1.5rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.saas-search button:hover { background: #1e293b; }
+
+/* Course Cards */
+.saas-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.saas-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: #cbd5e1;
+}
+.saas-card__img {
+  width: 100%;
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+.saas-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.saas-card:hover .saas-card__img img {
+  transform: scale(1.05);
+}
+.saas-card__badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(4px);
+  color: #2563eb;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.saas-card__body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.saas-card__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.saas-card__cat {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.saas-card__price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #16a34a;
+}
+.saas-card__title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+  text-decoration: none;
+}
+.saas-card__title:hover { color: #2563eb; }
+.saas-card__footer {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.saas-card__footer i { color: #94a3b8; }
+
+/* Intro Block & Images */
+.saas-intro-img {
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* FAQ Accordion */
+.saas-faq-accordion .accordion-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem !important;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.saas-faq-accordion .accordion-button {
+  font-weight: 700;
+  color: #0f172a;
+  padding: 1.25rem 1.5rem;
+  background-color: #ffffff;
+  box-shadow: none !important;
+}
+.saas-faq-accordion .accordion-button:not(.collapsed) {
+  color: #2563eb;
+  background-color: #f8fafc;
+}
+.saas-faq-accordion .accordion-body {
+  padding: 0 1.5rem 1.5rem;
+  color: #475569;
+  line-height: 1.6;
+  background-color: #ffffff;
+}
+.saas-faq-accordion .accordion-body p:last-child { margin-bottom: 0; }
+
+
+/* Testimonial Cards */
+.saas-testimonial {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  height: 100%;
+}
+.saas-testimonial__rating {
+  color: #fbbf24;
+  margin-bottom: 1rem;
+}
+.saas-testimonial__content {
+  font-size: 1.1rem;
+  color: #334155;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+.saas-testimonial__author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.saas-testimonial__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+.saas-hero-bg {
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+}
+.saas-hero-bg::before {
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+}
+</style>
+
+{# 1. HERO SECTION (With Carousel Image on the Right) #}
+<section class="saas-section saas-hero-bg position-relative" style="padding-top: 8rem; padding-bottom: 6rem;">
+  <!-- Decorative Abstract Background Elements -->
+  <div class="position-absolute rounded-circle" style="width: 600px; height: 600px; background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(255,255,255,0) 70%); top: -150px; left: -150px; z-index: 0; pointer-events: none;"></div>
+  <div class="position-absolute rounded-circle" style="width: 700px; height: 700px; background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, rgba(255,255,255,0) 70%); bottom: -200px; right: -50px; z-index: 0; pointer-events: none;"></div>
+  <div class="position-absolute" style="top: 20%; right: 45%; opacity: 0.4; z-index: 0; pointer-events: none;">
+    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="6" cy="6" r="2" fill="#94a3b8"/>
+      <circle cx="22" cy="6" r="2" fill="#94a3b8"/>
+      <circle cx="38" cy="6" r="2" fill="#94a3b8"/>
+      <circle cx="54" cy="6" r="2" fill="#94a3b8"/>
+      <circle cx="6" cy="22" r="2" fill="#94a3b8"/>
+      <circle cx="22" cy="22" r="2" fill="#94a3b8"/>
+      <circle cx="38" cy="22" r="2" fill="#94a3b8"/>
+      <circle cx="54" cy="22" r="2" fill="#94a3b8"/>
+      <circle cx="6" cy="38" r="2" fill="#94a3b8"/>
+      <circle cx="22" cy="38" r="2" fill="#94a3b8"/>
+      <circle cx="38" cy="38" r="2" fill="#94a3b8"/>
+      <circle cx="54" cy="38" r="2" fill="#94a3b8"/>
+    </svg>
+  </div>
+
+  <div class="row align-items-center position-relative z-1">
+    <div class="col-lg-6 pe-lg-5 mb-5 mb-lg-0" data-aos="fade-up">
+      {% set main_slide = slideshows[0] %}
+      
+      <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white mb-4" style="border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <span class="badge bg-primary rounded-pill">New</span>
+        <span class="fs-6 fw-medium text-slate-700" style="color: #334155; font-size: 0.875rem;">Premium Health Education</span>
+      </div>
+      
+      <h1 class="saas-display">
+        {{ main_slide.heading|default('Accelerate Your Medical Career') }}
+      </h1>
+      <p class="saas-lead pe-md-5">
+        {{ main_slide.subheading|raw|default('Access world-class training programs designed for modern healthcare professionals. Evidence-based, interactive, and fully certified.') }}
+      </p>
+      
+      <form action="{{ path('lms_course.catalog') }}" method="get" class="saas-search mb-5 shadow-lg" style="border-width: 2px;">
+        <input type="text" name="q" placeholder="{{ 'Search for courses, skills, or certifications...'|t }}">
+        <button type="submit">{{ 'Search'|t }}</button>
+      </form>
+      
+      <div class="d-flex align-items-center gap-5 border-top pt-4" style="border-color: rgba(0,0,0,0.05) !important;">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" style="width: 48px; height: 48px;"><i class="fas fa-certificate"></i></div>
+          <div>
+            <div class="fs-3 fw-black text-dark lh-1 mb-1">{{ stats.courses|default('39') }}</div>
+            <div class="text-muted fw-medium small text-uppercase" style="letter-spacing: 0.05em;">{{ 'Certified Courses'|t }}</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-success rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" style="width: 48px; height: 48px;"><i class="fas fa-user-check"></i></div>
+          <div>
+            <div class="fs-3 fw-black text-dark lh-1 mb-1">{{ stats.students|default('5000+') }}</div>
+            <div class="text-muted fw-medium small text-uppercase" style="letter-spacing: 0.05em;">{{ 'Active Learners'|t }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-6 ps-lg-4" data-aos="fade-left" data-aos-delay="100">
+      <div class="position-relative">
+        <div class="position-absolute rounded-circle" style="width: 400px; height: 400px; background: linear-gradient(135deg, #93c5fd 0%, #3b82f6 100%); opacity: 0.2; filter: blur(40px); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0;"></div>
+        
+        <div class="saas-intro-img position-relative z-1" style="aspect-ratio: 4/3; border: 8px solid rgba(255,255,255,0.7); box-shadow: 0 40px 60px -15px rgba(0,0,0,0.15);">
+          {% if slideshows|length > 0 %}
+          <div id="heroImageCarousel" class="carousel slide h-100 w-100" data-bs-ride="carousel" data-bs-interval="4000">
+            <div class="carousel-inner h-100 w-100">
+              {% for slide in slideshows %}
+                <div class="carousel-item h-100 w-100 {% if loop.first %}active{% endif %}">
+                  {% if slide.image_url %}
+                    <img src="{{ slide.image_url }}" class="d-block w-100 h-100" alt="{{ slide.heading }}" style="object-fit: cover;">
+                  {% else %}
+                    <div class="bg-secondary w-100 h-100 d-flex align-items-center justify-content-center">
+                      <i class="fas fa-image text-white-50 fs-1"></i>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+            {% if slideshows|length > 1 %}
+            <div class="carousel-indicators mb-3">
+              {% for slide in slideshows %}
+                <button type="button" data-bs-target="#heroImageCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{% if loop.first %}active{% endif %}" aria-current="true" style="width: 8px; height: 8px; border-radius: 50%; background-color: #fff; opacity: 0.8;"></button>
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroImageCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon d-none" aria-hidden="true"></span>
+              <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 40px; height: 40px; opacity: 0.9;">
+                 <i class="fas fa-chevron-left text-dark"></i>
+              </div>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroImageCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon d-none" aria-hidden="true"></span>
+              <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 40px; height: 40px; opacity: 0.9;">
+                 <i class="fas fa-chevron-right text-dark"></i>
+              </div>
+            </button>
+            {% endif %}
+          </div>
+          {% else %}
+            <div class="bg-secondary w-100 h-100"></div>
+          {% endif %}
+        </div>
+        
+        <!-- Floating Glass Badge 1 -->
+        <div class="position-absolute z-2 bg-white rounded-4 p-3 shadow-lg d-flex align-items-center gap-3" style="bottom: 2rem; left: -2rem; min-width: 240px; border: 1px solid rgba(255,255,255,0.8); backdrop-filter: blur(10px); background: rgba(255,255,255,0.95); animation: float 6s ease-in-out infinite;">
+          <div class="bg-success rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 48px; height: 48px; flex-shrink: 0;">
+            <i class="fas fa-shield-alt fs-5"></i>
+          </div>
+          <div>
+            <div class="fw-bolder text-dark mb-0" style="font-size: 0.95rem;">State Certified</div>
+            <div class="small text-muted mb-0" style="font-size: 0.75rem;">100% Accredited Programs</div>
+          </div>
+        </div>
+        
+        <!-- Floating Glass Badge 2 -->
+        <div class="position-absolute z-2 bg-white rounded-4 p-3 shadow-lg d-flex align-items-center gap-3" style="top: 2rem; right: -2rem; border: 1px solid rgba(255,255,255,0.8); backdrop-filter: blur(10px); background: rgba(255,255,255,0.95); animation: float 8s ease-in-out infinite reverse;">
+          <div class="d-flex" style="color: #fbbf24; font-size: 1.25rem;">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <div class="fw-bolder text-dark mb-0 border-start ps-3" style="font-size: 0.95rem;">
+            5.0 <span class="fw-medium text-muted small">/ 5</span>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+{# 1.5 Continue Learning (Logged In Users) #}
+{% if logged_in and my_courses|length > 0 %}
+<section class="saas-section" style="background: #ffffff; padding: 4rem 0;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold mb-0 text-dark"><i class="fas fa-book-reader text-primary me-2"></i> {{ 'Continue Learning'|t }}</h3>
+    <a href="{{ path('lms_progress.dashboard')|default('#') }}" class="text-primary text-decoration-none fw-semibold">{{ 'My Dashboard'|t }} <i class="fas fa-arrow-right ms-1"></i></a>
+  </div>
+  <div class="row g-4">
+    {% for item in my_courses %}
+      <div class="col-md-6 col-lg-4">
+        <div class="p-3 border rounded-3 d-flex align-items-center gap-3 bg-white" style="box-shadow: 0 2px 4px rgba(0,0,0,0.02)">
+           <div class="rounded-2 overflow-hidden" style="width: 80px; height: 60px; min-width: 80px;">
+             {% if item.course.thumbnail_url %}
+               <img src="{{ item.course.thumbnail_url }}" alt="..." class="w-100 h-100 object-fit-cover">
+             {% else %}
+               <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center"><i class="fas fa-video text-muted"></i></div>
+             {% endif %}
+           </div>
+           <div class="flex-grow-1 min-w-0">
+             <h4 class="fs-6 fw-bold text-truncate mb-1"><a href="{{ item.course.continue_url }}" class="text-dark text-decoration-none">{{ item.course.name }}</a></h4>
+             <div class="progress" style="height: 6px;">
+               <div class="progress-bar bg-primary" style="width: {{ item.progress }}%"></div>
+             </div>
+             <div class="text-muted mt-1" style="font-size: 0.75rem;">{{ item.progress }}% {{ 'Completed'|t }}</div>
+           </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# 2. POPULAR CATEGORIES (Modernized) #}
+{% if categories|length > 0 %}
+<section class="saas-section saas-bg-gray border-top border-bottom position-relative" style="border-color: #e2e8f0 !important; padding: 6rem 0;">
+  <!-- Subtle Background Decor -->
+  <div class="position-absolute rounded-circle" style="width: 400px; height: 400px; background: radial-gradient(circle, rgba(99,102,241,0.03) 0%, rgba(255,255,255,0) 70%); top: -50px; left: 10%; z-index: 0; pointer-events: none;"></div>
+
+  <div class="text-center mb-5 position-relative z-1">
+    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill bg-white text-primary fw-bold" style="font-size: 0.75rem; letter-spacing: 0.05em; border: 1px solid rgba(99,102,241,0.2);">
+      <i class="fas fa-compass"></i> {{ 'DISCOVER'|t }}
+    </div>
+    <h2 class="saas-title mb-2">{{ 'Explore Categories'|t }}</h2>
+    <p class="saas-lead mb-0 text-muted mx-auto" style="max-width: 600px;">{{ 'Find the perfect topic to boost your skills and advance your career in healthcare.'|t }}</p>
+  </div>
+  
+  <div class="row g-4 justify-content-center position-relative z-1">
+    {% set cat_icons = ['fa-heartbeat', 'fa-user-md', 'fa-hands-helping', 'fa-brain', 'fa-notes-medical', 'fa-vial', 'fa-stethoscope', 'fa-first-aid'] %}
+    {% set cat_colors = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#14b8a6', '#6366f1'] %}
+    {% set cat_bg = ['#ede9fe', '#eff6ff', '#d1fae5', '#fef3c7', '#fee2e2', '#fce7f3', '#ccfbf1', '#e0e7ff'] %}
+
+    {% for cat in categories %}
+      {% set icon_idx = loop.index0 % cat_icons|length %}
+      <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 50 }}">
+        <a href="{{ path('lms_course.category_detail', {'taxonomy_term': cat.entity.id})|default('#') }}" class="d-flex align-items-center p-3 p-xl-4 bg-white rounded-4 text-decoration-none group position-relative overflow-hidden h-100" style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02);">
+           
+           <!-- Hover Overlay Effect -->
+           <div class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="background: linear-gradient(135deg, {{ cat_bg[icon_idx] }} 0%, #ffffff 100%); transition: opacity 0.3s;" onmouseover="this.classList.remove('opacity-0')" onmouseout="this.classList.add('opacity-0')"></div>
+
+           <!-- Card Content -->
+           <div class="d-flex align-items-center gap-3 w-100 position-relative z-1">
+             <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 52px; height: 52px; background-color: {{ cat_bg[icon_idx] }}; color: {{ cat_colors[icon_idx] }}; transition: transform 0.3s;">
+               <!-- Check if thumbnail image might be available in cat object for future use, otherwise fallback to SaaS Icons -->
+               {% if cat.image_url %}
+                  <img src="{{ cat.image_url }}" alt="..." class="w-100 h-100 rounded-circle object-fit-cover shadow-sm">
+               {% else %}
+                  <i class="fas {{ cat_icons[icon_idx] }} fs-5"></i>
+               {% endif %}
+             </div>
+             
+             <div class="flex-grow-1 min-w-0">
+               <h3 class="fs-6 fw-bold text-dark mb-1" style="transition: color 0.2s;" onmouseover="this.style.color='{{ cat_colors[icon_idx] }}'" onmouseout="this.style.color='#0f172a'">{{ cat.name }}</h3>
+               <div class="d-flex align-items-center">
+                 <span class="text-muted fw-medium" style="font-size: 0.75rem;">{{ cat.course_count }} {{ 'Courses'|t }}</span>
+                 <i class="fas fa-chevron-right ms-auto opacity-25" style="font-size: 0.75rem; color: {{ cat_colors[icon_idx] }}; transition: transform 0.2s;"></i>
+               </div>
+             </div>
+           </div>
+
+           <!-- Injected CSS for Hover Effects exclusively for this block -->
+           <style>
+             a.group:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.05); border-color: {{ cat_colors[icon_idx] }}40; }
+             a.group:hover .fa-chevron-right { transform: translateX(4px); opacity: 1 !important; }
+             a.group:hover .rounded-circle { transform: scale(1.05); }
+           </style>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# 3. FEATURED COURSES (With Fixed Prices) #}
+{% if featured_courses|length > 0 %}
+<section class="saas-section" style="background-color: #ffffff;">
+  <div class="d-flex justify-content-between align-items-end mb-5">
+    <div>
+      <h2 class="saas-title mb-2">{{ 'Featured Programs'|t }}</h2>
+      <p class="saas-lead mb-0 text-muted" style="font-size: 1.1rem;">{{ 'Hand-picked premium content for your growth.'|t }}</p>
+    </div>
+    <a href="{{ path('lms_course.catalog') }}" class="saas-btn-outline d-none d-md-inline-flex">
+      {{ 'Explore All'|t }} <i class="fas fa-arrow-right ms-2"></i>
+    </a>
+  </div>
+  
+  <div class="row g-4">
+    {% for card in featured_courses %}
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+        <div class="saas-card">
+          <a href="{{ card.url }}" class="saas-card__img">
+            {% if card.thumbnail_url %}
+              <img src="{{ card.thumbnail_url }}" alt="{{ card.title }}">
+            {% else %}
+              <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+                <i class="fas fa-image text-muted fs-1 opacity-25"></i>
+              </div>
+            {% endif %}
+            {% if card.bestseller or card.featured %}
+              <div class="saas-card__badge"><i class="fas fa-star text-warning me-1"></i> {{ 'Featured'|t }}</div>
+            {% endif %}
+            <div class="position-absolute d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm" style="top: 1rem; right: 1rem; width: 32px; height: 32px; z-index: 2;">
+              <i class="far fa-heart text-muted" style="cursor: pointer; font-size: 0.9rem;"></i>
+            </div>
+          </a>
+          <div class="saas-card__body">
+            <div class="saas-card__meta">
+              <span class="saas-card__cat">{{ card.category|default('Course') }}</span>
+              <span class="saas-card__price">{{ card.price }}</span>
+            </div>
+            <a href="{{ card.url }}" class="saas-card__title mb-2">{{ card.name }}</a>
+            
+            {% if card.instructor_name %}
+            <div class="d-flex align-items-center gap-2 mb-2">
+              {% if card.instructor_avatar %}
+                <img src="{{ card.instructor_avatar }}" class="rounded-circle" style="width: 24px; height: 24px; object-fit: cover;" alt="{{ card.instructor_name }}">
+              {% else %}
+                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 24px; height: 24px; font-size: 0.65rem; font-weight: bold;">
+                  {{ card.instructor_name|slice(0, 1)|upper }}
+                </div>
+              {% endif %}
+              <span class="text-muted small fw-medium">{{ card.instructor_name }}</span>
+            </div>
+            {% endif %}
+            
+            <p class="text-muted mb-3" style="font-size: 0.85rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; min-height: 2.5rem;">
+              {{ card.short_description|striptags }}
+            </p>
+            
+            <div class="mt-auto mb-2 d-flex align-items-center">
+              <span class="text-muted small fw-bold me-2">{{ card.rating|default(5.0)|number_format(1) }}</span>
+              {% for i in 1..card.rating|default(5)|round(0, 'floor') %}
+                <i class="fas fa-star text-warning" style="font-size: 0.8rem;"></i>
+              {% endfor %}
+            </div>
+            
+            <div class="saas-card__footer d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="d-flex align-items-center text-muted" style="font-size: 0.8rem;">
+                 <i class="fas fa-signal me-1"></i> {{ card.level|default('All Levels') }}
+                 <span class="mx-2 text-muted opacity-50">•</span>
+                 <i class="far fa-clock me-1"></i> {{ card.duration }}
+              </div>
+            </div>
+            
+            <div class="mt-3 pt-3 border-top d-flex align-items-center justify-content-between">
+              {% if card.is_enrolled %}
+                <div class="d-flex align-items-center text-success fw-bold" style="font-size: 0.85rem;"><i class="fas fa-unlock-alt me-2"></i> {{ 'UNLOCKED'|t }}</div>
+                <a href="{{ card.continue_url }}" class="saas-btn-primary py-1 px-3 fs-6 rounded-pill" style="min-width: fit-content; border-radius: 2rem !important; font-size: 0.85rem !important;">{{ 'Continue Learning'|t }}</a>
+              {% else %}
+                <div class="d-flex align-items-center text-muted fw-bold" style="font-size: 0.85rem;"><i class="fas fa-lock me-2"></i> {{ 'LOCKED'|t }}</div>
+                <a href="{{ card.url }}" class="saas-btn-outline py-1 px-3 fs-6 rounded-pill" style="min-width: fit-content; border-radius: 2rem !important; font-size: 0.85rem !important;">{{ 'View Course'|t }}</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# 4. BUNDLES (Restored) #}
+{% if bundles is defined and bundles|length > 0 %}
+<section class="saas-section saas-bg-gray">
+  <div class="text-center mb-5">
+    <h2 class="saas-title mb-2">{{ 'Popular Learning Bundles'|t }}</h2>
+    <p class="saas-lead text-muted">{{ 'Save multiple courses by enrolling into verified bundles'|t }}</p>
+  </div>
+  <div class="row g-4 justify-content-center">
+    {% for bundle in bundles %}
+      <div class="col-lg-4 col-md-6">
+        <div class="p-4 bg-white border rounded-4 text-center d-flex flex-column h-100" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+          <div class="d-inline-block px-3 py-1 bg-primary text-white text-uppercase rounded-pill fw-bold mb-4 mx-auto" style="font-size: 0.75rem; letter-spacing: 0.05em;">{{ 'Value Bundle'|t }}</div>
+          <h3 class="fs-4 fw-bold mb-3">{{ bundle.label() }}</h3>
+          <div class="fs-1 fw-bold text-success mb-4">${{ bundle.get('field_price').value|default('0.00') }}</div>
+          <a href="#" class="saas-btn-outline w-100 mt-auto">{{ 'View Bundle Details'|t }}</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# 5. ABOUT / INTRODUCTIONS #}
+{% if introductions|length > 0 %}
+<section class="saas-section" style="background: #ffffff;">
+  {% for intro in introductions %}
+    <div class="row align-items-center mb-5 pb-5 {% if not loop.last %}border-bottom{% endif %}" style="border-color: #f1f5f9 !important;" data-aos="fade-up">
+      {% if intro.image_position == 'left' %}
+      <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
+        <div class="saas-intro-img">
+          <img src="{{ intro.image_url }}" alt="{{ intro.title }}" class="img-fluid w-100" style="aspect-ratio: 1/1; object-fit: cover;">
+        </div>
+      </div>
+      {% endif %}
+      
+      <div class="col-lg-6 {% if intro.image_position == 'left' %}ps-lg-5{% else %}pe-lg-5{% endif %}">
+        {% if intro.subheading %}
+          <div class="d-inline-block px-3 py-1 rounded-pill bg-light text-primary fw-bold mb-4" style="font-size: 0.85rem; letter-spacing: 0.05em;">
+            {{ intro.subheading }}
+          </div>
+        {% endif %}
+        <h2 class="saas-title mb-4" style="font-size: 2.75rem;">{{ intro.title }}</h2>
+        <div class="saas-lead mb-5">
+          {{ intro.body|raw }}
+        </div>
+        {% if intro.link_url %}
+          <a href="{{ intro.link_url }}" class="saas-btn-outline">{{ intro.link_title }}</a>
+        {% endif %}
+      </div>
+
+      {% if intro.image_position != 'left' %}
+      <div class="col-lg-6 mt-5 mt-lg-0 ps-lg-5">
+        <div class="saas-intro-img">
+          <img src="{{ intro.image_url }}" alt="{{ intro.title }}" class="img-fluid w-100" style="aspect-ratio: 1/1; object-fit: cover;">
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+{# 5.5. FAQS (Global) #}
+{% if faqs|length > 0 %}
+<section class="saas-section" style="background: #ffffff;">
+  <div class="row">
+    <div class="col-lg-5 mb-5 mb-lg-0 pe-lg-5" data-aos="fade-right">
+      <h2 class="saas-title mb-4" style="font-size: 2.75rem;">{{ 'Frequently Asked Questions'|t }}</h2>
+      <p class="saas-lead mb-5">{{ 'Got questions? We have answers. Check out our most common queries below.'|t }}</p>
+      
+      <div class="saas-intro-img position-relative overflow-visible">
+        <div class="position-absolute rounded-circle" style="width: 300px; height: 300px; background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%); opacity: 0.15; filter: blur(30px); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0;"></div>
+        
+        {% set faq_img = 'https://picsum.photos/seed/faq_health/800/800' %}
+        {% if featured_courses|length > 0 and featured_courses[0].thumbnail_url %}
+           {% set faq_img = featured_courses[0].thumbnail_url %}
+        {% endif %}
+        <div class="rounded-4 overflow-hidden position-relative z-1 shadow-lg" style="aspect-ratio: 4/5;">
+           <img src="{{ faq_img }}" alt="FAQ Support" class="img-fluid w-100 h-100" style="object-fit: cover;">
+        </div>
+        
+        <!-- Decoration Box -->
+        <div class="position-absolute bg-white p-4 rounded-4 shadow-sm z-2" style="bottom: -2rem; right: -2rem; border: 1px solid #e2e8f0; width: 65%;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; flex-shrink: 0;">
+               <i class="fas fa-headset fs-5"></i>
+            </div>
+            <div>
+              <div class="fw-bold text-dark fs-6">{{ '24/7 Support'|t }}</div>
+              <div class="small text-muted">{{ 'We are here to help.'|t }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-7 ps-lg-5 mt-5 mt-lg-0" data-aos="fade-left">
+      <div class="accordion saas-faq-accordion" id="accordionFaqs">
+        {% for faq in faqs %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFaq{{ faq.id }}">
+              <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFaq{{ faq.id }}" aria-expanded="{% if loop.first %}true{% else %}false{% endif %}" aria-controls="collapseFaq{{ faq.id }}">
+                {{ faq.question }}
+              </button>
+            </h2>
+            <div id="collapseFaq{{ faq.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="headingFaq{{ faq.id }}" data-bs-parent="#accordionFaqs">
+              <div class="accordion-body">
+                {{ faq.answer|raw }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# 6. TESTIMONIALS (Restored - Feedback User) #}
+{% if testimonials|length > 0 %}
+<section class="saas-section saas-bg-gray">
+  <div class="text-center mb-5">
+    <h2 class="saas-title mb-2">{{ 'What Our Students Say'|t }}</h2>
+    <p class="saas-lead text-muted">{{ 'Real feedback from our professional community.'|t }}</p>
+  </div>
+  <div class="row g-4 justify-content-center">
+    {% for tm in testimonials %}
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+        <div class="saas-testimonial">
+          <div class="saas-testimonial__rating">
+            {% for i in 1..tm.rating|default(5) %}
+              <i class="fas fa-star"></i>
+            {% endfor %}
+          </div>
+          <p class="saas-testimonial__content">"{{ tm.content }}"</p>
+          <div class="saas-testimonial__author d-flex align-items-center gap-3">
+            {% if tm.avatar %}
+              <img src="{{ tm.avatar }}" alt="{{ tm.name }}" class="saas-testimonial__avatar">
+            {% else %}
+              <div class="saas-testimonial__avatar bg-light d-flex align-items-center justify-content-center text-primary fw-bold fs-5">{{ tm.name|slice(0, 1) }}</div>
+            {% endif %}
+            <div>
+              <h4 class="fs-6 fw-bold mb-0 text-dark">{{ tm.name }}</h4>
+              <span class="text-muted small">{{ tm.role }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# 7. CALL TO ACTION #}
+<section class="saas-section saas-bg-dark text-center" style="padding: 6rem 0;">
+  <div class="row justify-content-center">
+    <div class="col-lg-8" data-aos="zoom-in">
+      <h2 class="saas-display text-white mb-4">{{ 'Ready to Transform Your Career?'|t }}</h2>
+      <p class="saas-lead text-slate-300 mb-5" style="color: #cbd5e1;">{{ 'Join thousands of professionals mastering new skills every day. Registration takes less than a minute.'|t }}</p>
+      <div class="d-flex justify-content-center gap-3 flex-column flex-md-row">
+        <a href="{{ path('user.register')|default('#') }}" class="saas-btn-primary">
+          {{ 'Create Free Account'|t }}
+        </a>
+        <a href="{{ path('lms_course.catalog') }}" class="saas-btn-outline" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #fff !important;">
+          {{ 'Browse Catalog'|t }}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

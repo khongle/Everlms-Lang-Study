@@ -1,0 +1,356 @@
+// Learn page layout
+.lms-learn {
+    display: flex;
+    min-height: calc(100vh - 80px);
+    background-color: $color-bg-primary;
+
+    &__main {
+        flex: 1;
+        min-width: 0;
+        background: $color-bg-primary;
+    }
+
+    &__content {
+        padding: $spacer-xxl;
+
+        @media (max-width: $breakpoint-md) {
+            padding: $spacer-md;
+        }
+    }
+
+    &__player {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: rgba(22, 27, 34, 0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid hsla(0,0%,100%,0.1);
+        border-radius: $radius-lg;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    &__text-content {
+        padding: 2rem;
+        line-height: 1.8;
+        color: #c9d1d9;
+        font-size: 1.05rem;
+    }
+
+    &__video-wrapper {
+        position: relative;
+        padding-top: 56.25%; // 16:9
+        background: #000;
+        overflow: hidden;
+    }
+
+    &__iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    &__placeholder {
+        background: rgba(22, 27, 34, 0.6);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid hsla(0,0%,100%,0.1);
+        border-radius: $radius-lg;
+        padding: 5rem 2rem;
+        text-align: center;
+        color: $color-text-muted;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        i {
+            font-size: 4rem;
+            margin-bottom: $spacer-lg;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        p {
+            font-size: 1.125rem;
+            margin: 0;
+            color: $color-text-muted;
+        }
+    }
+
+    &__info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: $spacer-lg 0;
+        border-bottom: 1px solid $color-border;
+    }
+
+    &__title {
+        font-size: $font-size-h3;
+        font-weight: $font-weight-bold;
+        margin: 0;
+    }
+
+    &__description {
+        padding: $spacer-lg 0;
+        line-height: 1.7;
+        color: $color-text-secondary;
+    }
+
+    &__attachments {
+        padding: $spacer-lg 0;
+        border-top: 1px solid $color-border;
+
+        h3 {
+            font-size: $font-size-lg;
+            margin-bottom: $spacer-md;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li a {
+            display: block;
+            padding: $spacer-xs $spacer-sm;
+            color: $color-primary;
+            text-decoration: none;
+            border-radius: $radius-md;
+
+            &:hover {
+                background: rgba($color-primary, 0.1);
+            }
+        }
+    }
+
+    // Sidebar
+    &__sidebar {
+        width: 360px;
+        min-width: 360px;
+        background: $color-bg-secondary;
+        border-left: 1px solid hsla(0,0%,100%,0.1);
+        overflow-y: auto;
+        max-height: calc(100vh - 80px);
+        position: sticky;
+        top: 80px;
+
+        @media (max-width: $breakpoint-md) {
+            display: none; // mobile: hide sidebar or show as overlay
+        }
+    }
+
+    &__sidebar-header {
+        padding: $spacer-md $spacer-lg;
+        border-bottom: 1px solid $color-border;
+
+        h2 {
+            font-size: $font-size-base;
+            font-weight: $font-weight-semibold;
+            margin: 0;
+        }
+    }
+
+    &__chapter-accordion {
+        summary {
+            padding: $spacer-md $spacer-lg $spacer-sm;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            
+            &::marker,
+            &::-webkit-details-marker {
+                display: none;
+            }
+
+            .toggle-icon {
+                color: $color-text-muted;
+                font-size: 0.8rem;
+                transition: transform 0.3s ease;
+            }
+
+            &:hover {
+                .lms-learn__chapter-title, .toggle-icon {
+                    color: $color-text-secondary;
+                }
+            }
+        }
+        
+        &[open] {
+            summary {
+                .lms-learn__chapter-title, .toggle-icon {
+                    color: $color-text-primary;
+                }
+                .toggle-icon {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+    }
+
+    &__chapter-title {
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+        color: $color-text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 0;
+        transition: color 0.2s ease;
+    }
+
+    &__lesson-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    &__lesson-item {
+        border-left: 3px solid transparent;
+        transition: all 0.2s ease;
+
+        a {
+            display: flex;
+            align-items: center;
+            gap: $spacer-sm;
+            padding: $spacer-md $spacer-lg;
+            color: $color-text-secondary;
+            text-decoration: none;
+            font-size: 0.9375rem;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background: rgba(255,255,255, 0.03);
+                color: $color-text-primary;
+            }
+
+            i {
+                width: 24px;
+                text-align: center;
+                font-size: 1.1rem;
+            }
+
+            span {
+                flex: 1;
+                line-height: 1.4;
+            }
+
+            small {
+                color: $color-text-muted;
+            }
+        }
+
+        &--active {
+            background: rgba($color-primary, 0.1);
+            border-left: 3px solid $color-primary;
+
+            a {
+                color: #fff;
+                font-weight: $font-weight-semibold;
+                
+                i {
+                    color: $color-primary;
+                }
+            }
+        }
+    }
+}
+
+// Progress bar
+.lms-progress-bar {
+    height: 6px;
+    background: $color-bg-tertiary;
+    border-radius: $radius-full;
+    overflow: hidden;
+    margin: $spacer-sm 0;
+
+    &__fill {
+        height: 100%;
+        background: $gradient-primary;
+        border-radius: $radius-full;
+        transition: width 0.3s ease;
+    }
+
+    &__label {
+        font-size: $font-size-xs;
+        color: $color-text-muted;
+    }
+}
+
+// KPI card improvements
+.lms-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: $spacer-md;
+    padding: $spacer-lg;
+
+    &__icon {
+        width: 48px;
+        height: 48px;
+        border-radius: $radius-lg;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+
+        &--primary {
+            background: rgba($color-primary, 0.15);
+            color: $color-primary;
+        }
+
+        &--success {
+            background: rgba($color-success, 0.15);
+            color: $color-success;
+        }
+
+        &--warning {
+            background: rgba($color-warning, 0.15);
+            color: $color-warning;
+        }
+
+        &--info {
+            background: rgba($color-info, 0.15);
+            color: $color-info;
+        }
+    }
+
+    &__value {
+        display: block;
+        font-size: $font-size-h3;
+        font-weight: $font-weight-extrabold;
+    }
+
+    &__label {
+        font-size: $font-size-sm;
+        color: $color-text-muted;
+    }
+}
+
+// Certificate icon
+.lms-certificate-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto $spacer-md;
+    border-radius: 50%;
+    background: $gradient-primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+        font-size: 1.5rem;
+        color: #fff;
+    }
+}
+
+// Button block
+.lms-btn--block {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: $spacer-md;
+}

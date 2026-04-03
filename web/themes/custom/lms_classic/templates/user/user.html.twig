@@ -1,0 +1,14 @@
+{#
+/**
+ * @file
+ * Default theme implementation to present all user data.
+ *
+ * This acts as a fallback for compact or token view modes, so we don't
+ * render the entire giant profile inside comments!
+ */
+#}
+<article{{ attributes.addClass('profile') }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</article>

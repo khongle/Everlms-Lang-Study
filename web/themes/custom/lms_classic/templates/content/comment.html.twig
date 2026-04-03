@@ -1,0 +1,60 @@
+{#
+/**
+ * @file
+ * Custom theme implementation for comments.
+ */
+#}
+{%
+  set classes = [
+    'comment',
+    'lms-comment-card',
+    status != 'published' ? 'comment--unpublished',
+    comment.owner.anonymous ? 'by-anonymous',
+    author_id and author_id == commented_entity.getOwnerId() ? 'by-node-author',
+  ]
+%}
+
+<article{{ attributes.addClass(classes) }}>
+  <mark class="hidden" data-comment-timestamp="{{ new_indicator_timestamp }}"></mark>
+
+  <div class="lms-comment__avatar">
+    {% if user_picture %}
+      <div class="lms-comment__avatar-img">
+        {{ user_picture }}
+      </div>
+    {% else %}
+      <div class="lms-comment__avatar-placeholder">
+        <i class="fas fa-user"></i>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="lms-comment__content">
+    <div class="lms-comment__header">
+      <div class="lms-comment__author">
+        {% set author_user = comment.getOwner() %}
+        {% set first_name = author_user.field_first_name.value %}
+        {% set last_name = author_user.field_last_name.value %}
+        {% if first_name or last_name %}
+          {{ first_name }} {{ last_name }}
+        {% else %}
+          {{ author }}
+        {% endif %}
+      </div>
+      <div class="lms-comment__time">{{ created }}</div>
+      {% if status != 'published' %}
+        <span class="lms-comment__badge">{{ 'Awaiting moderation'|t }}</span>
+      {% endif %}
+    </div>
+
+    <div class="lms-comment__body">
+      {{ content.comment_body }}
+    </div>
+
+    {% if content.links %}
+      <div class="lms-comment__actions">
+        {{ content.links }}
+      </div>
+    {% endif %}
+  </div>
+</article>

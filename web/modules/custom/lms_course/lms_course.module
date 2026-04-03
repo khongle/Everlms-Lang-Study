@@ -25,11 +25,26 @@ function lms_course_theme(): array {
       ],
       'template' => 'lms-instructor-profile',
     ],
+    'lms_glossary' => [
+      'variables' => [
+        'terms' => [],
+        'alphabet' => [],
+      ],
+      'template' => 'lms-glossary',
+    ],
     'lms_homepage' => [
       'variables' => [
+        'introductions' => [],
+        'slideshows' => [],
         'featured_courses' => [],
         'categories' => [],
         'stats' => [],
+        'my_courses' => [],
+        'bundles' => [],
+        'testimonials' => [],
+        'faqs' => [],
+        'logged_in' => FALSE,
+        'homepage_style' => 'glassmorphism',
       ],
       'template' => 'lms-homepage',
     ],
@@ -60,6 +75,7 @@ function lms_course_theme(): array {
         'logged_in' => FALSE,
         'is_enrolled' => FALSE,
         'continue_url' => '',
+        'rating_form' => NULL,
       ],
       'template' => 'lms-course-detail',
     ],
@@ -100,11 +116,19 @@ function lms_course_theme(): array {
     'lms_admin_courses' => [
       'variables' => [
         'courses' => [],
+        'pager' => NULL,
         'filters' => [],
         'category_options' => [],
         'instructor_options' => [],
       ],
       'template' => 'lms-admin-courses',
+    ],
+    'lms_admin_courses_table' => [
+      'variables' => [
+        'courses' => [],
+        'pager' => NULL,
+      ],
+      'template' => 'lms-admin-courses-table',
     ],
     'lms_admin_quizzes' => [
       'variables' => [
@@ -121,12 +145,49 @@ function lms_course_theme(): array {
     'lms_admin_users' => [
       'variables' => [
         'users' => [],
+        'pager' => NULL,
         'add_user_url' => '',
         'current_search' => '',
         'current_role' => 'All',
         'current_status' => 'All',
       ],
       'template' => 'lms-admin-users',
+    ],
+    'lms_admin_content' => [
+      'variables' => [
+        'contents' => [],
+        'pager' => NULL,
+        'filters' => [],
+        'content_type_label' => '',
+        'add_content_url' => '',
+        'active_menu' => '',
+        'hide_thumbnail' => FALSE,
+      ],
+      'template' => 'lms-admin-content',
+    ],
+    'lms_admin_ratings' => [
+      'variables' => [
+        'ratings' => [],
+        'pager' => NULL,
+        'filters' => [],
+        'active' => 'content_ratings'
+      ],
+      'template' => 'lms-admin-ratings',
+    ],
+    'lms_admin_content_table' => [
+      'variables' => [
+        'contents' => [],
+        'pager' => NULL,
+        'hide_thumbnail' => FALSE,
+      ],
+      'template' => 'lms-admin-content-table',
+    ],
+    'lms_admin_users_table' => [
+      'variables' => [
+        'users' => [],
+        'pager' => NULL,
+      ],
+      'template' => 'lms-admin-users-table',
     ],
     'lms_admin_reports_v2' => [
       'variables' => [
@@ -156,6 +217,14 @@ function lms_course_theme(): array {
         'active_menu' => 'users',
       ],
       'template' => 'lms-admin-user-form',
+    ],
+    'lms_admin_entity_view' => [
+      'variables' => [
+        'content' => [],
+        'title' => '',
+        'active_menu' => 'dashboard',
+      ],
+      'template' => 'lms-admin-entity-view',
     ],
     // Profile
     'lms_profile' => [

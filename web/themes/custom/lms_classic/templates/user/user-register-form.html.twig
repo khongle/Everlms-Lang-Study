@@ -1,0 +1,37 @@
+{# Register form — matches 06-auth-login-register.png #}
+{{ attach_library('lms_theme/global') }}
+
+<div class="lms-auth">
+  <div class="lms-auth__container">
+    <div class="lms-auth__card">
+      <div class="lms-auth__header">
+        <a href="{{ path('<front>') }}" class="lms-auth__logo">
+          <i class="fas fa-graduation-cap"></i> {{ 'EverLMS'|t }}
+        </a>
+        <h1>{{ 'Create Account'|t }}</h1>
+        <p>{{ 'Start your learning journey today'|t }}</p>
+      </div>
+
+      {# Social login buttons #}
+      <div class="lms-auth__social">
+        <a href="#" class="lms-btn lms-btn--social lms-btn--google">
+          <i class="fab fa-google"></i> {{ 'Sign up with Google'|t }}
+        </a>
+        <a href="#" class="lms-btn lms-btn--social lms-btn--facebook">
+          <i class="fab fa-facebook-f"></i> {{ 'Sign up with Facebook'|t }}
+        </a>
+      </div>
+
+      <div class="lms-auth__divider">
+        <span>{{ 'or sign up with email'|t }}</span>
+      </div>
+
+      {# Drupal register form #}
+      {{ form }}
+
+      <div class="lms-auth__footer">
+        <p>{{ 'Already have an account?'|t }} <a href="{{ path('user.login') }}">{{ 'Sign In'|t }}</a></p>
+      </div>
+    </div>
+  </div>
+</div>

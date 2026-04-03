@@ -282,9 +282,6 @@ final class QuizController extends ControllerBase {
     return $this->redirect('lms_quiz.result', ['lms_quiz_result' => $quiz_result->id()]);
   }
 
-  /**
-   * View quiz result.
-   */
   public function viewResult(QuizResult $lms_quiz_result): array {
     $quiz = $lms_quiz_result->get('field_quiz')->entity;
     $result_term = $lms_quiz_result->get('field_result')->entity;
@@ -297,11 +294,22 @@ final class QuizController extends ControllerBase {
         continue;
       }
       $question = $response->get('field_question')->entity;
+      
+      $choices = [];
+      if ($response->hasField('field_answers') && !$response->get('field_answers')->isEmpty()) {
+        foreach ($response->get('field_answers') as $ans_ref) {
+          if ($ans_ref->entity) {
+            $choices[] = $ans_ref->entity->label();
+          }
+        }
+      }
+
       $responses[] = [
-        'question' => $question?->label() ?? '',
+        'question' => $question?->label() ?? 'Unknown Question',
         'correct' => (bool) $response->get('field_correct')->value,
         'score' => (float) $response->get('field_score')->value,
         'text_answer' => $response->get('field_text_answer')->value ?? '',
+        'choices' => $choices,
         'feedback' => $response->get('field_teacher_feedback')->value ?? '',
         'pending' => (bool) $response->get('field_pending_review')->value,
       ];
@@ -341,7 +349,7 @@ final class QuizController extends ControllerBase {
         'quiz_name' => $quiz?->label() ?? '',
         'score' => (float) $result->get('field_score')->value,
         'date' => $result->get('created')->value,
-        'url' => $result->toUrl()->toString(),
+        'url' => \Drupal\Core\Url::fromRoute('lms_quiz.result', ['lms_quiz_result' => $result->id()])->toString(),
       ];
     }
 

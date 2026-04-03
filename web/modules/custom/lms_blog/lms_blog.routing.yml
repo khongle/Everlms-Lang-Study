@@ -39,7 +39,7 @@ lms_blog.frontend.collection:
     _access: 'TRUE'
 
 lms_blog.frontend.canonical:
-  path: '/news/{lms_article}'
+  path: '/news/{node}'
   defaults:
     _controller: '\Drupal\lms_blog\Controller\LmsBlogController::view'
     _title_callback: '\Drupal\lms_blog\Controller\LmsBlogController::viewTitle'
@@ -47,5 +47,5 @@ lms_blog.frontend.canonical:
     _access: 'TRUE'
   options:
     parameters:
-      lms_article:
-        type: entity:lms_article
+      node:
+        type: entity:node

@@ -59,7 +59,7 @@
         </span>
         <span style="display: flex; align-items: center; gap: 0.5rem; color: #8b949e;">
           <i class="fas fa-globe" style="color: #4facfe;"></i> 
-          <strong style="color: #fff;">{{ course.field_language.value ?? 'English'|t }}</strong>
+          <strong style="color: #fff;">{{ course.field_language.entity.name.value ?? 'English'|t }}</strong>
         </span>
       </div>
     </div>
@@ -140,8 +140,19 @@
         {# Curriculum Tab (shown below in mobile) #}
         <div class="lms-tab-panel" id="curriculum">
           <h2 class="lms-tab-panel__title" style="font-size: 1.75rem; margin-bottom: 1.5rem; color: #fff;">{{ 'Course Curriculum'|t }}</h2>
+          {% set total_lessons = 0 %}
+          {% set total_duration = 0 %}
+          {% for item in curriculum %}
+            {% set total_lessons = total_lessons + item.lessons|length %}
+            {% for lesson in item.lessons %}
+              {% set total_duration = total_duration + lesson.field_duration.value|default(0) %}
+            {% endfor %}
+          {% endfor %}
+          {% set duration_hours = (total_duration / 60)|round(0, 'floor') %}
+          {% set duration_mins = total_duration % 60 %}
+          
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; color: #8b949e; font-size: 0.9375rem;">
-            <span>{{ curriculum|length }} {{ 'sections'|t }} <span style="margin: 0 0.5rem;">•</span> 12 {{ 'lectures'|t }} <span style="margin: 0 0.5rem;">•</span> 5h 30m {{ 'total length'|t }}</span>
+            <span>{{ curriculum|length }} {{ 'sections'|t }} <span style="margin: 0 0.5rem;">•</span> {{ total_lessons }} {{ 'lectures'|t }} <span style="margin: 0 0.5rem;">•</span> {% if duration_hours > 0 %}{{ duration_hours }}h {% endif %}{{ duration_mins }}m {{ 'total length'|t }}</span>
             <a href="#" style="color: #667eea; text-decoration: none; font-weight: 500;">{{ 'Expand all sections'|t }}</a>
           </div>
 
@@ -165,10 +176,12 @@
                             'text': 'fa-file-alt',
                             'quiz': 'fa-question-circle',
                             'h5p': 'fa-puzzle-piece',
-                            'scorm': 'fa-code',
+                            'pdf': 'fa-file-pdf',
+                            'scorm': 'fa-box-open',
+                            'pptx': 'fa-file-powerpoint',
                             'zoom': 'fa-video'
                           } %}
-                          <i class="fas {{ type_icons[lesson.field_type.value] ?? 'fa-play-circle' }}" style="color: #667eea; font-size: 1.1rem;"></i>
+                          <i class="fas {{ type_icons[lesson.field_type.value] ?? 'fa-file' }}" style="color: #667eea; font-size: 1.1rem;"></i>
                           {% if is_enrolled %}
                             <a href="{{ path('lms_progress.lesson_view', {'lms_course': course.id(), 'lms_lesson': lesson.id()}) }}" style="color: #c9d1d9; font-size: 0.9375rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#c9d1d9'">{{ lesson.label }}</a>
                           {% else %}
@@ -230,7 +243,11 @@
                 <span><i class="fas fa-play-circle" style="color: #f5576c; margin-right: 4px;"></i> {{ instructor_courses_count|number_format }} Courses</span>
               </div>
               <p style="color: #8b949e; line-height: 1.6; font-size: 0.9375rem; margin-bottom: 1.5rem;">
-                {{ instructor.field_bio.value ?? 'Passionate about teaching cutting-edge technologies to empower the next generation of developers. Experience working at top tech companies scaling architectures for millions of users.'|t }}
+                {% if instructor and instructor.field_bio.value %}
+                  {{ instructor.field_bio.value|raw }}
+                {% else %}
+                  {{ 'Passionate about teaching cutting-edge technologies to empower the next generation of developers.'|t }}
+                {% endif %}
               </p>
               <div style="display: flex; gap: 1rem;">
                 <a href="#" class="lms-social-btn" style="width: 36px; height: 36px; border-radius: 50%; background: #21262d; border: 1px solid hsla(0,0%,100%,0.1); display: flex; align-items: center; justify-content: center; color: #8b949e; text-decoration: none;" onmouseover="this.style.background='#0a66c2'; this.style.color='#fff';" onmouseout="this.style.background='#21262d'; this.style.color='#8b949e';"><i class="fab fa-linkedin-in"></i></a>
@@ -268,6 +285,16 @@
               {% endfor %}
             </div>
           </div>
+          
+          {# Rating Form - visible if user enrolled and hasn't rated yet #}
+          {% if rating_form %}
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid hsla(0,0%,100%,0.1);">
+              <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: #fff;">{{ 'Leave your review'|t }}</h3>
+              <div class="card-glass" style="background: rgba(22, 27, 34, 0.5); border: 1px solid hsla(0,0%,100%,0.05); padding: 1.5rem; border-radius: 0.75rem;">
+                {{ rating_form }}
+              </div>
+            </div>
+          {% endif %}
         </div>
 
         {# FAQ Tab #}

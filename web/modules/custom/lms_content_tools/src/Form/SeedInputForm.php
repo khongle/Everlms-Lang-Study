@@ -198,19 +198,9 @@ final class SeedInputForm extends FormBase {
         '#rows' => 2,
       ];
       $form['courses']['items'][$i]['category'] = [
-        '#type' => 'select',
+        '#type' => 'textfield',
         '#title' => $this->t('Category'),
-        '#options' => [
-          'Programming' => 'Programming',
-          'Design' => 'Design',
-          'Marketing' => 'Marketing',
-          'Management' => 'Management',
-          'Soft Skills' => 'Soft Skills',
-          'Data Science' => 'Data Science',
-          'DevOps' => 'DevOps',
-          'Security' => 'Security',
-          'Other' => 'Other',
-        ],
+        '#description' => $this->t('Enter a course category (e.g., Programming, Healthcare).'),
         '#default_value' => $course['category'] ?? 'Programming',
         '#required' => TRUE,
       ];
@@ -456,6 +446,31 @@ final class SeedInputForm extends FormBase {
       '#title' => $this->t('Create sample badges'),
       '#default_value' => $sampleData['create_badges'] ?? TRUE,
     ];
+    $form['sample_data']['create_slideshows'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Create sample slideshows (Home banners)'),
+      '#default_value' => $sampleData['create_slideshows'] ?? TRUE,
+    ];
+    $form['sample_data']['create_introductions'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Create sample introductions (Landing blocks)'),
+      '#default_value' => $sampleData['create_introductions'] ?? TRUE,
+    ];
+    $form['sample_data']['create_glossaries'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Create sample glossaries (Vocabulary)'),
+      '#default_value' => $sampleData['create_glossaries'] ?? TRUE,
+    ];
+    $form['sample_data']['create_blogs'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Create sample blog articles'),
+      '#default_value' => $sampleData['create_blogs'] ?? TRUE,
+    ];
+    $form['sample_data']['create_faqs'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Create sample FAQs (Course & Global)'),
+      '#default_value' => $sampleData['create_faqs'] ?? TRUE,
+    ];
     $form['sample_data']['currency'] = [
       '#type' => 'select',
       '#title' => $this->t('Currency'),
@@ -658,6 +673,11 @@ final class SeedInputForm extends FormBase {
         'create_membership_plans' => (bool) ($values['sample_data']['create_membership_plans'] ?? TRUE),
         'create_notifications' => (bool) ($values['sample_data']['create_notifications'] ?? FALSE),
         'create_badges' => (bool) ($values['sample_data']['create_badges'] ?? TRUE),
+        'create_slideshows' => (bool) ($values['sample_data']['create_slideshows'] ?? TRUE),
+        'create_introductions' => (bool) ($values['sample_data']['create_introductions'] ?? TRUE),
+        'create_glossaries' => (bool) ($values['sample_data']['create_glossaries'] ?? TRUE),
+        'create_blogs' => (bool) ($values['sample_data']['create_blogs'] ?? TRUE),
+        'create_faqs' => (bool) ($values['sample_data']['create_faqs'] ?? TRUE),
         'currency' => $values['sample_data']['currency'] ?? 'VND',
       ],
       'advanced' => [
@@ -672,13 +692,19 @@ final class SeedInputForm extends FormBase {
 
     // Build courses array.
     $courseItems = $values['courses']['items'] ?? [];
+    $uniqueCategories = [];
     foreach ($courseItems as $i => $course) {
       if (is_array($course) && !empty($course['title'])) {
+        $category = trim($course['category'] ?? 'Programming');
+        if (!in_array($category, $uniqueCategories)) {
+          $uniqueCategories[] = $category;
+        }
+
         $data['courses'][] = [
           'id' => $i + 1,
           'title' => $course['title'],
           'description' => $course['description'] ?? '',
-          'category' => $course['category'] ?? 'Programming',
+          'category' => $category,
           'level' => $course['level'] ?? 'beginner',
           'chapters_count' => (int) ($course['counts']['chapters_count'] ?? 5),
           'lessons_per_chapter' => (int) ($course['counts']['lessons_per_chapter'] ?? 4),
@@ -691,6 +717,9 @@ final class SeedInputForm extends FormBase {
         ];
       }
     }
+    
+    // Attach unique categories
+    $data['categories'] = $uniqueCategories;
 
     // Build instructors array.
     $instructorItems = $values['instructors']['items'] ?? [];

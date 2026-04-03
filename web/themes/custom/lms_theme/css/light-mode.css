@@ -1,0 +1,2323 @@
+/* LIGHT MODE overrides for Inner Pages when Minimalist layout (Style 2) is active */
+
+/* GLOBAL overrides for dark theme */
+body.layout-minimalist {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+body.layout-minimalist h1,
+body.layout-minimalist h2,
+body.layout-minimalist h3,
+body.layout-minimalist h4,
+body.layout-minimalist h5,
+body.layout-minimalist h6 {
+  color: #0f172a;
+}
+
+body.layout-minimalist p,
+body.layout-minimalist .text-muted {
+  color: #64748b !important;
+}
+
+/* COURSE CATALOG & CATEGORIES */
+body.layout-minimalist .lms-catalog {
+  margin-top: 2.5rem;
+}
+
+body.layout-minimalist .lms-catalog__sidebar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+body.layout-minimalist .lms-catalog__sidebar-title {
+  color: #0f172a;
+  font-size: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+body.layout-minimalist .lms-catalog__toolbar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+body.layout-minimalist .lms-catalog__filter-group h4 {
+  color: #475569;
+  font-weight: 700;
+}
+
+body.layout-minimalist .lms-catalog__checkbox {
+  color: #475569;
+}
+
+body.layout-minimalist .lms-catalog__checkbox:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+body.layout-minimalist .lms-catalog__checkbox input[type="checkbox"] {
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
+body.layout-minimalist .lms-catalog__checkbox input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  border-color: transparent;
+}
+
+body.layout-minimalist .lms-catalog__count {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+body.layout-minimalist .lms-select {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #0f172a;
+  box-shadow: none;
+}
+body.layout-minimalist .lms-select:focus {
+  background: #ffffff;
+  border-color: #6366f1;
+}
+
+body.layout-minimalist .lms-input {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #0f172a;
+}
+body.layout-minimalist .lms-input:focus {
+  background: #ffffff;
+  border-color: #6366f1;
+}
+body.layout-minimalist .lms-input::placeholder {
+  color: #94a3b8;
+}
+
+/* CARDS */
+body.layout-minimalist .card-lms {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+body.layout-minimalist .card-lms:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1), 0 0 15px rgba(99,102,241,0.05);
+}
+
+body.layout-minimalist .card-lms__title {
+  color: #0f172a;
+}
+
+body.layout-minimalist .card-lms__desc {
+  color: #64748b;
+}
+
+body.layout-minimalist .card-lms__price {
+  color: #0f172a;
+}
+
+body.layout-minimalist .card-lms__meta {
+  color: #64748b;
+}
+
+/* CATEGORY PAGE */
+body.layout-minimalist .lms-categories-hero h1 {
+  background: none !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+body.layout-minimalist .lms-categories-hero p {
+  color: #475569 !important;
+}
+
+body.layout-minimalist .lms-categories-hero .lms-search-box input {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+}
+
+body.layout-minimalist .lms-categories-hero .lms-search-box input:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important;
+}
+
+body.layout-minimalist .lms-categories-hero .lms-search-box input::placeholder {
+  color: #94a3b8 !important;
+}
+
+body.layout-minimalist .lms-categories-hero .lms-search-box i {
+  color: #64748b !important;
+}
+
+body.layout-minimalist .lms-category-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+  padding: 0 !important;
+}
+body.layout-minimalist .lms-category-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1) !important;
+  transform: translateY(-4px) !important;
+}
+body.layout-minimalist .lms-category-card__title {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-category-card__desc {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-category-card__icon {
+  background: #f8fafc !important;
+  border: none !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  width: 100% !important;
+  height: 200px !important;
+  border-radius: 1rem 1rem 0 0 !important;
+  margin-bottom: 0 !important;
+}
+body.layout-minimalist .lms-category-card__content {
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem !important;
+}
+body.layout-minimalist .lms-category-card__meta {
+  padding: 0 1.5rem 1.5rem 1.5rem !important;
+}
+body.layout-minimalist .lms-category-card__meta .lms-badge {
+  background: #eff6ff !important;
+  color: #3b82f6 !important;
+  border-color: #bfdbfe !important;
+}
+
+
+/* FORUM */
+body.layout-minimalist .lms-forum-header h1 {
+  color: #0f172a;
+}
+
+body.layout-minimalist .lms-forum-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+body.layout-minimalist .lms-forum-item:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+body.layout-minimalist .lms-forum-item__content h3 a {
+  color: #0f172a;
+}
+body.layout-minimalist .lms-forum-item__content h3 a:hover {
+  color: #6366f1;
+}
+body.layout-minimalist .lms-forum-item__content p {
+  color: #475569;
+}
+body.layout-minimalist .lms-forum-item__meta {
+  color: #64748b;
+}
+body.layout-minimalist .lms-forum-item__stat-value {
+  color: #0f172a;
+}
+body.layout-minimalist .lms-forum-item__stat-label {
+  color: #64748b;
+}
+
+body.layout-minimalist .lms-forum-post {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+body.layout-minimalist .lms-forum-post__body {
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-forum-post__body p {
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-forum-post__body code {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+body.layout-minimalist .lms-forum-reply-form {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+body.layout-minimalist .lms-forum-reply-form h4 {
+  color: #0f172a;
+}
+body.layout-minimalist .lms-forum-replies-title {
+  color: #0f172a;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* PRICING */
+body.layout-minimalist .lms-pricing-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+body.layout-minimalist .lms-pricing-card--recommended {
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.03) 0%, #ffffff 100%);
+  border-color: #6366f1;
+}
+body.layout-minimalist .lms-pricing-card__name {
+  color: #0f172a;
+}
+body.layout-minimalist .lms-pricing-card__amount {
+  color: #0f172a;
+}
+body.layout-minimalist .lms-pricing-card__period {
+  color: #64748b;
+}
+body.layout-minimalist .lms-pricing-card__features li {
+  color: #475569;
+  border-bottom: 1px solid #f1f5f9;
+}
+body.layout-minimalist .lms-pricing-header h1 {
+  background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+body.layout-minimalist .lms-pricing-header p {
+  color: #64748b;
+}
+
+/* FORM ELEMENTS GLOBALLY FOR LIGHT MODE */
+body.layout-minimalist .form-lms__input,
+body.layout-minimalist .form-text,
+body.layout-minimalist .form-email,
+body.layout-minimalist .form-url,
+body.layout-minimalist .form-number,
+body.layout-minimalist .form-tel,
+body.layout-minimalist .form-search,
+body.layout-minimalist input[type="text"],
+body.layout-minimalist input[type="email"],
+body.layout-minimalist input[type="password"],
+body.layout-minimalist input[type="number"],
+body.layout-minimalist select,
+body.layout-minimalist textarea,
+body.layout-minimalist .form-lms__textarea,
+body.layout-minimalist .form-lms__select {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+body.layout-minimalist .form-lms__input:focus,
+body.layout-minimalist .form-text:focus,
+body.layout-minimalist .form-email:focus,
+body.layout-minimalist input[type="text"]:focus,
+body.layout-minimalist input[type="email"]:focus,
+body.layout-minimalist input[type="password"]:focus,
+body.layout-minimalist select:focus,
+body.layout-minimalist textarea:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+body.layout-minimalist .form-lms__input::placeholder,
+body.layout-minimalist .form-text::placeholder,
+body.layout-minimalist .form-email::placeholder,
+body.layout-minimalist input[type="text"]::placeholder,
+body.layout-minimalist input[type="email"]::placeholder,
+body.layout-minimalist input[type="password"]::placeholder,
+body.layout-minimalist textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* BADGES AND BUTTONS */
+body.layout-minimalist .btn-lms-outline {
+  color: #334155;
+  border-color: #cbd5e1;
+}
+body.layout-minimalist .btn-lms-outline:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+}
+
+/* BLOG & NEWS (Overrides for inline dark mode styles) */
+body.layout-minimalist .blog-container .card {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist .blog-container .card:hover {
+  box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1) !important;
+  border-color: #cbd5e1 !important;
+}
+body.layout-minimalist .blog-container .card-img-top[style*="#21262d"] {
+  background-color: #f8fafc !important;
+}
+body.layout-minimalist .blog-container .card-title a,
+body.layout-minimalist .blog-container h4 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .blog-container .card-title a:hover {
+  color: #6366f1 !important;
+}
+body.layout-minimalist .blog-container .card-text,
+body.layout-minimalist .blog-container .text-muted,
+body.layout-minimalist .article-container .text-muted {
+  color: #64748b !important;
+}
+body.layout-minimalist .blog-container .text-primary {
+  color: #6366f1 !important;
+}
+body.layout-minimalist .blog-container .p-5.rounded-4 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* BLOG SINGLE ARTICLE */
+body.layout-minimalist .article-container h1 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .article-container .article-content {
+  color: #334155 !important;
+}
+body.layout-minimalist .article-container .article-content h1,
+body.layout-minimalist .article-container .article-content h2,
+body.layout-minimalist .article-container .article-content h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .article-container .lms-forum-teaser-cta {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist .article-container .lms-forum-teaser-cta h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .article-container div[style*="linear-gradient(to bottom, rgba(13, 17, 23, 0) 0%, rgba(13, 17, 23, 1) 100%)"] {
+  background: linear-gradient(to bottom, rgba(248, 250, 252, 0) 0%, #ffffff 100%) !important;
+}
+
+/* ==============================================================
+   COURSE DETAIL PAGE (Style 2: Minimalist Clean)
+   ============================================================== */
+
+/* Banner */
+body.layout-minimalist .lms-course-banner {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  padding: 3rem 0 !important;
+}
+body.layout-minimalist .lms-course-banner h1 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+body.layout-minimalist .lms-course-banner p {
+  color: #334155 !important;
+  font-size: 1.125rem !important;
+}
+body.layout-minimalist .lms-course-banner .badge-lms {
+  background: #e0e7ff !important;
+  color: #4338ca !important;
+  font-weight: 600 !important;
+  border: none !important;
+}
+
+/* Metadata Tags (Instructor, Rating, Students, Language) */
+body.layout-minimalist .lms-course-banner__meta {
+  gap: 1rem !important;
+  margin-top: 1.5rem !important;
+}
+body.layout-minimalist .lms-course-banner__meta > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  background: #ffffff !important;
+  padding: 0.5rem 1.25rem !important;
+  border-radius: 2rem !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02) !important;
+  color: #475569 !important;
+  font-size: 0.9375rem !important;
+  font-weight: 500 !important;
+}
+body.layout-minimalist .lms-course-banner__meta > span.lms-course-banner__instructor {
+  padding-left: 0.35rem !important; /* Snug fit around avatar */
+}
+body.layout-minimalist .lms-course-banner__meta img {
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+body.layout-minimalist .lms-course-banner__meta a > div {
+  background: #f1f5f9 !important;
+  border: none !important;
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-course-banner__meta strong {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.layout-minimalist .lms-course-banner__meta > span > i,
+body.layout-minimalist .lms-course-banner__meta > span > div > i {
+  color: #64748b !important; /* Unify generic icons to slate */
+}
+/* Specifically target stars to keep them gold */
+body.layout-minimalist .lms-course-banner__meta .lms-course-banner__rating i.fa-star,
+body.layout-minimalist .lms-course-banner__meta .lms-course-banner__rating i.fa-star-half-alt {
+  color: #f59e0b !important; /* Amber 500 */
+}
+body.layout-minimalist .lms-course-banner__meta .lms-course-banner__rating i.far.fa-star {
+  color: #e2e8f0 !important;
+}
+body.layout-minimalist .lms-course-banner__meta span[style*="text-decoration: underline"],
+body.layout-minimalist .lms-course-banner__meta > span > span {
+  text-decoration: none !important;
+  color: #64748b !important;
+  font-weight: 400 !important;
+}
+/* Banner Video/Image refinement */
+body.layout-minimalist .lms-course-banner__image-wrapper > div:first-child {
+  display: none !important; /* Hide blurry dark glow */
+}
+body.layout-minimalist .lms-course-banner__image-wrapper .card-lms {
+  border: 6px solid #ffffff !important;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04) !important;
+  border-radius: 1rem !important;
+}
+
+/* Tabs Navigation */
+body.layout-minimalist .lms-course-tabs {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist .lms-course-tabs a.lms-tabs__link {
+  color: #64748b !important;
+  font-weight: 600 !important;
+  border-bottom: 3px solid transparent !important;
+  padding: 1.25rem 0 !important;
+  margin-bottom: -1px !important;
+}
+body.layout-minimalist .lms-course-tabs a.lms-tabs__link--active {
+  color: #4f46e5 !important;
+  border-bottom: 3px solid #4f46e5 !important;
+}
+body.layout-minimalist .lms-course-tabs a.lms-tabs__link:hover:not(.lms-tabs__link--active) {
+  color: #0f172a !important;
+  border-bottom: 3px solid #cbd5e1 !important;
+}
+
+/* Main Section Background */
+body.layout-minimalist .lms-course-banner + .lms-course-tabs + .lms-section,
+body.layout-minimalist .lms-section:has(.lms-course-layout) {
+  background: #ffffff !important;
+}
+
+/* Tab Panels & Typograpghy */
+body.layout-minimalist .lms-tab-panel__title {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+body.layout-minimalist .lms-course-body,
+body.layout-minimalist .lms-learn-list,
+body.layout-minimalist .lms-learn-list li,
+body.layout-minimalist .lms-course-body p {
+  color: #334155 !important;
+  font-weight: 400 !important;
+}
+body.layout-minimalist .lms-tab-panel h3 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.layout-minimalist .lms-tab-panel .card-glass {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+  padding: 2.5rem !important;
+  border-radius: 1.25rem !important;
+}
+
+/* Curriculum Accordion */
+body.layout-minimalist #curriculum > div:last-child {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+}
+body.layout-minimalist .lms-curriculum__chapter {
+  border-color: #e2e8f0 !important;
+}
+body.layout-minimalist .lms-curriculum__lesson {
+  border-color: #f1f5f9 !important;
+}
+body.layout-minimalist .lms-curriculum__chapter-header {
+  background: #f8fafc !important;
+  padding: 1.5rem !important;
+}
+body.layout-minimalist .lms-curriculum__chapter-header:hover {
+  background: #f1f5f9 !important;
+}
+body.layout-minimalist .lms-curriculum__lesson:hover {
+  background: #f8fafc !important;
+}
+body.layout-minimalist .lms-curriculum__chapter-header h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-curriculum__lesson a,
+body.layout-minimalist .lms-curriculum__lesson span {
+  color: #334155 !important;
+  font-weight: 500 !important;
+}
+
+/* Instructor Box */
+body.layout-minimalist #instructor > div.lms-tab-panel__title {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist #instructor > div:not(.lms-tab-panel__title),
+body.layout-minimalist #faq > div > div {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist #instructor h3 a {
+  color: #0f172a !important;
+}
+body.layout-minimalist #instructor p {
+  color: #475569 !important;
+}
+/* Instructor icons and metrics */
+body.layout-minimalist #instructor .fa-star {
+  color: #eab308 !important; /* Golden */
+}
+body.layout-minimalist #instructor .fa-certificate,
+body.layout-minimalist #instructor .fa-play-circle,
+body.layout-minimalist #instructor > div > div > p:nth-child(2) {
+  color: #4f46e5 !important; /* Indigo primary */
+}
+body.layout-minimalist #instructor > div > div > div > span {
+  color: #64748b !important; /* Slate metrics text */
+}
+body.layout-minimalist #instructor .lms-social-btn {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+body.layout-minimalist #instructor .lms-social-btn:hover {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border-color: #4f46e5 !important;
+}
+
+/* FAQ Accordion */
+body.layout-minimalist #faq > div {
+  border-color: #e2e8f0 !important;
+  background: #ffffff !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+}
+body.layout-minimalist #faq > div > div {
+  border-bottom: 1px solid #e2e8f0 !important;
+  border: none !important;
+  margin-bottom: 0 !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist #faq > div > div > div:first-child {
+  background: #f8fafc !important;
+}
+body.layout-minimalist #faq > div > div > div:first-child h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist #faq > div > div > div:nth-child(2) {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-top: 1px solid #f1f5f9 !important;
+}
+
+/* Reviews stats */
+/* Stars */
+body.layout-minimalist #reviews .fa-star,
+body.layout-minimalist #reviews .fa-star-half-alt,
+body.layout-minimalist #reviews .far.fa-star {
+  color: #eab308 !important; /* Bright Gold */
+}
+/* Numeric Rating Text */
+body.layout-minimalist #reviews > div:first-of-type > div:first-child > div:nth-child(1) {
+  color: #0f172a !important;
+}
+body.layout-minimalist #reviews > div:first-of-type > div:first-child > div:nth-child(3) {
+  color: #64748b !important;
+}
+body.layout-minimalist #reviews > div:first-of-type > div:last-child > div {
+  color: #475569 !important; /* Percentages and star numbers */
+}
+/* Progress Bars */
+body.layout-minimalist #reviews > div:first-of-type > div:last-child > div > div:nth-child(2) {
+  background: #e2e8f0 !important; /* unfilled bar background (slate-200) */
+  border: 1px solid #cbd5e1 !important;
+}
+body.layout-minimalist #reviews > div:first-of-type > div:last-child > div > div:nth-child(2) > div {
+  background: linear-gradient(90deg, #818cf8 0%, #4f46e5 100%) !important; /* filled bar (indigo-gradient) */
+}
+
+/* Review Form */
+body.layout-minimalist #reviews h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist #reviews .card-glass {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist #reviews .card-glass label {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+body.layout-minimalist #reviews .card-glass .description {
+  color: #64748b !important;
+}
+body.layout-minimalist #reviews .card-glass select,
+body.layout-minimalist #reviews .card-glass textarea,
+body.layout-minimalist #reviews .card-glass input[type="text"] {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important; /* enhance spacing */
+}
+body.layout-minimalist #reviews .card-glass select:focus,
+body.layout-minimalist #reviews .card-glass textarea:focus,
+body.layout-minimalist #reviews .card-glass input[type="text"]:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+  outline: none !important;
+}
+
+
+/* Right Sidebar (Enroll Card) */
+body.layout-minimalist .lms-enroll-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04) !important;
+  border-radius: 1.25rem !important;
+}
+body.layout-minimalist .lms-enroll-card__price {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-enroll-card .btn-lms-outline {
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+body.layout-minimalist .lms-enroll-card .btn-lms-outline:hover {
+  background: #f8fafc !important;
+  border-color: #64748b !important;
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-enroll-card .btn-lms-primary {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4) !important;
+  color: #ffffff !important;
+}
+body.layout-minimalist .lms-enroll-card .btn-lms-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5) !important;
+}
+body.layout-minimalist .lms-enroll-card h4 {
+  color: #0f172a !important;
+  border-bottom-color: #f1f5f9 !important;
+}
+body.layout-minimalist .lms-enroll-card__includes li span {
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-enroll-card__share .lms-social-btn {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-enroll-card__share .lms-social-btn:hover {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border-color: #4f46e5 !important;
+}
+
+/* ==============================================================
+   LESSON DETAIL PAGE / THEATER MODE (Style 2: Minimalist Clean)
+   ============================================================== */
+
+body.layout-minimalist .lms-learn,
+body.layout-minimalist .lms-learn__main {
+  background: #ffffff !important;
+}
+
+/* Sidebar */
+body.layout-minimalist .lms-learn__sidebar {
+  background: #f8fafc !important;
+  border-left: 1px solid #e2e8f0 !important;
+  padding: 1.5rem 1rem !important;
+  box-sizing: border-box !important;
+}
+body.layout-minimalist .lms-floating-sidebar-toggle {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #475569 !important;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.05) !important;
+}
+
+/* Header, Title & Toolbar Setup */
+body.layout-minimalist .lms-learn__title {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  font-size: 2.25rem !important;
+}
+/* Re-engineer the Top Bar as a compact command strip */
+body.layout-minimalist .lms-learn__top-bar {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 0.75rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+}
+body.layout-minimalist .lms-learn__top-bar h1 {
+  color: #0f172a !important;
+}
+
+/* Compact Toolbar Buttons */
+body.layout-minimalist .lms-learn__top-bar .btn-lms-outline,
+body.layout-minimalist .lms-learn__top-bar .btn-lms-primary {
+  border-radius: 0.375rem !important; /* Sharp rounded squares instead of giant pills */
+  padding: 0.35rem 0.75rem !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist .lms-learn__top-bar .btn-lms-outline {
+  border: 1px solid #cbd5e1 !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-learn__top-bar .btn-lms-outline:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-learn__top-bar .btn-lms-primary {
+  background: #e0e7ff !important;
+  color: #4338ca !important;
+  border: none !important;
+}
+body.layout-minimalist .lms-learn__top-bar .btn-lms-primary:hover {
+  background: #c7d2fe !important;
+  color: #312e81 !important;
+}
+
+/* Video Frame & Player Area */
+body.layout-minimalist .lms-learn__video-wrapper,
+body.layout-minimalist .video-container {
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01) !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+}
+body.layout-minimalist .lms-learn__iframe {
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 1rem !important;
+}
+
+/* Lesson Action Buttons (Mark Complete / Completed) */
+body.layout-minimalist .lms-learn__info {
+  margin-top: 2rem !important;
+}
+body.layout-minimalist .lms-learn__actions button[disabled],
+body.layout-minimalist .lms-learn__actions button.btn-lms-outline {
+  color: #16a34a !important; /* Green 600 */
+  border-color: #86efac !important; /* Green 300 */
+  background: #f0fdf4 !important; /* Green 50 */
+  font-weight: 600 !important;
+}
+body.layout-minimalist .lms-learn__actions button.btn-lms-success {
+  background: #16a34a !important;
+  color: #ffffff !important;
+  border-color: #15803d !important;
+}
+body.layout-minimalist .lms-learn__actions button.btn-lms-success:hover {
+  background: #15803d !important;
+}
+
+/* Sidebar headings & progress */
+body.layout-minimalist .lms-learn__sidebar-header {
+  border-bottom: none !important;
+  padding-bottom: 0.5rem !important;
+}
+body.layout-minimalist .lms-learn__sidebar-header h2 {
+  color: #0f172a !important;
+  font-size: 1.125rem !important; /* Slightly smaller to match compact aesthetic */
+  line-height: 1.4 !important;
+  font-weight: 800 !important;
+  margin-bottom: 1rem !important;
+}
+/* Re-engineer Progress Wrapper as an ultra-compact widget card */
+body.layout-minimalist .lms-learn__progress-wrapper {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+  margin-bottom: 1rem !important;
+}
+body.layout-minimalist .lms-learn__progress-wrapper span[style*="color: #fff"] {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-learn__progress-wrapper > div:first-child {
+  margin-bottom: 0.35rem !important;
+}
+body.layout-minimalist .lms-learn__progress-wrapper > div:first-child span {
+  color: #64748b !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+body.layout-minimalist .lms-learn__progress-wrapper > div:first-child span:last-child {
+  color: #4f46e5 !important; /* The % number */
+  font-weight: 800 !important;
+  font-size: 0.8125rem !important;
+}
+body.layout-minimalist .progress-bar-bg {
+  background: #f1f5f9 !important;
+  height: 4px !important; /* Slim line */
+  margin: 0 !important;
+  border-radius: 10px !important;
+}
+body.layout-minimalist .progress-bar-fill {
+  background: linear-gradient(90deg, #6366f1, #4f46e5) !important;
+  border-radius: 10px !important;
+}
+body.layout-minimalist .lms-learn__progress-wrapper > div:last-child {
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+  font-size: 0.7rem !important;
+  margin-top: 0.35rem !important;
+}
+
+/* Curriculum Accordion in Sidebar */
+body.layout-minimalist .lms-learn__chapter-accordion {
+  margin-bottom: 0 !important;
+}
+body.layout-minimalist .lms-learn__chapter-summary {
+  border-top: 1px solid #e2e8f0 !important;
+  padding: 1.25rem 0.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+body.layout-minimalist .lms-learn__chapter-title {
+  color: #64748b !important;
+  font-weight: 700 !important;
+  font-size: 0.8125rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  margin: 0 !important;
+}
+body.layout-minimalist .lms-learn__chapter-summary .toggle-icon {
+  color: #94a3b8 !important;
+  font-size: 0.875rem !important;
+}
+body.layout-minimalist .lms-learn__lesson-list {
+  padding-left: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 1rem !important;
+}
+body.layout-minimalist .lms-learn__lesson-item a {
+  padding: 0.75rem 1rem !important;
+  border-radius: 0.5rem !important;
+  margin-bottom: 0.15rem !important;
+}
+body.layout-minimalist .lms-learn__lesson-item i.fa-check-circle {
+  color: #10b981 !important; /* Clean Emerald checkmark */
+}
+body.layout-minimalist .lms-learn__lesson-item {
+  color: #475569 !important;
+  border-bottom: none !important;
+}
+body.layout-minimalist .lms-learn__lesson-item span {
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-learn__lesson-item small {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-learn__lesson-item:hover a {
+  background: #f8fafc !important;
+}
+body.layout-minimalist .lms-learn__lesson-item--active a {
+  background: #e0e7ff !important;
+}
+body.layout-minimalist .lms-learn__lesson-item--active span {
+  color: #4338ca !important;
+  font-weight: 600 !important;
+}
+body.layout-minimalist .lms-learn__lesson-item--active small {
+  color: #4f46e5 !important;
+  font-weight: 500 !important;
+}
+
+/* Tabs */
+body.layout-minimalist .lms-nav-tabs {
+  border-bottom-color: #e2e8f0 !important;
+}
+body.layout-minimalist .lms-tab-item {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-tab-item:hover {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-tab-item.active,
+body.layout-minimalist .lms-tab-item[style*="color: #fff"] {
+  color: #4f46e5 !important;
+  border-bottom-color: #4f46e5 !important;
+}
+
+/* Tab Panels Content */
+body.layout-minimalist .lms-learn__description,
+body.layout-minimalist .lms-learn__description * {
+  color: #334155 !important;
+}
+/* Text Content Area (The actual lesson text) */
+body.layout-minimalist .lms-learn__text-content {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+  padding: 3rem !important;
+  border-radius: 1.25rem !important;
+  color: #334155 !important;
+  max-width: 900px !important;
+  margin: 0 auto !important;
+}
+body.layout-minimalist .lms-learn__text-content h1,
+body.layout-minimalist .lms-learn__text-content h2,
+body.layout-minimalist .lms-learn__text-content h3,
+body.layout-minimalist .lms-learn__text-content strong {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  margin-top: 0 !important;
+  margin-bottom: 1.5rem !important;
+}
+body.layout-minimalist .lms-learn__text-content p,
+body.layout-minimalist .lms-learn__text-content li,
+body.layout-minimalist .lms-learn__text-content span {
+  color: #334155 !important;
+  font-size: 1.125rem !important;
+  line-height: 1.8 !important;
+}
+body.layout-minimalist .lms-learn__placeholder {
+  background: #f8fafc !important;
+  border: 1px dashed #cbd5e1 !important;
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-learn__placeholder h3,
+body.layout-minimalist .lms-learn__placeholder h4 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-learn__placeholder p {
+  color: #475569 !important;
+}
+
+/* Resources Tab */
+body.layout-minimalist #tab-resources h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist #tab-resources li {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+body.layout-minimalist #tab-resources li span {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+/* Notes Tab */
+body.layout-minimalist #tab-notes h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist #tab-notes textarea {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+body.layout-minimalist #tab-notes textarea:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.1) !important;
+  outline: none;
+}
+
+/* Q&A Tab */
+body.layout-minimalist #tab-qna h3 {
+  color: #0f172a !important;
+}
+
+/* Embedded Media Backgrounds */
+body.layout-minimalist .lms-learn__h5p-wrapper,
+body.layout-minimalist .lms-learn__pdf-wrapper,
+body.layout-minimalist .lms-learn__zoom-wrapper {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+}
+
+/* Specific styling for PDF */
+body.layout-minimalist .lms-learn__pdf-wrapper {
+  padding: 1.5rem !important;
+}
+body.layout-minimalist .lms-learn__pdf-wrapper .field__label {
+  display: none !important;
+}
+body.layout-minimalist .lms-learn__pdf-wrapper .field__items,
+body.layout-minimalist .lms-learn__pdf-wrapper .field__item {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+}
+body.layout-minimalist .lms-learn__pdf-wrapper iframe,
+body.layout-minimalist .lms-learn__pdf-wrapper embed,
+body.layout-minimalist .lms-learn__pdf-wrapper object {
+  width: 100% !important;
+  flex: 1 !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+}
+
+/* ==============================================================
+   NOTIFICATIONS (Style 2: Minimalist Clean)
+   ============================================================== */
+
+/* Notification Dropdown (Bell) */
+body.layout-minimalist .lms-bell-dropdown {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1) !important;
+  border-radius: 0.75rem !important;
+}
+body.layout-minimalist .lms-bell-dropdown__header {
+  border-bottom: 1px solid #f1f5f9 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.layout-minimalist .lms-bell-dropdown-item {
+  border-bottom: 1px solid #f8fafc !important;
+  transition: background 0.2s !important;
+}
+body.layout-minimalist .lms-bell-dropdown-item:hover {
+  background: #f8fafc !important;
+}
+body.layout-minimalist .lms-bell-dropdown-item.lms-bell-dropdown-item--unread {
+  background: #f0fdf4 !important; /* Soft green tint for unread */
+}
+body.layout-minimalist .lms-bell-dropdown-item.lms-bell-dropdown-item--unread:hover {
+  background: #dcfce7 !important;
+}
+body.layout-minimalist .lms-bell-dropdown-item__content h4 {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+body.layout-minimalist .lms-bell-dropdown-item__content p {
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-bell-dropdown-item__time {
+  color: #94a3b8 !important;
+}
+body.layout-minimalist .lms-bell-dropdown__footer {
+  border-top: 1px solid #f1f5f9 !important;
+  background: #f8fafc !important;
+  border-radius: 0 0 0.75rem 0.75rem !important;
+}
+body.layout-minimalist .lms-bell-dropdown__footer a {
+  color: #4338ca !important;
+  font-weight: 600 !important;
+}
+body.layout-minimalist .lms-bell-dropdown__footer a:hover {
+  color: #312e81 !important;
+}
+
+/* Notifications Main Page */
+body.layout-minimalist .lms-notifications-wrapper {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+  border-radius: 1rem !important;
+}
+body.layout-minimalist .lms-notifications-title {
+  color: #0f172a !important;
+  margin-bottom: 2rem !important;
+}
+body.layout-minimalist .lms-notifications-header {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+body.layout-minimalist .lms-notification-filters .lms-filter-btn {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #cbd5e1 !important;
+  font-weight: 500 !important;
+}
+body.layout-minimalist .lms-notification-filters .lms-filter-btn:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-notification-filters .lms-filter-btn.active {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border-color: #4f46e5 !important;
+}
+body.layout-minimalist .lms-notification-item {
+  border: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+}
+body.layout-minimalist .lms-notification-item:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+body.layout-minimalist .lms-notification-item--unread {
+  background: #f4f6ff !important;
+  border-color: #c7d2fe !important;
+}
+body.layout-minimalist .lms-notification-item__body h4 a {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.layout-minimalist .lms-notification-item__body p {
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-notification-item__date {
+  color: #94a3b8 !important;
+}
+body.layout-minimalist .lms-empty-state {
+  background: #f8fafc !important;
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: 1rem !important;
+}
+body.layout-minimalist .lms-empty-state h3 {
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-empty-state p {
+  color: #64748b !important;
+}
+
+/* ==============================================================
+   COMMUNITY / FORUMS (Style 2: Minimalist Clean)
+   ============================================================== */
+
+body.layout-minimalist .lms-forum-thread {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist .lms-forum-thread__main {
+  border-bottom: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important; /* Slightly distinct for the original post */
+  border-radius: 1rem 1rem 0 0 !important;
+}
+body.layout-minimalist .lms-forum-comment {
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+body.layout-minimalist .lms-forum-comment:last-child {
+  border-bottom: none !important;
+}
+body.layout-minimalist .lms-forum-comment__meta {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-forum-comment__author {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.layout-minimalist .lms-forum-comment__body,
+body.layout-minimalist .lms-forum-comment__body p {
+  color: #334155 !important;
+  font-size: 1.05rem !important;
+  line-height: 1.7 !important;
+}
+body.layout-minimalist .lms-forum-comment__body h1,
+body.layout-minimalist .lms-forum-comment__body h2,
+body.layout-minimalist .lms-forum-comment__body h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-forum-comment__actions button,
+body.layout-minimalist .lms-forum-comment__action-icon {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-forum-comment__actions button:hover,
+body.layout-minimalist .lms-forum-comment__action-icon:hover {
+  color: #0f172a !important;
+  background: #f1f5f9 !important;
+}
+body.layout-minimalist .lms-forum-comment--best-answer {
+  background: #f0fdf4 !important;
+}
+
+/* Fix generic modal Dark Theme forms within Minimalist */
+body.layout-minimalist .lms-theme-dark-form,
+body.layout-minimalist .lms-forum-thread__form {
+  background: #ffffff !important;
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-theme-dark-form label {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-theme-dark-form input[type="text"],
+body.layout-minimalist .lms-theme-dark-form input[type="email"],
+body.layout-minimalist .lms-theme-dark-form input[type="password"],
+body.layout-minimalist .lms-theme-dark-form select,
+body.layout-minimalist .lms-theme-dark-form textarea,
+body.layout-minimalist .tox-tinymce {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  border-radius: 0.5rem !important;
+}
+body.layout-minimalist .ui-dialog.lms-theme-dark-form .ui-dialog-titlebar,
+body.layout-minimalist .lms-theme-dark-form .ui-dialog-titlebar {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.layout-minimalist .ui-dialog {
+  background: #ffffff !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04) !important;
+  border: 1px solid #e2e8f0 !important;
+}
+body.layout-minimalist .ui-dialog .ui-dialog-titlebar {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+body.layout-minimalist .ui-dialog .ui-dialog-content {
+  background: #ffffff !important;
+  color: #334155 !important;
+}
+body.layout-minimalist .ui-dialog .ui-widget-content {
+  background: #ffffff !important;
+  color: #334155 !important;
+}
+
+/* Tables inside Minimalist Forms/Modals */
+body.layout-minimalist .lms-theme-dark-form table,
+body.layout-minimalist .ui-dialog table {
+  background: #ffffff !important;
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin-top: 1rem !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden !important;
+}
+body.layout-minimalist .lms-theme-dark-form thead,
+body.layout-minimalist .ui-dialog thead {
+  background: #f8fafc !important; /* Gentle light grey header instead of pitch black */
+}
+body.layout-minimalist .lms-theme-dark-form thead th,
+body.layout-minimalist .ui-dialog thead th {
+  background: transparent !important;
+  color: #475569 !important; /* Slate grey text */
+  border-bottom: 2px solid #e2e8f0 !important;
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 1rem !important;
+}
+body.layout-minimalist .lms-theme-dark-form tbody td,
+body.layout-minimalist .ui-dialog tbody td {
+  background: #ffffff !important;
+  color: #0f172a !important; /* High contrast dark slate for row labels */
+  border-bottom: 1px solid #f1f5f9 !important;
+  font-weight: 600 !important;
+  padding: 1.25rem 1rem !important;
+}
+body.layout-minimalist .lms-theme-dark-form tbody tr:last-child td,
+body.layout-minimalist .ui-dialog tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Fix Native Checkboxes contrasting violently in Minimalist form */
+body.layout-minimalist .lms-theme-dark-form input[type="checkbox"],
+body.layout-minimalist .ui-dialog input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-color: #ffffff !important;
+  margin: 0 !important;
+  color: #4f46e5 !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  border: 2px solid #cbd5e1 !important;
+  border-radius: 0.25rem !important;
+  display: inline-grid !important;
+  place-content: center !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist .lms-theme-dark-form input[type="checkbox"]:hover,
+body.layout-minimalist .ui-dialog input[type="checkbox"]:hover {
+  border-color: #94a3b8 !important;
+}
+body.layout-minimalist .lms-theme-dark-form input[type="checkbox"]::before,
+body.layout-minimalist .ui-dialog input[type="checkbox"]::before {
+  content: "" !important;
+  width: 0.65em !important;
+  height: 0.65em !important;
+  transform: scale(0) !important;
+  transition: 120ms transform ease-in-out !important;
+  box-shadow: inset 1em 1em white !important;
+  background-color: white !important;
+  transform-origin: center !important;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%) !important;
+}
+body.layout-minimalist .lms-theme-dark-form input[type="checkbox"]:checked,
+body.layout-minimalist .ui-dialog input[type="checkbox"]:checked {
+  background-color: #4f46e5 !important;
+  border-color: #4f46e5 !important;
+}
+body.layout-minimalist .lms-theme-dark-form input[type="checkbox"]:checked::before,
+body.layout-minimalist .ui-dialog input[type="checkbox"]:checked::before {
+  transform: scale(1) !important;
+}
+
+/* Fix generic texts drifting to dark mode variables */
+body.layout-minimalist .lms-theme-dark-form .description,
+body.layout-minimalist .ui-dialog .description,
+body.layout-minimalist .ui-dialog p {
+  color: #64748b !important;
+}
+
+/* ==============================================================
+   QUIZ & ASSESSMENTS (Style 2: Minimalist Clean)
+   ============================================================== */
+
+/* Quiz Take Page */
+body.layout-minimalist .lms-quiz__header-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+  padding: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+body.layout-minimalist .lms-quiz__title {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+body.layout-minimalist .lms-quiz__desc {
+  color: #475569 !important;
+  font-size: 1.05rem !important;
+}
+body.layout-minimalist .lms-quiz__meta {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 0.5rem !important;
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-quiz__meta span {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+body.layout-minimalist .lms-quiz__meta span i {
+  color: #64748b !important;
+}
+
+/* Quiz Question Cards */
+body.layout-minimalist .lms-quiz__card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+  padding: 2rem !important;
+  margin-bottom: 1.5rem !important;
+}
+body.layout-minimalist .lms-quiz__q-header {
+  border-bottom: 2px dashed #e2e8f0 !important;
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 1rem !important;
+}
+body.layout-minimalist .lms-quiz__q-num {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  font-size: 1.25rem !important;
+}
+body.layout-minimalist .lms-quiz__q-pts {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+body.layout-minimalist .lms-quiz__q-title {
+  color: #1e293b !important;
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Option Labels (Radio/Checkbox) */
+body.layout-minimalist .lms-quiz__option-label {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #334155 !important;
+  border-radius: 0.5rem !important;
+  padding: 1rem 1.25rem !important;
+  transition: all 0.2s !important;
+}
+body.layout-minimalist .lms-quiz__option-label:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+/* If they select an option */
+body.layout-minimalist input[type="radio"]:checked + .lms-quiz__option-label,
+body.layout-minimalist input[type="checkbox"]:checked + .lms-quiz__option-label {
+  background: #eef2ff !important;
+  border-color: #6366f1 !important;
+  color: #312e81 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 0 1px #6366f1 !important;
+}
+
+/* Fix raw input radios disappearing in minimalist */
+body.layout-minimalist .lms-quiz__form input[type="radio"],
+body.layout-minimalist .lms-quiz__form input[type="checkbox"] {
+  accent-color: #4f46e5 !important;
+}
+
+/* Quiz Results Page */
+body.layout-minimalist .lms-result-container {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05) !important;
+  border-radius: 1rem !important;
+}
+body.layout-minimalist .lms-result-hero {
+  border-bottom: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+  border-radius: 1rem 1rem 0 0 !important;
+}
+body.layout-minimalist .lms-result-title {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-score-circle {
+  background: #ffffff !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist .lms-score-circle--pass { border-color: #10b981 !important; color: #059669 !important; }
+body.layout-minimalist .lms-score-circle--fail { border-color: #ef4444 !important; color: #dc2626 !important; }
+body.layout-minimalist .lms-responses-title {
+  color: #0f172a !important;
+  border-top: 2px solid #e2e8f0 !important;
+}
+body.layout-minimalist .lms-response-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+}
+body.layout-minimalist .lms-response-correct { border-left: 4px solid #10b981 !important; }
+body.layout-minimalist .lms-response-incorrect { border-left: 4px solid #ef4444 !important; }
+body.layout-minimalist .lms-response-question h3 {
+  color: #1e293b !important;
+}
+body.layout-minimalist .lms-response-points {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-answer-label {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-answer-text {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-response-answer {
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+/* Fix Hardcoded Dark Mode Inline Styles from Quiz Module */
+body.layout-minimalist .lms-quiz-wrapper {
+  background-color: #f1f5f9 !important; /* Soft slate background instead of #0d1117 pitch black */
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-quiz__choice-box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #334155 !important;
+  border-radius: 0.5rem !important;
+  padding: 1rem 1.25rem !important;
+  transition: all 0.2s !important;
+}
+body.layout-minimalist .lms-quiz__choice-box span {
+  color: #334155 !important; /* Fix light-grey text on white background */
+}
+body.layout-minimalist .lms-quiz__choice-box:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+body.layout-minimalist .lms-quiz__choice-box:has(input:checked) {
+  background: #eef2ff !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 1px #6366f1 !important;
+}
+body.layout-minimalist .lms-quiz__choice-box:has(input:checked) span {
+  color: #312e81 !important;
+  font-weight: 600 !important;
+}
+
+/* Overriding Quiz Modals */
+body.layout-minimalist .lms-modal-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1) !important;
+}
+body.layout-minimalist .lms-modal-title {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-modal-body {
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-btn-cancel {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+}
+body.layout-minimalist .lms-btn-cancel:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-quiz__btn-submit,
+body.layout-minimalist .lms-btn-confirm {
+  background: #4f46e5 !important;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4) !important;
+  border: none !important;
+}
+body.layout-minimalist .lms-quiz__btn-submit:hover,
+body.layout-minimalist .lms-btn-confirm:hover {
+  background: #4338ca !important;
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6) !important;
+}
+
+/* Fix Unreadable Text and Remaining Dark Components */
+body.layout-minimalist .lms-quiz__choice-box * {
+  color: #334155 !important; /* Force all nested text (span, etc) to dark slate */
+}
+body.layout-minimalist .lms-quiz__choice-box:has(input:checked) * {
+  color: #312e81 !important; /* Force active checked text to indigo */
+}
+
+body.layout-minimalist .lms-sortable-item {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-sortable-item:hover {
+  border-color: #94a3b8 !important;
+  background: #f8fafc !important;
+}
+body.layout-minimalist .lms-sortable-item .lms-drag-handle {
+  color: #64748b !important;
+}
+
+body.layout-minimalist .lms-quiz__match-row {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+body.layout-minimalist .lms-quiz__match-left {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-quiz__match-select {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+body.layout-minimalist .lms-quiz-input {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-quiz-input:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+}
+
+/* Fix Quiz Results Page Inline Overrides */
+body.layout-minimalist .lms-result-wrapper {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-response-question {
+  color: #0f172a !important; /* Fix unreadable question text */
+  font-weight: 700 !important;
+}
+body.layout-minimalist .lms-answer-text {
+  background: #f8fafc !important; /* Light background for student's exact submission */
+  color: #334155 !important;
+  border-color: #e2e8f0 !important;
+}
+body.layout-minimalist .lms-btn-back {
+  background: #ffffff !important;
+  color: #4f46e5 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+body.layout-minimalist .lms-btn-back:hover {
+  background: #f1f5f9 !important;
+  border-color: #4f46e5 !important;
+  color: #4338ca !important;
+}
+
+/* ==============================================================
+   FORUM CKEDITOR (Style 2: Minimalist Clean)
+   ============================================================== */
+
+/* Fix black background inside CKEditor editable area */
+body.layout-minimalist .ck-editor__editable,
+body.layout-minimalist .ck-editor__editable_inline {
+  background-color: #ffffff !important;
+  color: #0f172a !important;   /* Dark text for typing */
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+/* Fix generic text format descriptions (About text formats) */
+body.layout-minimalist .filter-wrapper {
+  background-color: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+  padding: 1rem !important;
+}
+body.layout-minimalist .filter-guidelines {
+  color: #475569 !important;
+}
+
+/* ==============================================================
+   FORUM THREAD CONTENT SPECIFIC (Style 2: Minimalist Clean)
+   ============================================================== */
+body.layout-minimalist .lms-breadcrumb {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: none !important;
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-breadcrumb a { color: #64748b !important; }
+body.layout-minimalist .lms-breadcrumb a:hover { color: #4f46e5 !important; }
+body.layout-minimalist .lms-breadcrumb span { color: #0f172a !important; font-weight: 600 !important; }
+
+body.layout-minimalist .lms-forum-thread {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+}
+
+body.layout-minimalist .lms-forum-thread__main {
+  border-bottom-color: #e2e8f0 !important;
+}
+
+body.layout-minimalist .lms-forum-comment__meta strong {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-forum-comment__meta .lms-text-muted {
+  color: #64748b !important;
+}
+
+body.layout-minimalist .lms-forum-comment h1,
+body.layout-minimalist .lms-forum-comment h2,
+body.layout-minimalist .lms-forum-comment h3 {
+  color: #0f172a !important;
+}
+
+body.layout-minimalist .lms-forum-comment__body {
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-forum-comment__body blockquote {
+  background: #f8fafc !important;
+  border-left-color: #6366f1 !important;
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-forum-comment__body blockquote strong {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-forum-comment__body code {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+body.layout-minimalist .lms-forum-comment__avatar {
+  background: #f1f5f9 !important;
+  color: #94a3b8 !important;
+}
+
+body.layout-minimalist .lms-action-badge {
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+  background: transparent !important;
+}
+body.layout-minimalist .lms-action-badge:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+body.layout-minimalist .lms-forum-comment__action-icon {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-forum-comment__action-icon:hover {
+  color: #0f172a !important;
+}
+
+body.layout-minimalist .lms-forum-thread__form {
+  border-top-color: #e2e8f0 !important;
+}
+
+/* ==============================================================
+   CHECKOUT PAGE (Style 2: Minimalist Clean)
+   ============================================================== */
+body.layout-minimalist .lms-checkout {
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-checkout__title {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-checkout__payment h2,
+body.layout-minimalist .lms-checkout__summary h2 {
+  color: #0f172a !important;
+}
+
+body.layout-minimalist .form-type-radio {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+body.layout-minimalist .form-type-radio:hover {
+  background: #f8fafc !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist .form-type-radio label {
+  color: #0f172a !important;
+}
+
+body.layout-minimalist .lms-checkout__summary {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important;
+}
+body.layout-minimalist .lms-checkout__course {
+  border-bottom-color: #e2e8f0 !important;
+}
+body.layout-minimalist .lms-checkout__course-title {
+  color: #0f172a !important;
+}
+
+body.layout-minimalist .lms-checkout__row span {
+  color: #475569 !important; /* General text */
+}
+body.layout-minimalist .lms-checkout__row span[style*="font-weight: 600"] {
+  color: #0f172a !important; /* Price value */
+}
+
+body.layout-minimalist .lms-checkout__total {
+  border-top-color: #e2e8f0 !important;
+  color: #0f172a !important; /* Total label */
+}
+/* Ensure the total green price is retained but pops nicely */
+body.layout-minimalist .lms-checkout__total span[style*="#10b981"] {
+  color: #059669 !important; /* Darker emerald */
+}
+
+/* ==============================================================
+   BANK TRANSFER PAGE & RECEIPT (Style 2: Minimalist Clean)
+   ============================================================== */
+/* Main Order Pending Card */
+body.layout-minimalist .lms-bt {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist .lms-bt__title {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-bt__subtitle {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-bt__details {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+body.layout-minimalist .lms-bt__row {
+  border-bottom-color: #cbd5e1 !important;
+}
+body.layout-minimalist .lms-bt__label {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-bt__details .lms-bt__value {
+  color: #0f172a !important;
+}
+/* Keep the orange transfer code and green amount, but make them bolder */
+body.layout-minimalist .lms-bt__value[style*="#10b981"] {
+  color: #059669 !important;
+}
+body.layout-minimalist .lms-bt__value[style*="#f59e0b"] {
+  color: #d97706 !important;
+}
+
+/* Alert Instructions */
+body.layout-minimalist .lms-bt__instructions {
+  background: #eef2ff !important;
+  border-left-color: #4f46e5 !important;
+  color: #312e81 !important;
+}
+
+/* Receipt Upload Form Wrapper */
+body.layout-minimalist .lms-receipt-upload {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist .lms-receipt-upload h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-receipt-upload .custom-upload-btn,
+body.layout-minimalist .lms-receipt-upload input.button {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+}
+body.layout-minimalist .lms-receipt-upload .custom-upload-btn:hover,
+body.layout-minimalist .lms-receipt-upload input.button:hover {
+  background-color: #4338ca !important;
+}
+/* Force file name text (created inline via JS) to be dark in light mode */
+body.layout-minimalist .lms-receipt-upload .custom-file-name {
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-receipt-upload .text-muted {
+  color: #64748b !important;
+}
+
+/* ==============================================================
+   USER DASHBOARD (Style 2: Minimalist Clean)
+   ============================================================== */
+/* KPI Cards */
+body.layout-minimalist .lms-kpi-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02) !important;
+}
+body.layout-minimalist .lms-kpi-card__value {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-kpi-card__label {
+  color: #64748b !important;
+}
+
+/* Course Filters */
+body.layout-minimalist .lms-course-filters {
+  background: #f8fafc !important; /* Lighter background instead of dark #161b22 */
+  border-color: #e2e8f0 !important;
+}
+body.layout-minimalist .lms-course-filters .lms-filter-btn {
+  color: #64748b !important; /* Override JS inline dark style */
+}
+body.layout-minimalist .lms-course-filters .lms-filter-btn.active {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+}
+
+/* Continue Learning Course Cards */
+body.layout-minimalist .card-lms--course {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 8px 16px -4px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist .card-lms__title a {
+  color: #0f172a !important; /* Override inline mouseout white */
+}
+body.layout-minimalist .card-lms__title a:hover {
+  color: #4f46e5 !important; /* Override inline mouseover purple */
+}
+
+/* Progress Labels */
+body.layout-minimalist .card-lms__body span[style*="color: #e6edf3"] {
+  color: #0f172a !important; /* Force Number Percentage to dark */
+}
+body.layout-minimalist .card-lms__body span[style*="color: #8b949e"] {
+  color: #64748b !important; /* Force Progress label to slightly darker gray */
+}
+body.layout-minimalist .lms-progress-bar {
+  background: #e2e8f0 !important; /* Track background */
+}
+
+/* Completed 'Review Course' Button Override */
+body.layout-minimalist .card-lms__body .btn-lms-primary[style*="rgba(255,255,255,0.05)"] {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+}
+body.layout-minimalist .card-lms__body .btn-lms-primary[style*="rgba(255,255,255,0.05)"]:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* Dashboard Empty State */
+body.layout-minimalist .lms-empty-state {
+  background: #ffffff !important;
+  border: 2px dashed #cbd5e1 !important;
+  border-radius: 1rem !important;
+  padding: 3rem 2rem !important;
+  text-align: center !important;
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-empty-state i.fas.fa-graduation-cap {
+  font-size: 3rem !important;
+  color: #c7d2fe !important;
+  margin-bottom: 1rem !important;
+  display: block !important;
+}
+body.layout-minimalist .lms-empty-state h3 {
+  color: #334155 !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 1.5rem !important;
+}
+/* 'Browse Courses' link → proper Indigo button */
+body.layout-minimalist .lms-empty-state .lms-btn,
+body.layout-minimalist .lms-empty-state .lms-btn--primary,
+body.layout-minimalist .lms-empty-state a {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: background 0.2s ease !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3) !important;
+}
+body.layout-minimalist .lms-empty-state a:hover {
+  background: #4338ca !important;
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.5) !important;
+}
+
+/* Dashboard Title & Section Spacing */
+body.layout-minimalist .lms-manage__title {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+body.layout-minimalist .lms-section__title {
+  color: #0f172a !important;
+}
+
+/* ==============================================================
+   LOGIN & REGISTER PAGES (Style 2: Minimalist Clean)
+   ============================================================== */
+/* Page-level background */
+body.layout-minimalist .lms-auth {
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f0f9ff 100%) !important;
+  min-height: 100vh !important;
+}
+
+/* The card */
+body.layout-minimalist .lms-auth__card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 4px 6px rgba(0,0,0,0.04) !important;
+  backdrop-filter: none !important;
+}
+
+/* Header text */
+body.layout-minimalist .lms-auth__header h1 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-auth__header p {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-auth__logo,
+body.layout-minimalist .lms-auth__logo i {
+  color: #4f46e5 !important;
+}
+
+/* Inputs */
+body.layout-minimalist .lms-auth input[type=text],
+body.layout-minimalist .lms-auth input[type=email],
+body.layout-minimalist .lms-auth input[type=password] {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-auth input[type=text]:focus,
+body.layout-minimalist .lms-auth input[type=email]:focus,
+body.layout-minimalist .lms-auth input[type=password]:focus {
+  background: #ffffff !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
+}
+body.layout-minimalist .lms-auth input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Labels */
+body.layout-minimalist .lms-auth label {
+  color: #374151 !important;
+  font-weight: 600 !important;
+}
+
+/* Submit button */
+body.layout-minimalist .lms-auth input[type=submit],
+body.layout-minimalist .lms-auth button[type=submit],
+body.layout-minimalist .lms-auth .form-submit {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4) !important;
+}
+body.layout-minimalist .lms-auth input[type=submit]:hover,
+body.layout-minimalist .lms-auth button[type=submit]:hover,
+body.layout-minimalist .lms-auth .form-submit:hover {
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6) !important;
+  opacity: 0.95 !important;
+}
+
+/* Social login buttons */
+body.layout-minimalist .lms-auth .lms-btn--social,
+body.layout-minimalist .lms-auth .lms-btn--outline {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-auth .lms-btn--social:hover,
+body.layout-minimalist .lms-auth .lms-btn--outline:hover {
+  background: #f1f5f9 !important;
+  border-color: #4f46e5 !important;
+  color: #4f46e5 !important;
+}
+
+/* OR divider */
+body.layout-minimalist .lms-auth__divider,
+body.layout-minimalist .lms-auth .text-muted,
+body.layout-minimalist .lms-auth hr + span {
+  color: #94a3b8 !important;
+  background: transparent !important;
+}
+body.layout-minimalist .lms-auth hr {
+  border-color: #e2e8f0 !important;
+}
+/* The inline 'or' span background fix */
+body.layout-minimalist .lms-auth .position-absolute {
+  background: #ffffff !important;
+  color: #94a3b8 !important;
+}
+
+/* Footer links */
+body.layout-minimalist .lms-auth__footer,
+body.layout-minimalist .lms-auth__footer p {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-auth__footer a,
+body.layout-minimalist .lms-auth p a {
+  color: #4f46e5 !important;
+}
+body.layout-minimalist .lms-auth p a:hover {
+  color: #4338ca !important;
+  text-decoration: underline !important;
+}
+
+/* ==============================================================
+   USER DROPDOWN MENU (Style 2: Minimalist Clean)
+   Avatar click → Dashboard / My Profile / Logout
+   ============================================================== */
+body.layout-minimalist .lms-mega-dropdown,
+body.layout-minimalist .lms-mega-dropdown--small {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06) !important;
+  margin-top: 8px !important; /* Small gap so it doesn't "stick" to dark navbar */
+}
+/* Arrow tip - outer (border color) */
+body.layout-minimalist .lms-mega-dropdown::before {
+  border-top: none !important;
+  border-bottom-color: #cbd5e1 !important;
+  top: -9px !important;
+}
+/* Arrow tip - inner (fill same as card bg) */
+body.layout-minimalist .lms-mega-dropdown::after {
+  border-top: none !important;
+  border-bottom-color: #ffffff !important;
+  top: -7px !important;
+}
+
+/* Menu links */
+body.layout-minimalist .lms-mega-dropdown .lms-mega-link,
+body.layout-minimalist .lms-mega-dropdown--small .lms-mega-link {
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-mega-dropdown .lms-mega-link:hover,
+body.layout-minimalist .lms-mega-dropdown--small .lms-mega-link:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* Column titles */
+body.layout-minimalist .lms-mega-dropdown .lms-mega-col-title {
+  color: #94a3b8 !important;
+}
+
+/* Divider */
+body.layout-minimalist .lms-mega-dropdown .lms-mega-divider {
+  background-color: #e2e8f0 !important;
+}
+
+/* Logout link */
+body.layout-minimalist .lms-mega-dropdown .lms-mega-link-logout {
+  color: #dc2626 !important;
+}
+body.layout-minimalist .lms-mega-dropdown .lms-mega-link-logout:hover {
+  opacity: 0.8 !important;
+}
+
+/* Footer area of the big mega dropdown */
+body.layout-minimalist .lms-mega-footer {
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+/* Mega menu column borders */
+body.layout-minimalist .lms-mega-col:not(:last-child) {
+  border-right-color: #e2e8f0 !important;
+}
+
+/* ==============================================================
+   USER PROFILE REDESIGN overrides
+   ============================================================== */
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__header {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__cover-bg {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%) !important;
+  border-bottom: 1px solid #e2e8f0;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__avatar-wrapper {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__avatar-wrapper img,
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__avatar-placeholder {
+  border-color: #ffffff !important;
+  box-shadow: 0 0 0 4px #ffffff, 0 8px 16px rgba(0,0,0,0.1) !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__avatar-placeholder {
+  background: #f1f5f9 !important;
+  color: #94a3b8 !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__name {
+  color: #0f172a !important;
+  background: none !important;
+  -webkit-text-fill-color: #0f172a !important;
+  text-shadow: none !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__job {
+  color: #4f46e5 !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__section-title {
+  color: #1e293b !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-bio-card {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__bio-content {
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-info-item {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02) !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-info-label {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-info-value {
+  color: #0f172a !important;
+}
+
+/* Gamification dashboard */
+body.layout-minimalist .lms-profile__layout-redesign .lms-gamification-dashboard {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-gamification-dashboard__title {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-stat-box {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-stat-box__val {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-stat-box__label {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-stat-member-label {
+  color: #94a3b8 !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-stat-member-val {
+  color: #334155 !important;
+}
+
+/* Inline generic overrides inside courses and quizzes */
+/* User Profile Redesign overrides omitted for brevity (they were already there) */
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-courses-card-item h4 a,
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-quizzes-card-item h4 {
+  color: #1e293b !important;
+}
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-quizzes-card-item span[style*="rgba"] {
+  text-shadow: none !important;
+}
+
+/* ==============================================================
+   FOOTER (Force Style 1 / Dark)
+   Keep footer dark and maintain its standard text colors 
+   despite body.layout-minimalist overrides.
+   ============================================================== */
+body.layout-minimalist .lms-footer {
+  background: #161b22 !important;
+  border-top: 1px solid hsla(0,0%,100%,.1) !important;
+}
+body.layout-minimalist .lms-footer h4 {
+  color: #e6edf3 !important;
+}
+body.layout-minimalist .lms-footer ul li,
+body.layout-minimalist .lms-footer ul li i,
+body.layout-minimalist .lms-footer .lms-footer__bottom p {
+  color: #8b949e !important;
+}
+body.layout-minimalist .lms-footer ul li a {
+  color: #58a6ff !important;
+}
+body.layout-minimalist .lms-footer ul li a:hover {
+  color: rgb(104.7, 174.9, 255) !important;
+  text-decoration: none !important;
+}
+body.layout-minimalist .lms-footer .lms-footer__bottom {
+  border-top: 1px solid hsla(0,0%,100%,.1) !important;
+}
+body.layout-minimalist .lms-footer .lms-footer__bottom p a {
+  color: #667eea !important;
+  font-weight: 500 !important;
+}

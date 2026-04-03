@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the lms_rating module.
+ */
+
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
+/**
+ * Add the 'field_is_featured' field to the lms_rating entity.
+ */
+function lms_rating_update_11001() {
+  $field_storage_definition = BaseFieldDefinition::create('boolean')
+    ->setLabel(new TranslatableMarkup('Featured on Homepage'))
+    ->setDefaultValue(FALSE)
+    ->setDisplayConfigurable('form', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_is_featured', 'lms_rating', 'lms_rating', $field_storage_definition);
+
+  return 'Installed field_is_featured on lms_rating entity.';
+}

@@ -28,12 +28,13 @@ class LmsBlogController extends ControllerBase {
    * Displays the list of published articles.
    */
   public function index(): array {
-    $storage = $this->entityTypeManager->getStorage('lms_article');
+    $storage = $this->entityTypeManager->getStorage('node');
     $query = $storage->getQuery()
+      ->condition('type', 'blog')
       ->condition('status', 1)
       ->sort('created', 'DESC')
       ->range(0, 12)
-      ->accessCheck(TRUE);
+      ->accessCheck(FALSE);
     
     $ids = $query->execute();
     $articles = $storage->loadMultiple($ids);
@@ -55,14 +56,14 @@ class LmsBlogController extends ControllerBase {
   /**
    * Displays a single article.
    */
-  public function view(LmsArticle $lms_article): array {
+  public function view(\Drupal\node\NodeInterface $node): array {
     $is_anonymous = $this->currentUser()->isAnonymous();
     return [
       '#theme' => 'lms_blog_single',
-      '#article' => $lms_article,
+      '#article' => $node,
       '#is_teaser_mode' => $is_anonymous,
       '#cache' => [
-        'tags' => $lms_article->getCacheTags(),
+        'tags' => $node->getCacheTags(),
         'contexts' => ['user.roles:anonymous'],
       ],
     ];
@@ -71,8 +72,8 @@ class LmsBlogController extends ControllerBase {
   /**
    * Title callback for the single article page.
    */
-  public function viewTitle(LmsArticle $lms_article): string {
-    return $lms_article->label();
+  public function viewTitle(\Drupal\node\NodeInterface $node): string {
+    return $node->label();
   }
 
 }

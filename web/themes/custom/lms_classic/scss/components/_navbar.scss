@@ -1,0 +1,198 @@
+// ========================================
+// Navbar — Dark Premium with Glassmorphism
+// ========================================
+
+.lms-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $navbar-height;
+    background: $navbar-bg;
+    backdrop-filter: $glass-blur;
+    border-bottom: 1px solid $color-border;
+    z-index: $z-navbar;
+    display: flex;
+    align-items: center;
+
+    &__container {
+        width: 100%;
+        max-width: $container-max-width;
+        margin: 0 auto;
+        padding: 0 $container-padding;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &__brand {
+        display: flex;
+        align-items: center;
+        gap: $spacer-sm;
+        font-size: 1.5rem;
+        font-weight: $font-weight-extrabold;
+        color: $color-text-primary;
+        text-decoration: none;
+
+        img {
+            height: 36px;
+        }
+    }
+
+    &__nav {
+        display: flex;
+        align-items: center;
+        gap: $spacer-xs;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    &__item {
+        position: relative;
+    }
+
+    &__link {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.875rem;
+        font-size: $font-size-base;
+        font-weight: $font-weight-medium;
+        color: $color-text-secondary;
+        text-decoration: none;
+        border-radius: $radius-md;
+        transition: all $transition-fast;
+
+        &:hover,
+        &.active {
+            color: $color-text-primary;
+            background: $glass-bg;
+        }
+
+        &--active {
+            color: $color-primary;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: $spacer-md;
+    }
+
+    &__icon-btn {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $color-text-secondary;
+        border: none;
+        background: none;
+        border-radius: $radius-full;
+        cursor: pointer;
+        transition: all $transition-fast;
+
+        &:hover {
+            color: $color-text-primary;
+            background: $glass-bg;
+        }
+    }
+
+    &__badge {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.625rem;
+        font-weight: $font-weight-bold;
+        color: #fff;
+        background: $color-accent-danger;
+        border-radius: $radius-full;
+    }
+
+    // Mega Menu Dropdown
+    &__dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 200px;
+        background: $color-bg-secondary;
+        border: 1px solid $color-border;
+        border-radius: $radius-lg;
+        box-shadow: $shadow-lg;
+        padding: $spacer-sm;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(8px);
+        transition: all $transition-fast;
+        z-index: $z-dropdown;
+    }
+
+    &__item:hover &__dropdown {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    &__dropdown-link {
+        display: flex;
+        align-items: center;
+        gap: $spacer-sm;
+        padding: 0.5rem 0.75rem;
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        text-decoration: none;
+        border-radius: $radius-sm;
+        transition: all $transition-fast;
+
+        &:hover {
+            color: $color-text-primary;
+            background: $glass-bg;
+        }
+    }
+}
+
+// Body offset for fixed navbar
+body {
+    padding-top: $navbar-height;
+}
+
+// Drupal Admin Toolbar Fix
+body.toolbar-horizontal .lms-navbar {
+    top: 39px !important;
+    z-index: 400 !important;
+}
+body.toolbar-horizontal.toolbar-tray-open .lms-navbar {
+    top: 79px !important;
+}
+
+// Mobile toggle
+.lms-navbar__toggle {
+    display: none;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    color: $color-text-primary;
+    cursor: pointer;
+    font-size: 1.25rem;
+
+    @media (max-width: $breakpoint-lg) {
+        display: flex;
+    }
+}
+
+@media (max-width: $breakpoint-lg) {
+    .lms-navbar__nav {
+        display: none;
+    }
+}

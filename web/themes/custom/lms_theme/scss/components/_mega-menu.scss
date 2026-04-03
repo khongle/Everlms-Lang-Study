@@ -1,0 +1,151 @@
+.lms-mega-menu-wrapper {
+  position: relative;
+
+  &:hover .lms-mega-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .lms-user-profile-link {
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+}
+
+.lms-mega-dropdown {
+  position: absolute;
+  top: 100%;
+  right: -20px;
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  width: 780px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  padding: 1rem 0 0 0;
+  z-index: 1000;
+  
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 32px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #30363d;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: -7px;
+    right: 32px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #161b22;
+  }
+  
+  &--small {
+    width: 220px;
+    padding: 0.5rem 0;
+  }
+}
+
+.lms-mega-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  padding: 0 1.5rem 1rem 1.5rem;
+}
+
+.lms-mega-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  
+  &:not(:last-child) {
+    border-right: 1px solid #21262d;
+    padding-right: 1.5rem;
+  }
+}
+
+.lms-mega-col-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #8b949e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.lms-mega-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #c9d1d9;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  i {
+    width: 16px;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    transform: translateX(3px);
+  }
+}
+
+.lms-mega-divider {
+  border: 0;
+  height: 1px;
+  background-color: #21262d;
+  margin: 0.5rem 0;
+}
+
+.lms-mega-footer {
+  border-top: 1px solid #21262d;
+  background-color: #0d1117;
+  padding: 0.75rem 1.5rem;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.lms-mega-link-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #ff7b72;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+// Thêm text-purple class vi lms-theme co the thieu
+.text-purple {
+  color: #bc8cff !important;
+}

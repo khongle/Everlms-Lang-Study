@@ -354,8 +354,12 @@
                         'text': 'fa-file-alt',
                         'quiz': 'fa-question-circle',
                         'h5p': 'fa-puzzle-piece',
+                        'pdf': 'fa-file-pdf',
+                        'scorm': 'fa-box-open',
+                        'pptx': 'fa-file-powerpoint',
+                        'zoom': 'fa-video',
                       } %}
-                      <i class="fas {{ type_icons[l.entity.field_type.value] ?? 'fa-circle' }}" style="color: #8b949e;"></i>
+                      <i class="fas {{ type_icons[l.entity.field_type.value] ?? 'fa-file' }}" style="color: #8b949e;"></i>
                     {% endif %}
                     <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ l.entity.label }}</span>
                   </div>
