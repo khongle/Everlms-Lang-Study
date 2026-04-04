@@ -12,33 +12,23 @@
  */
 #}
 
-{# Bóc tách URL hình ảnh vật lý nếu Admin có upload #}
-{% set background_uri = template.field_background.entity.getFileUri() %}
-{% set background_url = background_uri ? file_url(background_uri) : '' %}
-
-{% set logo_uri = template.field_logo.entity.getFileUri() %}
-{% set logo_url = logo_uri ? file_url(logo_uri) : '' %}
-
-{% set signature_uri = template.field_signature.entity.getFileUri() %}
-{% set signature_url = signature_uri ? file_url(signature_uri) : '' %}
-
-{# Chuẩn bị danh sách Token map với Data thật #}
+{# Sử dụng đường dẫn vật lý thực tế (Absolute Physical Path) từ preprocess #}
 {% set placeholders = {
   '[student_name]': user.getDisplayName(),
   '[course_name]': course.label(),
   '[issue_date]': date,
   '[certificate_code]': code,
-  '[logo]': logo_url,
-  '[seal]': template.field_seal.entity ? file_url(template.field_seal.entity.getFileUri()) : '',
-  '[signature]': signature_url,
-  '[background]': background_url
+  '[logo]': field_logo_path,
+  '[seal]': field_seal_path,
+  '[signature]': field_signature_path,
+  '[background]': field_background_path
 } %}
 
 {# Output toàn bộ nội dung Admin tự thiết kế từ field_layout #}
 <style>
     @page {
-        {% if background_url %}
-        background-image: url('{{ background_url }}');
+        {% if field_background_path %}
+        background-image: url('{{ field_background_path }}');
         background-image-resize: 6;
         {% endif %}
         margin: 0;

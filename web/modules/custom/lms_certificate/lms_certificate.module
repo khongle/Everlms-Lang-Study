@@ -61,3 +61,32 @@ function lms_certificate_entity_operation(\Drupal\Core\Entity\EntityInterface $e
   return $operations;
 }
 
+/**
+ * Implements template_preprocess_HOOK() for certificate_pdf.
+ */
+function lms_certificate_preprocess_certificate_pdf(&$variables) {
+  $template = $variables['template'];
+  /** @var \Drupal\Core\File\FileSystemInterface $file_system */
+  $file_system = \Drupal::service('file_system');
+  
+  $images = [
+    'field_background' => 'field_background_path',
+    'field_logo' => 'field_logo_path',
+    'field_signature' => 'field_signature_path',
+    'field_seal' => 'field_seal_path',
+  ];
+  
+  foreach ($images as $field_name => $var_name) {
+    $variables[$var_name] = '';
+    if ($template && $template->hasField($field_name) && !$template->get($field_name)->isEmpty()) {
+      $entity = $template->get($field_name)->entity;
+      if ($entity) {
+        $uri = $entity->getFileUri();
+        $realpath = $file_system->realpath($uri);
+        if ($realpath && file_exists($realpath)) {
+          $variables[$var_name] = $realpath;
+        }
+      }
+    }
+  }
+}
