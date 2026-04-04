@@ -55,6 +55,7 @@ class CertificateAdminController extends ControllerBase {
         'status' => $is_revoked ? 'Revoked' : 'Valid',
         'pdf_url' => $cert->get('field_pdf_file')->entity ? \Drupal::service('file_url_generator')->generateAbsoluteString($cert->get('field_pdf_file')->entity->getFileUri()) : '#',
         'revoke_url' => \Drupal\Core\Url::fromRoute('lms_certificate.revoke', ['lms_user_certificate' => $cert->id()])->toString(),
+        'regenerate_url' => \Drupal\Core\Url::fromRoute('lms_certificate.regenerate', ['lms_user_certificate' => $cert->id()])->toString(),
       ];
     }
 
@@ -134,6 +135,37 @@ class CertificateAdminController extends ControllerBase {
         'contexts' => ['user.roles'],
       ],
     ];
+  }
+
+  public function regenerateCertificate(\Drupal\Core\Entity\EntityInterface $lms_user_certificate) {
+    if (!$this->currentUser()->hasPermission('administer lms_course')) {
+      throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException();
+    }
+    
+    if ($lms_user_certificate->get('field_revoked')->value) {
+      $this->messenger()->addWarning($this->t('Cannot regenerate a revoked certificate.'));
+      return $this->redirect('lms_certificate.admin_dashboard');
+    }
+
+    $user = $lms_user_certificate->get('uid')->entity;
+    $course = $lms_user_certificate->get('field_course')->entity;
+    $template = $lms_user_certificate->get('field_template')->entity;
+    $code = $lms_user_certificate->get('field_certificate_number')->value;
+
+    if ($user && $course && $template && $code) {
+      /** @var \Drupal\lms_certificate\Service\CertificateGenerator $generator */
+      $generator = \Drupal::service('lms_certificate.generator');
+      $success = $generator->generate($template, $user, $course, $code);
+      if ($success) {
+        $this->messenger()->addStatus($this->t('Certificate PDF regenerated successfully for @name.', ['@name' => $user->getDisplayName()]));
+      } else {
+        $this->messenger()->addError($this->t('Failed to regenerate certificate PDF.'));
+      }
+    } else {
+      $this->messenger()->addError($this->t('Certificate is missing required data to regenerate.'));
+    }
+
+    return $this->redirect('lms_certificate.admin_dashboard');
   }
 
 }

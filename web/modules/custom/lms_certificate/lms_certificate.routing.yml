@@ -18,6 +18,18 @@ lms_certificate.revoke:
       lms_user_certificate:
         type: entity:lms_user_certificate
 
+lms_certificate.regenerate:
+  path: '/workspace/certificates/{lms_user_certificate}/regenerate'
+  defaults:
+    _controller: '\Drupal\lms_certificate\Controller\CertificateAdminController::regenerateCertificate'
+    _title: 'Regenerate Certificate PDF'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    parameters:
+      lms_user_certificate:
+        type: entity:lms_user_certificate
+
 lms_certificate.admin_dashboard:
   path: '/workspace/certificates'
   defaults:
