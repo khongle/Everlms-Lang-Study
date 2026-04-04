@@ -1,0 +1,62 @@
+uuid: ab1d482a-0316-4103-9b18-5b8d95fc53de
+langcode: en
+status: true
+dependencies:
+  module:
+    - inline_entity_form
+    - lms_chapter
+    - text
+id: lms_chapter.lms_chapter.default
+targetEntityType: lms_chapter
+bundle: lms_chapter
+mode: default
+content:
+  field_description:
+    type: text_textarea
+    weight: -9
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_lessons:
+    type: inline_entity_form_complex
+    weight: 12
+    region: content
+    settings:
+      form_mode: default
+      override_labels: false
+      label_singular: ''
+      label_plural: ''
+      allow_new: true
+      allow_existing: true
+      match_operator: CONTAINS
+      allow_duplicate: false
+      collapsible: false
+      collapsed: false
+      revision: false
+      removed_reference: optional
+    third_party_settings: {  }
+  name:
+    type: string_textfield
+    weight: -10
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 10
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  weight:
+    type: number
+    weight: 0
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+hidden: {  }

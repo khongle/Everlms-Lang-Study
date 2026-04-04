@@ -1,0 +1,19 @@
+uuid: cc436cae-f5bf-4e54-bac6-22c400b69161
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.slideshow_item
+    - field.storage.block_content.field_slide_heading
+id: block_content.slideshow_item.field_slide_heading
+field_name: field_slide_heading
+entity_type: block_content
+bundle: slideshow_item
+label: Heading
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

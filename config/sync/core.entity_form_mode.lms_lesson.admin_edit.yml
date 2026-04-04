@@ -1,0 +1,11 @@
+uuid: 2e9228e2-52c6-4632-abe3-d7b0e97ca3d2
+langcode: en
+status: true
+dependencies:
+  module:
+    - lms_lesson
+id: lms_lesson.admin_edit
+label: 'Admin Edit'
+description: null
+targetEntityType: lms_lesson
+cache: true

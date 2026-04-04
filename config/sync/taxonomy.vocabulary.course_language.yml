@@ -1,0 +1,9 @@
+uuid: 81df58f4-3462-43a6-8f1a-ce3c1645d72a
+langcode: en
+status: true
+dependencies: {  }
+name: 'Course Language'
+vid: course_language
+description: 'EverLMS: Course Language vocabulary.'
+weight: 0
+new_revision: false

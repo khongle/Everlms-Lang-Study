@@ -1,0 +1,9 @@
+uuid: e35837de-eb4e-4dd8-bd4e-06ccafb4a3b3
+langcode: en
+status: true
+dependencies: {  }
+name: 'Course Category'
+vid: course_category
+description: 'EverLMS: Course Category vocabulary.'
+weight: 0
+new_revision: false

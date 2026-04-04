@@ -1,0 +1,19 @@
+uuid: 460947b8-e857-463a-a7d6-8f6979e4f73b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_slide_heading
+    - node.type.slideshow
+id: node.slideshow.field_slide_heading
+field_name: field_slide_heading
+entity_type: node
+bundle: slideshow
+label: 'Slide Heading'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

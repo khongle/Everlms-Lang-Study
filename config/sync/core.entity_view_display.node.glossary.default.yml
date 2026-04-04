@@ -1,0 +1,32 @@
+uuid: d30c244c-8fa7-4db6-91d5-b3348b4d2bda
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.glossary.body
+    - field.field.node.glossary.field_course
+    - field.field.node.glossary.field_synonyms
+    - node.type.glossary
+  module:
+    - text
+    - user
+id: node.glossary.default
+targetEntityType: node
+bundle: glossary
+mode: default
+content:
+  body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  field_course: true
+  field_synonyms: true

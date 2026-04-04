@@ -1,0 +1,9 @@
+uuid: fdcbd71a-829a-48a3-8e27-59774672c665
+langcode: en
+status: true
+dependencies: {  }
+name: 'Quiz Difficulty'
+vid: quiz_difficulty
+description: 'EverLMS: Quiz Difficulty vocabulary.'
+weight: 0
+new_revision: false

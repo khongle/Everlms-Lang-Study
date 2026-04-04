@@ -1,0 +1,11 @@
+uuid: 5488c872-f6de-4551-aeeb-67ffe9b88352
+langcode: en
+status: true
+dependencies: {  }
+name: Blog
+type: blog
+description: 'Blog articles and news updates.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: true

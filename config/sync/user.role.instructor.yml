@@ -1,0 +1,16 @@
+uuid: 75ef69fe-fe99-46bf-b3eb-51c58fd408e0
+langcode: en
+status: true
+dependencies:
+  module:
+    - comment
+id: instructor
+label: Instructor
+weight: 3
+is_admin: false
+permissions:
+  - 'access comments'
+  - 'administer comments'
+  - 'edit own comments'
+  - 'post comments'
+  - 'skip comment approval'

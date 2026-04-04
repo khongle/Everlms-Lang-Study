@@ -1,0 +1,23 @@
+uuid: bf542d19-5409-4b07-b82c-82a75e61050e
+langcode: en
+status: true
+dependencies:
+  module:
+    - search
+  theme:
+    - lms_classic
+_core:
+  default_config_hash: _nZjxxdypO6xrOAJkCYD81v0L7wh2zbCAVO7_C-UKIc
+id: lms_classic_search_form_narrow
+theme: lms_classic
+region: primary_menu
+weight: -4
+provider: null
+plugin: search_form_block
+settings:
+  id: search_form_block
+  label: 'Search form (narrow)'
+  label_display: '0'
+  provider: search
+  page_id: null
+visibility: {  }

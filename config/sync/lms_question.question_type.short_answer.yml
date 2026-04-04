@@ -1,0 +1,9 @@
+uuid: c89b655a-97fc-4594-957e-d6cb990010dc
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: h8v0uLbvlO5Ciz2W13fi_mp49TS_7FKyhB8-_dOBvIs
+id: short_answer
+label: 'Short Answer'
+description: 'Short Answer question type.'

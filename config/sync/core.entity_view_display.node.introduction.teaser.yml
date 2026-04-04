@@ -1,0 +1,40 @@
+uuid: 78b9321c-ac48-4b3c-a314-940028ab1aa5
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.introduction.body
+    - field.field.node.introduction.field_background_color
+    - field.field.node.introduction.field_call_to_action
+    - field.field.node.introduction.field_image_position
+    - field.field.node.introduction.field_intro_image
+    - field.field.node.introduction.field_subheading
+    - node.type.introduction
+  module:
+    - text
+    - user
+id: node.introduction.teaser
+targetEntityType: node
+bundle: introduction
+mode: teaser
+content:
+  body:
+    type: text_summary_or_trimmed
+    label: hidden
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  field_background_color: true
+  field_call_to_action: true
+  field_image_position: true
+  field_intro_image: true
+  field_subheading: true

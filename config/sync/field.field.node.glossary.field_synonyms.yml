@@ -1,0 +1,19 @@
+uuid: 46c2c619-b828-45f1-81da-01c0e47d551a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_synonyms
+    - node.type.glossary
+id: node.glossary.field_synonyms
+field_name: field_synonyms
+entity_type: node
+bundle: glossary
+label: 'Synonyms (Từ đồng nghĩa or Viết tắt)'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

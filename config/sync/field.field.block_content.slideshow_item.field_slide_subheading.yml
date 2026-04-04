@@ -1,0 +1,22 @@
+uuid: 6d331124-0d70-4858-b2af-bd5e1e89eb4c
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.slideshow_item
+    - field.storage.block_content.field_slide_subheading
+  module:
+    - text
+id: block_content.slideshow_item.field_slide_subheading
+field_name: field_slide_subheading
+entity_type: block_content
+bundle: slideshow_item
+label: Subheading
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

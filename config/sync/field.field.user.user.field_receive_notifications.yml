@@ -1,0 +1,22 @@
+uuid: 768a3add-023c-4b5e-a618-30a20557cd4e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_receive_notifications
+  module:
+    - user
+id: user.user.field_receive_notifications
+field_name: field_receive_notifications
+entity_type: user
+bundle: user
+label: 'Receive System Notifications'
+description: 'Check to receive email notifications.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

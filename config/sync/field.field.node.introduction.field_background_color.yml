@@ -1,0 +1,21 @@
+uuid: 5cfaf1e5-4236-4267-88b7-8bbc7950e237
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_background_color
+    - node.type.introduction
+  module:
+    - options
+id: node.introduction.field_background_color
+field_name: field_background_color
+entity_type: node
+bundle: introduction
+label: 'Màu nền mặc định (Background Token)'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

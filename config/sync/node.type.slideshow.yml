@@ -1,0 +1,11 @@
+uuid: 101d58ae-8263-4e9f-bd62-40606a2ee094
+langcode: en
+status: true
+dependencies: {  }
+name: Slideshow
+type: slideshow
+description: 'A homepage slideshow banner.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: true

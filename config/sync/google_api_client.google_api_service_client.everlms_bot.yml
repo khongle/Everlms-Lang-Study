@@ -1,0 +1,26 @@
+uuid: f14318bd-f5d0-4c30-9a71-65bfaf4f5908
+langcode: en
+status: true
+dependencies: {  }
+id: everlms_bot
+label: 'EverLMS Bot.'
+auth_config: "{\r\n  \"type\": \"service_account\",\r\n  \"project_id\": \"everlms\",\r\n  \"private_key_id\": \"9b36c6c8322013d33d57ecbd82908c88a06604ad\",\r\n  \"private_key\": \"-----BEGIN PRIVATE KEY-----\\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCyStshcK1Ma02w\\njhKkA96ibttXpOkgAppqANPRYtJA8B8mOHzYZFjLVHlDJFr/TXosnLwGYtkxSS3q\\nL9OvzHvbsr7ZmnT+RAfkZrLQBNe4quRpCrc1z4MxeKmtC9k97OhtO+BUyHOkrr0Y\\n/66pMRVlsBfrBzI48eMct1CJIZGLA21y7DzFzm5gOxoWAzefZsHJ0V3b9vk56Fia\\nZCyk660Jky3VSb5s0iM1mBrxktzDGigL65VzjqMK9/1QBNv9UXP93fKmg1fwtvoB\\nb/HHvJZ29rvTbB2GFSpIt+lmY4ObWMDdbTG7TPc0l5wAl+NABQ6V5t22HSuwrpQ+\\neUouq3R7AgMBAAECggEANinaf0KxSv1wKRpIHG6WhIcj+HC/Z7uSuHBO6RXZ5ONt\\nuxk/CCgX95FOk3CoelXJr2LgFhqSe9AM9E+aQhZfbENVilrLfvEg6qiuWtaVyGKW\\nKDkapmzHoNBUz57BXPgrNgASKv+Ibjetd7o5D+o6410HLx3NCpKlWbRw8W/yvKWI\\nlR2Mo5n2EQXkoDU6uGYzUr7v62rb7z/hZEjCtXQCtAUv++30FZxInHpxCUgHHfTm\\nmOGvFNkWgXIYKh//PaR8/U9Xx4LZem8i/MH31Cm4mk3FPEPXsfOYFnj0hG//HxlZ\\nomUAw0lASoitUbEz9tMXWa/hh1KO5gfSXjCnOM6wtQKBgQDaL8owVYpZLE0P044h\\nN7GnBGyEv06d1F92h3ovkWF9ribrV+Y+S/bNGKlItULUPmkkNbIjL3qSpDtsXFEq\\n7sqoaQkj6aN/jzYvMHtvFY1YoV0xPY1HM9SjVF7VVXmdXF6zm7EyC/sAmbRCuG2K\\nByQuZ5sC0oycOrhjJ41OgYcKpQKBgQDRMRdd2SLRCQ+pjUmVMQq5b3Cn/Tc+1/fu\\nVQDMkOrHs1Kla03v6P8Ai3yj79TSL6+PsrTcE1Sw8RU6eK+Dsp0BjL08xGNqrx66\\n9qSddw/dOV44OM1K70+g67TrB9KgFYdd3JB9t4/kzJklZPYGzQX02m0DddaYmGs1\\nfknZVsz4nwKBgFln8dsigkGONLnCf+A+uS5uUqWG2wkzqDaixz/Mu/1LKqmPaEqo\\nyCY878ladVsRg/YRhsCCSSDj6XG61ovYM/UUrWko6RVxMsvdewcG9teVr+FojobZ\\nx01yWjXjA6Wm3yuMJe0TGbSiR0p71m8UBBB75fofGv091qbS40WDMDn9AoGAMmKZ\\nlzAac7C0BgmSxI1oYNuXjc6uhMNt4wi0RZFOC0WEzXT386Xx7YarQa0dXHbB2WGY\\nsD0zs96NV2UEGTtnF513YvCGZYbCZxPK+GZZ+tW7fN0pjTfwvPiovcdHkuk8jn32\\ni2EwFlK1PE2B+IdfPOdzRFcYle54PA0r6l4+xk8CgYAM1rCPoVPMMntgweme+PhK\\n0yIlXQBYf/Z+1/udeOGbF+lXnH49jLsITdj8ZW1hTaGT6HSlHx0DOoPypc57TI6j\\n5nh831rtPeuvR6wNIGEUv0KOldTSzTLioM9t8KsvQL/grns0xDN3hdfV433x50Z6\\nYWqqXaCtpGVKYt9xjHUXKg==\\n-----END PRIVATE KEY-----\\n\",\r\n  \"client_email\": \"everlms-slides-api@everlms.iam.gserviceaccount.com\",\r\n  \"client_id\": \"110633627655834817201\",\r\n  \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\",\r\n  \"token_uri\": \"https://oauth2.googleapis.com/token\",\r\n  \"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\",\r\n  \"client_x509_cert_url\": \"https://www.googleapis.com/robot/v1/metadata/x509/everlms-slides-api%40everlms.iam.gserviceaccount.com\",\r\n  \"universe_domain\": \"googleapis.com\"\r\n}\r\n"
+access_token: '{"access_token":"ya29.c.c0AZ4bNpbHj3N5GWPrlBpqPSrPVCT7F1-YJfeocVNqcLfg3h2tOP_58nS63rFbYdTfb9OmHhgzy9ulftF5g1ndHDAa1C7ody0hf47p-6Uz5CcLHx0_YLrf99BNysIFxUOMUmS8X9NMdGeEtS1iaFYzehcLu1zP1mZ0Rc9ln6OAszi-zFIiORnrcML6yEgroYxjU07BdtFfCuZpLQqdF0rtkPRkgNhp9xWQnMkmPTcWEaH9gzNiC6Nl29TaHzQZo87lHWBekKJiOpNpPEujndgpYY0RRhjWfsTv9uCeo-uY22W_YndwZw-Ti0CzQSx8aOfi8x3cyNXuDBYOTlJ9tNRQXve-G9F6QKFTb1Cavd6W0s5mFruXt9bUj47AbnG_MWUPTvNJgut2MjLJMJxs47NiEnsN416Kee2Mtp_mgU4hi3W2MlY13-ddOFY-YnkUZh5zh-3R8_l0lvSq5230e92kI49k9efkfJcwa5Xt9UjtjZoQxUJqaeR3Uxm5ZdY8y52XQywil3Ind63k1Zgkrn3e-UfFXXbpiURliVeQx0driy550WI6ux5eB-IWboW681mfj_p57asr-l86sfeaRfXr9l4f-Onls4rlpjpsffzveq0-xkVvqtqecolv5s2cesoBR43X0BuzBYWkB_c9sJvVQBRrQ20qov_wknrxOZUXO55uO8xv1jhUXY9IUpt-ltbo7sQ31n9h0eU0mfVttiimXzcWJQUc5824rs333-mISpaotcyiRgZW6xycBJku5tfVon5Qk5om1uuu-Yae0Z4Wv4bp_gJe_Wp9p2YvejtQ6dd8m7XfVjw46llwv1UuldVZy4IF2ihMqoInfs-nt-Od151a9nkghZbI_nmV_YYuF4wkRRBoSz1obUJwIi85ijy6o3Odgf9rMJtxSXh8p3WVvm8dw9clIMp5Zlq88Z4t4IXmvca5y8lc93iFJ01Rg27i5uOJjW4oJaBpqsWdlRhgnXMZYFpmijJ94w3YfVpvIeIwuIwSZY4R-jm","expires_in":3599,"token_type":"Bearer","created":1774523705}'
+services:
+  drive: drive
+  slides: slides
+scopes:
+  DRIVE: DRIVE
+  DRIVE_APPDATA: DRIVE_APPDATA
+  DRIVE_APPS_READONLY: DRIVE_APPS_READONLY
+  DRIVE_FILE: DRIVE_FILE
+  DRIVE_MEET_READONLY: DRIVE_MEET_READONLY
+  DRIVE_METADATA: DRIVE_METADATA
+  DRIVE_METADATA_READONLY: DRIVE_METADATA_READONLY
+  DRIVE_PHOTOS_READONLY: DRIVE_PHOTOS_READONLY
+  DRIVE_READONLY: DRIVE_READONLY
+  DRIVE_SCRIPTS: DRIVE_SCRIPTS
+  PRESENTATIONS: PRESENTATIONS
+  PRESENTATIONS_READONLY: PRESENTATIONS_READONLY
+  SPREADSHEETS: SPREADSHEETS
+  SPREADSHEETS_READONLY: SPREADSHEETS_READONLY

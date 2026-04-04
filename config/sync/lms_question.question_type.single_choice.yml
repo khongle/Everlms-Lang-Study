@@ -1,0 +1,9 @@
+uuid: 140bf348-4517-44ff-ad29-27ecdb74684c
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: E_aY1iM5HVwMWLF9nkhddw-e_d-1wmlrsBwgV22L1a4
+id: single_choice
+label: 'Single Choice'
+description: 'Single Choice question type.'

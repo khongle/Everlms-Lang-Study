@@ -1,0 +1,11 @@
+uuid: afb64ca6-526f-449d-bf92-96ca68ea7a08
+langcode: en
+status: true
+dependencies:
+  module:
+    - social_auth
+id: social_auth.token
+label: Token
+description: null
+targetEntityType: social_auth
+cache: true

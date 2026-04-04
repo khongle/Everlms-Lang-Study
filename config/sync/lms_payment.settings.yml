@@ -1,0 +1,11 @@
+stripe_publishable_key: pk_test_51LHg6AA6EX4T5LmWIomp5nr57zU49thhSXkKZyLicE3TQFCMmrY7Jyg2yUtLI9y869aUgPElMdG5vAYl4I9ueuuV00iJSPqojr
+stripe_secret_key: sk_test_51LHg6AA6EX4T5LmWr5C0QA6YeTc8SA9ubZ8ILiDerQrUQh1caSxAe913Z1KvFLJRZWN1lpNG4zs6y4KnK2754f2Y009cOTWSvs
+paypal_client_id: ATqarcndkCZIsrRiDBwXGycbLAC-VppC8R2l7bpjXr25REMeu6Ipw6DbWCMEA2HrN5uuyeAV_MHxqTIF
+paypal_secret: EOQXQg9fYWOl2LNd1iP9O0uXcRvCMgzfCCDXuWFY_tvsjP7JqKC2LCMfQEXjWS7KYDeh0y97QGpqWWpn
+zalopay_app_id: ''
+zalopay_key1: ''
+zalopay_key2: ''
+bank_instructions: 'Please scan the electronic QR code below using your banking app to make the transfer. The system will automatically approve your course.'
+bank_bin: BIDV
+bank_account_no: '1170181109'
+bank_account_name: 'LE HUU PHAT'

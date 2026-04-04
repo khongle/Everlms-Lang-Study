@@ -1,0 +1,9 @@
+uuid: 35776eb1-e14d-40e5-9d1e-1a22a3f70417
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: ldRowGJkF5Enm6BIuXHMbUmMnWUACR_W70EZi-1iftw
+id: true_false
+label: 'True False'
+description: 'True False question type.'

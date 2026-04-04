@@ -1,0 +1,8 @@
+uuid: f2904dbb-cbe6-4e50-a3d6-02d26f8a81ed
+langcode: en
+status: true
+dependencies: {  }
+id: lesson_comment
+label: 'Lesson Comment'
+target_entity_type_id: lms_lesson
+description: 'Comment and Q&A settings for lessons.'

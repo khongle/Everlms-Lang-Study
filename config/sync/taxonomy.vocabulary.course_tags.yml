@@ -1,0 +1,9 @@
+uuid: f3fb0511-ea5e-4e6c-ab6d-14ac669864ed
+langcode: en
+status: true
+dependencies: {  }
+name: 'Course Tags'
+vid: course_tags
+description: 'EverLMS: Course Tags vocabulary.'
+weight: 0
+new_revision: false

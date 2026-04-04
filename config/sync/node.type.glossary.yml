@@ -1,0 +1,11 @@
+uuid: 7ddaa058-0997-4f64-af61-54bb07974a49
+langcode: en
+status: true
+dependencies: {  }
+name: Glossary
+type: glossary
+description: 'A glossary term with definition and synonyms.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: true

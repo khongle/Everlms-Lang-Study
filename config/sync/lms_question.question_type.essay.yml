@@ -1,0 +1,9 @@
+uuid: 214c2d7c-a6d4-4524-a9e1-6552af4e6440
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: xMNClTR1Xb59cIbRNzRwkEusHrFGojTNE9P_dyYvXzw
+id: essay
+label: Essay
+description: 'Essay question type.'

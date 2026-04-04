@@ -1,0 +1,23 @@
+uuid: 882e915f-686e-46f8-b46d-0c110af3b7d5
+langcode: en
+status: true
+dependencies:
+  module:
+    - search
+  theme:
+    - lms_theme
+_core:
+  default_config_hash: pbbed0hdqGDF-_QWVVTWRAwgDIotFuAvWH5mWUZu0fA
+id: lms_theme_search_form_wide
+theme: lms_theme
+region: secondary_menu
+weight: -5
+provider: null
+plugin: search_form_block
+settings:
+  id: search_form_block
+  label: 'Search form (wide)'
+  label_display: '0'
+  provider: search
+  page_id: null
+visibility: {  }

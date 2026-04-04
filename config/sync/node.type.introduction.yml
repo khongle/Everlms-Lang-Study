@@ -1,0 +1,11 @@
+uuid: 0ecc940f-fb63-424e-a065-21c3237d0974
+langcode: en
+status: true
+dependencies: {  }
+name: Introduction
+type: introduction
+description: 'A component for Hero and Feature segments with Image & Text.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: true

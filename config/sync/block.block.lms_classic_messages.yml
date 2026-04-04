@@ -1,0 +1,22 @@
+uuid: 055506c0-f265-4128-acdb-e4d1de595a6b
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - lms_classic
+_core:
+  default_config_hash: BZ5tpW7H8X4PVGRm3MImTIHd2tN0eF7zOtp4SpRYUA0
+id: lms_classic_messages
+theme: lms_classic
+region: highlighted
+weight: -5
+provider: null
+plugin: system_messages_block
+settings:
+  id: system_messages_block
+  label: 'Status messages'
+  label_display: '0'
+  provider: system
+visibility: {  }

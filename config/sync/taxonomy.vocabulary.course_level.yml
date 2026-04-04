@@ -1,0 +1,9 @@
+uuid: 83bf6ebf-51bf-4c88-82df-3d77a0fb8be0
+langcode: en
+status: true
+dependencies: {  }
+name: 'Course Level'
+vid: course_level
+description: 'EverLMS: Course Level vocabulary.'
+weight: 0
+new_revision: false

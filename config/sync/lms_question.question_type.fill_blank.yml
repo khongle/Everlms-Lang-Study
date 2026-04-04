@@ -1,0 +1,9 @@
+uuid: 37626c2c-5720-4bd9-998c-b3b15b61dbf3
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: 4zxo7hPWNDxdI7nHqF8QtRsumQXNonfZaVz6xQDkGdQ
+id: fill_blank
+label: 'Fill Blank'
+description: 'Fill Blank question type.'

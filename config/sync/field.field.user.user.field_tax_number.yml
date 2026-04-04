@@ -1,0 +1,20 @@
+uuid: c47ffb06-5f6a-43a2-9778-c92dde96cdfa
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_tax_number
+  module:
+    - user
+id: user.user.field_tax_number
+field_name: field_tax_number
+entity_type: user
+bundle: user
+label: 'Tax Number'
+description: 'Personal or business tax ID (for invoices).'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

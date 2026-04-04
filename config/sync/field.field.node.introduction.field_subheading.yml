@@ -1,0 +1,19 @@
+uuid: f7c1d5bc-b077-4b27-94fd-041f43fce228
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_subheading
+    - node.type.introduction
+id: node.introduction.field_subheading
+field_name: field_subheading
+entity_type: node
+bundle: introduction
+label: 'Phụ đề (Subheading ngược)'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,26 @@
+uuid: 1304fbe5-abf0-4d28-96c2-15d6d6d568d1
+langcode: en
+status: true
+dependencies:
+  module:
+    - comment
+    - lms_lesson
+id: lms_lesson.lms_lesson.field_comments
+field_name: field_comments
+entity_type: lms_lesson
+bundle: lms_lesson
+label: Comments
+description: 'Lesson comments and Q&A.'
+required: false
+translatable: true
+default_value:
+  -
+    status: 2
+default_value_callback: ''
+settings:
+  default_mode: 1
+  per_page: 50
+  anonymous: 0
+  form_location: true
+  preview: 1
+field_type: comment

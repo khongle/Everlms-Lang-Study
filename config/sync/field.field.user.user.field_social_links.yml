@@ -1,0 +1,23 @@
+uuid: e3d2c999-9200-4434-a0df-1c86ff25969f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_social_links
+  module:
+    - link
+    - user
+id: user.user.field_social_links
+field_name: field_social_links
+entity_type: user
+bundle: user
+label: 'Social Links'
+description: 'Links to LinkedIn, Facebook, Twitter, Portfolio, etc.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 1
+  link_type: 17
+field_type: link

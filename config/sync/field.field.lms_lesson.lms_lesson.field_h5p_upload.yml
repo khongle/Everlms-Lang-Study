@@ -1,0 +1,21 @@
+uuid: 4bd60471-5bd3-4ff1-925e-61bc6e1145d1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.lms_lesson.field_h5p_upload
+  module:
+    - h5p
+    - lms_lesson
+id: lms_lesson.lms_lesson.field_h5p_upload
+field_name: field_h5p_upload
+entity_type: lms_lesson
+bundle: lms_lesson
+label: 'H5P Interactive File'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: h5p

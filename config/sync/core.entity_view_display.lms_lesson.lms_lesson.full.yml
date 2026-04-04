@@ -1,0 +1,89 @@
+uuid: 0dc60ec0-62ac-4ef5-ad53-9ace3cf02cf8
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.comment.lesson_comment.default
+    - field.field.lms_lesson.lms_lesson.field_h5p_upload
+  module:
+    - ajax_comments
+    - comment
+    - file
+    - h5p
+    - lms_lesson
+    - md_viewer
+    - pdf
+id: lms_lesson.lms_lesson.full
+targetEntityType: lms_lesson
+bundle: lms_lesson
+mode: full
+content:
+  field_attachments:
+    type: pdf_default
+    label: above
+    settings:
+      width: 100%
+      height: 650px
+      keep_pdfjs: true
+      page: null
+      zoom: null
+      custom_zoom: null
+      pagemode: null
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_comments:
+    type: comment_default
+    label: hidden
+    settings:
+      view_mode: default
+      pager_id: 0
+    third_party_settings:
+      ajax_comments:
+        enable_ajax_comments: '1'
+    weight: 10
+    region: content
+  field_h5p_upload:
+    type: h5p_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 5
+    region: content
+  field_pptx_attachment:
+    type: mdocviewer_field
+    label: hidden
+    settings:
+      width: null
+      height: 600
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_video_file:
+    type: file_video
+    label: hidden
+    settings:
+      controls: true
+      autoplay: false
+      loop: false
+      multiple_file_display_type: tags
+      muted: false
+      playsinline: false
+      width: 100
+      height: 100
+    third_party_settings: {  }
+    weight: 3
+    region: content
+hidden:
+  field_content: true
+  field_drip_days: true
+  field_duration: true
+  field_free_preview: true
+  field_h5p_embed: true
+  field_quiz: true
+  field_scorm_package: true
+  field_type: true
+  field_video_url: true
+  field_zoom_meeting_id: true
+  field_zoom_schedule: true
+  name: true

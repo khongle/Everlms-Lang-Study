@@ -1,0 +1,11 @@
+uuid: 874fd3bc-ba5d-4fab-80bc-4541f007eb76
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.manager_create
+label: 'Manager Create'
+description: null
+targetEntityType: user
+cache: true

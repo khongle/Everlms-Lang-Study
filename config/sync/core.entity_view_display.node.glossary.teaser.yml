@@ -1,0 +1,34 @@
+uuid: ec1b7998-2224-4b4a-a993-ebe5ccbd460b
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.glossary.body
+    - field.field.node.glossary.field_course
+    - field.field.node.glossary.field_synonyms
+    - node.type.glossary
+  module:
+    - text
+    - user
+id: node.glossary.teaser
+targetEntityType: node
+bundle: glossary
+mode: teaser
+content:
+  body:
+    type: text_summary_or_trimmed
+    label: hidden
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  field_course: true
+  field_synonyms: true

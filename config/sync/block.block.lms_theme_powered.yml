@@ -1,0 +1,22 @@
+uuid: d5f49299-d5b7-4733-90c6-9fa382c9ac80
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - lms_theme
+_core:
+  default_config_hash: eYL19CLDyinGTWYQfBD1DswWzglEotE_kHnHx3AxTXM
+id: lms_theme_powered
+theme: lms_theme
+region: footer_bottom
+weight: 0
+provider: null
+plugin: system_powered_by_block
+settings:
+  id: system_powered_by_block
+  label: 'Powered by Drupal'
+  label_display: '0'
+  provider: system
+visibility: {  }

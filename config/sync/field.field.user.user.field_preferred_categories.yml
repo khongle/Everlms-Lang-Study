@@ -1,0 +1,25 @@
+uuid: e542b025-e7e2-46a4-9067-c3be457a6841
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_preferred_categories
+    - taxonomy.vocabulary.course_category
+  module:
+    - user
+id: user.user.field_preferred_categories
+field_name: field_preferred_categories
+entity_type: user
+bundle: user
+label: 'Preferred Categories'
+description: 'Course categories the user is interested in.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      course_category: course_category
+field_type: entity_reference

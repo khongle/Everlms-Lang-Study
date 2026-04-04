@@ -1,0 +1,9 @@
+uuid: 12f10a0e-dd12-4fb4-a490-34e7d3d0c2c1
+langcode: en
+status: true
+dependencies: {  }
+name: 'Quiz Results'
+vid: quiz_results
+description: 'EverLMS: Quiz Results vocabulary.'
+weight: 0
+new_revision: false

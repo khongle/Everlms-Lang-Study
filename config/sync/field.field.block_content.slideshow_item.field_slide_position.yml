@@ -1,0 +1,21 @@
+uuid: 579d3786-76ab-4e90-bcf2-1a84cb0508d7
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.slideshow_item
+    - field.storage.block_content.field_slide_position
+  module:
+    - options
+id: block_content.slideshow_item.field_slide_position
+field_name: field_slide_position
+entity_type: block_content
+bundle: slideshow_item
+label: 'Text Position'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

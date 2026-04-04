@@ -1,0 +1,9 @@
+uuid: 615b0f4a-4d03-4b9b-a263-3fddc2e4e659
+langcode: en
+status: true
+dependencies: {  }
+name: 'Forum Category'
+vid: forum_category
+description: 'Categories for forum topics'
+weight: 0
+new_revision: false

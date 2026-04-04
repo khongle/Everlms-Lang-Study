@@ -1,0 +1,21 @@
+uuid: d58c8a1a-1a86-4f25-8d18-67f56aea4822
+langcode: en
+status: true
+dependencies:
+  module:
+    - lms_forum
+    - text
+id: lms_forum_reply.lms_forum_reply.default
+targetEntityType: lms_forum_reply
+bundle: lms_forum_reply
+mode: default
+content:
+  field_body:
+    type: text_textarea
+    weight: 0
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+hidden: {  }

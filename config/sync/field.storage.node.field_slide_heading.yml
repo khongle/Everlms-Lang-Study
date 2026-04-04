@@ -1,0 +1,21 @@
+uuid: 610fc9bc-d6a5-4225-a07f-670e59a23d1d
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_slide_heading
+field_name: field_slide_heading
+entity_type: node
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

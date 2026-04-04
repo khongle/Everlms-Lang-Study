@@ -1,0 +1,20 @@
+uuid: d2c432dd-1a68-4399-bfff-4079f3e6f938
+langcode: en
+status: true
+dependencies:
+  module:
+    - lms_notification
+  theme:
+    - lms_theme
+id: lms_theme_notificationbell
+theme: lms_theme
+region: header
+weight: 0
+provider: null
+plugin: lms_notification_bell_block
+settings:
+  id: lms_notification_bell_block
+  label: 'Notification Bell'
+  label_display: '0'
+  provider: lms_notification
+visibility: {  }

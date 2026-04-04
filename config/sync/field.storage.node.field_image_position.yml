@@ -1,0 +1,27 @@
+uuid: b4434dbc-71c6-46ae-973d-98e2b45b74fc
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_image_position
+field_name: field_image_position
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: left
+      label: 'Bên Trái (Ảnh Trái - Chữ Phải)'
+    -
+      value: right
+      label: 'Bên Phải (Chữ Trái - Ảnh Phải)'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

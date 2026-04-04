@@ -1,0 +1,11 @@
+uuid: 8504273e-b325-4ed8-bc37-abdbda6a77ac
+langcode: en
+status: true
+dependencies:
+  module:
+    - lms_course
+id: lms_course.manager_edit
+label: 'Manager Edit'
+description: null
+targetEntityType: lms_course
+cache: true

@@ -1,0 +1,9 @@
+uuid: 5f5194dd-2c2f-4642-88ad-420628600a3f
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: 0Hvg3rIe70EXgu3KcfXLxm_i7M7r6jD3XAE6ovH-hhE
+id: matching
+label: Matching
+description: 'Matching question type.'

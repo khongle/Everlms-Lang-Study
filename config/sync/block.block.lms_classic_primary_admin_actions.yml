@@ -1,0 +1,20 @@
+uuid: b4902dde-4bd8-4c50-83ab-1cea7852a90f
+langcode: en
+status: true
+dependencies:
+  theme:
+    - lms_classic
+_core:
+  default_config_hash: Q9_2whdOj1YIomfvsIfopROW4FT_X5pY0DjdOiOaQ5U
+id: lms_classic_primary_admin_actions
+theme: lms_classic
+region: highlighted
+weight: -5
+provider: null
+plugin: local_actions_block
+settings:
+  id: local_actions_block
+  label: 'Primary admin actions'
+  label_display: '0'
+  provider: core
+visibility: {  }

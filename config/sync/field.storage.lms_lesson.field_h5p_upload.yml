@@ -1,0 +1,19 @@
+uuid: b2c98f90-96f7-4f88-837d-a0caa3162edf
+langcode: en
+status: true
+dependencies:
+  module:
+    - h5p
+    - lms_lesson
+id: lms_lesson.field_h5p_upload
+field_name: field_h5p_upload
+entity_type: lms_lesson
+type: h5p
+settings: {  }
+module: h5p
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

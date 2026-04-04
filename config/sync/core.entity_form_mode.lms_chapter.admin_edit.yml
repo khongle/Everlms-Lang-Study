@@ -1,0 +1,11 @@
+uuid: e4e62212-127f-48aa-a238-404a7757ee7a
+langcode: en
+status: true
+dependencies:
+  module:
+    - lms_chapter
+id: lms_chapter.admin_edit
+label: 'Admin Edit'
+description: null
+targetEntityType: lms_chapter
+cache: true

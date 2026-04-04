@@ -1,0 +1,11 @@
+uuid: 4239c78b-414e-4809-b903-d77a4758d773
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.admin_edit
+label: 'Admin Edit'
+description: null
+targetEntityType: user
+cache: true

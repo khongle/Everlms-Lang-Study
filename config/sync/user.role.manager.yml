@@ -1,0 +1,32 @@
+uuid: e631cf44-647a-4bd1-bca9-ddcdb157e4f5
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.basic_html
+    - filter.format.full_html
+    - filter.format.restricted_html
+  module:
+    - devel
+    - filter
+    - h5peditor
+    - lms_course
+    - system
+id: manager
+label: Manager
+weight: 2
+is_admin: false
+permissions:
+  - 'access h5p editor'
+  - 'access user profiles'
+  - 'administer lms_course'
+  - 'create lms_course'
+  - 'delete lms_course'
+  - 'edit lms_course'
+  - 'edit own lms_course'
+  - 'switch users'
+  - 'use text format basic_html'
+  - 'use text format full_html'
+  - 'use text format restricted_html'
+  - 'view lms_course'
+  - 'view the administration theme'

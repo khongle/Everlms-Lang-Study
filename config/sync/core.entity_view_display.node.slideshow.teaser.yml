@@ -1,0 +1,40 @@
+uuid: 50b0f4e9-d84a-4851-bee6-8922ef5b04f8
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.slideshow.body
+    - field.field.node.slideshow.field_slide_heading
+    - field.field.node.slideshow.field_slide_image
+    - field.field.node.slideshow.field_slide_link
+    - field.field.node.slideshow.field_slide_position
+    - field.field.node.slideshow.field_slide_subheading
+    - node.type.slideshow
+  module:
+    - text
+    - user
+id: node.slideshow.teaser
+targetEntityType: node
+bundle: slideshow
+mode: teaser
+content:
+  body:
+    type: text_summary_or_trimmed
+    label: hidden
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  field_slide_heading: true
+  field_slide_image: true
+  field_slide_link: true
+  field_slide_position: true
+  field_slide_subheading: true

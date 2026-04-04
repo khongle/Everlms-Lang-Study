@@ -1,0 +1,9 @@
+uuid: 49c99bbf-92b6-4c52-916f-421883ff2abd
+langcode: en
+status: true
+dependencies: {  }
+name: 'Badge Type'
+vid: badge_type
+description: 'EverLMS: Badge Type vocabulary.'
+weight: 0
+new_revision: false

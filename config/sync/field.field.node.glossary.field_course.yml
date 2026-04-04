@@ -1,0 +1,22 @@
+uuid: ea4886ae-18bf-478c-9a2d-b5487f822c49
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_course
+    - node.type.glossary
+id: node.glossary.field_course
+field_name: field_course
+entity_type: node
+bundle: glossary
+label: 'Related Course (Thuộc môn học)'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:lms_course'
+  handler_settings:
+    target_bundles: null
+field_type: entity_reference

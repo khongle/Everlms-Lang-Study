@@ -1,0 +1,45 @@
+uuid: 6f0e42c4-134e-4c6b-8f4a-6bd670a553aa
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.course_category.field_category_thumbnail
+    - field.field.taxonomy_term.course_category.field_is_featured
+    - taxonomy.vocabulary.course_category
+  module:
+    - image
+    - text
+id: taxonomy_term.course_category.default
+targetEntityType: taxonomy_term
+bundle: course_category
+mode: default
+content:
+  description:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_category_thumbnail:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: ''
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 5
+    region: content
+  field_is_featured:
+    type: boolean
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 6
+    region: content
+hidden: {  }

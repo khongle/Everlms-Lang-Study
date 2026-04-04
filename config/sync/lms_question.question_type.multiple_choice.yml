@@ -1,0 +1,9 @@
+uuid: 38387b38-aac1-4aee-918a-55dc32eb211f
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: l1voO7bH0EABDZonMpBxasLZ5SiS3JO1pMRnAnXMTBc
+id: multiple_choice
+label: 'Multiple Choice'
+description: 'Multiple Choice question type.'

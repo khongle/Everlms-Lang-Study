@@ -1,0 +1,8 @@
+uuid: 48042faf-a9a7-446b-8fa3-943db1f6e578
+langcode: en
+status: true
+dependencies: {  }
+id: slideshow_item
+label: 'Slideshow Item'
+revision: false
+description: 'A slide used in a banner slideshow component.'

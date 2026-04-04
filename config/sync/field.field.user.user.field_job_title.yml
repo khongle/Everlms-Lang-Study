@@ -1,0 +1,20 @@
+uuid: 655a4ff8-8c19-49aa-a18a-8bf90b1f38ce
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_job_title
+  module:
+    - user
+id: user.user.field_job_title
+field_name: field_job_title
+entity_type: user
+bundle: user
+label: 'Job Title'
+description: 'Current job title (e.g., "Senior Developer at X").'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

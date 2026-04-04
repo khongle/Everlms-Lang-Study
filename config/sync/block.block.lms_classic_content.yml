@@ -1,0 +1,22 @@
+uuid: 511cd13c-7cb2-4d72-a306-4fd9141582c2
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - lms_classic
+_core:
+  default_config_hash: erQSEZF2XUjNmgTl0uNRBzmg18ZGXwUcw2FhApoeuHk
+id: lms_classic_content
+theme: lms_classic
+region: content
+weight: 0
+provider: null
+plugin: system_main_block
+settings:
+  id: system_main_block
+  label: 'Main page content'
+  label_display: '0'
+  provider: system
+visibility: {  }

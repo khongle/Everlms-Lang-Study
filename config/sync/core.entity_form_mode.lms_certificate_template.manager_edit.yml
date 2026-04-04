@@ -1,0 +1,11 @@
+uuid: 04efcd12-5428-4c17-9316-4cecd2bda026
+langcode: en
+status: true
+dependencies:
+  module:
+    - lms_certificate
+id: lms_certificate_template.manager_edit
+label: 'Manager Edit'
+description: null
+targetEntityType: lms_certificate_template
+cache: true

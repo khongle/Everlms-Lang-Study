@@ -1,0 +1,27 @@
+uuid: 0a4f53cb-7ff6-439e-b0ff-5c27fe18f03c
+langcode: en
+status: true
+dependencies:
+  config:
+    - comment.type.lesson_comment
+    - field.field.comment.lesson_comment.comment_body
+  module:
+    - text
+id: comment.lesson_comment.default
+targetEntityType: comment
+bundle: lesson_comment
+mode: default
+content:
+  comment_body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden: {  }

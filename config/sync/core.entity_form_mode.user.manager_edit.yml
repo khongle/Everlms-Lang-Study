@@ -1,0 +1,11 @@
+uuid: cfa4a5ea-4ddc-48df-bee9-a04516294fc8
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.manager_edit
+label: 'Manager Edit'
+description: null
+targetEntityType: user
+cache: true

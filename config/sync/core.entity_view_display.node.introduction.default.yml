@@ -1,0 +1,38 @@
+uuid: f7e71074-2255-4f32-bcec-a8947e9c7da6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.introduction.body
+    - field.field.node.introduction.field_background_color
+    - field.field.node.introduction.field_call_to_action
+    - field.field.node.introduction.field_image_position
+    - field.field.node.introduction.field_intro_image
+    - field.field.node.introduction.field_subheading
+    - node.type.introduction
+  module:
+    - text
+    - user
+id: node.introduction.default
+targetEntityType: node
+bundle: introduction
+mode: default
+content:
+  body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  field_background_color: true
+  field_call_to_action: true
+  field_image_position: true
+  field_intro_image: true
+  field_subheading: true

@@ -1,0 +1,11 @@
+uuid: dec08aff-2c2d-4f30-b5fd-0fb68746babb
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.admin_create
+label: 'Admin Create'
+description: null
+targetEntityType: user
+cache: true

@@ -1,0 +1,15 @@
+uuid: e2c28567-b3eb-46de-8912-0e3de4d90b36
+langcode: en
+status: true
+dependencies:
+  module:
+    - comment
+id: student
+label: Student
+weight: 5
+is_admin: false
+permissions:
+  - 'access comments'
+  - 'edit own comments'
+  - 'post comments'
+  - 'skip comment approval'

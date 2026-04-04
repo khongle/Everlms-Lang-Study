@@ -1,0 +1,7 @@
+default_provider: openai
+openai:
+  model: gpt-4o
+  api_key: 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
+gemini:
+  model: gemini-2.5-flash
+  api_key: AIzaSyC0OvkqS9LAD3vH55pX-FPbhsm4T0_6T4o

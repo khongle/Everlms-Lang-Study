@@ -1,0 +1,9 @@
+uuid: b22cb83d-e7e3-414a-9fca-f990c999900f
+langcode: en
+status: true
+dependencies: {  }
+name: 'FAQ Category'
+vid: faq_category
+description: 'EverLMS: FAQ Category vocabulary.'
+weight: 0
+new_revision: false

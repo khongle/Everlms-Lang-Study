@@ -1,0 +1,9 @@
+uuid: 91564790-84da-431e-a85e-574ac6dca5cf
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: dM-IhZTpN7pd38zI2CEmUJMsVQlg5j2XlTln8TIkGa4
+id: ordering
+label: Ordering
+description: 'Ordering question type.'

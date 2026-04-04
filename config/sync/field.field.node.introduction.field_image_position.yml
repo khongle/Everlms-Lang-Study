@@ -1,0 +1,21 @@
+uuid: 5da84f57-016c-4462-91df-fd83b77185e4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_image_position
+    - node.type.introduction
+  module:
+    - options
+id: node.introduction.field_image_position
+field_name: field_image_position
+entity_type: node
+bundle: introduction
+label: 'Vị trí Hình ảnh (Layout Direction)'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
