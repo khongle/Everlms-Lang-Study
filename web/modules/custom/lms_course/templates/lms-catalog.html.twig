@@ -20,13 +20,19 @@
             {% set wrapper_opened = false %}
             
             {% for cat in categories %}
-              {% set is_checked = cat.id in filters.category %}
+              {% set cat_id_str = cat.id() ~ '' %}
+              {% set is_checked = false %}
+              {% for fc in filters.category %}
+                {% if (fc ~ '') == cat_id_str %}
+                  {% set is_checked = true %}
+                {% endif %}
+              {% endfor %}
               {% set is_hidden = not is_checked and visible_count >= 5 %}
               
               {% if not is_hidden %}
                 {% set visible_count = visible_count + 1 %}
                 <label class="lms-catalog__checkbox">
-                  <input type="checkbox" value="{{ cat.id }}" data-filter-type="category" {% if is_checked %}checked{% endif %}>
+                  <input type="checkbox" value="{{ cat.id() }}" data-filter-type="category" {% if is_checked %}checked{% endif %}>
                   <span>{{ cat.label }}</span>
                 </label>
               {% else %}
@@ -37,7 +43,7 @@
                 
                 {% set hidden_count = hidden_count + 1 %}
                 <label class="lms-catalog__checkbox">
-                  <input type="checkbox" value="{{ cat.id }}" data-filter-type="category" {% if is_checked %}checked{% endif %}>
+                  <input type="checkbox" value="{{ cat.id() }}" data-filter-type="category" {% if is_checked %}checked{% endif %}>
                   <span>{{ cat.label }}</span>
                 </label>
               {% endif %}

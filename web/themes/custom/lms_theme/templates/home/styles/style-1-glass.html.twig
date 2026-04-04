@@ -195,7 +195,7 @@
     </div>
     <div class="lms-categories-grid lms-categories-grid--images">
       {% for cat in categories %}
-        <a href="{{ path('lms_course.category_detail', {'taxonomy_term': cat.entity.id})|default('#') }}" class="lms-category-card lms-category-card--has-image">
+        <a href="{{ path('lms_course.catalog') }}?category={{ cat.entity.id }}" class="lms-category-card lms-category-card--has-image">
           <div class="lms-category-card__thumb">
             {% if cat.thumbnail_url %}
               <img src="{{ cat.thumbnail_url }}" alt="{{ cat.name }}">

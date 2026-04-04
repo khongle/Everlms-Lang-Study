@@ -349,7 +349,7 @@ final class CoursePublicController extends ControllerBase {
 
     $categories_input = $query_all['category'] ?? [];
     $categories = is_array($categories_input) ? $categories_input : [$categories_input];
-    $categories = array_filter($categories);
+    $categories = array_map('strval', array_filter($categories));
 
     $levels_input = $query_all['level'] ?? [];
     $levels = is_array($levels_input) ? $levels_input : [$levels_input];
@@ -361,7 +361,7 @@ final class CoursePublicController extends ControllerBase {
 
     $ratings_input = $query_all['rating'] ?? [];
     $ratings = is_array($ratings_input) ? $ratings_input : [$ratings_input];
-    $ratings = array_filter($ratings);
+    $ratings = array_map('intval', array_filter($ratings));
 
     $sort = $request->query->get('sort', 'Most Popular');
 
