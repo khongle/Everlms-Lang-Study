@@ -1395,6 +1395,22 @@ class ContentToolsCommands extends DrushCommands {
       }
 
       $node = $nodeStorage->create($fields);
+
+      // Save definition text: try 'body' first (standard Drupal), fallback to 'field_definition'.
+      $definition = $item['definition'] ?? $item['body'] ?? '';
+      if (!empty($definition)) {
+        if ($node->hasField('body')) {
+          $node->set('body', ['value' => $definition, 'format' => 'full_html']);
+        }
+        if ($node->hasField('field_definition')) {
+          $node->set('field_definition', ['value' => $definition, 'format' => 'full_html']);
+        }
+        // Plain text fallback fields.
+        if ($node->hasField('field_term_definition')) {
+          $node->set('field_term_definition', $definition);
+        }
+      }
+
       $node->save();
       $count++;
     }
@@ -2004,10 +2020,44 @@ class ContentToolsCommands extends DrushCommands {
         $resultLabel = !empty($item['is_passed']) ? 'Passed' : 'Failed';
         $termId = $this->getOrCreateTerm('quiz_results', $resultLabel);
 
+        $response_ids = [];
+        $questions = $quiz->get('field_questions')->referencedEntities();
+        $total = count($questions);
+        if ($total > 0) {
+          $score = (float) $item['score'];
+          $num_correct = round($total * ($score / 100));
+          $responseStorage = $this->entityTypeManager->getStorage('lms_question_response');
+          
+          foreach ($questions as $index => $question) {
+            $is_correct = ($index < $num_correct);
+            $fields_resp = [
+              'field_question' => $question->id(),
+              'field_quiz' => $quiz->id(),
+              'field_correct' => $is_correct,
+              'field_score' => $is_correct ? 10 : 0, 
+              'field_pending_review' => FALSE,
+              'field_text_answer' => $is_correct ? 'Correct dummy answer submitted.' : 'Incorrect dummy answer submitted.',
+            ];
+            
+            if (in_array($question->bundle(), ['single_choice', 'multiple_choice'])) {
+              $choices = $question->get('field_choices')->referencedEntities();
+              if (!empty($choices)) {
+                $fields_resp['field_answers'] = ['target_id' => $choices[0]->id()];
+                $fields_resp['field_text_answer'] = $choices[0]->label();
+              }
+            }
+            
+            $resp_entity = $responseStorage->create($fields_resp);
+            $resp_entity->save();
+            $response_ids[] = ['target_id' => $resp_entity->id()];
+          }
+        }
+
         $fields = [
           'uid' => $user->id(),
           'field_quiz' => $quiz->id(),
           'field_score' => $item['score'],
+          'field_responses' => $response_ids,
         ];
 
         if ($termId) {
