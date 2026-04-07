@@ -31,6 +31,7 @@ use Drupal\views\EntityViewsData;
     'label' => 'name',
     'langcode' => 'langcode',
     'owner' => 'uid',
+    'published' => 'status',
   ],
   handlers: [
     'view_builder' => EntityViewBuilder::class,
@@ -145,6 +146,16 @@ class Quiz extends ContentEntityBase implements EntityOwnerInterface {
       ->setDisplayOptions('form', ['type' => 'entity_reference_autocomplete', 'weight' => -1])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
+
+    $fields['status'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(new TranslatableMarkup('Published status'))
+      ->setDescription(new TranslatableMarkup('A boolean indicating whether the Quiz is published.'))
+      ->setDefaultValue(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'boolean_checkbox',
+        'weight' => 99,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Created'));

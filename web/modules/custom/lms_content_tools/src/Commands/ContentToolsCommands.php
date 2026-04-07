@@ -305,14 +305,6 @@ class ContentToolsCommands extends DrushCommands {
       '@date' => $manifest['generated_at'] ?? 'unknown',
     ]));
 
-    // Show summary.
-    if (!empty($manifest['summary'])) {
-      $rows = [];
-      foreach ($manifest['summary'] as $key => $value) {
-        $rows[] = [str_replace('_', ' ', ucfirst($key)), $value];
-      }
-      $this->io()->table(['Content', 'Count'], $rows);
-    }
 
     // Determine files to import.
     $importOrder = $manifest['import_order'] ?? [];
@@ -918,11 +910,68 @@ class ContentToolsCommands extends DrushCommands {
       'field_time_limit' => (int) ($quizData['time_limit'] ?? 30),
       'field_take_quiz_number' => (int) ($quizData['max_attempts'] ?? 3),
       'field_form_style' => $quizData['display_style'] ?? 'question_step',
+      'status' => 1,
       'field_questions' => $questionIds,
       'uid' => 1,
     ]);
     $quiz->save();
     $count++;
+
+    // AUTO-LINK TO COURSE
+    $course = NULL;
+    if (!empty($data['target_course'])) {
+      $course = $this->lookupCourseByTitle($data['target_course']);
+    } else {
+      // Fallback to old behavior if target_course is missing
+      $cleanTitle = str_replace(['Final Assessment: ', 'Final Quiz: ', 'Quiz: '], '', $quizData['title']);
+      $course = $this->lookupCourseByTitle($cleanTitle);
+    }
+
+    if ($course) {
+      $chapterStorage = $this->entityTypeManager->getStorage('lms_chapter');
+      $lessonStorage = $this->entityTypeManager->getStorage('lms_lesson');
+
+      // Create new Quiz Lesson
+      $lesson = $lessonStorage->create([
+        'name' => $quizData['title'],
+        'status' => 1,
+        'field_type' => 'quiz',
+        'field_quiz' => $quiz->id(),
+        'weight' => 99, // Make it the last lesson
+      ]);
+      $lesson->save();
+      $count++;
+
+      // Based on user choice: "quiz nên thuộc chapter cuối cùng của course nha"
+      $existingChapters = $course->get('field_chapters')->referencedEntities();
+
+      if (!empty($existingChapters)) {
+        // Grab the last chapter
+        $lastChapter = end($existingChapters);
+        $lessonIds = array_column($lastChapter->get('field_lessons')->getValue(), 'target_id');
+        $lessonIds[] = $lesson->id();
+        $lastChapter->set('field_lessons', $lessonIds);
+        $lastChapter->save();
+        $this->logger()->success(dt('Linked Quiz automatically to the last chapter of course: @course', ['@course' => $course->label()]));
+      } else {
+        // If course has no chapters, create one
+        $chapter = $chapterStorage->create([
+          'name' => 'Final Assessment',
+          'status' => 1,
+          'field_lessons' => [$lesson->id()],
+          'weight' => 99,
+        ]);
+        $chapter->save();
+        $count++;
+        $chapterIds = array_column($course->get('field_chapters')->getValue(), 'target_id');
+        $chapterIds[] = $chapter->id();
+        $course->set('field_chapters', $chapterIds);
+        $course->save();
+        $this->logger()->success(dt('Linked Quiz automatically to a new chapter of course: @course', ['@course' => $course->label()]));
+      }
+    } else {
+      $this->logger()->warning(dt('Could not auto-link Quiz. Course not found.'));
+    }
 
     return $count;
   }
@@ -1209,6 +1258,24 @@ class ContentToolsCommands extends DrushCommands {
         if ($course) {
           // Fallback to uid 1 if no students found.
           $authorId = !empty($studentIds) ? $studentIds[array_rand($studentIds)] : 1;
+
+          // Ensure the reviewer is enrolled in the course (data consistency).
+          $enrollmentStorage = $this->entityTypeManager->getStorage('lms_user_course');
+          $existingEnrollment = $enrollmentStorage->getQuery()
+            ->condition('uid', $authorId)
+            ->condition('field_course', $course->id())
+            ->accessCheck(FALSE)
+            ->execute();
+
+          if (empty($existingEnrollment)) {
+            // Auto-enroll user so review data is consistent.
+            $enrollment = $enrollmentStorage->create([
+              'uid' => $authorId,
+              'field_course' => $course->id(),
+              'field_status' => 'active',
+            ]);
+            $enrollment->save();
+          }
 
           // Prevent duplicates: check if this user already reviewed this course.
           $existingRating = $ratingStorage->getQuery()
@@ -1507,20 +1574,40 @@ class ContentToolsCommands extends DrushCommands {
    * @return \Drupal\file\FileInterface|null
    *   The saved file entity, or NULL if the file does not exist.
    */
-  protected function createManagedFileFromGenerated(string $filename): ?\Drupal\file\FileInterface {
-    $uri = 'public://generated/' . $filename;
-    /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
-    $fileSystem = \Drupal::service('file_system');
-    $realpath = $fileSystem->realpath($uri);
-    if (!$realpath || !file_exists($realpath)) {
-      $this->logger()->warning(dt('Image file not found: @uri', ['@uri' => $uri]));
+  protected function createManagedFileFromGenerated(string $filename, string $destination_uri = 'public://generated/'): ?\Drupal\file\FileInterface {
+    if (empty($filename)) {
       return NULL;
     }
+
+    $agent_images_dir = DRUPAL_ROOT . '/../.agent/images';
+    $found_path = null;
+
+    if (is_dir($agent_images_dir)) {
+      $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($agent_images_dir));
+      foreach ($iterator as $fileInfo) {
+        if ($fileInfo->isFile() && $fileInfo->getFilename() === $filename) {
+          $found_path = $fileInfo->getPathname();
+          break;
+        }
+      }
+    }
+
+    if (!$found_path) {
+      $this->logger()->warning(dt('Image file not found in agent dir: @filename', ['@filename' => $filename]));
+      return NULL;
+    }
+
+    /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
+    $fileSystem = \Drupal::service('file_system');
+    $fileSystem->prepareDirectory($destination_uri, \Drupal\Core\File\FileSystemInterface::CREATE_DIRECTORY | \Drupal\Core\File\FileSystemInterface::MODIFY_PERMISSIONS);
+
+    $uri = rtrim($destination_uri, '/') . '/' . $filename;
+    
     try {
       /** @var \Drupal\file\FileRepositoryInterface $fileRepo */
       $fileRepo = \Drupal::service('file.repository');
       return $fileRepo->writeData(
-        file_get_contents($realpath),
+        file_get_contents($found_path),
         $uri,
         \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE
       );
@@ -1998,6 +2085,44 @@ class ContentToolsCommands extends DrushCommands {
 
           $progress = $storage->create($progressFields);
           $progress->save();
+
+          // Ensure lms_user_lesson records mathematically match the field_progress percentage
+          $all_lessons = [];
+          foreach ($course->get('field_chapters')->referencedEntities() as $chapter) {
+            if ($chapter->hasField('field_lessons')) {
+              foreach ($chapter->get('field_lessons')->referencedEntities() as $cl) {
+                $all_lessons[] = $cl->id();
+              }
+            }
+          }
+
+          if (!empty($all_lessons) && $item['percentage'] > 0) {
+            $target_completed_count = ($item['status'] === 'completed' || $item['percentage'] == 100)
+              ? count($all_lessons)
+              : floor(($item['percentage'] / 100) * count($all_lessons));
+
+            // Prevent 0% target if percentage > 0 to avoid contradiction
+            if ($target_completed_count == 0 && $item['percentage'] > 0) {
+              $target_completed_count = 1;
+            }
+
+            $lesson_storage = $this->entityTypeManager->getStorage('lms_user_lesson');
+            for ($i = 0; $i < $target_completed_count; $i++) {
+              $lesson_storage->create([
+                'uid' => $user->id(),
+                'field_lesson' => $all_lessons[$i],
+                'field_status' => 'completed',
+                'field_completed_at' => $progressFields['field_completed_at'] ?? time(),
+              ])->save();
+            }
+
+            // Write the true granular percentage back to the overarching lms_user_course progress tracker
+            // to ensure UI consistency everywhere.
+            $true_percentage = floor(($target_completed_count / count($all_lessons)) * 100);
+            $progress->set('field_progress', $true_percentage);
+            $progress->save();
+          }
+
           $count++;
         }
       }
@@ -2112,11 +2237,62 @@ class ContentToolsCommands extends DrushCommands {
           }
         }
 
-        // 3. Save Entity
+        // 3. Mark Course and all Lessons as 100% completed since they hold a Certificate
+        $enrollment_storage = $this->entityTypeManager->getStorage('lms_user_course');
+        $e_ids = $enrollment_storage->getQuery()
+          ->condition('uid', $user->id())
+          ->condition('field_course', $course->id())
+          ->accessCheck(FALSE)
+          ->execute();
+        
+        $now = time();
+        if ($e_ids) {
+          $enrollment = $enrollment_storage->load(reset($e_ids));
+          if ($enrollment->get('field_status')->value !== 'completed' || $enrollment->get('field_progress')->value != 100) {
+            $enrollment->set('field_status', 'completed');
+            $enrollment->set('field_progress', 100);
+            $enrollment->set('field_completed_at', $now);
+            $enrollment->save();
+          }
+        } else {
+          $enrollment_storage->create([
+            'uid' => $user->id(),
+            'field_course' => $course->id(),
+            'field_status' => 'completed',
+            'field_progress' => 100,
+            'field_completed_at' => $now,
+          ])->save();
+        }
+
+        // Complete all lessons attached to the course
+        $lesson_storage = $this->entityTypeManager->getStorage('lms_user_lesson');
+        foreach ($course->get('field_chapters')->referencedEntities() as $chapter) {
+          if ($chapter->hasField('field_lessons')) {
+            foreach ($chapter->get('field_lessons')->referencedEntities() as $cl) {
+              $p_ids = $lesson_storage->getQuery()
+                ->condition('uid', $user->id())
+                ->condition('field_lesson', $cl->id())
+                ->accessCheck(FALSE)
+                ->execute();
+              
+              if (empty($p_ids)) {
+                $lesson_storage->create([
+                  'uid' => $user->id(),
+                  'field_lesson' => $cl->id(),
+                  'field_status' => 'completed',
+                  'field_completed_at' => $now,
+                ])->save();
+              }
+            }
+          }
+        }
+
+        // 4. Save Entity
         $fields = [
           'uid' => $user->id(),
           'field_course' => $course->id(),
           'field_certificate_number' => $code,
+          'field_issued_at' => strtotime($item['issued_date'] ?? 'now'),
         ];
         if ($template) {
           $fields['field_template'] = $template->id();
@@ -2150,6 +2326,7 @@ class ContentToolsCommands extends DrushCommands {
         'uid' => $user->id(),
         'field_order_number' => $item['order_number'],
         'field_total' => $item['total'],
+        'field_status' => $item['status'] ?? 'completed',
       ]);
       $order->save();
 

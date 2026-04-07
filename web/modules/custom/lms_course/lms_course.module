@@ -75,6 +75,7 @@ function lms_course_theme(): array {
         'logged_in' => FALSE,
         'is_enrolled' => FALSE,
         'continue_url' => '',
+        'course_reviews' => [],
         'rating_form' => NULL,
       ],
       'template' => 'lms-course-detail',

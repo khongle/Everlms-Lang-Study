@@ -51,7 +51,7 @@
             {% if empty_stars > 0 %}{% for i in 1..empty_stars %}<i class="far fa-star"></i>{% endfor %}{% endif %}
           </div>
           <strong style="color: #fff; margin-left: 4px;">{{ course_rating|number_format(1) }}</strong> 
-          <span style="color: #8b949e; text-decoration: underline;">(0 {{ 'reviews'|t }})</span>
+          <span style="color: #8b949e; text-decoration: underline;">({{ course_reviews|length }} {{ 'reviews'|t }})</span>
         </span>
         <span style="display: flex; align-items: center; gap: 0.5rem; color: #8b949e;">
           <i class="fas fa-users" style="color: #667eea;"></i> 
@@ -289,10 +289,43 @@
           {# Rating Form - visible if user enrolled and hasn't rated yet #}
           {% if rating_form %}
             <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid hsla(0,0%,100%,0.1);">
-              <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: #fff;">{{ 'Leave your review'|t }}</h3>
-              <div class="card-glass" style="background: rgba(22, 27, 34, 0.5); border: 1px solid hsla(0,0%,100%,0.05); padding: 1.5rem; border-radius: 0.75rem;">
+              <h3 class="lms-tab-panel__title" style="font-size: 1.3rem; margin-bottom: 1rem;">{{ 'Leave your review'|t }}</h3>
+              <div class="card-glass" style="padding: 1.5rem; border-radius: 0.75rem;">
                 {{ rating_form }}
               </div>
+            </div>
+          {% endif %}
+
+          {# Approved Reviews List #}
+          {% if course_reviews is not empty %}
+            <div style="margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid hsla(0,0%,100%,0.1);">
+              <h3 class="lms-tab-panel__title" style="font-size: 1.3rem; margin-bottom: 1.5rem;">{{ 'Student Reviews'|t }} <span class="text-muted" style="font-size: 1rem; font-weight: 400;">({{ course_reviews|length }})</span></h3>
+              {% for review in course_reviews %}
+                <div class="card-lms" style="padding: 1.5rem; margin-bottom: 1rem; position: relative; {{ review.is_featured ? 'background: rgba(102,126,234,0.05); border-color: rgba(102,126,234,0.3);' : '' }}">
+                  {% if review.is_featured %}
+                    <span class="badge-lms badge-lms--primary" style="position: absolute; top: 1rem; right: 1rem;"><i class="fas fa-star" style="margin-right: 3px;"></i>{{ 'Featured'|t }}</span>
+                  {% endif %}
+                  <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    {% if review.reviewer_avatar %}
+                      <img src="{{ review.reviewer_avatar }}" alt="{{ review.reviewer_name }}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid hsla(0,0%,100%,0.1);">
+                    {% else %}
+                      <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1.1rem;">{{ review.reviewer_name|first|upper }}</div>
+                    {% endif %}
+                    <div>
+                      <div class="card-lms__title" style="margin: 0; font-size: 0.95rem;">{{ review.reviewer_name }}</div>
+                      <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+                        <div class="card-lms__rating">
+                          {% for i in 1..5 %}{% if i <= review.score %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}{% endfor %}
+                        </div>
+                        <span class="text-muted" style="font-size: 0.8rem;">{{ review.date }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  {% if review.review %}
+                    <p class="text-muted" style="line-height: 1.7; font-size: 0.9375rem; margin: 0;">{{ review.review }}</p>
+                  {% endif %}
+                </div>
+              {% endfor %}
             </div>
           {% endif %}
         </div>

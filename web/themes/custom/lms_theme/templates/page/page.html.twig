@@ -47,8 +47,8 @@
 
               {# Mega Menu Dropdown #}
               {% if 'administrator' in user.roles or 'manager' in user.roles %}
-              <div class="lms-mega-dropdown">
-                <div class="lms-mega-grid">
+              <div class="lms-mega-dropdown" style="width: max-content;">
+                <div class="lms-mega-grid" {% if 'administrator' not in user.roles %}style="grid-template-columns: repeat(3, 1fr);"{% endif %}>
                   <!-- Col 1: PERSONAL -->
                   <div class="lms-mega-col">
                     <div class="lms-mega-col-title">PERSONAL</div>
@@ -56,43 +56,40 @@
                     <a href="{{ path('lms_progress.my_courses') }}" class="lms-mega-link"><i class="fas fa-book-open text-success"></i> My Courses</a>
                     <a href="{{ path('lms_quiz.my_results') }}" class="lms-mega-link"><i class="fas fa-star text-purple"></i> My Quizzes</a>
                     <a href="{{ path('lms_progress.certificates') }}" class="lms-mega-link"><i class="fas fa-award text-warning"></i> My Certificates</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-box text-info"></i> My Orders</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-calendar-check text-warning"></i> Store Orders</a>
                     <a href="{{ path('lms_course.pricing') }}" class="lms-mega-link"><i class="fas fa-id-badge text-success"></i> Membership</a>
                     <a href="{{ path('user.page') }}" class="lms-mega-link"><i class="fas fa-user text-purple"></i> My Profile</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-bell text-warning"></i> Notifications</a>
                   </div>
                   <!-- Col 2: CONTENT -->
                   <div class="lms-mega-col">
                     <div class="lms-mega-col-title">CONTENT</div>
-                    <a href="{{ path('lms_course.admin_dashboard') }}" class="lms-mega-link"><i class="fas fa-video text-danger"></i> Courses</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-newspaper text-info"></i> Blog & News</a>
-                    <a href="{{ path('entity.taxonomy_vocabulary.collection') }}" class="lms-mega-link"><i class="fas fa-layer-group text-primary"></i> Categories</a>
-                    <a href="{{ path('lms_forum.index') }}" class="lms-mega-link"><i class="fas fa-comments text-success"></i> Forums</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-question-circle text-warning"></i> FAQ</a>
-                    <a href="{{ path('lms_course.glossary') }}" class="lms-mega-link"><i class="fas fa-book-open text-purple"></i> Glossary</a>
+                    <a href="/workspace/content/slideshows" class="lms-mega-link"><i class="fas fa-images text-primary"></i> Manage Slideshows</a>
+                    <a href="/workspace/content/faqs" class="lms-mega-link"><i class="fas fa-question-circle text-warning"></i> Manage FAQs</a>
+                    <a href="/workspace/content/glossaries" class="lms-mega-link"><i class="fas fa-book-open text-purple"></i> Manage Glossaries</a>
+                    <a href="/workspace/content/news" class="lms-mega-link"><i class="fas fa-newspaper text-info"></i> Manage News</a>
+                    <a href="{{ path('lms_rating.admin_list') }}" class="lms-mega-link"><i class="fas fa-comments text-success"></i> Student Feedback</a>
                   </div>
-                  <!-- Col 3: INSTRUCTOR -->
+                  <!-- Col 3: MANAGER -->
                   <div class="lms-mega-col">
-                    <div class="lms-mega-col-title">INSTRUCTOR</div>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-chalkboard-teacher text-success"></i> My Classes</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-file-alt text-info"></i> Materials</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-user-graduate text-warning"></i> Students</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-tasks text-primary"></i> Scoring</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-certificate text-danger"></i> Certificates</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-chart-bar text-success"></i> Reports</a>
+                    <div class="lms-mega-col-title">MANAGER</div>
+                    <a href="{{ path('lms_course.admin_dashboard') }}" class="lms-mega-link"><i class="fas fa-briefcase text-primary"></i> Workspace</a>
+                    <a href="{{ path('lms_course.admin_courses') }}" class="lms-mega-link"><i class="fas fa-video text-success"></i> Manage Courses</a>
+                    <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-mega-link"><i class="fas fa-tasks text-warning"></i> Manage Quizzes</a>
+                    <a href="{{ path('lms_course.admin_users') }}" class="lms-mega-link"><i class="fas fa-user-graduate text-info"></i> Manage Students</a>
+                    <a href="{{ path('lms_certificate.admin_dashboard') }}" class="lms-mega-link"><i class="fas fa-award text-danger"></i> Manage Certificates</a>
+                    <a href="{{ path('lms_course.admin_orders') }}" class="lms-mega-link"><i class="fas fa-file-invoice-dollar text-success"></i> Store Orders</a>
+                    <a href="/workspace/reports" class="lms-mega-link"><i class="fas fa-chart-bar text-warning"></i> Reports</a>
                   </div>
                   <!-- Col 4: ADMIN -->
+                  {% if 'administrator' in user.roles %}
                   <div class="lms-mega-col">
                     <div class="lms-mega-col-title">ADMIN</div>
                     <a href="/admin/config/system/site-information" class="lms-mega-link"><i class="fas fa-cog text-muted"></i> Global Settings</a>
-                    <a href="#" class="lms-mega-link"><i class="fas fa-tools text-danger"></i> Content Tools</a>
                     <a href="/admin/structure" class="lms-mega-link"><i class="fas fa-cubes text-success"></i> Structure</a>
                     <a href="/admin/people/permissions" class="lms-mega-link"><i class="fas fa-shield-alt text-primary"></i> Roles & Permissions</a>
-                    <a href="/admin/people" class="lms-mega-link"><i class="fas fa-users text-info"></i> Users</a>
                     <hr class="lms-mega-divider" />
-                    <a href="{{ path('open_switcher.frontend') }}" class="lms-mega-link"><i class="fas fa-random text-primary"></i> Switch User</a>
+                    <a href="/open-switcher" class="lms-mega-link"><i class="fas fa-random text-primary"></i> Switch User</a>
                   </div>
+                  {% endif %}
                 </div>
                 
                 <div class="lms-mega-footer">

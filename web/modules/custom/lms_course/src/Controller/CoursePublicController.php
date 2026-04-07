@@ -721,7 +721,7 @@ final class CoursePublicController extends ControllerBase {
       if ($is_enrolled) {
 
         // Calculate continue URL: improved logic for last accessed lesson.
-        $continue_url = $lms_course->toUrl()->toString();
+        $continue_url = \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $lms_course->id()])->toString();
         if (!$lms_course->get('field_chapters')->isEmpty()) {
            $course_lesson_ids = [];
            foreach ($lms_course->get('field_chapters')->referencedEntities() as $chapter) {
@@ -805,6 +805,47 @@ final class CoursePublicController extends ControllerBase {
       }
     }
 
+    // Load approved reviews for this course.
+    $course_reviews = [];
+    if (\Drupal::entityTypeManager()->hasDefinition('lms_rating')) {
+      $rating_storage = $this->entityTypeManager->getStorage('lms_rating');
+      $review_ids = $rating_storage->getQuery()
+        ->condition('field_course', $lms_course->id())
+        ->condition('field_approved', TRUE)
+        ->sort('id', 'DESC')
+        ->range(0, 20)
+        ->accessCheck(FALSE)
+        ->execute();
+      if ($review_ids) {
+        foreach ($rating_storage->loadMultiple($review_ids) as $rating) {
+          $reviewer = $rating->getOwner();
+          $reviewer_name = $reviewer ? $reviewer->getDisplayName() : 'Anonymous';
+          if ($reviewer && $reviewer->hasField('field_first_name')) {
+            $fn = $reviewer->get('field_first_name')->value;
+            $ln = $reviewer->hasField('field_last_name') ? $reviewer->get('field_last_name')->value : '';
+            $full = trim("$fn $ln");
+            if ($full) $reviewer_name = $full;
+          }
+          $reviewer_avatar = '';
+          if ($reviewer && $reviewer->hasField('user_picture') && !$reviewer->get('user_picture')->isEmpty()) {
+            $avatar_file = $reviewer->get('user_picture')->entity;
+            if ($avatar_file) {
+              $reviewer_avatar = \Drupal::service('file_url_generator')->generateAbsoluteString($avatar_file->getFileUri());
+            }
+          }
+          $course_reviews[] = [
+            'id'             => $rating->id(),
+            'score'          => (int) $rating->get('field_score')->value,
+            'review'         => $rating->hasField('field_review') ? $rating->get('field_review')->value : '',
+            'reviewer_name'  => $reviewer_name,
+            'reviewer_avatar'=> $reviewer_avatar,
+            'date'           => \Drupal::service('date.formatter')->format($rating->get('created')->value, 'medium'),
+            'is_featured'    => $rating->hasField('field_is_featured') ? (bool) $rating->get('field_is_featured')->value : FALSE,
+          ];
+        }
+      }
+    }
+
     return [
       '#theme' => 'lms_course_detail',
       '#course' => $lms_course,
@@ -823,6 +864,7 @@ final class CoursePublicController extends ControllerBase {
       '#logged_in' => $logged_in,
       '#is_enrolled' => $is_enrolled,
       '#continue_url' => $continue_url,
+      '#course_reviews' => $course_reviews,
       '#rating_form' => $is_enrolled && \Drupal::moduleHandler()->moduleExists('lms_rating') ? \Drupal::formBuilder()->getForm('\Drupal\lms_rating\Form\RatingForm', $lms_course->id()) : NULL,
     ];
   }

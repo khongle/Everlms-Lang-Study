@@ -67,7 +67,7 @@ final class UserPortalController extends ControllerBase {
         $in_progress++;
       }
       // Determine continue URL
-      $continue_url = $course->toUrl()->toString();
+      $continue_url = \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $course->id()])->toString();
       if (!$course->get('field_chapters')->isEmpty()) {
          $course_lesson_ids = [];
          foreach ($course->get('field_chapters')->referencedEntities() as $chapter) {
@@ -237,7 +237,7 @@ final class UserPortalController extends ControllerBase {
         continue;
       }
       // Determine continue URL
-      $continue_url = $course->toUrl()->toString();
+      $continue_url = \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $course->id()])->toString();
       if (!$course->get('field_chapters')->isEmpty()) {
          $course_lesson_ids = [];
          foreach ($course->get('field_chapters')->referencedEntities() as $chapter) {

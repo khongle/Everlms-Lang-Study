@@ -221,7 +221,7 @@ function lms_theme_preprocess_user(&$variables) {
           }
           $active_courses[] = [
             'title' => $course->label(),
-            'url' => $course->toUrl()->toString(),
+            'url' => \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $course->id()])->toString(),
             'thumbnail' => $thumbnail,
             'progress' => $progress,
           ];
