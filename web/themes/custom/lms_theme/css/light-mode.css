@@ -2321,3 +2321,66 @@ body.layout-minimalist .lms-footer .lms-footer__bottom p a {
   color: #667eea !important;
   font-weight: 500 !important;
 }
+
+/* ---------------------------------------------------
+   LEARNING INTERFACE LIGHT MODE
+   --------------------------------------------------- */
+body.layout-minimalist .lms-learn {
+  background-color: #f8fafc !important;
+  margin-top: -32px; /* Pull immersive learning UI flush with navbar against standard page content padding */
+}
+body.layout-minimalist .lms-learn__main {
+  background-color: #f8fafc !important;
+}
+body.layout-minimalist .lms-learn__header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+body.layout-minimalist .lms-learn__title {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-learn__slide-wrapper {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+body.layout-minimalist .lms-learn__navigation {
+  background: #ffffff !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+body.layout-minimalist .lms-learn__sidebar {
+  background: #ffffff !important;
+  border-left: 1px solid #e2e8f0 !important;
+}
+body.layout-minimalist .lms-learn-sidebar__header {
+  background: #f1f5f9 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+body.layout-minimalist .lms-learn-sidebar__course-title {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-accordion__item {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+body.layout-minimalist .lms-accordion__button {
+  background: #ffffff !important;
+  color: #334155 !important;
+}
+body.layout-minimalist .lms-accordion__button.active {
+  background: #f8fafc !important;
+}
+body.layout-minimalist .lms-lesson-link {
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-lesson-link:hover {
+  background: #f1f5f9 !important;
+}
+body.layout-minimalist .lms-lesson-link.active {
+  background: #e0f2fe !important;
+  color: #0369a1 !important;
+  border-left-color: #0ea5e9 !important;
+}
+body.layout-minimalist .lms-learn__video-wrapper {
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1) !important;
+}

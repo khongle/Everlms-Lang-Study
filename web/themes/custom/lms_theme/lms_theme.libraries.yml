@@ -66,6 +66,11 @@ homepage_minimalist:
     theme:
       css/minimalist.css: {}
 
+homepage_playful:
+  css:
+    theme:
+      css/playful.css: {}
+
 light_mode:
   css:
     theme:

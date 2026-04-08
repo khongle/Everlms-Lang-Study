@@ -17,6 +17,8 @@
 {% if homepage_style == 'minimalist' %}
   {{ attach_library('lms_theme/homepage_minimalist') }}
   {% include '@lms_theme/home/styles/style-2-minimal.html.twig' %}
+{% elseif homepage_style == 'playful' %}
+  {% include '@lms_theme/home/styles/style-playful.html.twig' %}
 {% else %}
   {% include '@lms_theme/home/styles/style-1-glass.html.twig' %}
 {% endif %}

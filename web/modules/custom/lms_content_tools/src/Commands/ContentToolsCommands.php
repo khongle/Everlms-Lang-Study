@@ -1688,6 +1688,34 @@ class ContentToolsCommands extends DrushCommands {
 
       $termId = $this->getOrCreateTerm('course_category', $item['name'], $imageFilename, $description);
       if ($termId) {
+        // Extra logic to handle the new icon_filename field
+        $iconFilename = $item['icon_filename'] ?? NULL;
+        if ($iconFilename) {
+          $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($termId);
+          if ($term && $term->hasField('field_icon')) {
+             // Tim trong thu muc transparent truoc vi user luu vao do bang script moi
+             $basePath = DRUPAL_ROOT . '/../.agent/images/image_category_icon/';
+             $physicalPath = file_exists($basePath . 'transparent/' . $iconFilename) ? 
+                             $basePath . 'transparent/' . $iconFilename :
+                             $basePath . $iconFilename;
+             
+             if (file_exists($physicalPath)) {
+                $fileData = file_get_contents($physicalPath);
+                /** @var \Drupal\file\FileRepositoryInterface $fileRepo */
+                $fileRepo = \Drupal::service('file.repository');
+                $file = $fileRepo->writeData($fileData, 'public://categories/icons/' . $iconFilename, \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE);
+                if ($file) {
+                  $term->set('field_icon', ['target_id' => $file->id()]);
+                  $term->save();
+                }
+             } else {
+                $this->logger()->warning(dt('Icon image missing for category @name: @file', [
+                  '@name' => $item['name'],
+                  '@file' => $iconFilename,
+                ]));
+             }
+          }
+        }
         $count++;
       }
     }

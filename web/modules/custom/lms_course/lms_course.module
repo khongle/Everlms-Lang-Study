@@ -42,6 +42,7 @@ function lms_course_theme(): array {
         'my_courses' => [],
         'bundles' => [],
         'testimonials' => [],
+        'memberships' => [],
         'faqs' => [],
         'logged_in' => FALSE,
         'homepage_style' => 'glassmorphism',

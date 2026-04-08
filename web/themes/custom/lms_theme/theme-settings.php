@@ -25,6 +25,7 @@ function lms_theme_form_system_theme_settings_alter(&$form, FormStateInterface $
     '#options' => [
       'glassmorphism' => t('Style 1: Modern Glassmorphism (Dark)'),
       'minimalist' => t('Style 2: Minimalist Clean (Light)'),
+      'playful' => t('Style 3: Playful & Colorful (Kids/Teens)'),
     ],
   ];
 }

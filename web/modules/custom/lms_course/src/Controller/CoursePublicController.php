@@ -310,6 +310,16 @@ final class CoursePublicController extends ControllerBase {
         ];
       }
     }
+    // Memberships.
+    $memberships = [];
+    $membership_json_path = \Drupal::root() . '/../.agent/generated/commerce/membership-plans.json';
+    if (file_exists($membership_json_path)) {
+      $json_data = file_get_contents($membership_json_path);
+      $decoded = json_decode($json_data, TRUE);
+      if (isset($decoded['membership_plans'])) {
+        $memberships = $decoded['membership_plans'];
+      }
+    }
 
     return [
       '#theme' => 'lms_homepage',
@@ -321,6 +331,7 @@ final class CoursePublicController extends ControllerBase {
       '#my_courses' => $my_courses,
       '#bundles' => $bundles,
       '#testimonials' => $testimonials,
+      '#memberships' => $memberships,
       '#faqs' => $global_faqs,
       '#logged_in' => $user->isAuthenticated(),
       '#stats' => [

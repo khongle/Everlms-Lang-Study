@@ -58,8 +58,22 @@ function lms_theme_preprocess_html(&$variables) {
   $style = theme_get_setting('homepage_style', 'lms_theme') ?? 'glassmorphism';
   $variables['attributes']['class'][] = 'layout-' . $style;
   
+  $current_uri = \Drupal::request()->getRequestUri();
+  $is_workspace = strpos($current_uri, '/workspace') === 0;
+  $is_learn = strpos($current_uri, '/learn') === 0;
+  $is_front = \Drupal::service('path.matcher')->isFrontPage();
+  if ($is_front) {
+    $variables['attributes']['class'][] = 'is-front-page';
+  }
+
   if ($style === 'minimalist') {
     $variables['#attached']['library'][] = 'lms_theme/light_mode';
+  } elseif ($style === 'playful') {
+    $variables['#attached']['library'][] = 'lms_theme/homepage_playful';
+    if (!$is_workspace && !$is_front) {
+      $variables['#attached']['library'][] = 'lms_theme/light_mode';
+      $variables['attributes']['class'][] = 'layout-minimalist';
+    }
   }
 }
 
