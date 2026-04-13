@@ -67,9 +67,16 @@ homepage_minimalist:
       css/minimalist.css: {}
 
 homepage_playful:
+  version: 1.x
   css:
     theme:
       css/playful.css: {}
+
+homepage_corporate:
+  version: 1.x
+  css:
+    theme:
+      css/corporate.css: {}
 
 light_mode:
   css:

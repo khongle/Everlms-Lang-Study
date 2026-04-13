@@ -74,6 +74,12 @@ function lms_theme_preprocess_html(&$variables) {
       $variables['#attached']['library'][] = 'lms_theme/light_mode';
       $variables['attributes']['class'][] = 'layout-minimalist';
     }
+  } elseif ($style === 'corporate') {
+    $variables['#attached']['library'][] = 'lms_theme/homepage_corporate';
+    if (!$is_workspace && !$is_front) {
+      $variables['#attached']['library'][] = 'lms_theme/light_mode';
+      $variables['attributes']['class'][] = 'layout-minimalist';
+    }
   }
 }
 
