@@ -459,7 +459,7 @@ class ContentToolsCommands extends DrushCommands {
     $count = 0;
     $userStorage = $this->entityTypeManager->getStorage('user');
 
-    $users = $data['instructors'] ?? $data['students'] ?? [];
+    $users = $data['instructors'] ?? $data['students'] ?? $data['managers'] ?? [];
     foreach ($users as $userData) {
       $existing = $userStorage->loadByProperties(['mail' => $userData['email']]);
       if (!empty($existing)) {
@@ -1701,9 +1701,12 @@ class ContentToolsCommands extends DrushCommands {
              
              if (file_exists($physicalPath)) {
                 $fileData = file_get_contents($physicalPath);
+                $destDir = 'public://categories/icons';
+                \Drupal::service('file_system')->prepareDirectory($destDir, \Drupal\Core\File\FileSystemInterface::CREATE_DIRECTORY | \Drupal\Core\File\FileSystemInterface::MODIFY_PERMISSIONS);
+                
                 /** @var \Drupal\file\FileRepositoryInterface $fileRepo */
                 $fileRepo = \Drupal::service('file.repository');
-                $file = $fileRepo->writeData($fileData, 'public://categories/icons/' . $iconFilename, \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE);
+                $file = $fileRepo->writeData($fileData, $destDir . '/' . $iconFilename, \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE);
                 if ($file) {
                   $term->set('field_icon', ['target_id' => $file->id()]);
                   $term->save();
