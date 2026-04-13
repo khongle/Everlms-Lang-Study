@@ -1,0 +1,431 @@
+{# EverLMS - Corporate Skin Core Template #}
+{{ attach_library('lms_theme/homepage_corporate') }}
+
+<div class="corporate-skin-wrapper" style="width: 100vw; position: relative; left: 50%; transform: translateX(-50%); overflow: hidden; background: #ffffff;">
+
+  <!-- Professional Dynamic Hero Carousel -->
+  {% if slideshows|length > 0 %}
+  <section class="hero-corporate p-0">
+    <div id="corporateHeroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
+      
+      <!-- Indicators -->
+      {% if slideshows|length > 1 %}
+      <div class="carousel-indicators corporate-indicators">
+        {% for slide in slideshows %}
+          <button type="button" data-bs-target="#corporateHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %} aria-current="true" aria-label="Slide {{ loop.index }}"></button>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="carousel-inner">
+        {% for slide in slideshows %}
+        <div class="carousel-item {% if loop.first %}active{% endif %}">
+          
+          <!-- Background Image with Professional Overlay -->
+          <div class="carousel-bg-wrapper">
+            {% if slide.image_url %}
+              <div class="carousel-bg-img" style="background-image: url('{{ slide.image_url }}');"></div>
+            {% else %}
+              <div class="carousel-bg-img" style="background: linear-gradient(135deg, #1e40af 0%, #0f172a 100%);"></div>
+            {% endif %}
+            <div class="carousel-overlay"></div>
+          </div>
+
+          <!-- Slide Content -->
+          <div class="container position-relative d-flex align-items-center" style="min-height: 85vh; padding: 120px 24px 140px; z-index: 2;">
+            <div class="row w-100">
+              
+              {% set align_class = 'col-lg-9 mx-auto text-center' %}
+              {% set btn_class = 'justify-content-center' %}
+              {% set stats_class = 'justify-content-center' %}
+              {% if slide.position == 'left' %}
+                {% set align_class = 'col-lg-8 me-auto text-start' %}
+                {% set btn_class = 'justify-content-start' %}
+                {% set stats_class = 'justify-content-start' %}
+              {% elseif slide.position == 'right' %}
+                {% set align_class = 'col-lg-8 ms-auto text-end' %}
+                {% set btn_class = 'justify-content-end' %}
+                {% set stats_class = 'justify-content-end' %}
+              {% endif %}
+
+              <div class="{{ align_class }} corporate-hero-card" style="color: #fff;">
+                <span class="hero-label animate-fade-up">Nexus Supply Chain Academy</span>
+                
+                <h1 class="hero-title animate-fade-up-1">{{ slide.heading|striptags }}</h1>
+                <p class="hero-sub animate-fade-up-2 {% if slide.position == 'center' %}mx-auto{% endif %}">{{ slide.subheading|striptags }}</p>
+                
+                <div class="hero-stats animate-fade-up-3 {{ stats_class }}">
+                  <div>
+                    <div class="hero-stat-value">{{ stats.students|default('18,500') }}</div>
+                    <div class="hero-stat-label">Associates Trained</div>
+                  </div>
+                  <div class="d-none d-sm-block">
+                    <div class="hero-stat-value">94%</div>
+                    <div class="hero-stat-label">Compliance Rate</div>
+                  </div>
+                  <div>
+                    <div class="hero-stat-value">{{ stats.courses|default('120') }}+</div>
+                    <div class="hero-stat-label">Hours of SOPs</div>
+                  </div>
+                </div>
+
+                <div class="hero-buttons animate-fade-up-4 {{ btn_class }}">
+                  {% if slide.link_url %}
+                    <a href="{{ slide.link_url }}" class="btn-primary d-inline-flex align-items-center">
+                      {{ slide.link_title|default('Start Training Catalog') }}
+                      <svg class="ms-2" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
+                  {% endif %}
+                  <a href="/courses" class="btn-secondary">View Logistics Paths</a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Navigation Arrows -->
+      {% if slideshows|length > 1 %}
+      <button class="carousel-control-prev corporate-nav-btn" type="button" data-bs-target="#corporateHeroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next corporate-nav-btn" type="button" data-bs-target="#corporateHeroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+      {% endif %}
+
+    </div>
+  </section>
+  {% else %}
+  <section class="hero-corporate">
+    <div class="container">
+      <span class="hero-label">Nexus Supply Chain Academy</span>
+      <h1>Empower Your Workforce<br>with Strategic Training</h1>
+      <p class="hero-sub">Deliver measurable learning outcomes at scale. Align employee development with organizational goals through our enterprise-grade training platform.</p>
+      <div class="hero-buttons">
+        <a href="/courses" class="btn-primary">Browse Catalog</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+
+
+  <!-- Recommended Training (Featured Courses) -->
+  {% if featured_courses %}
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Recommended Modules</h2>
+      <p class="section-desc">Curated training modules designed for measurable business impact and professional development.</p>
+      <div class="training-grid">
+        {% for course in featured_courses|slice(0,4) %}
+        {% set colors = ['blue', 'green', 'indigo', 'amber'] %}
+        {% set bgs = ['bg-1', 'bg-2', 'bg-3', 'bg-4'] %}
+        {% set color = colors[loop.index0 % 4] %}
+        {% set bg = bgs[loop.index0 % 4] %}
+        
+        <a href="{{ course.url }}" class="training-card">
+          <div class="training-card-top {{ color }}"></div>
+          
+          <div class="training-thumb {{ bg }}">
+            {% if course.thumbnail_url %}
+              <img src="{{ course.thumbnail_url }}" alt="{{ course.title }}" />
+            {% else %}
+              <div style="font-size: 48px;">🛡️</div>
+            {% endif %}
+          </div>
+
+          <div class="training-body">
+            <div class="training-category">{{ course.category|default('Compliance') }}</div>
+            <div class="training-title">{{ course.name }}</div>
+            
+            <div class="training-instructor">
+              <div class="avatar-sm av-{{ color }}">
+                {% if course.instructor_avatar %}
+                  <img src="{{ course.instructor_avatar }}" alt="{{ course.instructor_name }}">
+                {% else %}
+                  NN
+                {% endif %}
+              </div>
+              <span>{{ course.instructor_name|default('Nexus Network') }}</span>
+            </div>
+            
+            <div class="training-desc">
+              {{ course.short_description|striptags|slice(0, 90) ~ '...' }}
+            </div>
+            
+            <div class="training-meta">
+              <div class="training-meta-left">{{ course.lesson_count|default(10) }} Lessons · <span class="stars">★★★★★</span> {{ course.rating|default('4.9') }}</div>
+              <div class="training-price">{{ course.price|default('Free') }}</div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Categories / Paths -->
+  {% if categories %}
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Training Tracks</h2>
+      <p class="section-desc">Structured logistics programs designed to build deep expertise and drive organizational transformation.</p>
+      
+      {% if categories|length > 0 %}
+      <div class="programs-grid">
+        {% for category in categories|slice(0,6) %}
+        {% set pcolors = ['blue', 'green', 'indigo'] %}
+        {% set pcolor = pcolors[loop.index0 % 3] %}
+        <a href="/courses?category={{ category.entity.id() }}" class="nexus-track-card">
+          <div class="ntc-top">
+            <div class="ntc-icon {{ pcolor }}">
+              {% if category.entity.field_icon.entity and category.entity.field_icon.entity.uri.value %}
+                <img src="{{ file_url(category.entity.field_icon.entity.uri.value) }}" alt="{{ category.name }}" />
+              {% else %}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+              {% endif %}
+            </div>
+            
+            <div class="ntc-title">{{ category.name }}</div>
+            
+            <div class="ntc-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+            </div>
+          </div>
+          
+          <div class="ntc-desc">Focused curriculum equipping your teams with core competencies in {{ category.name }} to scale operations safely.</div>
+          
+          <div class="ntc-badges">
+            <span class="ntc-badge primary">{{ category.course_count|default(0) }} Courses</span>
+            <span class="ntc-badge success">✓ Accredited</span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Latest News & Insights -->
+  {% if latest_news %}
+  <section class="section">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end" style="margin-bottom: 40px;">
+        <div style="flex: 1;">
+          <h2 class="section-title" style="margin-bottom: 8px; text-align: left;">Latest News & Insights</h2>
+          <p class="section-desc" style="margin-bottom: 0; text-align: left;">Stay up to date with EverLMS tips, updates, and educational resources.</p>
+        </div>
+        <div>
+          <a href="/news" style="color: #1e40af; font-weight: 600; text-decoration: none; padding-bottom: 8px; display: inline-block;">View all news →</a>
+        </div>
+      </div>
+      
+      <div class="news-grid">
+        {% for news in latest_news %}
+        <div class="news-card">
+          <div class="news-thumb">
+            {% if news.thumbnail_url %}
+              <img src="{{ news.thumbnail_url }}" alt="{{ news.title }}">
+            {% else %}
+              <div style="background: #e5e7eb; width: 100%; height: 100%;"></div>
+            {% endif %}
+          </div>
+          <div class="news-content">
+            <h3 class="news-title"><a href="{{ news.url }}">{{ news.title }}</a></h3>
+            <p class="news-summary">{{ news.summary }}</p>
+            <div class="news-meta">
+              <div class="news-date">📅 {{ news.date }}</div>
+              <a href="{{ news.url }}" class="read-more">Read more →</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Platform Capabilities / CMS Introductions -->
+  {% if introductions %}
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Nexus Advantage</h2>
+      <p class="section-desc">Enterprise-grade capabilities built for logistics operations that demand rigorous scaling.</p>
+      <div class="caps-grid">
+        {% for intro in introductions|slice(0,8) %}
+        <a href="{{ intro.link_url|default('/courses') }}" class="cap-card advanced-cap-card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; text-align: left; text-decoration: none; color: inherit;">
+          {% if intro.image_url %}
+            <div class="cap-image-wrap" style="height: 200px; width: 100%; overflow: hidden; position: relative;">
+              <img src="{{ intro.image_url }}" alt="{{ intro.title }}" class="cap-image" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease;">
+              <div class="cap-image-overlay" style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 50%);"></div>
+            </div>
+          {% endif %}
+          <div style="padding: 32px 28px; flex: 1; display: flex; flex-direction: column;">
+            <div class="cap-tag" style="font-size: 11px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Operational Insight</div>
+            <div class="cap-title" style="font-size: 19px; margin-bottom: 14px; line-height: 1.4; color: #111827; font-weight: 800; transition: color 0.3s ease;">{{ intro.title }}</div>
+            <div class="cap-desc" style="font-size: 14px; color: #64748b; line-height: 1.7; flex: 1;">
+              {{ intro.body|striptags|length > 130 ? intro.body|striptags|slice(0, 130) ~ '...' : intro.body|striptags }}
+            </div>
+            <div class="cap-footer" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #f1f5f9; display: flex; align-items: center; color: #1e40af; font-weight: 600; font-size: 14px; transition: color 0.3s ease;">
+              Explore Concept
+              <svg style="width: 16px; height: 16px; margin-left: 8px; transition: transform 0.3s ease;" class="cap-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Testimonials -->
+  {% if testimonials %}
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Performance Results</h2>
+      <p class="section-desc">See how leading distribution centers are scaling their footprint.</p>
+      <div class="testimonials-grid">
+        {% for item in testimonials|slice(0,3) %}
+        <div class="testimonial-card">
+          <div class="quote-icon">"</div>
+          <div class="testimonial-header">
+            {% if item.avatar %}
+              <img src="{{ item.avatar }}" alt="{{ item.name }}" class="testimonial-avatar-lg" />
+            {% else %}
+              <div class="testimonial-avatar-lg" style="background:#1e40af; display:flex; align-items:center; justify-content:center; color:#fff; font-size:24px; font-weight:800;">N</div>
+            {% endif %}
+            <div>
+              <div class="testimonial-name">{{ item.name }}</div>
+              <div class="testimonial-role" style="margin-bottom: 4px;">{{ item.role }}</div>
+              <div class="testimonial-stars">
+                {% for i in 1..item.rating|default(5) %}★{% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-text">"{{ item.content|striptags }}"</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Pricing -->
+  {% if memberships %}
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">B2B Scalable Pricing</h2>
+      <p class="section-desc">Plans scaled for fleets of every size. All plans include WMS tracking.</p>
+      <div class="pricing-grid">
+        {% for plan in memberships %}
+        <div class="pricing-card {% if plan.recommended %}popular{% endif %}">
+          {% if plan.recommended %}<span class="pricing-badge">Most Popular</span>{% endif %}
+          <div class="pricing-name">{{ plan.name }}</div>
+          <div class="pricing-price">
+            {% if plan.price == 0 %}
+              Free
+              <span class="period" style="display:block; font-size:14px; color:#9ca3af; font-weight:500; min-height: 24px;">For individual associates</span>
+            {% else %}
+              <span class="currency">{% if plan.currency == 'USD' %}${% elseif plan.currency == 'EUR' %}€{% else %}£{% endif %}</span>{{ plan.price }}
+              <span class="period" style="display:block; font-size:14px; color:#9ca3af; font-weight:500;">Per user, billed annually</span>
+            {% endif %}
+          </div>
+          <ul class="pricing-features">
+            {% for feature in plan.features %}
+            <li><span class="check">✓</span> {{ feature }}</li>
+            {% endfor %}
+          </ul>
+          <a href="/user/register" class="pricing-btn {% if plan.recommended %}btn-fill{% else %}btn-outline{% endif %}">
+            {% if plan.price == 0 %}Access Portal{% else %}Deploy Fleet Plan{% endif %}
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- FAQ -->
+  {% if faqs %}
+  <section class="section faq-section" style="background-color: #ffffff; padding: 120px 0; border-top: 1px solid #f1f5f9;">
+    <div class="container">
+      <div class="row align-items-start">
+        <div class="col-lg-5 pe-lg-5 mb-5 mb-lg-0">
+          <div style="font-size: 13px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px;">Support & Guidance</div>
+          <h2 style="font-family: 'Inter', sans-serif; font-size: 42px; font-weight: 800; color: #0f172a; line-height: 1.1; margin-bottom: 24px; letter-spacing: -1px;">We're here<br>to help you.</h2>
+          <p style="font-size: 16px; color: #64748b; line-height: 1.7; margin-bottom: 40px; max-width: 400px;">Everything you need to know about enterprise logistics compliance and how Nexus Supply Chain Academy seamlessly integrates into your operational workflow.</p>
+          
+          <div class="faq-contact-box" style="background: #f8fafc; border-radius: 16px; padding: 32px; border: 1px solid #e2e8f0; max-width: 400px;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+              <div style="width: 48px; height: 48px; border-radius: 50%; background: #dbeafe; color: #1e40af; display: flex; align-items: center; justify-content: center;">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+              </div>
+              <div>
+                <div style="font-weight: 800; color: #0f172a; font-size: 16px;">Still have questions?</div>
+                <div style="font-size: 14px; color: #64748b;">Our team is ready to help.</div>
+              </div>
+            </div>
+            <a href="/contact" class="btn-primary" style="display: block; text-align: center; width: 100%; border-radius: 8px; font-weight: 700; padding: 12px;">Contact Support</a>
+          </div>
+        </div>
+        
+        <div class="col-lg-7">
+          <div class="faq-list faq-split-layout" style="max-width: 100%;">
+            {% for f in faqs %}
+            <div class="faq-item {% if loop.first %}active{% endif %}">
+              <button class="faq-question">
+                <span class="faq-text">{{ f.question }}</span>
+                <span class="faq-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  {{ f.answer|raw }}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- CTA Banner -->
+  <section class="cta-banner">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Ready to Standardize Operations?</h2>
+        <p>Deploy the Nexus system to ensure complete regulatory compliance across all warehouse distribution centers.</p>
+        <a href="/courses" class="btn-primary" style="display: inline-block;">Schedule Deployment</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+document.querySelectorAll('.faq-question').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var item = this.parentElement;
+    var isActive = item.classList.contains('active');
+    document.querySelectorAll('.layout-corporate .faq-item').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    if (!isActive) {
+      item.classList.add('active');
+    }
+  });
+});
+</script>
