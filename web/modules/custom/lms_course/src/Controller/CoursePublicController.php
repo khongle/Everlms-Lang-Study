@@ -373,6 +373,49 @@ final class CoursePublicController extends ControllerBase {
       }
     }
 
+    // Latest News & Insights.
+    $latest_news = [];
+    $news_nids = $this->entityTypeManager->getStorage('node')
+      ->getQuery()
+      ->condition('type', 'blog')
+      ->condition('status', 1)
+      ->sort('created', 'DESC')
+      ->range(0, 6)
+      ->accessCheck(FALSE)
+      ->execute();
+
+    if ($news_nids) {
+      $news_nodes = $this->entityTypeManager->getStorage('node')->loadMultiple($news_nids);
+      foreach ($news_nodes as $node) {
+        $image_url = '';
+        if ($node->hasField('field_thumb') && !$node->get('field_thumb')->isEmpty()) {
+          $file = $node->get('field_thumb')->entity;
+          if ($file) {
+            $image_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+          }
+        }
+        
+        $body = $node->hasField('body') ? $node->get('body')->value : '';
+        $summary = '';
+        if ($node->hasField('body') && $node->get('body')->summary) {
+           $summary = $node->get('body')->summary;
+        } else {
+           $summary = strip_tags((string) $body);
+           if (mb_strlen($summary) > 130) {
+              $summary = mb_substr($summary, 0, 127) . '...';
+           }
+        }
+
+        $latest_news[] = [
+          'title' => $node->label(),
+          'url' => \Drupal\Core\Url::fromRoute('lms_blog.frontend.canonical', ['node' => $node->id()])->toString(),
+          'thumbnail_url' => $image_url,
+          'summary' => $summary,
+          'date' => \Drupal::service('date.formatter')->format($node->getCreatedTime(), 'custom', 'M d, Y'),
+        ];
+      }
+    }
+
     return [
       '#theme' => 'lms_homepage',
       '#homepage_style' => theme_get_setting('homepage_style', 'lms_theme') ?? 'glassmorphism',
