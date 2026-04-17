@@ -2,7 +2,7 @@
 /**
  * @file
  * Homepage Entry Router Template.
- * This template receives the data from HomepageController and routes it to 
+ * This template receives the data from HomepageController and routes it to
  * the appropriate aesthetic style template based on the Admin Theme Settings.
  *
  * Available variables:
@@ -12,15 +12,35 @@
 #}
 
 {{ attach_library('lms_theme/global') }}
-{{ attach_library('lms_theme/homepage') }}
 
 {% if homepage_style == 'minimalist' %}
-  {{ attach_library('lms_theme/homepage_minimalist') }}
   {% include '@lms_theme/home/styles/style-2-minimal.html.twig' %}
+{% elseif homepage_style == 'academy' %}
+  {% include '@lms_theme/home/styles/style-academy.html.twig' %}
+{% elseif homepage_style == 'editorial' %}
+  {% include '@lms_theme/home/styles/style-editorial.html.twig' %}
+{% elseif homepage_style == 'nature' %}
+  {% include '@lms_theme/home/styles/style-nature.html.twig' %}
+{% elseif homepage_style == 'neon' %}
+  {% include '@lms_theme/home/styles/style-neon.html.twig' %}
+{% elseif homepage_style == 'luxury' %}
+  {% include '@lms_theme/home/styles/style-luxury.html.twig' %}
+{% elseif homepage_style == 'creative' %}
+  {% include '@lms_theme/home/styles/style-creative.html.twig' %}
+{% elseif homepage_style == 'gradient' %}
+  {% include '@lms_theme/home/styles/style-gradient.html.twig' %}
+{% elseif homepage_style == 'community' %}
+  {% include '@lms_theme/home/styles/style-community.html.twig' %}
+{% elseif homepage_style == 'retro' %}
+  {% include '@lms_theme/home/styles/style-retro.html.twig' %}
+{% elseif homepage_style == 'medical' %}
+  {% include '@lms_theme/home/styles/style-medical.html.twig' %}
 {% elseif homepage_style == 'playful' %}
   {% include '@lms_theme/home/styles/style-playful.html.twig' %}
 {% elseif homepage_style == 'corporate' %}
   {% include '@lms_theme/home/styles/style-4-corporate.html.twig' %}
+{% elseif homepage_style == 'government' %}
+  {% include '@lms_theme/home/styles/style-government.html.twig' %}
 {% else %}
   {% include '@lms_theme/home/styles/style-1-glass.html.twig' %}
 {% endif %}

@@ -1,0 +1,358 @@
+{{ attach_library('lms_theme/homepage_retro') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+
+<div class="retro-home">
+  {% if homepage_sections.hero ?? true %}
+  <section class="retro-hero retro-breakout">
+    <div class="retro-hero__bg"></div>
+    <div class="retro-hero__frame">
+      {% if slideshows %}
+      <div id="retroHeroCarousel" class="carousel slide retro-carousel" data-bs-ride="carousel" data-bs-interval="6400">
+        {% if slideshows|length > 1 %}
+        <div class="carousel-indicators retro-carousel__indicators">
+          {% for slide in slideshows %}
+            <button type="button" data-bs-target="#retroHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="retro-carousel__indicator{% if loop.first %} active{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="carousel-inner retro-carousel__inner">
+          {% for slide in slideshows %}
+          <div class="carousel-item retro-carousel__item{% if loop.first %} active{% endif %}">
+            {% if slide.image_url %}<img src="{{ slide.image_url }}" alt="{{ slide.heading }}" class="retro-carousel__image">{% endif %}
+            <div class="retro-carousel__veil"></div>
+            <div class="retro-shell retro-hero__content">
+              <span class="retro-eyebrow">{{ site_name|default('EverLMS') }}</span>
+              <h1 class="retro-hero__title">{{ slide.heading }}</h1>
+              <p class="retro-hero__subtitle">{{ slide.subheading|striptags }}</p>
+              <div class="retro-hero__actions">
+                <a href="{{ slide.link_url }}" class="retro-btn retro-btn--primary">{{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}</a>
+                <a href="{{ path('lms_course.catalog') }}" class="retro-btn retro-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="retro-shell retro-hero__fallback">
+        <span class="retro-eyebrow">{{ site_name|default('EverLMS') }}</span>
+        <h1 class="retro-hero__title">{{ homepage_settings.hero_fallback_heading }}</h1>
+        <p class="retro-hero__subtitle">{{ homepage_settings.hero_fallback_subtext }}</p>
+        <div class="retro-hero__actions">
+          <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="retro-btn retro-btn--primary">{{ homepage_settings.hero_fallback_cta_text }}</a>
+          <a href="{{ path('lms_course.catalog') }}" class="retro-btn retro-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if homepage_sections.stats ?? true %}
+    <div class="retro-stats retro-shell">
+      <div class="retro-stats__grid">
+        <div class="retro-stat"><span class="retro-stat__value">{{ stats.courses }}</span><span class="retro-stat__label">{{ stats.courses_label }}</span></div>
+        <div class="retro-stat"><span class="retro-stat__value">{{ stats.students }}</span><span class="retro-stat__label">{{ stats.students_label }}</span></div>
+        <div class="retro-stat"><span class="retro-stat__value">{{ stats.satisfaction }}</span><span class="retro-stat__label">{{ stats.satisfaction_label }}</span></div>
+        <div class="retro-stat"><span class="retro-stat__value">{{ categories|length }}</span><span class="retro-stat__label">{{ 'Domains'|t }}</span></div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+  <section class="retro-section retro-shell">
+    <div class="retro-section__head retro-section__head--split">
+      <div>
+        <span class="retro-kicker">{{ 'Continue'|t }}</span>
+        <h2 class="retro-section__title">{{ 'Continue Learning'|t }}</h2>
+      </div>
+      <a href="{{ path('lms_progress.dashboard') }}" class="retro-link">{{ 'Open Dashboard'|t }}</a>
+    </div>
+    <div class="retro-progress-grid">
+      {% for item in my_courses|slice(0, 3) %}
+      <article class="retro-progress-card">
+        <div class="retro-progress-card__thumb">
+          {% if item.course.thumbnail_url %}
+            <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}">
+          {% else %}
+            <div class="retro-progress-card__placeholder"><i class="fas fa-book-open"></i></div>
+          {% endif %}
+        </div>
+        <div class="retro-progress-card__body">
+          <h3 class="retro-progress-card__title"><a href="{{ item.course.continue_url }}">{{ item.course.name }}</a></h3>
+          <div class="retro-progress"><div class="retro-progress__fill lms-learning-progress__fill" data-progress="{{ item.progress }}"></div></div>
+          <div class="retro-progress-card__meta">{{ item.progress }}% {{ 'Completed'|t }}</div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="retro-section retro-section--surface retro-shell">
+    <div class="retro-section__head retro-section__head--center">
+      <span class="retro-kicker">{{ 'Categories'|t }}</span>
+      <h2 class="retro-section__title">{{ homepage_settings.categories_section_title }}</h2>
+      <p class="retro-section__subtitle">{{ homepage_settings.categories_section_subtitle }}</p>
+    </div>
+    <div class="retro-category-grid">
+      {% for category in categories %}
+      <a href="{{ category.url }}" class="retro-category-card">
+        <div class="retro-category-card__icon">
+          {% if category.image_url %}<img src="{{ category.image_url }}" alt="{{ category.name }}">{% else %}<i class="fas fa-shapes"></i>{% endif %}
+        </div>
+        <h3 class="retro-category-card__name">{{ category.name }}</h3>
+        {% if category.course_count is defined %}<span class="retro-category-card__count">{{ category.course_count }} {{ 'courses'|t }}</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="retro-section retro-shell">
+    <div class="retro-section__head retro-section__head--split">
+      <div>
+        <span class="retro-kicker">{{ 'Featured'|t }}</span>
+        <h2 class="retro-section__title">{{ homepage_settings.featured_section_title }}</h2>
+        <p class="retro-section__subtitle">{{ homepage_settings.featured_section_subtitle }}</p>
+      </div>
+      <a href="{{ path('lms_course.catalog') }}" class="retro-link">{{ homepage_settings.featured_section_link_text }}</a>
+    </div>
+    <div class="retro-course-grid">
+      {% for course in featured_courses|slice(0, 6) %}
+      <article class="retro-course-card">
+        <a href="{{ course.url }}" class="retro-course-card__thumb-wrap">
+          {% if course.thumbnail_url %}
+            <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" class="retro-course-card__thumb">
+          {% else %}
+            <div class="retro-course-card__thumb-placeholder"><i class="fas fa-graduation-cap"></i></div>
+          {% endif %}
+        </a>
+        <div class="retro-course-card__body">
+          {% if course.category_name %}<span class="retro-course-card__cat">{{ course.category_name }}</span>{% endif %}
+          <h3 class="retro-course-card__title"><a href="{{ course.url }}">{{ course.name }}</a></h3>
+          {% if course.instructor_name %}<p class="retro-course-card__instructor">{{ course.instructor_name }}</p>{% endif %}
+          <div class="retro-course-card__footer">
+            {% if course.price is defined %}<span class="retro-course-card__price">{% if course.is_free ?? false %}{{ 'Free'|t }}{% else %}{{ course.price }}{% endif %}</span>{% endif %}
+            <a href="{{ course.url }}" class="retro-btn retro-btn--sm">{{ 'View'|t }}</a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.introductions ?? true) and introductions %}
+  <section class="retro-section retro-section--surface retro-shell">
+    <div class="retro-section__head retro-section__head--center">
+      <span class="retro-kicker">{{ 'About'|t }}</span>
+      <h2 class="retro-section__title">{{ homepage_settings.introductions_section_title }}</h2>
+      <p class="retro-section__subtitle">{{ homepage_settings.introductions_section_subtitle }}</p>
+    </div>
+    <div class="retro-intro-list">
+      {% for intro in introductions %}
+      <article class="retro-intro-item{% if loop.index is even %} retro-intro-item--alt{% endif %}">
+        <div class="retro-intro-item__media">
+          {% if intro.image_url %}<img src="{{ intro.image_url }}" alt="{{ intro.title }}">{% else %}<div class="retro-intro-item__placeholder"><i class="fas fa-lightbulb"></i></div>{% endif %}
+        </div>
+        <div class="retro-intro-item__content">
+          <h3 class="retro-intro-item__title">{{ intro.title }}</h3>
+          <div class="retro-intro-item__body">{{ intro.body|raw }}</div>
+          {% if intro.link_url %}<a href="{{ intro.link_url }}" class="retro-link">{{ intro.link_title|default('Learn More'|t) }}</a>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.bundles ?? true) and course_bundles %}
+  <section class="retro-section retro-shell">
+    <div class="retro-section__head retro-section__head--center">
+      <span class="retro-kicker">{{ 'Bundles'|t }}</span>
+      <h2 class="retro-section__title">{{ homepage_settings.bundles_section_title }}</h2>
+      <p class="retro-section__subtitle">{{ homepage_settings.bundles_section_subtitle }}</p>
+    </div>
+    <div class="retro-bundle-grid">
+      {% for bundle in course_bundles|slice(0, 4) %}
+      <a href="{{ bundle.url }}" class="retro-bundle-card">
+        <h3 class="retro-bundle-card__title">{{ bundle.name }}</h3>
+        {% if bundle.description %}<p class="retro-bundle-card__desc">{{ bundle.description|striptags|slice(0, 100) }}...</p>{% endif %}
+        <span class="retro-bundle-card__link">{{ 'View Bundle'|t }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="retro-section retro-section--surface retro-shell">
+    <div class="retro-section__head retro-section__head--center">
+      <span class="retro-kicker">{{ 'Testimonials'|t }}</span>
+      <h2 class="retro-section__title">{{ homepage_settings.testimonials_section_title }}</h2>
+      <p class="retro-section__subtitle">{{ homepage_settings.testimonials_section_subtitle }}</p>
+    </div>
+    <div class="retro-testimonial-grid">
+      {% for item in testimonials|slice(0, 3) %}
+      <article class="retro-testimonial-card">
+        <p class="retro-testimonial-card__quote">{{ item.testimonial }}</p>
+        <div class="retro-testimonial-card__author">
+          <strong>{{ item.author_name }}</strong>
+          {% if item.author_role %}<span>{{ item.author_role }}</span>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.training_process ?? true %}
+  <section class="retro-section retro-shell">
+    <div class="retro-section__head retro-section__head--center">
+      <span class="retro-kicker">{{ 'Process'|t }}</span>
+      <h2 class="retro-section__title">{{ homepage_settings.training_process_section_title }}</h2>
+      <p class="retro-section__subtitle">{{ homepage_settings.training_process_section_subtitle }}</p>
+    </div>
+    <div class="retro-process-layout">
+      <div class="retro-process-steps">
+        {% set steps = [
+          { num: '01', title: homepage_settings.training_process_step_1_title, desc: homepage_settings.training_process_step_1_description },
+          { num: '02', title: homepage_settings.training_process_step_2_title, desc: homepage_settings.training_process_step_2_description },
+          { num: '03', title: homepage_settings.training_process_step_3_title, desc: homepage_settings.training_process_step_3_description },
+          { num: '04', title: homepage_settings.training_process_step_4_title, desc: homepage_settings.training_process_step_4_description }
+        ] %}
+        {% for step in steps %}
+        <div class="retro-step">
+          <span class="retro-step__num">{{ step.num }}</span>
+          <div class="retro-step__content">
+            <h3 class="retro-step__title">{{ step.title }}</h3>
+            <p class="retro-step__desc">{{ step.desc }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <aside class="retro-process-panel">
+        <h3 class="retro-process-panel__title">{{ homepage_settings.training_process_panel_title }}</h3>
+        <p class="retro-process-panel__subtitle">{{ homepage_settings.training_process_panel_subtitle }}</p>
+        <ul class="retro-feature-list">
+          {% set features = [
+            homepage_settings.training_process_feature_1,
+            homepage_settings.training_process_feature_2,
+            homepage_settings.training_process_feature_3,
+            homepage_settings.training_process_feature_4,
+            homepage_settings.training_process_feature_5,
+            homepage_settings.training_process_feature_6
+          ] %}
+          {% for feature in features %}
+          <li>{{ feature }}</li>
+          {% endfor %}
+        </ul>
+        <a href="{{ path('lms_course.catalog') }}" class="retro-btn retro-btn--primary">{{ homepage_settings.training_process_panel_cta_text }}</a>
+      </aside>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.news ?? true) and news_items %}
+  <section class="retro-section retro-section--surface retro-shell">
+    <div class="retro-section__head retro-section__head--split">
+      <div>
+        <span class="retro-kicker">{{ 'News'|t }}</span>
+        <h2 class="retro-section__title">{{ homepage_settings.news_section_title }}</h2>
+        <p class="retro-section__subtitle">{{ homepage_settings.news_section_subtitle }}</p>
+      </div>
+      <a href="{{ path('view.frontpage.page_1') }}" class="retro-link">{{ homepage_settings.news_section_link_text }}</a>
+    </div>
+    <div class="retro-news-grid">
+      {% for item in news_items|slice(0, 3) %}
+      <article class="retro-news-card">
+        {% if item.image_url %}<img src="{{ item.image_url }}" alt="{{ item.title }}" class="retro-news-card__thumb">{% endif %}
+        <div class="retro-news-card__body">
+          {% if item.date %}<time class="retro-news-card__date">{{ item.date }}</time>{% endif %}
+          <h3 class="retro-news-card__title"><a href="{{ item.url }}">{{ item.title }}</a></h3>
+          {% if item.summary %}<p class="retro-news-card__summary">{{ item.summary|striptags|slice(0, 110) }}...</p>{% endif %}
+          <a href="{{ item.url }}" class="retro-link">{{ 'Read More'|t }}</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.membership ?? true) and membership_plans %}
+  <section class="retro-section retro-shell">
+    <div class="retro-section__head retro-section__head--center">
+      <span class="retro-kicker">{{ 'Membership'|t }}</span>
+      <h2 class="retro-section__title">{{ homepage_settings.membership_section_title }}</h2>
+      <p class="retro-section__subtitle">{{ homepage_settings.membership_section_subtitle }}</p>
+    </div>
+    <div class="retro-plan-grid">
+      {% for plan in membership_plans %}
+      <article class="retro-plan-card{% if plan.is_recommended ?? false %} retro-plan-card--recommended{% endif %}">
+        {% if plan.is_recommended ?? false %}<span class="retro-plan-card__badge">{{ homepage_settings.membership_recommended_badge_text }}</span>{% endif %}
+        <h3 class="retro-plan-card__title">{{ plan.name }}</h3>
+        <div class="retro-plan-card__price">
+          {% if plan.price_display %}<span class="retro-plan-card__amount">{{ plan.price_display }}</span>{% endif %}
+          {% if plan.period %}<span class="retro-plan-card__period">/ {{ plan.period }}</span>{% endif %}
+        </div>
+        {% if plan.features %}
+        <ul class="retro-plan-card__features">
+          {% for feature in plan.features %}<li>{{ feature }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+        <a href="{{ plan.url }}" class="retro-btn retro-btn--primary retro-btn--block">
+          {% if plan.is_free ?? false %}
+            {{ homepage_settings.membership_free_cta_text }}
+          {% elseif plan.is_recommended ?? false %}
+            {{ homepage_settings.membership_recommended_cta_text }}
+          {% else %}
+            {{ homepage_settings.membership_paid_cta_text }}
+          {% endif %}
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.faq ?? true) and faqs %}
+  <section class="retro-section retro-section--surface retro-shell">
+    <div class="retro-section__head retro-section__head--center">
+      <span class="retro-kicker">{{ 'FAQ'|t }}</span>
+      <h2 class="retro-section__title">{{ homepage_settings.faq_section_title }}</h2>
+      <p class="retro-section__subtitle">{{ homepage_settings.faq_section_subtitle }}</p>
+    </div>
+    <div class="retro-faq" id="retroFaqAccordion">
+      {% for faq in faqs %}
+      <article class="retro-faq__item">
+        <button class="retro-faq__question" type="button" data-bs-toggle="collapse" data-bs-target="#retroFaq{{ loop.index }}" aria-expanded="{{ loop.first ? 'true' : 'false' }}" aria-controls="retroFaq{{ loop.index }}">
+          <span>{{ faq.question }}</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div id="retroFaq{{ loop.index }}" class="retro-faq__answer collapse{% if loop.first %} show{% endif %}" data-bs-parent="#retroFaqAccordion">
+          <div class="retro-faq__answer-body">{{ faq.answer|raw }}</div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="retro-cta retro-breakout">
+    <div class="retro-shell retro-cta__inner">
+      <h2 class="retro-cta__title">{{ homepage_settings.cta_banner_title }}</h2>
+      <p class="retro-cta__description">{{ homepage_settings.cta_banner_description }}</p>
+      <div class="retro-cta__actions">
+        {% if not logged_in %}
+          <a href="{{ path('user.register') }}" class="retro-btn retro-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+        {% else %}
+          <a href="{{ path('lms_course.catalog') }}" class="retro-btn retro-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+        {% endif %}
+        <a href="{{ path('lms_course.catalog') }}" class="retro-btn retro-btn--ghost">{{ homepage_settings.cta_secondary_text }}</a>
+      </div>
+    </div>
+  </section>
+</div>

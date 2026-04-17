@@ -1,0 +1,446 @@
+{# EverLMS - Government Style Homepage Template #}
+{# Professional · WCAG AA · System Fonts · High Contrast #}
+{{ attach_library('lms_theme/homepage_government') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+
+<div class="government-skin-wrapper">
+
+  {# ================================================================
+     HERO SLIDESHOW CAROUSEL — Full-width with image backgrounds
+     ================================================================ #}
+    {% if homepage_sections.hero ?? true %}
+  {% if slideshows|length > 0 %}
+  <section class="gov-hero-carousel">
+    <div id="govHeroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="7000">
+
+      {# Indicators #}
+      {% if slideshows|length > 1 %}
+      <div class="carousel-indicators gov-carousel-indicators">
+        {% for slide in slideshows %}
+          <button type="button" data-bs-target="#govHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="gov-carousel-indicator{% if loop.first %} active{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="carousel-inner">
+        {% for slide in slideshows %}
+        <div class="carousel-item {% if loop.first %}active{% endif %}">
+          <div class="gov-hero-slide">
+            {# Left content panel — solid navy, never obscures image #}
+            <div class="gov-hero-content">
+              <div class="gov-hero-inner">
+                <span class="gov-hero-badge">{{ site_name|default('Training Portal') }}</span>
+                <h1 class="gov-hero-title">{{ slide.heading|striptags }}</h1>
+                <p class="gov-hero-desc">{{ slide.subheading|striptags }}</p>
+                <div class="gov-hero-actions">
+                  {% if slide.link_url %}
+                    <a href="{{ slide.link_url }}" class="gov-hero-btn-primary">
+                      {{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}
+                      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                  {% endif %}
+                  <a href="{{ path('lms_course.catalog') }}" class="gov-hero-btn-outline">{{ homepage_settings.hero_secondary_cta_text }}</a>
+                </div>
+                <div class="gov-hero-trust">
+                  <span><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Certified Programs</span>
+                  <span><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Mobile Accessible</span>
+                  <span><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Instant Certificates</span>
+                </div>
+              </div>
+            </div>
+            {# Right image panel — full bleed, no dark overlay #}
+            <div class="gov-hero-image">
+              {% if slide.image_url %}
+                <img src="{{ slide.image_url }}" alt="{{ slide.heading|striptags }}" />
+              {% else %}
+                <div class="gov-hero-image-placeholder">
+                  <svg width="80" height="80" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.2)" stroke-width="1"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {# Navigation arrows #}
+      {% if slideshows|length > 1 %}
+      <button class="carousel-control-prev gov-carousel-control" type="button" data-bs-target="#govHeroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next gov-carousel-control" type="button" data-bs-target="#govHeroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+      {% endif %}
+    </div>
+
+    {# Stats bar below carousel #}
+    {% if homepage_sections.stats ?? true %}
+    <div class="gov-hero-stats-shell">
+      <div class="gov-container">
+        <div class="gov-hero-stats-grid">
+          <div class="gov-hero-stat-item">
+            <span class="gov-hero-stat-value">{{ stats.courses }}</span>
+            <span class="gov-hero-stat-label">{{ stats.courses_label }}</span>
+          </div>
+          <div class="gov-hero-stat-item">
+            <span class="gov-hero-stat-value">{{ stats.students }}</span>
+            <span class="gov-hero-stat-label">{{ stats.students_label }}</span>
+          </div>
+          <div class="gov-hero-stat-item">
+            <span class="gov-hero-stat-value">{{ stats.satisfaction }}</span>
+            <span class="gov-hero-stat-label">{{ stats.satisfaction_label }}</span>
+          </div>
+          <div class="gov-hero-stat-item">
+            <span class="gov-hero-stat-value">{{ categories|length|default('8') }}</span>
+            <span class="gov-hero-stat-label">Training Areas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% else %}
+  {# Fallback hero when no slideshows #}
+  <section class="gov-hero-fallback">
+    <div class="gov-container">
+      <h1 class="gov-hero-fallback-title">{{ homepage_settings.hero_fallback_heading }}</h1>
+      <p class="gov-hero-fallback-desc">{{ homepage_settings.hero_fallback_subtext }}</p>
+      <div class="gov-hero-fallback-actions">
+        <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="gov-hero-btn-primary">{{ homepage_settings.hero_fallback_cta_text }}</a>
+        <a href="{{ path('lms_course.category') }}" class="gov-hero-btn-outline">{{ homepage_settings.hero_secondary_cta_text }}</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+    {% endif %}
+
+
+  {# ================================================================
+     FEATURED COURSES — Cards with thumbnails
+     ================================================================ #}
+    {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="gov-section" id="gov-featured">
+    <div class="gov-container">
+      <h2 class="gov-section-title">{{ homepage_settings.featured_section_title }}</h2>
+      {% if homepage_settings.featured_section_subtitle %}
+      <p class="gov-section-desc">{{ homepage_settings.featured_section_subtitle }}</p>
+      {% endif %}
+
+      <div class="gov-courses-grid">
+        {% for course in featured_courses|slice(0,6) %}
+        <a href="{{ course.url }}" class="gov-course-card">
+          <div class="gov-course-thumb">
+            {% if course.thumbnail_url %}
+              <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" loading="lazy" />
+            {% endif %}
+            {% if course.price_raw is defined and course.price_raw > 0 %}
+              <span class="gov-course-price-badge">{{ course.price }}</span>
+            {% else %}
+              <span class="gov-course-price-badge gov-course-price-free">{{ 'Free'|t }}</span>
+            {% endif %}
+          </div>
+          <div class="gov-course-body">
+            <div class="gov-course-category">{{ course.category }}</div>
+            <h3 class="gov-course-title">{{ course.name }}</h3>
+            {% if course.short_description %}
+              <p class="gov-course-desc">{{ course.short_description|striptags|slice(0, 100) }}{% if course.short_description|striptags|length > 100 %}...{% endif %}</p>
+            {% endif %}
+            <div class="gov-course-footer">
+              <div class="gov-course-meta">
+                {% if course.lesson_count is defined and course.lesson_count > 0 %}
+                  <span><i class="fas fa-book-open"></i> {{ course.lesson_count }} {{ 'Lessons'|t }}</span>
+                {% endif %}
+                {% if course.duration and course.duration != '0h 0m' %}
+                  <span><i class="fas fa-clock"></i> {{ course.duration }}</span>
+                {% endif %}
+              </div>
+              <div class="gov-course-instructor">
+                {% if course.instructor_avatar %}
+                  <img src="{{ course.instructor_avatar }}" alt="{{ course.instructor_name }}" class="gov-instructor-avatar" />
+                {% endif %}
+                <span>{{ course.instructor_name }}</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+
+      <div class="gov-section-action-center">
+        <a href="{{ path('lms_course.catalog') }}" class="gov-view-all">{{ homepage_settings.featured_section_link_text }} &rarr;</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+
+  {# ================================================================
+     TRAINING CATEGORIES — Larger icons with images
+     ================================================================ #}
+    {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="gov-section gov-section-alt" id="gov-categories">
+    <div class="gov-container">
+      <h2 class="gov-section-title">{{ homepage_settings.categories_section_title }}</h2>
+      {% if homepage_settings.categories_section_subtitle %}
+      <p class="gov-section-desc">{{ homepage_settings.categories_section_subtitle }}</p>
+      {% endif %}
+
+      <div class="gov-categories-grid">
+        {% for category in categories|slice(0,8) %}
+        <a href="{{ path('lms_course.catalog') ~ '?category=' ~ category.entity.id() }}" class="gov-category-card">
+          <div class="gov-category-icon">
+            {% if category.entity.field_icon.entity and category.entity.field_icon.entity.uri.value %}
+              <img src="{{ file_url(category.entity.field_icon.entity.uri.value) }}" alt="{{ category.name }}" />
+            {% else %}
+              <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#1a4b8c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+            {% endif %}
+          </div>
+          <div class="gov-category-title">{{ category.name }}</div>
+          <div class="gov-category-count">{{ category.course_count|default(0) }} {{ 'Courses'|t }}</div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+
+  {# ================================================================
+     TRAINING PROCESS — How It Works
+     ================================================================ #}
+    {% if homepage_sections.training_process ?? true %}
+  <section class="gov-section">
+    <div class="gov-container">
+      <div class="gov-training-layout">
+
+        <div class="gov-training-left">
+          <h2 class="gov-section-title">{{ homepage_settings.training_process_section_title }}</h2>
+          {% if homepage_settings.training_process_section_subtitle %}
+          <p class="gov-section-desc">{{ homepage_settings.training_process_section_subtitle }}</p>
+          {% endif %}
+
+          <ol class="gov-steps-list">
+            <li>
+              <span class="gov-step-title">{{ homepage_settings.training_process_step_1_title }}</span>
+              <span class="gov-step-desc">{{ homepage_settings.training_process_step_1_description }}</span>
+            </li>
+            <li>
+              <span class="gov-step-title">{{ homepage_settings.training_process_step_2_title }}</span>
+              <span class="gov-step-desc">{{ homepage_settings.training_process_step_2_description }}</span>
+            </li>
+            <li>
+              <span class="gov-step-title">{{ homepage_settings.training_process_step_3_title }}</span>
+              <span class="gov-step-desc">{{ homepage_settings.training_process_step_3_description }}</span>
+            </li>
+            <li>
+              <span class="gov-step-title">{{ homepage_settings.training_process_step_4_title }}</span>
+              <span class="gov-step-desc">{{ homepage_settings.training_process_step_4_description }}</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="gov-training-right">
+          <div class="gov-training-panel">
+            <div class="gov-tp-icon-row">
+              <div class="gov-tp-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M9 11l2 3 4-5"/></svg>
+              </div>
+              <div>
+                <div class="gov-tp-panel-title">{{ homepage_settings.training_process_panel_title }}</div>
+                <div class="gov-tp-panel-sub">{{ homepage_settings.training_process_panel_subtitle }}</div>
+              </div>
+            </div>
+            <ul class="gov-tp-features">
+              <li>{{ homepage_settings.training_process_feature_1 }}</li>
+              <li>{{ homepage_settings.training_process_feature_2 }}</li>
+              <li>{{ homepage_settings.training_process_feature_3 }}</li>
+              <li>{{ homepage_settings.training_process_feature_4 }}</li>
+              <li>{{ homepage_settings.training_process_feature_5 }}</li>
+              <li>{{ homepage_settings.training_process_feature_6 }}</li>
+            </ul>
+            <a href="{{ logged_in ? path('lms_progress.dashboard') : path('user.register') }}" class="gov-tp-cta">{{ homepage_settings.training_process_panel_cta_text }} &rarr;</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+
+  {# ================================================================
+     NEWS & ANNOUNCEMENTS
+     ================================================================ #}
+  {% if (homepage_sections.news ?? true) and latest_news %}
+  <section class="gov-section gov-section-alt">
+    <div class="gov-container">
+      <div class="gov-news-heading-row">
+        <div>
+          <h2 class="gov-section-title gov-section-title--tight">{{ homepage_settings.news_section_title }}</h2>
+          {% if homepage_settings.news_section_subtitle %}
+          <p class="gov-section-desc gov-section-desc--flush">{{ homepage_settings.news_section_subtitle }}</p>
+          {% endif %}
+        </div>
+        <a href="{{ path('lms_blog.frontend.collection') }}" class="gov-view-all">{{ homepage_settings.news_section_link_text }} &rarr;</a>
+      </div>
+
+      <div class="gov-news-grid">
+        {% for news in latest_news|slice(0,3) %}
+        <a href="{{ news.url }}" class="gov-news-card">
+          {% if news.thumbnail_url %}
+          <div class="gov-news-thumb">
+            <img src="{{ news.thumbnail_url }}" alt="{{ news.title }}" loading="lazy" />
+          </div>
+          {% endif %}
+          <div class="gov-news-content">
+            <div class="gov-news-date">{{ news.date }}</div>
+            <h3 class="gov-news-title">{{ news.title }}</h3>
+            <p class="gov-news-summary">{{ news.summary|striptags|slice(0, 120) }}{% if news.summary|striptags|length > 120 %}...{% endif %}</p>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+
+  {# ================================================================
+     ABOUT & RESOURCES — from CMS 'introductions' content
+     ================================================================ #}
+    {% if (homepage_sections.introductions ?? true) and introductions %}
+  <section class="gov-section">
+    <div class="gov-container">
+      <h2 class="gov-section-title">{{ homepage_settings.introductions_section_title }}</h2>
+      {% if homepage_settings.introductions_section_subtitle %}
+      <p class="gov-section-desc">{{ homepage_settings.introductions_section_subtitle }}</p>
+      {% endif %}
+
+      <div class="gov-intro-list">
+        {% for intro in introductions|slice(0,4) %}
+        <div class="gov-intro-card {% if intro.background_color == 'dark' %}gov-intro-dark{% endif %}">
+          {% if intro.image_url %}
+          <div class="gov-intro-image">
+            <img src="{{ intro.image_url }}" alt="{{ intro.title }}" loading="lazy" />
+          </div>
+          {% endif %}
+          <div class="gov-intro-content">
+            <h3 class="gov-intro-title">{{ intro.title }}</h3>
+            <p class="gov-intro-body">{{ intro.body|striptags|slice(0, 200) }}{% if intro.body|striptags|length > 200 %}...{% endif %}</p>
+            {% if intro.link_url and intro.link_url != '#' %}
+              <a href="{{ intro.link_url }}" class="gov-intro-link">{{ intro.link_title|default(homepage_settings.default_intro_cta_text) }} &rarr;</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+
+  {# ================================================================
+     FAQ
+     ================================================================ #}
+    {% if (homepage_sections.faqs ?? true) and faqs %}
+  <section class="gov-section gov-section-alt" id="gov-faq">
+    <div class="gov-container">
+      <div class="gov-faq-layout">
+
+        <div class="gov-faq-left">
+          <h2 class="gov-section-title">{{ homepage_settings.faq_section_title }}</h2>
+          {% if homepage_settings.faq_section_subtitle %}
+          <p class="gov-section-desc">{{ homepage_settings.faq_section_subtitle }}</p>
+          {% endif %}
+
+          <div class="gov-faq-list">
+            {% for faq in faqs|slice(0,6) %}
+            <details class="gov-faq-item">
+              <summary>{{ faq.question }}</summary>
+              <div class="gov-faq-answer">{{ faq.answer|raw }}</div>
+            </details>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="gov-faq-right">
+          <div class="gov-faq-panel">
+            <div class="gov-fp-header">
+              <div class="gov-fp-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <div>
+                <div class="gov-fp-title">{{ homepage_settings.faq_support_title }}</div>
+                <div class="gov-fp-sub">{{ homepage_settings.faq_support_subtitle }}</div>
+              </div>
+            </div>
+            <p class="gov-fp-body">{{ homepage_settings.faq_support_body }}</p>
+            <div class="gov-fp-contacts">
+              <div class="gov-fp-contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <span>{{ footer_email }}</span>
+              </div>
+              <div class="gov-fp-contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.4 2 2 0 0 1 3.58 2.2h2.98a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 17z"/></svg>
+                <span>{{ footer_working_hours ?: 'Mon-Fri, 8:00 AM - 5:00 PM' }}</span>
+              </div>
+            </div>
+            <a href="{{ path('lms_course.contact') }}" class="gov-fp-cta">{{ homepage_settings.faq_support_cta_text }} &rarr;</a>
+          </div>
+
+          {# Quick access links — fills empty space below contact panel #}
+          <div class="gov-faq-quicklinks">
+            <div class="gov-ql-title">{{ homepage_settings.faq_quicklinks_title }}</div>
+            <a href="{{ path('lms_course.catalog') }}" class="gov-ql-item">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+              {{ homepage_settings.faq_quicklink_catalog_text }}
+            </a>
+            <a href="{{ path('lms_course.category') }}" class="gov-ql-item">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              {{ homepage_settings.faq_quicklink_categories_text }}
+            </a>
+            <a href="{{ path('lms_progress.dashboard') }}" class="gov-ql-item">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              {{ homepage_settings.faq_quicklink_dashboard_text }}
+            </a>
+            <a href="{{ path('lms_progress.certificates') }}" class="gov-ql-item">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+              {{ homepage_settings.faq_quicklink_certificates_text }}
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+
+  {# ================================================================
+     CTA — Contact / Get Started
+     ================================================================ #}
+  {% if homepage_sections.cta_guest ?? true %}
+  <section class="gov-cta-section">
+    <div class="gov-container">
+      <div class="gov-cta-card">
+        <h2 class="gov-cta-title">{{ homepage_settings.cta_banner_title }}</h2>
+        <p class="gov-cta-desc">
+          {{ homepage_settings.cta_banner_description }}
+        </p>
+        <div class="gov-cta-actions">
+          <a href="{{ path('lms_course.catalog') }}" class="gov-cta-btn-primary">{{ homepage_settings.cta_primary_text }}</a>
+        {% if not logged_in %}
+          <a href="{{ path('user.register') }}" class="gov-cta-btn-secondary">{{ homepage_settings.cta_secondary_text }}</a>
+        {% else %}
+          <a href="{{ path('lms_progress.dashboard') }}" class="gov-cta-btn-secondary">{{ homepage_settings.cta_logged_in_secondary_text }}</a>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+</div>

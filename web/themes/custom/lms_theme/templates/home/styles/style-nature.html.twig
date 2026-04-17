@@ -1,0 +1,414 @@
+{{ attach_library('lms_theme/homepage_nature') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+
+<div class="nature-home">
+  {% if homepage_sections.hero ?? true %}
+  <section class="nature-hero nature-section-breakout">
+    <div class="nature-hero__frame">
+      {% if slideshows %}
+      <div id="natureHeroCarousel" class="carousel slide nature-carousel" data-bs-ride="carousel" data-bs-interval="6500">
+        {% if slideshows|length > 1 %}
+        <div class="carousel-indicators nature-carousel__indicators">
+          {% for slide in slideshows %}
+            <button type="button" data-bs-target="#natureHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="nature-carousel__indicator{% if loop.first %} active{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="carousel-inner nature-carousel__inner">
+          {% for slide in slideshows %}
+          <div class="carousel-item nature-carousel__item{% if loop.first %} active{% endif %}">
+            <div class="nature-carousel__media">
+              {% if slide.image_url %}
+                <img src="{{ slide.image_url }}" alt="{{ slide.heading }}" class="nature-carousel__image">
+              {% else %}
+                <div class="nature-carousel__fallback"></div>
+              {% endif %}
+            </div>
+            <div class="nature-hero__content nature-shell">
+              <div class="nature-hero__card">
+                <span class="nature-eyebrow">{{ site_name|default('EverLMS') }}</span>
+                <h1 class="nature-hero__title">{{ slide.heading }}</h1>
+                <p class="nature-hero__subtitle">{{ slide.subheading|striptags }}</p>
+                <div class="nature-hero__actions">
+                  <a href="{{ slide.link_url }}" class="nature-btn nature-btn--primary">{{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}</a>
+                  <a href="{{ path('lms_course.catalog') }}" class="nature-btn nature-btn--secondary">{{ homepage_settings.hero_secondary_cta_text }}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="nature-hero__fallback nature-shell">
+        <div class="nature-hero__card nature-hero__card--fallback">
+          <span class="nature-eyebrow">{{ site_name|default('EverLMS') }}</span>
+          <h1 class="nature-hero__title">{{ homepage_settings.hero_fallback_heading }}</h1>
+          <p class="nature-hero__subtitle">{{ homepage_settings.hero_fallback_subtext }}</p>
+          <div class="nature-hero__actions">
+            <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="nature-btn nature-btn--primary">{{ homepage_settings.hero_fallback_cta_text }}</a>
+            <a href="{{ path('lms_course.catalog') }}" class="nature-btn nature-btn--secondary">{{ homepage_settings.hero_secondary_cta_text }}</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% if homepage_sections.stats ?? true %}
+    <div class="nature-stats nature-shell">
+      <div class="nature-stats__grid">
+        <div class="nature-stat"><span class="nature-stat__value">{{ stats.courses }}</span><span class="nature-stat__label">{{ stats.courses_label }}</span></div>
+        <div class="nature-stat"><span class="nature-stat__value">{{ stats.students }}</span><span class="nature-stat__label">{{ stats.students_label }}</span></div>
+        <div class="nature-stat"><span class="nature-stat__value">{{ stats.satisfaction }}</span><span class="nature-stat__label">{{ stats.satisfaction_label }}</span></div>
+        <div class="nature-stat"><span class="nature-stat__value">{{ categories|length }}</span><span class="nature-stat__label">{{ 'Topics'|t }}</span></div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+  <section class="nature-section nature-shell">
+    <div class="nature-section__header nature-section__header--split">
+      <div>
+        <h2 class="nature-section__title">{{ 'Continue Learning'|t }}</h2>
+      </div>
+      <a href="{{ path('lms_progress.dashboard') }}" class="nature-link">{{ 'Open Dashboard'|t }}</a>
+    </div>
+    <div class="nature-study-grid">
+      {% for item in my_courses|slice(0,3) %}
+      <article class="nature-study-card">
+        <div class="nature-study-card__thumb">
+          {% if item.course.thumbnail_url %}
+            <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}">
+          {% else %}
+            <div class="nature-study-card__placeholder"><i class="fas fa-leaf"></i></div>
+          {% endif %}
+        </div>
+        <div class="nature-study-card__body">
+          <h3 class="nature-study-card__title"><a href="{{ item.course.continue_url }}">{{ item.course.name }}</a></h3>
+          <div class="nature-progress"><div class="nature-progress__fill lms-learning-progress__fill" data-progress="{{ item.progress }}"></div></div>
+          <div class="nature-study-card__meta">{{ item.progress }}% {{ 'Complete'|t }}</div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="nature-section nature-section--tinted nature-shell nature-section--full nature-section--categories">
+    <div class="nature-section__header nature-section__header--center">
+      <span class="nature-section__kicker">{{ 'Explore'|t }}</span>
+      <h2 class="nature-section__title">{{ homepage_settings.categories_section_title }}</h2>
+      {% if homepage_settings.categories_section_subtitle %}<p class="nature-section__lead">{{ homepage_settings.categories_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="nature-category-grid">
+      {% for cat in categories|slice(0,8) %}
+      {% set category_url = cat.url ?? (path('lms_course.catalog') ~ '?category=' ~ (cat.entity.id ?? '')) %}
+      <a href="{{ category_url }}" class="nature-category-card">
+        {% if cat.icon_url %}
+          <div class="nature-category-card__media nature-category-card__media--icon"><img src="{{ cat.icon_url }}" alt="{{ cat.name }}"></div>
+        {% elseif cat.thumbnail_url %}
+          <div class="nature-category-card__media"><img src="{{ cat.thumbnail_url }}" alt="{{ cat.name }}"></div>
+        {% elseif cat.image_url %}
+          <div class="nature-category-card__media"><img src="{{ cat.image_url }}" alt="{{ cat.name }}"></div>
+        {% else %}
+          <div class="nature-category-card__media nature-category-card__media--fallback"><i class="fas fa-leaf"></i></div>
+        {% endif %}
+        <div class="nature-category-card__body">
+          <h3 class="nature-category-card__title">{{ cat.name }}</h3>
+          <p class="nature-category-card__meta">{{ cat.course_count }} {{ 'Courses'|t }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="nature-section nature-shell nature-section--full nature-section--featured">
+    <div class="nature-section__header nature-section__header--split">
+      <div>
+        <span class="nature-section__kicker">{{ 'Featured'|t }}</span>
+        <h2 class="nature-section__title">{{ homepage_settings.featured_section_title }}</h2>
+        {% if homepage_settings.featured_section_subtitle %}<p class="nature-section__lead">{{ homepage_settings.featured_section_subtitle }}</p>{% endif %}
+      </div>
+      <a href="{{ path('lms_course.catalog') }}" class="nature-link">{{ homepage_settings.featured_section_link_text }}</a>
+    </div>
+    <div class="nature-course-grid">
+      {% for card in featured_courses|slice(0,6) %}
+      {% set featured_is_free = (card.price_raw ?? 0) <= 0 %}
+      {% set course_level = card.level ?? '' %}
+      {% set course_duration = card.duration ?? '' %}
+      {% set course_lessons = card.lesson_count ?? card.lessons_count ?? card.lessons ?? '' %}
+      {% set course_rating = card.rating ?? '' %}
+      {% set course_summary = card.summary ?? card.short_description ?? card.description ?? '' %}
+      <article class="nature-course-card">
+        <a href="{{ card.url }}" class="nature-course-card__media">
+          {% if card.thumbnail_url %}
+            <img src="{{ card.thumbnail_url }}" alt="{{ card.name }}">
+          {% else %}
+            <div class="nature-course-card__placeholder"><i class="fas fa-tree"></i></div>
+          {% endif %}
+        </a>
+        <div class="nature-course-card__body">
+          <div class="nature-course-card__topline">
+            {% if card.category %}<span class="nature-course-card__cat">{{ card.category }}</span>{% endif %}
+            <span class="nature-course-card__price">{% if featured_is_free %}{{ 'Free'|t }}{% else %}{{ card.price }}{% endif %}</span>
+          </div>
+          <h3 class="nature-course-card__title"><a href="{{ card.url }}">{{ card.name }}</a></h3>
+          {% if card.instructor_name %}<p class="nature-course-card__instructor">{{ 'By'|t }} {{ card.instructor_name }}</p>{% endif %}
+          {% if course_summary %}<p class="nature-course-card__summary">{{ course_summary|striptags|slice(0, 130) }}{% if course_summary|striptags|length > 130 %}...{% endif %}</p>{% endif %}
+          {% if course_level or course_duration or course_lessons or course_rating %}
+            <div class="nature-course-card__footer">
+              {% if course_level %}<span>{{ course_level }}</span>{% endif %}
+              {% if course_duration %}<span>{{ course_duration }}</span>{% endif %}
+              {% if course_lessons %}<span>{{ course_lessons }} {{ 'lessons'|t }}</span>{% endif %}
+              {% if course_rating %}<span><i class="fas fa-star" aria-hidden="true"></i> {{ course_rating }}</span>{% endif %}
+            </div>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.introductions ?? true) and introductions %}
+  <section class="nature-section nature-section--tinted nature-shell nature-section--full nature-section--intro">
+    <div class="nature-section__header nature-section__header--center">
+      <span class="nature-section__kicker">{{ 'Our Philosophy'|t }}</span>
+      <h2 class="nature-section__title">{{ homepage_settings.introductions_section_title }}</h2>
+      {% if homepage_settings.introductions_section_subtitle %}<p class="nature-section__lead">{{ homepage_settings.introductions_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="nature-intro-list">
+      {% for intro in introductions|slice(0,3) %}
+      <article class="nature-intro-card">
+        {% if intro.image_url %}<div class="nature-intro-card__media"><img src="{{ intro.image_url }}" alt="{{ intro.title }}"></div>{% endif %}
+        <div class="nature-intro-card__body">
+          {% if intro.subheading %}<span class="nature-intro-card__eyebrow">{{ intro.subheading }}</span>{% endif %}
+          <h3 class="nature-intro-card__title">{{ intro.title }}</h3>
+          <div class="nature-intro-card__copy">{{ intro.body|striptags }}</div>
+          {% if intro.link_url and intro.link_url != '#' %}<a href="{{ intro.link_url }}" class="nature-link">{{ intro.link_title|default(homepage_settings.default_intro_cta_text) }}</a>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.bundles ?? true) and bundles %}
+  <section class="nature-section nature-shell nature-section--full nature-section--bundles">
+    <div class="nature-section__header nature-section__header--center">
+      <span class="nature-section__kicker">{{ 'Guided Paths'|t }}</span>
+      <h2 class="nature-section__title">{{ homepage_settings.bundles_section_title }}</h2>
+      {% if homepage_settings.bundles_section_subtitle %}<p class="nature-section__lead">{{ homepage_settings.bundles_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="nature-path-grid">
+      {% for bundle in bundles|slice(0,3) %}
+      <article class="nature-path-card">
+        <div class="nature-path-card__icon"><i class="fas fa-route"></i></div>
+        <h3 class="nature-path-card__title">{{ bundle.title }}</h3>
+        <p class="nature-path-card__summary">{{ bundle.summary|striptags }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="nature-section nature-section--tinted nature-shell nature-section--full nature-section--testimonials">
+    <div class="nature-section__header nature-section__header--center">
+      <span class="nature-section__kicker">{{ 'Community'|t }}</span>
+      <h2 class="nature-section__title">{{ homepage_settings.testimonials_section_title }}</h2>
+      {% if homepage_settings.testimonials_section_subtitle %}<p class="nature-section__lead">{{ homepage_settings.testimonials_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="nature-testimonial-grid">
+      {% for item in testimonials|slice(0,3) %}
+      {% set quote = item.content ?? item.testimonial ?? '' %}
+      {% set author_name = item.name ?? ('Learner'|t) %}
+      {% set author_role = item.role ?? '' %}
+      {% set author_avatar = item.avatar ?? '' %}
+      <article class="nature-testimonial-card">
+        <blockquote class="nature-testimonial-card__quote">{{ quote|striptags }}</blockquote>
+        <div class="nature-testimonial-card__head">
+          {% if author_avatar %}
+            <img src="{{ author_avatar }}" alt="{{ author_name }}" class="nature-testimonial-card__avatar">
+          {% else %}
+            <span class="nature-testimonial-card__avatar nature-testimonial-card__avatar--fallback">{{ author_name|slice(0, 1)|upper }}</span>
+          {% endif %}
+          <div class="nature-testimonial-card__author-wrap">
+            <div class="nature-testimonial-card__author">{{ author_name }}</div>
+            {% if author_role %}<div class="nature-testimonial-card__role">{{ author_role }}</div>{% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.news ?? true) and latest_news %}
+  <section class="nature-section nature-shell nature-section--full nature-section--resources">
+    <div class="nature-section__header nature-section__header--split">
+      <div>
+        <span class="nature-section__kicker">{{ 'Updates'|t }}</span>
+        <h2 class="nature-section__title">{{ homepage_settings.news_section_title }}</h2>
+        {% if homepage_settings.news_section_subtitle %}<p class="nature-section__lead">{{ homepage_settings.news_section_subtitle }}</p>{% endif %}
+      </div>
+      <a href="{{ path('lms_blog.frontend.collection') }}" class="nature-link">{{ homepage_settings.news_section_link_text }}</a>
+    </div>
+    <div class="nature-news-grid">
+      {% for news in latest_news|slice(0,3) %}
+      {% set news_url = news.url ?? '#' %}
+      {% set news_image = news.thumbnail_url ?? news.image_url ?? '' %}
+      {% set news_summary = news.summary ?? '' %}
+      <article class="nature-news-card nature-news-card--visual">
+        <a href="{{ news_url }}" class="nature-news-card__media nature-news-card__media--overlay">
+          {% if news_image %}
+            <img src="{{ news_image }}" alt="{{ news.title }}">
+          {% else %}
+            <div class="nature-news-card__placeholder"><i class="fas fa-newspaper"></i></div>
+          {% endif %}
+          <div class="nature-news-card__overlay">
+            {% if news.date %}<time class="nature-news-card__date">{{ news.date }}</time>{% endif %}
+            <h3 class="nature-news-card__overlay-title">{{ news.title }}</h3>
+            {% if news_summary %}<p class="nature-news-card__summary">{{ news_summary|striptags|slice(0, 145) }}{% if news_summary|striptags|length > 145 %}...{% endif %}</p>{% endif %}
+            <span class="nature-news-card__cta">{{ 'Read Story'|t }}</span>
+          </div>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.membership ?? true) and memberships %}
+  <section class="nature-section nature-section--tinted nature-shell nature-section--full nature-section--pricing">
+    <div class="nature-section__header nature-section__header--center">
+      <span class="nature-section__kicker">{{ 'Plans'|t }}</span>
+      <h2 class="nature-section__title">{{ homepage_settings.membership_section_title }}</h2>
+      {% if homepage_settings.membership_section_subtitle %}<p class="nature-section__lead">{{ homepage_settings.membership_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="nature-pricing-grid">
+      {% for plan in memberships %}
+      {% set is_free_plan = (plan.price ?? 0) <= 0 %}
+      {% set plan_supporting_text = is_free_plan ? homepage_settings.membership_free_supporting_text : homepage_settings.membership_paid_supporting_text %}
+      <article class="nature-pricing-card{% if plan.recommended %} is-featured{% endif %}">
+        {% if plan.recommended %}<span class="nature-pricing-card__badge">{{ homepage_settings.membership_recommended_badge_text }}</span>{% endif %}
+        <h3 class="nature-pricing-card__title">{{ plan.name }}</h3>
+        {% if plan.description %}
+          <p class="nature-pricing-card__desc">{{ plan.description|striptags|slice(0, 120) }}{% if plan.description|striptags|length > 120 %}...{% endif %}</p>
+        {% elseif plan_supporting_text %}
+          <p class="nature-pricing-card__desc">{{ plan_supporting_text }}</p>
+        {% endif %}
+        <div class="nature-pricing-card__price">
+          {% if is_free_plan %}
+            {{ homepage_settings.membership_free_price_text }}
+          {% elseif plan.currency == 'USD' %}
+            ${{ (plan.price ?? 0)|number_format(2, '.', ',') }}
+          {% elseif plan.currency == 'EUR' %}
+            EUR {{ (plan.price ?? 0)|number_format(2, '.', ',') }}
+          {% else %}
+            GBP {{ (plan.price ?? 0)|number_format(2, '.', ',') }}
+          {% endif %}
+        </div>
+        {% if plan.billing_cycle is defined and plan.billing_cycle %}<div class="nature-pricing-card__period">/ {{ plan.billing_cycle|replace({'_': ' '})|title }}</div>{% endif %}
+        {% if plan.features %}
+        <ul class="nature-pricing-card__features">
+          {% for feature in plan.features %}<li><i class="fas fa-check"></i> {{ feature }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+        <a href="{{ path('lms_course.pricing') }}" class="nature-btn nature-btn--primary nature-btn--block">{% if is_free_plan %}{{ homepage_settings.membership_free_cta_text }}{% elseif plan.recommended %}{{ homepage_settings.membership_recommended_cta_text }}{% else %}{{ homepage_settings.membership_paid_cta_text }}{% endif %}</a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.training_process ?? true %}
+  <section class="nature-section nature-shell nature-section--full nature-section--process">
+    <div class="nature-process">
+      <div class="nature-process__copy">
+        <span class="nature-section__kicker">{{ 'The Path'|t }}</span>
+        <h2 class="nature-section__title">{{ homepage_settings.training_process_section_title }}</h2>
+        {% if homepage_settings.training_process_section_subtitle %}<p class="nature-section__lead">{{ homepage_settings.training_process_section_subtitle }}</p>{% endif %}
+        <div class="nature-process__panel">
+          <strong class="nature-process__panel-title">{{ homepage_settings.training_process_panel_title }}</strong>
+          <p class="nature-process__panel-subtitle">{{ homepage_settings.training_process_panel_subtitle }}</p>
+          <ul class="nature-process__features">
+            <li><i class="fas fa-leaf"></i> {{ homepage_settings.training_process_feature_1 }}</li>
+            <li><i class="fas fa-leaf"></i> {{ homepage_settings.training_process_feature_2 }}</li>
+            <li><i class="fas fa-leaf"></i> {{ homepage_settings.training_process_feature_3 }}</li>
+            <li><i class="fas fa-leaf"></i> {{ homepage_settings.training_process_feature_4 }}</li>
+            <li><i class="fas fa-leaf"></i> {{ homepage_settings.training_process_feature_5 }}</li>
+            <li><i class="fas fa-leaf"></i> {{ homepage_settings.training_process_feature_6 }}</li>
+          </ul>
+          <a href="{{ path('lms_course.catalog') }}" class="nature-btn nature-btn--primary">{{ homepage_settings.training_process_panel_cta_text }}</a>
+        </div>
+      </div>
+      <ol class="nature-process__steps">
+        <li class="nature-process__step">
+          <span class="nature-process__step-number">01</span>
+          <div><strong>{{ homepage_settings.training_process_step_1_title }}</strong><p>{{ homepage_settings.training_process_step_1_description }}</p></div>
+        </li>
+        <li class="nature-process__step">
+          <span class="nature-process__step-number">02</span>
+          <div><strong>{{ homepage_settings.training_process_step_2_title }}</strong><p>{{ homepage_settings.training_process_step_2_description }}</p></div>
+        </li>
+        <li class="nature-process__step">
+          <span class="nature-process__step-number">03</span>
+          <div><strong>{{ homepage_settings.training_process_step_3_title }}</strong><p>{{ homepage_settings.training_process_step_3_description }}</p></div>
+        </li>
+        <li class="nature-process__step">
+          <span class="nature-process__step-number">04</span>
+          <div><strong>{{ homepage_settings.training_process_step_4_title }}</strong><p>{{ homepage_settings.training_process_step_4_description }}</p></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.faqs ?? true) and faqs %}
+  <section class="nature-section nature-section--tinted nature-shell nature-section--full nature-section--faq">
+    <div class="nature-section__header nature-section__header--center">
+      <span class="nature-section__kicker">{{ 'FAQ'|t }}</span>
+      <h2 class="nature-section__title">{{ homepage_settings.faq_section_title }}</h2>
+      {% if homepage_settings.faq_section_subtitle %}<p class="nature-section__lead">{{ homepage_settings.faq_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="accordion nature-faq" id="natureFaq">
+      {% for faq in faqs %}
+      <div class="accordion-item nature-faq__item">
+        <h2 class="accordion-header" id="natureFaqHeading{{ loop.index }}">
+          <button class="accordion-button nature-faq__button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#natureFaqCollapse{{ loop.index }}" aria-expanded="{% if loop.first %}true{% else %}false{% endif %}" aria-controls="natureFaqCollapse{{ loop.index }}">{{ faq.question }}</button>
+        </h2>
+        <div id="natureFaqCollapse{{ loop.index }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="natureFaqHeading{{ loop.index }}" data-bs-parent="#natureFaq">
+          <div class="accordion-body nature-faq__body">{{ faq.answer|raw }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.cta_guest ?? true %}
+  <section class="nature-cta nature-shell nature-cta--full">
+    <div class="nature-cta__box">
+      <div class="nature-cta__copy-wrap">
+        <span class="nature-section__kicker">{{ 'Get Started'|t }}</span>
+        <h2 class="nature-cta__title">{{ homepage_settings.cta_banner_title }}</h2>
+        <p class="nature-cta__copy">{{ homepage_settings.cta_banner_description }}</p>
+        <div class="nature-cta__actions">
+          <a href="{{ logged_in ? path('lms_progress.dashboard') : path('user.register') }}" class="nature-btn nature-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+          <a href="{{ path('lms_course.catalog') }}" class="nature-btn nature-btn--secondary">{{ logged_in ? homepage_settings.cta_logged_in_secondary_text : homepage_settings.cta_secondary_text }}</a>
+        </div>
+      </div>
+      <ul class="nature-cta__metrics" aria-label="{{ 'Growth highlights'|t }}">
+        <li><strong>{{ stats.students }}</strong><span>{{ stats.students_label }}</span></li>
+        <li><strong>{{ stats.courses }}</strong><span>{{ stats.courses_label }}</span></li>
+        <li><strong>{{ stats.satisfaction }}</strong><span>{{ stats.satisfaction_label }}</span></li>
+      </ul>
+    </div>
+  </section>
+  {% endif %}
+</div>

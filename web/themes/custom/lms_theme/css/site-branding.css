@@ -1,0 +1,78 @@
+.lms-navbar {
+  height: 80px;
+}
+
+.lms-navbar__container {
+  min-height: 80px;
+}
+
+body {
+  padding-top: 80px;
+}
+
+.lms-footer__brand-link {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.lms-footer__brand-link:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+.lms-footer__bottom p {
+  margin: 0;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.lms-brand-mark {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.lms-navbar__brand .lms-brand-mark--header {
+  width: auto;
+  height: 72px;
+  max-width: none;
+}
+
+.lms-brand-mark--footer {
+  width: auto;
+  height: 96px;
+  max-width: none;
+  max-height: none;
+}
+
+.lms-auth__logo .lms-brand-mark,
+.lms-navbar__brand .lms-brand-mark,
+.lms-footer__brand-link .lms-brand-mark {
+  vertical-align: middle;
+}
+
+@media (max-width: 576px) {
+  .lms-navbar {
+    height: 72px;
+  }
+
+  .lms-navbar__container {
+    min-height: 72px;
+  }
+
+  body {
+    padding-top: 72px;
+  }
+
+  .lms-navbar__brand .lms-brand-mark--header {
+    height: 56px;
+  }
+
+  .lms-brand-mark--footer {
+    height: 72px;
+  }
+}

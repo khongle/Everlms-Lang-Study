@@ -1,0 +1,503 @@
+{{ attach_library('lms_theme/homepage_creative') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+{% set creative_bundles = bundles ?? course_bundles ?? [] %}
+{% set creative_news = latest_news ?? news_items ?? [] %}
+{% set creative_memberships = memberships ?? membership_plans ?? [] %}
+{% set creative_intro_layout = homepage_settings.introductions_layout|default('list')|lower %}
+{% set creative_intro_items = introductions|default([])|slice(0, 2) %}
+
+<div class="creative-home">
+  {% if homepage_sections.hero ?? true %}
+  <section class="creative-hero creative-breakout">
+    <div class="creative-hero__canvas"></div>
+    <div class="creative-hero__frame">
+      {% if slideshows %}
+      <div id="creativeHeroCarousel" class="carousel slide creative-carousel" data-bs-ride="carousel" data-bs-interval="6200">
+        {% if slideshows|length > 1 %}
+        <div class="carousel-indicators creative-carousel__indicators">
+          {% for slide in slideshows %}
+            <button type="button" data-bs-target="#creativeHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="creative-carousel__indicator{% if loop.first %} active{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="carousel-inner creative-carousel__inner">
+          {% for slide in slideshows %}
+          <div class="carousel-item creative-carousel__item{% if loop.first %} active{% endif %}">
+            {% if slide.image_url %}<img src="{{ slide.image_url }}" alt="{{ slide.heading }}" class="creative-carousel__image">{% endif %}
+            <div class="creative-carousel__veil"></div>
+            <div class="creative-shell creative-hero__content">
+              <span class="creative-eyebrow">{{ site_name|default('EverLMS') }}</span>
+              <h1 class="creative-hero__title">{{ slide.heading }}</h1>
+              <p class="creative-hero__subtitle">{{ slide.subheading|striptags }}</p>
+              <div class="creative-hero__actions">
+                <a href="{{ slide.link_url }}" class="creative-btn creative-btn--primary">{{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}</a>
+                <a href="{{ path('lms_course.catalog') }}" class="creative-btn creative-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="creative-shell creative-hero__fallback">
+        <span class="creative-eyebrow">{{ site_name|default('EverLMS') }}</span>
+        <h1 class="creative-hero__title">{{ homepage_settings.hero_fallback_heading }}</h1>
+        <p class="creative-hero__subtitle">{{ homepage_settings.hero_fallback_subtext }}</p>
+        <div class="creative-hero__actions">
+          <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="creative-btn creative-btn--primary">{{ homepage_settings.hero_fallback_cta_text }}</a>
+          <a href="{{ path('lms_course.catalog') }}" class="creative-btn creative-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if homepage_sections.stats ?? true %}
+    <div class="creative-stats creative-shell">
+      <div class="creative-stats__grid">
+        <div class="creative-stat"><span class="creative-stat__value">{{ stats.courses }}</span><span class="creative-stat__label">{{ stats.courses_label }}</span></div>
+        <div class="creative-stat"><span class="creative-stat__value">{{ stats.students }}</span><span class="creative-stat__label">{{ stats.students_label }}</span></div>
+        <div class="creative-stat"><span class="creative-stat__value">{{ stats.satisfaction }}</span><span class="creative-stat__label">{{ stats.satisfaction_label }}</span></div>
+        <div class="creative-stat"><span class="creative-stat__value">{{ categories|length }}</span><span class="creative-stat__label">{{ 'Domains'|t }}</span></div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+  <section class="creative-section creative-shell">
+    <div class="creative-section__head creative-section__head--split">
+      <div>
+        <span class="creative-kicker">{{ 'Continue'|t }}</span>
+        <h2 class="creative-section__title">{{ 'Continue Learning'|t }}</h2>
+      </div>
+      <a href="{{ path('lms_progress.dashboard') }}" class="creative-link">{{ 'Open Dashboard'|t }}</a>
+    </div>
+    <div class="creative-progress-grid">
+      {% for item in my_courses|slice(0, 3) %}
+      <article class="creative-progress-card">
+        <div class="creative-progress-card__thumb">
+          {% if item.course.thumbnail_url %}
+            <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}">
+          {% else %}
+            <div class="creative-progress-card__placeholder"><i class="fas fa-palette"></i></div>
+          {% endif %}
+        </div>
+        <div class="creative-progress-card__body">
+          <h3 class="creative-progress-card__title"><a href="{{ item.course.continue_url }}">{{ item.course.name }}</a></h3>
+          <div class="creative-progress"><div class="creative-progress__fill lms-learning-progress__fill" data-progress="{{ item.progress|default(0) }}" style="--progress: {{ item.progress|default(0) }}%; width: {{ item.progress|default(0) }}%;"></div></div>
+          <div class="creative-progress-card__meta">{{ item.progress }}% {{ 'Completed'|t }}</div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="creative-section creative-section--surface creative-breakout">
+    <div class="creative-shell">
+      <div class="creative-section__head creative-section__head--center">
+        <span class="creative-kicker">{{ 'Categories'|t }}</span>
+        <h2 class="creative-section__title">{{ homepage_settings.categories_section_title }}</h2>
+        <p class="creative-section__subtitle">{{ homepage_settings.categories_section_subtitle }}</p>
+      </div>
+      <div class="creative-category-grid">
+        {% for category in categories|slice(0, 8) %}
+        {% set category_name = category.name ?? ((category.entity is defined and category.entity) ? category.entity.label : ('Category'|t)) %}
+        {% set category_image = category.thumbnail_url ?? category.image_url ?? '' %}
+        {% set category_url = category.url ?? ((category.entity is defined and category.entity) ? path('lms_course.category_detail', {'taxonomy_term': category.entity.id()}) : path('lms_course.category')) %}
+        {% set category_tone = (loop.index0 % 3) + 1 %}
+        <a href="{{ category_url }}" class="creative-category-card creative-category-card--tone-{{ category_tone }}">
+          <div class="creative-category-card__media creative-category-card__media--tone-{{ category_tone }}">
+            {% if category_image %}
+              <img src="{{ category_image }}" alt="{{ category_name }}" class="creative-category-card__image">
+            {% else %}
+              <span class="creative-category-card__fallback">{{ category_name|slice(0, 1)|upper }}</span>
+            {% endif %}
+          </div>
+          <h3 class="creative-category-card__name">{{ category_name }}</h3>
+          {% if category.course_count is defined %}<span class="creative-category-card__count">{{ category.course_count }} {{ 'courses'|t }}</span>{% endif %}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="creative-section creative-shell">
+    <div class="creative-section__head creative-section__head--split">
+      <div>
+        <span class="creative-kicker">{{ 'Featured'|t }}</span>
+        <h2 class="creative-section__title">{{ homepage_settings.featured_section_title }}</h2>
+        <p class="creative-section__subtitle">{{ homepage_settings.featured_section_subtitle }}</p>
+      </div>
+      <a href="{{ path('lms_course.catalog') }}" class="creative-link">{{ homepage_settings.featured_section_link_text }}</a>
+    </div>
+    <div class="creative-course-grid">
+      {% for course in featured_courses|slice(0, 6) %}
+      {% set course_category = course.category_name ?? course.category ?? '' %}
+      {% set course_summary = course.short_description ?? '' %}
+      {% set course_level = course.level ?? '' %}
+      {% set course_duration = course.duration ?? '' %}
+      {% set course_lessons = course.lesson_count ?? 0 %}
+      {% set course_rating = course.rating ?? null %}
+      {% set course_is_free = (course.is_free ?? false) or (course.price_raw is defined and course.price_raw == 0) %}
+      <article class="creative-course-card">
+        <a href="{{ course.url }}" class="creative-course-card__thumb-wrap">
+          {% if course.thumbnail_url %}
+            <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" class="creative-course-card__thumb">
+          {% else %}
+            <div class="creative-course-card__thumb-placeholder"><i class="fas fa-image"></i></div>
+          {% endif %}
+          <div class="creative-course-card__overlay">
+            {% if course_category %}<span class="creative-course-card__overlay-chip">{{ course_category }}</span>{% endif %}
+            <h4 class="creative-course-card__overlay-title">{{ course.name }}</h4>
+            {% if course.instructor_name %}<p class="creative-course-card__overlay-instructor">{{ course.instructor_name }}</p>{% endif %}
+            {% if course_level or course_duration or course_lessons or course_rating %}
+            <div class="creative-course-card__overlay-meta">
+              {% if course_level %}<span>{{ course_level }}</span>{% endif %}
+              {% if course_duration %}<span>{{ course_duration }}</span>{% endif %}
+              {% if course_lessons %}<span>{{ course_lessons }} {{ 'lessons'|t }}</span>{% endif %}
+              {% if course_rating %}<span><i class="fas fa-star"></i> {{ course_rating|number_format(1) }}</span>{% endif %}
+            </div>
+            {% endif %}
+            {% if course_summary %}
+            <p class="creative-course-card__overlay-summary">{{ course_summary|striptags|slice(0, 130) }}{% if course_summary|striptags|length > 130 %}...{% endif %}</p>
+            {% endif %}
+          </div>
+        </a>
+        <div class="creative-course-card__body">
+          {% if course_category %}<span class="creative-course-card__cat">{{ course_category }}</span>{% endif %}
+          <h3 class="creative-course-card__title"><a href="{{ course.url }}">{{ course.name }}</a></h3>
+          {% if course.instructor_name %}<p class="creative-course-card__instructor">{{ course.instructor_name }}</p>{% endif %}
+          <div class="creative-course-card__footer">
+            {% if course.price is defined %}<span class="creative-course-card__price">{% if course_is_free %}{{ 'Free'|t }}{% else %}{{ course.price }}{% endif %}</span>{% endif %}
+            <a href="{{ course.url }}" class="creative-btn creative-btn--sm">{{ 'View Course'|t }}</a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.introductions ?? true) and creative_intro_items %}
+  <section class="creative-section creative-section--surface creative-breakout">
+    <div class="creative-shell">
+      <div class="creative-section__head creative-section__head--center">
+        <span class="creative-kicker">{{ 'About'|t }}</span>
+        <h2 class="creative-section__title">{{ homepage_settings.introductions_section_title }}</h2>
+        <p class="creative-section__subtitle">{{ homepage_settings.introductions_section_subtitle }}</p>
+      </div>
+      <div class="creative-intro-list{% if creative_intro_layout == 'grid' %} creative-intro-list--grid{% endif %}{% if creative_intro_layout not in ['grid', 'list'] %} creative-intro-list--curated{% endif %}">
+        {% for intro in creative_intro_items %}
+        <article class="creative-intro-item{% if creative_intro_layout != 'grid' and loop.index is even %} creative-intro-item--alt{% endif %}">
+          <div class="creative-intro-item__media">
+            {% if intro.image_url %}<img src="{{ intro.image_url }}" alt="{{ intro.title }}">{% else %}<div class="creative-intro-item__placeholder"><i class="fas fa-lightbulb"></i></div>{% endif %}
+          </div>
+          <div class="creative-intro-item__content">
+            <h3 class="creative-intro-item__title">{{ intro.title }}</h3>
+            <div class="creative-intro-item__body">{{ intro.body|raw }}</div>
+            {% if intro.link_url %}<a href="{{ intro.link_url }}" class="creative-link">{{ intro.link_title|default('Learn More'|t) }}</a>{% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.bundles ?? true) and creative_bundles %}
+  <section class="creative-section creative-shell">
+    <div class="creative-section__head creative-section__head--center">
+      <span class="creative-kicker">{{ 'Bundles'|t }}</span>
+      <h2 class="creative-section__title">{{ homepage_settings.bundles_section_title }}</h2>
+      <p class="creative-section__subtitle">{{ homepage_settings.bundles_section_subtitle }}</p>
+    </div>
+    <div class="creative-bundle-grid">
+      {% for bundle in creative_bundles|slice(0, 4) %}
+      {% set bundle_title = bundle.title ?? bundle.name ?? bundle.label ?? ('Learning Bundle'|t) %}
+      {% set bundle_summary = bundle.summary ?? '' %}
+      {% if bundle_summary is empty and bundle.description is defined and bundle.description is not iterable %}
+        {% set bundle_summary = bundle.description %}
+      {% endif %}
+      {% set bundle_url = bundle.url ?? path('lms_course.catalog') %}
+      <a href="{{ bundle_url }}" class="creative-bundle-card">
+        <h3 class="creative-bundle-card__title">{{ bundle_title }}</h3>
+        {% if bundle_summary %}<p class="creative-bundle-card__desc">{{ bundle_summary|striptags|slice(0, 100) }}...</p>{% endif %}
+        <span class="creative-bundle-card__link">{{ 'View Bundle'|t }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="creative-section creative-section--surface creative-breakout">
+    <div class="creative-shell">
+      <div class="creative-section__head creative-section__head--center">
+        <span class="creative-kicker">{{ 'Testimonials'|t }}</span>
+        <h2 class="creative-section__title">{{ homepage_settings.testimonials_section_title }}</h2>
+        <p class="creative-section__subtitle">{{ homepage_settings.testimonials_section_subtitle }}</p>
+      </div>
+      <div class="creative-testimonial-grid">
+        {% for item in testimonials|slice(0, 3) %}
+        {% set quote = item.content ?? item.testimonial ?? '' %}
+        {% set author_name = item.name ?? item.author_name ?? ('Learner'|t) %}
+        {% set author_role = item.role ?? item.author_role ?? '' %}
+        {% set author_avatar = item.avatar ?? item.author_avatar ?? '' %}
+        {% set course_title = item.course_title ?? '' %}
+        <article class="creative-testimonial-card">
+          <p class="creative-testimonial-card__quote">{{ quote|striptags }}</p>
+          <div class="creative-testimonial-card__head">
+            <span class="creative-testimonial-card__avatar-wrap">
+              {% if author_avatar %}
+                <img src="{{ author_avatar }}" alt="{{ author_name }}" class="creative-testimonial-card__avatar">
+              {% else %}
+                <span class="creative-testimonial-card__avatar creative-testimonial-card__avatar--fallback">{{ author_name|slice(0, 1)|upper }}</span>
+              {% endif %}
+            </span>
+            <div class="creative-testimonial-card__author">
+              <strong>{{ author_name }}</strong>
+              {% if author_role %}<span>{{ author_role }}</span>{% endif %}
+              {% if course_title %}<small>{{ course_title }}</small>{% endif %}
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.instructor ?? true %}
+  {% set spotlight_name = '' %}
+  {% set spotlight_avatar = '' %}
+  {% set spotlight_role = '' %}
+  {% set spotlight_bio = '' %}
+  {% set spotlight_profile_url = '' %}
+
+  {% if instructor is defined and instructor %}
+    {% set spotlight_name = instructor.name ?? instructor.full_name ?? instructor.display_name ?? '' %}
+    {% set spotlight_avatar = instructor.avatar_url ?? instructor.avatar ?? instructor.image_url ?? '' %}
+    {% set spotlight_role = instructor.role ?? instructor.title ?? '' %}
+    {% set spotlight_bio = instructor.bio ?? instructor.description ?? '' %}
+    {% set spotlight_profile_url = instructor.url ?? instructor.profile_url ?? '' %}
+  {% endif %}
+
+  {% if spotlight_name is empty and featured_courses is defined and featured_courses|length > 0 %}
+    {% set spotlight_course = featured_courses[0] %}
+    {% set spotlight_name = spotlight_course.instructor_name ?? '' %}
+    {% set spotlight_avatar = spotlight_course.instructor_avatar ?? '' %}
+    {% set spotlight_role = spotlight_course.instructor_role ?? ('Lead Instructor'|t) %}
+    {% set spotlight_bio = spotlight_course.short_description ?? '' %}
+    {% set spotlight_profile_url = spotlight_course.instructor_url ?? '' %}
+  {% endif %}
+
+  {% if spotlight_name %}
+  <section class="creative-section creative-section--surface creative-breakout">
+    <div class="creative-shell">
+      <div class="creative-section__head creative-section__head--center">
+        <span class="creative-kicker">{{ homepage_settings.instructor_section_label|default('Instructor Spotlight'|t) }}</span>
+        <h2 class="creative-section__title">{{ homepage_settings.instructor_section_title|default('Meet Your Mentor'|t) }}</h2>
+      </div>
+      <article class="creative-instructor">
+        <div class="creative-instructor__avatar">
+          {% if spotlight_avatar %}
+            <img src="{{ spotlight_avatar }}" alt="{{ spotlight_name }}">
+          {% else %}
+            <div class="creative-instructor__avatar-placeholder">{{ spotlight_name|slice(0, 1)|upper }}</div>
+          {% endif %}
+        </div>
+        <div class="creative-instructor__body">
+          {% if spotlight_profile_url %}
+            <h3 class="creative-instructor__name"><a href="{{ spotlight_profile_url }}">{{ spotlight_name }}</a></h3>
+          {% else %}
+            <h3 class="creative-instructor__name">{{ spotlight_name }}</h3>
+          {% endif %}
+          {% if spotlight_role %}<p class="creative-instructor__role">{{ spotlight_role }}</p>{% endif %}
+          <p class="creative-instructor__bio">
+            {% if spotlight_bio %}
+              {{ spotlight_bio|striptags|slice(0, 260) }}{% if spotlight_bio|striptags|length > 260 %}...{% endif %}
+            {% else %}
+              {{ 'Project-based guidance from a working creative, focused on portfolio outcomes and practical craft.'|t }}
+            {% endif %}
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+  {% endif %}
+  {% endif %}
+
+  {% if homepage_sections.training_process ?? true %}
+  <section class="creative-section creative-shell">
+    <div class="creative-section__head creative-section__head--center">
+      <span class="creative-kicker">{{ 'Process'|t }}</span>
+      <h2 class="creative-section__title">{{ homepage_settings.training_process_section_title }}</h2>
+      <p class="creative-section__subtitle">{{ homepage_settings.training_process_section_subtitle }}</p>
+    </div>
+    <div class="creative-process-layout">
+      <div class="creative-process-steps">
+        {% set steps = [
+          { num: '01', title: homepage_settings.training_process_step_1_title, desc: homepage_settings.training_process_step_1_description },
+          { num: '02', title: homepage_settings.training_process_step_2_title, desc: homepage_settings.training_process_step_2_description },
+          { num: '03', title: homepage_settings.training_process_step_3_title, desc: homepage_settings.training_process_step_3_description },
+          { num: '04', title: homepage_settings.training_process_step_4_title, desc: homepage_settings.training_process_step_4_description }
+        ] %}
+        {% for step in steps %}
+        <div class="creative-step">
+          <span class="creative-step__num">{{ step.num }}</span>
+          <div class="creative-step__content">
+            <h3 class="creative-step__title">{{ step.title }}</h3>
+            <p class="creative-step__desc">{{ step.desc }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <aside class="creative-process-panel">
+        <h3 class="creative-process-panel__title">{{ homepage_settings.training_process_panel_title }}</h3>
+        <p class="creative-process-panel__subtitle">{{ homepage_settings.training_process_panel_subtitle }}</p>
+        <ul class="creative-feature-list">
+          {% set features = [
+            homepage_settings.training_process_feature_1,
+            homepage_settings.training_process_feature_2,
+            homepage_settings.training_process_feature_3,
+            homepage_settings.training_process_feature_4,
+            homepage_settings.training_process_feature_5,
+            homepage_settings.training_process_feature_6
+          ] %}
+          {% for feature in features %}
+          <li>{{ feature }}</li>
+          {% endfor %}
+        </ul>
+        <a href="{{ path('lms_course.catalog') }}" class="creative-btn creative-btn--primary">{{ homepage_settings.training_process_panel_cta_text }}</a>
+      </aside>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.news ?? true) and creative_news %}
+  <section class="creative-section creative-section--surface creative-breakout">
+    <div class="creative-shell">
+      <div class="creative-section__head creative-section__head--split">
+        <div>
+          <span class="creative-kicker">{{ 'News'|t }}</span>
+          <h2 class="creative-section__title">{{ homepage_settings.news_section_title }}</h2>
+          <p class="creative-section__subtitle">{{ homepage_settings.news_section_subtitle }}</p>
+        </div>
+        <a href="{{ path('lms_blog.frontend.collection') }}" class="creative-link">{{ homepage_settings.news_section_link_text }}</a>
+      </div>
+      <div class="creative-news-grid">
+        {% for item in creative_news|slice(0, 3) %}
+        {% set news_url = item.url ?? ((item.id is defined and item.id) ? path('lms_blog.frontend.canonical', {'node': item.id}) : path('lms_blog.frontend.collection')) %}
+        {% set news_image = item.image_url ?? item.thumbnail_url ?? '' %}
+        {% set news_summary = item.summary ?? '' %}
+        <article class="creative-news-card">
+          <a href="{{ news_url }}" class="creative-news-card__media">
+            {% if news_image %}
+              <img src="{{ news_image }}" alt="{{ item.title }}" class="creative-news-card__thumb">
+            {% else %}
+              <span class="creative-news-card__thumb creative-news-card__thumb--placeholder"><i class="fas fa-newspaper"></i></span>
+            {% endif %}
+            <span class="creative-news-card__hover">
+              <span class="creative-news-card__hover-label">{{ 'Open article'|t }}</span>
+              {% if news_summary %}
+                <span class="creative-news-card__hover-copy">{{ news_summary|striptags|slice(0, 100) }}{% if news_summary|striptags|length > 100 %}...{% endif %}</span>
+              {% endif %}
+            </span>
+          </a>
+          <div class="creative-news-card__body">
+            {% if item.date %}<time class="creative-news-card__date">{{ item.date }}</time>{% endif %}
+            <h3 class="creative-news-card__title"><a href="{{ news_url }}">{{ item.title }}</a></h3>
+            {% if news_summary %}<p class="creative-news-card__summary">{{ news_summary|striptags|slice(0, 110) }}{% if news_summary|striptags|length > 110 %}...{% endif %}</p>{% endif %}
+            <a href="{{ news_url }}" class="creative-link">{{ 'Read More'|t }}</a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.membership ?? true) and creative_memberships %}
+  <section class="creative-section creative-shell">
+    <div class="creative-section__head creative-section__head--center">
+      <span class="creative-kicker">{{ 'Membership'|t }}</span>
+      <h2 class="creative-section__title">{{ homepage_settings.membership_section_title }}</h2>
+      <p class="creative-section__subtitle">{{ homepage_settings.membership_section_subtitle }}</p>
+    </div>
+    <div class="creative-plan-grid">
+      {% for plan in creative_memberships %}
+      {% set plan_url = plan.url ?? ((plan.id is defined and plan.id) ? path('lms_order.checkout_membership', {'plan_id': plan.id}) : '#') %}
+      <article class="creative-plan-card{% if plan.is_recommended ?? false %} creative-plan-card--recommended{% endif %}">
+        {% if plan.is_recommended ?? false %}<span class="creative-plan-card__badge">{{ homepage_settings.membership_recommended_badge_text }}</span>{% endif %}
+        <h3 class="creative-plan-card__title">{{ plan.name }}</h3>
+        <div class="creative-plan-card__price">
+          {% if plan.price_display %}<span class="creative-plan-card__amount">{{ plan.price_display }}</span>{% endif %}
+          {% if plan.period %}<span class="creative-plan-card__period">/ {{ plan.period }}</span>{% endif %}
+        </div>
+        {% if plan.features %}
+        <ul class="creative-plan-card__features">
+          {% for feature in plan.features %}<li>{{ feature }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+        <a href="{{ plan_url }}" class="creative-btn creative-btn--primary creative-btn--block">
+          {% if plan.is_free ?? false %}
+            {{ homepage_settings.membership_free_cta_text }}
+          {% elseif plan.is_recommended ?? false %}
+            {{ homepage_settings.membership_recommended_cta_text }}
+          {% else %}
+            {{ homepage_settings.membership_paid_cta_text }}
+          {% endif %}
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.faq ?? true) and faqs %}
+  <section class="creative-section creative-section--surface creative-breakout">
+    <div class="creative-shell">
+      <div class="creative-section__head creative-section__head--center">
+        <span class="creative-kicker">{{ 'FAQ'|t }}</span>
+        <h2 class="creative-section__title">{{ homepage_settings.faq_section_title }}</h2>
+        <p class="creative-section__subtitle">{{ homepage_settings.faq_section_subtitle }}</p>
+      </div>
+      <div class="creative-faq" id="creativeFaqAccordion">
+        {% for faq in faqs %}
+        <article class="creative-faq__item">
+          <button class="creative-faq__question" type="button" data-bs-toggle="collapse" data-bs-target="#creativeFaq{{ loop.index }}" aria-expanded="{{ loop.first ? 'true' : 'false' }}" aria-controls="creativeFaq{{ loop.index }}">
+            <span>{{ faq.question }}</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="creativeFaq{{ loop.index }}" class="creative-faq__answer collapse{% if loop.first %} show{% endif %}" data-bs-parent="#creativeFaqAccordion">
+            <div class="creative-faq__answer-body">{{ faq.answer|raw }}</div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="creative-cta creative-breakout">
+    <div class="creative-shell creative-cta__inner">
+      <div class="creative-cta__content">
+        <h2 class="creative-cta__title">{{ homepage_settings.cta_banner_title }}</h2>
+        <p class="creative-cta__description">{{ homepage_settings.cta_banner_description }}</p>
+      </div>
+      <div class="creative-cta__actions">
+        {% if not logged_in %}
+          <a href="{{ path('user.register') }}" class="creative-btn creative-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+        {% else %}
+          <a href="{{ path('lms_course.catalog') }}" class="creative-btn creative-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+        {% endif %}
+        <a href="{{ path('lms_course.catalog') }}" class="creative-btn creative-btn--ghost">{{ homepage_settings.cta_secondary_text }}</a>
+      </div>
+    </div>
+  </section>
+</div>

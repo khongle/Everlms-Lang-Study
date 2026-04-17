@@ -117,6 +117,10 @@ body {
   backdrop-filter: blur(10px);
 }
 
+.lms-hero__badge--glass {
+  backdrop-filter: blur(8px);
+}
+
 .lms-hero__title--lg {
   font-size: 3.5rem;
   line-height: 1.2;
@@ -129,6 +133,17 @@ body {
   color: rgba(255,255,255,0.8);
   margin-bottom: 40px;
   line-height: 1.6;
+}
+
+.lms-hero__fallback-wrapper--glass {
+  min-height: 60vh;
+  background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+}
+
+.lms-carousel-overlay--fallback {
+  background: url('https://picsum.photos/seed/fallback/1920/800') center/cover no-repeat;
+  opacity: 0.15;
+  pointer-events: none;
 }
 
 /* Glassmorphism general class */
@@ -168,6 +183,10 @@ body {
 }
 
 .lms-hero__search .lms-search-input:focus {
+  outline: none;
+}
+
+.lms-search-input--glass {
   outline: none;
 }
 
@@ -212,6 +231,16 @@ body {
   line-height: 1.4;
   max-width: 120px;
   word-break: break-word;
+}
+
+.lms-hero__floating-ui--docked {
+  bottom: 0;
+  transform: translateY(50%);
+}
+
+.lms-stat-label--hero {
+  letter-spacing: 1px;
+  font-size: 0.7rem;
 }
 
 .lms-stat-divider {
@@ -354,6 +383,11 @@ body {
 .lms-progress-card .lms-progress-wrapper .lms-progress-fill {
   height: 100%;
   background: linear-gradient(90deg, #4facfe, #00f2fe);
+}
+
+.lms-hero-spacer--glass {
+  height: 140px;
+  background-color: transparent;
 }
 
 .lms-progress-card .lms-progress-wrapper .lms-progress-text {

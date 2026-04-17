@@ -1,8 +1,10 @@
 {# Homepage template — modernized according to EverLMS plan #}
 {{ attach_library('lms_theme/global') }}
 {{ attach_library('lms_theme/homepage') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
 
 {# 1. Hero Section (Dynamic Slideshow + Glassmorphism Search + Animated Stats) #}
+{% if homepage_sections.hero ?? true %}
 <section class="lms-hero lms-hero--carousel position-relative">
   
   {# Bootstrap Carousel #}
@@ -24,7 +26,7 @@
           <div class="carousel-caption d-flex h-100 align-items-center pb-5 {% if slide.position == 'left' %}justify-content-start text-start{% elseif slide.position == 'right' %}justify-content-end text-start{% else %}justify-content-center text-center{% endif %}">
             <div class="lms-carousel-content container" data-aos="fade-up">
               <div class="lms-glass-content-box p-4 p-lg-5 rounded-4 d-inline-block shadow-lg border border-white border-opacity-10">
-                <div class="lms-hero__badge mb-3 d-inline-block px-3 py-1 rounded-pill fw-semibold" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(8px);">{{ '⭐ Featured'|t }}</div>
+                <div class="lms-hero__badge lms-hero__badge--glass mb-3 d-inline-block px-3 py-1 rounded-pill fw-semibold">{{ '⭐ Featured'|t }}</div>
                 <h1 class="lms-hero__title lms-hero__title--lg mb-3 text-white fw-bolder">
                   {{ slide.heading }}
                 </h1>
@@ -55,22 +57,25 @@
   </div>
   {% else %}
     {# Elegant Fallback if no slideshow available #}
-    <div class="lms-hero__fallback-wrapper w-100 position-relative d-flex align-items-center justify-content-center text-center" style="min-height: 60vh; background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);">
-      <div class="lms-carousel-overlay position-absolute top-0 start-0 w-100 h-100" style="background: url('https://picsum.photos/seed/fallback/1920/800') center/cover no-repeat; opacity: 0.15; pointer-events: none;"></div>
+    <div class="lms-hero__fallback-wrapper lms-hero__fallback-wrapper--glass w-100 position-relative d-flex align-items-center justify-content-center text-center">
+      <div class="lms-carousel-overlay lms-carousel-overlay--fallback position-absolute top-0 start-0 w-100 h-100"></div>
       <div class="container lms-hero__container position-relative z-2 pb-5">
         <div class="lms-hero__badge mb-3 d-inline-block">{{ '⭐ Welcome'|t }}</div>
         <h1 class="lms-hero__title lms-hero__title--lg mb-4 text-white">
-          {{ 'Welcome to EverLMS'|t }}
+          {{ homepage_settings.hero_fallback_heading }}
         </h1>
         <div class="lms-hero__subtitle text-white-50 mb-5 fs-5">
-          {{ 'Start your learning journey with our premium courses today.'|t }}
+          {{ homepage_settings.hero_fallback_subtext }}
         </div>
+        <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="lms-btn lms-btn--primary lms-btn--lg lms-btn-glow px-4 py-2 rounded-pill fw-bold">
+          {{ homepage_settings.hero_fallback_cta_text }}
+        </a>
       </div>
     </div>
   {% endif %}
 
   {# Floating Controls (Search Bar + Stats) #}
-  <div class="lms-hero__floating-ui position-absolute w-100 z-3" style="bottom: 0; transform: translateY(50%);">
+  <div class="lms-hero__floating-ui lms-hero__floating-ui--docked position-absolute w-100 z-3">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-10">
@@ -81,25 +86,27 @@
               <form action="{{ path('lms_course.catalog') }}" method="get">
                 <div class="lms-search-bar d-flex align-items-center w-100 bg-black bg-opacity-25 rounded-pill p-2 border border-white border-opacity-25">
                   <i class="fas fa-search lms-search-icon text-white ms-3 me-2"></i>
-                  <input type="text" name="q" placeholder="{{ 'What do you want to learn today?'|t }}" class="form-control bg-transparent border-0 text-white shadow-none" style="outline: none;">
+                  <input type="text" name="q" placeholder="{{ 'What do you want to learn today?'|t }}" class="form-control bg-transparent border-0 text-white shadow-none lms-search-input lms-search-input--glass">
                   <button type="submit" class="lms-btn lms-btn--primary rounded-pill px-4 ms-2 fw-semibold">
                     {{ 'Search'|t }}
                   </button>
                 </div>
               </form>
             </div>
-            
+
             {# Stats Side #}
+            {% if homepage_sections.stats ?? true %}
             <div class="lms-hero__floating-stats d-flex w-100 w-md-auto gap-4 justify-content-around text-center border-md-start border-white border-opacity-25 ps-md-4">
               <div class="lms-hero-stat-item px-2">
                 <h3 class="lms-stat-number fw-bold mb-1"><span class="fs-3">{{ stats.courses }}</span></h3>
-                <span class="lms-stat-label text-white-50 small text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.7rem;">{{ 'Premium Courses'|t }}</span>
+                <span class="lms-stat-label lms-stat-label--hero text-white-50 small text-uppercase fw-semibold">{{ stats.courses_label }}</span>
               </div>
               <div class="lms-hero-stat-item px-2">
                 <h3 class="lms-stat-number fw-bold mb-1"><span class="fs-3">{{ stats.students }}</span></h3>
-                <span class="lms-stat-label text-white-50 small text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.7rem;">{{ 'Enrolled Students'|t }}</span>
+                <span class="lms-stat-label lms-stat-label--hero text-white-50 small text-uppercase fw-semibold">{{ stats.students_label }}</span>
               </div>
             </div>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -108,10 +115,11 @@
 </section>
 
 {# Spacer to prevent section below from being overlapped by the floating panel #}
-<div class="lms-hero-spacer" style="height: 140px; background-color: transparent;"></div>
+<div class="lms-hero-spacer lms-hero-spacer--glass"></div>
+{% endif %}
 
 {# 1.5. Dynamic Introductions #}
-{% if introductions|length > 0 %}
+{% if (homepage_sections.introductions ?? true) and introductions|length > 0 %}
   {% for intro in introductions %}
     <section class="lms-section lms-introduction lms-intro-bg--{{ intro.background_color }}" data-aos="fade-up">
       <div class="container">
@@ -149,12 +157,12 @@
 {% endif %}
 
 {# 2. Continue Learning Widget (Only for logged-in users) #}
-{% if logged_in and my_courses|length > 0 %}
+{% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
 <section class="lms-section lms-section--my-learning" data-aos="fade-up">
   <div class="container">
     <div class="lms-section-header">
       <h2 class="lms-section-title"><i class="fas fa-book-reader text-primary"></i> {{ 'Continue Learning'|t }}</h2>
-      <a href="{{ path('lms_progress.dashboard')|default('#') }}" class="lms-link-more">{{ 'My Dashboard'|t }} <i class="fas fa-arrow-right"></i></a>
+      <a href="{{ path('lms_progress.dashboard') }}" class="lms-link-more">{{ 'My Dashboard'|t }} <i class="fas fa-arrow-right"></i></a>
     </div>
     <div class="lms-progress-cards">
       {% for item in my_courses %}
@@ -170,7 +178,7 @@
             <h4 class="lms-course-title">{{ item.course.name }}</h4>
             <div class="lms-progress-wrapper">
               <div class="lms-progress-bar">
-                <div class="lms-progress-fill lms-gradient-bg" style="width: {{ item.progress }}%;"></div>
+                <div class="lms-progress-fill lms-gradient-bg" data-progress="{{ item.progress }}"></div>
               </div>
               <span class="lms-progress-text">{{ item.progress }}% {{ 'Completed'|t }}</span>
             </div>
@@ -186,12 +194,14 @@
 {% endif %}
 
 {# 3. Popular Categories #}
-{% if categories|length > 0 %}
+{% if (homepage_sections.categories ?? true) and categories|length > 0 %}
 <section class="lms-section lms-bg-darker" data-aos="fade-up">
   <div class="container">
     <div class="lms-section-header text-center">
-      <h2 class="lms-section-title">{{ 'Explore Popular Categories'|t }}</h2>
-      <p class="lms-section-subtitle">{{ 'Find the perfect topic to boost your skills and career'|t }}</p>
+      <h2 class="lms-section-title">{{ homepage_settings.categories_section_title }}</h2>
+      {% if homepage_settings.categories_section_subtitle %}
+      <p class="lms-section-subtitle">{{ homepage_settings.categories_section_subtitle }}</p>
+      {% endif %}
     </div>
     <div class="lms-categories-grid lms-categories-grid--images">
       {% for cat in categories %}
@@ -218,12 +228,12 @@
 {% endif %}
 
 {# 4. Featured Courses (Case Studies) #}
-{% if featured_courses|length > 0 %}
+{% if (homepage_sections.featured ?? true) and featured_courses|length > 0 %}
 <section class="lms-section" data-aos="fade-up">
   <div class="container">
     <div class="lms-section-header">
-      <h2 class="lms-section-title">{{ 'Featured Courses'|t }}</h2>
-      <a href="{{ path('lms_course.catalog') }}" class="lms-link-more">{{ 'View All Courses'|t }} <i class="fas fa-arrow-right"></i></a>
+      <h2 class="lms-section-title">{{ homepage_settings.featured_section_title }}</h2>
+      <a href="{{ path('lms_course.catalog') }}" class="lms-link-more">{{ homepage_settings.featured_section_link_text }} <i class="fas fa-arrow-right"></i></a>
     </div>
     <div class="grid-courses lms-courses-grid">
       {% for card in featured_courses %}
@@ -237,12 +247,14 @@
 {% endif %}
 
 {# 5. Popular Bundles (If available) #}
-{% if bundles is defined and bundles|length > 0 %}
+{% if (homepage_sections.bundles ?? true) and bundles is defined and bundles|length > 0 %}
 <section class="lms-section lms-section--bundles lms-bg-gradient" data-aos="fade-up">
   <div class="container">
     <div class="lms-section-header lms-text-light text-center">
-      <h2 class="lms-section-title">{{ 'Popular Learning Bundles'|t }}</h2>
-      <p class="lms-section-subtitle">{{ 'Save up to 40% with our curated course bundles'|t }}</p>
+      <h2 class="lms-section-title">{{ homepage_settings.bundles_section_title }}</h2>
+      {% if homepage_settings.bundles_section_subtitle %}
+      <p class="lms-section-subtitle">{{ homepage_settings.bundles_section_subtitle }}</p>
+      {% endif %}
     </div>
     <div class="lms-bundles-grid">
       {% for bundle in bundles %}
@@ -262,11 +274,14 @@
 
 
 {# 7. Testimonials #}
-{% if testimonials|length > 0 %}
+{% if (homepage_sections.testimonials ?? true) and testimonials|length > 0 %}
 <section class="lms-section lms-section--testimonials" data-aos="fade-up">
   <div class="container">
     <div class="lms-section-header text-center">
-      <h2 class="lms-section-title">{{ 'What Our Students Say'|t }}</h2>
+      <h2 class="lms-section-title">{{ homepage_settings.testimonials_section_title }}</h2>
+      {% if homepage_settings.testimonials_section_subtitle %}
+      <p class="lms-section-subtitle">{{ homepage_settings.testimonials_section_subtitle }}</p>
+      {% endif %}
     </div>
     <div class="lms-testimonials-carousel">
       {% for tm in testimonials %}
@@ -292,15 +307,17 @@
 {% endif %}
 
 {# 8. Call to Action Banner #}
+{% if homepage_sections.cta_guest ?? true %}
 <section class="lms-section lms-cta-banner" data-aos="zoom-in">
   <div class="container">
     <div class="lms-cta-inner lms-gradient-bg lms-glass-panel">
-      <h2>{{ 'Ready to Transform Your Career?'|t }}</h2>
-      <p>{{ 'Join thousands of students and start learning today.'|t }}</p>
+      <h2>{{ homepage_settings.cta_banner_title }}</h2>
+      <p>{{ homepage_settings.cta_banner_description }}</p>
       <div class="lms-cta-actions">
-        <a href="{{ path('user.register')|default('#') }}" class="lms-btn lms-btn--light lms-btn--lg">{{ 'Start Free Trial'|t }}</a>
-        <a href="{{ path('lms_course.catalog') }}" class="lms-btn lms-btn--outline-light lms-btn--lg">{{ 'Browse Courses'|t }}</a>
+        <a href="{{ path('user.register') }}" class="lms-btn lms-btn--light lms-btn--lg">{{ homepage_settings.cta_primary_text }}</a>
+        <a href="{{ path('lms_course.catalog') }}" class="lms-btn lms-btn--outline-light lms-btn--lg">{{ homepage_settings.cta_secondary_text }}</a>
       </div>
     </div>
   </div>
 </section>
+{% endif %}

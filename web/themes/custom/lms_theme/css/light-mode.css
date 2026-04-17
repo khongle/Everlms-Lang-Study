@@ -752,13 +752,54 @@ body.layout-minimalist .lms-learn,
 body.layout-minimalist .lms-learn__main {
   background: #ffffff !important;
 }
+body.layout-minimalist .lms-learn {
+  display: flex !important;
+  align-items: stretch !important;
+  min-height: calc(100vh - 80px);
+}
+body.layout-minimalist .lms-learn__main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+body.layout-minimalist .lms-learn__content {
+  min-width: 0;
+  background: #ffffff !important;
+}
 
 /* Sidebar */
 body.layout-minimalist .lms-learn__sidebar {
+  width: 360px;
+  min-width: 360px;
+  flex: 0 0 360px;
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
   background: #f8fafc !important;
   border-left: 1px solid #e2e8f0 !important;
   padding: 1.5rem 1rem !important;
   box-sizing: border-box !important;
+}
+body.layout-minimalist .lms-learn--sidebar-collapsed .lms-learn__sidebar {
+  transform: translateX(100%);
+  width: 0 !important;
+  min-width: 0 !important;
+  flex-basis: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+  border-left: 0 !important;
+  padding: 0 !important;
+}
+body.layout-minimalist .lms-learn--sidebar-collapsed .lms-floating-sidebar-toggle {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  position: fixed !important;
+  right: 0 !important;
+  left: auto !important;
+  top: 50% !important;
+  transform: translateY(-50%) rotate(180deg) !important;
+  z-index: 1000 !important;
+  border-radius: 8px 0 0 8px !important;
 }
 body.layout-minimalist .lms-floating-sidebar-toggle {
   background: #ffffff !important;
@@ -981,6 +1022,41 @@ body.layout-minimalist .lms-tab-item.active,
 body.layout-minimalist .lms-tab-item[style*="color: #fff"] {
   color: #4f46e5 !important;
   border-bottom-color: #4f46e5 !important;
+}
+body.layout-minimalist .lms-tab-pane {
+  display: none !important;
+}
+body.layout-minimalist .lms-tab-pane.is-active {
+  display: block !important;
+}
+
+@media (max-width: 991px) {
+  body.layout-minimalist .lms-learn {
+    display: block !important;
+    min-height: auto;
+  }
+
+  body.layout-minimalist .lms-learn__sidebar,
+  body.layout-minimalist .lms-learn--sidebar-collapsed .lms-learn__sidebar {
+    display: block !important;
+    position: static !important;
+    top: auto !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    flex-basis: auto !important;
+    max-height: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    border-left: 0 !important;
+    border-top: 1px solid #e2e8f0 !important;
+    padding: 1rem !important;
+  }
+
+  body.layout-minimalist .lms-floating-sidebar-toggle,
+  body.layout-minimalist .lms-learn--sidebar-collapsed .lms-floating-sidebar-toggle {
+    display: none !important;
+  }
 }
 
 /* Tab Panels Content */
@@ -1699,6 +1775,106 @@ body.layout-minimalist .filter-guidelines {
 }
 
 /* ==============================================================
+   ABOUT / CONTACT (Style 2: Minimalist Clean)
+   ============================================================== */
+body.layout-minimalist .lms-about-page,
+body.layout-minimalist .lms-contact-page {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(124, 58, 237, 0.1), transparent 24%),
+    linear-gradient(180deg, #f8fbff 0%, #f8fafc 46%, #eef4ff 100%) !important;
+}
+
+body.layout-minimalist .lms-about-hero__panel,
+body.layout-minimalist .lms-about-section,
+body.layout-minimalist .lms-about-banner,
+body.layout-minimalist .lms-contact-hero__copy,
+body.layout-minimalist .lms-contact-hero__panel,
+body.layout-minimalist .lms-contact-info-card,
+body.layout-minimalist .lms-contact-map-card,
+body.layout-minimalist .lms-contact-action-card {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08) !important;
+}
+
+body.layout-minimalist .lms-about-hero h1,
+body.layout-minimalist .lms-about-section h2,
+body.layout-minimalist .lms-about-principle-card h3,
+body.layout-minimalist .lms-about-value-card h3,
+body.layout-minimalist .lms-about-team-card h3,
+body.layout-minimalist .lms-about-banner h2,
+body.layout-minimalist .lms-contact-hero h1,
+body.layout-minimalist .lms-contact-hero h2,
+body.layout-minimalist .lms-contact-map-card h2,
+body.layout-minimalist .lms-contact-action-card h2,
+body.layout-minimalist .lms-contact-info-card a,
+body.layout-minimalist .lms-contact-info-card strong,
+body.layout-minimalist .lms-contact-info-card span,
+body.layout-minimalist .lms-contact-action-list__item strong {
+  color: #0f172a !important;
+}
+
+body.layout-minimalist .lms-about-hero p,
+body.layout-minimalist .lms-about-section p,
+body.layout-minimalist .lms-about-principle-card p,
+body.layout-minimalist .lms-about-value-card p,
+body.layout-minimalist .lms-about-team-card p,
+body.layout-minimalist .lms-about-banner p,
+body.layout-minimalist .lms-about-banner__meta span,
+body.layout-minimalist .lms-contact-hero p,
+body.layout-minimalist .lms-contact-hero__panel-list li,
+body.layout-minimalist .lms-contact-info-card p,
+body.layout-minimalist .lms-contact-map-card p,
+body.layout-minimalist .lms-contact-map-card__meta span,
+body.layout-minimalist .lms-contact-action-card p,
+body.layout-minimalist .lms-contact-action-list__item span {
+  color: #475569 !important;
+}
+
+body.layout-minimalist .lms-about-stat-card,
+body.layout-minimalist .lms-about-principle-card,
+body.layout-minimalist .lms-about-value-card,
+body.layout-minimalist .lms-about-team-card,
+body.layout-minimalist .lms-contact-action-list__item {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: none !important;
+}
+
+body.layout-minimalist .lms-about-stat-card__value {
+  color: #0f172a !important;
+}
+
+body.layout-minimalist .lms-about-stat-card__label,
+body.layout-minimalist .lms-about-section__eyebrow,
+body.layout-minimalist .lms-about-banner__eyebrow,
+body.layout-minimalist .lms-contact-hero__eyebrow,
+body.layout-minimalist .lms-contact-hero__panel-eyebrow,
+body.layout-minimalist .lms-contact-info-card__label,
+body.layout-minimalist .lms-contact-map-card__eyebrow,
+body.layout-minimalist .lms-contact-action-card__eyebrow {
+  color: #4f46e5 !important;
+}
+
+body.layout-minimalist .lms-about-hero__eyebrow,
+body.layout-minimalist .lms-about-hero__copy .btn-lms-outline,
+body.layout-minimalist .lms-contact-hero__pills span,
+body.layout-minimalist .lms-contact-map-card__meta span {
+  background: #f8fafc !important;
+  border-color: #dbeafe !important;
+}
+
+body.layout-minimalist .lms-about-banner {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%) !important;
+  border-color: #c7d2fe !important;
+}
+
+body.layout-minimalist .lms-contact-map-card__placeholder {
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%) !important;
+}
+
+/* ==============================================================
    FORUM THREAD CONTENT SPECIFIC (Style 2: Minimalist Clean)
    ============================================================== */
 body.layout-minimalist .lms-breadcrumb {
@@ -2004,6 +2180,203 @@ body.layout-minimalist .lms-empty-state a {
   transition: background 0.2s ease !important;
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3) !important;
 }
+
+/* ==============================================================
+   LEARNING PORTAL (Dashboard + My Courses)
+   ============================================================== */
+body.layout-minimalist .lms-dashboard-page::before,
+body.layout-minimalist .lms-my-courses-page::before {
+  opacity: 0.35 !important;
+}
+body.layout-minimalist .lms-dashboard-page__hero,
+body.layout-minimalist .lms-learning-spotlight,
+body.layout-minimalist .lms-my-courses-page__summary-card,
+body.layout-minimalist .lms-learning-empty {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.06) !important;
+}
+body.layout-minimalist .lms-dashboard-page__hero,
+body.layout-minimalist .lms-my-courses-page__hero,
+body.layout-minimalist .lms-quiz-results-page__hero,
+body.layout-minimalist .lms-certificates-page__hero {
+  align-items: stretch !important;
+}
+body.layout-minimalist .lms-learning-spotlight {
+  align-items: stretch !important;
+  overflow: hidden !important;
+}
+body.layout-minimalist .lms-learning-spotlight__media,
+body.layout-minimalist .lms-learning-card__media {
+  display: block;
+  min-height: 190px;
+  overflow: hidden;
+}
+body.layout-minimalist .lms-learning-spotlight__media img,
+body.layout-minimalist .lms-learning-card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+body.layout-minimalist .lms-dashboard-page__eyebrow,
+body.layout-minimalist .lms-my-courses-page__eyebrow {
+  background: rgba(79, 70, 229, 0.08) !important;
+  border-color: rgba(79, 70, 229, 0.18) !important;
+  color: #4338ca !important;
+}
+body.layout-minimalist .lms-dashboard-page__title,
+body.layout-minimalist .lms-my-courses-page__title,
+body.layout-minimalist .lms-learning-toolbar__title,
+body.layout-minimalist .lms-learning-spotlight__title,
+body.layout-minimalist .lms-learning-card__title,
+body.layout-minimalist .lms-my-courses-page__summary-value,
+body.layout-minimalist .lms-learning-empty h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-dashboard-page__subtitle,
+body.layout-minimalist .lms-my-courses-page__subtitle,
+body.layout-minimalist .lms-learning-toolbar__subtitle,
+body.layout-minimalist .lms-learning-spotlight__copy,
+body.layout-minimalist .lms-learning-card__meta,
+body.layout-minimalist .lms-my-courses-page__summary-label,
+body.layout-minimalist .lms-learning-empty {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-learning-spotlight__category,
+body.layout-minimalist .lms-learning-card__category {
+  background: #eef2ff !important;
+  border-color: #c7d2fe !important;
+  color: #3730a3 !important;
+}
+body.layout-minimalist .lms-learning-spotlight__status,
+body.layout-minimalist .lms-learning-card__badge {
+  background: #eef2ff !important;
+  border-color: #c7d2fe !important;
+  color: #4338ca !important;
+}
+body.layout-minimalist .lms-learning-spotlight__status.is-completed,
+body.layout-minimalist .lms-learning-card__badge.is-completed {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+body.layout-minimalist .lms-learning-spotlight__status.is-idle,
+body.layout-minimalist .lms-learning-card__badge.is-idle {
+  background: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+}
+body.layout-minimalist .lms-learning-filters {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+body.layout-minimalist .lms-learning-filters__button {
+  color: #475569 !important;
+}
+body.layout-minimalist .lms-learning-filters__button span {
+  background: #e2e8f0 !important;
+}
+body.layout-minimalist .lms-learning-filters__button.is-active {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.22) !important;
+}
+body.layout-minimalist .lms-learning-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06) !important;
+}
+body.layout-minimalist .lms-learning-card::after {
+  background: linear-gradient(180deg, transparent 0%, rgba(248, 250, 252, 0.9) 100%) !important;
+}
+body.layout-minimalist .lms-learning-progress__track {
+  background: #e2e8f0 !important;
+}
+body.layout-minimalist .lms-learning-progress__fill {
+  box-shadow: none !important;
+}
+body.layout-minimalist .lms-learning-card__cta.is-secondary,
+body.layout-minimalist .lms-learning-spotlight__cta.is-secondary {
+  background: #f8fafc !important;
+  color: #334155 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+/* ==============================================================
+   CERTIFICATES + QUIZ RESULTS
+   ============================================================== */
+body.layout-minimalist .lms-certificates-page__summary-card,
+body.layout-minimalist .lms-certificate-card,
+body.layout-minimalist .lms-certificates-empty,
+body.layout-minimalist .lms-quiz-results-page__summary-card,
+body.layout-minimalist .lms-quiz-results-board,
+body.layout-minimalist .lms-quiz-results-empty,
+body.layout-minimalist .lms-quiz-result-row {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06) !important;
+}
+body.layout-minimalist .lms-certificates-page__title,
+body.layout-minimalist .lms-certificates-page__summary-value,
+body.layout-minimalist .lms-certificate-card__meta-value,
+body.layout-minimalist .lms-certificates-empty h3,
+body.layout-minimalist .lms-quiz-results-page__title,
+body.layout-minimalist .lms-quiz-results-page__summary-value,
+body.layout-minimalist .lms-quiz-result-row__title,
+body.layout-minimalist .lms-quiz-result-row__score-value,
+body.layout-minimalist .lms-quiz-results-empty h3 {
+  color: #0f172a !important;
+}
+body.layout-minimalist .lms-certificates-page__subtitle,
+body.layout-minimalist .lms-certificates-page__summary-label,
+body.layout-minimalist .lms-certificate-card__meta-label,
+body.layout-minimalist .lms-certificates-empty p,
+body.layout-minimalist .lms-quiz-results-page__subtitle,
+body.layout-minimalist .lms-quiz-results-page__summary-label,
+body.layout-minimalist .lms-quiz-result-row__meta,
+body.layout-minimalist .lms-quiz-result-row__score-label,
+body.layout-minimalist .lms-quiz-results-empty p {
+  color: #64748b !important;
+}
+body.layout-minimalist .lms-certificates-page__eyebrow {
+  background: rgba(217, 119, 6, 0.08) !important;
+  border-color: rgba(217, 119, 6, 0.18) !important;
+  color: #b45309 !important;
+}
+body.layout-minimalist .lms-certificate-card__preview {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(255, 255, 255, 0.96)) !important;
+  border-color: rgba(217, 119, 6, 0.2) !important;
+}
+body.layout-minimalist .lms-certificate-card__frame {
+  background: linear-gradient(160deg, #fffdf5, #fff7ed) !important;
+  border-color: rgba(217, 119, 6, 0.18) !important;
+  color: #92400e !important;
+}
+body.layout-minimalist .lms-certificate-card__brand,
+body.layout-minimalist .lms-certificate-card__track,
+body.layout-minimalist .lms-certificate-card__serial {
+  color: #9a3412 !important;
+}
+body.layout-minimalist .lms-certificate-card__course {
+  color: #7c2d12 !important;
+}
+body.layout-minimalist .lms-quiz-results-page__eyebrow {
+  background: rgba(16, 185, 129, 0.08) !important;
+  border-color: rgba(16, 185, 129, 0.18) !important;
+  color: #047857 !important;
+}
+body.layout-minimalist .lms-quiz-results-page__summary-card.is-success .lms-quiz-results-page__summary-value {
+  color: #15803d !important;
+}
+body.layout-minimalist .lms-quiz-results-page__summary-card.is-accent .lms-quiz-results-page__summary-value {
+  color: #0369a1 !important;
+}
+body.layout-minimalist .lms-quiz-result-row__action.is-secondary {
+  background: #f8fafc !important;
+  color: #334155 !important;
+  border: 1px solid #cbd5e1 !important;
+}
 body.layout-minimalist .lms-empty-state a:hover {
   background: #4338ca !important;
   box-shadow: 0 6px 18px rgba(79, 70, 229, 0.5) !important;
@@ -2139,7 +2512,12 @@ body.layout-minimalist .lms-mega-dropdown--small {
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06) !important;
-  margin-top: 8px !important; /* Small gap so it doesn't "stick" to dark navbar */
+  margin-top: 0 !important;
+}
+body.layout-minimalist .lms-mega-menu-wrapper {
+  position: relative;
+  padding-bottom: 10px;
+  margin-bottom: -10px;
 }
 /* Arrow tip - outer (border color) */
 body.layout-minimalist .lms-mega-dropdown::before {
@@ -2233,13 +2611,16 @@ body.layout-minimalist .lms-profile__layout-redesign .lms-profile__section-title
   color: #1e293b !important;
 }
 body.layout-minimalist .lms-profile__layout-redesign .lms-profile-bio-card {
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-  box-shadow: none !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1rem !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
 }
 body.layout-minimalist .lms-profile__layout-redesign .lms-profile__bio-content {
   color: #475569 !important;
+  margin: 0 !important;
+  overflow-wrap: anywhere;
 }
 body.layout-minimalist .lms-profile__layout-redesign .lms-profile-info-item {
   background: #ffffff !important;
@@ -2327,7 +2708,7 @@ body.layout-minimalist .lms-footer .lms-footer__bottom p a {
    --------------------------------------------------- */
 body.layout-minimalist .lms-learn {
   background-color: #f8fafc !important;
-  margin-top: -32px; /* Pull immersive learning UI flush with navbar against standard page content padding */
+  margin-top: 0 !important;
 }
 body.layout-minimalist .lms-learn__main {
   background-color: #f8fafc !important;
@@ -2383,4 +2764,419 @@ body.layout-minimalist .lms-lesson-link.active {
 body.layout-minimalist .lms-learn__video-wrapper {
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1) !important;
+}
+
+/* ==============================================================
+   SHARED INNER-PAGE LAYOUT STABILITY
+   Keeps structural behavior identical across all homepage skins.
+   ============================================================== */
+body.layout-minimalist .lms-dashboard-page__hero,
+body.layout-minimalist .lms-my-courses-page__hero {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr) !important;
+  gap: clamp(1rem, 2vw, 2rem) !important;
+  align-items: stretch !important;
+}
+
+body.layout-minimalist .lms-my-courses-page__summary {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.9rem !important;
+  align-content: stretch !important;
+}
+
+body.layout-minimalist .lms-learning-spotlight {
+  display: grid !important;
+  grid-template-columns: minmax(15rem, 17rem) minmax(0, 1fr) !important;
+  gap: 1.25rem !important;
+  align-items: stretch !important;
+}
+
+body.layout-minimalist .lms-learning-spotlight__media {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  aspect-ratio: 16 / 10 !important;
+}
+
+body.layout-minimalist .lms-learning-spotlight__body,
+body.layout-minimalist .lms-learning-card__body,
+body.layout-minimalist .lms-quiz-result-row__content,
+body.layout-minimalist .lms-certificate-card__body {
+  min-width: 0;
+}
+
+body.layout-minimalist .lms-learning-spotlight__title,
+body.layout-minimalist .lms-learning-card__title,
+body.layout-minimalist .lms-quiz-result-row__title {
+  overflow-wrap: anywhere;
+}
+
+body.layout-minimalist .lms-quiz-results-page__summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0.9rem !important;
+}
+
+body.layout-minimalist .lms-certificates-page__summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.9rem !important;
+}
+
+body.layout-minimalist .lms-certificates-grid {
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)) !important;
+  gap: 1.1rem !important;
+}
+
+body.layout-minimalist .lms-certificate-card__meta {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0.75rem !important;
+}
+
+body.layout-minimalist .lms-quiz-result-row {
+  display: grid !important;
+  grid-template-columns: 3.5rem minmax(0, 1fr) auto auto !important;
+  gap: 1rem !important;
+  align-items: center !important;
+}
+
+body.layout-minimalist .lms-learn__top-bar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  row-gap: 0.75rem !important;
+}
+
+body.layout-minimalist .lms-learn__top-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+}
+
+body.layout-minimalist .lms-learn__top-btn {
+  white-space: nowrap;
+}
+
+body.layout-minimalist .lms-learn__tabs-container {
+  margin-top: 1.25rem !important;
+}
+
+body.layout-minimalist .lms-nav-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 1.25rem !important;
+  margin: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+body.layout-minimalist .lms-tab-content {
+  padding-top: 1rem !important;
+}
+
+body.layout-minimalist .lms-learn__sidebar {
+  padding: 0 !important;
+}
+
+body.layout-minimalist .lms-learn__sidebar-header {
+  margin-bottom: 0 !important;
+  padding: 1rem 1rem 0.75rem !important;
+}
+
+body.layout-minimalist .lms-learn__nav {
+  padding: 0.25rem 0 0.85rem !important;
+}
+
+body.layout-minimalist .lms-learn__chapter-accordion summary,
+body.layout-minimalist .lms-learn__lesson-item a {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+body.layout-minimalist .lms-mega-menu-wrapper {
+  position: relative;
+  padding-bottom: 14px;
+  margin-bottom: -14px;
+}
+
+body.layout-minimalist .lms-mega-menu-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: -28px;
+  width: clamp(260px, 42vw, 780px);
+  height: 18px;
+}
+
+body.layout-minimalist .lms-mega-dropdown,
+body.layout-minimalist .lms-mega-dropdown--small {
+  margin-top: 6px !important;
+}
+
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-bio-card,
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-info-item,
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-courses-card,
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-quizzes-card {
+  padding: clamp(1rem, 2.4vw, 1.75rem) !important;
+}
+
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile__bio-content,
+body.layout-minimalist .lms-profile__layout-redesign .lms-profile-info-value {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 991px) {
+  body.layout-minimalist .lms-dashboard-page__hero,
+  body.layout-minimalist .lms-my-courses-page__hero,
+  body.layout-minimalist .lms-learning-spotlight,
+  body.layout-minimalist .lms-quiz-result-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.layout-minimalist .lms-learning-spotlight__media {
+    aspect-ratio: 16 / 9 !important;
+  }
+
+  body.layout-minimalist .lms-quiz-result-row__score,
+  body.layout-minimalist .lms-quiz-result-row__action {
+    grid-column: auto !important;
+  }
+
+  body.layout-minimalist .lms-my-courses-page__summary,
+  body.layout-minimalist .lms-certificates-page__summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body.layout-minimalist .lms-learn__sidebar,
+  body.layout-minimalist .lms-learn--sidebar-collapsed .lms-learn__sidebar {
+    padding: 0 !important;
+  }
+
+  body.layout-minimalist .lms-learn__sidebar-header {
+    padding: 1rem !important;
+  }
+
+  body.layout-minimalist .lms-learn__nav {
+    padding: 0 0 1rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body.layout-minimalist .lms-my-courses-page__summary,
+  body.layout-minimalist .lms-quiz-results-page__summary,
+  body.layout-minimalist .lms-certificates-page__summary,
+  body.layout-minimalist .lms-certificate-card__meta {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ==============================================================
+   SHARED INNER-PAGE POLISH PASS 2
+   ============================================================== */
+body.layout-minimalist .lms-my-courses-page__hero,
+body.layout-minimalist .lms-quiz-results-page__hero,
+body.layout-minimalist .lms-certificates-page__hero {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr) !important;
+  gap: clamp(1rem, 2vw, 1.75rem) !important;
+  padding: clamp(1rem, 2.1vw, 1.7rem) !important;
+  border-radius: 1.1rem !important;
+}
+
+body.layout-minimalist .lms-my-courses-page__hero-copy,
+body.layout-minimalist .lms-quiz-results-page__hero-copy,
+body.layout-minimalist .lms-certificates-page__hero-copy,
+body.layout-minimalist .lms-learning-toolbar > div:first-child {
+  min-width: 0;
+}
+
+body.layout-minimalist .lms-my-courses-page__title,
+body.layout-minimalist .lms-quiz-results-page__title,
+body.layout-minimalist .lms-certificates-page__title,
+body.layout-minimalist .lms-learning-toolbar__title {
+  margin: 0 0 0.45rem !important;
+  line-height: 1.15 !important;
+}
+
+body.layout-minimalist .lms-my-courses-page__subtitle,
+body.layout-minimalist .lms-quiz-results-page__subtitle,
+body.layout-minimalist .lms-certificates-page__subtitle,
+body.layout-minimalist .lms-learning-toolbar__subtitle {
+  margin: 0 !important;
+  max-width: 56ch;
+}
+
+body.layout-minimalist .lms-my-courses-page__summary,
+body.layout-minimalist .lms-quiz-results-page__summary,
+body.layout-minimalist .lms-certificates-page__summary {
+  display: grid !important;
+  gap: 0.85rem !important;
+}
+
+body.layout-minimalist .lms-my-courses-page__summary-card,
+body.layout-minimalist .lms-quiz-results-page__summary-card,
+body.layout-minimalist .lms-certificates-page__summary-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 0.35rem !important;
+  min-height: 5.75rem !important;
+  padding: 0.95rem 1rem !important;
+  border-radius: 0.95rem !important;
+}
+
+body.layout-minimalist .lms-quiz-results-board {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.85rem !important;
+  padding: 1rem !important;
+  border-radius: 1rem !important;
+}
+
+body.layout-minimalist .lms-quiz-results-empty,
+body.layout-minimalist .lms-certificates-empty {
+  padding: clamp(1.4rem, 3vw, 2.4rem) 1rem !important;
+  border-radius: 1rem !important;
+}
+
+body.layout-minimalist .lms-certificates-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)) !important;
+  gap: 1rem !important;
+}
+
+body.layout-minimalist .lms-certificate-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  padding: 1rem !important;
+  border-radius: 1rem !important;
+}
+
+body.layout-minimalist .lms-certificate-card__preview {
+  margin-bottom: 0 !important;
+}
+
+body.layout-minimalist .lms-certificate-card__actions,
+body.layout-minimalist .lms-certificate-card__button {
+  width: 100%;
+}
+
+body.layout-minimalist .lms-learning-toolbar {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  margin-bottom: 1rem !important;
+  padding: 0.95rem 1rem !important;
+  border-radius: 1rem !important;
+}
+
+body.layout-minimalist .lms-learning-filters {
+  padding: 0.25rem !important;
+  gap: 0.25rem !important;
+  border-radius: 999px !important;
+}
+
+body.layout-minimalist .lms-learning-filters__button {
+  min-height: 2.35rem !important;
+  padding: 0.45rem 0.8rem !important;
+  font-size: 0.86rem !important;
+  font-weight: 700 !important;
+  white-space: nowrap;
+}
+
+body.layout-minimalist .lms-learning-filters__button span {
+  min-width: 1.4rem !important;
+  min-height: 1.4rem !important;
+  padding: 0 0.3rem !important;
+}
+
+body.layout-minimalist .lms-nav-tabs {
+  list-style: none !important;
+  padding: 0.35rem !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+}
+
+body.layout-minimalist .lms-nav-tabs .lms-tab-item {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0.52rem 0.9rem !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  font-size: 0.9rem !important;
+  line-height: 1.1 !important;
+}
+
+body.layout-minimalist .lms-nav-tabs .lms-tab-item.active,
+body.layout-minimalist .lms-nav-tabs .lms-tab-item[style*="color: #fff"] {
+  color: #ffffff !important;
+  border-bottom-color: transparent !important;
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
+  box-shadow: 0 8px 18px rgba(79, 70, 229, 0.25) !important;
+}
+
+body.layout-minimalist .lms-nav-tabs .lms-tab-item:hover:not(.active) {
+  background: #f8fafc !important;
+}
+
+body.layout-minimalist .lms-floating-sidebar-toggle {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  left: auto !important;
+  width: 34px !important;
+  height: 34px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 0.65rem !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+  transform: none !important;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12) !important;
+}
+
+body.layout-minimalist .lms-floating-sidebar-toggle:hover {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+body.layout-minimalist .lms-learn__sidebar-header {
+  padding-top: 3rem !important;
+}
+
+body.layout-minimalist .lms-learn--sidebar-collapsed .lms-floating-sidebar-toggle {
+  position: fixed !important;
+  top: 118px !important;
+  right: 16px !important;
+  left: auto !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 999px !important;
+  transform: none !important;
+  z-index: 1005 !important;
+}
+
+@media (max-width: 1080px) {
+  body.layout-minimalist .lms-my-courses-page__hero,
+  body.layout-minimalist .lms-quiz-results-page__hero,
+  body.layout-minimalist .lms-certificates-page__hero,
+  body.layout-minimalist .lms-learning-toolbar {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body.layout-minimalist .lms-learning-filters {
+    width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+
+  body.layout-minimalist .lms-learning-filters__button {
+    flex: 0 0 auto;
+  }
 }

@@ -4,52 +4,58 @@
  * Frontend template for Blog articles list.
  */
 #}
-<div class="blog-container container py-5">
+{{ attach_library('lms_theme/global') }}
+
+<div class="blog-container container py-5 lms-news-list">
   <div class="row mb-5">
     <div class="col-12 text-center">
-      <h1 class="display-4 fw-bold">Latest News & Insights</h1>
-      <p class="lead text-muted">Stay up to date with EverLMS tips, updates, and educational resources.</p>
+      <h1 class="display-4 fw-bold">{{ 'Latest News & Insights'|t }}</h1>
+      <p class="lead text-muted">{{ 'Stay up to date with EverLMS tips, updates, and educational resources.'|t }}</p>
     </div>
   </div>
 
   <div class="row g-4">
     {% for article in articles %}
+      {% set article_url = path('lms_blog.frontend.canonical', {'node': article.id()}) %}
+      {% set article_summary = article.body.summary|default(article.body.value|striptags|slice(0, 180)) %}
       <div class="col-md-4">
-        <div class="card h-100 rounded-4 overflow-hidden" 
-             style="background-color: #161b22; border: 1px solid rgba(240, 246, 252, 0.1); 
-                    transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
-             onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.3)';"
-             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.1)';">
+        <article class="card h-100 rounded-4 overflow-hidden lms-news-list__card">
+          <a href="{{ article_url }}" class="lms-news-list__media">
           {% if article.field_thumb.entity %}
-            <img src="{{ file_url(article.field_thumb.entity.uri.value) }}" class="card-img-top" alt="{{ article.title.value }}" style="height: 200px; object-fit: cover; object-position: center 25%; border-bottom: 1px solid rgba(240, 246, 252, 0.05);">
+            <img src="{{ file_url(article.field_thumb.entity.uri.value) }}" class="card-img-top" alt="{{ article.title.value }}">
           {% else %}
-            <div class="card-img-top d-flex align-items-center justify-content-center" style="background-color: #21262d; height: 200px;">
-              <span class="text-muted"><i class="fas fa-image fa-3x"></i></span>
+            <div class="card-img-top d-flex align-items-center justify-content-center lms-news-list__media-placeholder">
+              <span><i class="fas fa-image fa-3x"></i></span>
             </div>
           {% endif %}
+            <span class="lms-news-list__hover">
+              <span class="lms-news-list__hover-label">{{ 'Open article'|t }}</span>
+              <span class="lms-news-list__hover-copy">{{ article_summary|striptags|slice(0, 105) }}{% if article_summary|striptags|length > 105 %}...{% endif %}</span>
+            </span>
+          </a>
           
           <div class="card-body p-4 d-flex flex-column">
             <h5 class="card-title fw-bold mb-3">
-              <a href="{{ path('lms_blog.frontend.canonical', {'node': article.id()}) }}" class="text-decoration-none stretched-link" style="color: #e6edf3; transition: color 0.2s;" onmouseover="this.style.color='#58a6ff'" onmouseout="this.style.color='#e6edf3'">
+              <a href="{{ article_url }}" class="lms-news-list__title-link text-decoration-none">
                 {{ article.title.value }}
               </a>
             </h5>
-            <p class="card-text text-muted mb-4" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-              {{ article.body.summary|default(article.body.value|striptags|slice(0, 150) ~ '...') }}
+            <p class="card-text text-muted mb-4 lms-news-list__summary">
+              {{ article_summary|striptags|slice(0, 150) }}{% if article_summary|striptags|length > 150 %}...{% endif %}
             </p>
             <div class="mt-auto d-flex justify-content-between align-items-center">
               <small class="text-muted"><i class="far fa-calendar-alt me-2"></i>{{ article.created.value|date('M d, Y') }}</small>
-              <span class="text-primary fw-bold" style="font-size: 0.9rem;">Read more <i class="fas fa-arrow-right ms-1"></i></span>
+              <a href="{{ article_url }}" class="lms-news-list__read-more">{{ 'Read more'|t }} <i class="fas fa-arrow-right ms-1"></i></a>
             </div>
           </div>
-        </div>
+        </article>
       </div>
     {% else %}
       <div class="col-12 text-center py-5">
-        <div class="p-5 rounded-4 shadow-sm" style="background-color: #161b22; border: 1px solid rgba(240, 246, 252, 0.1);">
+        <div class="p-5 rounded-4 shadow-sm lms-news-list__empty">
           <i class="far fa-newspaper fa-4x text-muted mb-3"></i>
-          <h4 style="color: #e6edf3;">No articles published yet</h4>
-          <p class="text-muted">Check back later for exciting news from EverLMS.</p>
+          <h4>{{ 'No articles published yet'|t }}</h4>
+          <p class="text-muted">{{ 'Check back later for exciting news from EverLMS.'|t }}</p>
         </div>
       </div>
     {% endfor %}

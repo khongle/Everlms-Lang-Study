@@ -1,81 +1,114 @@
-{# Contact — Corporate Premium Layout #}
 {{ attach_library('lms_theme/global') }}
 
-<div class="layout-corporate bg-light" style="min-height: 100vh; padding: 100px 0;">
+<section class="lms-contact-page">
   <div class="container">
-    <div class="row gx-5 align-items-center">
-      
-      <!-- Left side: Contact Information -->
-      <div class="col-lg-5 mb-5 mb-lg-0 pe-lg-5">
-        <div style="font-size: 13px; font-weight: 800; color: #3b82f6; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;">Contact Us</div>
-        <h1 style="font-family: 'Inter', sans-serif; font-size: 48px; font-weight: 800; color: #0f172a; line-height: 1.1; margin-bottom: 24px; letter-spacing: -1px;">Let's start a conversation.</h1>
-        <p style="font-size: 18px; color: #64748b; line-height: 1.6; margin-bottom: 48px;">Have questions about integrating Nexus Supply Chain Academy into your workflow? Our deployment team is ready to guide you.</p>
-        
-        <div class="contact-info-list" style="display: flex; flex-direction: column; gap: 32px;">
-          <div class="contact-item" style="display: flex; gap: 24px;">
-            <div style="width: 56px; height: 56px; background: #ffffff; border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; color: #3b82f6; flex-shrink: 0;">
-              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            </div>
-            <div>
-              <div style="font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Headquarters</div>
-              <div style="font-weight: 700; color: #0f172a; font-size: 16px; line-height: 1.5;">Supply Chain Plaza<br>Nexus District, Global Hub</div>
-            </div>
-          </div>
-          
-          <div class="contact-item" style="display: flex; gap: 24px;">
-            <div style="width: 56px; height: 56px; background: #ffffff; border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; color: #3b82f6; flex-shrink: 0;">
-              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-            </div>
-            <div>
-              <div style="font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Direct Line</div>
-              <div style="font-weight: 700; color: #0f172a; font-size: 16px; line-height: 1.5;">+01 00 200 0000<br><span style="font-weight: 500; font-size: 14px; color: #64748b;">Sales & Technical Support</span></div>
-            </div>
-          </div>
-          
-          <div class="contact-item" style="display: flex; gap: 24px;">
-            <div style="width: 56px; height: 56px; background: #ffffff; border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; color: #3b82f6; flex-shrink: 0;">
-              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            </div>
-            <div>
-              <div style="font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Digital Inquiry</div>
-              <div style="font-weight: 700; color: #0f172a; font-size: 16px; line-height: 1.5;">partnerships@nexus.com<br><span style="font-weight: 500; font-size: 14px; color: #64748b;">support@nexus.com</span></div>
-            </div>
-          </div>
+    <section class="lms-contact-hero">
+      <div class="lms-contact-hero__copy">
+        <span class="lms-contact-hero__eyebrow">{{ 'Contact'|t }}</span>
+        <h1>{{ 'Talk to the @site_name team.'|t({'@site_name': site_name}) }}</h1>
+        <p>{{ 'Use the contact channels below for onboarding questions, platform support, partnership discussions, or rollout planning.'|t }}</p>
+
+        <div class="lms-contact-hero__pills">
+          <span>{{ 'Typical response'|t }}: <strong>{{ 'within 1 business day'|t }}</strong></span>
+          <span>{{ 'Coverage'|t }}: <strong>{{ footer_working_hours }}</strong></span>
+        </div>
+
+        <div class="lms-contact-hero__actions">
+          <a href="{{ footer_email_href }}" class="btn-lms-primary">{{ 'Email Support'|t }}</a>
+          {% if footer_phone_href != 'tel:' %}
+            <a href="{{ footer_phone_href }}" class="btn-lms-outline">{{ 'Call Us'|t }}</a>
+          {% endif %}
         </div>
       </div>
-      
-      <!-- Right side: Contact Form -->
-      <div class="col-lg-7">
-        <div class="contact-form-card" style="background: #ffffff; border-radius: 24px; padding: 48px; box-shadow: 0 20px 40px -10px rgba(15,23,42,0.1); border: 1px solid #f1f5f9;">
-          <h3 style="font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 32px; letter-spacing: -0.5px;">Send us a message</h3>
-          <form method="post">
-            <div class="row gx-4">
-              <div class="col-md-6 mb-4">
-                <label style="display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 8px;">Your Name</label>
-                <input type="text" class="corporate-input" placeholder="John Doe" required style="width: 100%; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 16px; font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: #f8fafc;">
-              </div>
-              <div class="col-md-6 mb-4">
-                <label style="display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 8px;">Work Email</label>
-                <input type="email" class="corporate-input" placeholder="john@company.com" required style="width: 100%; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 16px; font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: #f8fafc;">
-              </div>
-            </div>
-            
-            <div class="mb-4">
-              <label style="display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 8px;">Subject</label>
-              <input type="text" class="corporate-input" placeholder="How can we help?" required style="width: 100%; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 16px; font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: #f8fafc;">
-            </div>
-            
-            <div class="mb-4">
-              <label style="display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 8px;">Message</label>
-              <textarea class="corporate-input" rows="5" placeholder="Tell us about your logistics training needs..." required style="width: 100%; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; resize: vertical; background: #f8fafc; line-height: 1.6;"></textarea>
-            </div>
-            
-            <button type="submit" class="btn-primary" style="width: 100%; padding: 18px; font-size: 16px; font-weight: 700; border-radius: 12px; margin-top: 8px; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;">Send Message &rarr;</button>
-          </form>
+
+      <div class="lms-contact-hero__panel">
+        <span class="lms-contact-hero__panel-eyebrow">{{ 'Fastest Routes'|t }}</span>
+        <h2>{{ 'Choose the best path for your request.'|t }}</h2>
+        <ul class="lms-contact-hero__panel-list">
+          <li>{{ 'Email us for onboarding, support, or partnership requests.'|t }}</li>
+          <li>{{ 'Call during support hours for urgent coordination.'|t }}</li>
+          <li>{{ 'Review pricing and catalog pages before rollout planning.'|t }}</li>
+        </ul>
+
+        <div class="lms-contact-hero__panel-actions">
+          <a href="{{ pricing_url }}" class="btn-lms-outline">{{ 'View Pricing'|t }}</a>
+          <a href="{{ catalog_url }}" class="btn-lms-outline">{{ 'Browse Catalog'|t }}</a>
         </div>
       </div>
-      
-    </div>
+    </section>
+
+    <section class="lms-contact-info-grid">
+      <article class="lms-contact-info-card">
+        <div class="lms-contact-info-card__icon"><i class="fas fa-envelope"></i></div>
+        <span class="lms-contact-info-card__label">{{ 'Email'|t }}</span>
+        <a href="{{ footer_email_href }}">{{ footer_email }}</a>
+        <p>{{ 'Best for support tickets, onboarding questions, and partnership outreach.'|t }}</p>
+      </article>
+
+      <article class="lms-contact-info-card">
+        <div class="lms-contact-info-card__icon"><i class="fas fa-phone"></i></div>
+        <span class="lms-contact-info-card__label">{{ 'Phone'|t }}</span>
+        {% if footer_phone_href != 'tel:' %}
+          <a href="{{ footer_phone_href }}">{{ footer_phone }}</a>
+        {% else %}
+          <span>{{ footer_phone }}</span>
+        {% endif %}
+        <p>{{ 'Reach the team directly when coordination is time-sensitive.'|t }}</p>
+      </article>
+
+      <article class="lms-contact-info-card">
+        <div class="lms-contact-info-card__icon"><i class="fas fa-clock"></i></div>
+        <span class="lms-contact-info-card__label">{{ 'Hours'|t }}</span>
+        <strong>{{ footer_working_hours }}</strong>
+        <p>{{ 'Use email outside those hours and the team will follow up in the next support window.'|t }}</p>
+      </article>
+
+      <article class="lms-contact-info-card">
+        <div class="lms-contact-info-card__icon"><i class="fas fa-location-dot"></i></div>
+        <span class="lms-contact-info-card__label">{{ 'Office'|t }}</span>
+        <strong>{{ footer_address }}</strong>
+        <p>{{ 'Primary coordination point for platform planning, implementation, and client support.'|t }}</p>
+      </article>
+    </section>
+
+    <section class="lms-contact-layout">
+      <div class="lms-contact-map-card">
+        {% if footer_map_embed_url %}
+          <iframe src="{{ footer_map_embed_url }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="{{ 'Office location map'|t }}"></iframe>
+        {% else %}
+          <div class="lms-contact-map-card__placeholder">
+            <span class="lms-contact-map-card__eyebrow">{{ 'Office Location'|t }}</span>
+            <h2>{{ site_name }}</h2>
+            <p>{{ footer_address }}</p>
+            <div class="lms-contact-map-card__meta">
+              <span><i class="fas fa-envelope"></i> {{ footer_email }}</span>
+              <span><i class="fas fa-clock"></i> {{ footer_working_hours }}</span>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="lms-contact-action-card">
+        <span class="lms-contact-action-card__eyebrow">{{ 'Next Steps'|t }}</span>
+        <h2>{{ 'Move from inquiry to rollout with the right entry point.'|t }}</h2>
+        <p>{{ 'If you are still exploring, review the catalog and pricing pages first. If you are ready to start, create an account and continue the discussion with the team.'|t }}</p>
+
+        <div class="lms-contact-action-list">
+          <a href="{{ catalog_url }}" class="lms-contact-action-list__item">
+            <strong>{{ 'Browse Catalog'|t }}</strong>
+            <span>{{ 'Review courses, categories, and learning paths.'|t }}</span>
+          </a>
+          <a href="{{ pricing_url }}" class="lms-contact-action-list__item">
+            <strong>{{ 'Review Pricing'|t }}</strong>
+            <span>{{ 'Compare membership plans before rollout planning.'|t }}</span>
+          </a>
+          <a href="{{ register_url }}" class="lms-contact-action-list__item">
+            <strong>{{ 'Create Account'|t }}</strong>
+            <span>{{ 'Start onboarding and continue with the team afterward.'|t }}</span>
+          </a>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 

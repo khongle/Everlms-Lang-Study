@@ -1,60 +1,130 @@
-{# About Us — matches 19-about-us.png #}
 {{ attach_library('lms_theme/global') }}
 
-{# Hero #}
-<section class="lms-about-hero">
+<section class="lms-about-page">
   <div class="container">
-    <h1>{{ 'About EverLMS'|t }}</h1>
-    <p>{{ 'We believe in the power of education to transform lives. Our platform connects passionate instructors with eager learners worldwide.'|t }}</p>
-  </div>
-</section>
+    <section class="lms-about-hero">
+      <div class="lms-about-hero__panel">
+        <div class="lms-about-hero__copy">
+          <span class="lms-about-hero__eyebrow">{{ 'About'|t }}</span>
+          <h1>{{ 'About @site_name'|t({'@site_name': site_name}) }}</h1>
+          <p>{{ site_tagline }}</p>
 
-{# Stats #}
-<section class="lms-section">
-  <div class="container">
-    <div class="lms-stats-grid">
-      {% for stat in stats %}
-        <div class="lms-stat-card">
-          <div class="lms-stat-card__value">{{ stat.value }}</div>
-          <div class="lms-stat-card__label">{{ stat.label }}</div>
-        </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-{# Mission + Vision #}
-<section class="lms-section lms-section--alt">
-  <div class="container">
-    <div class="lms-about-grid">
-      <div class="lms-card lms-about-card">
-        <div class="lms-about-card__icon"><i class="fas fa-bullseye"></i></div>
-        <h3>{{ 'Our Mission'|t }}</h3>
-        <p>{{ 'To democratize education by providing affordable, high-quality online learning experiences accessible to everyone, regardless of their background or location.'|t }}</p>
-      </div>
-      <div class="lms-card lms-about-card">
-        <div class="lms-about-card__icon"><i class="fas fa-eye"></i></div>
-        <h3>{{ 'Our Vision'|t }}</h3>
-        <p>{{ 'A world where every individual has the opportunity to learn, grow, and achieve their full potential through technology-enabled education.'|t }}</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-{# Team #}
-<section class="lms-section">
-  <div class="container">
-    <h2 class="lms-section__title lms-section__title--center">{{ 'Meet Our Team'|t }}</h2>
-    <div class="lms-team-grid">
-      {% for member in team %}
-        <div class="lms-card lms-team-card">
-          <div class="lms-team-card__avatar">
-            <i class="fas fa-user-circle"></i>
+          <div class="lms-about-hero__actions">
+            <a href="{{ catalog_url }}" class="btn-lms-primary">{{ 'Explore Courses'|t }}</a>
+            <a href="{{ contact_url }}" class="btn-lms-outline">{{ 'Contact Us'|t }}</a>
           </div>
-          <h4>{{ member.name }}</h4>
-          <p>{{ member.role }}</p>
         </div>
-      {% endfor %}
-    </div>
+
+        <div class="lms-about-hero__stats">
+          {% for stat in stats %}
+            <article class="lms-about-stat-card">
+              <div class="lms-about-stat-card__value">{{ stat.value }}</div>
+              <div class="lms-about-stat-card__label">{{ stat.label }}</div>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <section class="lms-about-section">
+      <div class="lms-about-section__header">
+        <span class="lms-about-section__eyebrow">{{ 'Our Journey'|t }}</span>
+        <h2>{{ 'Built to make learning operations clearer, faster, and easier to scale.'|t }}</h2>
+        <p>{{ '@site_name helps teams deliver structured learning experiences, track progress confidently, and turn certification into something operationally useful instead of purely administrative.'|t({'@site_name': site_name}) }}</p>
+      </div>
+
+      <div class="lms-about-principles">
+        <article class="lms-about-principle-card">
+          <div class="lms-about-principle-card__icon"><i class="fas fa-eye"></i></div>
+          <h3>{{ 'Our Vision'|t }}</h3>
+          <p>{{ 'To create a learning ecosystem where teams can grow with clarity, confidence, and measurable outcomes.'|t }}</p>
+        </article>
+
+        <article class="lms-about-principle-card">
+          <div class="lms-about-principle-card__icon"><i class="fas fa-bullseye"></i></div>
+          <h3>{{ 'Our Mission'|t }}</h3>
+          <p>{{ 'To give organizations a practical platform for catalog delivery, certification workflows, and learner support without unnecessary operational friction.'|t }}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="lms-about-section">
+      <div class="lms-about-section__header lms-about-section__header--center">
+        <span class="lms-about-section__eyebrow">{{ 'Core Values'|t }}</span>
+        <h2>{{ 'Built to stay useful as your learning operations grow.'|t }}</h2>
+      </div>
+
+      <div class="lms-about-values-grid">
+        <article class="lms-about-value-card">
+          <div class="lms-about-value-card__icon"><i class="fas fa-infinity"></i></div>
+          <h3>{{ 'Build Once, Scale Forever'|t }}</h3>
+          <p>{{ 'We focus on structures that stay maintainable as your team, catalog, and reporting needs expand.'|t }}</p>
+        </article>
+
+        <article class="lms-about-value-card">
+          <div class="lms-about-value-card__icon"><i class="fas fa-sliders-h"></i></div>
+          <h3>{{ 'Configurable by Design'|t }}</h3>
+          <p>{{ 'Branding, homepage sections, and public-page copy should be manageable without rebuilding the frontend every time.'|t }}</p>
+        </article>
+
+        <article class="lms-about-value-card">
+          <div class="lms-about-value-card__icon"><i class="fas fa-shield-alt"></i></div>
+          <h3>{{ 'Operational Clarity'|t }}</h3>
+          <p>{{ 'We prioritize clear content structures, dependable data flows, and interfaces that reduce ambiguity for admins and learners.'|t }}</p>
+        </article>
+
+        <article class="lms-about-value-card">
+          <div class="lms-about-value-card__icon"><i class="fas fa-rocket"></i></div>
+          <h3>{{ 'Fast to Adopt'|t }}</h3>
+          <p>{{ 'Teams should be able to launch, onboard, and iterate quickly without sacrificing the quality of the learner experience.'|t }}</p>
+        </article>
+      </div>
+    </section>
+
+    {% if team %}
+      <section class="lms-about-section">
+        <div class="lms-about-section__header lms-about-section__header--center">
+          <span class="lms-about-section__eyebrow">{{ 'Leadership Team'|t }}</span>
+          <h2>{{ 'The people shaping the platform.'|t }}</h2>
+        </div>
+
+        <div class="lms-about-team-grid">
+          {% for member in team %}
+            <article class="lms-about-team-card">
+              <div class="lms-about-team-card__avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <h3>{{ member.name }}</h3>
+              <p>{{ member.role }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
+    <section class="lms-about-banner">
+      <div class="lms-about-banner__content">
+        <div class="lms-about-banner__badge"><i class="fas fa-shield-check"></i></div>
+        <div>
+          <span class="lms-about-banner__eyebrow">{{ 'Support Commitment'|t }}</span>
+          <h2>{{ 'Launch with a partner that stays involved after go-live.'|t }}</h2>
+          <p>{{ 'From rollout questions to platform operations, we design the public experience and the admin workflow to stay aligned as the system grows.'|t }}</p>
+        </div>
+      </div>
+
+      <div class="lms-about-banner__meta">
+        {% if footer_phone %}
+          <span><i class="fas fa-phone"></i> {{ footer_phone }}</span>
+        {% endif %}
+        {% if footer_email %}
+          <span><i class="fas fa-envelope"></i> {{ footer_email }}</span>
+        {% endif %}
+      </div>
+
+      <div class="lms-about-banner__actions">
+        <a href="{{ contact_url }}" class="btn-lms-primary">{{ 'Request a Demo'|t }}</a>
+        <a href="{{ catalog_url }}" class="btn-lms-outline">{{ 'View Catalog'|t }}</a>
+      </div>
+    </section>
   </div>
 </section>

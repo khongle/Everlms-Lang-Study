@@ -182,6 +182,14 @@ button { font-family: inherit; cursor: pointer; }
 }
 .instructor-name { font-size: 13px; color: #6b7280; font-weight: 600; }
 .course-meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #6b7280; }
+.course-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #475569;
+}
+.course-meta-icon { opacity: 0.8; }
 .course-rating { color: #eab308; font-weight: 700; }
 
 /* Superpowers */
@@ -194,6 +202,16 @@ button { font-family: inherit; cursor: pointer; }
 .power-emoji { font-size: 52px; display: block; margin-bottom: 12px; position: relative; z-index: 1; }
 .power-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; position: relative; z-index: 1; }
 .power-desc { font-size: 14px; line-height: 1.5; position: relative; z-index: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; }
+.power-link {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: underline;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.power-link:hover { opacity: 1; }
 
 .power-img-wrap {
   width: 100%;
@@ -265,6 +283,15 @@ button { font-family: inherit; cursor: pointer; }
   align-items: center; justify-content: center; font-size: 28px;
   margin: 0 auto 12px; border: 3px solid;
 }
+.learner-avatar-media {
+  overflow: hidden;
+  padding: 0;
+}
+.learner-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .learner-card:nth-child(1) .learner-avatar { background: #f3f0ff; border-color: #c4b5fd; }
 .learner-card:nth-child(2) .learner-avatar { background: #fff7ed; border-color: #fdba74; }
 .learner-card:nth-child(3) .learner-avatar { background: #fce7f3; border-color: #f9a8d4; }
@@ -278,6 +305,11 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* Pricing */
+.playful-pricing-section {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  position: relative;
+}
 .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .pricing-card {
   background: #fff; border-radius: 20px; padding: 32px 28px; text-align: center;
@@ -296,20 +328,55 @@ button { font-family: inherit; cursor: pointer; }
 .pricing-emoji { font-size: 40px; margin-bottom: 8px; display: block; }
 .pricing-tier { font-size: 20px; font-weight: 800; color: #1e1b4b; margin-bottom: 4px; }
 .pricing-price { font-size: 40px; font-weight: 800; margin-bottom: 4px; }
+.pricing-price-stack { margin-bottom: 24px; }
 .pricing-price .currency { font-size: 20px; vertical-align: super; }
+.pricing-currency {
+  font-size: 24px;
+  vertical-align: top;
+  font-weight: 700;
+}
+.pricing-amount {
+  font-size: 48px;
+  font-weight: 800;
+  color: #1e1b4b;
+  line-height: 1;
+}
 .pricing-price .period { font-size: 14px; font-weight: 500; color: #6b7280; }
+.pricing-period {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 600;
+}
 .pricing-card:nth-child(1) .pricing-price { color: #22c55e; }
 .pricing-card:nth-child(2) .pricing-price { color: #7c3aed; }
 .pricing-card:nth-child(3) .pricing-price { color: #f97316; }
 .pricing-features { list-style: none; margin: 20px 0; text-align: left; }
+.playful-pricing-features {
+  padding: 0;
+  margin: 0 0 32px;
+  text-align: left;
+}
 .pricing-features li {
   padding: 8px 0; font-size: 14px; color: #4b5563;
   border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 8px;
 }
+.playful-pricing-feature-item {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #4b5563;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border-bottom: none;
+  padding: 0;
+}
+.playful-pricing-feature-check { color: #22c55e; }
+.playful-pricing-feature-item:last-child { margin-bottom: 0; }
 .pricing-features li:last-child { border-bottom: none; }
 .pricing-btn {
   display: block; width: 100%; padding: 12px; border-radius: 9999px;
   font-size: 15px; font-weight: 700; border: none; transition: all 0.2s;
+  text-decoration: none;
 }
 .pricing-btn:hover { transform: scale(1.03); }
 .pricing-btn-free { background: #f3f4f6; color: #374151; }
@@ -622,5 +689,1136 @@ body.layout-playful.is-front-page .main-container {
   margin-top: 0 !important;
 }
 body.layout-playful.is-front-page .playful-skin-wrapper {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  background: #fffbeb;
   margin-top: -32px; /* Pull it up to counteract standard Drupal wrapper padding if any remains */
+}
+
+body.layout-playful.is-front-page .playful-hero-breakthrough {
+  width: 100%;
+  padding: 60px 0 100px;
+  background: linear-gradient(135deg, #fef08a 0%, #f97316 100%);
+}
+
+body.layout-playful.is-front-page .hero-breakthrough-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  text-decoration: none;
+  background: #0f172a;
+  color: #fff !important;
+  border-radius: 99px;
+  padding: 18px 40px;
+  font-size: 17px;
+  font-weight: 800;
+  transition: all 0.3s;
+  box-shadow: 0 10px 20px rgba(15,23,42,0.1);
+}
+
+body.layout-playful.is-front-page .hero-breakthrough-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(15,23,42,0.2);
+  background: #1e293b;
+}
+
+body.layout-playful.is-front-page .hero-breakthrough-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: #ffffff;
+  color: #0f172a !important;
+  border: 2px solid #cbd5e1;
+  border-radius: 99px;
+  padding: 16px 40px;
+  font-size: 17px;
+  font-weight: 800;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+body.layout-playful.is-front-page .hero-breakthrough-secondary:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.05);
+}
+
+body.layout-playful.is-front-page .playful-hero-glow {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+
+body.layout-playful.is-front-page .playful-hero-glow-left {
+  top: -10%;
+  left: -5%;
+  width: 50%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 60%);
+  filter: blur(40px);
+}
+
+body.layout-playful.is-front-page .playful-hero-glow-right {
+  bottom: -10%;
+  right: 10%;
+  width: 40%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(236,72,153,0.3) 0%, transparent 60%);
+  filter: blur(50px);
+}
+
+body.layout-playful,
+body.layout-playful #page-wrapper,
+body.layout-playful .main-container {
+  background-color: #fefefe !important;
+}
+
+body.layout-playful.is-front-page {
+  overflow-x: hidden;
+}
+
+body.layout-playful.is-front-page .playful-hero-indicators {
+  bottom: -60px;
+  gap: 8px;
+}
+
+body.layout-playful.is-front-page .playful-hero-indicator-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #0f172a;
+  border: none;
+  opacity: 0.2;
+  transition: all 0.3s;
+}
+
+body.layout-playful.is-front-page .playful-hero-indicator-dot.active {
+  opacity: 1 !important;
+  transform: scale(1.3);
+}
+
+body.layout-playful.is-front-page .playful-hero-frame {
+  border-radius: 32px;
+  background: #ffffff;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 40px 80px rgba(15,23,42,0.1) !important;
+}
+
+body.layout-playful.is-front-page .playful-hero-row {
+  min-height: 580px;
+}
+
+body.layout-playful.is-front-page .playful-hero-content-col {
+  padding: 64px 48px;
+  background: #ffffff;
+}
+
+body.layout-playful.is-front-page .playful-hero-chip {
+  background: #eef2ff;
+  color: #4f46e5;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 8px 24px;
+  border-radius: 99px;
+  box-shadow: 0 4px 12px rgba(79,70,229,0.1);
+}
+
+body.layout-playful.is-front-page .playful-hero-chip-icon {
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+body.layout-playful.is-front-page .playful-hero-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 60px;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.1;
+  margin-bottom: 32px;
+  letter-spacing: -2px;
+}
+
+body.layout-playful.is-front-page .playful-hero-subtext {
+  font-family: 'Nunito', sans-serif;
+  font-size: 20px;
+  color: #475569;
+  line-height: 1.7;
+  margin-bottom: 32px;
+  max-width: 95%;
+  border-left: 4px solid #4f46e5;
+  padding-left: 24px;
+}
+
+body.layout-playful.is-front-page .playful-hero-stats-row {
+  font-family: 'Nunito', sans-serif;
+}
+
+body.layout-playful.is-front-page .playful-hero-star {
+  color: #f59e0b;
+  font-size: 22px;
+}
+
+body.layout-playful.is-front-page .playful-hero-stat-strong {
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 18px;
+}
+
+body.layout-playful.is-front-page .playful-hero-stat-soft {
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+body.layout-playful.is-front-page .playful-hero-divider {
+  width: 1px;
+  height: 32px;
+  background: #cbd5e1;
+}
+
+body.layout-playful.is-front-page .playful-hero-feature-row {
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #475569;
+}
+
+body.layout-playful.is-front-page .playful-hero-check {
+  color: #10b981;
+  font-size: 18px;
+  margin-right: 6px;
+}
+
+body.layout-playful.is-front-page .playful-hero-media-col {
+  background: #e2e8f0;
+}
+
+body.layout-playful.is-front-page .playful-hero-media-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body.layout-playful.is-front-page .hero-breakthrough-visual-shell {
+  background: #f8fafc;
+}
+
+body.layout-playful.is-front-page .hero-breakthrough-visual {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+}
+
+body.layout-playful.is-front-page .hero-breakthrough-emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+body.layout-playful.is-front-page .hero-breakthrough-emoji-tile {
+  font-size: 40px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+body.layout-playful.is-front-page .hero-breakthrough-cta-icon {
+  font-size: 16px;
+}
+
+body.layout-playful.is-front-page .playful-adventure-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+body.layout-playful.is-front-page .playful-adventure-icon-wrap {
+  margin-bottom: 24px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+}
+
+body.layout-playful.is-front-page .playful-adventure-icon-img {
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.05));
+}
+
+body.layout-playful.is-front-page .playful-course-thumb-link {
+  display: block;
+  overflow: hidden;
+}
+
+body.layout-playful.is-front-page .playful-course-thumb-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+}
+
+body.layout-playful.is-front-page .playful-img-hover:hover {
+  transform: scale(1.05);
+}
+
+body.layout-playful.is-front-page .adventure-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+body.layout-playful.is-front-page .instructor-card-pro:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(15,23,42,0.08) !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.layout-playful.is-front-page .pro-profile-btn:hover {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #0f172a !important;
+}
+
+/* ---------------------------------------------------
+   Playful Inner Pages (strictly scoped)
+   - Applies only to non-front, non-workspace routes
+   - Prevents bleed into other skins
+   --------------------------------------------------- */
+body.layout-playful .lms-learning-progress__fill {
+  width: var(--progress, 0%) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) {
+  background: #fffbeb !important;
+  color: #475569 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) h1,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) h2,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) h3,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) h4,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) h5,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) h6,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-section__title,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-manage__title {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) p,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .text-muted,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lead,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-section__subtitle,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-section__desc,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .section-desc {
+  color: #64748b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) a {
+  color: #7c3aed;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) a:hover {
+  color: #6d28d9;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-dashboard-page::before,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-courses-page::before {
+  background:
+    radial-gradient(circle at top right, rgba(124, 58, 237, 0.18), transparent 42%),
+    radial-gradient(circle at top left, rgba(236, 72, 153, 0.12), transparent 38%) !important;
+  opacity: 0.6 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-dashboard-page__hero,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-courses-page__hero,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-courses-page__summary-card,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-toolbar,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-panel .card-glass,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-enroll-card,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__player,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__top-bar,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__sidebar,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__content,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__notes,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__discussion,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__summary,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-bt,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-membership,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-membership-card,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notifications-wrapper,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-item,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-catalog__sidebar,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-catalog__toolbar,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .card,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-category-card,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-forum-item,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-forum-post,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-forum-reply-form,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-pricing-card,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form .ui-dialog-content {
+  background: #ffffff !important;
+  border: 1px solid #eadcff !important;
+  border-radius: 18px !important;
+  box-shadow: 0 12px 28px rgba(124, 58, 237, 0.1) !important;
+  backdrop-filter: none !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-dashboard-page__hero,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-courses-page__hero,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight {
+  background: linear-gradient(135deg, #ffffff 0%, #faf5ff 70%, #fff7ed 100%) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-dashboard-page__eyebrow,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-courses-page__eyebrow {
+  background: #f3e8ff !important;
+  border-color: #d8b4fe !important;
+  color: #6d28d9 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight__title,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card__title,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-courses-page__summary-value {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight__copy,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card__meta,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-courses-page__summary-label {
+  color: #64748b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight__category,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card__category {
+  background: #ede9fe !important;
+  border-color: #c4b5fd !important;
+  color: #5b21b6 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight__status,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card__badge {
+  background: #fdf2f8 !important;
+  border-color: #f9a8d4 !important;
+  color: #be185d !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight__status.is-completed,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card__badge.is-completed {
+  background: #ecfdf5 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight__status.is-idle,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card__badge.is-idle {
+  background: #fff7ed !important;
+  border-color: #fdba74 !important;
+  color: #c2410c !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters {
+  background: #fdf4ff !important;
+  border-color: #eadcff !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters__button {
+  color: #6b7280 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters__button span {
+  background: #f3e8ff !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters__button.is-active {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 55%, #ec4899 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 22px rgba(124, 58, 237, 0.24) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-progress__track,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-progress-bar,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .progress,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .progress-bar-bg {
+  background: #f3e8ff !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-progress__fill,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-progress-bar__fill,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .progress-bar-fill,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .progress-bar {
+  background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%) !important;
+  box-shadow: none !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-progress__fill.is-completed {
+  background: linear-gradient(135deg, #22c55e 0%, #14b8a6 100%) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .btn-lms-primary,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__notes-btn--save,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .form-submit,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .button,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-comments-wrapper--lesson input[type="submit"] {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 55%, #ec4899 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 22px rgba(124, 58, 237, 0.24) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .btn-lms-outline {
+  background: #ffffff !important;
+  color: #7c3aed !important;
+  border: 1px solid #c4b5fd !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .btn-lms-outline:hover {
+  background: #f5f3ff !important;
+  color: #6d28d9 !important;
+  border-color: #a78bfa !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-select,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-input,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glass-input,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-control,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-lms__input,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-text,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-email,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-url,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-number,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-search,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="text"],
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="email"],
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="password"],
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="number"],
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) select,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) textarea {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border: 1px solid #d8b4fe !important;
+  box-shadow: none !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-select:focus,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-input:focus,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-control:focus,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) input:focus,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) select:focus,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) textarea:focus {
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-banner {
+  background: linear-gradient(135deg, #fffbeb 0%, #faf5ff 65%, #fdf2f8 100%) !important;
+  border-bottom: 1px solid #eadcff !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-banner + .lms-course-tabs + .lms-section,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-section:has(.lms-course-layout) {
+  background: #fffbeb !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-banner h1,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-banner__meta strong,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-panel__title,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-enroll-card__price {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-banner p,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-body,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn-list,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn-list li,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-meta-item,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-enroll-card__includes li span {
+  color: #64748b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-banner__meta > span {
+  background: #ffffff !important;
+  border: 1px solid #eadcff !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-banner__meta .lms-course-banner__rating i.fa-star,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-banner__meta .lms-course-banner__rating i.fa-star-half-alt {
+  color: #f59e0b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item {
+  color: #6b7280 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link--active,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item.active {
+  color: #7c3aed !important;
+  border-bottom-color: #7c3aed !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__main {
+  background: #fffbeb !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__title,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__course-title,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__chapter-title,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__discussion-title,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__notes-title {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__lesson-item a,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__lesson-item span,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__lesson-item small,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__discussion-subtitle,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__placeholder-copy {
+  color: #64748b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__lesson-item--active {
+  background: #f3e8ff !important;
+  border-left-color: #7c3aed !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__lesson-item--active a,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__lesson-item--active span,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__lesson-item--active small {
+  color: #5b21b6 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__notes-textarea {
+  background: #ffffff !important;
+  border: 1px solid #d8b4fe !important;
+  color: #334155 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-learn__discussion {
+  background: #ffffff !important;
+  border: 1px solid #eadcff !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.08) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-actions {
+  margin-top: 0.85rem !important;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-comments-wrapper--lesson {
+  background: #faf5ff !important;
+  border: 1px solid #e9d5ff !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--delete {
+  background: #fff7ed !important;
+  color: #c2410c !important;
+  border: 1px solid #fdba74 !important;
+  box-shadow: none !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--delete:hover {
+  background: #ffedd5 !important;
+  color: #9a3412 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn:disabled,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-comments-wrapper--lesson .form-submit:disabled,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-comments-wrapper--lesson .button:disabled,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-comments-wrapper--lesson input[type="submit"]:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout {
+  color: #475569 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__title,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__payment h2,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__summary h2,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__course-title,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__total {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-type-radio {
+  background: #ffffff !important;
+  border-color: #d8b4fe !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-type-radio:hover {
+  background: #faf5ff !important;
+  border-color: #a78bfa !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-type-radio label {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-radio,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__payment input[type="radio"] {
+  accent-color: #7c3aed;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__course,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__total {
+  border-color: #eadcff !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__total span[style*="#10b981"] {
+  color: #16a34a !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-bt__title {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-bt__subtitle,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-bt__label,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-bt__instructions {
+  color: #64748b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-bt__details {
+  background: #faf5ff !important;
+  border: 1px solid #eadcff !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-bt__row {
+  border-bottom-color: #eadcff !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-bt__instructions {
+  background: #f5f3ff !important;
+  border-left-color: #7c3aed !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-bt__btn {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 55%, #ec4899 100%) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-bt__btn:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 55%, #db2777 100%) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-membership h2,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-membership-card h3 {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-membership-card__value,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-membership-card__body p,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-membership-card__body strong {
+  color: #64748b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-membership-icon {
+  background: #ede9fe !important;
+  color: #7c3aed !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notifications-title {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-filters .lms-filter-btn,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-btn-settings {
+  background: #ffffff !important;
+  color: #6d28d9 !important;
+  border-color: #d8b4fe !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-filters .lms-filter-btn.active {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 55%, #ec4899 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-item--unread {
+  border-left-color: #7c3aed !important;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, #ffffff 70%) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-item__icon {
+  background: #f3e8ff !important;
+  color: #7c3aed !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-item__body h4 a {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-item__body p,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-item__date {
+  color: #64748b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notifications-wrapper .pager__item a {
+  background: #ffffff !important;
+  border-color: #d8b4fe !important;
+  color: #6d28d9 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notifications-wrapper .pager__item.is-active a,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notifications-wrapper .pager__item a:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 55%, #ec4899 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form .ui-dialog-titlebar {
+  background: #faf5ff !important;
+  border-bottom: 1px solid #eadcff !important;
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close::before {
+  color: #6d28d9 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form input,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form select,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form textarea {
+  background: #ffffff !important;
+  border: 1px solid #d8b4fe !important;
+  color: #334155 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form .form-submit,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form .button {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 55%, #ec4899 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+body.layout-playful:not(.is-front-page):not(.is-workspace) #lms-back-to-top,
+body.layout-playful:not(.is-front-page):not(.is-workspace) .lms-back-to-top {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(124, 58, 237, 0.3) !important;
+  box-shadow: 0 14px 28px rgba(124, 58, 237, 0.24) !important;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+}
+
+body.layout-playful:not(.is-front-page):not(.is-workspace) #lms-back-to-top.lms-back-to-top--visible,
+body.layout-playful:not(.is-front-page):not(.is-workspace) .lms-back-to-top.lms-back-to-top--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.layout-playful:not(.is-front-page):not(.is-workspace) #lms-back-to-top:hover,
+body.layout-playful:not(.is-front-page):not(.is-workspace) .lms-back-to-top:hover {
+  transform: translateY(-3px);
+  background: #6d28d9 !important;
+  box-shadow: 0 18px 34px rgba(124, 58, 237, 0.3) !important;
+}
+
+/* ---------------------------------------------------
+   Playful final polish
+   - intro text contrast
+   - header/footer harmony
+   - glossary palette
+   - lesson detail tabs/buttons
+   - professional back-to-top (right side)
+   --------------------------------------------------- */
+
+/* About & Resources cards: prevent washed-out text on intro grid. */
+body.layout-playful.is-front-page .powers-grid .power-card {
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+body.layout-playful.is-front-page .powers-grid .power-card:nth-child(4n + 1) {
+  color: #4c1d95 !important;
+}
+
+body.layout-playful.is-front-page .powers-grid .power-card:nth-child(4n + 2) {
+  color: #14532d !important;
+}
+
+body.layout-playful.is-front-page .powers-grid .power-card:nth-child(4n + 3) {
+  color: #1e3a8a !important;
+}
+
+body.layout-playful.is-front-page .powers-grid .power-card:nth-child(4n + 4) {
+  color: #9a3412 !important;
+}
+
+body.layout-playful.is-front-page .powers-grid .power-title,
+body.layout-playful.is-front-page .powers-grid .power-desc,
+body.layout-playful.is-front-page .powers-grid .power-link,
+body.layout-playful.is-front-page .powers-grid .power-desc * {
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+/* Header/footer updated to feel aligned with Playful palette. */
+body.layout-playful:not(.is-workspace) .lms-navbar {
+  background: linear-gradient(110deg, rgba(47, 24, 96, 0.96) 0%, rgba(30, 41, 59, 0.96) 75%) !important;
+  border-bottom: 1px solid rgba(236, 72, 153, 0.32) !important;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.28) !important;
+}
+
+body.layout-playful:not(.is-workspace) .lms-navbar__brand {
+  color: #ffffff !important;
+}
+
+body.layout-playful:not(.is-workspace) .lms-navbar__brand i {
+  color: #facc15 !important;
+}
+
+body.layout-playful:not(.is-workspace) .lms-navbar__link,
+body.layout-playful:not(.is-workspace) .lms-navbar__icon-btn {
+  color: #e2e8f0 !important;
+}
+
+body.layout-playful:not(.is-workspace) .lms-navbar__link:hover,
+body.layout-playful:not(.is-workspace) .lms-navbar__link--active,
+body.layout-playful:not(.is-workspace) .lms-navbar__link.active,
+body.layout-playful:not(.is-workspace) .lms-navbar__icon-btn:hover {
+  color: #ffffff !important;
+}
+
+body.layout-playful:not(.is-workspace) .lms-footer {
+  background: linear-gradient(145deg, #130f34 0%, #17203f 60%, #1c2551 100%) !important;
+  border-top: 1px solid rgba(167, 139, 250, 0.34) !important;
+}
+
+body.layout-playful:not(.is-workspace) .lms-footer__brand,
+body.layout-playful:not(.is-workspace) .lms-footer h4,
+body.layout-playful:not(.is-workspace) .lms-footer__title {
+  color: #ffffff !important;
+}
+
+body.layout-playful:not(.is-workspace) .lms-footer,
+body.layout-playful:not(.is-workspace) .lms-footer p,
+body.layout-playful:not(.is-workspace) .lms-footer li,
+body.layout-playful:not(.is-workspace) .lms-footer span,
+body.layout-playful:not(.is-workspace) .lms-footer i,
+body.layout-playful:not(.is-workspace) .lms-footer__description,
+body.layout-playful:not(.is-workspace) .lms-footer__bottom {
+  color: #dbe2ff !important;
+}
+
+body.layout-playful:not(.is-workspace) .lms-footer a,
+body.layout-playful:not(.is-workspace) .lms-footer .lms-footer__link,
+body.layout-playful:not(.is-workspace) .lms-footer__social a,
+body.layout-playful:not(.is-workspace) .lms-footer__bottom p a {
+  color: #f3e8ff !important;
+}
+
+body.layout-playful:not(.is-workspace) .lms-footer a:hover,
+body.layout-playful:not(.is-workspace) .lms-footer .lms-footer__link:hover,
+body.layout-playful:not(.is-workspace) .lms-footer__social a:hover,
+body.layout-playful:not(.is-workspace) .lms-footer__bottom p a:hover {
+  color: #fdba74 !important;
+}
+
+body.layout-playful:not(.is-workspace) .lms-footer__bottom {
+  border-top-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Back-to-top: right side, cleaner interaction, stronger visibility. */
+body.layout-playful:not(.is-workspace) #lms-back-to-top,
+body.layout-playful:not(.is-workspace) .lms-back-to-top {
+  position: fixed !important;
+  right: clamp(14px, 2.2vw, 30px) !important;
+  left: auto !important;
+  bottom: clamp(14px, 2.2vw, 30px) !important;
+  z-index: 1250 !important;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%) !important;
+  border: 1px solid rgba(167, 139, 250, 0.4) !important;
+  box-shadow: 0 16px 30px rgba(124, 58, 237, 0.32) !important;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) scale(0.96);
+  transition: transform 0.22s ease, opacity 0.22s ease, box-shadow 0.22s ease, background 0.22s ease !important;
+}
+
+body.layout-playful:not(.is-workspace) #lms-back-to-top i,
+body.layout-playful:not(.is-workspace) .lms-back-to-top i {
+  color: #ffffff !important;
+  font-size: 14px;
+}
+
+body.layout-playful:not(.is-workspace) #lms-back-to-top.lms-back-to-top--visible,
+body.layout-playful:not(.is-workspace) .lms-back-to-top.lms-back-to-top--visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+body.layout-playful:not(.is-workspace) #lms-back-to-top:hover,
+body.layout-playful:not(.is-workspace) .lms-back-to-top:hover {
+  transform: translateY(-4px) scale(1.03) !important;
+  background: linear-gradient(135deg, #6d28d9 0%, #db2777 100%) !important;
+  box-shadow: 0 20px 36px rgba(124, 58, 237, 0.4) !important;
+}
+
+body.layout-playful:not(.is-workspace) #lms-back-to-top:focus-visible,
+body.layout-playful:not(.is-workspace) .lms-back-to-top:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 0 0 6px rgba(124, 58, 237, 0.4) !important;
+}
+
+/* Glossary page: neutral white is replaced with Playful-compatible palette. */
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page {
+  background: linear-gradient(180deg, #fffbeb 0%, #faf5ff 100%) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page h1,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .display-4,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .lms-letter-heading,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .card-title {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .lead,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .text-muted,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-definition,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .card-text {
+  color: #64748b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .lms-glass-input {
+  background: #ffffff !important;
+  border: 1px solid #d8b4fe !important;
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.08) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .lms-letter-btn {
+  background: #ffffff !important;
+  color: #6d28d9 !important;
+  border: 1px solid #ddd6fe !important;
+  box-shadow: 0 4px 10px rgba(124, 58, 237, 0.08) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .lms-letter-btn:hover:not(.disabled) {
+  background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .lms-glass-card {
+  background: #ffffff !important;
+  border: 1px solid #eadcff !important;
+  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.08) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .lms-text-gradient,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .text-primary {
+  background: none !important;
+  -webkit-text-fill-color: #6d28d9 !important;
+  color: #6d28d9 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-page .badge.bg-primary {
+  background: #ede9fe !important;
+  border: 1px solid #d8b4fe !important;
+  color: #6d28d9 !important;
+}
+
+/* Lesson detail tabs/buttons polish (Q&A + Notes). */
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs {
+  background: #ffffff !important;
+  border: 1px solid #eadcff !important;
+  border-radius: 999px !important;
+  padding: 0.35rem !important;
+  gap: 0.4rem;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs .lms-tab-item {
+  color: #5b6478 !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  padding: 0.6rem 1rem !important;
+  line-height: 1.1 !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs .lms-tab-item.active,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs .lms-tab-item[style*="color: #fff"] {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%) !important;
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.24) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs .lms-tab-item:hover:not(.active) {
+  color: #4c1d95 !important;
+  background: #f5f3ff !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-learn__discussion-title {
+  color: #1e1b4b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-learn__discussion-subtitle {
+  color: #64748b !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .form-submit,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .button,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson input[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  border-radius: 999px !important;
+  padding: 0.62rem 1.04rem !important;
+  line-height: 1.1;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  border: 1px solid transparent !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--save,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .form-submit,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .button,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson input[type="submit"] {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 55%, #ec4899 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2) !important;
+}
+
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .form-submit:hover,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .button:hover,
+body.layout-playful.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson input[type="submit"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px rgba(124, 58, 237, 0.28) !important;
 }

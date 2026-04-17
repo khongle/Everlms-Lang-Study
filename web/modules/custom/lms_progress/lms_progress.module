@@ -15,6 +15,7 @@ function lms_progress_theme(): array {
     'lms_dashboard' => [
       'variables' => [
         'stats' => [],
+        'course_summary' => [],
         'recent_courses' => [],
       ],
       'template' => 'lms-dashboard',
@@ -22,6 +23,7 @@ function lms_progress_theme(): array {
     'lms_my_courses' => [
       'variables' => [
         'courses' => [],
+        'summary' => [],
       ],
       'template' => 'lms-my-courses',
     ],
@@ -43,6 +45,7 @@ function lms_progress_theme(): array {
     'lms_my_certificates' => [
       'variables' => [
         'certificates' => [],
+        'summary' => [],
       ],
       'template' => 'lms-my-certificates',
     ],

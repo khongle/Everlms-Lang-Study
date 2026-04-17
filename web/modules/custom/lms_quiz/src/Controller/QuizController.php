@@ -342,12 +342,39 @@ final class QuizController extends ControllerBase {
       : [];
 
     $items = [];
+    $passed_count = 0;
+    $review_count = 0;
+    $retry_count = 0;
+    $total_score = 0.0;
+    $best_score = 0.0;
     foreach ($results as $result) {
       $quiz = $result->get('field_quiz')->entity;
+      $score = (float) $result->get('field_score')->value;
+      $threshold = $quiz && $quiz->hasField('field_threshold') && !$quiz->get('field_threshold')->isEmpty()
+        ? (float) $quiz->get('field_threshold')->value
+        : 80.0;
+      $state = 'retry';
+      if ($score >= $threshold) {
+        $state = 'passed';
+        $passed_count++;
+      }
+      elseif ($score >= max($threshold - 15, 50)) {
+        $state = 'review';
+        $review_count++;
+      }
+      else {
+        $retry_count++;
+      }
+
+      $total_score += $score;
+      $best_score = max($best_score, $score);
+
       $items[] = [
         'id' => $result->id(),
         'quiz_name' => $quiz?->label() ?? '',
-        'score' => (float) $result->get('field_score')->value,
+        'score' => $score,
+        'threshold' => $threshold,
+        'state' => $state,
         'date' => $result->get('created')->value,
         'url' => \Drupal\Core\Url::fromRoute('lms_quiz.result', ['lms_quiz_result' => $result->id()])->toString(),
       ];
@@ -356,6 +383,14 @@ final class QuizController extends ControllerBase {
     return [
       '#theme' => 'lms_my_quiz_results',
       '#results' => $items,
+      '#summary' => [
+        'total' => count($items),
+        'passed' => $passed_count,
+        'review' => $review_count,
+        'retry' => $retry_count,
+        'average_score' => count($items) > 0 ? round($total_score / count($items), 1) : 0,
+        'best_score' => $best_score,
+      ],
     ];
   }
 

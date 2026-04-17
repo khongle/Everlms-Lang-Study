@@ -3,6 +3,11 @@
   Light mode, clean cards, subtle shadows, colorful accents, container-aligned.
 #}
 
+{{ attach_library('lms_theme/homepage_minimalist') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+{% set minimal_news = latest_news ?? news_items ?? [] %}
+{% set minimal_memberships = memberships ?? membership_plans ?? [] %}
+
 <style>
 /* 1. Global Light Theme Overrides */
 body {
@@ -310,11 +315,12 @@ body {
 </style>
 
 {# 1. HERO SECTION (With Carousel Image on the Right) #}
-<section class="saas-section saas-hero-bg position-relative" style="padding-top: 8rem; padding-bottom: 6rem;">
+{% if homepage_sections.hero ?? true %}
+<section class="saas-section saas-hero-bg saas-section--hero position-relative">
   <!-- Decorative Abstract Background Elements -->
-  <div class="position-absolute rounded-circle" style="width: 600px; height: 600px; background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(255,255,255,0) 70%); top: -150px; left: -150px; z-index: 0; pointer-events: none;"></div>
-  <div class="position-absolute rounded-circle" style="width: 700px; height: 700px; background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, rgba(255,255,255,0) 70%); bottom: -200px; right: -50px; z-index: 0; pointer-events: none;"></div>
-  <div class="position-absolute" style="top: 20%; right: 45%; opacity: 0.4; z-index: 0; pointer-events: none;">
+  <div class="position-absolute rounded-circle saas-hero-deco saas-hero-deco--left"></div>
+  <div class="position-absolute rounded-circle saas-hero-deco saas-hero-deco--right"></div>
+  <div class="position-absolute saas-hero-deco-grid">
     <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="6" cy="6" r="2" fill="#94a3b8"/>
       <circle cx="22" cy="6" r="2" fill="#94a3b8"/>
@@ -333,55 +339,57 @@ body {
 
   <div class="row align-items-center position-relative z-1">
     <div class="col-lg-6 pe-lg-5 mb-5 mb-lg-0" data-aos="fade-up">
-      {% set main_slide = slideshows[0] %}
+      {% set main_slide = slideshows|length > 0 ? slideshows[0] : {} %}
       
-      <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white mb-4" style="border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white mb-4 saas-hero-chip">
         <span class="badge bg-primary rounded-pill">New</span>
-        <span class="fs-6 fw-medium text-slate-700" style="color: #334155; font-size: 0.875rem;">Premium Health Education</span>
+        <span class="fs-6 fw-medium text-slate-700 saas-hero-chip-text">{{ site_tagline is not empty ? site_tagline : site_name }}</span>
       </div>
       
       <h1 class="saas-display">
-        {{ main_slide.heading|default('Accelerate Your Medical Career') }}
+        {{ main_slide.heading is not empty ? main_slide.heading : homepage_settings.hero_fallback_heading }}
       </h1>
       <p class="saas-lead pe-md-5">
-        {{ main_slide.subheading|raw|default('Access world-class training programs designed for modern healthcare professionals. Evidence-based, interactive, and fully certified.') }}
+        {{ main_slide.subheading is not empty ? main_slide.subheading|raw : homepage_settings.hero_fallback_subtext }}
       </p>
       
-      <form action="{{ path('lms_course.catalog') }}" method="get" class="saas-search mb-5 shadow-lg" style="border-width: 2px;">
+      <form action="{{ path('lms_course.catalog') }}" method="get" class="saas-search mb-5 shadow-lg saas-search-form">
         <input type="text" name="q" placeholder="{{ 'Search for courses, skills, or certifications...'|t }}">
         <button type="submit">{{ 'Search'|t }}</button>
       </form>
       
-      <div class="d-flex align-items-center gap-5 border-top pt-4" style="border-color: rgba(0,0,0,0.05) !important;">
+      {% if homepage_sections.stats ?? true %}
+      <div class="d-flex align-items-center gap-5 border-top pt-4 saas-hero-stats">
         <div class="d-flex align-items-center gap-3">
-          <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" style="width: 48px; height: 48px;"><i class="fas fa-certificate"></i></div>
+          <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm saas-hero-stat-icon"><i class="fas fa-certificate"></i></div>
           <div>
-            <div class="fs-3 fw-black text-dark lh-1 mb-1">{{ stats.courses|default('39') }}</div>
-            <div class="text-muted fw-medium small text-uppercase" style="letter-spacing: 0.05em;">{{ 'Certified Courses'|t }}</div>
+            <div class="fs-3 fw-black text-dark lh-1 mb-1">{{ stats.courses }}</div>
+            <div class="text-muted fw-medium small text-uppercase saas-hero-stat-label">{{ stats.courses_label }}</div>
           </div>
         </div>
         <div class="d-flex align-items-center gap-3">
-          <div class="bg-success rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" style="width: 48px; height: 48px;"><i class="fas fa-user-check"></i></div>
+          <div class="bg-success rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm saas-hero-stat-icon saas-hero-stat-icon--success"><i class="fas fa-user-check"></i></div>
           <div>
-            <div class="fs-3 fw-black text-dark lh-1 mb-1">{{ stats.students|default('5000+') }}</div>
-            <div class="text-muted fw-medium small text-uppercase" style="letter-spacing: 0.05em;">{{ 'Active Learners'|t }}</div>
+            <div class="fs-3 fw-black text-dark lh-1 mb-1">{{ stats.students }}</div>
+            <div class="text-muted fw-medium small text-uppercase saas-hero-stat-label">{{ stats.students_label }}</div>
           </div>
         </div>
       </div>
+      {% endif %}
     </div>
     
     <div class="col-lg-6 ps-lg-4" data-aos="fade-left" data-aos-delay="100">
       <div class="position-relative">
-        <div class="position-absolute rounded-circle" style="width: 400px; height: 400px; background: linear-gradient(135deg, #93c5fd 0%, #3b82f6 100%); opacity: 0.2; filter: blur(40px); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0;"></div>
+        <div class="position-absolute rounded-circle saas-hero-media-glow"></div>
         
-        <div class="saas-intro-img position-relative z-1" style="aspect-ratio: 4/3; border: 8px solid rgba(255,255,255,0.7); box-shadow: 0 40px 60px -15px rgba(0,0,0,0.15);">
+        <div class="saas-intro-img position-relative z-1 saas-intro-img-frame">
           {% if slideshows|length > 0 %}
           <div id="heroImageCarousel" class="carousel slide h-100 w-100" data-bs-ride="carousel" data-bs-interval="4000">
             <div class="carousel-inner h-100 w-100">
               {% for slide in slideshows %}
                 <div class="carousel-item h-100 w-100 {% if loop.first %}active{% endif %}">
                   {% if slide.image_url %}
-                    <img src="{{ slide.image_url }}" class="d-block w-100 h-100" alt="{{ slide.heading }}" style="object-fit: cover;">
+                    <img src="{{ slide.image_url }}" class="d-block w-100 h-100 saas-intro-slide-img" alt="{{ slide.heading }}">
                   {% else %}
                     <div class="bg-secondary w-100 h-100 d-flex align-items-center justify-content-center">
                       <i class="fas fa-image text-white-50 fs-1"></i>
@@ -393,45 +401,51 @@ body {
             {% if slideshows|length > 1 %}
             <div class="carousel-indicators mb-3">
               {% for slide in slideshows %}
-                <button type="button" data-bs-target="#heroImageCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{% if loop.first %}active{% endif %}" aria-current="true" style="width: 8px; height: 8px; border-radius: 50%; background-color: #fff; opacity: 0.8;"></button>
+                <button type="button" data-bs-target="#heroImageCarousel" data-bs-slide-to="{{ loop.index0 }}" class="saas-hero-carousel-dot {% if loop.first %}active{% endif %}" aria-current="true"></button>
               {% endfor %}
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#heroImageCarousel" data-bs-slide="prev">
               <span class="carousel-control-prev-icon d-none" aria-hidden="true"></span>
-              <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 40px; height: 40px; opacity: 0.9;">
+              <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow saas-hero-carousel-nav">
                  <i class="fas fa-chevron-left text-dark"></i>
               </div>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#heroImageCarousel" data-bs-slide="next">
               <span class="carousel-control-next-icon d-none" aria-hidden="true"></span>
-              <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 40px; height: 40px; opacity: 0.9;">
+              <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow saas-hero-carousel-nav">
                  <i class="fas fa-chevron-right text-dark"></i>
               </div>
             </button>
             {% endif %}
           </div>
           {% else %}
-            <div class="bg-secondary w-100 h-100"></div>
+            <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center saas-intro-fallback">
+              <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm mb-3 saas-intro-fallback-icon-wrap">
+                <i class="fas fa-graduation-cap saas-intro-fallback-icon"></i>
+              </div>
+              <div class="fw-bold fs-4 mb-2">{{ site_name }}</div>
+              <div class="text-muted saas-intro-fallback-text">{{ homepage_settings.hero_fallback_subtext }}</div>
+            </div>
           {% endif %}
         </div>
         
         <!-- Floating Glass Badge 1 -->
-        <div class="position-absolute z-2 bg-white rounded-4 p-3 shadow-lg d-flex align-items-center gap-3" style="bottom: 2rem; left: -2rem; min-width: 240px; border: 1px solid rgba(255,255,255,0.8); backdrop-filter: blur(10px); background: rgba(255,255,255,0.95); animation: float 6s ease-in-out infinite;">
-          <div class="bg-success rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 48px; height: 48px; flex-shrink: 0;">
+        <div class="position-absolute z-2 bg-white rounded-4 p-3 shadow-lg d-flex align-items-center gap-3 saas-floating-badge saas-floating-badge--left">
+          <div class="bg-success rounded-circle d-flex align-items-center justify-content-center text-white saas-floating-badge-icon">
             <i class="fas fa-shield-alt fs-5"></i>
           </div>
           <div>
-            <div class="fw-bolder text-dark mb-0" style="font-size: 0.95rem;">State Certified</div>
-            <div class="small text-muted mb-0" style="font-size: 0.75rem;">100% Accredited Programs</div>
+            <div class="fw-bolder text-dark mb-0 saas-floating-badge-title">State Certified</div>
+            <div class="small text-muted mb-0 saas-floating-badge-subtitle">100% Accredited Programs</div>
           </div>
         </div>
         
         <!-- Floating Glass Badge 2 -->
-        <div class="position-absolute z-2 bg-white rounded-4 p-3 shadow-lg d-flex align-items-center gap-3" style="top: 2rem; right: -2rem; border: 1px solid rgba(255,255,255,0.8); backdrop-filter: blur(10px); background: rgba(255,255,255,0.95); animation: float 8s ease-in-out infinite reverse;">
-          <div class="d-flex" style="color: #fbbf24; font-size: 1.25rem;">
+        <div class="position-absolute z-2 bg-white rounded-4 p-3 shadow-lg d-flex align-items-center gap-3 saas-floating-badge saas-floating-badge--right">
+          <div class="d-flex saas-floating-stars">
             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
           </div>
-          <div class="fw-bolder text-dark mb-0 border-start ps-3" style="font-size: 0.95rem;">
+          <div class="fw-bolder text-dark mb-0 border-start ps-3 saas-floating-score">
             5.0 <span class="fw-medium text-muted small">/ 5</span>
           </div>
         </div>
@@ -440,31 +454,32 @@ body {
     </div>
   </div>
 </section>
+{% endif %}
 
 {# 1.5 Continue Learning (Logged In Users) #}
-{% if logged_in and my_courses|length > 0 %}
-<section class="saas-section" style="background: #ffffff; padding: 4rem 0;">
+{% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+<section class="saas-section saas-section--surface saas-section--compact">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="fw-bold mb-0 text-dark"><i class="fas fa-book-reader text-primary me-2"></i> {{ 'Continue Learning'|t }}</h3>
-    <a href="{{ path('lms_progress.dashboard')|default('#') }}" class="text-primary text-decoration-none fw-semibold">{{ 'My Dashboard'|t }} <i class="fas fa-arrow-right ms-1"></i></a>
+    <a href="{{ path('lms_progress.dashboard') }}" class="text-primary text-decoration-none fw-semibold">{{ 'My Dashboard'|t }} <i class="fas fa-arrow-right ms-1"></i></a>
   </div>
   <div class="row g-4">
     {% for item in my_courses %}
       <div class="col-md-6 col-lg-4">
-        <div class="p-3 border rounded-3 d-flex align-items-center gap-3 bg-white h-100" style="box-shadow: 0 2px 4px rgba(0,0,0,0.02)">
-           <div class="rounded-2 overflow-hidden" style="width: 80px; height: 60px; min-width: 80px;">
+        <div class="p-3 border rounded-3 d-flex align-items-center gap-3 bg-white h-100 minimal-continue-card">
+           <div class="rounded-2 overflow-hidden minimal-continue-thumb">
              {% if item.course.thumbnail_url %}
-               <img src="{{ item.course.thumbnail_url }}" alt="..." class="w-100 h-100 object-fit-cover">
+               <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}" class="w-100 h-100 object-fit-cover">
              {% else %}
                <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center"><i class="fas fa-video text-muted"></i></div>
              {% endif %}
            </div>
-           <div class="flex-grow-1" style="min-width: 0;">
-             <h4 class="fs-6 fw-bold mb-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: normal;"><a href="{{ item.course.continue_url }}" class="text-dark text-decoration-none">{{ item.course.name }}</a></h4>
-             <div class="progress" style="height: 6px;">
-               <div class="progress-bar bg-primary" style="width: {{ item.progress }}%"></div>
+           <div class="flex-grow-1 minimal-continue-body">
+             <h4 class="fs-6 fw-bold mb-1 minimal-continue-title"><a href="{{ item.course.continue_url }}" class="text-dark text-decoration-none">{{ item.course.name }}</a></h4>
+             <div class="progress minimal-continue-progress">
+               <div class="progress-bar bg-primary lms-learning-progress__fill" data-progress="{{ item.progress }}"></div>
              </div>
-             <div class="text-muted mt-1" style="font-size: 0.75rem;">{{ item.progress }}% {{ 'Completed'|t }}</div>
+             <div class="text-muted mt-1 minimal-continue-status">{{ item.progress }}% {{ 'Completed'|t }}</div>
            </div>
         </div>
       </div>
@@ -474,17 +489,19 @@ body {
 {% endif %}
 
 {# 2. POPULAR CATEGORIES (Modernized) #}
-{% if categories|length > 0 %}
-<section class="saas-section saas-bg-gray border-top border-bottom position-relative" style="border-color: #e2e8f0 !important; padding: 6rem 0;">
+{% if (homepage_sections.categories ?? true) and categories|length > 0 %}
+<section class="saas-section saas-bg-gray border-top border-bottom position-relative minimal-categories-section">
   <!-- Subtle Background Decor -->
-  <div class="position-absolute rounded-circle" style="width: 400px; height: 400px; background: radial-gradient(circle, rgba(99,102,241,0.03) 0%, rgba(255,255,255,0) 70%); top: -50px; left: 10%; z-index: 0; pointer-events: none;"></div>
+  <div class="position-absolute rounded-circle minimal-categories-glow"></div>
 
   <div class="text-center mb-5 position-relative z-1">
-    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill bg-white text-primary fw-bold" style="font-size: 0.75rem; letter-spacing: 0.05em; border: 1px solid rgba(99,102,241,0.2);">
+    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill bg-white text-primary fw-bold minimal-section-chip">
       <i class="fas fa-compass"></i> {{ 'DISCOVER'|t }}
     </div>
-    <h2 class="saas-title mb-2">{{ 'Explore Categories'|t }}</h2>
-    <p class="saas-lead mb-0 text-muted mx-auto" style="max-width: 600px;">{{ 'Find the perfect topic to boost your skills and advance your career in healthcare.'|t }}</p>
+    <h2 class="saas-title mb-2">{{ homepage_settings.categories_section_title }}</h2>
+    {% if homepage_settings.categories_section_subtitle %}
+    <p class="saas-lead mb-0 text-muted mx-auto minimal-section-subtitle">{{ homepage_settings.categories_section_subtitle }}</p>
+    {% endif %}
   </div>
   
   <div class="row g-4 justify-content-center position-relative z-1">
@@ -495,14 +512,14 @@ body {
     {% for cat in categories %}
       {% set icon_idx = loop.index0 % cat_icons|length %}
       <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 50 }}">
-        <a href="{{ path('lms_course.catalog') }}?category={{ cat.entity.id }}" class="d-flex align-items-center p-3 p-xl-4 bg-white rounded-4 text-decoration-none group position-relative overflow-hidden h-100" style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02);">
+        <a href="{{ path('lms_course.catalog') }}?category={{ cat.entity.id }}" class="d-flex align-items-center p-3 p-xl-4 bg-white rounded-4 text-decoration-none position-relative overflow-hidden h-100 minimal-category-card minimal-category-card--{{ icon_idx + 1 }}">
            
            <!-- Hover Overlay Effect -->
-           <div class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="background: linear-gradient(135deg, {{ cat_bg[icon_idx] }} 0%, #ffffff 100%); transition: opacity 0.3s;" onmouseover="this.classList.remove('opacity-0')" onmouseout="this.classList.add('opacity-0')"></div>
+           <div class="position-absolute top-0 start-0 w-100 h-100 minimal-category-overlay"></div>
 
            <!-- Card Content -->
            <div class="d-flex align-items-center gap-3 w-100 position-relative z-1">
-             <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 52px; height: 52px; background-color: {{ cat_bg[icon_idx] }}; color: {{ cat_colors[icon_idx] }}; transition: transform 0.3s;">
+             <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 minimal-category-icon">
                <!-- Check if thumbnail image might be available in cat object for future use, otherwise fallback to SaaS Icons -->
                {% if cat.image_url %}
                   <img src="{{ cat.image_url }}" alt="..." class="w-100 h-100 rounded-circle object-fit-cover shadow-sm">
@@ -512,20 +529,13 @@ body {
              </div>
              
              <div class="flex-grow-1 min-w-0">
-               <h3 class="fs-6 fw-bold text-dark mb-1" style="transition: color 0.2s;" onmouseover="this.style.color='{{ cat_colors[icon_idx] }}'" onmouseout="this.style.color='#0f172a'">{{ cat.name }}</h3>
+               <h3 class="fs-6 fw-bold text-dark mb-1 minimal-category-title">{{ cat.name }}</h3>
                <div class="d-flex align-items-center">
-                 <span class="text-muted fw-medium" style="font-size: 0.75rem;">{{ cat.course_count }} {{ 'Courses'|t }}</span>
-                 <i class="fas fa-chevron-right ms-auto opacity-25" style="font-size: 0.75rem; color: {{ cat_colors[icon_idx] }}; transition: transform 0.2s;"></i>
+                 <span class="text-muted fw-medium minimal-category-count">{{ cat.course_count }} {{ 'Courses'|t }}</span>
+                 <i class="fas fa-chevron-right ms-auto opacity-25 minimal-category-arrow"></i>
                </div>
              </div>
            </div>
-
-           <!-- Injected CSS for Hover Effects exclusively for this block -->
-           <style>
-             a.group:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.05); border-color: {{ cat_colors[icon_idx] }}40; }
-             a.group:hover .fa-chevron-right { transform: translateX(4px); opacity: 1 !important; }
-             a.group:hover .rounded-circle { transform: scale(1.05); }
-           </style>
         </a>
       </div>
     {% endfor %}
@@ -534,15 +544,17 @@ body {
 {% endif %}
 
 {# 3. FEATURED COURSES (With Fixed Prices) #}
-{% if featured_courses|length > 0 %}
-<section class="saas-section" style="background-color: #ffffff;">
+{% if (homepage_sections.featured ?? true) and featured_courses|length > 0 %}
+<section class="saas-section saas-section--surface">
   <div class="d-flex justify-content-between align-items-end mb-5">
     <div>
-      <h2 class="saas-title mb-2">{{ 'Featured Programs'|t }}</h2>
-      <p class="saas-lead mb-0 text-muted" style="font-size: 1.1rem;">{{ 'Hand-picked premium content for your growth.'|t }}</p>
+      <h2 class="saas-title mb-2">{{ homepage_settings.featured_section_title }}</h2>
+      {% if homepage_settings.featured_section_subtitle %}
+      <p class="saas-lead mb-0 text-muted minimal-featured-subtitle">{{ homepage_settings.featured_section_subtitle }}</p>
+      {% endif %}
     </div>
     <a href="{{ path('lms_course.catalog') }}" class="saas-btn-outline d-none d-md-inline-flex">
-      {{ 'Explore All'|t }} <i class="fas fa-arrow-right ms-2"></i>
+      {{ homepage_settings.featured_section_link_text }} <i class="fas fa-arrow-right ms-2"></i>
     </a>
   </div>
   
@@ -561,8 +573,8 @@ body {
             {% if card.bestseller or card.featured %}
               <div class="saas-card__badge"><i class="fas fa-star text-warning me-1"></i> {{ 'Featured'|t }}</div>
             {% endif %}
-            <div class="position-absolute d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm" style="top: 1rem; right: 1rem; width: 32px; height: 32px; z-index: 2;">
-              <i class="far fa-heart text-muted" style="cursor: pointer; font-size: 0.9rem;"></i>
+            <div class="position-absolute d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm minimal-featured-favorite">
+              <i class="far fa-heart text-muted minimal-featured-favorite-icon"></i>
             </div>
           </a>
           <div class="saas-card__body">
@@ -575,9 +587,9 @@ body {
             {% if card.instructor_name %}
             <div class="d-flex align-items-center gap-2 mb-2">
               {% if card.instructor_avatar %}
-                <img src="{{ card.instructor_avatar }}" class="rounded-circle" style="width: 24px; height: 24px; object-fit: cover;" alt="{{ card.instructor_name }}">
+                <img src="{{ card.instructor_avatar }}" class="rounded-circle minimal-featured-instructor-avatar" alt="{{ card.instructor_name }}">
               {% else %}
-                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 24px; height: 24px; font-size: 0.65rem; font-weight: bold;">
+                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white minimal-featured-instructor-avatar minimal-featured-instructor-placeholder">
                   {{ card.instructor_name|slice(0, 1)|upper }}
                 </div>
               {% endif %}
@@ -585,19 +597,19 @@ body {
             </div>
             {% endif %}
             
-            <p class="text-muted mb-3" style="font-size: 0.85rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; min-height: 2.5rem;">
+            <p class="text-muted mb-3 minimal-featured-description">
               {{ card.short_description|striptags }}
             </p>
             
             <div class="mt-auto mb-2 d-flex align-items-center">
               <span class="text-muted small fw-bold me-2">{{ card.rating|default(5.0)|number_format(1) }}</span>
               {% for i in 1..card.rating|default(5)|round(0, 'floor') %}
-                <i class="fas fa-star text-warning" style="font-size: 0.8rem;"></i>
+                <i class="fas fa-star text-warning minimal-featured-star"></i>
               {% endfor %}
             </div>
             
             <div class="saas-card__footer d-flex align-items-center justify-content-between flex-wrap gap-2">
-              <div class="d-flex align-items-center text-muted" style="font-size: 0.8rem;">
+              <div class="d-flex align-items-center text-muted minimal-featured-meta">
                  <i class="fas fa-signal me-1"></i> {{ card.level|default('All Levels') }}
                  <span class="mx-2 text-muted opacity-50">•</span>
                  <i class="far fa-clock me-1"></i> {{ card.duration }}
@@ -606,11 +618,11 @@ body {
             
             <div class="mt-3 pt-3 border-top d-flex align-items-center justify-content-between">
               {% if card.is_enrolled %}
-                <div class="d-flex align-items-center text-success fw-bold" style="font-size: 0.85rem;"><i class="fas fa-unlock-alt me-2"></i> {{ 'UNLOCKED'|t }}</div>
-                <a href="{{ card.continue_url }}" class="saas-btn-primary py-1 px-3 fs-6 rounded-pill" style="min-width: fit-content; border-radius: 2rem !important; font-size: 0.85rem !important;">{{ 'Continue Learning'|t }}</a>
+                <div class="d-flex align-items-center text-success fw-bold minimal-featured-state"><i class="fas fa-unlock-alt me-2"></i> {{ 'UNLOCKED'|t }}</div>
+                <a href="{{ card.continue_url }}" class="saas-btn-primary py-1 px-3 fs-6 rounded-pill minimal-featured-pill-btn">{{ 'Continue Learning'|t }}</a>
               {% else %}
-                <div class="d-flex align-items-center text-muted fw-bold" style="font-size: 0.85rem;"><i class="fas fa-lock me-2"></i> {{ 'LOCKED'|t }}</div>
-                <a href="{{ card.url }}" class="saas-btn-outline py-1 px-3 fs-6 rounded-pill" style="min-width: fit-content; border-radius: 2rem !important; font-size: 0.85rem !important;">{{ 'View Course'|t }}</a>
+                <div class="d-flex align-items-center text-muted fw-bold minimal-featured-state"><i class="fas fa-lock me-2"></i> {{ 'LOCKED'|t }}</div>
+                <a href="{{ card.url }}" class="saas-btn-outline py-1 px-3 fs-6 rounded-pill minimal-featured-pill-btn">{{ 'View Course'|t }}</a>
               {% endif %}
             </div>
           </div>
@@ -622,17 +634,19 @@ body {
 {% endif %}
 
 {# 4. BUNDLES (Restored) #}
-{% if bundles is defined and bundles|length > 0 %}
+{% if (homepage_sections.bundles ?? true) and bundles is defined and bundles|length > 0 %}
 <section class="saas-section saas-bg-gray">
   <div class="text-center mb-5">
-    <h2 class="saas-title mb-2">{{ 'Popular Learning Bundles'|t }}</h2>
-    <p class="saas-lead text-muted">{{ 'Save multiple courses by enrolling into verified bundles'|t }}</p>
+    <h2 class="saas-title mb-2">{{ homepage_settings.bundles_section_title }}</h2>
+    {% if homepage_settings.bundles_section_subtitle %}
+    <p class="saas-lead text-muted">{{ homepage_settings.bundles_section_subtitle }}</p>
+    {% endif %}
   </div>
   <div class="row g-4 justify-content-center">
     {% for bundle in bundles %}
       <div class="col-lg-4 col-md-6">
-        <div class="p-4 bg-white border rounded-4 text-center d-flex flex-column h-100" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-          <div class="d-inline-block px-3 py-1 bg-primary text-white text-uppercase rounded-pill fw-bold mb-4 mx-auto" style="font-size: 0.75rem; letter-spacing: 0.05em;">{{ 'Value Bundle'|t }}</div>
+        <div class="p-4 bg-white border rounded-4 text-center d-flex flex-column h-100 minimal-bundle-card">
+          <div class="d-inline-block px-3 py-1 bg-primary text-white text-uppercase rounded-pill fw-bold mb-4 mx-auto minimal-bundle-badge">{{ 'Value Bundle'|t }}</div>
           <h3 class="fs-4 fw-bold mb-3">{{ bundle.label() }}</h3>
           <div class="fs-1 fw-bold text-success mb-4">${{ bundle.get('field_price').value|default('0.00') }}</div>
           <a href="#" class="saas-btn-outline w-100 mt-auto">{{ 'View Bundle Details'|t }}</a>
@@ -644,25 +658,28 @@ body {
 {% endif %}
 
 {# 5. ABOUT / INTRODUCTIONS #}
-{% if introductions|length > 0 %}
-<section class="saas-section" style="background: #ffffff;">
-  {% for intro in introductions %}
-    <div class="row align-items-center mb-5 pb-5 {% if not loop.last %}border-bottom{% endif %}" style="border-color: #f1f5f9 !important;" data-aos="fade-up">
+{% if (homepage_sections.introductions ?? true) and introductions|length > 0 %}
+{% set intro_layout = homepage_settings.introductions_layout|default('zigzag') %}
+{% set intro_layout_mode = intro_layout|lower %}
+{% set minimal_intro_items = intro_layout_mode in ['grid', 'list'] ? introductions : introductions|slice(0, 2) %}
+<section class="saas-section saas-section--surface">
+  {% for intro in minimal_intro_items %}
+    <div class="row align-items-center mb-5 pb-5 {% if not loop.last %}border-bottom minimal-intro-row--bordered{% endif %}" data-aos="fade-up">
       {% if intro.image_position == 'left' %}
       <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
         <div class="saas-intro-img">
-          <img src="{{ intro.image_url }}" alt="{{ intro.title }}" class="img-fluid w-100" style="aspect-ratio: 1/1; object-fit: cover;">
+          <img src="{{ intro.image_url }}" alt="{{ intro.title }}" class="img-fluid w-100 minimal-intro-image">
         </div>
       </div>
       {% endif %}
       
       <div class="col-lg-6 {% if intro.image_position == 'left' %}ps-lg-5{% else %}pe-lg-5{% endif %}">
         {% if intro.subheading %}
-          <div class="d-inline-block px-3 py-1 rounded-pill bg-light text-primary fw-bold mb-4" style="font-size: 0.85rem; letter-spacing: 0.05em;">
+          <div class="d-inline-block px-3 py-1 rounded-pill bg-light text-primary fw-bold mb-4 minimal-intro-chip">
             {{ intro.subheading }}
           </div>
         {% endif %}
-        <h2 class="saas-title mb-4" style="font-size: 2.75rem;">{{ intro.title }}</h2>
+        <h2 class="saas-title mb-4 minimal-section-title-lg">{{ intro.title }}</h2>
         <div class="saas-lead mb-5">
           {{ intro.body|raw }}
         </div>
@@ -674,7 +691,7 @@ body {
       {% if intro.image_position != 'left' %}
       <div class="col-lg-6 mt-5 mt-lg-0 ps-lg-5">
         <div class="saas-intro-img">
-          <img src="{{ intro.image_url }}" alt="{{ intro.title }}" class="img-fluid w-100" style="aspect-ratio: 1/1; object-fit: cover;">
+          <img src="{{ intro.image_url }}" alt="{{ intro.title }}" class="img-fluid w-100 minimal-intro-image">
         </div>
       </div>
       {% endif %}
@@ -684,28 +701,30 @@ body {
 {% endif %}
 
 {# 5.5. FAQS (Global) #}
-{% if faqs|length > 0 %}
-<section class="saas-section" style="background: #ffffff;">
+{% if (homepage_sections.faqs ?? true) and faqs|length > 0 %}
+<section class="saas-section saas-section--surface">
   <div class="row">
     <div class="col-lg-5 mb-5 mb-lg-0 pe-lg-5" data-aos="fade-right">
-      <h2 class="saas-title mb-4" style="font-size: 2.75rem;">{{ 'Frequently Asked Questions'|t }}</h2>
-      <p class="saas-lead mb-5">{{ 'Got questions? We have answers. Check out our most common queries below.'|t }}</p>
+    <h2 class="saas-title mb-4 minimal-section-title-lg">{{ homepage_settings.faq_section_title }}</h2>
+      {% if homepage_settings.faq_section_subtitle %}
+      <p class="saas-lead mb-5">{{ homepage_settings.faq_section_subtitle }}</p>
+      {% endif %}
       
       <div class="saas-intro-img position-relative overflow-visible">
-        <div class="position-absolute rounded-circle" style="width: 300px; height: 300px; background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%); opacity: 0.15; filter: blur(30px); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0;"></div>
+      <div class="position-absolute rounded-circle minimal-faq-glow"></div>
         
         {% set faq_img = 'https://picsum.photos/seed/faq_health/800/800' %}
         {% if featured_courses|length > 0 and featured_courses[0].thumbnail_url %}
            {% set faq_img = featured_courses[0].thumbnail_url %}
         {% endif %}
-        <div class="rounded-4 overflow-hidden position-relative z-1 shadow-lg" style="aspect-ratio: 4/5;">
-           <img src="{{ faq_img }}" alt="FAQ Support" class="img-fluid w-100 h-100" style="object-fit: cover;">
+      <div class="rounded-4 overflow-hidden position-relative z-1 shadow-lg minimal-faq-media">
+        <img src="{{ faq_img }}" alt="FAQ Support" class="img-fluid w-100 h-100 minimal-faq-image">
         </div>
         
         <!-- Decoration Box -->
-        <div class="position-absolute bg-white p-4 rounded-4 shadow-sm z-2" style="bottom: -2rem; right: -2rem; border: 1px solid #e2e8f0; width: 65%;">
+      <div class="position-absolute bg-white p-4 rounded-4 shadow-sm z-2 minimal-faq-support-card">
           <div class="d-flex align-items-center gap-3">
-            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; flex-shrink: 0;">
+        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center minimal-faq-support-icon">
                <i class="fas fa-headset fs-5"></i>
             </div>
             <div>
@@ -740,11 +759,13 @@ body {
 {% endif %}
 
 {# 6. TESTIMONIALS (Restored - Feedback User) #}
-{% if testimonials|length > 0 %}
+{% if (homepage_sections.testimonials ?? true) and testimonials|length > 0 %}
 <section class="saas-section saas-bg-gray">
   <div class="text-center mb-5">
-    <h2 class="saas-title mb-2">{{ 'What Our Students Say'|t }}</h2>
-    <p class="saas-lead text-muted">{{ 'Real feedback from our professional community.'|t }}</p>
+    <h2 class="saas-title mb-2">{{ homepage_settings.testimonials_section_title }}</h2>
+    {% if homepage_settings.testimonials_section_subtitle %}
+    <p class="saas-lead text-muted">{{ homepage_settings.testimonials_section_subtitle }}</p>
+    {% endif %}
   </div>
   <div class="row g-4 justify-content-center">
     {% for tm in testimonials %}
@@ -774,20 +795,274 @@ body {
 </section>
 {% endif %}
 
-{# 7. CALL TO ACTION #}
-<section class="saas-section saas-bg-dark text-center" style="padding: 6rem 0;">
+{# 6.5 INSTRUCTOR SPOTLIGHT #}
+{% if homepage_sections.instructor ?? true %}
+  {% set spotlight_name = '' %}
+  {% set spotlight_avatar = '' %}
+  {% set spotlight_role = '' %}
+  {% set spotlight_bio = '' %}
+  {% set spotlight_url = '' %}
+
+  {% if instructor is defined and instructor %}
+    {% set spotlight_name = instructor.name ?? instructor.full_name ?? instructor.display_name ?? '' %}
+    {% set spotlight_avatar = instructor.avatar ?? instructor.image_url ?? '' %}
+    {% set spotlight_role = instructor.role ?? instructor.title ?? '' %}
+    {% set spotlight_bio = instructor.bio ?? instructor.description ?? '' %}
+    {% set spotlight_url = instructor.url ?? instructor.profile_url ?? '' %}
+  {% endif %}
+
+  {% if spotlight_name is empty and featured_courses|length > 0 %}
+    {% set spotlight_course = featured_courses[0] %}
+    {% set spotlight_name = spotlight_course.instructor_name ?? '' %}
+    {% set spotlight_avatar = spotlight_course.instructor_avatar ?? '' %}
+    {% set spotlight_role = spotlight_role ?: ('Lead Instructor'|t) %}
+    {% set spotlight_bio = spotlight_course.short_description|default('') %}
+    {% set spotlight_url = spotlight_course.instructor_url ?? '' %}
+  {% endif %}
+
+  {% if spotlight_name %}
+    {% set spotlight_link = spotlight_url ? spotlight_url : path('lms_course.catalog') %}
+    {% set spotlight_excerpt = spotlight_bio|striptags %}
+    {% set spotlight_related = [] %}
+    {% set spotlight_seen = spotlight_name ? [spotlight_name] : [] %}
+    {% for course in featured_courses|slice(0, 8) %}
+      {% set related_name = course.instructor_name ?? '' %}
+      {% if related_name and related_name not in spotlight_seen and spotlight_related|length < 2 %}
+        {% set spotlight_seen = spotlight_seen|merge([related_name]) %}
+        {% set spotlight_related = spotlight_related|merge([{
+          name: related_name,
+          avatar: course.instructor_avatar ?? '',
+          role: course.instructor_role ?? ('Course Instructor'|t),
+          course_title: course.title ?? '',
+          url: course.instructor_url ?? course.url ?? path('lms_course.catalog')
+        }]) %}
+      {% endif %}
+    {% endfor %}
+
+    <section class="saas-section saas-section--surface minimal-instructor-section">
+      <div class="row justify-content-center">
+        <div class="col-xl-11">
+          <div class="minimal-instructor-layout">
+            <article class="p-4 p-lg-5 rounded-4 bg-white border d-flex flex-column flex-lg-row align-items-center gap-4 gap-lg-5 minimal-instructor-card" data-aos="fade-up">
+              <div class="minimal-instructor-avatar-wrap">
+                {% if spotlight_avatar %}
+                  <img src="{{ spotlight_avatar }}" alt="{{ spotlight_name }}" class="rounded-circle minimal-instructor-avatar">
+                {% else %}
+                  <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-primary minimal-instructor-avatar-fallback">
+                    {{ spotlight_name|slice(0, 1)|upper }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="text-center text-lg-start flex-grow-1">
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary-subtle text-primary fw-semibold mb-3 minimal-instructor-chip">
+                  <i class="fas fa-user-graduate"></i>
+                  {{ 'Instructor Spotlight'|t }}
+                </div>
+                <h3 class="fw-bolder text-dark mb-2 minimal-instructor-name">{{ spotlight_name }}</h3>
+                {% if spotlight_role %}
+                  <p class="text-muted fw-semibold mb-3 minimal-instructor-role">{{ spotlight_role }}</p>
+                {% endif %}
+                <p class="text-muted mb-4 minimal-instructor-bio">
+                  {% if spotlight_excerpt %}
+                    {{ spotlight_excerpt|slice(0, 220) }}{% if spotlight_excerpt|length > 220 %}...{% endif %}
+                  {% else %}
+                    {{ 'Learn from seasoned mentors and practical experts guiding real-world outcomes.'|t }}
+                  {% endif %}
+                </p>
+                <a href="{{ spotlight_link }}" class="saas-btn-primary rounded-pill px-4">
+                  {{ 'View Courses'|t }} <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+              </div>
+            </article>
+
+            {% if spotlight_related %}
+              <aside class="minimal-instructor-related" data-aos="fade-up" data-aos-delay="80">
+                {% for mentor in spotlight_related %}
+                  <a href="{{ mentor.url }}" class="minimal-instructor-related-card text-decoration-none">
+                    <div class="minimal-instructor-related-avatar-wrap">
+                      {% if mentor.avatar %}
+                        <img src="{{ mentor.avatar }}" alt="{{ mentor.name }}" class="minimal-instructor-related-avatar">
+                      {% else %}
+                        <div class="minimal-instructor-related-avatar-fallback">
+                          {{ mentor.name|slice(0, 1)|upper }}
+                        </div>
+                      {% endif %}
+                    </div>
+                    <div class="minimal-instructor-related-content">
+                      <h4>{{ mentor.name }}</h4>
+                      <p>{{ mentor.role }}</p>
+                      {% if mentor.course_title %}
+                        <span>{{ mentor.course_title|slice(0, 58) }}{% if mentor.course_title|length > 58 %}...{% endif %}</span>
+                      {% endif %}
+                    </div>
+                    <i class="fas fa-arrow-up-right-from-square minimal-instructor-related-icon"></i>
+                  </a>
+                {% endfor %}
+              </aside>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+{% endif %}
+
+{# 7. LATEST NEWS #}
+{% if (homepage_sections.news ?? true) and minimal_news %}
+<section class="saas-section saas-bg-gray minimal-news-section">
+  <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between mb-5 gap-3">
+    <div>
+      <h2 class="saas-title mb-2">{{ homepage_settings.news_section_title|default('Latest News'|t) }}</h2>
+      <p class="saas-lead mb-0 text-muted minimal-section-subtitle">{{ homepage_settings.news_section_subtitle|default('Insights, updates, and practical learning stories from the EverLMS community.'|t) }}</p>
+    </div>
+    <a href="{{ path('lms_blog.frontend.collection') }}" class="saas-btn-outline">
+      {{ homepage_settings.news_section_link_text|default('View All'|t) }} <i class="fas fa-arrow-right ms-2"></i>
+    </a>
+  </div>
+
+  <div class="row g-4">
+    {% for item in minimal_news|slice(0, 3) %}
+      {% set news_url = item.url ?? '#' %}
+      {% set news_image = item.thumbnail_url ?? item.image_url ?? '' %}
+      {% set news_title = item.title ?? ('News item'|t) %}
+      <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 80 }}">
+        <article class="bg-white border rounded-4 overflow-hidden h-100 d-flex flex-column minimal-news-card">
+          <a href="{{ news_url }}" class="position-relative d-block minimal-news-media">
+            {% if news_image %}
+              <img src="{{ news_image }}" alt="{{ news_title }}" class="w-100 h-100 object-fit-cover minimal-news-image">
+            {% else %}
+              <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light text-muted minimal-news-image-placeholder">
+                <i class="fas fa-newspaper fs-3"></i>
+              </div>
+            {% endif %}
+            <span class="position-absolute top-0 start-0 m-3 px-3 py-1 rounded-pill bg-white text-primary fw-bold small text-uppercase minimal-news-chip">
+              {{ item.category|default('News') }}
+            </span>
+          </a>
+
+          <div class="p-4 d-flex flex-column flex-grow-1">
+            {% if item.date %}
+              <time class="text-muted small fw-semibold mb-2 d-inline-flex align-items-center gap-2 minimal-news-date">
+                <i class="far fa-calendar-alt"></i>{{ item.date }}
+              </time>
+            {% endif %}
+            <h3 class="fs-5 fw-bolder text-dark mb-2 lh-sm">
+              <a href="{{ news_url }}" class="text-dark text-decoration-none minimal-news-title-link">{{ news_title }}</a>
+            </h3>
+            {% if item.summary %}
+              <p class="text-muted mb-4 flex-grow-1 minimal-news-summary">
+                {{ item.summary|striptags|slice(0, 140) }}{% if item.summary|striptags|length > 140 %}...{% endif %}
+              </p>
+            {% endif %}
+            <a href="{{ news_url }}" class="text-primary fw-semibold text-decoration-none mt-auto minimal-news-readmore">
+              {{ 'Read More'|t }} <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </article>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# 8. MEMBERSHIP TEASER #}
+{% if (homepage_sections.membership ?? true) and minimal_memberships %}
+<section class="saas-section saas-section--surface minimal-membership-section">
+  <div class="text-center mb-5">
+    <h2 class="saas-title mb-2">{{ homepage_settings.membership_section_title|default('Membership Plans'|t) }}</h2>
+    <p class="saas-lead text-muted mb-0 minimal-section-subtitle">{{ homepage_settings.membership_section_subtitle|default('Choose a plan that matches your learning pace and long-term goals.'|t) }}</p>
+  </div>
+
+  <div class="row g-4 justify-content-center">
+    {% for plan in minimal_memberships|slice(0, 3) %}
+      {% set is_recommended = plan.recommended ?? plan.is_recommended ?? false %}
+      {% set is_free_plan = (plan.is_free ?? false) or ((plan.price ?? 0) <= 0) %}
+      {% set plan_features = plan.features is iterable ? plan.features : [] %}
+      {% set plan_url = plan.url ?? path('lms_course.pricing') %}
+      {% set plan_name = plan.name ?? ('Membership'|t) %}
+      <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 80 }}">
+        <article class="bg-white border rounded-4 p-4 h-100 d-flex flex-column position-relative minimal-membership-card{% if is_recommended %} minimal-membership-card--recommended{% endif %}">
+          {% if is_recommended %}
+            <span class="position-absolute top-0 start-50 translate-middle-x px-3 py-1 rounded-pill bg-primary text-white fw-bold small minimal-membership-badge">
+              {{ homepage_settings.membership_recommended_badge_text|default('Recommended'|t) }}
+            </span>
+          {% endif %}
+
+          <h3 class="fs-4 fw-bolder text-dark mb-2 text-center">{{ plan_name }}</h3>
+          {% if plan.description %}
+            <p class="text-muted text-center mb-4 minimal-membership-description">
+              {{ plan.description|striptags|slice(0, 120) }}{% if plan.description|striptags|length > 120 %}...{% endif %}
+            </p>
+          {% endif %}
+
+          <div class="text-center mb-4">
+            {% if is_free_plan %}
+              <span class="minimal-membership-price">{{ homepage_settings.membership_free_price_text|default('Free'|t) }}</span>
+            {% elseif plan.price_display is defined and plan.price_display %}
+              <span class="minimal-membership-price">{{ plan.price_display }}</span>
+            {% else %}
+              {% set currency_symbol = '$' %}
+              {% if plan.currency is defined and plan.currency == 'EUR' %}
+                {% set currency_symbol = 'EUR ' %}
+              {% elseif plan.currency is defined and plan.currency == 'GBP' %}
+                {% set currency_symbol = 'GBP ' %}
+              {% endif %}
+              <span class="minimal-membership-price">{{ currency_symbol }}{{ (plan.price ?? 0)|number_format(2, '.', ',') }}</span>
+            {% endif %}
+
+            {% if plan.billing_cycle is defined and plan.billing_cycle %}
+              <span class="text-muted fw-semibold">/ {{ plan.billing_cycle|replace({'_': ' '})|title }}</span>
+            {% elseif plan.period is defined and plan.period %}
+              <span class="text-muted fw-semibold">/ {{ plan.period }}</span>
+            {% endif %}
+          </div>
+
+          {% if plan_features %}
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-4 flex-grow-1 minimal-membership-features">
+              {% for feature in plan_features|slice(0, 5) %}
+                <li class="d-flex align-items-start gap-2 text-muted">
+                  <i class="fas fa-check-circle text-primary mt-1"></i>
+                  <span>{{ feature }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div class="flex-grow-1"></div>
+          {% endif %}
+
+          <a href="{{ plan_url }}" class="saas-btn-primary w-100 rounded-pill text-center">
+            {% if is_free_plan %}
+              {{ homepage_settings.membership_free_cta_text|default('Start Free'|t) }}
+            {% elseif is_recommended %}
+              {{ homepage_settings.membership_recommended_cta_text|default('Choose Plan'|t) }}
+            {% else %}
+              {{ homepage_settings.membership_paid_cta_text|default('Get Started'|t) }}
+            {% endif %}
+          </a>
+        </article>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# 9. CALL TO ACTION #}
+{% if homepage_sections.cta_guest ?? true %}
+<section class="saas-section saas-bg-dark saas-section--cta text-center">
   <div class="row justify-content-center">
     <div class="col-lg-8" data-aos="zoom-in">
-      <h2 class="saas-display text-white mb-4">{{ 'Ready to Transform Your Career?'|t }}</h2>
-      <p class="saas-lead text-slate-300 mb-5" style="color: #cbd5e1;">{{ 'Join thousands of professionals mastering new skills every day. Registration takes less than a minute.'|t }}</p>
+      <h2 class="saas-display text-white mb-4">{{ homepage_settings.cta_banner_title }}</h2>
+      <p class="saas-lead text-slate-300 mb-5 minimal-cta-copy">{{ homepage_settings.cta_banner_description }}</p>
       <div class="d-flex justify-content-center gap-3 flex-column flex-md-row">
-        <a href="{{ path('user.register')|default('#') }}" class="saas-btn-primary">
-          {{ 'Create Free Account'|t }}
+        <a href="{{ path('user.register') }}" class="saas-btn-primary">
+          {{ homepage_settings.cta_primary_text }}
         </a>
-        <a href="{{ path('lms_course.catalog') }}" class="saas-btn-outline" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #fff !important;">
-          {{ 'Browse Catalog'|t }}
+        <a href="{{ path('lms_course.catalog') }}" class="saas-btn-outline minimal-cta-outline-light">
+          {{ homepage_settings.cta_secondary_text }}
         </a>
       </div>
     </div>
   </div>
 </section>
+{% endif %}

@@ -3,8 +3,13 @@
   {# Navbar — matches mockup: Logo | Nav | Login/Register #}
   <header class="lms-navbar">
     <div class="lms-navbar__container">
-      <a href="{{ path('<front>') }}" class="lms-navbar__brand">
-        <i class="fas fa-graduation-cap"></i> {{ 'EverLMS'|t }}
+      <a href="{{ path('<front>') }}" class="lms-navbar__brand" title="{{ site_logo_alt }}" aria-label="{{ site_name }}">
+        {% if site_logo_url %}
+          <img src="{{ site_logo_url }}" alt="{{ site_logo_alt }}" class="lms-brand-mark lms-brand-mark--header">
+        {% else %}
+          <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+          <span>{{ site_name }}</span>
+        {% endif %}
       </a>
 
       <button class="lms-navbar__toggle" aria-label="Toggle navigation">
@@ -145,6 +150,18 @@
     <div class="lms-footer__container">
       <div class="lms-footer__grid">
         <div class="lms-footer__col">
+          <div class="lms-footer__brand">
+            <a href="{{ path('<front>') }}" class="lms-footer__brand-link" title="{{ site_logo_alt }}" aria-label="{{ site_name }}">
+              {% if site_logo_url %}
+                <img src="{{ site_logo_url }}" alt="{{ site_logo_alt }}" class="lms-brand-mark lms-brand-mark--footer">
+              {% else %}
+                <span>{{ site_name }}</span>
+              {% endif %}
+            </a>
+          </div>
+          {% if site_tagline %}
+            <p class="lms-footer__description">{{ site_tagline }}</p>
+          {% endif %}
           <h4>{{ 'Quick Links'|t }}</h4>
           <ul>
             <li><a href="{{ path('<front>') }}">{{ 'Home'|t }}</a></li>
@@ -166,25 +183,42 @@
         <div class="lms-footer__col">
           <h4>{{ 'Supports'|t }}</h4>
           <ul>
-            <li><a href="#">{{ 'About Us'|t }}</a></li>
-            <li><a href="#">{{ 'Supports'|t }}</a></li>
+            <li><a href="{{ path('lms_course.about') }}">{{ 'About Us'|t }}</a></li>
+            <li><a href="{{ path('lms_course.contact') }}">{{ 'Supports'|t }}</a></li>
             <li><a href="#">{{ 'FAQ'|t }}</a></li>
-            <li><a href="#">{{ 'Contact Us'|t }}</a></li>
+            <li><a href="{{ path('lms_course.contact') }}">{{ 'Contact Us'|t }}</a></li>
           </ul>
         </div>
         <div class="lms-footer__col">
           <h4>{{ 'Contact Info'|t }}</h4>
           <ul>
-            <li><i class="fas fa-map-marker-alt"></i> {{ 'Company Headquarters, District'|t }}</li>
-            <li><i class="fas fa-phone"></i> +01 00 200 0000</li>
-            <li><i class="fas fa-phone"></i> +01 00 200 0000</li>
-            <li><i class="fas fa-envelope"></i> everlms@gmail.com</li>
+            {% if footer_address %}
+              <li><i class="fas fa-map-marker-alt"></i> {{ footer_address|nl2br }}</li>
+            {% endif %}
+            {% if footer_phone %}
+              <li><i class="fas fa-phone"></i> <a href="tel:{{ footer_phone|replace({' ': ''}) }}">{{ footer_phone }}</a></li>
+            {% endif %}
+            {% if footer_email %}
+              <li><i class="fas fa-envelope"></i> <a href="mailto:{{ footer_email }}">{{ footer_email }}</a></li>
+            {% endif %}
+            {% if footer_working_hours %}
+              <li><i class="fas fa-clock"></i> {{ footer_working_hours }}</li>
+            {% endif %}
           </ul>
+          {% if footer_social_links %}
+            <div class="lms-footer__social">
+              {% for social in footer_social_links %}
+                <a href="{{ social.url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ social.label }}">
+                  <i class="{{ social.icon }}"></i>
+                </a>
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
       </div>
 
       <div class="lms-footer__bottom">
-        <p>{{ 'Powered by'|t }} <a href="#">EverLMS</a></p>
+        <p>{{ footer_copyright|nl2br }}</p>
       </div>
     </div>
   </footer>

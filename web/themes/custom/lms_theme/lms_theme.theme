@@ -6,11 +6,91 @@
  */
 
 /**
+ * Returns a usable site logo URL for shared page templates.
+ */
+function lms_theme_get_site_logo_url(): string {
+  $logo_url = trim((string) theme_get_setting('logo.url', 'lms_theme'));
+  if ($logo_url === '') {
+    return '';
+  }
+
+  $use_default_logo = (bool) theme_get_setting('logo.use_default', 'lms_theme');
+  if (!$use_default_logo) {
+    return $logo_url;
+  }
+
+  if (\Drupal\Component\Utility\UrlHelper::isExternal($logo_url) || str_starts_with($logo_url, 'data:')) {
+    return $logo_url;
+  }
+
+  $logo_path = parse_url($logo_url, PHP_URL_PATH);
+  if (!is_string($logo_path) || $logo_path === '') {
+    $logo_path = $logo_url;
+  }
+
+  $logo_path = ltrim(rawurldecode($logo_path), '/');
+  if ($logo_path === '') {
+    return '';
+  }
+
+  $filesystem_path = \Drupal::root() . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $logo_path);
+  return is_file($filesystem_path) ? $logo_url : '';
+}
+
+/**
+ * Returns shared theme variables used by page and homepage templates.
+ */
+function lms_theme_get_shared_site_variables(): array {
+  $site_config = \Drupal::config('system.site');
+  $site_name = trim((string) ($site_config->get('name') ?? ''));
+  $site_slogan = trim((string) (theme_get_setting('site_tagline', 'lms_theme') ?: $site_config->get('slogan') ?: ''));
+  $site_logo_alt = trim((string) (theme_get_setting('site_logo_alt', 'lms_theme') ?: ($site_name ?: 'EverLMS')));
+
+  $shared_variables = [
+    'site_name' => $site_name ?: 'EverLMS',
+    'site_tagline' => $site_slogan,
+    'site_logo_alt' => $site_logo_alt,
+    'site_logo_url' => lms_theme_get_site_logo_url(),
+    'footer_address' => trim((string) (theme_get_setting('footer_address', 'lms_theme') ?: 'Company Headquarters, District')),
+    'footer_phone' => trim((string) (theme_get_setting('footer_phone', 'lms_theme') ?: '+01 00 200 0000')),
+    'footer_email' => trim((string) (theme_get_setting('footer_email', 'lms_theme') ?: ($site_config->get('mail') ?? 'everlms@gmail.com'))),
+    'footer_working_hours' => trim((string) theme_get_setting('footer_working_hours', 'lms_theme')),
+    'footer_copyright' => trim((string) (theme_get_setting('footer_copyright', 'lms_theme') ?: "Copyright © 2025 EverLMS. Product by WeebPal (since 2012). All rights reserved.\nAuthored by Hai Nguyen, Maintained by the Phat Le & WeebPal Team, Developed by Claude.")),
+    'footer_map_embed_url' => trim((string) theme_get_setting('footer_map_embed_url', 'lms_theme')),
+    'app_store_url' => trim((string) theme_get_setting('app_store_url', 'lms_theme')),
+    'google_play_url' => trim((string) theme_get_setting('google_play_url', 'lms_theme')),
+  ];
+
+  $social_links = [];
+  $social_map = [
+    'social_facebook' => ['label' => 'Facebook', 'icon' => 'fab fa-facebook-f'],
+    'social_youtube' => ['label' => 'YouTube', 'icon' => 'fab fa-youtube'],
+    'social_linkedin' => ['label' => 'LinkedIn', 'icon' => 'fab fa-linkedin-in'],
+    'social_tiktok' => ['label' => 'TikTok', 'icon' => 'fab fa-tiktok'],
+    'social_zalo' => ['label' => 'Zalo', 'icon' => 'fas fa-comment-dots'],
+  ];
+  foreach ($social_map as $setting_key => $meta) {
+    $url = trim((string) theme_get_setting($setting_key, 'lms_theme'));
+    if ($url !== '') {
+      $social_links[] = [
+        'label' => $meta['label'],
+        'icon' => $meta['icon'],
+        'url' => $url,
+      ];
+    }
+  }
+  $shared_variables['footer_social_links'] = $social_links;
+
+  return $shared_variables;
+}
+
+/**
  * Implements hook_preprocess_page().
  */
 function lms_theme_preprocess_page(&$variables) {
   $route_name = \Drupal::routeMatch()->getRouteName();
   $variables['current_route'] = $route_name;
+  $variables += lms_theme_get_shared_site_variables();
 
   $request = \Drupal::request();
   if ($request->hasSession() && $request->getSession()->get('open_switcher_original_uid')) {
@@ -52,6 +132,13 @@ function lms_theme_preprocess_page(&$variables) {
 }
 
 /**
+ * Implements hook_preprocess_HOOK() for lms_homepage.
+ */
+function lms_theme_preprocess_lms_homepage(&$variables) {
+  $variables += lms_theme_get_shared_site_variables();
+}
+
+/**
  * Implements hook_preprocess_html().
  */
 function lms_theme_preprocess_html(&$variables) {
@@ -61,6 +148,9 @@ function lms_theme_preprocess_html(&$variables) {
   $current_uri = \Drupal::request()->getRequestUri();
   $is_workspace = strpos($current_uri, '/workspace') === 0;
   $is_learn = strpos($current_uri, '/learn') === 0;
+  if ($is_workspace) {
+    $variables['attributes']['class'][] = 'is-workspace';
+  }
   $is_front = \Drupal::service('path.matcher')->isFrontPage();
   if ($is_front) {
     $variables['attributes']['class'][] = 'is-front-page';
@@ -68,18 +158,77 @@ function lms_theme_preprocess_html(&$variables) {
 
   if ($style === 'minimalist') {
     $variables['#attached']['library'][] = 'lms_theme/light_mode';
+    if (!$is_workspace) {
+      $variables['#attached']['library'][] = 'lms_theme/homepage_minimalist';
+    }
   } elseif ($style === 'playful') {
-    $variables['#attached']['library'][] = 'lms_theme/homepage_playful';
     if (!$is_workspace && !$is_front) {
       $variables['#attached']['library'][] = 'lms_theme/light_mode';
       $variables['attributes']['class'][] = 'layout-minimalist';
     }
+    $variables['#attached']['library'][] = 'lms_theme/homepage_playful';
   } elseif ($style === 'corporate') {
     $variables['#attached']['library'][] = 'lms_theme/homepage_corporate';
     if (!$is_workspace && !$is_front) {
       $variables['#attached']['library'][] = 'lms_theme/light_mode';
       $variables['attributes']['class'][] = 'layout-minimalist';
     }
+  } elseif ($style === 'government') {
+    $variables['#attached']['library'][] = 'lms_theme/homepage_government';
+    if (!$is_workspace && !$is_front) {
+      $variables['#attached']['library'][] = 'lms_theme/light_mode';
+      $variables['attributes']['class'][] = 'layout-minimalist';
+    }
+  } elseif ($style === 'academy') {
+    if (!$is_workspace && !$is_front) {
+      $variables['#attached']['library'][] = 'lms_theme/light_mode';
+      $variables['attributes']['class'][] = 'layout-minimalist';
+    }
+    $variables['#attached']['library'][] = 'lms_theme/homepage_academy';
+  } elseif ($style === 'editorial') {
+    $variables['#attached']['library'][] = 'lms_theme/homepage_editorial';
+    if (!$is_workspace && !$is_front) {
+      $variables['#attached']['library'][] = 'lms_theme/light_mode';
+      $variables['attributes']['class'][] = 'layout-minimalist';
+    }
+  } elseif ($style === 'nature') {
+    if (!$is_workspace && !$is_front) {
+      $variables['#attached']['library'][] = 'lms_theme/light_mode';
+      $variables['attributes']['class'][] = 'layout-minimalist';
+    }
+    $variables['#attached']['library'][] = 'lms_theme/homepage_nature';
+  } elseif ($style === 'gradient') {
+    if (!$is_workspace && !$is_front) {
+      $variables['#attached']['library'][] = 'lms_theme/light_mode';
+      $variables['attributes']['class'][] = 'layout-minimalist';
+    }
+    $variables['#attached']['library'][] = 'lms_theme/homepage_gradient';
+  } elseif ($style === 'luxury') {
+    if (!$is_workspace) {
+      $variables['#attached']['library'][] = 'lms_theme/homepage_luxury';
+    }
+  } elseif ($style === 'creative') {
+    if (!$is_workspace) {
+      $variables['#attached']['library'][] = 'lms_theme/homepage_creative';
+    }
+  } elseif ($style === 'community') {
+    if (!$is_workspace && !$is_front) {
+      $variables['#attached']['library'][] = 'lms_theme/light_mode';
+      $variables['attributes']['class'][] = 'layout-minimalist';
+    }
+    $variables['#attached']['library'][] = 'lms_theme/homepage_community';
+  } elseif ($style === 'retro') {
+    $variables['#attached']['library'][] = 'lms_theme/homepage_retro';
+    if (!$is_workspace && !$is_front) {
+      $variables['#attached']['library'][] = 'lms_theme/light_mode';
+      $variables['attributes']['class'][] = 'layout-minimalist';
+    }
+  } elseif ($style === 'medical') {
+    if (!$is_workspace && !$is_front) {
+      $variables['#attached']['library'][] = 'lms_theme/light_mode';
+      $variables['attributes']['class'][] = 'layout-minimalist';
+    }
+    $variables['#attached']['library'][] = 'lms_theme/homepage_medical';
   }
 }
 

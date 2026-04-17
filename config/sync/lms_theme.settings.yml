@@ -8,3 +8,6 @@ logo:
 favicon:
   use_default: 1
 homepage_style: minimalist
+footer_copyright: |-
+  Copyright © 2025 EverLMS. Product by WeebPal (since 2012). All rights reserved.
+  Authored by Hai Nguyen, Maintained by the Phat Le & WeebPal Team, Developed by Claude.

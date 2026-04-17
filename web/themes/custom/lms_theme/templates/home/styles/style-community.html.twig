@@ -1,0 +1,477 @@
+{{ attach_library('lms_theme/homepage_community') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+{% set community_bundles = bundles ?? course_bundles ?? [] %}
+{% set community_news = latest_news ?? news_items ?? [] %}
+{% set community_memberships = memberships ?? membership_plans ?? [] %}
+{% set community_intro_primary = introductions|default([])|slice(0, 2) %}
+{% set community_intro_rest = introductions|default([])|slice(2) %}
+
+<div class="community-home">
+  {% if homepage_sections.hero ?? true %}
+  <section class="community-hero community-breakout">
+    <div class="community-hero__bg"></div>
+    <div class="community-hero__frame">
+      {% if slideshows %}
+      <div id="communityHeroCarousel" class="carousel slide carousel-fade community-carousel" data-bs-ride="carousel" data-bs-interval="5600" data-bs-pause="false" data-bs-touch="true" data-bs-wrap="true">
+        {% if slideshows|length > 1 %}
+        <div class="carousel-indicators community-carousel__indicators">
+          {% for slide in slideshows %}
+            <button type="button" data-bs-target="#communityHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="community-carousel__indicator{% if loop.first %} active{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="carousel-inner community-carousel__inner">
+          {% for slide in slideshows %}
+          <div class="carousel-item community-carousel__item{% if loop.first %} active{% endif %}">
+            {% if slide.image_url %}<img src="{{ slide.image_url }}" alt="{{ slide.heading }}" class="community-carousel__image">{% endif %}
+            <div class="community-carousel__veil"></div>
+            <div class="community-shell community-hero__content">
+              <div class="community-hero__panel">
+                <span class="community-eyebrow">{{ site_name|default('EverLMS') }}</span>
+                <h1 class="community-hero__title">{{ slide.heading }}</h1>
+                <p class="community-hero__subtitle">{{ slide.subheading|striptags }}</p>
+                <div class="community-hero__actions">
+                  <a href="{{ slide.link_url }}" class="community-btn community-btn--primary">{{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}</a>
+                  <a href="{{ path('lms_course.catalog') }}" class="community-btn community-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="community-shell community-hero__fallback">
+        <div class="community-hero__panel">
+          <span class="community-eyebrow">{{ site_name|default('EverLMS') }}</span>
+          <h1 class="community-hero__title">{{ homepage_settings.hero_fallback_heading }}</h1>
+          <p class="community-hero__subtitle">{{ homepage_settings.hero_fallback_subtext }}</p>
+          <div class="community-hero__actions">
+            <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="community-btn community-btn--primary">{{ homepage_settings.hero_fallback_cta_text }}</a>
+            <a href="{{ path('lms_course.catalog') }}" class="community-btn community-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if homepage_sections.stats ?? true %}
+    <div class="community-stats community-shell">
+      <div class="community-stats__grid">
+        <div class="community-stat"><span class="community-stat__value">{{ stats.courses }}</span><span class="community-stat__label">{{ stats.courses_label }}</span></div>
+        <div class="community-stat"><span class="community-stat__value">{{ stats.students }}</span><span class="community-stat__label">{{ stats.students_label }}</span></div>
+        <div class="community-stat"><span class="community-stat__value">{{ stats.satisfaction }}</span><span class="community-stat__label">{{ stats.satisfaction_label }}</span></div>
+        <div class="community-stat"><span class="community-stat__value">{{ categories|length }}</span><span class="community-stat__label">{{ 'Domains'|t }}</span></div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+  <section class="community-section community-shell">
+    <div class="community-section__head community-section__head--split">
+      <div>
+        <h2 class="community-section__title">{{ 'Continue Learning'|t }}</h2>
+      </div>
+      <a href="{{ path('lms_progress.dashboard') }}" class="community-link">{{ 'Open Dashboard'|t }}</a>
+    </div>
+    <div class="community-progress-grid">
+      {% for item in my_courses|slice(0, 3) %}
+      <article class="community-progress-card">
+        <div class="community-progress-card__thumb">
+          {% if item.course.thumbnail_url %}
+            <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}">
+          {% else %}
+            <div class="community-progress-card__placeholder"><i class="fas fa-book-open"></i></div>
+          {% endif %}
+        </div>
+        <div class="community-progress-card__body">
+          <h3 class="community-progress-card__title"><a href="{{ item.course.continue_url }}">{{ item.course.name }}</a></h3>
+          <div class="community-progress"><div class="community-progress__fill lms-learning-progress__fill" data-progress="{{ item.progress }}" style="--progress: {{ item.progress }}%; width: {{ item.progress }}%;"></div></div>
+          <div class="community-progress-card__meta">{{ item.progress }}% {{ 'Completed'|t }}</div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="community-section community-section--surface community-section--categories community-breakout">
+    <div class="community-shell">
+      <div class="community-section__head community-section__head--center">
+        <span class="community-kicker">{{ 'Categories'|t }}</span>
+        <h2 class="community-section__title">{{ homepage_settings.categories_section_title }}</h2>
+        <p class="community-section__subtitle">{{ homepage_settings.categories_section_subtitle }}</p>
+      </div>
+      <div class="community-category-grid">
+        {% for category in categories %}
+        {% set category_url = category.url ?? (path('lms_course.catalog') ~ '?category=' ~ (category.entity.id ?? '')) %}
+        <a href="{{ category_url }}" class="community-category-card">
+          <div class="community-category-card__icon">
+            {% if category.icon_url %}
+              <img src="{{ category.icon_url }}" alt="{{ category.name }}">
+            {% elseif category.thumbnail_url %}
+              <img src="{{ category.thumbnail_url }}" alt="{{ category.name }}">
+            {% elseif category.image_url %}
+              <img src="{{ category.image_url }}" alt="{{ category.name }}">
+            {% else %}
+              <i class="fas fa-shapes"></i>
+            {% endif %}
+          </div>
+          <h3 class="community-category-card__name">{{ category.name }}</h3>
+          {% if category.course_count is defined %}<span class="community-category-card__count">{{ category.course_count }} {{ 'courses'|t }}</span>{% endif %}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="community-section community-shell">
+    <div class="community-section__head community-section__head--split">
+      <div>
+        <span class="community-kicker">{{ 'Featured'|t }}</span>
+        <h2 class="community-section__title">{{ homepage_settings.featured_section_title }}</h2>
+        <p class="community-section__subtitle">{{ homepage_settings.featured_section_subtitle }}</p>
+      </div>
+      <a href="{{ path('lms_course.catalog') }}" class="community-link">{{ homepage_settings.featured_section_link_text }}</a>
+    </div>
+    <div class="community-course-grid">
+      {% for course in featured_courses|slice(0, 6) %}
+      {% set featured_is_free = (course.price_raw ?? 0) <= 0 %}
+      {% set course_level = course.level ?? '' %}
+      {% set course_duration = course.duration ?? '' %}
+      {% set course_lessons = course.lesson_count ?? course.lessons_count ?? course.lessons ?? '' %}
+      {% set course_rating = course.rating ?? '' %}
+      {% set course_summary = course.summary ?? course.short_description ?? course.description ?? '' %}
+      <article class="community-course-card community-course-card--visual">
+        <a href="{{ course.url }}" class="community-course-card__thumb-wrap community-course-card__thumb-wrap--overlay">
+          {% if course.thumbnail_url %}
+            <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" class="community-course-card__thumb">
+          {% else %}
+            <div class="community-course-card__thumb-placeholder"><i class="fas fa-graduation-cap"></i></div>
+          {% endif %}
+          <div class="community-course-card__overlay">
+            {% if course.category %}<span class="community-course-card__cat">{{ course.category }}</span>{% endif %}
+            <h3 class="community-course-card__overlay-title">{{ course.name }}</h3>
+            {% if course.instructor_name %}<p class="community-course-card__overlay-instructor">{{ course.instructor_name }}</p>{% endif %}
+            {% if course_level or course_duration or course_lessons or course_rating %}
+              <div class="community-course-card__overlay-meta">
+                {% if course_level %}<span>{{ course_level }}</span>{% endif %}
+                {% if course_duration %}<span>{{ course_duration }}</span>{% endif %}
+                {% if course_lessons %}<span>{{ course_lessons }} {{ 'lessons'|t }}</span>{% endif %}
+                {% if course_rating %}<span><i class="fas fa-star" aria-hidden="true"></i> {{ course_rating }}</span>{% endif %}
+              </div>
+            {% endif %}
+            {% if course_summary %}
+              <p class="community-course-card__overlay-summary">{{ course_summary|striptags|slice(0, 135) }}{% if course_summary|striptags|length > 135 %}...{% endif %}</p>
+            {% endif %}
+            <div class="community-course-card__overlay-footer">
+              <span class="community-course-card__price">{% if featured_is_free %}{{ 'Free'|t }}{% else %}{{ course.price }}{% endif %}</span>
+              <span class="community-course-card__cta">{{ 'View Course'|t }}</span>
+            </div>
+          </div>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.introductions ?? true) and introductions %}
+  <section class="community-section community-section--surface community-section--about community-breakout">
+    <div class="community-shell">
+      <div class="community-section__head community-section__head--center">
+        <span class="community-kicker">{{ 'About'|t }}</span>
+        <h2 class="community-section__title">{{ homepage_settings.introductions_section_title }}</h2>
+        <p class="community-section__subtitle">{{ homepage_settings.introductions_section_subtitle }}</p>
+      </div>
+      <div class="community-intro-spotlight">
+        {% for intro in community_intro_primary %}
+        <article class="community-intro-spotlight__card{% if loop.last %} community-intro-spotlight__card--secondary{% endif %}">
+          <div class="community-intro-spotlight__media">
+            {% if intro.image_url %}
+              <img src="{{ intro.image_url }}" alt="{{ intro.title }}">
+            {% else %}
+              <div class="community-intro-item__placeholder"><i class="fas fa-lightbulb"></i></div>
+            {% endif %}
+          </div>
+          <div class="community-intro-spotlight__content">
+            <span class="community-intro-spotlight__index">{{ loop.index < 10 ? '0' ~ loop.index : loop.index }}</span>
+            <h3 class="community-intro-spotlight__title">{{ intro.title }}</h3>
+            <p class="community-intro-spotlight__summary">{{ intro.body|striptags|slice(0, 220) }}{% if intro.body|striptags|length > 220 %}...{% endif %}</p>
+            {% if intro.link_url %}<a href="{{ intro.link_url }}" class="community-link">{{ intro.link_title|default('Learn More'|t) }}</a>{% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      {% if community_intro_rest %}
+      <div class="community-intro-listing" aria-label="{{ 'More resources'|t }}">
+        {% for intro in community_intro_rest %}
+        <a href="{{ intro.link_url ?: path('lms_course.about') }}" class="community-intro-listing__item">
+          <span class="community-intro-listing__title">{{ intro.title }}</span>
+          <span class="community-intro-listing__cta">{{ intro.link_title|default('Open Resource'|t) }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.bundles ?? true) and community_bundles %}
+  <section class="community-section community-shell">
+    <div class="community-section__head community-section__head--center">
+      <span class="community-kicker">{{ 'Bundles'|t }}</span>
+      <h2 class="community-section__title">{{ homepage_settings.bundles_section_title }}</h2>
+      <p class="community-section__subtitle">{{ homepage_settings.bundles_section_subtitle }}</p>
+    </div>
+    <div class="community-bundle-grid">
+      {% for bundle in community_bundles|slice(0, 4) %}
+      {% set bundle_title = bundle.title ?? bundle.name ?? bundle.label ?? ('Learning Bundle'|t) %}
+      {% set bundle_summary = bundle.summary ?? bundle.description ?? '' %}
+      {% set bundle_url = bundle.url ?? path('lms_course.catalog') %}
+      <a href="{{ bundle_url }}" class="community-bundle-card">
+        <h3 class="community-bundle-card__title">{{ bundle_title }}</h3>
+        {% if bundle_summary %}<p class="community-bundle-card__desc">{{ bundle_summary|striptags|slice(0, 100) }}...</p>{% endif %}
+        <span class="community-bundle-card__link">{{ 'View Bundle'|t }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="community-section community-section--surface community-section--testimonials community-breakout">
+    <div class="community-shell">
+      <div class="community-section__head community-section__head--center">
+        <span class="community-kicker">{{ 'Testimonials'|t }}</span>
+        <h2 class="community-section__title">{{ homepage_settings.testimonials_section_title }}</h2>
+        <p class="community-section__subtitle">{{ homepage_settings.testimonials_section_subtitle }}</p>
+      </div>
+      <div class="community-testimonial-grid">
+        {% for item in testimonials|slice(0, 3) %}
+        {% set quote = item.content ?? item.testimonial ?? '' %}
+        {% set author_name = item.name ?? item.author_name ?? ('Learner'|t) %}
+        {% set author_role = item.role ?? item.author_role ?? '' %}
+        {% set author_avatar = item.avatar ?? item.author_avatar ?? '' %}
+        <article class="community-testimonial-card">
+          <p class="community-testimonial-card__quote">{{ quote|striptags }}</p>
+          <div class="community-testimonial-card__head">
+            <span class="community-testimonial-card__avatar-wrap">
+              {% if author_avatar %}
+                <img src="{{ author_avatar }}" alt="{{ author_name }}" class="community-testimonial-card__avatar">
+              {% else %}
+                <span class="community-testimonial-card__avatar community-testimonial-card__avatar--fallback">{{ author_name|slice(0, 1)|upper }}</span>
+              {% endif %}
+            </span>
+            <div class="community-testimonial-card__author">
+              <strong>{{ author_name }}</strong>
+              {% if author_role %}<span>{{ author_role }}</span>{% endif %}
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.training_process ?? true %}
+  <section class="community-section community-section--process community-shell">
+    <div class="community-section__head community-section__head--center">
+      <span class="community-kicker">{{ 'Process'|t }}</span>
+      <h2 class="community-section__title">{{ homepage_settings.training_process_section_title }}</h2>
+      <p class="community-section__subtitle">{{ homepage_settings.training_process_section_subtitle }}</p>
+    </div>
+    <div class="community-process-layout">
+      <div class="community-process-steps">
+        {% set steps = [
+          { num: '01', title: homepage_settings.training_process_step_1_title, desc: homepage_settings.training_process_step_1_description },
+          { num: '02', title: homepage_settings.training_process_step_2_title, desc: homepage_settings.training_process_step_2_description },
+          { num: '03', title: homepage_settings.training_process_step_3_title, desc: homepage_settings.training_process_step_3_description },
+          { num: '04', title: homepage_settings.training_process_step_4_title, desc: homepage_settings.training_process_step_4_description }
+        ] %}
+        {% for step in steps %}
+        <div class="community-step">
+          <span class="community-step__num">{{ step.num }}</span>
+          <div class="community-step__content">
+            <h3 class="community-step__title">{{ step.title }}</h3>
+            <p class="community-step__desc">{{ step.desc }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <aside class="community-process-panel">
+        <h3 class="community-process-panel__title">{{ homepage_settings.training_process_panel_title }}</h3>
+        <p class="community-process-panel__subtitle">{{ homepage_settings.training_process_panel_subtitle }}</p>
+        <ul class="community-feature-list">
+          {% set features = [
+            homepage_settings.training_process_feature_1,
+            homepage_settings.training_process_feature_2,
+            homepage_settings.training_process_feature_3,
+            homepage_settings.training_process_feature_4,
+            homepage_settings.training_process_feature_5,
+            homepage_settings.training_process_feature_6
+          ] %}
+          {% for feature in features %}
+          <li>{{ feature }}</li>
+          {% endfor %}
+        </ul>
+        <a href="{{ path('lms_course.catalog') }}" class="community-btn community-btn--primary">{{ homepage_settings.training_process_panel_cta_text }}</a>
+      </aside>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.news ?? true) and community_news %}
+  <section class="community-section community-section--surface community-section--news community-breakout">
+    <div class="community-shell">
+      <div class="community-section__head community-section__head--split">
+        <div>
+          <span class="community-kicker">{{ 'News'|t }}</span>
+          <h2 class="community-section__title">{{ homepage_settings.news_section_title }}</h2>
+          <p class="community-section__subtitle">{{ homepage_settings.news_section_subtitle }}</p>
+        </div>
+        <a href="{{ path('lms_blog.frontend.collection') }}" class="community-link">{{ homepage_settings.news_section_link_text }}</a>
+      </div>
+      <div class="community-news-grid">
+        {% for item in community_news|slice(0, 3) %}
+        {% set news_url = item.url ?? '#' %}
+        {% set news_image = item.thumbnail_url ?? item.image_url ?? '' %}
+        <article class="community-news-card community-news-card--visual">
+          <a href="{{ news_url }}" class="community-news-card__media">
+            {% if news_image %}
+              <img src="{{ news_image }}" alt="{{ item.title }}" class="community-news-card__thumb">
+            {% else %}
+              <div class="community-course-card__thumb-placeholder"><i class="fas fa-newspaper"></i></div>
+            {% endif %}
+            <div class="community-news-card__overlay">
+              {% if item.date %}<time class="community-news-card__date">{{ item.date }}</time>{% endif %}
+              <h3 class="community-news-card__overlay-title">{{ item.title }}</h3>
+              {% if item.summary %}<p class="community-news-card__summary">{{ item.summary|striptags|slice(0, 150) }}{% if item.summary|striptags|length > 150 %}...{% endif %}</p>{% endif %}
+              <span class="community-news-card__cta">{{ 'Read Story'|t }}</span>
+            </div>
+          </a>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.membership ?? true) and community_memberships %}
+  <section class="community-section community-shell">
+    <div class="community-section__head community-section__head--center">
+      <span class="community-kicker">{{ 'Membership'|t }}</span>
+      <h2 class="community-section__title">{{ homepage_settings.membership_section_title }}</h2>
+      <p class="community-section__subtitle">{{ homepage_settings.membership_section_subtitle }}</p>
+    </div>
+    <div class="community-plan-grid">
+      {% for plan in community_memberships %}
+      {% set is_recommended = plan.recommended ?? plan.is_recommended ?? false %}
+      {% set is_free_plan = (plan.is_free ?? false) or ((plan.price ?? 0) <= 0) %}
+      {% set plan_url = plan.url ?? path('lms_course.pricing') %}
+      {% set plan_features = plan.features ?? [] %}
+      {% set plan_supporting_text = is_free_plan ? homepage_settings.membership_free_supporting_text : homepage_settings.membership_paid_supporting_text %}
+      <article class="community-plan-card{% if is_recommended %} community-plan-card--recommended{% endif %}">
+        <div class="community-plan-card__header">
+          {% if is_recommended %}<span class="community-plan-card__badge">{{ homepage_settings.membership_recommended_badge_text }}</span>{% endif %}
+          <h3 class="community-plan-card__title">{{ plan.name }}</h3>
+          {% if plan.description %}
+            <p class="community-plan-card__description">{{ plan.description|striptags|slice(0, 120) }}{% if plan.description|striptags|length > 120 %}...{% endif %}</p>
+          {% elseif plan_supporting_text %}
+            <p class="community-plan-card__description">{{ plan_supporting_text }}</p>
+          {% endif %}
+        </div>
+        <div class="community-plan-card__price">
+          {% if is_free_plan %}
+            <span class="community-plan-card__amount">{{ homepage_settings.membership_free_price_text }}</span>
+          {% else %}
+            {% set currency_symbol = '$' %}
+            {% if plan.currency is defined and plan.currency == 'EUR' %}
+              {% set currency_symbol = 'EUR ' %}
+            {% elseif plan.currency is defined and plan.currency == 'GBP' %}
+              {% set currency_symbol = 'GBP ' %}
+            {% endif %}
+            <span class="community-plan-card__amount">{{ currency_symbol }}{{ (plan.price ?? 0)|number_format(2, '.', ',') }}</span>
+          {% endif %}
+          {% if plan.billing_cycle is defined and plan.billing_cycle %}<span class="community-plan-card__period">/ {{ plan.billing_cycle|replace({'_': ' '})|title }}</span>{% endif %}
+        </div>
+        {% if plan_features %}
+        <ul class="community-plan-card__features">
+          {% for feature in plan_features %}<li><i class="fas fa-check-circle" aria-hidden="true"></i><span>{{ feature }}</span></li>{% endfor %}
+        </ul>
+        {% endif %}
+        <div class="community-plan-card__actions">
+          <a href="{{ plan_url }}" class="community-btn community-btn--primary community-btn--block">
+            {% if is_free_plan %}
+              {{ homepage_settings.membership_free_cta_text }}
+            {% elseif is_recommended %}
+              {{ homepage_settings.membership_recommended_cta_text }}
+            {% else %}
+              {{ homepage_settings.membership_paid_cta_text }}
+            {% endif %}
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.faqs ?? true) and faqs %}
+  <section class="community-section community-section--surface community-section--faq community-breakout">
+    <div class="community-shell">
+      <div class="community-section__head community-section__head--center">
+        <span class="community-kicker">{{ 'FAQ'|t }}</span>
+        <h2 class="community-section__title">{{ homepage_settings.faq_section_title }}</h2>
+        <p class="community-section__subtitle">{{ homepage_settings.faq_section_subtitle }}</p>
+      </div>
+      <div class="community-faq" id="communityFaqAccordion">
+        {% for faq in faqs %}
+        <article class="community-faq__item">
+          <button class="community-faq__question" type="button" data-bs-toggle="collapse" data-bs-target="#communityFaq{{ loop.index }}" aria-expanded="{{ loop.first ? 'true' : 'false' }}" aria-controls="communityFaq{{ loop.index }}">
+            <span class="community-faq__question-index">{{ loop.index < 10 ? '0' ~ loop.index : loop.index }}</span>
+            <span class="community-faq__question-text">{{ faq.question }}</span>
+            <span class="community-faq__question-icon"><i class="fas fa-chevron-down" aria-hidden="true"></i></span>
+          </button>
+          <div id="communityFaq{{ loop.index }}" class="community-faq__answer collapse{% if loop.first %} show{% endif %}" data-bs-parent="#communityFaqAccordion">
+            <div class="community-faq__answer-body">{{ faq.answer|raw }}</div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.cta_guest ?? true %}
+  <section class="community-cta community-breakout">
+    <div class="community-shell">
+      <div class="community-cta__panel community-cta__inner">
+        <div class="community-cta__copy">
+          <h2 class="community-cta__title">{{ homepage_settings.cta_banner_title }}</h2>
+          <p class="community-cta__description">{{ homepage_settings.cta_banner_description }}</p>
+          <div class="community-cta__actions">
+            {% if not logged_in %}
+              <a href="{{ path('user.register') }}" class="community-btn community-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+            {% else %}
+              <a href="{{ path('lms_course.catalog') }}" class="community-btn community-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+            {% endif %}
+            <a href="{{ path('lms_course.catalog') }}" class="community-btn community-btn--ghost">{{ logged_in ? homepage_settings.cta_logged_in_secondary_text : homepage_settings.cta_secondary_text }}</a>
+          </div>
+        </div>
+        <ul class="community-cta__metrics" aria-label="{{ 'Community highlights'|t }}">
+          <li><strong>{{ stats.students }}</strong><span>{{ stats.students_label }}</span></li>
+          <li><strong>{{ stats.courses }}</strong><span>{{ stats.courses_label }}</span></li>
+          <li><strong>{{ stats.satisfaction }}</strong><span>{{ stats.satisfaction_label }}</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</div>

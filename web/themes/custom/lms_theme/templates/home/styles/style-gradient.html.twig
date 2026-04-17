@@ -1,0 +1,452 @@
+{{ attach_library('lms_theme/homepage_gradient') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+{% set gradient_bundles = bundles ?? course_bundles ?? [] %}
+{% set gradient_news = latest_news ?? news_items ?? [] %}
+{% set gradient_memberships = memberships ?? membership_plans ?? [] %}
+{% set gradient_intro_primary = introductions|default([])|slice(0, 2) %}
+{% set gradient_intro_rest = introductions|default([])|slice(2) %}
+
+<div class="gradient-home">
+  {% if homepage_sections.hero ?? true %}
+  <section class="gradient-hero gradient-breakout">
+    <div class="gradient-hero__bg"></div>
+    <div class="gradient-hero__frame">
+      {% if slideshows %}
+      <div id="gradientHeroCarousel" class="carousel slide gradient-carousel" data-bs-ride="carousel" data-bs-interval="6400" data-bs-pause="false" data-bs-touch="true" data-bs-wrap="true">
+        {% if slideshows|length > 1 %}
+        <div class="carousel-indicators gradient-carousel__indicators">
+          {% for slide in slideshows %}
+            <button type="button" data-bs-target="#gradientHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="gradient-carousel__indicator{% if loop.first %} active{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="carousel-inner gradient-carousel__inner">
+          {% for slide in slideshows %}
+          <div class="carousel-item gradient-carousel__item{% if loop.first %} active{% endif %}">
+            <div class="gradient-carousel__veil"></div>
+            <div class="gradient-shell gradient-hero__content">
+              <div class="gradient-hero__layout">
+                <div class="gradient-hero__panel">
+                  <span class="gradient-eyebrow">{{ site_name|default('EverLMS') }}</span>
+                  <h1 class="gradient-hero__title">{{ slide.heading }}</h1>
+                  <p class="gradient-hero__subtitle">{{ slide.subheading|striptags }}</p>
+                  <div class="gradient-hero__actions">
+                    <a href="{{ slide.link_url|default(path('lms_course.catalog')) }}" class="gradient-btn gradient-btn--primary">{{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}</a>
+                    <a href="{{ path('lms_course.catalog') }}" class="gradient-btn gradient-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+                  </div>
+                </div>
+                {% if slide.image_url %}
+                <div class="gradient-hero__media-wrap">
+                  <figure class="gradient-hero__media">
+                    <img src="{{ slide.image_url }}" alt="{{ slide.heading }}" class="gradient-hero__media-image">
+                  </figure>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="gradient-shell gradient-hero__fallback">
+        <div class="gradient-hero__layout">
+          <div class="gradient-hero__panel">
+            <span class="gradient-eyebrow">{{ site_name|default('EverLMS') }}</span>
+            <h1 class="gradient-hero__title">{{ homepage_settings.hero_fallback_heading }}</h1>
+            <p class="gradient-hero__subtitle">{{ homepage_settings.hero_fallback_subtext }}</p>
+            <div class="gradient-hero__actions">
+              <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="gradient-btn gradient-btn--primary">{{ homepage_settings.hero_fallback_cta_text }}</a>
+              <a href="{{ path('lms_course.catalog') }}" class="gradient-btn gradient-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if homepage_sections.stats ?? true %}
+    <div class="gradient-stats gradient-shell">
+      <div class="gradient-stats__grid">
+        <div class="gradient-stat"><span class="gradient-stat__value">{{ stats.courses }}</span><span class="gradient-stat__label">{{ stats.courses_label }}</span></div>
+        <div class="gradient-stat"><span class="gradient-stat__value">{{ stats.students }}</span><span class="gradient-stat__label">{{ stats.students_label }}</span></div>
+        <div class="gradient-stat"><span class="gradient-stat__value">{{ stats.satisfaction }}</span><span class="gradient-stat__label">{{ stats.satisfaction_label }}</span></div>
+        <div class="gradient-stat"><span class="gradient-stat__value">{{ categories|length }}</span><span class="gradient-stat__label">{{ 'Domains'|t }}</span></div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+  <section class="gradient-section gradient-shell">
+    <div class="gradient-section__head gradient-section__head--split">
+      <div>
+        <span class="gradient-kicker">{{ 'Continue'|t }}</span>
+        <h2 class="gradient-section__title">{{ 'Continue Learning'|t }}</h2>
+      </div>
+      <a href="{{ path('lms_progress.dashboard') }}" class="gradient-link">{{ 'Open Dashboard'|t }}</a>
+    </div>
+    <div class="gradient-progress-grid">
+      {% for item in my_courses|slice(0, 3) %}
+      <article class="gradient-progress-card">
+        <div class="gradient-progress-card__thumb">
+          {% if item.course.thumbnail_url %}
+            <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}">
+          {% else %}
+            <div class="gradient-progress-card__placeholder"><i class="fas fa-book-open"></i></div>
+          {% endif %}
+        </div>
+        <div class="gradient-progress-card__body">
+          <h3 class="gradient-progress-card__title"><a href="{{ item.course.continue_url }}">{{ item.course.name }}</a></h3>
+          <div class="gradient-progress"><div class="gradient-progress__fill lms-learning-progress__fill" data-progress="{{ item.progress }}" style="--progress: {{ item.progress }}%;"></div></div>
+          <div class="gradient-progress-card__meta">{{ item.progress }}% {{ 'Completed'|t }}</div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="gradient-section gradient-section--surface gradient-section--categories gradient-shell">
+    <div class="gradient-section__head gradient-section__head--center">
+      <span class="gradient-kicker">{{ 'Categories'|t }}</span>
+      <h2 class="gradient-section__title">{{ homepage_settings.categories_section_title }}</h2>
+      <p class="gradient-section__subtitle">{{ homepage_settings.categories_section_subtitle }}</p>
+    </div>
+    <div class="gradient-category-grid">
+      {% for category in categories %}
+      {% set category_url = category.url ?: ((category.entity.id ?? null) ? (path('lms_course.catalog') ~ '?category=' ~ category.entity.id) : path('lms_course.catalog')) %}
+      <a href="{{ category_url }}" class="gradient-category-card">
+        <div class="gradient-category-card__icon">
+          {% if category.icon_url %}
+            <img src="{{ category.icon_url }}" alt="{{ category.name }}">
+          {% elseif category.thumbnail_url %}
+            <img src="{{ category.thumbnail_url }}" alt="{{ category.name }}">
+          {% elseif category.image_url %}
+            <img src="{{ category.image_url }}" alt="{{ category.name }}">
+          {% else %}
+            <i class="fas fa-shapes"></i>
+          {% endif %}
+        </div>
+        <h3 class="gradient-category-card__name">{{ category.name }}</h3>
+        {% if category.course_count is defined %}<span class="gradient-category-card__count">{{ category.course_count }} {{ 'courses'|t }}</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="gradient-section gradient-section--featured gradient-shell">
+    <div class="gradient-section__head gradient-section__head--split">
+      <div>
+        <span class="gradient-kicker">{{ 'Featured'|t }}</span>
+        <h2 class="gradient-section__title">{{ homepage_settings.featured_section_title }}</h2>
+        <p class="gradient-section__subtitle">{{ homepage_settings.featured_section_subtitle }}</p>
+      </div>
+      <a href="{{ path('lms_course.catalog') }}" class="gradient-link">{{ homepage_settings.featured_section_link_text }}</a>
+    </div>
+    <div class="gradient-course-grid">
+      {% for course in featured_courses|slice(0, 6) %}
+      {% set featured_is_free = (course.price_raw ?? 0) <= 0 or (course.is_free ?? false) %}
+      {% set featured_category = course.category ?? course.category_name ?? '' %}
+      {% set featured_summary = course.summary ?? course.short_description ?? course.description ?? '' %}
+      {% set featured_summary_plain = featured_summary|striptags %}
+      <article class="gradient-course-card gradient-course-card--visual">
+        <a href="{{ course.url }}" class="gradient-course-card__thumb-wrap gradient-course-card__thumb-wrap--overlay">
+          {% if course.thumbnail_url %}
+            <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" class="gradient-course-card__thumb">
+          {% else %}
+            <div class="gradient-course-card__thumb-placeholder"><i class="fas fa-graduation-cap"></i></div>
+          {% endif %}
+          <div class="gradient-course-card__overlay">
+            {% if featured_category %}<span class="gradient-course-card__cat gradient-course-card__cat--overlay">{{ featured_category }}</span>{% endif %}
+            <h3 class="gradient-course-card__overlay-title">{{ course.name }}</h3>
+            {% if course.instructor_name %}<p class="gradient-course-card__overlay-instructor">{{ course.instructor_name }}</p>{% endif %}
+            {% if featured_summary_plain %}<p class="gradient-course-card__overlay-summary">{{ featured_summary_plain|slice(0, 120) }}{% if featured_summary_plain|length > 120 %}...{% endif %}</p>{% endif %}
+            <div class="gradient-course-card__overlay-footer">
+              {% if course.price is defined %}<span class="gradient-course-card__price">{% if featured_is_free %}{{ 'Free'|t }}{% else %}{{ course.price }}{% endif %}</span>{% endif %}
+              <span class="gradient-course-card__cta">{{ 'View Course'|t }}</span>
+            </div>
+          </div>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.introductions ?? true) and introductions %}
+  <section class="gradient-section gradient-section--surface gradient-section--about gradient-shell">
+    <div class="gradient-section__head gradient-section__head--center">
+      <span class="gradient-kicker">{{ 'About'|t }}</span>
+      <h2 class="gradient-section__title">{{ homepage_settings.introductions_section_title }}</h2>
+      <p class="gradient-section__subtitle">{{ homepage_settings.introductions_section_subtitle }}</p>
+    </div>
+    <div class="gradient-intro-list">
+      {% for intro in gradient_intro_primary %}
+      <article class="gradient-intro-item{% if loop.index is even %} gradient-intro-item--alt{% endif %}">
+        <div class="gradient-intro-item__media">
+          {% if intro.image_url %}<img src="{{ intro.image_url }}" alt="{{ intro.title }}">{% else %}<div class="gradient-intro-item__placeholder"><i class="fas fa-lightbulb"></i></div>{% endif %}
+        </div>
+        <div class="gradient-intro-item__content">
+          <h3 class="gradient-intro-item__title">{{ intro.title }}</h3>
+          <div class="gradient-intro-item__body">{{ intro.body|raw }}</div>
+          {% if intro.link_url %}<a href="{{ intro.link_url }}" class="gradient-link">{{ intro.link_title|default('Learn More'|t) }}</a>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% if gradient_intro_rest %}
+    <div class="gradient-intro-listing">
+      {% for intro in gradient_intro_rest %}
+      {% set intro_link = intro.link_url ?: path('lms_course.catalog') %}
+      {% set intro_body_plain = intro.body|striptags %}
+      <a href="{{ intro_link }}" class="gradient-intro-listing__item">
+        <span class="gradient-intro-listing__index">{{ '%02d'|format(loop.index + (gradient_intro_primary|length)) }}</span>
+        <strong class="gradient-intro-listing__title">{{ intro.title }}</strong>
+        {% if intro_body_plain %}<span class="gradient-intro-listing__summary">{{ intro_body_plain|slice(0, 140) }}{% if intro_body_plain|length > 140 %}...{% endif %}</span>{% endif %}
+        <span class="gradient-intro-listing__cta">{{ intro.link_title|default('Learn More'|t) }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.bundles ?? true) and gradient_bundles %}
+  <section class="gradient-section gradient-shell">
+    <div class="gradient-section__head gradient-section__head--center">
+      <span class="gradient-kicker">{{ 'Bundles'|t }}</span>
+      <h2 class="gradient-section__title">{{ homepage_settings.bundles_section_title }}</h2>
+      <p class="gradient-section__subtitle">{{ homepage_settings.bundles_section_subtitle }}</p>
+    </div>
+    <div class="gradient-bundle-grid">
+      {% for bundle in gradient_bundles|slice(0, 4) %}
+      {% set bundle_title = bundle.title ?? bundle.name ?? bundle.label ?? ('Learning Bundle'|t) %}
+      {% set bundle_summary = bundle.summary ?? bundle.description ?? '' %}
+      {% set bundle_url = bundle.url ?: path('lms_course.catalog') %}
+      <a href="{{ bundle_url }}" class="gradient-bundle-card">
+        <h3 class="gradient-bundle-card__title">{{ bundle_title }}</h3>
+        {% if bundle_summary %}<p class="gradient-bundle-card__desc">{{ bundle_summary|striptags|slice(0, 100) }}{% if bundle_summary|striptags|length > 100 %}...{% endif %}</p>{% endif %}
+        <span class="gradient-bundle-card__link">{{ 'View Bundle'|t }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="gradient-section gradient-section--surface gradient-section--testimonials gradient-shell">
+    <div class="gradient-section__head gradient-section__head--center">
+      <span class="gradient-kicker">{{ 'Testimonials'|t }}</span>
+      <h2 class="gradient-section__title">{{ homepage_settings.testimonials_section_title }}</h2>
+      <p class="gradient-section__subtitle">{{ homepage_settings.testimonials_section_subtitle }}</p>
+    </div>
+    <div class="gradient-testimonial-grid">
+      {% for item in testimonials %}
+      {% set testimonial_quote = item.content ?? item.testimonial ?? '' %}
+      {% set testimonial_name = item.name ?? item.author_name ?? ('Learner'|t) %}
+      {% set testimonial_role = item.role ?? item.author_role ?? '' %}
+      {% set testimonial_avatar = item.avatar ?? item.author_avatar ?? item.avatar_url ?? '' %}
+      <article class="gradient-testimonial-card">
+        <div class="gradient-testimonial-card__head">
+          <span class="gradient-testimonial-card__avatar-wrap">
+            {% if testimonial_avatar %}
+              <img src="{{ testimonial_avatar }}" alt="{{ testimonial_name }}" class="gradient-testimonial-card__avatar">
+            {% else %}
+              <span class="gradient-testimonial-card__avatar gradient-testimonial-card__avatar--fallback">{{ testimonial_name|slice(0, 1)|upper }}</span>
+            {% endif %}
+          </span>
+          <div class="gradient-testimonial-card__author">
+            <strong>{{ testimonial_name }}</strong>
+            {% if testimonial_role %}<span>{{ testimonial_role }}</span>{% endif %}
+          </div>
+        </div>
+        <p class="gradient-testimonial-card__quote">{{ testimonial_quote|striptags }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.training_process ?? true %}
+  <section class="gradient-section gradient-shell">
+    <div class="gradient-section__head gradient-section__head--center">
+      <span class="gradient-kicker">{{ 'Process'|t }}</span>
+      <h2 class="gradient-section__title">{{ homepage_settings.training_process_section_title }}</h2>
+      <p class="gradient-section__subtitle">{{ homepage_settings.training_process_section_subtitle }}</p>
+    </div>
+    <div class="gradient-process-layout">
+      <div class="gradient-process-steps">
+        {% set steps = [
+          { num: '01', title: homepage_settings.training_process_step_1_title, desc: homepage_settings.training_process_step_1_description },
+          { num: '02', title: homepage_settings.training_process_step_2_title, desc: homepage_settings.training_process_step_2_description },
+          { num: '03', title: homepage_settings.training_process_step_3_title, desc: homepage_settings.training_process_step_3_description },
+          { num: '04', title: homepage_settings.training_process_step_4_title, desc: homepage_settings.training_process_step_4_description }
+        ] %}
+        {% for step in steps %}
+        <div class="gradient-step">
+          <span class="gradient-step__num">{{ step.num }}</span>
+          <div class="gradient-step__content">
+            <h3 class="gradient-step__title">{{ step.title }}</h3>
+            <p class="gradient-step__desc">{{ step.desc }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <aside class="gradient-process-panel">
+        <h3 class="gradient-process-panel__title">{{ homepage_settings.training_process_panel_title }}</h3>
+        <p class="gradient-process-panel__subtitle">{{ homepage_settings.training_process_panel_subtitle }}</p>
+        <ul class="gradient-feature-list">
+          {% set features = [
+            homepage_settings.training_process_feature_1,
+            homepage_settings.training_process_feature_2,
+            homepage_settings.training_process_feature_3,
+            homepage_settings.training_process_feature_4,
+            homepage_settings.training_process_feature_5,
+            homepage_settings.training_process_feature_6
+          ] %}
+          {% for feature in features %}
+          <li>{{ feature }}</li>
+          {% endfor %}
+        </ul>
+        <a href="{{ path('lms_course.catalog') }}" class="gradient-btn gradient-btn--primary">{{ homepage_settings.training_process_panel_cta_text }}</a>
+      </aside>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.news ?? true) and gradient_news %}
+  <section class="gradient-section gradient-section--surface gradient-section--news gradient-shell">
+    <div class="gradient-section__head gradient-section__head--split">
+      <div>
+        <span class="gradient-kicker">{{ 'News'|t }}</span>
+        <h2 class="gradient-section__title">{{ homepage_settings.news_section_title }}</h2>
+        <p class="gradient-section__subtitle">{{ homepage_settings.news_section_subtitle }}</p>
+      </div>
+      <a href="{{ path('lms_blog.frontend.collection') }}" class="gradient-link">{{ homepage_settings.news_section_link_text }}</a>
+    </div>
+    <div class="gradient-news-grid">
+      {% for item in gradient_news %}
+      {% set news_image = item.thumbnail_url ?? item.image_url ?? '' %}
+      {% set news_url = item.url ?: path('lms_blog.frontend.collection') %}
+      {% set news_summary = item.summary|default('')|striptags %}
+      <article class="gradient-news-card gradient-news-card--visual">
+        <a href="{{ news_url }}" class="gradient-news-card__media">
+          {% if news_image %}
+            <img src="{{ news_image }}" alt="{{ item.title }}" class="gradient-news-card__thumb">
+          {% else %}
+            <div class="gradient-news-card__thumb gradient-news-card__thumb--placeholder"><i class="fas fa-newspaper"></i></div>
+          {% endif %}
+          <div class="gradient-news-card__overlay">
+            {% if item.date %}<time class="gradient-news-card__date">{{ item.date }}</time>{% endif %}
+            <h3 class="gradient-news-card__overlay-title">{{ item.title }}</h3>
+            {% if news_summary %}<p class="gradient-news-card__summary">{{ news_summary|slice(0, 130) }}{% if news_summary|length > 130 %}...{% endif %}</p>{% endif %}
+            <span class="gradient-news-card__cta">{{ 'Read More'|t }}</span>
+          </div>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.membership ?? true) and gradient_memberships %}
+  <section class="gradient-section gradient-section--membership gradient-shell">
+    <div class="gradient-section__head gradient-section__head--center">
+      <span class="gradient-kicker">{{ 'Membership'|t }}</span>
+      <h2 class="gradient-section__title">{{ homepage_settings.membership_section_title }}</h2>
+      <p class="gradient-section__subtitle">{{ homepage_settings.membership_section_subtitle }}</p>
+    </div>
+    <div class="gradient-plan-grid">
+      {% for plan in gradient_memberships %}
+      {% set is_recommended = plan.recommended ?? plan.is_recommended ?? false %}
+      {% set is_free_plan = (plan.is_free ?? false) or ((plan.price ?? 0) <= 0) %}
+      {% set plan_url = plan.url ?: path('lms_course.pricing') %}
+      {% set plan_features = plan.features ?? [] %}
+      {% set plan_description = plan.description ?? '' %}
+      <article class="gradient-plan-card{% if is_recommended %} gradient-plan-card--recommended{% endif %}">
+        <div class="gradient-plan-card__header">
+          {% if is_recommended %}<span class="gradient-plan-card__badge">{{ homepage_settings.membership_recommended_badge_text }}</span>{% endif %}
+          <h3 class="gradient-plan-card__title">{{ plan.name }}</h3>
+          {% if plan_description %}<p class="gradient-plan-card__description">{{ plan_description|striptags }}</p>{% endif %}
+        </div>
+        <div class="gradient-plan-card__price">
+          {% if is_free_plan %}
+            <span class="gradient-plan-card__amount">{{ homepage_settings.membership_free_price_text }}</span>
+          {% elseif plan.price_display %}
+            <span class="gradient-plan-card__amount">{{ plan.price_display }}</span>
+          {% elseif plan.price is defined %}
+            <span class="gradient-plan-card__amount">${{ (plan.price ?? 0)|number_format(2, '.', ',') }}</span>
+          {% endif %}
+          {% if plan.period %}
+            <span class="gradient-plan-card__period">/ {{ plan.period }}</span>
+          {% elseif plan.billing_cycle is defined and plan.billing_cycle %}
+            <span class="gradient-plan-card__period">/ {{ plan.billing_cycle|replace({'_': ' '})|title }}</span>
+          {% endif %}
+        </div>
+        {% if plan_features %}
+        <ul class="gradient-plan-card__features">
+          {% for feature in plan_features %}<li>{{ feature }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+        <div class="gradient-plan-card__actions">
+          <a href="{{ plan_url }}" class="gradient-btn gradient-btn--primary gradient-btn--block">
+            {% if is_free_plan %}
+              {{ homepage_settings.membership_free_cta_text }}
+            {% elseif is_recommended %}
+              {{ homepage_settings.membership_recommended_cta_text }}
+            {% else %}
+              {{ homepage_settings.membership_paid_cta_text }}
+            {% endif %}
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.faqs ?? homepage_sections.faq ?? true) and faqs %}
+  <section class="gradient-section gradient-section--surface gradient-section--faq gradient-shell">
+    <div class="gradient-section__head gradient-section__head--center">
+      <span class="gradient-kicker">{{ 'FAQ'|t }}</span>
+      <h2 class="gradient-section__title">{{ homepage_settings.faq_section_title }}</h2>
+      <p class="gradient-section__subtitle">{{ homepage_settings.faq_section_subtitle }}</p>
+    </div>
+    <div class="gradient-faq" id="gradientFaqAccordion">
+      {% for faq in faqs %}
+      <article class="gradient-faq__item">
+        <button class="gradient-faq__question" type="button" data-bs-toggle="collapse" data-bs-target="#gradientFaq{{ loop.index }}" aria-expanded="{{ loop.first ? 'true' : 'false' }}" aria-controls="gradientFaq{{ loop.index }}">
+          <span>{{ faq.question }}</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div id="gradientFaq{{ loop.index }}" class="gradient-faq__answer collapse{% if loop.first %} show{% endif %}" data-bs-parent="#gradientFaqAccordion">
+          <div class="gradient-faq__answer-body">{{ faq.answer|raw }}</div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.cta_guest ?? true %}
+  <section class="gradient-cta gradient-breakout">
+    <div class="gradient-shell gradient-cta__inner">
+      <h2 class="gradient-cta__title">{{ homepage_settings.cta_banner_title }}</h2>
+      <p class="gradient-cta__description">{{ homepage_settings.cta_banner_description }}</p>
+      <div class="gradient-cta__actions">
+        {% if not logged_in %}
+          <a href="{{ path('user.register') }}" class="gradient-btn gradient-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+        {% else %}
+          <a href="{{ path('lms_course.catalog') }}" class="gradient-btn gradient-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+        {% endif %}
+        <a href="{{ path('lms_course.catalog') }}" class="gradient-btn gradient-btn--ghost">{{ homepage_settings.cta_secondary_text }}</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</div>

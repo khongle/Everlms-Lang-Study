@@ -1,0 +1,236 @@
+.lms-certificates-page {
+    position: relative;
+    padding-top: $spacer-xl;
+    padding-bottom: $spacer-xxl;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0 0 auto;
+        height: 34rem;
+        background:
+            radial-gradient(circle at top right, rgba(212, 175, 55, 0.22), transparent 42%),
+            radial-gradient(circle at top left, rgba(255, 225, 148, 0.12), transparent 34%);
+        pointer-events: none;
+    }
+
+    .container {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+.lms-certificates-page__hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(18rem, 0.95fr);
+    gap: $spacer-xl;
+    align-items: end;
+    margin-bottom: $spacer-xl;
+
+    @media (max-width: $breakpoint-lg) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.lms-certificates-page__hero-copy {
+    max-width: 38rem;
+}
+
+.lms-certificates-page__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    margin-bottom: $spacer-md;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.24);
+    color: #f5d98c;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.lms-certificates-page__title {
+    margin: 0 0 $spacer-sm;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+}
+
+.lms-certificates-page__subtitle {
+    margin: 0;
+    color: $color-text-secondary;
+    font-size: 1rem;
+}
+
+.lms-certificates-page__summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $spacer-md;
+
+    @media (max-width: $breakpoint-sm) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.lms-certificates-page__summary-card,
+.lms-certificate-card,
+.lms-certificates-empty {
+    @include glass-card;
+    background: rgba(13, 17, 23, 0.82);
+    box-shadow: $shadow-glass;
+}
+
+.lms-certificates-page__summary-card {
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-xs;
+    padding: $spacer-lg;
+}
+
+.lms-certificates-page__summary-value {
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    font-weight: $font-weight-extrabold;
+    color: #f8e7a1;
+}
+
+.lms-certificates-page__summary-label {
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.lms-certificates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+    gap: $spacer-lg;
+}
+
+.lms-certificate-card {
+    padding: $spacer-lg;
+    border-color: rgba(212, 175, 55, 0.18);
+}
+
+.lms-certificate-card__preview {
+    padding: $spacer-sm;
+    border-radius: $radius-xl;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(26, 26, 26, 0.92));
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    margin-bottom: $spacer-lg;
+}
+
+.lms-certificate-card__frame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-sm;
+    min-height: 16rem;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border-radius: calc($radius-xl - 0.2rem);
+    background:
+        radial-gradient(circle at bottom right, rgba(212, 175, 55, 0.12), transparent 32%),
+        linear-gradient(160deg, rgba(11, 14, 20, 0.96), rgba(24, 19, 8, 0.96));
+    border: 1px solid rgba(212, 175, 55, 0.18);
+    color: #f8e7a1;
+}
+
+.lms-certificate-card__brand,
+.lms-certificate-card__serial {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.lms-certificate-card__brand {
+    color: rgba(248, 231, 161, 0.9);
+}
+
+.lms-certificate-card__heading {
+    max-width: 12rem;
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    line-height: 1.05;
+}
+
+.lms-certificate-card__course {
+    margin-top: auto;
+    font-size: 1.3rem;
+    font-weight: $font-weight-extrabold;
+    color: #fff7d6;
+}
+
+.lms-certificate-card__track {
+    color: rgba(248, 231, 161, 0.78);
+    font-size: $font-size-sm;
+}
+
+.lms-certificate-card__serial {
+    color: rgba(248, 231, 161, 0.6);
+}
+
+.lms-certificate-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-lg;
+}
+
+.lms-certificate-card__meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $spacer-md;
+
+    @media (max-width: $breakpoint-sm) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.lms-certificate-card__meta-label {
+    display: block;
+    margin-bottom: $spacer-xs;
+    color: $color-text-secondary;
+    font-size: $font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.lms-certificate-card__meta-value {
+    display: block;
+    color: $color-text-primary;
+    font-weight: $font-weight-semibold;
+
+    &--mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: $font-size-sm;
+    }
+}
+
+.lms-certificate-card__button {
+    width: 100%;
+    min-height: 2.9rem;
+    border-radius: 999px;
+    text-decoration: none;
+}
+
+.lms-certificates-empty {
+    padding: clamp(2.5rem, 5vw, 4rem) $spacer-lg;
+    text-align: center;
+    border-style: dashed;
+
+    i {
+        display: block;
+        margin-bottom: $spacer-md;
+        font-size: 2.8rem;
+        color: #d4af37;
+    }
+
+    h3 {
+        margin: 0 0 $spacer-sm;
+        color: $color-text-primary;
+    }
+
+    p {
+        margin: 0;
+        color: $color-text-secondary;
+    }
+}

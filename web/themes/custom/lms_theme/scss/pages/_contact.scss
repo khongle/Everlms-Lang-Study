@@ -1,0 +1,377 @@
+// EverLMS — Contact Page
+// ========================================
+
+.lms-contact-page {
+  position: relative;
+  padding: 4rem 0 5rem;
+  background:
+    radial-gradient(circle at top left, rgba($color-accent-primary, 0.18), transparent 28%),
+    radial-gradient(circle at 90% 15%, rgba($color-accent-info, 0.18), transparent 24%),
+    linear-gradient(180deg, #0a111d 0%, #0d1117 55%, #090f18 100%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 95%);
+    pointer-events: none;
+  }
+}
+
+.lms-contact-hero,
+.lms-contact-info-grid,
+.lms-contact-layout {
+  position: relative;
+  z-index: 1;
+}
+
+.lms-contact-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.9fr);
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+
+  &__copy,
+  &__panel {
+    padding: clamp(1.5rem, 2vw, 2rem);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(10, 15, 24, 0.78);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  }
+
+  &__copy {
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: -15%;
+      bottom: -10%;
+      width: 240px;
+      height: 240px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba($color-accent-secondary, 0.26), transparent 68%);
+      pointer-events: none;
+    }
+  }
+
+  &__eyebrow,
+  &__panel-eyebrow {
+    display: inline-flex;
+    margin-bottom: 0.85rem;
+    font-size: 0.74rem;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  &__eyebrow {
+    color: #8fdcff;
+  }
+
+  &__panel-eyebrow {
+    color: #c6b8ff;
+  }
+
+  h1,
+  h2 {
+    margin: 0;
+    color: #fff;
+  }
+
+  h1 {
+    font-size: clamp(2.25rem, 4vw, 3.75rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  h2 {
+    font-size: 1.45rem;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    margin: 1rem 0 0;
+    max-width: 40rem;
+    color: rgba(230, 237, 243, 0.75);
+    font-size: 1rem;
+  }
+
+  &__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.4rem;
+
+    span {
+      display: inline-flex;
+      gap: 0.35rem;
+      align-items: center;
+      padding: 0.6rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: rgba(230, 237, 243, 0.76);
+      font-size: 0.9rem;
+    }
+
+    strong {
+      color: #fff;
+      font-weight: $font-weight-semibold;
+    }
+  }
+
+  &__actions,
+  &__panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 1.4rem;
+  }
+
+  &__panel-list {
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      position: relative;
+      padding-left: 1.35rem;
+      margin-bottom: 0.8rem;
+      color: rgba(230, 237, 243, 0.74);
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.55rem;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 999px;
+        background: linear-gradient(135deg, $color-accent-info, $color-accent-secondary);
+      }
+    }
+  }
+}
+
+.lms-contact-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.lms-contact-info-card {
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 18, 28, 0.76);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+
+  &__icon {
+    width: 3rem;
+    height: 3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba($color-accent-info, 0.22), rgba($color-accent-secondary, 0.18));
+    color: #fff;
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #9bd9ff;
+  }
+
+  a,
+  strong,
+  span {
+    display: block;
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: $font-weight-semibold;
+    text-decoration: none;
+  }
+
+  p {
+    margin: 0.75rem 0 0;
+    color: rgba(230, 237, 243, 0.72);
+    font-size: 0.94rem;
+  }
+}
+
+.lms-contact-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+  gap: 1rem;
+}
+
+.lms-contact-map-card,
+.lms-contact-action-card {
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(11, 17, 27, 0.82);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.2);
+}
+
+.lms-contact-map-card {
+  min-height: 100%;
+
+  iframe,
+  &__placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 380px;
+    border: 0;
+  }
+
+  &__placeholder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    background:
+      radial-gradient(circle at top right, rgba($color-accent-info, 0.22), transparent 35%),
+      linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(17, 24, 39, 0.82));
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 0.75rem;
+    font-size: 0.74rem;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #c6b8ff;
+  }
+
+  h2 {
+    margin: 0 0 0.75rem;
+    color: #fff;
+    font-size: 1.85rem;
+  }
+
+  p {
+    margin: 0;
+    max-width: 28rem;
+    color: rgba(230, 237, 243, 0.76);
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.4rem;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(230, 237, 243, 0.74);
+    }
+  }
+}
+
+.lms-contact-action-card {
+  padding: 1.5rem;
+
+  &__eyebrow {
+    display: inline-flex;
+    margin-bottom: 0.75rem;
+    font-size: 0.74rem;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #9bd9ff;
+  }
+
+  h2 {
+    margin: 0 0 0.75rem;
+    color: #fff;
+    font-size: 1.7rem;
+  }
+
+  p {
+    margin: 0 0 1.25rem;
+    color: rgba(230, 237, 243, 0.74);
+  }
+}
+
+.lms-contact-action-list {
+  display: grid;
+  gap: 0.9rem;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem 1.05rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    text-decoration: none;
+    transition: transform $transition-normal, border-color $transition-normal, background $transition-normal;
+
+    &:hover {
+      transform: translateY(-3px);
+      border-color: rgba($color-accent-info, 0.4);
+      background: rgba($color-accent-info, 0.08);
+    }
+
+    strong {
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    span {
+      color: rgba(230, 237, 243, 0.72);
+      font-size: 0.92rem;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-lg) {
+  .lms-contact-hero,
+  .lms-contact-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .lms-contact-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .lms-contact-page {
+    padding-top: 3rem;
+  }
+
+  .lms-contact-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lms-contact-hero__actions,
+  .lms-contact-hero__panel-actions {
+    flex-direction: column;
+
+    .btn-lms-primary,
+    .btn-lms-outline {
+      width: 100%;
+    }
+  }
+}

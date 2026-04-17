@@ -8,6 +8,8 @@
  * - alphabet: Array of letters A-Z.
  */
 #}
+{{ attach_library('lms_theme/global') }}
+
 <div class="lms-page lms-glossary-page py-5">
   <div class="container">
     
@@ -89,10 +91,10 @@
 </div>
 
 <style>
-/* Scoped styles inline because they strictly belong to this very module representation */
 .lms-glossary-page {
   background: #f8f9fa;
   min-height: 80vh;
+  color: #1e293b;
 }
 .lms-glass-input {
   background: rgba(255, 255, 255, 0.8) !important;
@@ -155,6 +157,112 @@
 .lms-glossary-definition p:last-child {
   margin-bottom: 0;
 }
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page {
+  background: transparent;
+  color: #e9e8ee;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .display-4,
+body.layout-creative:not(.is-workspace) .lms-glossary-page .fw-bold,
+body.layout-creative:not(.is-workspace) .lms-glossary-page h1,
+body.layout-creative:not(.is-workspace) .lms-glossary-page h2,
+body.layout-creative:not(.is-workspace) .lms-glossary-page h3 {
+  color: #fff !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lead,
+body.layout-creative:not(.is-workspace) .lms-glossary-page .text-muted {
+  color: rgba(233, 232, 238, 0.78) !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-letter-heading {
+  color: #ffffff !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-letter-divider {
+  border-color: rgba(255, 255, 255, 0.12);
+  opacity: 1;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-glass-input {
+  background: #1a1723 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e9e8ee;
+  box-shadow: none;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-glass-input::placeholder {
+  color: rgba(190, 184, 204, 0.75);
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-glass-input:focus {
+  border-color: rgba(255, 51, 102, 0.55);
+  box-shadow: 0 0 0 4px rgba(255, 51, 102, 0.14);
+  background: #211c30 !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-letter-btn {
+  background: #1f1b2b;
+  color: #efeaf9;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-letter-btn:hover:not(.disabled),
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-letter-btn:focus-visible {
+  background: linear-gradient(135deg, #ff3366 0%, #5a4ff0 100%);
+  border-color: transparent;
+  color: #fff;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-letter-btn.disabled {
+  opacity: 0.35;
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-glass-card {
+  background: #1f1b2b;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28) !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-glass-card:hover {
+  border-color: rgba(255, 51, 102, 0.44) !important;
+  box-shadow: 0 22px 42px rgba(0, 0, 0, 0.35) !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-glossary-definition,
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-glossary-definition p {
+  color: #c7c1d6 !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .badge.bg-primary {
+  background: rgba(51, 217, 255, 0.14) !important;
+  color: #8beaff !important;
+  border: 1px solid rgba(51, 217, 255, 0.32) !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-related-terms {
+  border-top-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-related-terms a {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #f0ecff !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page .lms-related-terms a:hover {
+  background: rgba(255, 51, 102, 0.16) !important;
+  border-color: rgba(255, 51, 102, 0.35) !important;
+  color: #ffd8e5 !important;
+}
+
+body.layout-creative:not(.is-workspace) .lms-glossary-page #glossary-empty-state h3 {
+  color: #fff;
+}
 </style>
 
 <script>
@@ -163,40 +271,37 @@
     const emptyState = document.getElementById('glossary-empty-state');
     
     if(searchInput) {
-      searchInput.addEventListener('input', function(e) {
-        const query = e.target.value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.glossary-item-card');
-        const sections = document.querySelectorAll('.glossary-group-section');
+      const cards = document.querySelectorAll('.glossary-item-card');
+      const sections = document.querySelectorAll('.glossary-group-section');
+
+      const applySearch = function(query) {
         let totalVisibleCards = 0;
-        
+
         cards.forEach(card => {
-          const term = card.getAttribute('data-term');
-          if (term.includes(query)) {
-            card.style.display = 'block';
-            card.classList.add('is-visible');
-          } else {
-            card.style.display = 'none';
-            card.classList.remove('is-visible');
+          const term = (card.getAttribute('data-term') || '').toLowerCase();
+          const matches = query === '' || term.includes(query);
+          card.style.display = matches ? '' : 'none';
+          card.dataset.visible = matches ? '1' : '0';
+          if (matches) {
+            totalVisibleCards += 1;
           }
         });
-        
+
         sections.forEach(section => {
-          const visibleCards = section.querySelectorAll('.glossary-item-card.is-visible, .glossary-item-card:not([style*="display: none"])');
-          
-          if (visibleCards.length === 0 && query !== '') {
-            section.style.display = 'none';
-          } else {
-            section.style.display = 'block';
-            totalVisibleCards += visibleCards.length;
-          }
+          const visibleInSection = section.querySelectorAll('.glossary-item-card[data-visible="1"]').length;
+          section.style.display = visibleInSection > 0 ? '' : 'none';
         });
-        
-        if (totalVisibleCards === 0 && query !== '') {
-           emptyState.style.display = 'block';
-        } else {
-           emptyState.style.display = 'none';
+
+        if (emptyState) {
+          emptyState.style.display = (query !== '' && totalVisibleCards === 0) ? 'block' : 'none';
         }
+      };
+
+      searchInput.addEventListener('input', function(e) {
+        applySearch((e.target.value || '').toLowerCase().trim());
       });
+
+      applySearch('');
     }
   });
 </script>

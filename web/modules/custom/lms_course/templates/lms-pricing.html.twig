@@ -4,28 +4,30 @@
 <section class="lms-section">
   <div class="container">
     <div class="lms-pricing-header">
-      <h1>{{ 'Choose Your Plan'|t }}</h1>
-      <p>{{ 'Get unlimited access to courses and certifications'|t }}</p>
+      <h1>{{ pricing_copy.pricing_page_title }}</h1>
+      <p>{{ pricing_copy.pricing_page_subtitle }}</p>
     </div>
 
+    {% if plans %}
     <div class="lms-pricing-grid">
       {% for plan in plans %}
         <div class="lms-card lms-pricing-card {{ plan.recommended ? 'lms-pricing-card--recommended' }}">
           {% if plan.recommended %}
-            <div class="lms-pricing-card__badge">{{ 'Most Popular'|t }}</div>
+            <div class="lms-pricing-card__badge">{{ pricing_copy.pricing_recommended_badge_text }}</div>
           {% endif %}
           <h3 class="lms-pricing-card__name">{{ plan.name }}</h3>
           <div class="lms-pricing-card__price">
             {% if plan.price > 0 %}
-              <span class="lms-pricing-card__amount">${{ plan.price|number_format(2) }}</span>
-              {% set period = plan.billing_cycle == 'yearly' ? 'year' : (plan.billing_cycle == 'monthly' ? 'month' : plan.billing_cycle) %}
+              {% set currency_symbol = plan.currency == 'EUR' ? '€' : (plan.currency == 'GBP' ? '£' : '$') %}
+              <span class="lms-pricing-card__amount">{{ currency_symbol }}{{ plan.price|number_format(2) }}</span>
+              {% set period = plan.billing_cycle == 'yearly' ? pricing_copy.pricing_year_label : (plan.billing_cycle == 'monthly' ? pricing_copy.pricing_month_label : plan.billing_cycle) %}
               {% if period != 'lifetime' %}
-                <span class="lms-pricing-card__period">/{{ period|t }}</span>
+                <span class="lms-pricing-card__period">/{{ period }}</span>
               {% else %}
-                <span class="lms-pricing-card__period"> {{ 'lifetime access'|t }}</span>
+                <span class="lms-pricing-card__period"> {{ pricing_copy.pricing_lifetime_access_text }}</span>
               {% endif %}
             {% else %}
-              <span class="lms-pricing-card__amount">{{ 'Free'|t }}</span>
+              <span class="lms-pricing-card__amount">{{ pricing_copy.pricing_free_price_text }}</span>
             {% endif %}
           </div>
 
@@ -38,10 +40,16 @@
           </ul>
 
           <a href="{{ url('lms_order.checkout_membership', {'plan_id': plan.id}) }}" class="lms-btn {{ plan.recommended ? 'lms-btn--primary' : 'lms-btn--outline' }} lms-btn--block">
-            {{ plan.price > 0 ? 'Get Started'|t : 'Start Free'|t }}
+            {{ plan.price > 0 ? pricing_copy.pricing_paid_cta_text : pricing_copy.pricing_free_cta_text }}
           </a>
         </div>
       {% endfor %}
     </div>
+    {% else %}
+    <div class="lms-card" style="padding: 2rem; text-align: center; max-width: 40rem; margin: 0 auto;">
+      <h2>{{ pricing_copy.pricing_empty_state_title }}</h2>
+      <p>{{ pricing_copy.pricing_empty_state_body }}</p>
+    </div>
+    {% endif %}
   </div>
 </section>

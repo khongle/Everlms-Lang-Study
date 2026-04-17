@@ -1,27 +1,14 @@
 {# EverLMS - Playful Skin Core Template #}
 {{ attach_library('lms_theme/homepage_playful') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
 
-<div class="playful-skin-wrapper" style="width: 100vw; position: relative; left: 50%; transform: translateX(-50%); overflow: hidden; background: #fffbeb;">
-<section class="playful-hero-breakthrough position-relative" style="padding: 60px 0 100px; width: 100%; background: linear-gradient(135deg, #fef08a 0%, #f97316 100%);">
-  
-  <style>
-    .hero-breakthrough-primary {
-      background: #0f172a; color: #fff !important; border-radius: 99px; padding: 18px 40px; font-size: 17px; font-weight: 800; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; border: none; text-decoration: none; box-shadow: 0 10px 20px rgba(15,23,42,0.1);
-    }
-    .hero-breakthrough-primary:hover {
-      transform: translateY(-2px); box-shadow: 0 15px 30px rgba(15,23,42,0.2); background: #1e293b;
-    }
-    .hero-breakthrough-secondary {
-      background: #ffffff; color: #0f172a !important; border: 2px solid #cbd5e1; border-radius: 99px; padding: 16px 40px; font-size: 17px; font-weight: 800; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-    }
-    .hero-breakthrough-secondary:hover {
-      background: #f8fafc; border-color: #94a3b8; transform: translateY(-2px); box-shadow: 0 8px 12px rgba(0,0,0,0.05);
-    }
-  </style>
+<div class="playful-skin-wrapper">
+{% if homepage_sections.hero ?? true %}
+<section class="playful-hero-breakthrough position-relative">
 
   <!-- Fun Playful Light Glows on Background -->
-  <div style="position: absolute; top: -10%; left: -5%; width: 50%; height: 80%; background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 60%); filter: blur(40px); pointer-events: none; z-index: 1;"></div>
-  <div style="position: absolute; bottom: -10%; right: 10%; width: 40%; height: 60%; background: radial-gradient(circle, rgba(236,72,153,0.3) 0%, transparent 60%); filter: blur(50px); pointer-events: none; z-index: 1;"></div>
+  <div class="playful-hero-glow playful-hero-glow-left"></div>
+  <div class="playful-hero-glow playful-hero-glow-right"></div>
 
   <div class="container position-relative z-2">
     {% if slideshows|length > 0 %}
@@ -29,81 +16,83 @@
       
       <!-- Indicators -->
       {% if slideshows|length > 1 %}
-      <div class="carousel-indicators" style="bottom: -60px; gap: 8px;">
+      <div class="carousel-indicators playful-hero-indicators">
         {% for slide in slideshows %}
-          <button type="button" data-bs-target="#playfulHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %} aria-current="true" aria-label="Slide {{ loop.index }}" style="width: 10px; height: 10px; border-radius: 50%; background-color: #0f172a; border: none; opacity: 0.2; transition: all 0.3s;"></button>
+          <button type="button" data-bs-target="#playfulHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="playful-hero-indicator-dot {% if loop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ loop.index }}"></button>
         {% endfor %}
       </div>
       {% endif %}
 
       <!-- The Massive Solid "Frame" containing the slides -->
-      <div class="carousel-inner shadow-lg" style="border-radius: 32px; background: #ffffff; overflow: hidden; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 40px 80px rgba(15,23,42,0.1) !important;">
+      <div class="carousel-inner shadow-lg playful-hero-frame">
         {% for slide in slideshows %}
         <div class="carousel-item {% if loop.first %}active{% endif %}">
           
           <!-- g-0 prevents gaps, align-items-stretch ensures image column matches text column height -->
-          <div class="row g-0 align-items-stretch" style="min-height: 580px;">
+          <div class="row g-0 align-items-stretch playful-hero-row">
             
             <!-- Left: Content Frame -->
-            <div class="col-lg-6 d-flex flex-column justify-content-center" style="padding: 64px 48px; background: #ffffff;">
+            <div class="col-lg-6 d-flex flex-column justify-content-center playful-hero-content-col">
               <div>
-                <span class="d-inline-flex align-items-center mb-4" style="background: #eef2ff; color: #4f46e5; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; padding: 8px 24px; border-radius: 99px; box-shadow: 0 4px 12px rgba(79,70,229,0.1);">
-                  <span style="font-size: 18px; margin-right: 8px;">🎯</span> EXPLORE THE FUTURE
+                <span class="d-inline-flex align-items-center mb-4 playful-hero-chip">
+                  <span class="playful-hero-chip-icon">🎯</span> EXPLORE THE FUTURE
                 </span>
                 
-                <h1 style="font-family: 'Nunito', sans-serif; font-size: 60px; font-weight: 900; color: #0f172a; line-height: 1.1; margin-bottom: 32px; letter-spacing: -2px;">
+                <h1 class="playful-hero-title">
                   {{ slide.heading|raw }}
                 </h1>
                 
-                <div style="font-family: 'Nunito', sans-serif; font-size: 20px; color: #475569; line-height: 1.7; margin-bottom: 32px; max-width: 95%; border-left: 4px solid #4f46e5; padding-left: 24px;">
+                <div class="playful-hero-subtext">
                   {{ slide.subheading|raw }}
                 </div>
                 
                 <!-- Clean Stats Row -->
-                <div class="d-flex align-items-center gap-4 mb-4" style="font-family: 'Nunito', sans-serif;">
+                {% if homepage_sections.stats ?? true %}
+                <div class="d-flex align-items-center gap-4 mb-4 playful-hero-stats-row">
                   <div class="d-flex align-items-center gap-2">
-                    <span style="color: #f59e0b; font-size: 22px;">★</span>
-                    <span style="font-weight: 800; color: #0f172a; font-size: 18px;">4.9/5</span>
-                    <span style="color: #64748b; font-size: 15px; font-weight: 600;">(2k+ reviews)</span>
+                    <span class="playful-hero-star">★</span>
+                    <span class="playful-hero-stat-strong">4.9/5</span>
+                    <span class="playful-hero-stat-soft">(2k+ reviews)</span>
                   </div>
-                  <div style="width: 1px; height: 32px; background: #cbd5e1;"></div>
+                  <div class="playful-hero-divider"></div>
                   <div class="d-flex align-items-center gap-2">
-                    <span style="font-weight: 800; color: #0f172a; font-size: 18px;">{{ stats.students|default('5K+') }}</span>
-                    <span style="color: #64748b; font-size: 15px; font-weight: 600;">Active Learners</span>
+                    <span class="playful-hero-stat-strong">{{ stats.students }}</span>
+                    <span class="playful-hero-stat-soft">{{ stats.students_label }}</span>
                   </div>
                 </div>
+                {% endif %}
 
                 <!-- Generic Robus Features -->
-                <div class="d-flex gap-4 mb-5" style="font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 700; color: #475569;">
-                   <div><span style="color: #10b981; font-size: 18px; margin-right: 6px;">✔</span> Expert Tutors</div>
-                   <div><span style="color: #10b981; font-size: 18px; margin-right: 6px;">✔</span> Lifetime Access</div>
+                <div class="d-flex gap-4 mb-5 playful-hero-feature-row">
+                   <div><span class="playful-hero-check">✔</span> Expert Tutors</div>
+                   <div><span class="playful-hero-check">✔</span> Lifetime Access</div>
                 </div>
 
                 <!-- CTA Buttons -->
                 <div class="d-flex flex-wrap gap-4">
                   {% if slide.link_url %}
                     <a href="{{ slide.link_url }}" class="hero-breakthrough-primary">
-                      {{ slide.link_title|default('Dive In Now') }} <i class="fas fa-arrow-right ms-2" style="font-size: 16px;"></i>
+                      {{ slide.link_title|default(homepage_settings.default_slide_cta_text) }} <i class="fas fa-arrow-right ms-2 hero-breakthrough-cta-icon"></i>
                     </a>
                   {% endif %}
-                  <a href="/courses" class="hero-breakthrough-secondary">
-                    Explore Catalog
+                  <a href="{{ path('lms_course.catalog') }}" class="hero-breakthrough-secondary">
+                    {{ homepage_settings.hero_secondary_cta_text }}
                   </a>
                 </div>
               </div>
             </div>
             
             <!-- Right: Seamless Edge-to-Edge Visual -->
-            <div class="col-lg-6 position-relative d-none d-lg-block" style="background: #e2e8f0;">
+            <div class="col-lg-6 position-relative d-none d-lg-block playful-hero-media-col">
               {% if slide.image_url %}
-                  <img src="{{ slide.image_url }}" alt="{{ slide.heading|striptags }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" />
+                  <img src="{{ slide.image_url }}" alt="{{ slide.heading|striptags }}" class="playful-hero-media-image" />
               {% else %}
-                <div class="d-flex align-items-center justify-content-center h-100" style="background: #f8fafc;">
-                  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-                    <div style="font-size: 40px; background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">🚀</div>
-                    <div style="font-size: 40px; background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">💡</div>
-                    <div style="font-size: 40px; background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">🎯</div>
-                    <div style="font-size: 40px; background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">📈</div>
+                <div class="d-flex align-items-center justify-content-center h-100 hero-breakthrough-visual-shell">
+                  <div class="hero-breakthrough-emoji-grid">
+                    <div class="hero-breakthrough-emoji-tile">🚀</div>
+                    <div class="hero-breakthrough-emoji-tile">💡</div>
+                    <div class="hero-breakthrough-emoji-tile">🎯</div>
+                    <div class="hero-breakthrough-emoji-tile">📈</div>
                   </div>
                 </div>
               {% endif %}
@@ -113,41 +102,70 @@
         </div>
         {% endfor %}
       </div>
-      
+    {% else %}
+    <div class="shadow-lg playful-hero-frame">
+      <div class="row g-0 align-items-stretch playful-hero-row">
+        <div class="col-lg-6 d-flex flex-column justify-content-center playful-hero-content-col">
+          <div>
+            <span class="d-inline-flex align-items-center mb-4 playful-hero-chip">
+              <span class="playful-hero-chip-icon">🎯</span> {{ site_name }}
+            </span>
+
+            <h1 class="playful-hero-title">
+              {{ homepage_settings.hero_fallback_heading }}
+            </h1>
+
+            <div class="playful-hero-subtext">
+              {{ homepage_settings.hero_fallback_subtext }}
+            </div>
+
+            <div class="d-flex flex-wrap gap-4">
+              <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="hero-breakthrough-primary">
+                {{ homepage_settings.hero_fallback_cta_text }} <i class="fas fa-arrow-right ms-2 hero-breakthrough-cta-icon"></i>
+              </a>
+              <a href="{{ path('lms_course.catalog') }}" class="hero-breakthrough-secondary">
+                {{ homepage_settings.hero_secondary_cta_text }}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center hero-breakthrough-visual">
+          <div class="hero-breakthrough-emoji-grid">
+            <div class="hero-breakthrough-emoji-tile">🚀</div>
+            <div class="hero-breakthrough-emoji-tile">💡</div>
+            <div class="hero-breakthrough-emoji-tile">🎯</div>
+            <div class="hero-breakthrough-emoji-tile">📈</div>
+          </div>
+        </div>
+      </div>
     </div>
     {% endif %}
   </div>
 </section>
-<style>
-/* Forcing light background across all wrappers to clear dark theme bounds */
-body, html, .layout-playful, #page-wrapper, .main-container { background-color: #fefefe !important; }
-body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
-.carousel-indicators button.active { opacity: 1 !important; transform: scale(1.3); }
-.playful-img-hover:hover { transform: scale(1.05); }
-.adventure-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-.instructor-card-pro:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(15,23,42,0.08) !important; border-color: #cbd5e1 !important; }
-.pro-profile-btn:hover { background: #0f172a !important; color: #ffffff !important; border-color: #0f172a !important; }
-</style>
+{% endif %}
 
 <!-- Learning Adventures (Categories) -->
-{% if categories %}
+{% if (homepage_sections.categories ?? true) and categories %}
 <section class="section confetti-section">
   <div class="container">
     <div class="section-header">
       <span class="section-emoji">🗺️</span>
-      <h2 class="section-title">Choose Your Adventure!</h2>
-      <p class="section-desc">Pick a path and start exploring. Every adventure is packed with fun challenges and awesome rewards!</p>
+      <h2 class="section-title">{{ homepage_settings.categories_section_title }}</h2>
+      {% if homepage_settings.categories_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.categories_section_subtitle }}</p>
+      {% endif %}
     </div>
     <div class="adventures-grid">
       {% for category in categories|slice(0,8) %}
-      <a href="/courses?category={{ category.entity.id|default('') }}" class="adventure-card" style="text-decoration: none; color: inherit; display: flex; flex-direction: column;">
+      <a href="{{ path('lms_course.catalog') ~ '?category=' ~ category.entity.id() }}" class="adventure-card playful-adventure-link">
         {% if category.entity.field_icon.entity and category.entity.field_icon.entity.uri.value %}
-          <div style="margin-bottom: 24px; text-align: center; display: flex; justify-content: center; align-items: center; min-height: 80px;">
-            <img src="{{ file_url(category.entity.field_icon.entity.uri.value) }}" alt="{{ category.name }}" style="max-width: 80px; max-height: 80px; object-fit: contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.05));" />
+          <div class="playful-adventure-icon-wrap">
+            <img src="{{ file_url(category.entity.field_icon.entity.uri.value) }}" alt="{{ category.name }}" class="playful-adventure-icon-img" />
           </div>
         {% endif %}
         <div class="adventure-title">{{ category.name }}</div>
-        <div class="adventure-count">{{ category.course_count|default(0) }} courses</div>
+        <div class="adventure-count">{{ category.course_count|default(0) }} {{ 'Courses'|t }}</div>
       </a>
       {% endfor %}
     </div>
@@ -156,33 +174,35 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
 {% endif %}
 
 <!-- Featured Courses -->
-{% if featured_courses %}
+{% if (homepage_sections.featured ?? true) and featured_courses %}
 <section class="section section-alt">
   <div class="container">
     <div class="section-header">
       <span class="section-emoji">🌟</span>
-      <h2 class="section-title">Popular Quests</h2>
-      <p class="section-desc">Top-rated courses our learners love. Earn XP and unlock badges as you complete each one!</p>
+      <h2 class="section-title">{{ homepage_settings.featured_section_title }}</h2>
+      {% if homepage_settings.featured_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.featured_section_subtitle }}</p>
+      {% endif %}
     </div>
     <div class="courses-grid">
       {% for course in featured_courses %}
       <div class="course-card">
         <div class="course-thumb">
-          <a href="{{ course.url }}" style="display: block; overflow: hidden;">
+          <a href="{{ course.url }}" class="playful-course-thumb-link">
             {% if course.thumbnail_url %}
-              <img src="{{ course.thumbnail_url }}" alt="{{ course.title }}" class="playful-img-hover" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;" />
+              <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" class="playful-img-hover playful-course-thumb-img" />
             {% else %}
-              <img src="https://picsum.photos/seed/{{ course.id }}/600/450" alt="{{ course.title }}" class="playful-img-hover" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;" />
+              <img src="https://picsum.photos/seed/{{ course.id }}/600/450" alt="{{ course.name }}" class="playful-img-hover playful-course-thumb-img" />
             {% endif %}
           </a>
-          <div class="course-badge">{{ course.price|default('Free') }}</div>
+          <div class="course-badge">{{ course.price }}</div>
         </div>
         <div class="course-body">
           
           <!-- Category & Level Tags -->
           <div class="d-flex flex-wrap gap-2 mb-3">
-            <span class="course-cat">{{ course.category|default('Logistics') }}</span>
-            <span class="course-level">🔥 {{ course.level|default('Beginner') }}</span>
+            <span class="course-cat">{{ course.category }}</span>
+            <span class="course-level">🔥 {{ course.level }}</span>
           </div>
 
           <!-- Title -->
@@ -204,14 +224,14 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
               <div class="playful-instructor-placeholder">👷</div>
             {% endif %}
             <div class="playful-instructor-info">
-              <span class="playful-instructor-name">{{ course.instructor_name|default('Nexus Instructor') }}</span>
+              <span class="playful-instructor-name">{{ course.instructor_name }}</span>
               <span class="playful-instructor-xp">🎯 +{{ random(100, 500) }} XP</span>
             </div>
           </div>
           
           <div class="course-meta">
-            <span style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: #475569;"><i class="fas fa-book-open text-primary" style="opacity: 0.8;"></i> {{ course.lesson_count|default(12) }} Lessons</span>
-            <span class="course-rating">⭐ {{ course.rating|default('4.9') }}</span>
+            <span class="course-meta-item"><i class="fas fa-book-open text-primary course-meta-icon"></i> {{ course.lesson_count }} {{ 'Lessons'|t }}</span>
+            <span class="course-rating">⭐ {{ course.rating }}</span>
           </div>
         </div>
       </div>
@@ -222,13 +242,15 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
 {% endif %}
 
 <!-- Dynamic CMS Introductions (Card Grid) -->
-{% if introductions %}
+{% if (homepage_sections.introductions ?? true) and introductions %}
 <section class="section confetti-section full-width-breakout">
   <div class="container">
     <div class="section-header">
       <span class="section-emoji">⚡</span>
-      <h2 class="section-title">Skills You'll Master</h2>
-      <p class="section-desc">Every course gives you new tactical abilities. Upgrade your stats!</p>
+      <h2 class="section-title">{{ homepage_settings.introductions_section_title }}</h2>
+      {% if homepage_settings.introductions_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.introductions_section_subtitle }}</p>
+      {% endif %}
     </div>
     <div class="powers-grid">
       {% for intro in introductions %}
@@ -243,8 +265,8 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
         <div class="power-title">{{ intro.title }}</div>
         <div class="power-desc">{{ intro.body|striptags|raw }}</div>
         {% if intro.link_url and intro.link_url != '#' %}
-        <a href="{{ intro.link_url }}" style="display: inline-block; margin-top: 16px; font-size: 14px; font-weight: 800; text-decoration: underline; opacity: 0.8; transition: opacity 0.2s;">
-          {{ intro.link_title|default('Explore Path →') }}
+        <a href="{{ intro.link_url }}" class="power-link">
+          {{ intro.link_title|default(homepage_settings.default_intro_cta_text) }}
         </a>
         {% endif %}
       </div>
@@ -255,13 +277,15 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
 {% endif %}
 
 <!-- Level Up / Learning Paths -->
-{% if bundles %}
+{% if (homepage_sections.bundles ?? true) and bundles %}
 <section class="section section-alt journey-section full-width-breakout">
   <div class="container">
     <div class="section-header">
       <span class="section-emoji">🚀</span>
-      <h2 class="section-title">Advance Your Career</h2>
-      <p class="section-desc">Follow a tactical learning path to move from new hire to warehouse legend!</p>
+      <h2 class="section-title">{{ homepage_settings.bundles_section_title }}</h2>
+      {% if homepage_settings.bundles_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.bundles_section_subtitle }}</p>
+      {% endif %}
     </div>
     <div class="journey-paths">
       {% for bundle in bundles|slice(0,3) %}
@@ -288,21 +312,23 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
 
 
 <!-- Star Learners -->
-{% if testimonials %}
+{% if (homepage_sections.testimonials ?? true) and testimonials %}
 <section class="section confetti-section full-width-breakout">
   <div class="container">
     <div class="section-header">
       <span class="section-emoji">🌟</span>
-      <h2 class="section-title">Star Associates Say…</h2>
-      <p class="section-desc">Hear from our hardest working team members on the floor!</p>
+      <h2 class="section-title">{{ homepage_settings.testimonials_section_title }}</h2>
+      {% if homepage_settings.testimonials_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.testimonials_section_subtitle }}</p>
+      {% endif %}
     </div>
     <div class="learners-grid">
       {% for item in testimonials|slice(0,3) %}
       <div class="learner-card">
         <span class="learner-deco">🎉</span>
-        <div class="learner-avatar" style="overflow: hidden; padding: 0;">
+        <div class="learner-avatar learner-avatar-media">
           {% if item.avatar %}
-            <img src="{{ item.avatar }}" alt="{{ item.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+            <img src="{{ item.avatar }}" alt="{{ item.name }}" class="learner-avatar-image">
           {% else %}
             👧
           {% endif %}
@@ -313,7 +339,7 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
         <p class="learner-quote">"{{ item.content|striptags|raw }}"</p>
         <div class="learner-name">{{ item.name }}</div>
         <div class="learner-role">{{ item.role }}</div>
-        <span class="learner-badge">🏅 {{ item.course_title|default('Achiever') }}</span>
+        <span class="learner-badge">🏅 {{ item.course_title }}</span>
       </div>
       {% endfor %}
     </div>
@@ -322,20 +348,22 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
 {% endif %}
 
 <!-- Pricing / Memberships -->
-{% if memberships %}
-<section class="section section-alt full-width-breakout" style="padding-top: 80px; padding-bottom: 80px; position:relative;">
+{% if (homepage_sections.membership ?? true) and memberships %}
+<section class="section section-alt full-width-breakout playful-pricing-section">
   <div class="container">
     <div class="section-header">
       <span class="section-emoji">💎</span>
-      <h2 class="section-title">Pick Your Plan</h2>
-      <p class="section-desc">Choose the adventure tier that fits your quest. Upgrade anytime!</p>
+      <h2 class="section-title">{{ homepage_settings.membership_section_title }}</h2>
+      {% if homepage_settings.membership_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.membership_section_subtitle }}</p>
+      {% endif %}
     </div>
     
     <div class="pricing-grid">
       {% for plan in memberships %}
       <div class="pricing-card {% if plan.recommended %}popular{% endif %}">
         {% if plan.recommended %}
-          <div class="pricing-popular-badge">🔥 Most Popular!</div>
+          <div class="pricing-popular-badge">{{ homepage_settings.membership_recommended_badge_text }}</div>
         {% endif %}
         
         <span class="pricing-emoji">
@@ -346,25 +374,30 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
         
         <div class="pricing-tier">{{ plan.name }}</div>
         
-        <div class="pricing-price" style="margin-bottom: 24px;">
-          <span class="currency" style="font-size:24px; vertical-align:top; font-weight:700;">
+        <div class="pricing-price pricing-price-stack">
+          <span class="currency pricing-currency">
             {% if plan.currency == 'USD' %}${% elseif plan.currency == 'EUR' %}€{% else %}£{% endif %}
           </span>
-          <span style="font-size: 48px; font-weight: 800; color: #1e1b4b; line-height: 1;">{{ plan.price }}</span>
-          <span class="period" style="font-size:14px; color:#6b7280; font-weight:600;">/mo</span>
+          <span class="pricing-amount">{{ plan.price }}</span>
+          <span class="period pricing-period">/mo</span>
         </div>
         
-        <ul class="pricing-features" style="list-style: none; padding: 0; margin-bottom: 32px; text-align: left;">
+        <ul class="pricing-features playful-pricing-features">
           {% for feature in plan.features %}
-            <li style="margin-bottom: 12px; font-size: 14px; color: #4b5563; display: flex; align-items: flex-start; gap: 8px;">
-              <span style="color: #22c55e;">✔</span> {{ feature }}
+            <li class="playful-pricing-feature-item">
+              <span class="playful-pricing-feature-check">✔</span> {{ feature }}
             </li>
           {% endfor %}
         </ul>
         
-        <a href="#" class="pricing-btn {% if plan.price == 0 %}pricing-btn-free{% elseif plan.recommended %}pricing-btn-popular{% else %}pricing-btn-legend{% endif %}" style="display: block; padding: 12px; border-radius: 99px; text-decoration: none; font-weight: 700; transition: all 0.2s; 
-          {% if plan.price == 0 %}background: #f3f4f6; color: #374151;{% elseif plan.recommended %}background: #7c3aed; color: #fff; box-shadow: 0 4px 12px rgba(124,58,237,0.3);{% else %}background: #f97316; color: #fff;{% endif %}">
-          {% if plan.price == 0 %}Start Free 🎈{% elseif plan.recommended %}Go Champion 🚀{% else %}Go Legend 👑{% endif %}
+        <a href="{{ path('lms_course.pricing') }}" class="pricing-btn {% if plan.price == 0 %}pricing-btn-free{% elseif plan.recommended %}pricing-btn-popular{% else %}pricing-btn-legend{% endif %}">
+          {% if plan.price == 0 %}
+            {{ homepage_settings.membership_free_cta_text }}
+          {% elseif plan.recommended %}
+            {{ homepage_settings.membership_recommended_cta_text }}
+          {% else %}
+            {{ homepage_settings.membership_paid_cta_text }}
+          {% endif %}
         </a>
       </div>
       {% endfor %}
@@ -374,13 +407,15 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
 {% endif %}
 
 <!-- FAQ -->
-{% if faqs %}
+{% if (homepage_sections.faqs ?? true) and faqs %}
 <section class="section section-alt full-width-breakout">
   <div class="container">
     <div class="section-header">
       <span class="section-emoji">❓</span>
-      <h2 class="section-title">Got Questions?</h2>
-      <p class="section-desc">We've got answers! Click to reveal the magic.</p>
+      <h2 class="section-title">{{ homepage_settings.faq_section_title }}</h2>
+      {% if homepage_settings.faq_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.faq_section_subtitle }}</p>
+      {% endif %}
     </div>
     <div class="faq-list">
       {% for f in faqs %}
@@ -400,26 +435,13 @@ body { overflow-x: hidden; } /* Prevent horizontal scroll from 100vw */
 {% endif %}
 
 <!-- CTA Banner -->
+{% if homepage_sections.cta_guest ?? true %}
 <section class="cta-banner full-width-breakout">
   <div class="container">
-    <h2>Ready for the Floor? 🚀</h2>
-    <p>Join thousands of associates who are leveling up their logistics career every day. The journey to operational excellence starts now!</p>
-    <a href="/courses" class="btn-cta-white">Start Training Now 🎉</a>
+    <h2>{{ homepage_settings.cta_banner_title }}</h2>
+    <p>{{ homepage_settings.cta_banner_description }}</p>
+    <a href="{{ path('lms_course.catalog') }}" class="btn-cta-white">{{ homepage_settings.cta_primary_text }}</a>
   </div>
 </section>
+{% endif %}
 </div>
-
-<script>
-document.querySelectorAll('.faq-question').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var item = this.closest('.faq-item');
-    var wasActive = item.classList.contains('active');
-    document.querySelectorAll('.faq-item').forEach(function(el) {
-      el.classList.remove('active');
-    });
-    if (!wasActive) {
-      item.classList.add('active');
-    }
-  });
-});
-</script>
