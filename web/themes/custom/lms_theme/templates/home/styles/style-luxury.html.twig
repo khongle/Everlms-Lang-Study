@@ -1,0 +1,520 @@
+{{ attach_library('lms_theme/homepage_luxury') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+{% set luxury_bundles = bundles ?? course_bundles ?? [] %}
+{% set luxury_news = latest_news ?? news_items ?? [] %}
+{% set luxury_memberships = memberships ?? membership_plans ?? [] %}
+{% set luxury_introductions = introductions ?? [] %}
+{% set luxury_intro_showcase = luxury_introductions|slice(0, 2) %}
+{% set luxury_intro_resources = luxury_introductions|slice(2, 3) %}
+
+<div class="luxury-home">
+  {% if homepage_sections.hero ?? true %}
+  <section class="luxury-hero luxury-breakout">
+    <div class="luxury-hero__frame">
+      {% if slideshows %}
+      <div id="luxuryHeroCarousel" class="carousel slide luxury-carousel" data-bs-ride="carousel" data-bs-interval="6800">
+        {% if slideshows|length > 1 %}
+        <div class="carousel-indicators luxury-carousel__indicators">
+          {% for slide in slideshows %}
+            <button type="button" data-bs-target="#luxuryHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="luxury-carousel__indicator{% if loop.first %} active{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="carousel-inner luxury-carousel__inner">
+          {% for slide in slideshows %}
+          {% set hero_heading = slide.heading|default(homepage_settings.hero_fallback_heading) %}
+          {% set hero_subheading = slide.subheading|default(homepage_settings.hero_fallback_subtext) %}
+          {% set hero_primary_url = slide.link_url|default(homepage_settings.hero_fallback_cta_url) %}
+          {% set hero_primary_text = slide.link_title|default(homepage_settings.default_slide_cta_text) %}
+          <div class="carousel-item luxury-carousel__item{% if loop.first %} active{% endif %}">
+            {% if slide.image_url %}
+              <img src="{{ slide.image_url }}" alt="{{ hero_heading|striptags }}" class="luxury-carousel__image">
+            {% endif %}
+            <div class="luxury-carousel__veil"></div>
+            <div class="luxury-shell luxury-hero__content">
+              <div class="luxury-hero__panel">
+                <span class="luxury-eyebrow">{{ site_name|default('EverLMS') }}</span>
+                <h1 class="luxury-hero__title">{{ hero_heading }}</h1>
+                <p class="luxury-hero__subtitle">{{ hero_subheading|striptags }}</p>
+                <div class="luxury-hero__actions">
+                  <a href="{{ hero_primary_url }}" class="luxury-btn luxury-btn--primary">{{ hero_primary_text }}</a>
+                  <a href="{{ path('lms_course.catalog') }}" class="luxury-btn luxury-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="luxury-shell luxury-hero__fallback">
+        <div class="luxury-hero__panel">
+          <span class="luxury-eyebrow">{{ site_name|default('EverLMS') }}</span>
+          <h1 class="luxury-hero__title">{{ homepage_settings.hero_fallback_heading }}</h1>
+          <p class="luxury-hero__subtitle">{{ homepage_settings.hero_fallback_subtext }}</p>
+          <div class="luxury-hero__actions">
+            <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="luxury-btn luxury-btn--primary">{{ homepage_settings.hero_fallback_cta_text }}</a>
+            <a href="{{ path('lms_course.catalog') }}" class="luxury-btn luxury-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if homepage_sections.stats ?? true %}
+    <div class="luxury-stats luxury-shell">
+      <div class="luxury-stats__grid">
+        <div class="luxury-stat">
+          <span class="luxury-stat__value">{{ stats.courses }}</span>
+          <span class="luxury-stat__label">{{ stats.courses_label }}</span>
+        </div>
+        <div class="luxury-stat">
+          <span class="luxury-stat__value">{{ stats.students }}</span>
+          <span class="luxury-stat__label">{{ stats.students_label }}</span>
+        </div>
+        <div class="luxury-stat">
+          <span class="luxury-stat__value">{{ stats.satisfaction }}</span>
+          <span class="luxury-stat__label">{{ stats.satisfaction_label }}</span>
+        </div>
+        <div class="luxury-stat">
+          <span class="luxury-stat__value">{{ categories is defined ? categories|length : 0 }}</span>
+          <span class="luxury-stat__label">{{ 'Domains'|t }}</span>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+  <section class="luxury-section luxury-shell">
+    <div class="luxury-section__header luxury-section__header--split">
+      <div>
+        <span class="luxury-section__kicker">{{ 'Your Journey'|t }}</span>
+        <h2 class="luxury-section__title">{{ 'Continue Learning'|t }}</h2>
+      </div>
+      <a href="{{ path('lms_progress.dashboard') }}" class="luxury-link">{{ 'Open Dashboard'|t }}</a>
+    </div>
+    <div class="luxury-learning-grid">
+      {% for item in my_courses|slice(0, 3) %}
+      {% set course_name = item.course.name ?? item.course.title ?? item.course.course_name ?? 'Untitled Course'|t %}
+      {% set continue_url = item.course.continue_url ?? item.course.url ?? path('lms_course.catalog') %}
+      {% set course_category = item.course.category ?? item.course.category_name ?? '' %}
+      <article class="luxury-learning-card">
+        <a class="luxury-learning-card__media" href="{{ continue_url }}">
+          {% if item.course.thumbnail_url %}
+            <img src="{{ item.course.thumbnail_url }}" alt="{{ course_name }}">
+          {% else %}
+            <div class="luxury-learning-card__placeholder"><i class="fas fa-book-open"></i></div>
+          {% endif %}
+        </a>
+        <div class="luxury-learning-card__body">
+          <h3 class="luxury-learning-card__title"><a href="{{ continue_url }}">{{ course_name }}</a></h3>
+          {% if course_category %}
+            <div class="luxury-learning-card__meta">{{ course_category }}</div>
+          {% endif %}
+          <div class="luxury-progress">
+            <div class="luxury-progress__fill lms-learning-progress__fill" data-progress="{{ item.progress }}" style="--progress: {{ item.progress }}%; width: {{ item.progress }}%;"></div>
+          </div>
+          <div class="luxury-learning-card__meta">{{ item.progress }}% {{ 'Completed'|t }}</div>
+          <a href="{{ continue_url }}" class="luxury-btn luxury-btn--sm luxury-learning-card__cta">{{ 'Continue Learning'|t }}</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="luxury-section luxury-section--surface luxury-section--categories luxury-breakout">
+    <div class="luxury-shell">
+      <div class="luxury-section__header luxury-section__header--center">
+        <span class="luxury-section__kicker">{{ 'Categories'|t }}</span>
+        <h2 class="luxury-section__title">{{ homepage_settings.categories_section_title }}</h2>
+        {% if homepage_settings.categories_section_subtitle %}
+          <p class="luxury-section__subtitle">{{ homepage_settings.categories_section_subtitle }}</p>
+        {% endif %}
+      </div>
+      <div class="luxury-category-grid">
+        {% for category in categories|slice(0, 8) %}
+        {% set category_url = category.url ?? (path('lms_course.catalog') ~ '?category=' ~ (category.entity.id ?? '')) %}
+        {% set category_icon = category.icon_url ?? category.thumbnail_url ?? category.image_url ?? '' %}
+        <a href="{{ category_url }}" class="luxury-category-card">
+          <div class="luxury-category-card__thumb">
+            {% if category_icon %}
+              <img src="{{ category_icon }}" alt="{{ category.name }}">
+            {% else %}
+              <i class="fas fa-gem"></i>
+            {% endif %}
+          </div>
+          <h3 class="luxury-category-card__name">{{ category.name }}</h3>
+          <span class="luxury-category-card__count">{{ category.course_count|default(0) }} {{ 'courses'|t }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="luxury-section luxury-section--featured luxury-breakout">
+    <div class="luxury-shell">
+      <div class="luxury-section__header luxury-section__header--split">
+        <div>
+          <span class="luxury-section__kicker">{{ 'Featured'|t }}</span>
+          <h2 class="luxury-section__title">{{ homepage_settings.featured_section_title }}</h2>
+          {% if homepage_settings.featured_section_subtitle %}
+            <p class="luxury-section__subtitle">{{ homepage_settings.featured_section_subtitle }}</p>
+          {% endif %}
+        </div>
+        <a href="{{ path('lms_course.catalog') }}" class="luxury-link">{{ homepage_settings.featured_section_link_text }}</a>
+      </div>
+      <div class="luxury-course-grid">
+        {% for course in featured_courses|slice(0, 6) %}
+        {% set featured_is_free = (course.price_raw ?? 0) <= 0 %}
+        {% set course_category = course.category_name ?? course.category ?? '' %}
+        <article class="luxury-course-card">
+          <a href="{{ course.url }}" class="luxury-course-card__media">
+            {% if course.thumbnail_url %}
+              <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}">
+            {% else %}
+              <div class="luxury-course-card__placeholder"><i class="fas fa-graduation-cap"></i></div>
+            {% endif %}
+            <div class="luxury-course-card__overlay">
+              {% if course_category %}<span class="luxury-course-card__overlay-tag">{{ course_category }}</span>{% endif %}
+              <span class="luxury-course-card__overlay-title">{{ course.name }}</span>
+              {% if course.instructor_name %}<span class="luxury-course-card__overlay-meta">{{ course.instructor_name }}</span>{% endif %}
+              {% if course.price is defined %}
+                <span class="luxury-course-card__overlay-meta">{% if featured_is_free %}{{ 'Free'|t }}{% else %}{{ course.price }}{% endif %}</span>
+              {% endif %}
+            </div>
+          </a>
+          <div class="luxury-course-card__body">
+            {% if course_category %}<span class="luxury-course-card__tag">{{ course_category }}</span>{% endif %}
+            <h3 class="luxury-course-card__title"><a href="{{ course.url }}">{{ course.name }}</a></h3>
+            {% if course.instructor_name %}<p class="luxury-course-card__instructor">{{ course.instructor_name }}</p>{% endif %}
+            <div class="luxury-course-card__footer">
+              {% if course.price is defined %}
+                <span class="luxury-course-card__price">{% if featured_is_free %}{{ 'Free'|t }}{% else %}{{ course.price }}{% endif %}</span>
+              {% endif %}
+              <a href="{{ course.url }}" class="luxury-btn luxury-btn--sm">{{ 'View'|t }}</a>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.introductions ?? true) and luxury_introductions %}
+  <section class="luxury-section luxury-section--surface luxury-section--introductions luxury-breakout">
+    <div class="luxury-shell">
+      <div class="luxury-section__header luxury-section__header--center">
+        <span class="luxury-section__kicker">{{ 'About'|t }}</span>
+        <h2 class="luxury-section__title">{{ homepage_settings.introductions_section_title }}</h2>
+        {% if homepage_settings.introductions_section_subtitle %}
+          <p class="luxury-section__subtitle">{{ homepage_settings.introductions_section_subtitle }}</p>
+        {% endif %}
+      </div>
+
+      <div class="luxury-intro-list">
+        {% for intro in luxury_intro_showcase %}
+        <article class="luxury-intro-item{% if loop.index is even %} luxury-intro-item--reverse{% endif %}">
+          <div class="luxury-intro-item__media">
+            {% if intro.image_url %}
+              <img src="{{ intro.image_url }}" alt="{{ intro.title }}">
+            {% else %}
+              <div class="luxury-intro-item__placeholder"><i class="fas fa-star"></i></div>
+            {% endif %}
+          </div>
+          <div class="luxury-intro-item__content">
+            <h3 class="luxury-intro-item__title">{{ intro.title }}</h3>
+            <div class="luxury-intro-item__body">{{ intro.body|raw }}</div>
+            {% if intro.link_url %}<a href="{{ intro.link_url }}" class="luxury-link">{{ intro.link_title|default('Learn More'|t) }}</a>{% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+
+      {% if luxury_intro_resources %}
+      <div class="luxury-intro-resources">
+        {% for intro in luxury_intro_resources %}
+        {% set intro_plain = intro.body|striptags|trim %}
+        <article class="luxury-intro-resource-card">
+          <h3 class="luxury-intro-resource-card__title">{{ intro.title }}</h3>
+          {% if intro_plain %}
+            <p class="luxury-intro-resource-card__body">{{ intro_plain|slice(0, 180) }}{% if intro_plain|length > 180 %}...{% endif %}</p>
+          {% endif %}
+          {% if intro.link_url %}<a href="{{ intro.link_url }}" class="luxury-link">{{ intro.link_title|default('Learn More'|t) }}</a>{% endif %}
+        </article>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.bundles ?? true) and luxury_bundles %}
+  <section class="luxury-section luxury-breakout">
+    <div class="luxury-shell">
+      <div class="luxury-section__header luxury-section__header--center">
+        <span class="luxury-section__kicker">{{ 'Bundles'|t }}</span>
+        <h2 class="luxury-section__title">{{ homepage_settings.bundles_section_title }}</h2>
+        {% if homepage_settings.bundles_section_subtitle %}
+          <p class="luxury-section__subtitle">{{ homepage_settings.bundles_section_subtitle }}</p>
+        {% endif %}
+      </div>
+      <div class="luxury-bundle-grid">
+        {% for bundle in luxury_bundles|slice(0, 4) %}
+        {% set bundle_title = bundle.title ?? bundle.name ?? bundle.label ?? ('Learning Bundle'|t) %}
+        {% set bundle_summary = bundle.summary ?? bundle.description ?? '' %}
+        {% set bundle_url = bundle.url ?? path('lms_course.catalog') %}
+        <a href="{{ bundle_url }}" class="luxury-bundle-card">
+          <h3 class="luxury-bundle-card__title">{{ bundle_title }}</h3>
+          {% if bundle_summary %}<p class="luxury-bundle-card__desc">{{ bundle_summary|striptags|slice(0, 120) }}{% if bundle_summary|striptags|length > 120 %}...{% endif %}</p>{% endif %}
+          <span class="luxury-bundle-card__link">{{ 'View Track'|t }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="luxury-section luxury-section--surface luxury-section--testimonials luxury-breakout">
+    <div class="luxury-shell">
+      <div class="luxury-section__header luxury-section__header--center">
+        <span class="luxury-section__kicker">{{ 'Testimonials'|t }}</span>
+        <h2 class="luxury-section__title">{{ homepage_settings.testimonials_section_title }}</h2>
+        {% if homepage_settings.testimonials_section_subtitle %}
+          <p class="luxury-section__subtitle">{{ homepage_settings.testimonials_section_subtitle }}</p>
+        {% endif %}
+      </div>
+      <div class="luxury-testimonial-grid">
+        {% for item in testimonials|slice(0, 3) %}
+        {% set quote = item.content ?? item.testimonial ?? '' %}
+        {% set author_name = item.name ?? item.author_name ?? ('Learner'|t) %}
+        {% set author_role = item.role ?? item.author_role ?? '' %}
+        {% set author_avatar = item.avatar ?? item.author_avatar ?? '' %}
+        <article class="luxury-testimonial-card">
+          <p class="luxury-testimonial-card__quote">"{{ quote|striptags }}"</p>
+          <div class="luxury-testimonial-card__head">
+            <span class="luxury-testimonial-card__avatar-wrap">
+              {% if author_avatar %}
+                <img src="{{ author_avatar }}" alt="{{ author_name }}" class="luxury-testimonial-card__avatar">
+              {% else %}
+                <span class="luxury-testimonial-card__avatar luxury-testimonial-card__avatar--fallback">{{ author_name|slice(0, 1)|upper }}</span>
+              {% endif %}
+            </span>
+            <div class="luxury-testimonial-card__author">
+              <strong>{{ author_name }}</strong>
+              {% if author_role %}<span>{{ author_role }}</span>{% endif %}
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.training_process ?? true %}
+  <section class="luxury-section luxury-section--process luxury-breakout">
+    <div class="luxury-shell">
+      <div class="luxury-section__header luxury-section__header--center">
+        <span class="luxury-section__kicker">{{ 'Method'|t }}</span>
+        <h2 class="luxury-section__title">{{ homepage_settings.training_process_section_title }}</h2>
+        {% if homepage_settings.training_process_section_subtitle %}
+          <p class="luxury-section__subtitle">{{ homepage_settings.training_process_section_subtitle }}</p>
+        {% endif %}
+      </div>
+
+      <div class="luxury-process-layout">
+        <div class="luxury-process-steps">
+          {% set steps = [
+            { num: '01', title: homepage_settings.training_process_step_1_title, desc: homepage_settings.training_process_step_1_description },
+            { num: '02', title: homepage_settings.training_process_step_2_title, desc: homepage_settings.training_process_step_2_description },
+            { num: '03', title: homepage_settings.training_process_step_3_title, desc: homepage_settings.training_process_step_3_description },
+            { num: '04', title: homepage_settings.training_process_step_4_title, desc: homepage_settings.training_process_step_4_description }
+          ] %}
+          {% for step in steps %}
+          <div class="luxury-step">
+            <span class="luxury-step__num">{{ step.num }}</span>
+            <div>
+              <h3 class="luxury-step__title">{{ step.title }}</h3>
+              <p class="luxury-step__desc">{{ step.desc }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <aside class="luxury-process-panel">
+          <h3 class="luxury-process-panel__title">{{ homepage_settings.training_process_panel_title }}</h3>
+          <p class="luxury-process-panel__subtitle">{{ homepage_settings.training_process_panel_subtitle }}</p>
+          {% set features = [
+            homepage_settings.training_process_feature_1,
+            homepage_settings.training_process_feature_2,
+            homepage_settings.training_process_feature_3,
+            homepage_settings.training_process_feature_4,
+            homepage_settings.training_process_feature_5,
+            homepage_settings.training_process_feature_6
+          ] %}
+          <ul class="luxury-feature-list">
+            {% for feature in features %}
+              {% if feature %}
+                <li>{{ feature }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          <a href="{{ path('lms_course.catalog') }}" class="luxury-btn luxury-btn--primary">{{ homepage_settings.training_process_panel_cta_text }}</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.news ?? true) and luxury_news %}
+  <section class="luxury-section luxury-section--surface luxury-section--news luxury-breakout">
+    <div class="luxury-shell">
+      <div class="luxury-section__header luxury-section__header--split">
+        <div>
+          <span class="luxury-section__kicker">{{ 'News'|t }}</span>
+          <h2 class="luxury-section__title">{{ homepage_settings.news_section_title }}</h2>
+          {% if homepage_settings.news_section_subtitle %}
+            <p class="luxury-section__subtitle">{{ homepage_settings.news_section_subtitle }}</p>
+          {% endif %}
+        </div>
+        <a href="{{ path('lms_blog.frontend.collection') }}" class="luxury-link">{{ homepage_settings.news_section_link_text }}</a>
+      </div>
+      <div class="luxury-news-grid">
+        {% for item in luxury_news|slice(0, 3) %}
+        {% set news_url = item.url ?? '#' %}
+        {% set news_image = item.thumbnail_url ?? item.image_url ?? '' %}
+        <article class="luxury-news-card">
+          <a href="{{ news_url }}" class="luxury-news-card__media">
+            {% if news_image %}
+              <img src="{{ news_image }}" alt="{{ item.title }}" class="luxury-news-card__thumb">
+            {% endif %}
+            <span class="luxury-news-card__overlay">
+              {% if item.date %}<span class="luxury-news-card__overlay-date">{{ item.date }}</span>{% endif %}
+              <span class="luxury-news-card__overlay-title">{{ item.title }}</span>
+            </span>
+          </a>
+          <div class="luxury-news-card__body">
+            {% if item.date %}<time class="luxury-news-card__date">{{ item.date }}</time>{% endif %}
+            <h3 class="luxury-news-card__title"><a href="{{ news_url }}">{{ item.title }}</a></h3>
+            {% if item.summary %}<p class="luxury-news-card__summary">{{ item.summary|striptags|slice(0, 120) }}{% if item.summary|striptags|length > 120 %}...{% endif %}</p>{% endif %}
+            <a href="{{ news_url }}" class="luxury-link">{{ 'Read More'|t }}</a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.membership ?? true) and luxury_memberships %}
+  <section class="luxury-section luxury-section--membership luxury-breakout">
+    <div class="luxury-shell">
+      <div class="luxury-section__header luxury-section__header--center">
+        <span class="luxury-section__kicker">{{ 'Membership'|t }}</span>
+        <h2 class="luxury-section__title">{{ homepage_settings.membership_section_title }}</h2>
+        {% if homepage_settings.membership_section_subtitle %}
+          <p class="luxury-section__subtitle">{{ homepage_settings.membership_section_subtitle }}</p>
+        {% endif %}
+      </div>
+      <div class="luxury-plan-grid">
+        {% for plan in luxury_memberships %}
+        {% set is_recommended = plan.recommended ?? plan.is_recommended ?? false %}
+        {% set is_free_plan = (plan.is_free ?? false) or ((plan.price ?? 0) <= 0) %}
+        {% set plan_url = plan.url ?? path('lms_course.pricing') %}
+        {% set plan_features = plan.features is defined ? (plan.features is iterable ? plan.features : plan.features|split("\n")) : [] %}
+        <article class="luxury-plan-card{% if is_recommended %} luxury-plan-card--recommended{% endif %}">
+          {% if is_recommended %}<span class="luxury-plan-card__badge">{{ homepage_settings.membership_recommended_badge_text }}</span>{% endif %}
+          <h3 class="luxury-plan-card__title">{{ plan.name }}</h3>
+          <div class="luxury-plan-card__price">
+            {% if is_free_plan %}
+              <span class="luxury-plan-card__amount">{{ homepage_settings.membership_free_price_text }}</span>
+            {% else %}
+              {% set currency_symbol = '$' %}
+              {% if plan.currency is defined and plan.currency == 'EUR' %}
+                {% set currency_symbol = 'EUR ' %}
+              {% elseif plan.currency is defined and plan.currency == 'GBP' %}
+                {% set currency_symbol = 'GBP ' %}
+              {% endif %}
+              <span class="luxury-plan-card__amount">{{ currency_symbol }}{{ (plan.price ?? 0)|number_format(2, '.', ',') }}</span>
+            {% endif %}
+            {% if plan.billing_cycle is defined and plan.billing_cycle %}
+              <span class="luxury-plan-card__period">/ {{ plan.billing_cycle|replace({'_': ' '})|title }}</span>
+            {% endif %}
+          </div>
+          {% if plan_features %}
+          <ul class="luxury-plan-card__features">
+            {% for feature in plan_features %}
+              {% if feature|trim %}
+                <li>{{ feature }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          {% endif %}
+          <a href="{{ plan_url }}" class="luxury-btn luxury-btn--primary luxury-btn--block">
+            {% if is_free_plan %}
+              {{ homepage_settings.membership_free_cta_text }}
+            {% elseif is_recommended %}
+              {{ homepage_settings.membership_recommended_cta_text }}
+            {% else %}
+              {{ homepage_settings.membership_paid_cta_text }}
+            {% endif %}
+          </a>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.faqs ?? true) and faqs %}
+  <section class="luxury-section luxury-section--surface luxury-section--faq luxury-breakout">
+    <div class="luxury-shell">
+      <div class="luxury-section__header luxury-section__header--center">
+        <span class="luxury-section__kicker">{{ 'FAQ'|t }}</span>
+        <h2 class="luxury-section__title">{{ homepage_settings.faq_section_title }}</h2>
+        {% if homepage_settings.faq_section_subtitle %}
+          <p class="luxury-section__subtitle">{{ homepage_settings.faq_section_subtitle }}</p>
+        {% endif %}
+      </div>
+      <div class="luxury-faq" id="luxuryFaqAccordion">
+        {% for faq in faqs %}
+        <article class="luxury-faq__item">
+          <button class="luxury-faq__question" type="button" data-bs-toggle="collapse" data-bs-target="#luxuryFaq{{ loop.index }}" aria-expanded="{{ loop.first ? 'true' : 'false' }}" aria-controls="luxuryFaq{{ loop.index }}">
+            <span>{{ faq.question }}</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="luxuryFaq{{ loop.index }}" class="luxury-faq__answer collapse{% if loop.first %} show{% endif %}" data-bs-parent="#luxuryFaqAccordion">
+            <div class="luxury-faq__answer-body">{{ faq.answer|raw }}</div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.cta_guest ?? true %}
+  <section class="luxury-cta luxury-breakout">
+    <div class="luxury-shell luxury-cta__inner">
+      <h2 class="luxury-cta__title">{{ homepage_settings.cta_banner_title }}</h2>
+      <p class="luxury-cta__description">{{ homepage_settings.cta_banner_description }}</p>
+      <div class="luxury-cta__actions">
+        {% if not logged_in %}
+          <a href="{{ path('user.register') }}" class="luxury-btn luxury-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+        {% else %}
+          <a href="{{ path('lms_course.catalog') }}" class="luxury-btn luxury-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+        {% endif %}
+        <a href="{{ path('lms_course.catalog') }}" class="luxury-btn luxury-btn--ghost">{{ logged_in ? homepage_settings.cta_logged_in_secondary_text : homepage_settings.cta_secondary_text }}</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</div>

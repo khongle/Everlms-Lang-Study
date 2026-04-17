@@ -1,0 +1,357 @@
+// EverLMS — About Page
+// ========================================
+
+.lms-about-page {
+  position: relative;
+  padding: 4rem 0 5rem;
+  background:
+    radial-gradient(circle at top left, rgba($color-accent-info, 0.2), transparent 32%),
+    radial-gradient(circle at top right, rgba($color-accent-secondary, 0.18), transparent 28%),
+    linear-gradient(180deg, #08101c 0%, #0d1117 42%, #080d16 100%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 92%);
+    pointer-events: none;
+  }
+}
+
+.lms-about-hero,
+.lms-about-section,
+.lms-about-banner {
+  position: relative;
+  z-index: 1;
+}
+
+.lms-about-hero {
+  margin-bottom: 2rem;
+
+  &__panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.9fr);
+    gap: 1.5rem;
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+    border-radius: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background:
+      linear-gradient(135deg, rgba(11, 17, 32, 0.92), rgba(17, 24, 39, 0.82)),
+      radial-gradient(circle at top right, rgba($color-accent-primary, 0.24), transparent 36%);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: auto -10% -1px auto;
+      width: 40%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba($color-accent-info, 0.95), rgba($color-accent-secondary, 0.9), transparent);
+      filter: blur(0.2px);
+    }
+  }
+
+  &__copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.25rem;
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: rgba($color-accent-info, 0.12);
+    border: 1px solid rgba($color-accent-info, 0.32);
+    color: #9bd9ff;
+    font-size: 0.72rem;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.5rem, 5vw, 4.25rem);
+    line-height: 0.95;
+    color: $color-text-primary;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+  }
+
+  p {
+    max-width: 42rem;
+    margin: 0;
+    font-size: 1.05rem;
+    color: rgba(230, 237, 243, 0.78);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    align-content: center;
+  }
+}
+
+.lms-about-stat-card {
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+  backdrop-filter: blur(14px);
+
+  &__value {
+    font-size: clamp(1.85rem, 3vw, 2.4rem);
+    font-weight: $font-weight-extrabold;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  &__label {
+    font-size: 0.92rem;
+    color: rgba(230, 237, 243, 0.7);
+  }
+}
+
+.lms-about-section {
+  margin-top: 2rem;
+  padding: clamp(1.5rem, 2vw, 2rem);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 15, 24, 0.72);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+
+  &__header {
+    max-width: 48rem;
+    margin-bottom: 1.5rem;
+
+    &--center {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+    margin-bottom: 0.75rem;
+    font-size: 0.76rem;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b6a4ff;
+  }
+
+  h2 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    color: $color-text-primary;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(230, 237, 243, 0.72);
+  }
+}
+
+.lms-about-principles,
+.lms-about-values-grid,
+.lms-about-team-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.lms-about-principles {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lms-about-values-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.lms-about-team-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.lms-about-principle-card,
+.lms-about-value-card,
+.lms-about-team-card {
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  transition: transform $transition-normal, border-color $transition-normal, box-shadow $transition-normal;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba($color-accent-info, 0.4);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+  }
+
+  h3 {
+    margin: 0 0 0.65rem;
+    font-size: 1.12rem;
+    color: #fff;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(230, 237, 243, 0.72);
+    font-size: 0.95rem;
+  }
+}
+
+.lms-about-principle-card__icon,
+.lms-about-value-card__icon,
+.lms-about-team-card__avatar {
+  width: 3.1rem;
+  height: 3.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba($color-accent-info, 0.24), rgba($color-accent-secondary, 0.2));
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 1.2rem;
+}
+
+.lms-about-team-card {
+  text-align: center;
+
+  &__avatar {
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 999px;
+  }
+
+  h3 {
+    margin-bottom: 0.4rem;
+  }
+}
+
+.lms-about-banner {
+  margin-top: 2rem;
+  padding: clamp(1.35rem, 2vw, 2rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) auto auto;
+  gap: 1.25rem;
+  align-items: center;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(132, 120, 255, 0.35);
+  background: linear-gradient(135deg, rgba(13, 18, 31, 0.95), rgba(22, 27, 34, 0.88));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+
+  &__content {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  &__badge {
+    width: 3.4rem;
+    height: 3.4rem;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba($color-accent-info, 0.22), rgba($color-accent-secondary, 0.22));
+    color: #fff;
+    font-size: 1.35rem;
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+    margin-bottom: 0.45rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #9bd9ff;
+  }
+
+  h2 {
+    margin: 0 0 0.55rem;
+    color: #fff;
+    font-size: 1.5rem;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(230, 237, 243, 0.74);
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      color: rgba(230, 237, 243, 0.76);
+      white-space: nowrap;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: $breakpoint-lg) {
+  .lms-about-hero__panel,
+  .lms-about-banner {
+    grid-template-columns: 1fr;
+  }
+
+  .lms-about-values-grid,
+  .lms-about-team-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lms-about-banner__actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .lms-about-page {
+    padding-top: 3rem;
+  }
+
+  .lms-about-hero__stats,
+  .lms-about-principles,
+  .lms-about-values-grid,
+  .lms-about-team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lms-about-hero__actions,
+  .lms-about-banner__actions {
+    flex-direction: column;
+
+    .btn-lms-primary,
+    .btn-lms-outline {
+      width: 100%;
+    }
+  }
+}

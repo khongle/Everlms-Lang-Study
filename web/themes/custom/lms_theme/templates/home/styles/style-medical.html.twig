@@ -1,0 +1,406 @@
+{{ attach_library('lms_theme/homepage_medical') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+
+<div class="medical-home">
+  {% if homepage_sections.hero ?? true %}
+  <section class="medical-hero medical-breakout">
+    <div class="medical-hero__bg"></div>
+    <div class="medical-hero__frame">
+      {% if slideshows %}
+      <div id="medicalHeroCarousel" class="carousel slide medical-carousel" data-bs-ride="carousel" data-bs-interval="6400">
+        {% if slideshows|length > 1 %}
+        <div class="carousel-indicators medical-carousel__indicators">
+          {% for slide in slideshows %}
+            <button type="button" data-bs-target="#medicalHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="medical-carousel__indicator{% if loop.first %} active{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="carousel-inner medical-carousel__inner">
+          {% for slide in slideshows %}
+          {% set hero_slide_image = slide.image_url|default('') %}
+          {% if not hero_slide_image %}
+            {% for fallback_slide in slideshows|default([]) %}
+              {% if not hero_slide_image and fallback_slide.image_url %}
+                {% set hero_slide_image = fallback_slide.image_url %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          <div class="carousel-item medical-carousel__item{% if loop.first %} active{% endif %}">
+            {% if hero_slide_image %}<img src="{{ hero_slide_image }}" alt="{{ slide.heading }}" class="medical-carousel__image">{% endif %}
+            <div class="medical-carousel__veil"></div>
+            <div class="medical-shell medical-hero__content">
+              <span class="medical-eyebrow">{{ site_name|default('EverLMS') }}</span>
+              <h1 class="medical-hero__title">{{ slide.heading }}</h1>
+              <p class="medical-hero__subtitle">{{ slide.subheading|striptags }}</p>
+              <div class="medical-hero__actions">
+                <a href="{{ slide.link_url }}" class="medical-btn medical-btn--primary">{{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}</a>
+                <a href="{{ path('lms_course.catalog') }}" class="medical-btn medical-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="medical-shell medical-hero__fallback">
+        <span class="medical-eyebrow">{{ site_name|default('EverLMS') }}</span>
+        <h1 class="medical-hero__title">{{ homepage_settings.hero_fallback_heading }}</h1>
+        <p class="medical-hero__subtitle">{{ homepage_settings.hero_fallback_subtext }}</p>
+        <div class="medical-hero__actions">
+          <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="medical-btn medical-btn--primary">{{ homepage_settings.hero_fallback_cta_text }}</a>
+          <a href="{{ path('lms_course.catalog') }}" class="medical-btn medical-btn--ghost">{{ homepage_settings.hero_secondary_cta_text }}</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if homepage_sections.stats ?? true %}
+    <div class="medical-stats medical-shell">
+      <div class="medical-stats__grid">
+        <div class="medical-stat"><span class="medical-stat__value">{{ stats.courses }}</span><span class="medical-stat__label">{{ stats.courses_label }}</span></div>
+        <div class="medical-stat"><span class="medical-stat__value">{{ stats.students }}</span><span class="medical-stat__label">{{ stats.students_label }}</span></div>
+        <div class="medical-stat"><span class="medical-stat__value">{{ stats.satisfaction }}</span><span class="medical-stat__label">{{ stats.satisfaction_label }}</span></div>
+        <div class="medical-stat"><span class="medical-stat__value">{{ categories|length }}</span><span class="medical-stat__label">{{ 'Domains'|t }}</span></div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+  <section class="medical-section medical-shell medical-shell--full">
+    <div class="medical-section__head medical-section__head--split">
+      <div>
+        <h2 class="medical-section__title">{{ 'Continue Learning'|t }}</h2>
+      </div>
+      <a href="{{ path('lms_progress.dashboard') }}" class="medical-link">{{ 'Open Dashboard'|t }}</a>
+    </div>
+    <div class="medical-progress-grid">
+      {% for item in my_courses|slice(0, 3) %}
+      <article class="medical-progress-card">
+        <div class="medical-progress-card__thumb">
+          {% if item.course.thumbnail_url %}
+            <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}">
+          {% else %}
+            <div class="medical-progress-card__placeholder"><i class="fas fa-book-open"></i></div>
+          {% endif %}
+        </div>
+        <div class="medical-progress-card__body">
+          <h3 class="medical-progress-card__title"><a href="{{ item.course.continue_url }}">{{ item.course.name }}</a></h3>
+          <div class="medical-progress"><div class="medical-progress__fill lms-learning-progress__fill" data-progress="{{ item.progress }}"></div></div>
+          <div class="medical-progress-card__meta">{{ item.progress }}% {{ 'Completed'|t }}</div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="medical-section medical-section--surface medical-shell medical-shell--full">
+    <div class="medical-section__head medical-section__head--center">
+      <span class="medical-kicker">{{ 'Categories'|t }}</span>
+      <h2 class="medical-section__title">{{ homepage_settings.categories_section_title }}</h2>
+      <p class="medical-section__subtitle">{{ homepage_settings.categories_section_subtitle }}</p>
+    </div>
+    <div class="medical-category-grid">
+      {% for category in categories %}
+      {% set category_url = category.url ?? (path('lms_course.catalog') ~ '?category=' ~ (category.entity.id ?? '')) %}
+      <a href="{{ category_url }}" class="medical-category-card">
+        <div class="medical-category-card__icon">
+          {% if category.icon_url %}
+            <img src="{{ category.icon_url }}" alt="{{ category.name }}">
+          {% elseif category.thumbnail_url %}
+            <img src="{{ category.thumbnail_url }}" alt="{{ category.name }}">
+          {% elseif category.image_url %}
+            <img src="{{ category.image_url }}" alt="{{ category.name }}">
+          {% else %}
+            <i class="fas fa-stethoscope"></i>
+          {% endif %}
+        </div>
+        <h3 class="medical-category-card__name">{{ category.name }}</h3>
+        {% if category.course_count is defined %}<span class="medical-category-card__count">{{ category.course_count }} {{ 'courses'|t }}</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="medical-section medical-shell medical-shell--full">
+    <div class="medical-section__head medical-section__head--split">
+      <div>
+        <span class="medical-kicker">{{ 'Featured'|t }}</span>
+        <h2 class="medical-section__title">{{ homepage_settings.featured_section_title }}</h2>
+        <p class="medical-section__subtitle">{{ homepage_settings.featured_section_subtitle }}</p>
+      </div>
+      <a href="{{ path('lms_course.catalog') }}" class="medical-link">{{ homepage_settings.featured_section_link_text }}</a>
+    </div>
+    <div class="medical-course-grid">
+      {% for course in featured_courses|slice(0, 6) %}
+      <article class="medical-course-card">
+        <a href="{{ course.url }}" class="medical-course-card__thumb-wrap">
+          {% if course.thumbnail_url %}
+            <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" class="medical-course-card__thumb">
+          {% else %}
+            <div class="medical-course-card__thumb-placeholder"><i class="fas fa-graduation-cap"></i></div>
+          {% endif %}
+        </a>
+        <div class="medical-course-card__body">
+          {% if course.category_name %}<span class="medical-course-card__cat">{{ course.category_name }}</span>{% endif %}
+          <h3 class="medical-course-card__title"><a href="{{ course.url }}">{{ course.name }}</a></h3>
+          {% if course.instructor_name %}<p class="medical-course-card__instructor">{{ course.instructor_name }}</p>{% endif %}
+          <div class="medical-course-card__footer">
+            {% if course.price is defined %}<span class="medical-course-card__price">{% if course.is_free ?? false %}{{ 'Free'|t }}{% else %}{{ course.price }}{% endif %}</span>{% endif %}
+            <a href="{{ course.url }}" class="medical-btn medical-btn--sm">{{ 'View'|t }}</a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.introductions ?? true) and introductions %}
+  <section class="medical-section medical-section--surface medical-shell medical-shell--full">
+    <div class="medical-section__head medical-section__head--center">
+      <span class="medical-kicker">{{ 'About'|t }}</span>
+      <h2 class="medical-section__title">{{ homepage_settings.introductions_section_title }}</h2>
+      <p class="medical-section__subtitle">{{ homepage_settings.introductions_section_subtitle }}</p>
+    </div>
+    <div class="medical-intro-list medical-intro-list--compact">
+      {% for intro in introductions|slice(0, 2) %}
+      <article class="medical-intro-item">
+        <div class="medical-intro-item__media">
+          {% if intro.image_url %}<img src="{{ intro.image_url }}" alt="{{ intro.title }}">{% else %}<div class="medical-intro-item__placeholder"><i class="fas fa-lightbulb"></i></div>{% endif %}
+        </div>
+        <div class="medical-intro-item__content">
+          <h3 class="medical-intro-item__title">{{ intro.title }}</h3>
+          <div class="medical-intro-item__body">{{ intro.body|raw }}</div>
+          {% if intro.link_url %}<a href="{{ intro.link_url }}" class="medical-link">{{ intro.link_title|default('Learn More'|t) }}</a>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.bundles ?? true) and course_bundles %}
+  <section class="medical-section medical-shell">
+    <div class="medical-section__head medical-section__head--center">
+      <span class="medical-kicker">{{ 'Bundles'|t }}</span>
+      <h2 class="medical-section__title">{{ homepage_settings.bundles_section_title }}</h2>
+      <p class="medical-section__subtitle">{{ homepage_settings.bundles_section_subtitle }}</p>
+    </div>
+    <div class="medical-bundle-grid">
+      {% for bundle in course_bundles|slice(0, 4) %}
+      <a href="{{ bundle.url }}" class="medical-bundle-card">
+        <h3 class="medical-bundle-card__title">{{ bundle.name }}</h3>
+        {% if bundle.description %}<p class="medical-bundle-card__desc">{{ bundle.description|striptags|slice(0, 100) }}...</p>{% endif %}
+        <span class="medical-bundle-card__link">{{ 'View Bundle'|t }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="medical-section medical-section--surface medical-shell medical-shell--full">
+    <div class="medical-section__head medical-section__head--center">
+      <span class="medical-kicker">{{ 'Testimonials'|t }}</span>
+      <h2 class="medical-section__title">{{ homepage_settings.testimonials_section_title ?: 'What Our Students Say'|t }}</h2>
+      <p class="medical-section__subtitle">{{ homepage_settings.testimonials_section_subtitle ?: 'Feedback from learners in real training environments.'|t }}</p>
+    </div>
+    <div class="medical-testimonial-grid">
+      {% for item in testimonials|slice(0, 3) %}
+      {% set testimonial_quote = item.content ?? item.testimonial ?? '' %}
+      {% set testimonial_name = item.name ?? item.author_name ?? 'Student'|t %}
+      {% set testimonial_role = item.role ?? item.author_role ?? '' %}
+      {% set testimonial_avatar = item.avatar ?? item.author_avatar ?? '' %}
+      {% set testimonial_course = item.course_title ?? '' %}
+      <article class="medical-testimonial-card">
+        <p class="medical-testimonial-card__quote">{{ testimonial_quote|striptags }}</p>
+        <div class="medical-testimonial-card__author">
+          <div class="medical-testimonial-card__avatar">
+            {% if testimonial_avatar %}
+              <img src="{{ testimonial_avatar }}" alt="{{ testimonial_name }}">
+            {% else %}
+              <span>{{ testimonial_name|slice(0, 1)|upper }}</span>
+            {% endif %}
+          </div>
+          <div class="medical-testimonial-card__author-meta">
+            <strong>{{ testimonial_name }}</strong>
+            {% if testimonial_role %}<span>{{ testimonial_role }}</span>{% endif %}
+            {% if testimonial_course %}<small>{{ testimonial_course }}</small>{% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.training_process ?? true %}
+  <section class="medical-section medical-shell">
+    <div class="medical-section__head medical-section__head--center">
+      <span class="medical-kicker">{{ 'Process'|t }}</span>
+      <h2 class="medical-section__title">{{ homepage_settings.training_process_section_title }}</h2>
+      <p class="medical-section__subtitle">{{ homepage_settings.training_process_section_subtitle }}</p>
+    </div>
+    <div class="medical-process-layout">
+      <div class="medical-process-steps">
+        {% set steps = [
+          { num: '01', title: homepage_settings.training_process_step_1_title, desc: homepage_settings.training_process_step_1_description },
+          { num: '02', title: homepage_settings.training_process_step_2_title, desc: homepage_settings.training_process_step_2_description },
+          { num: '03', title: homepage_settings.training_process_step_3_title, desc: homepage_settings.training_process_step_3_description },
+          { num: '04', title: homepage_settings.training_process_step_4_title, desc: homepage_settings.training_process_step_4_description }
+        ] %}
+        {% for step in steps %}
+        <div class="medical-step">
+          <span class="medical-step__num">{{ step.num }}</span>
+          <div class="medical-step__content">
+            <h3 class="medical-step__title">{{ step.title }}</h3>
+            <p class="medical-step__desc">{{ step.desc }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <aside class="medical-process-panel">
+        <h3 class="medical-process-panel__title">{{ homepage_settings.training_process_panel_title }}</h3>
+        <p class="medical-process-panel__subtitle">{{ homepage_settings.training_process_panel_subtitle }}</p>
+        <ul class="medical-feature-list">
+          {% set features = [
+            homepage_settings.training_process_feature_1,
+            homepage_settings.training_process_feature_2,
+            homepage_settings.training_process_feature_3,
+            homepage_settings.training_process_feature_4,
+            homepage_settings.training_process_feature_5,
+            homepage_settings.training_process_feature_6
+          ] %}
+          {% for feature in features %}
+          <li>{{ feature }}</li>
+          {% endfor %}
+        </ul>
+        <a href="{{ path('lms_course.catalog') }}" class="medical-btn medical-btn--primary">{{ homepage_settings.training_process_panel_cta_text }}</a>
+      </aside>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.news ?? true) and news_items %}
+  <section class="medical-section medical-section--surface medical-shell">
+    <div class="medical-section__head medical-section__head--split">
+      <div>
+        <span class="medical-kicker">{{ 'News'|t }}</span>
+        <h2 class="medical-section__title">{{ homepage_settings.news_section_title }}</h2>
+        <p class="medical-section__subtitle">{{ homepage_settings.news_section_subtitle }}</p>
+      </div>
+      <a href="{{ path('view.frontpage.page_1') }}" class="medical-link">{{ homepage_settings.news_section_link_text }}</a>
+    </div>
+    <div class="medical-news-grid">
+      {% for item in news_items|slice(0, 3) %}
+      <article class="medical-news-card">
+        {% if item.image_url %}<img src="{{ item.image_url }}" alt="{{ item.title }}" class="medical-news-card__thumb">{% endif %}
+        <div class="medical-news-card__body">
+          {% if item.date %}<time class="medical-news-card__date">{{ item.date }}</time>{% endif %}
+          <h3 class="medical-news-card__title"><a href="{{ item.url }}">{{ item.title }}</a></h3>
+          {% if item.summary %}<p class="medical-news-card__summary">{{ item.summary|striptags|slice(0, 110) }}...</p>{% endif %}
+          <a href="{{ item.url }}" class="medical-link">{{ 'Read More'|t }}</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.membership ?? true) and membership_plans %}
+  <section class="medical-section medical-shell">
+    <div class="medical-section__head medical-section__head--center">
+      <span class="medical-kicker">{{ 'Membership'|t }}</span>
+      <h2 class="medical-section__title">{{ homepage_settings.membership_section_title }}</h2>
+      <p class="medical-section__subtitle">{{ homepage_settings.membership_section_subtitle }}</p>
+    </div>
+    <div class="medical-plan-grid">
+      {% for plan in membership_plans %}
+      <article class="medical-plan-card{% if plan.is_recommended ?? false %} medical-plan-card--recommended{% endif %}">
+        {% if plan.is_recommended ?? false %}<span class="medical-plan-card__badge">{{ homepage_settings.membership_recommended_badge_text }}</span>{% endif %}
+        <h3 class="medical-plan-card__title">{{ plan.name }}</h3>
+        <div class="medical-plan-card__price">
+          {% if plan.price_display %}<span class="medical-plan-card__amount">{{ plan.price_display }}</span>{% endif %}
+          {% if plan.period %}<span class="medical-plan-card__period">/ {{ plan.period }}</span>{% endif %}
+        </div>
+        {% if plan.features %}
+        <ul class="medical-plan-card__features">
+          {% for feature in plan.features %}<li>{{ feature }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+        <a href="{{ plan.url }}" class="medical-btn medical-btn--primary medical-btn--block">
+          {% if plan.is_free ?? false %}
+            {{ homepage_settings.membership_free_cta_text }}
+          {% elseif plan.is_recommended ?? false %}
+            {{ homepage_settings.membership_recommended_cta_text }}
+          {% else %}
+            {{ homepage_settings.membership_paid_cta_text }}
+          {% endif %}
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.faq ?? true) and faqs %}
+  <section class="medical-section medical-section--surface medical-shell medical-shell--full">
+    <div class="medical-section__head medical-section__head--center">
+      <span class="medical-kicker">{{ 'FAQ'|t }}</span>
+      <h2 class="medical-section__title">{{ homepage_settings.faq_section_title ?: 'Frequently Asked Questions'|t }}</h2>
+      <p class="medical-section__subtitle">{{ homepage_settings.faq_section_subtitle ?: 'Everything you need to know before starting.'|t }}</p>
+    </div>
+    <div class="medical-faq" id="medicalFaqAccordion">
+      {% for faq in faqs %}
+      <article class="medical-faq__item">
+        <button class="medical-faq__question" type="button" data-bs-toggle="collapse" data-bs-target="#medicalFaq{{ loop.index }}" aria-expanded="{{ loop.first ? 'true' : 'false' }}" aria-controls="medicalFaq{{ loop.index }}">
+          <span>{{ faq.question }}</span>
+          <i class="medical-faq__icon fas fa-chevron-down"></i>
+        </button>
+        <div id="medicalFaq{{ loop.index }}" class="medical-faq__answer collapse{% if loop.first %} show{% endif %}" data-bs-parent="#medicalFaqAccordion">
+          <div class="medical-faq__answer-body">{{ faq.answer|raw }}</div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% set cta_slide_image = '' %}
+  {% set cta_slide_heading = homepage_settings.cta_banner_title %}
+  {% for slide in slideshows|default([]) %}
+    {% if not cta_slide_image and slide.image_url %}
+      {% set cta_slide_image = slide.image_url %}
+      {% set cta_slide_heading = slide.heading|default(homepage_settings.cta_banner_title) %}
+    {% endif %}
+  {% endfor %}
+  <section class="medical-cta medical-breakout">
+    <div class="medical-shell medical-shell--full medical-cta__inner">
+      <div class="medical-cta__content">
+        <h2 class="medical-cta__title">{{ homepage_settings.cta_banner_title }}</h2>
+        <p class="medical-cta__description">{{ homepage_settings.cta_banner_description }}</p>
+        <div class="medical-cta__actions">
+          {% if not logged_in %}
+            <a href="{{ path('user.register') }}" class="medical-btn medical-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+          {% else %}
+            <a href="{{ path('lms_course.catalog') }}" class="medical-btn medical-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+          {% endif %}
+          <a href="{{ path('lms_course.catalog') }}" class="medical-btn medical-btn--ghost">{{ homepage_settings.cta_secondary_text }}</a>
+        </div>
+      </div>
+      <div class="medical-cta__media">
+        {% if cta_slide_image %}
+          <img src="{{ cta_slide_image }}" alt="{{ cta_slide_heading }}">
+        {% else %}
+          <div class="medical-cta__media-fallback"><i class="fas fa-stethoscope"></i></div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+</div>

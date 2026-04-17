@@ -1,13 +1,66 @@
 {# Dashboard page #}
 {{ attach_library('lms_theme/global') }}
 
-<section class="lms-section">
+{% set featured_course = recent_courses|first %}
+
+<section class="lms-section lms-dashboard-page">
   <div class="container">
-    <h1 class="lms-manage__title">{{ 'Dashboard'|t }}</h1>
+    <div class="lms-dashboard-page__hero">
+      <div class="lms-dashboard-page__hero-copy">
+        <span class="lms-dashboard-page__eyebrow">{{ 'Learning overview'|t }}</span>
+        <h1 class="lms-dashboard-page__title">{{ 'Dashboard'|t }}</h1>
+        <p class="lms-dashboard-page__subtitle">{{ 'Track your active enrollments, jump back into recent lessons, and keep every learning streak moving.'|t }}</p>
+      </div>
+
+      {% if featured_course %}
+        {% set featured_status = featured_course.status == 'completed' ? 'Completed'|t : (featured_course.status == 'not_started' ? 'Ready to start'|t : 'In progress'|t) %}
+        {% set featured_action = featured_course.status == 'completed' ? 'Review Course'|t : (featured_course.status == 'not_started' ? 'Start Course'|t : 'Continue Learning'|t) %}
+        <article class="lms-learning-spotlight">
+          <a class="lms-learning-spotlight__media" href="{{ featured_course.url }}">
+            {% if featured_course.thumbnail_url %}
+              <img src="{{ featured_course.thumbnail_url }}" alt="{{ featured_course.title }}" loading="lazy">
+            {% else %}
+              <span class="lms-learning-spotlight__placeholder">
+                <i class="fas fa-graduation-cap"></i>
+              </span>
+            {% endif %}
+          </a>
+
+          <div class="lms-learning-spotlight__body">
+            <div class="lms-learning-spotlight__meta">
+              {% if featured_course.category %}
+                <span class="lms-learning-spotlight__category">{{ featured_course.category }}</span>
+              {% endif %}
+              <span class="lms-learning-spotlight__status">{{ featured_status }}</span>
+            </div>
+
+            <h2 class="lms-learning-spotlight__title">
+              <a href="{{ featured_course.url }}">{{ featured_course.title }}</a>
+            </h2>
+
+            <p class="lms-learning-spotlight__copy">{{ 'Your next lesson is ready. Pick up from the latest checkpoint and keep your progress climbing.'|t }}</p>
+
+            <div class="lms-learning-progress lms-learning-progress--hero">
+              <div class="lms-learning-progress__meta">
+                <span>{{ 'Progress'|t }}</span>
+                <strong>{{ featured_course.progress|number_format(0) }}%</strong>
+              </div>
+              <div class="lms-learning-progress__track">
+                <span class="lms-learning-progress__fill{% if featured_course.status == 'completed' %} is-completed{% endif %}" data-progress="{{ featured_course.progress|number_format(2, '.', '') }}"></span>
+              </div>
+            </div>
+
+            <a href="{{ featured_course.url }}" class="btn-lms-primary lms-learning-spotlight__cta{% if featured_course.status == 'completed' %} is-secondary{% endif %}">
+              {{ featured_action }}
+            </a>
+          </div>
+        </article>
+      {% endif %}
+    </div>
 
     {# KPI Cards #}
     <div class="lms-kpi-grid">
-      <div class="lms-card lms-kpi-card">
+      <div class="card-glass lms-kpi-card">
         <div class="lms-kpi-card__icon lms-kpi-card__icon--primary">
           <i class="fas fa-book-open"></i>
         </div>
@@ -17,7 +70,7 @@
         </div>
       </div>
 
-      <div class="lms-card lms-kpi-card">
+      <div class="card-glass lms-kpi-card">
         <div class="lms-kpi-card__icon lms-kpi-card__icon--warning">
           <i class="fas fa-spinner"></i>
         </div>
@@ -27,7 +80,7 @@
         </div>
       </div>
 
-      <div class="lms-card lms-kpi-card">
+      <div class="card-glass lms-kpi-card">
         <div class="lms-kpi-card__icon lms-kpi-card__icon--success">
           <i class="fas fa-check-circle"></i>
         </div>
@@ -37,7 +90,7 @@
         </div>
       </div>
 
-      <div class="lms-card lms-kpi-card">
+      <div class="card-glass lms-kpi-card">
         <div class="lms-kpi-card__icon lms-kpi-card__icon--info">
           <i class="fas fa-certificate"></i>
         </div>
@@ -50,105 +103,71 @@
 
     {# Continue Learning #}
     {% if recent_courses|length > 0 %}
-      <div class="lms-manage__header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; margin-top: 3rem;">
-        <h2 class="lms-section__title" style="margin: 0;">{{ 'Continue Learning'|t }}</h2>
-        <div class="lms-course-filters" style="display: flex; gap: 0.5rem; background: #161b22; padding: 0.25rem; border-radius: 0.5rem; border: 1px solid hsla(0,0%,100%,0.1);">
-          <button class="lms-filter-btn active" data-filter="all" style="background: #667eea; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">{{ 'All'|t }}</button>
-          <button class="lms-filter-btn" data-filter="in_progress" style="background: transparent; color: #8b949e; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.2s;">{{ 'In Progress'|t }}</button>
-          <button class="lms-filter-btn" data-filter="completed" style="background: transparent; color: #8b949e; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.2s;">{{ 'Completed'|t }}</button>
+      <div class="lms-dashboard-page__section" data-course-filter-root>
+        <div class="lms-learning-toolbar">
+          <div>
+            <h2 class="lms-learning-toolbar__title">{{ 'Continue learning'|t }}</h2>
+            <p class="lms-learning-toolbar__subtitle">{{ 'Filter your current queue and jump straight back into the right course.'|t }}</p>
+          </div>
+
+          <div class="lms-learning-filters" role="tablist" aria-label="{{ 'Filter courses'|t }}">
+            <button type="button" class="lms-learning-filters__button is-active" data-course-filter="all">{{ 'All'|t }}<span>{{ course_summary.all }}</span></button>
+            <button type="button" class="lms-learning-filters__button" data-course-filter="in_progress">{{ 'In Progress'|t }}<span>{{ course_summary.in_progress }}</span></button>
+            <button type="button" class="lms-learning-filters__button" data-course-filter="completed">{{ 'Completed'|t }}<span>{{ course_summary.completed }}</span></button>
+            <button type="button" class="lms-learning-filters__button" data-course-filter="not_started">{{ 'Not Started'|t }}<span>{{ course_summary.not_started }}</span></button>
+          </div>
         </div>
-      </div>
 
-      <div class="grid-courses" id="course-grid">
+        <div class="grid-courses lms-learning-grid">
         {% for item in recent_courses %}
-          <div class="course-item card-lms card-lms--course" data-status="{{ item.status }}" style="display: flex; flex-direction: column; height: 100%; transition: opacity 0.3s ease;">
-            {% if item.thumbnail_url %}
-              <div class="card-lms__image">
-                {% if item.category %}
-                  <span class="card-lms__category">{{ item.category }}</span>
-                {% endif %}
-                <img src="{{ item.thumbnail_url }}" alt="{{ item.course.label }}" loading="lazy">
-              </div>
-            {% else %}
-              <div class="card-lms__image card-lms__image--placeholder">
-                {% if item.category %}
-                  <span class="card-lms__category">{{ item.category }}</span>
-                {% endif %}
-                <i class="fas fa-graduation-cap"></i>
-              </div>
-            {% endif %}
+          {% set status_text = item.status == 'completed' ? 'Completed'|t : (item.status == 'not_started' ? 'Ready to start'|t : 'In progress'|t) %}
+          {% set action_text = item.status == 'completed' ? 'Review Course'|t : (item.status == 'not_started' ? 'Start Course'|t : 'Continue Learning'|t) %}
+          <article class="card-lms lms-learning-card course-item" data-course-status="{{ item.status }}">
+            <a class="lms-learning-card__media" href="{{ item.url }}">
+              {% if item.thumbnail_url %}
+                <img src="{{ item.thumbnail_url }}" alt="{{ item.title }}" loading="lazy">
+              {% else %}
+                <span class="lms-learning-card__placeholder"><i class="fas fa-graduation-cap"></i></span>
+              {% endif %}
 
-            <div class="card-lms__body" style="flex: 1; display: flex; flex-direction: column;">
-              <h3 class="card-lms__title" style="margin-bottom: 1rem;">
-                <a href="{{ item.url }}" style="color: #e6edf3; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#e6edf3'">{{ item.course.label }}</a>
+              <div class="lms-learning-card__chips">
+                {% if item.category %}
+                  <span class="lms-learning-card__category">{{ item.category }}</span>
+                {% endif %}
+                <span class="lms-learning-card__badge{% if item.status == 'completed' %} is-completed{% elseif item.status == 'not_started' %} is-idle{% endif %}">{{ status_text }}</span>
+              </div>
+            </a>
+
+            <div class="lms-learning-card__body">
+              <h3 class="lms-learning-card__title">
+                <a href="{{ item.url }}">{{ item.title }}</a>
               </h3>
-              
-              <div style="margin-top: auto; margin-bottom: 1rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                  <span style="font-size: 0.8125rem; color: #8b949e; font-weight: 500;">
-                    {% if item.status == 'completed' %}
-                      <span style="color: #43e97b;"><i class="fas fa-check-circle"></i> {{ 'Completed'|t }}</span>
-                    {% else %}
-                      {{ 'Progress'|t }}
-                    {% endif %}
-                  </span>
-                  <span style="font-size: 0.8125rem; color: #e6edf3; font-weight: 600;">{{ item.progress|number_format(0) }}%</span>
+
+              <div class="lms-learning-card__meta">
+                <span>{{ item.progress|number_format(0) }}% {{ 'complete'|t }}</span>
+                <span>{{ status_text }}</span>
+              </div>
+
+              <div class="lms-learning-progress">
+                <div class="lms-learning-progress__meta">
+                  <span>{{ 'Progress'|t }}</span>
+                  <strong>{{ item.progress|number_format(0) }}%</strong>
                 </div>
-                <div class="lms-progress-bar" style="background: rgba(102, 126, 234, 0.15); height: 8px; border-radius: 1rem; overflow: hidden; margin: 0;">
-                  <div class="lms-progress-bar__fill" style="width: {{ item.progress }}%; height: 100%; {% if item.status == 'completed' %}background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);{% else %}background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);{% endif %} border-radius: 1rem; transition: width 0.3s ease;"></div>
+                <div class="lms-learning-progress__track">
+                  <span class="lms-learning-progress__fill{% if item.status == 'completed' %} is-completed{% endif %}" data-progress="{{ item.progress|number_format(2, '.', '') }}"></span>
                 </div>
               </div>
 
-              <a href="{{ item.url }}" class="btn-lms-primary btn-lms-sm" style="border-radius: 2rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; {% if item.status == 'completed' %}background: rgba(255,255,255,0.05); color: #8b949e; border: 1px solid rgba(255,255,255,0.1);{% endif %}">
-                {% if item.status == 'completed' %}
-                  {{ 'Review Course'|t }} <i class="fas fa-redo" style="font-size: 0.85em;"></i>
-                {% else %}
-                  {{ 'Continue Learning'|t }} <i class="fas fa-play" style="font-size: 0.85em;"></i>
-                {% endif %}
+              <a href="{{ item.url }}" class="btn-lms-primary btn-lms-sm lms-learning-card__cta{% if item.status == 'completed' %} is-secondary{% endif %}">
+                {{ action_text }}
               </a>
             </div>
-          </div>
+          </article>
         {% endfor %}
+        </div>
       </div>
-
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          const filterBtns = document.querySelectorAll('.lms-filter-btn');
-          const courseItems = document.querySelectorAll('.course-item');
-
-          filterBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-              filterBtns.forEach(b => {
-                b.classList.remove('active');
-                b.style.background = 'transparent';
-                b.style.color = '#8b949e';
-                b.style.fontWeight = '500';
-              });
-              
-              this.classList.add('active');
-              this.style.background = '#667eea';
-              this.style.color = '#fff';
-              this.style.fontWeight = '600';
-
-              const filterValue = this.getAttribute('data-filter');
-
-              courseItems.forEach(item => {
-                item.style.opacity = '0';
-                setTimeout(() => {
-                  if (filterValue === 'all' || item.getAttribute('data-status') === filterValue) {
-                    item.style.display = 'flex';
-                    setTimeout(() => item.style.opacity = '1', 50);
-                  } else {
-                    item.style.display = 'none';
-                  }
-                }, 300);
-              });
-            });
-          });
-        });
-      </script>
     {% else %}
-      <div class="lms-empty-state">
+      <div class="lms-learning-empty">
         <i class="fas fa-graduation-cap"></i>
         <h3>{{ "You haven't enrolled in any courses yet"|t }}</h3>
         <a href="{{ path('lms_course.catalog') }}" class="lms-btn lms-btn--primary">

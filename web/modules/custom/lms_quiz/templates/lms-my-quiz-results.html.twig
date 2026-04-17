@@ -1,209 +1,67 @@
 {# My Quiz Results #}
 {{ attach_library('lms_theme/global') }}
 
-<style>
-/* Premium SaaS Quiz Results Layout */
-.lms-quiz-container {
-  padding-top: 3rem;
-  padding-bottom: 5rem;
-}
-.lms-quiz-title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 2.5rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.lms-quiz-title i {
-  color: #8b5cf6;
-  font-size: 1.75rem;
-}
-.lms-quiz-board {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-}
-.lms-quiz-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0;
-}
-.lms-quiz-table thead {
-  background: #f8fafc;
-  border-bottom: 2px solid #e2e8f0;
-}
-.lms-quiz-table th {
-  padding: 1.25rem 1.5rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-align: left;
-}
-.lms-quiz-table td {
-  padding: 1.5rem;
-  vertical-align: middle;
-  border-bottom: 1px solid #f1f5f9;
-  transition: background-color 0.2s ease;
-}
-.lms-quiz-table tbody tr:hover td {
-  background-color: #f8fafc;
-}
-.lms-quiz-table tbody tr:last-child td {
-  border-bottom: none;
-}
-.quiz-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.quiz-icon-box {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  flex-shrink: 0;
-}
-.quiz-icon-success {
-  background: #dcfce7;
-  color: #22c55e;
-}
-.quiz-icon-danger {
-  background: #fee2e2;
-  color: #ef4444;
-}
-.quiz-icon-warning {
-  background: #fef9c3;
-  color: #eab308;
-}
-.quiz-name-text {
-  font-weight: 600;
-  color: #1e293b;
-  font-size: 1.05rem;
-}
-.quiz-score-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-.score-success {
-  background: #f0fdf4;
-  color: #16a34a;
-  border: 1px solid #bbf7d0;
-}
-.score-danger {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-}
-.score-warning {
-  background: #fefce8;
-  color: #ca8a04;
-  border: 1px solid #fef08a;
-}
-.quiz-date {
-  color: #64748b;
-  font-weight: 500;
-  font-size: 0.95rem;
-}
-.quiz-action-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #475569;
-  font-weight: 600;
-  font-size: 0.85rem;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-.quiz-action-btn:hover {
-  background: #f8fafc;
-  color: #0f172a;
-  border-color: #94a3b8;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-}
-
-/* Empty State */
-.qz-empty {
-  text-align: center;
-  padding: 5rem 2rem;
-  background: #f8fafc;
-  border-radius: 24px;
-  border: 2px dashed #e2e8f0;
-}
-.qz-empty i { font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem; }
-.qz-empty h3 { font-size: 1.5rem; font-weight: 700; color: #334155; margin-bottom: 0.5rem; }
-</style>
-
-<section class="lms-quiz-container">
+<section class="lms-section lms-quiz-results-page">
   <div class="container">
-    <h1 class="lms-quiz-title">
-      <i class="fas fa-tasks"></i> {{ 'My Quiz Results'|t }}
-    </h1>
+    <div class="lms-quiz-results-page__hero">
+      <div class="lms-quiz-results-page__hero-copy">
+        <span class="lms-quiz-results-page__eyebrow">{{ 'Assessment history'|t }}</span>
+        <h1 class="lms-quiz-results-page__title">{{ 'My Quiz Results'|t }}</h1>
+        <p class="lms-quiz-results-page__subtitle">{{ 'Review every attempt, spot assessments that need another pass, and keep your average score moving upward.'|t }}</p>
+      </div>
 
-    {% if results|length > 0 %}
-      <div class="lms-quiz-board">
-        <div class="table-responsive">
-          <table class="lms-quiz-table mb-0">
-            <thead>
-              <tr>
-                <th>{{ 'Assessment'|t }}</th>
-                <th>{{ 'Final Score'|t }}</th>
-                <th>{{ 'Date Completed'|t }}</th>
-                <th class="text-end">{{ 'Actions'|t }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for item in results %}
-                {% set status_class = item.score >= 80 ? 'success' : (item.score >= 50 ? 'warning' : 'danger') %}
-                {% set icon_class = item.score >= 80 ? 'fa-check-circle' : (item.score >= 50 ? 'fa-exclamation-circle' : 'fa-times-circle') %}
-                
-                <tr>
-                  <td>
-                    <div class="quiz-name-cell">
-                      <div class="quiz-icon-box quiz-icon-{{ status_class }}">
-                        <i class="fas {{ icon_class }}"></i>
-                      </div>
-                      <div class="quiz-name-text">{{ item.quiz_name }}</div>
-                    </div>
-                  </td>
-                  <td>
-                    <span class="quiz-score-badge score-{{ status_class }}">
-                      {{ item.score|number_format(0) }}%
-                    </span>
-                  </td>
-                  <td>
-                    <span class="quiz-date"><i class="far fa-calendar-alt me-2"></i> {{ item.date|date('M d, Y') }}</span>
-                  </td>
-                  <td class="text-end">
-                    <a href="{{ item.url }}" class="quiz-action-btn">
-                      {{ 'Review'|t }} <i class="fas fa-arrow-right"></i>
-                    </a>
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+      <div class="lms-quiz-results-page__summary">
+        <div class="lms-quiz-results-page__summary-card">
+          <span class="lms-quiz-results-page__summary-value">{{ summary.total }}</span>
+          <span class="lms-quiz-results-page__summary-label">{{ 'Attempts'|t }}</span>
+        </div>
+        <div class="lms-quiz-results-page__summary-card is-success">
+          <span class="lms-quiz-results-page__summary-value">{{ summary.passed }}</span>
+          <span class="lms-quiz-results-page__summary-label">{{ 'Passed'|t }}</span>
+        </div>
+        <div class="lms-quiz-results-page__summary-card">
+          <span class="lms-quiz-results-page__summary-value">{{ summary.average_score|number_format(0) }}%</span>
+          <span class="lms-quiz-results-page__summary-label">{{ 'Average score'|t }}</span>
+        </div>
+        <div class="lms-quiz-results-page__summary-card is-accent">
+          <span class="lms-quiz-results-page__summary-value">{{ summary.best_score|number_format(0) }}%</span>
+          <span class="lms-quiz-results-page__summary-label">{{ 'Best score'|t }}</span>
         </div>
       </div>
+    </div>
+
+    {% if results|length > 0 %}
+      <div class="lms-quiz-results-board">
+        {% for item in results %}
+          {% set status_text = item.state == 'passed' ? 'Passed'|t : (item.state == 'review' ? 'Review'|t : 'Retry'|t) %}
+          {% set icon_class = item.state == 'passed' ? 'fa-check-circle' : (item.state == 'review' ? 'fa-eye' : 'fa-redo') %}
+
+          <article class="lms-quiz-result-row is-{{ item.state }}">
+            <div class="lms-quiz-result-row__icon">
+              <i class="fas {{ icon_class }}"></i>
+            </div>
+
+            <div class="lms-quiz-result-row__content">
+              <div class="lms-quiz-result-row__topline">
+                <h2 class="lms-quiz-result-row__title">{{ item.quiz_name }}</h2>
+                <span class="lms-quiz-result-row__badge is-{{ item.state }}">{{ status_text }}</span>
+              </div>
+              <p class="lms-quiz-result-row__meta">{{ 'Threshold'|t }} {{ item.threshold|number_format(0) }}% · {{ 'Completed'|t }} {{ item.date|date('M d, Y') }}</p>
+            </div>
+
+            <div class="lms-quiz-result-row__score">
+              <span class="lms-quiz-result-row__score-value">{{ item.score|number_format(0) }}%</span>
+              <span class="lms-quiz-result-row__score-label">{{ 'Final score'|t }}</span>
+            </div>
+
+            <a href="{{ item.url }}" class="btn-lms-primary lms-quiz-result-row__action{% if item.state != 'passed' %} is-secondary{% endif %}">
+              {{ 'Review Result'|t }}
+            </a>
+          </article>
+        {% endfor %}
+      </div>
     {% else %}
-      <div class="qz-empty">
+      <div class="lms-quiz-results-empty">
         <i class="fas fa-clipboard-check"></i>
         <h3>{{ 'No quiz results yet'|t }}</h3>
         <p class="text-muted">{{ 'Take an assessment to see your performance history.'|t }}</p>

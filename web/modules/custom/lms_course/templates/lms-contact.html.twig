@@ -1,62 +1,113 @@
-{# Contact — simple contact page #}
 {{ attach_library('lms_theme/global') }}
 
-<section class="lms-section">
+<section class="lms-contact-page">
   <div class="container">
-    <div class="lms-contact-layout">
-      <div class="lms-contact-layout__info">
-        <h1>{{ 'Get in Touch'|t }}</h1>
-        <p>{{ 'Have questions? We would love to hear from you.'|t }}</p>
+    <section class="lms-contact-hero">
+      <div class="lms-contact-hero__copy">
+        <span class="lms-contact-hero__eyebrow">{{ 'Contact'|t }}</span>
+        <h1>{{ 'Talk to the @site_name team.'|t({'@site_name': site_name}) }}</h1>
+        <p>{{ 'Use the contact channels below for onboarding questions, platform support, partnership discussions, or rollout planning.'|t }}</p>
 
-        <div class="lms-contact-items">
-          <div class="lms-contact-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <div>
-              <h4>{{ 'Address'|t }}</h4>
-              <p>{{ 'Company Headquarters, District, City'|t }}</p>
-            </div>
-          </div>
-          <div class="lms-contact-item">
-            <i class="fas fa-phone"></i>
-            <div>
-              <h4>{{ 'Phone'|t }}</h4>
-              <p>+01 00 200 0000</p>
-            </div>
-          </div>
-          <div class="lms-contact-item">
-            <i class="fas fa-envelope"></i>
-            <div>
-              <h4>{{ 'Email'|t }}</h4>
-              <p>everlms@gmail.com</p>
-            </div>
-          </div>
+        <div class="lms-contact-hero__pills">
+          <span>{{ 'Typical response'|t }}: <strong>{{ 'within 1 business day'|t }}</strong></span>
+          <span>{{ 'Coverage'|t }}: <strong>{{ footer_working_hours }}</strong></span>
+        </div>
+
+        <div class="lms-contact-hero__actions">
+          <a href="{{ footer_email_href }}" class="btn-lms-primary">{{ 'Email Support'|t }}</a>
+          {% if footer_phone_href != 'tel:' %}
+            <a href="{{ footer_phone_href }}" class="btn-lms-outline">{{ 'Call Us'|t }}</a>
+          {% endif %}
         </div>
       </div>
 
-      <div class="lms-contact-layout__form">
-        <div class="lms-card">
-          <h3>{{ 'Send us a Message'|t }}</h3>
-          <form method="post">
-            <div class="form-item">
-              <label>{{ 'Name'|t }}</label>
-              <input type="text" class="lms-input" placeholder="{{ 'Your name'|t }}">
-            </div>
-            <div class="form-item">
-              <label>{{ 'Email'|t }}</label>
-              <input type="email" class="lms-input" placeholder="{{ 'your@email.com'|t }}">
-            </div>
-            <div class="form-item">
-              <label>{{ 'Subject'|t }}</label>
-              <input type="text" class="lms-input" placeholder="{{ 'How can we help?'|t }}">
-            </div>
-            <div class="form-item">
-              <label>{{ 'Message'|t }}</label>
-              <textarea class="lms-input lms-textarea" rows="5" placeholder="{{ 'Your message...'|t }}"></textarea>
-            </div>
-            <button type="submit" class="lms-btn lms-btn--primary lms-btn--block">{{ 'Send Message'|t }}</button>
-          </form>
+      <div class="lms-contact-hero__panel">
+        <span class="lms-contact-hero__panel-eyebrow">{{ 'Fastest Routes'|t }}</span>
+        <h2>{{ 'Choose the best path for your request.'|t }}</h2>
+        <ul class="lms-contact-hero__panel-list">
+          <li>{{ 'Email us for onboarding, support, or partnership requests.'|t }}</li>
+          <li>{{ 'Call during support hours for urgent coordination.'|t }}</li>
+          <li>{{ 'Review pricing and catalog pages before rollout planning.'|t }}</li>
+        </ul>
+
+        <div class="lms-contact-hero__panel-actions">
+          <a href="{{ pricing_url }}" class="btn-lms-outline">{{ 'View Pricing'|t }}</a>
+          <a href="{{ catalog_url }}" class="btn-lms-outline">{{ 'Browse Catalog'|t }}</a>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section class="lms-contact-info-grid">
+      <article class="lms-contact-info-card">
+        <div class="lms-contact-info-card__icon"><i class="fas fa-envelope"></i></div>
+        <span class="lms-contact-info-card__label">{{ 'Email'|t }}</span>
+        <a href="{{ footer_email_href }}">{{ footer_email }}</a>
+        <p>{{ 'Best for support tickets, onboarding questions, and partnership outreach.'|t }}</p>
+      </article>
+
+      <article class="lms-contact-info-card">
+        <div class="lms-contact-info-card__icon"><i class="fas fa-phone"></i></div>
+        <span class="lms-contact-info-card__label">{{ 'Phone'|t }}</span>
+        {% if footer_phone_href != 'tel:' %}
+          <a href="{{ footer_phone_href }}">{{ footer_phone }}</a>
+        {% else %}
+          <span>{{ footer_phone }}</span>
+        {% endif %}
+        <p>{{ 'Reach the team directly when coordination is time-sensitive.'|t }}</p>
+      </article>
+
+      <article class="lms-contact-info-card">
+        <div class="lms-contact-info-card__icon"><i class="fas fa-clock"></i></div>
+        <span class="lms-contact-info-card__label">{{ 'Hours'|t }}</span>
+        <strong>{{ footer_working_hours }}</strong>
+        <p>{{ 'Use email outside those hours and the team will follow up in the next support window.'|t }}</p>
+      </article>
+
+      <article class="lms-contact-info-card">
+        <div class="lms-contact-info-card__icon"><i class="fas fa-location-dot"></i></div>
+        <span class="lms-contact-info-card__label">{{ 'Office'|t }}</span>
+        <strong>{{ footer_address }}</strong>
+        <p>{{ 'Primary coordination point for platform planning, implementation, and client support.'|t }}</p>
+      </article>
+    </section>
+
+    <section class="lms-contact-layout">
+      <div class="lms-contact-map-card">
+        {% if footer_map_embed_url %}
+          <iframe src="{{ footer_map_embed_url }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="{{ 'Office location map'|t }}"></iframe>
+        {% else %}
+          <div class="lms-contact-map-card__placeholder">
+            <span class="lms-contact-map-card__eyebrow">{{ 'Office Location'|t }}</span>
+            <h2>{{ site_name }}</h2>
+            <p>{{ footer_address }}</p>
+            <div class="lms-contact-map-card__meta">
+              <span><i class="fas fa-envelope"></i> {{ footer_email }}</span>
+              <span><i class="fas fa-clock"></i> {{ footer_working_hours }}</span>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="lms-contact-action-card">
+        <span class="lms-contact-action-card__eyebrow">{{ 'Next Steps'|t }}</span>
+        <h2>{{ 'Move from inquiry to rollout with the right entry point.'|t }}</h2>
+        <p>{{ 'If you are still exploring, review the catalog and pricing pages first. If you are ready to start, create an account and continue the discussion with the team.'|t }}</p>
+
+        <div class="lms-contact-action-list">
+          <a href="{{ catalog_url }}" class="lms-contact-action-list__item">
+            <strong>{{ 'Browse Catalog'|t }}</strong>
+            <span>{{ 'Review courses, categories, and learning paths.'|t }}</span>
+          </a>
+          <a href="{{ pricing_url }}" class="lms-contact-action-list__item">
+            <strong>{{ 'Review Pricing'|t }}</strong>
+            <span>{{ 'Compare membership plans before rollout planning.'|t }}</span>
+          </a>
+          <a href="{{ register_url }}" class="lms-contact-action-list__item">
+            <strong>{{ 'Create Account'|t }}</strong>
+            <span>{{ 'Start onboarding and continue with the team afterward.'|t }}</span>
+          </a>
+        </div>
+      </div>
+    </section>
   </div>
 </section>

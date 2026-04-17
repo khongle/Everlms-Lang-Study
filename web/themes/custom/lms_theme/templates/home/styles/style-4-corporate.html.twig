@@ -1,0 +1,506 @@
+{# EverLMS - Corporate Skin Core Template #}
+{{ attach_library('lms_theme/homepage_corporate') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+
+<div class="corporate-skin-wrapper">
+
+  <!-- Professional Dynamic Hero Carousel -->
+  {% if homepage_sections.hero ?? true %}
+  {% if slideshows|length > 0 %}
+  <section class="hero-corporate p-0">
+    <div id="corporateHeroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
+      
+      <!-- Indicators -->
+      {% if slideshows|length > 1 %}
+      <div class="carousel-indicators corporate-indicators">
+        {% for slide in slideshows %}
+          <button type="button" data-bs-target="#corporateHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %} aria-current="true" aria-label="Slide {{ loop.index }}"></button>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="carousel-inner">
+        {% for slide in slideshows %}
+        <div class="carousel-item {% if loop.first %}active{% endif %}">
+          
+          <!-- Background Image with Professional Overlay -->
+          <div class="carousel-bg-wrapper">
+            {% if slide.image_url %}
+              <img src="{{ slide.image_url }}" alt="{{ slide.heading|striptags }}" class="carousel-bg-img-media">
+            {% else %}
+              <div class="carousel-bg-img carousel-bg-img--fallback"></div>
+            {% endif %}
+            <div class="carousel-overlay"></div>
+          </div>
+
+          <!-- Slide Content -->
+          <div class="container position-relative d-flex align-items-center corporate-hero-slide-container">
+            <div class="row w-100">
+              
+              {% set align_class = 'col-lg-9 mx-auto text-center' %}
+              {% set btn_class = 'justify-content-center' %}
+              {% set stats_class = 'justify-content-center' %}
+              {% if slide.position == 'left' %}
+                {% set align_class = 'col-lg-8 me-auto text-start' %}
+                {% set btn_class = 'justify-content-start' %}
+                {% set stats_class = 'justify-content-start' %}
+              {% elseif slide.position == 'right' %}
+                {% set align_class = 'col-lg-8 ms-auto text-end' %}
+                {% set btn_class = 'justify-content-end' %}
+                {% set stats_class = 'justify-content-end' %}
+              {% endif %}
+
+              <div class="{{ align_class }} corporate-hero-card">
+                <span class="hero-label animate-fade-up">{{ site_name }}</span>
+                
+                <h1 class="hero-title animate-fade-up-1">{{ slide.heading is not empty ? slide.heading|striptags : homepage_settings.hero_fallback_heading }}</h1>
+                <p class="hero-sub animate-fade-up-2 {% if slide.position == 'center' %}mx-auto{% endif %}">{{ slide.subheading is not empty ? slide.subheading|striptags : homepage_settings.hero_fallback_subtext }}</p>
+                
+                {% if homepage_sections.stats ?? true %}
+                <div class="hero-stats animate-fade-up-3 {{ stats_class }}">
+                  <div>
+                    <div class="hero-stat-value">{{ stats.students }}</div>
+                    <div class="hero-stat-label">{{ stats.students_label }}</div>
+                  </div>
+                  <div class="d-none d-sm-block">
+                    <div class="hero-stat-value">{{ stats.satisfaction }}</div>
+                    <div class="hero-stat-label">{{ stats.satisfaction_label }}</div>
+                  </div>
+                  <div>
+                    <div class="hero-stat-value">{{ stats.courses }}</div>
+                    <div class="hero-stat-label">{{ stats.courses_label }}</div>
+                  </div>
+                </div>
+                {% endif %}
+
+                <div class="hero-buttons animate-fade-up-4 {{ btn_class }}">
+                  {% if slide.link_url %}
+                    <a href="{{ slide.link_url }}" class="btn-primary d-inline-flex align-items-center">
+                      {{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}
+                      <svg class="ms-2" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
+                  {% endif %}
+                  <a href="{{ path('lms_course.catalog') }}" class="btn-secondary">{{ homepage_settings.hero_secondary_cta_text }}</a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Navigation Arrows -->
+      {% if slideshows|length > 1 %}
+      <button class="carousel-control-prev corporate-nav-btn" type="button" data-bs-target="#corporateHeroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next corporate-nav-btn" type="button" data-bs-target="#corporateHeroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+      {% endif %}
+
+    </div>
+  </section>
+  {% else %}
+  <section class="hero-corporate">
+    <div class="container">
+      <span class="hero-label">{{ site_name }}</span>
+      <h1>{{ homepage_settings.hero_fallback_heading }}</h1>
+      <p class="hero-sub">{{ homepage_settings.hero_fallback_subtext }}</p>
+      <div class="hero-buttons">
+        <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="btn-primary">{{ homepage_settings.hero_fallback_cta_text }}</a>
+        <a href="{{ path('lms_course.catalog') }}" class="btn-secondary">{{ homepage_settings.hero_secondary_cta_text }}</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+  {% endif %}
+
+
+
+  <!-- Continue Learning (logged-in, enrolled users) -->
+  {% if (homepage_sections.continue_learning ?? true) and my_courses %}
+  <section class="section corporate-continue-section">
+    <div class="container">
+      <h2 class="section-title text-start">{{ homepage_settings.continue_learning_title ?? 'Continue Learning' }}</h2>
+      <div class="corporate-continue-grid">
+        {% for item in my_courses|slice(0,4) %}
+        <div class="corporate-continue-card">
+          <div class="corporate-continue-thumb">
+            {% if item.course.thumbnail_url %}
+            <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}">
+            {% else %}
+            <div class="corporate-continue-thumb--fallback"></div>
+            {% endif %}
+          </div>
+          <div class="corporate-continue-body">
+            <div class="corporate-continue-title">{{ item.course.name }}</div>
+            <div class="corporate-continue-progress">
+              <div class="corporate-continue-bar">
+                <div class="corporate-continue-fill" style="--progress: {{ item.progress ?? 0 }}%"></div>
+              </div>
+              <span class="corporate-continue-pct">{{ item.progress ?? 0 }}%</span>
+            </div>
+            <a href="{{ item.course.continue_url }}" class="corporate-continue-btn">Resume →</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Recommended Training (Featured Courses) -->
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">{{ homepage_settings.featured_section_title }}</h2>
+      {% if homepage_settings.featured_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.featured_section_subtitle }}</p>
+      {% endif %}
+      <div class="training-grid">
+        {% for course in featured_courses|slice(0,4) %}
+        {% set colors = ['blue', 'green', 'indigo', 'amber'] %}
+        {% set bgs = ['bg-1', 'bg-2', 'bg-3', 'bg-4'] %}
+        {% set color = colors[loop.index0 % 4] %}
+        {% set bg = bgs[loop.index0 % 4] %}
+        
+        <a href="{{ course.url }}" class="training-card">
+          <div class="training-card-top {{ color }}"></div>
+          
+          <div class="training-thumb {{ bg }}">
+            {% if course.thumbnail_url %}
+              <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" />
+            {% else %}
+              <div class="training-thumb-fallback-icon">🛡️</div>
+            {% endif %}
+          </div>
+
+          <div class="training-body">
+            <div class="training-category">{{ course.category|default('Compliance') }}</div>
+            <div class="training-title">{{ course.name }}</div>
+            
+            <div class="training-instructor">
+              <div class="avatar-sm av-{{ color }}">
+                {% if course.instructor_avatar %}
+                  <img src="{{ course.instructor_avatar }}" alt="{{ course.instructor_name }}">
+                {% else %}
+                  NN
+                {% endif %}
+              </div>
+              <span>{{ course.instructor_name }}</span>
+            </div>
+            
+            {% if course.short_description %}
+            <div class="training-desc">
+              {{ course.short_description|striptags|length > 90 ? course.short_description|striptags|slice(0, 90) ~ '...' : course.short_description|striptags }}
+            </div>
+            {% endif %}
+            
+            <div class="training-meta">
+              <div class="training-meta-left">{{ course.lesson_count }} {{ 'Lessons'|t }} · <span class="stars">★★★★★</span> {{ course.rating }}</div>
+              <div class="training-price">{{ course.price }}</div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Categories / Paths -->
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">{{ homepage_settings.categories_section_title }}</h2>
+      {% if homepage_settings.categories_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.categories_section_subtitle }}</p>
+      {% endif %}
+      
+      {% if categories|length > 0 %}
+      <div class="programs-grid">
+        {% for category in categories|slice(0,6) %}
+        {% set pcolors = ['blue', 'green', 'indigo'] %}
+        {% set pcolor = pcolors[loop.index0 % 3] %}
+        <a href="{{ path('lms_course.catalog') ~ '?category=' ~ category.entity.id() }}" class="nexus-track-card">
+          <div class="ntc-top">
+            <div class="ntc-icon {{ pcolor }}">
+              {% if category.entity.field_icon.entity and category.entity.field_icon.entity.uri.value %}
+                <img src="{{ file_url(category.entity.field_icon.entity.uri.value) }}" alt="{{ category.name }}" />
+              {% else %}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+              {% endif %}
+            </div>
+            
+            <div class="ntc-title">{{ category.name }}</div>
+            
+            <div class="ntc-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+            </div>
+          </div>
+          
+          <div class="ntc-desc">Focused curriculum equipping your teams with core competencies in {{ category.name }} to scale operations safely.</div>
+          
+          <div class="ntc-badges">
+            <span class="ntc-badge primary">{{ category.course_count|default(0) }} {{ 'Courses'|t }}</span>
+            <span class="ntc-badge success">✓ Accredited</span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Platform Capabilities / CMS Introductions -->
+  {% if (homepage_sections.introductions ?? true) and introductions %}
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">{{ homepage_settings.introductions_section_title }}</h2>
+      {% if homepage_settings.introductions_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.introductions_section_subtitle }}</p>
+      {% endif %}
+      <div class="caps-grid">
+        {% for intro in introductions|slice(0,8) %}
+        <a href="{{ intro.link_url and intro.link_url != '#' ? intro.link_url : path('lms_course.catalog') }}" class="cap-card advanced-cap-card advanced-cap-card--intro">
+          {% if intro.image_url %}
+            <div class="cap-image-wrap cap-image-wrap--intro">
+              <img src="{{ intro.image_url }}" alt="{{ intro.title }}" class="cap-image cap-image--intro">
+              <div class="cap-image-overlay"></div>
+            </div>
+          {% endif %}
+          <div class="cap-card-body">
+            <div class="cap-tag cap-tag--intro">Operational Insight</div>
+            <div class="cap-title cap-title--intro">{{ intro.title }}</div>
+            <div class="cap-desc cap-desc--intro">
+              {{ intro.body|striptags|length > 130 ? intro.body|striptags|slice(0, 130) ~ '...' : intro.body|striptags }}
+            </div>
+            <div class="cap-footer cap-footer--intro">
+              Explore Concept
+              <svg class="cap-arrow cap-arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Instructor Spotlight -->
+  {% if (homepage_sections.instructor ?? true) and instructor %}
+  <section class="section corporate-instructor-section">
+    <div class="container">
+      <div class="corporate-instructor-inner">
+        <div class="corporate-instructor-avatar-col">
+          {% if instructor.avatar %}
+          <img src="{{ instructor.avatar }}" alt="{{ instructor.name }}" class="corporate-instructor-img">
+          {% else %}
+          <div class="corporate-instructor-initials">{{ instructor.name|slice(0,2)|upper }}</div>
+          {% endif %}
+        </div>
+        <div class="corporate-instructor-content">
+          <span class="corporate-instructor-label">{{ 'Featured Instructor'|t }}</span>
+          <h2 class="corporate-instructor-name">{{ instructor.name }}</h2>
+          <p class="corporate-instructor-role">{{ instructor.role }}</p>
+          <p class="corporate-instructor-bio">{{ instructor.bio }}</p>
+          <div class="corporate-instructor-stats">
+            {% if instructor.courses_count %}<span>{{ instructor.courses_count }} {{ 'Courses'|t }}</span>{% endif %}
+            {% if instructor.students_count %}<span>{{ instructor.students_count }} {{ 'Learners'|t }}</span>{% endif %}
+          </div>
+          <a href="{{ instructor.profile_url }}" class="corporate-instructor-cta">{{ 'View All Courses'|t }} →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Testimonials -->
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">{{ homepage_settings.testimonials_section_title }}</h2>
+      {% if homepage_settings.testimonials_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.testimonials_section_subtitle }}</p>
+      {% endif %}
+      <div class="testimonials-grid">
+        {% for item in testimonials|slice(0,3) %}
+        <div class="testimonial-card">
+          <div class="quote-icon">"</div>
+          <div class="testimonial-header">
+            {% if item.avatar %}
+              <img src="{{ item.avatar }}" alt="{{ item.name }}" class="testimonial-avatar-lg" />
+            {% else %}
+              <div class="testimonial-avatar-lg testimonial-avatar-lg--fallback">N</div>
+            {% endif %}
+            <div>
+              <div class="testimonial-name">{{ item.name }}</div>
+              <div class="testimonial-role testimonial-role--spaced">{{ item.role }}</div>
+              <div class="testimonial-stars">
+                {% for i in 1..item.rating|default(5) %}★{% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-text">"{{ item.content|striptags }}"</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- FAQ -->
+  {% if (homepage_sections.faqs ?? true) and faqs %}
+  <section class="section faq-section corporate-faq-section">
+    <div class="container">
+      <div class="row align-items-start">
+        <div class="col-lg-4 pe-lg-5 mb-5 mb-lg-0">
+          <div class="corporate-faq-kicker">Support & Guidance</div>
+          <h2 class="corporate-faq-title">{{ homepage_settings.faq_section_title }}</h2>
+          {% if homepage_settings.faq_section_subtitle %}
+          <p class="corporate-faq-subtitle">{{ homepage_settings.faq_section_subtitle }}</p>
+          {% endif %}
+          
+          <div class="faq-contact-box">
+            <div class="corporate-faq-contact-header">
+              <div class="corporate-faq-contact-icon">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+              </div>
+              <div>
+                <div class="corporate-faq-contact-title">{{ 'Still have questions?'|t }}</div>
+                <div class="corporate-faq-contact-copy">{{ 'Our team is ready to help.'|t }}</div>
+              </div>
+            </div>
+            <a href="{{ path('lms_course.contact') }}" class="btn-primary corporate-btn-primary--full">{{ 'Contact Support'|t }}</a>
+          </div>
+        </div>
+        
+        <div class="col-lg-8">
+          <div class="faq-list faq-split-layout corporate-faq-list">
+            {% for f in faqs %}
+            <div class="faq-item {% if loop.first %}active{% endif %}">
+              <button class="faq-question">
+                <span class="faq-text">{{ f.question }}</span>
+                <span class="faq-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  {{ f.answer|raw }}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Latest News & Insights -->
+  {% if (homepage_sections.news ?? true) and latest_news %}
+  <section class="section">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end news-heading-row">
+        <div class="news-heading-copy">
+          <h2 class="section-title news-heading-title">{{ homepage_settings.news_section_title }}</h2>
+          {% if homepage_settings.news_section_subtitle %}
+          <p class="section-desc news-heading-desc">{{ homepage_settings.news_section_subtitle }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <a href="{{ path('lms_blog.frontend.collection') }}" class="news-heading-link">{{ homepage_settings.news_section_link_text }} →</a>
+        </div>
+      </div>
+      
+      <div class="news-grid">
+        {% for news in latest_news %}
+        <div class="news-card">
+          <div class="news-thumb">
+            {% if news.thumbnail_url %}
+              <img src="{{ news.thumbnail_url }}" alt="{{ news.title }}">
+            {% else %}
+              <div class="news-thumb-fallback"></div>
+            {% endif %}
+          </div>
+          <div class="news-content">
+            <h3 class="news-title"><a href="{{ news.url }}">{{ news.title }}</a></h3>
+            <p class="news-summary">{{ news.summary }}</p>
+            <div class="news-meta">
+              <div class="news-date">📅 {{ news.date }}</div>
+              <a href="{{ news.url }}" class="read-more">Read more →</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Pricing -->
+  {% if (homepage_sections.membership ?? true) and memberships %}
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">{{ homepage_settings.membership_section_title }}</h2>
+      {% if homepage_settings.membership_section_subtitle %}
+      <p class="section-desc">{{ homepage_settings.membership_section_subtitle }}</p>
+      {% endif %}
+      <div class="pricing-grid">
+        {% for plan in memberships %}
+        <div class="pricing-card {% if plan.recommended %}popular{% endif %}">
+          {% if plan.recommended %}<span class="pricing-badge">{{ homepage_settings.membership_recommended_badge_text }}</span>{% endif %}
+          <div class="pricing-name">{{ plan.name }}</div>
+          <div class="pricing-price">
+            {% if plan.price == 0 %}
+              {{ homepage_settings.membership_free_price_text }}
+              <span class="period pricing-period-label pricing-period-label--free">{{ homepage_settings.membership_free_supporting_text }}</span>
+            {% else %}
+              <span class="currency">{% if plan.currency == 'USD' %}${% elseif plan.currency == 'EUR' %}€{% else %}£{% endif %}</span>{{ plan.price }}
+              <span class="period pricing-period-label">{{ homepage_settings.membership_paid_supporting_text }}</span>
+            {% endif %}
+          </div>
+          <ul class="pricing-features">
+            {% for feature in plan.features %}
+            <li><span class="check">✓</span> {{ feature }}</li>
+            {% endfor %}
+          </ul>
+          <a href="{{ path('lms_course.pricing') }}" class="pricing-btn {% if plan.recommended %}btn-fill{% else %}btn-outline{% endif %}">
+            {% if plan.price == 0 %}
+              {{ homepage_settings.membership_free_cta_text }}
+            {% elseif plan.recommended %}
+              {{ homepage_settings.membership_recommended_cta_text }}
+            {% else %}
+              {{ homepage_settings.membership_paid_cta_text }}
+            {% endif %}
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- CTA Banner -->
+  {% if homepage_sections.cta_guest ?? true %}
+  <section class="cta-banner">
+    <div class="container">
+      <div class="cta-box">
+        <h2>{{ homepage_settings.cta_banner_title }}</h2>
+        <p>{{ homepage_settings.cta_banner_description }}</p>
+        <a href="{{ path('lms_course.catalog') }}" class="btn-primary corporate-cta-link">{{ homepage_settings.cta_primary_text }}</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+</div>

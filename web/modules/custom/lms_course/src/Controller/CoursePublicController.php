@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\lms_course\Controller;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\lms_base\Service\LmsHelper;
@@ -44,6 +45,8 @@ final class CoursePublicController extends ControllerBase {
    * Homepage.
    */
   public function homepage(): array {
+    $homepage_settings = $this->getHomepageSettings();
+
     // 0. Slideshow Banner from Custom Node Type.
     $slideshows = [];
     $slide_nids = $this->entityTypeManager->getStorage('node')
@@ -65,7 +68,7 @@ final class CoursePublicController extends ControllerBase {
         }
         
         $link_url = '#';
-        $link_title = 'Explore Now';
+        $link_title = $homepage_settings['default_slide_cta_text'];
         if ($block->hasField('field_slide_link') && !$block->get('field_slide_link')->isEmpty()) {
           $link_item = $block->get('field_slide_link')->first();
           try {
@@ -92,7 +95,9 @@ final class CoursePublicController extends ControllerBase {
       ->getQuery()
       ->condition('field_featured', TRUE)
       ->condition('status', TRUE)
-      ->range(0, 8)
+      ->sort('changed', 'DESC')
+      ->sort('id', 'DESC')
+      ->range(0, 24)
       ->accessCheck(FALSE)
       ->execute();
     $featured_courses = $featured
@@ -121,12 +126,21 @@ final class CoursePublicController extends ControllerBase {
            $thumbnail_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
         }
       }
-      
+
+      $icon_url = '';
+      if ($term->hasField('field_icon') && !$term->get('field_icon')->isEmpty()) {
+        $icon_file = $term->get('field_icon')->entity;
+        if ($icon_file) {
+          $icon_url = \Drupal::service('file_url_generator')->generateAbsoluteString($icon_file->getFileUri());
+        }
+      }
+
       $top_categories[] = [
         'entity' => $term,
         'name' => $term->label(),
         'course_count' => $count,
         'thumbnail_url' => $thumbnail_url,
+        'icon_url' => $icon_url,
       ];
     }
 
@@ -231,6 +245,9 @@ final class CoursePublicController extends ControllerBase {
             'content' => $rating->get('field_review')->value,
             'rating' => (int) $rating->get('field_score')->value,
             'avatar' => $avatar,
+            'course_title' => $rating->hasField('field_course') && !$rating->get('field_course')->isEmpty() && $rating->get('field_course')->entity
+              ? $rating->get('field_course')->entity->label()
+              : (string) $this->t('Top Learner'),
           ];
         }
       }
@@ -258,7 +275,7 @@ final class CoursePublicController extends ControllerBase {
         }
         
         $link_url = '#';
-        $link_title = 'Learn More';
+        $link_title = $homepage_settings['default_intro_cta_text'];
         if ($node->hasField('field_call_to_action') && !$node->get('field_call_to_action')->isEmpty()) {
           $link_item = $node->get('field_call_to_action')->first();
           try {
@@ -311,21 +328,58 @@ final class CoursePublicController extends ControllerBase {
       }
     }
     // Memberships.
-    $memberships = [];
-    $membership_json_path = \Drupal::root() . '/../.agent/generated/commerce/membership-plans.json';
-    if (file_exists($membership_json_path)) {
-      $json_data = file_get_contents($membership_json_path);
-      $decoded = json_decode($json_data, TRUE);
-      if (isset($decoded['membership_plans'])) {
-        $memberships = $decoded['membership_plans'];
+    $memberships = $this->getHomepageMemberships();
+
+    // Latest News & Insights.
+    $latest_news = [];
+    $news_nids = $this->entityTypeManager->getStorage('node')
+      ->getQuery()
+      ->condition('type', 'blog')
+      ->condition('status', 1)
+      ->sort('created', 'DESC')
+      ->range(0, 6)
+      ->accessCheck(FALSE)
+      ->execute();
+
+    if ($news_nids) {
+      $news_nodes = $this->entityTypeManager->getStorage('node')->loadMultiple($news_nids);
+      foreach ($news_nodes as $node) {
+        $image_url = '';
+        if ($node->hasField('field_thumb') && !$node->get('field_thumb')->isEmpty()) {
+          $file = $node->get('field_thumb')->entity;
+          if ($file) {
+            $image_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+          }
+        }
+        
+        $body = $node->hasField('body') ? $node->get('body')->value : '';
+        $summary = '';
+        if ($node->hasField('body') && $node->get('body')->summary) {
+           $summary = $node->get('body')->summary;
+        } else {
+           $summary = strip_tags((string) $body);
+           if (mb_strlen($summary) > 130) {
+              $summary = mb_substr($summary, 0, 127) . '...';
+           }
+        }
+
+        $latest_news[] = [
+          'title' => $node->label(),
+          'url' => \Drupal\Core\Url::fromRoute('lms_blog.frontend.canonical', ['node' => $node->id()])->toString(),
+          'thumbnail_url' => $image_url,
+          'summary' => $summary,
+          'date' => \Drupal::service('date.formatter')->format($node->getCreatedTime(), 'custom', 'M d, Y'),
+        ];
       }
     }
 
     return [
       '#theme' => 'lms_homepage',
       '#homepage_style' => theme_get_setting('homepage_style', 'lms_theme') ?? 'glassmorphism',
+      '#homepage_settings' => $homepage_settings,
       '#introductions' => $introductions,
       '#slideshows' => $slideshows,
+      '#latest_news' => $latest_news,
       '#featured_courses' => $this->buildCourseCards($featured_courses),
       '#categories' => $top_categories,
       '#my_courses' => $my_courses,
@@ -334,21 +388,578 @@ final class CoursePublicController extends ControllerBase {
       '#memberships' => $memberships,
       '#faqs' => $global_faqs,
       '#logged_in' => $user->isAuthenticated(),
-      '#stats' => [
-        'courses' => $course_count ?: '10+ ',
-        'students' => '5.000+',
-        'satisfaction' => '98%',
-      ],
-      '#attached' => [
-        'library' => [
-          // Will define this library for homepage aesthetics
-          'lms_theme/homepage',
-        ],
-      ],
+      '#stats' => $this->getHomepageStats($homepage_settings, $course_count),
       '#cache' => [
-        'tags' => ['lms_rating_list'],
+        'tags' => Cache::mergeTags([
+          'lms_rating_list',
+          'lms_course_list',
+        ], array_map(static fn($course) => 'lms_course:' . $course->id(), $featured_courses)),
       ],
     ];
+  }
+
+  /**
+   * Returns editable homepage settings with safe defaults.
+   */
+  private function getHomepageSettings(): array {
+    $site_name = trim((string) (\Drupal::config('system.site')->get('name') ?? '')) ?: 'EverLMS';
+    $catalog_url = \Drupal\Core\Url::fromRoute('lms_course.catalog')->toString();
+    $style = theme_get_setting('homepage_style', 'lms_theme') ?? 'glassmorphism';
+    $default_sections = [
+      'hero',
+      'stats',
+      'continue_learning',
+      'featured',
+      'categories',
+      'introductions',
+      'bundles',
+      'testimonials',
+      'faqs',
+      'news',
+      'membership',
+      'training_process',
+      'cta_guest',
+    ];
+
+    $defaults = [
+      'stats_students_label' => (string) $this->t('Students'),
+      'stats_students_value' => '5,000+',
+      'stats_satisfaction_label' => (string) $this->t('Satisfaction'),
+      'stats_satisfaction_value' => '98%',
+      'stats_courses_label' => (string) $this->t('Courses'),
+      'stats_certs_label' => (string) $this->t('Certificates'),
+      'hero_fallback_heading' => (string) $this->t('Welcome to @site_name', ['@site_name' => $site_name]),
+      'hero_fallback_subtext' => (string) $this->t('Start your learning journey with our premium courses today.'),
+      'hero_fallback_cta_text' => (string) $this->t('Explore Courses'),
+      'hero_fallback_cta_url' => $catalog_url,
+      'default_slide_cta_text' => (string) $this->t('Explore Now'),
+      'default_intro_cta_text' => (string) $this->t('Learn More'),
+    ];
+
+    $defaults += $this->getHomepageCopyDefaults($style, $site_name);
+
+    $settings = [];
+    foreach ($defaults as $key => $default) {
+      $value = theme_get_setting($key, 'lms_theme');
+      $settings[$key] = $value !== NULL && $value !== '' ? $value : $default;
+    }
+
+    $raw_sections = theme_get_setting('homepage_sections_enabled', 'lms_theme');
+    if ($raw_sections === NULL) {
+      $raw_sections = $default_sections;
+    }
+
+    $settings['sections_enabled'] = [];
+    foreach ($default_sections as $section) {
+      $settings['sections_enabled'][$section] = in_array($section, $raw_sections, TRUE) || !empty($raw_sections[$section]);
+    }
+
+    return $settings;
+  }
+
+  /**
+   * Returns style-aware defaults for editable homepage copy.
+   */
+  private function getHomepageCopyDefaults(string $style, string $site_name): array {
+    $defaults = [
+      'glassmorphism' => [
+        'hero_secondary_cta_text' => (string) $this->t('Browse Catalog'),
+        'categories_section_title' => (string) $this->t('Explore Popular Categories'),
+        'categories_section_subtitle' => (string) $this->t('Find the perfect topic to boost your skills and career.'),
+        'featured_section_title' => (string) $this->t('Featured Courses'),
+        'featured_section_subtitle' => '',
+        'featured_section_link_text' => (string) $this->t('View All Courses'),
+        'bundles_section_title' => (string) $this->t('Popular Learning Bundles'),
+        'bundles_section_subtitle' => (string) $this->t('Save up to 40% with our curated course bundles.'),
+        'introductions_section_title' => '',
+        'introductions_section_subtitle' => '',
+        'testimonials_section_title' => (string) $this->t('What Our Students Say'),
+        'testimonials_section_subtitle' => '',
+        'membership_section_title' => '',
+        'membership_section_subtitle' => '',
+        'membership_recommended_badge_text' => (string) $this->t('Most Popular'),
+        'membership_free_price_text' => (string) $this->t('Free'),
+        'membership_free_supporting_text' => '',
+        'membership_paid_supporting_text' => '',
+        'membership_free_cta_text' => (string) $this->t('Get Started'),
+        'membership_recommended_cta_text' => (string) $this->t('Get Started'),
+        'membership_paid_cta_text' => (string) $this->t('Get Started'),
+        'faq_section_title' => '',
+        'faq_section_subtitle' => '',
+        'news_section_title' => '',
+        'news_section_subtitle' => '',
+        'news_section_link_text' => (string) $this->t('View all news'),
+        'training_process_section_title' => '',
+        'training_process_section_subtitle' => '',
+        'training_process_step_1_title' => '',
+        'training_process_step_1_description' => '',
+        'training_process_step_2_title' => '',
+        'training_process_step_2_description' => '',
+        'training_process_step_3_title' => '',
+        'training_process_step_3_description' => '',
+        'training_process_step_4_title' => '',
+        'training_process_step_4_description' => '',
+        'training_process_panel_title' => '',
+        'training_process_panel_subtitle' => '',
+        'training_process_feature_1' => '',
+        'training_process_feature_2' => '',
+        'training_process_feature_3' => '',
+        'training_process_feature_4' => '',
+        'training_process_feature_5' => '',
+        'training_process_feature_6' => '',
+        'training_process_panel_cta_text' => '',
+        'faq_support_title' => '',
+        'faq_support_subtitle' => '',
+        'faq_support_body' => '',
+        'faq_support_cta_text' => '',
+        'faq_quicklinks_title' => '',
+        'faq_quicklink_catalog_text' => '',
+        'faq_quicklink_categories_text' => '',
+        'faq_quicklink_dashboard_text' => '',
+        'faq_quicklink_certificates_text' => '',
+        'cta_banner_title' => (string) $this->t('Ready to Transform Your Career?'),
+        'cta_banner_description' => (string) $this->t('Join thousands of students and start learning today.'),
+        'cta_primary_text' => (string) $this->t('Start Free Trial'),
+        'cta_secondary_text' => (string) $this->t('Browse Courses'),
+        'cta_logged_in_secondary_text' => (string) $this->t('Go to Dashboard'),
+      ],
+      'minimalist' => [
+        'hero_secondary_cta_text' => (string) $this->t('Browse Catalog'),
+        'categories_section_title' => (string) $this->t('Explore Categories'),
+        'categories_section_subtitle' => (string) $this->t('Find the perfect topic to build practical skills and advance your career.'),
+        'featured_section_title' => (string) $this->t('Featured Programs'),
+        'featured_section_subtitle' => (string) $this->t('Hand-picked premium content for your growth.'),
+        'featured_section_link_text' => (string) $this->t('Explore All'),
+        'bundles_section_title' => (string) $this->t('Popular Learning Bundles'),
+        'bundles_section_subtitle' => (string) $this->t('Save multiple courses by enrolling into verified bundles.'),
+        'introductions_section_title' => '',
+        'introductions_section_subtitle' => '',
+        'testimonials_section_title' => (string) $this->t('What Our Students Say'),
+        'testimonials_section_subtitle' => (string) $this->t('Real feedback from our professional community.'),
+        'membership_section_title' => '',
+        'membership_section_subtitle' => '',
+        'membership_recommended_badge_text' => (string) $this->t('Most Popular'),
+        'membership_free_price_text' => (string) $this->t('Free'),
+        'membership_free_supporting_text' => '',
+        'membership_paid_supporting_text' => '',
+        'membership_free_cta_text' => (string) $this->t('Get Started'),
+        'membership_recommended_cta_text' => (string) $this->t('Get Started'),
+        'membership_paid_cta_text' => (string) $this->t('Get Started'),
+        'faq_section_title' => (string) $this->t('Frequently Asked Questions'),
+        'faq_section_subtitle' => (string) $this->t('Got questions? We have answers. Check out our most common queries below.'),
+        'news_section_title' => '',
+        'news_section_subtitle' => '',
+        'news_section_link_text' => (string) $this->t('View all news'),
+        'training_process_section_title' => '',
+        'training_process_section_subtitle' => '',
+        'training_process_step_1_title' => '',
+        'training_process_step_1_description' => '',
+        'training_process_step_2_title' => '',
+        'training_process_step_2_description' => '',
+        'training_process_step_3_title' => '',
+        'training_process_step_3_description' => '',
+        'training_process_step_4_title' => '',
+        'training_process_step_4_description' => '',
+        'training_process_panel_title' => '',
+        'training_process_panel_subtitle' => '',
+        'training_process_feature_1' => '',
+        'training_process_feature_2' => '',
+        'training_process_feature_3' => '',
+        'training_process_feature_4' => '',
+        'training_process_feature_5' => '',
+        'training_process_feature_6' => '',
+        'training_process_panel_cta_text' => '',
+        'faq_support_title' => '',
+        'faq_support_subtitle' => '',
+        'faq_support_body' => '',
+        'faq_support_cta_text' => '',
+        'faq_quicklinks_title' => '',
+        'faq_quicklink_catalog_text' => '',
+        'faq_quicklink_categories_text' => '',
+        'faq_quicklink_dashboard_text' => '',
+        'faq_quicklink_certificates_text' => '',
+        'cta_banner_title' => (string) $this->t('Ready to Transform Your Career?'),
+        'cta_banner_description' => (string) $this->t('Join thousands of professionals mastering new skills every day. Registration takes less than a minute.'),
+        'cta_primary_text' => (string) $this->t('Create Free Account'),
+        'cta_secondary_text' => (string) $this->t('Browse Catalog'),
+        'cta_logged_in_secondary_text' => (string) $this->t('Go to Dashboard'),
+      ],
+      'playful' => [
+        'hero_secondary_cta_text' => (string) $this->t('Explore Catalog'),
+        'categories_section_title' => (string) $this->t('Choose Your Adventure!'),
+        'categories_section_subtitle' => (string) $this->t('Pick a path and start exploring. Every adventure is packed with fun challenges and awesome rewards!'),
+        'featured_section_title' => (string) $this->t('Popular Quests'),
+        'featured_section_subtitle' => (string) $this->t('Top-rated courses our learners love. Earn XP and unlock badges as you complete each one!'),
+        'featured_section_link_text' => (string) $this->t('Explore All'),
+        'bundles_section_title' => (string) $this->t('Advance Your Career'),
+        'bundles_section_subtitle' => (string) $this->t('Follow a tactical learning path to move from new hire to true expert.'),
+        'introductions_section_title' => (string) $this->t("Skills You'll Master"),
+        'introductions_section_subtitle' => (string) $this->t('Every course gives you new tactical abilities. Upgrade your stats!'),
+        'testimonials_section_title' => (string) $this->t('Star Associates Say…'),
+        'testimonials_section_subtitle' => (string) $this->t('Hear from learners who are leveling up every week.'),
+        'membership_section_title' => (string) $this->t('Pick Your Plan'),
+        'membership_section_subtitle' => (string) $this->t('Choose the adventure tier that fits your quest. Upgrade anytime!'),
+        'membership_recommended_badge_text' => (string) $this->t('🔥 Most Popular!'),
+        'membership_free_price_text' => (string) $this->t('Free'),
+        'membership_free_supporting_text' => '',
+        'membership_paid_supporting_text' => '',
+        'membership_free_cta_text' => (string) $this->t('Start Free 🎈'),
+        'membership_recommended_cta_text' => (string) $this->t('Go Champion 🚀'),
+        'membership_paid_cta_text' => (string) $this->t('Go Legend 👑'),
+        'faq_section_title' => (string) $this->t('Got Questions?'),
+        'faq_section_subtitle' => (string) $this->t("We've got answers. Click to reveal the magic."),
+        'news_section_title' => '',
+        'news_section_subtitle' => '',
+        'news_section_link_text' => (string) $this->t('View all news'),
+        'training_process_section_title' => '',
+        'training_process_section_subtitle' => '',
+        'training_process_step_1_title' => '',
+        'training_process_step_1_description' => '',
+        'training_process_step_2_title' => '',
+        'training_process_step_2_description' => '',
+        'training_process_step_3_title' => '',
+        'training_process_step_3_description' => '',
+        'training_process_step_4_title' => '',
+        'training_process_step_4_description' => '',
+        'training_process_panel_title' => '',
+        'training_process_panel_subtitle' => '',
+        'training_process_feature_1' => '',
+        'training_process_feature_2' => '',
+        'training_process_feature_3' => '',
+        'training_process_feature_4' => '',
+        'training_process_feature_5' => '',
+        'training_process_feature_6' => '',
+        'training_process_panel_cta_text' => '',
+        'faq_support_title' => '',
+        'faq_support_subtitle' => '',
+        'faq_support_body' => '',
+        'faq_support_cta_text' => '',
+        'faq_quicklinks_title' => '',
+        'faq_quicklink_catalog_text' => '',
+        'faq_quicklink_categories_text' => '',
+        'faq_quicklink_dashboard_text' => '',
+        'faq_quicklink_certificates_text' => '',
+        'cta_banner_title' => (string) $this->t('Ready for the Floor? 🚀'),
+        'cta_banner_description' => (string) $this->t('Join thousands of associates who are leveling up their career every day. The journey starts now.'),
+        'cta_primary_text' => (string) $this->t('Start Training Now 🎉'),
+        'cta_secondary_text' => (string) $this->t('Browse Catalog'),
+        'cta_logged_in_secondary_text' => (string) $this->t('Go to Dashboard'),
+      ],
+      'community' => [
+        'hero_secondary_cta_text' => (string) $this->t('Join Community'),
+        'categories_section_title' => (string) $this->t('Find Your Learning Circle'),
+        'categories_section_subtitle' => (string) $this->t('Explore topic hubs where members learn, share, and grow together.'),
+        'featured_section_title' => (string) $this->t('Popular with Members'),
+        'featured_section_subtitle' => (string) $this->t('Courses learners are actively discussing and completing this week.'),
+        'featured_section_link_text' => (string) $this->t('See Full Catalog'),
+        'bundles_section_title' => (string) $this->t('Community Learning Paths'),
+        'bundles_section_subtitle' => (string) $this->t('Follow curated paths to build momentum with your peers.'),
+        'introductions_section_title' => (string) $this->t('Learn Better Together'),
+        'introductions_section_subtitle' => (string) $this->t('Join conversations, learn from mentors, and stay accountable with your cohort.'),
+        'testimonials_section_title' => (string) $this->t('Member Stories'),
+        'testimonials_section_subtitle' => (string) $this->t('Real voices from learners advancing their goals inside the community.'),
+        'membership_section_title' => (string) $this->t('Membership Tiers'),
+        'membership_section_subtitle' => (string) $this->t('Pick the access level that matches your learning rhythm.'),
+        'membership_recommended_badge_text' => (string) $this->t('Most Active'),
+        'membership_free_price_text' => (string) $this->t('Free'),
+        'membership_free_supporting_text' => (string) $this->t('Great for getting started'),
+        'membership_paid_supporting_text' => (string) $this->t('Unlock member-only perks and live sessions'),
+        'membership_free_cta_text' => (string) $this->t('Start for Free'),
+        'membership_recommended_cta_text' => (string) $this->t('Join Popular Plan'),
+        'membership_paid_cta_text' => (string) $this->t('Upgrade Access'),
+        'faq_section_title' => (string) $this->t('Community FAQ'),
+        'faq_section_subtitle' => (string) $this->t('Everything you need to know about joining, participating, and growing here.'),
+        'news_section_title' => (string) $this->t('Community Updates'),
+        'news_section_subtitle' => (string) $this->t('Highlights, events, and announcements from across the learning community.'),
+        'news_section_link_text' => (string) $this->t('View all updates'),
+        'training_process_section_title' => (string) $this->t('How Community Learning Works'),
+        'training_process_section_subtitle' => (string) $this->t('A simple flow to help you stay active and make visible progress.'),
+        'training_process_step_1_title' => (string) $this->t('Join and set your learning goals'),
+        'training_process_step_1_description' => (string) $this->t('Create your account, choose interests, and define your first target milestone.'),
+        'training_process_step_2_title' => (string) $this->t('Enroll and learn with your peers'),
+        'training_process_step_2_description' => (string) $this->t('Start courses, follow your path, and keep momentum with weekly progress.'),
+        'training_process_step_3_title' => (string) $this->t('Discuss, ask, and get mentor support'),
+        'training_process_step_3_description' => (string) $this->t('Use forum threads and Q&A spaces to unblock quickly and learn together.'),
+        'training_process_step_4_title' => (string) $this->t('Celebrate wins and level up'),
+        'training_process_step_4_description' => (string) $this->t('Track outcomes, collect certificates, and unlock the next growth stage.'),
+        'training_process_panel_title' => (string) $this->t('Member Experience'),
+        'training_process_panel_subtitle' => (string) $this->t('Built for participation, consistency, and meaningful progress.'),
+        'training_process_feature_1' => (string) $this->t('Peer discussion and support loops'),
+        'training_process_feature_2' => (string) $this->t('Structured learning paths'),
+        'training_process_feature_3' => (string) $this->t('Mentor-guided Q&A touchpoints'),
+        'training_process_feature_4' => (string) $this->t('Progress and completion tracking'),
+        'training_process_feature_5' => (string) $this->t('Certificates and achievement signals'),
+        'training_process_feature_6' => (string) $this->t('Events, updates, and member spotlights'),
+        'training_process_panel_cta_text' => (string) $this->t('Explore Learning Paths'),
+        'faq_support_title' => '',
+        'faq_support_subtitle' => '',
+        'faq_support_body' => '',
+        'faq_support_cta_text' => '',
+        'faq_quicklinks_title' => '',
+        'faq_quicklink_catalog_text' => '',
+        'faq_quicklink_categories_text' => '',
+        'faq_quicklink_dashboard_text' => '',
+        'faq_quicklink_certificates_text' => '',
+        'cta_banner_title' => (string) $this->t('Ready to Learn with the Community?'),
+        'cta_banner_description' => (string) $this->t('Join a friendly peer network, stay accountable, and grow your skills together.'),
+        'cta_primary_text' => (string) $this->t('Create Account'),
+        'cta_secondary_text' => (string) $this->t('Browse Courses'),
+        'cta_logged_in_secondary_text' => (string) $this->t('Go to Dashboard'),
+      ],
+      'nature' => [
+        'hero_secondary_cta_text' => (string) $this->t('Explore Courses'),
+        'categories_section_title' => (string) $this->t('Topics Rooted in Practice'),
+        'categories_section_subtitle' => (string) $this->t('Discover subject areas cultivated for depth, clarity, and long-term mastery.'),
+        'featured_section_title' => (string) $this->t('Courses Worth Growing With'),
+        'featured_section_subtitle' => (string) $this->t('Hand-picked programs that reward patience, curiosity, and consistent effort.'),
+        'featured_section_link_text' => (string) $this->t('Browse The Full Catalog'),
+        'bundles_section_title' => (string) $this->t('Learning Paths'),
+        'bundles_section_subtitle' => (string) $this->t('Curated sequences of courses designed to build understanding layer by layer.'),
+        'introductions_section_title' => (string) $this->t('Our Approach to Learning'),
+        'introductions_section_subtitle' => (string) $this->t('We believe knowledge grows best when it is nurtured with intention and care.'),
+        'testimonials_section_title' => (string) $this->t('Voices from Our Community'),
+        'testimonials_section_subtitle' => (string) $this->t('Real reflections from learners who took their time and made it count.'),
+        'membership_section_title' => (string) $this->t('Choose Your Growth Plan'),
+        'membership_section_subtitle' => (string) $this->t('Flexible options that let you learn at your own natural pace.'),
+        'membership_recommended_badge_text' => (string) $this->t('Most Nourishing'),
+        'membership_free_price_text' => (string) $this->t('Free'),
+        'membership_free_supporting_text' => (string) $this->t('Start with essential access'),
+        'membership_paid_supporting_text' => (string) $this->t('Unlock guided pathways and premium support'),
+        'membership_free_cta_text' => (string) $this->t('Start for Free'),
+        'membership_recommended_cta_text' => (string) $this->t('Grow With Us'),
+        'membership_paid_cta_text' => (string) $this->t('Join Now'),
+        'faq_section_title' => (string) $this->t('Common Questions'),
+        'faq_section_subtitle' => (string) $this->t('Answers to the things most learners wonder about as they settle in.'),
+        'news_section_title' => (string) $this->t('From the Garden'),
+        'news_section_subtitle' => (string) $this->t('Updates, stories, and ideas freshly picked from our learning community.'),
+        'news_section_link_text' => (string) $this->t('Read All Updates'),
+        'training_process_section_title' => (string) $this->t('How Your Journey Unfolds'),
+        'training_process_section_subtitle' => (string) $this->t('A gentle, purposeful path from first step to lasting achievement.'),
+        'training_process_step_1_title' => (string) $this->t('Explore the landscape'),
+        'training_process_step_1_description' => (string) $this->t('Browse topics and subjects that genuinely interest you.'),
+        'training_process_step_2_title' => (string) $this->t('Plant your intention'),
+        'training_process_step_2_description' => (string) $this->t('Choose a course or path that aligns with where you want to grow.'),
+        'training_process_step_3_title' => (string) $this->t('Tend to your progress'),
+        'training_process_step_3_description' => (string) $this->t('Move through lessons steadily, revisiting concepts as needed.'),
+        'training_process_step_4_title' => (string) $this->t('Harvest your results'),
+        'training_process_step_4_description' => (string) $this->t('Complete your course, earn your certificate, and carry the knowledge forward.'),
+        'training_process_panel_title' => (string) $this->t('Growth Takes Root Here'),
+        'training_process_panel_subtitle' => (string) $this->t('Learning designed for the long term'),
+        'training_process_feature_1' => (string) $this->t('Self-paced and unhurried'),
+        'training_process_feature_2' => (string) $this->t('Expert-crafted content'),
+        'training_process_feature_3' => (string) $this->t('Warm and welcoming community'),
+        'training_process_feature_4' => (string) $this->t('Progress tracked naturally'),
+        'training_process_feature_5' => (string) $this->t('Certificates that endure'),
+        'training_process_feature_6' => (string) $this->t('Consistent, thoughtful design'),
+        'training_process_panel_cta_text' => (string) $this->t('Begin growing'),
+        'faq_support_title' => '',
+        'faq_support_subtitle' => '',
+        'faq_support_body' => '',
+        'faq_support_cta_text' => '',
+        'faq_quicklinks_title' => '',
+        'faq_quicklink_catalog_text' => '',
+        'faq_quicklink_categories_text' => '',
+        'faq_quicklink_dashboard_text' => '',
+        'faq_quicklink_certificates_text' => '',
+        'cta_banner_title' => (string) $this->t('Ready to Cultivate Something Meaningful?'),
+        'cta_banner_description' => (string) $this->t('Join a learning community rooted in genuine curiosity, thoughtful guidance, and organic growth.'),
+        'cta_primary_text' => (string) $this->t('Start Learning'),
+        'cta_secondary_text' => (string) $this->t("See What's Growing"),
+        'cta_logged_in_secondary_text' => (string) $this->t('Go to Dashboard'),
+      ],
+      'corporate' => [
+        'hero_secondary_cta_text' => (string) $this->t('Browse Catalog'),
+        'categories_section_title' => (string) $this->t('Training Tracks'),
+        'categories_section_subtitle' => (string) $this->t('Structured learning programs designed to build deep expertise and drive organizational transformation.'),
+        'featured_section_title' => (string) $this->t('Recommended Modules'),
+        'featured_section_subtitle' => (string) $this->t('Curated training modules designed for measurable business impact and professional development.'),
+        'featured_section_link_text' => (string) $this->t('View All Courses'),
+        'bundles_section_title' => '',
+        'bundles_section_subtitle' => '',
+        'introductions_section_title' => (string) $this->t('@site_name Advantage', ['@site_name' => $site_name]),
+        'introductions_section_subtitle' => (string) $this->t('Enterprise-grade capabilities built for scalable operations and rigorous compliance.'),
+        'testimonials_section_title' => (string) $this->t('Performance Results'),
+        'testimonials_section_subtitle' => (string) $this->t('See how leading organizations are scaling with structured learning.'),
+        'membership_section_title' => (string) $this->t('Scalable Pricing'),
+        'membership_section_subtitle' => (string) $this->t('Plans designed for teams of every size.'),
+        'membership_recommended_badge_text' => (string) $this->t('Most Popular'),
+        'membership_free_price_text' => (string) $this->t('Free'),
+        'membership_free_supporting_text' => (string) $this->t('For individual associates'),
+        'membership_paid_supporting_text' => (string) $this->t('Per user, billed annually'),
+        'membership_free_cta_text' => (string) $this->t('Access Portal'),
+        'membership_recommended_cta_text' => (string) $this->t('Deploy Fleet Plan'),
+        'membership_paid_cta_text' => (string) $this->t('Deploy Fleet Plan'),
+        'faq_section_title' => (string) $this->t("We're here to help you."),
+        'faq_section_subtitle' => (string) $this->t('Everything you need to know about enterprise learning operations and how @site_name supports rollout, onboarding, and team growth.', ['@site_name' => $site_name]),
+        'news_section_title' => (string) $this->t('Latest News & Insights'),
+        'news_section_subtitle' => (string) $this->t('Stay up to date with platform tips, updates, and educational resources.'),
+        'news_section_link_text' => (string) $this->t('View all news'),
+        'training_process_section_title' => '',
+        'training_process_section_subtitle' => '',
+        'training_process_step_1_title' => '',
+        'training_process_step_1_description' => '',
+        'training_process_step_2_title' => '',
+        'training_process_step_2_description' => '',
+        'training_process_step_3_title' => '',
+        'training_process_step_3_description' => '',
+        'training_process_step_4_title' => '',
+        'training_process_step_4_description' => '',
+        'training_process_panel_title' => '',
+        'training_process_panel_subtitle' => '',
+        'training_process_feature_1' => '',
+        'training_process_feature_2' => '',
+        'training_process_feature_3' => '',
+        'training_process_feature_4' => '',
+        'training_process_feature_5' => '',
+        'training_process_feature_6' => '',
+        'training_process_panel_cta_text' => '',
+        'faq_support_title' => '',
+        'faq_support_subtitle' => '',
+        'faq_support_body' => '',
+        'faq_support_cta_text' => '',
+        'faq_quicklinks_title' => '',
+        'faq_quicklink_catalog_text' => '',
+        'faq_quicklink_categories_text' => '',
+        'faq_quicklink_dashboard_text' => '',
+        'faq_quicklink_certificates_text' => '',
+        'cta_banner_title' => (string) $this->t('Ready to Standardize Operations?'),
+        'cta_banner_description' => (string) $this->t('Use @site_name to standardize training delivery, onboarding, and operational readiness across teams.', ['@site_name' => $site_name]),
+        'cta_primary_text' => (string) $this->t('Browse Catalog'),
+        'cta_secondary_text' => (string) $this->t('Contact Support'),
+        'cta_logged_in_secondary_text' => (string) $this->t('Go to Dashboard'),
+      ],
+      'government' => [
+        'hero_secondary_cta_text' => (string) $this->t('View Categories'),
+        'categories_section_title' => (string) $this->t('Training Categories'),
+        'categories_section_subtitle' => (string) $this->t('Browse training by subject area. Select a category to view available courses.'),
+        'featured_section_title' => (string) $this->t('Featured Training'),
+        'featured_section_subtitle' => (string) $this->t('Priority training modules recommended for professional development and compliance.'),
+        'featured_section_link_text' => (string) $this->t('View all courses'),
+        'bundles_section_title' => '',
+        'bundles_section_subtitle' => '',
+        'introductions_section_title' => (string) $this->t('About & Resources'),
+        'introductions_section_subtitle' => (string) $this->t('Learn more about our training programs and access support resources.'),
+        'testimonials_section_title' => '',
+        'testimonials_section_subtitle' => '',
+        'membership_section_title' => '',
+        'membership_section_subtitle' => '',
+        'membership_recommended_badge_text' => (string) $this->t('Most Popular'),
+        'membership_free_price_text' => (string) $this->t('Free'),
+        'membership_free_supporting_text' => '',
+        'membership_paid_supporting_text' => '',
+        'membership_free_cta_text' => (string) $this->t('Get Started'),
+        'membership_recommended_cta_text' => (string) $this->t('Get Started'),
+        'membership_paid_cta_text' => (string) $this->t('Get Started'),
+        'faq_section_title' => (string) $this->t('Frequently Asked Questions'),
+        'faq_section_subtitle' => (string) $this->t('Common questions about training requirements, deadlines, and portal usage.'),
+        'news_section_title' => (string) $this->t('Announcements & Updates'),
+        'news_section_subtitle' => (string) $this->t('Policy updates, training announcements, and important notices.'),
+        'news_section_link_text' => (string) $this->t('View all announcements'),
+        'training_process_section_title' => (string) $this->t('Training Process'),
+        'training_process_section_subtitle' => (string) $this->t('Follow these steps to access and complete your required and elective training.'),
+        'training_process_step_1_title' => (string) $this->t('Register or log in to the portal'),
+        'training_process_step_1_description' => (string) $this->t('Create your account or sign in to access the training catalog and your personal dashboard.'),
+        'training_process_step_2_title' => (string) $this->t('Browse and enroll in courses'),
+        'training_process_step_2_description' => (string) $this->t('Explore training categories, view course details, and enroll in programs that match your development goals.'),
+        'training_process_step_3_title' => (string) $this->t('Complete courses and assessments'),
+        'training_process_step_3_description' => (string) $this->t('Work through modules at your own pace. Progress is saved automatically. Pass assessments to earn credit.'),
+        'training_process_step_4_title' => (string) $this->t('Download certificates and track progress'),
+        'training_process_step_4_description' => (string) $this->t('Completed training is recorded in your transcript. Download certificates for your records.'),
+        'training_process_panel_title' => (string) $this->t('Certified Training Program'),
+        'training_process_panel_subtitle' => (string) $this->t('Recognized professional development'),
+        'training_process_feature_1' => (string) $this->t('Self-paced online learning'),
+        'training_process_feature_2' => (string) $this->t('Progress auto-saved across sessions'),
+        'training_process_feature_3' => (string) $this->t('Downloadable completion certificates'),
+        'training_process_feature_4' => (string) $this->t('Instructor-reviewed assessments'),
+        'training_process_feature_5' => (string) $this->t('Accessible on any device'),
+        'training_process_feature_6' => (string) $this->t('Transcript and compliance reporting'),
+        'training_process_panel_cta_text' => (string) $this->t('Get Started Today'),
+        'faq_support_title' => (string) $this->t('Still have questions?'),
+        'faq_support_subtitle' => (string) $this->t('Our support team can help'),
+        'faq_support_body' => (string) $this->t("Can't find the answer you need? Our training coordinators are available to assist you with enrollment, technical issues, and certification questions."),
+        'faq_support_cta_text' => (string) $this->t('Contact Support'),
+        'faq_quicklinks_title' => (string) $this->t('Quick Access'),
+        'faq_quicklink_catalog_text' => (string) $this->t('Course Catalog'),
+        'faq_quicklink_categories_text' => (string) $this->t('All Categories'),
+        'faq_quicklink_dashboard_text' => (string) $this->t('My Dashboard'),
+        'faq_quicklink_certificates_text' => (string) $this->t('My Certificates'),
+        'cta_banner_title' => (string) $this->t('Ready to Start Your Training?'),
+        'cta_banner_description' => (string) $this->t('Browse our course catalog, enroll today, and take the first step toward professional growth.'),
+        'cta_primary_text' => (string) $this->t('Browse Course Catalog'),
+        'cta_secondary_text' => (string) $this->t('Create Account'),
+        'cta_logged_in_secondary_text' => (string) $this->t('Go to Dashboard'),
+      ],
+    ];
+
+    return $defaults[$style] ?? $defaults['glassmorphism'];
+  }
+
+  /**
+   * Builds homepage stats with editable labels and values.
+   */
+  private function getHomepageStats(array $homepage_settings, int $course_count): array {
+    $certificate_count = 0;
+    if ($this->entityTypeManager->hasDefinition('lms_user_certificate')) {
+      $certificate_count = (int) $this->entityTypeManager->getStorage('lms_user_certificate')
+        ->getQuery()
+        ->accessCheck(FALSE)
+        ->count()
+        ->execute();
+    }
+
+    return [
+      'courses' => $course_count > 0 ? (string) $course_count : '10+',
+      'students' => (string) $homepage_settings['stats_students_value'],
+      'satisfaction' => (string) $homepage_settings['stats_satisfaction_value'],
+      'certs' => $certificate_count > 0 ? (string) $certificate_count : '0',
+      'courses_label' => (string) $homepage_settings['stats_courses_label'],
+      'students_label' => (string) $homepage_settings['stats_students_label'],
+      'satisfaction_label' => (string) $homepage_settings['stats_satisfaction_label'],
+      'certs_label' => (string) $homepage_settings['stats_certs_label'],
+    ];
+  }
+
+  /**
+   * Loads homepage memberships from entity storage.
+   */
+  private function getHomepageMemberships(): array {
+    $memberships = [];
+
+    if ($this->entityTypeManager->hasDefinition('lms_membership_plan')) {
+      $plan_ids = $this->entityTypeManager->getStorage('lms_membership_plan')
+        ->getQuery()
+        ->condition('status', TRUE)
+        ->sort('field_price', 'ASC')
+        ->range(0, 3)
+        ->accessCheck(FALSE)
+        ->execute();
+
+      if ($plan_ids) {
+        $plans = $this->entityTypeManager->getStorage('lms_membership_plan')->loadMultiple($plan_ids);
+        foreach ($plans as $plan) {
+          $features = [];
+          foreach ($plan->get('field_features') as $feature_item) {
+            $feature_value = trim((string) $feature_item->value);
+            if ($feature_value !== '') {
+              $features[] = $feature_value;
+            }
+          }
+
+          $memberships[] = [
+            'id' => (int) $plan->id(),
+            'name' => $plan->label(),
+            'price' => (float) ($plan->get('field_price')->value ?? 0),
+            'currency' => 'USD',
+            'description' => $plan->hasField('field_description') && !$plan->get('field_description')->isEmpty() ? $plan->get('field_description')->value : '',
+            'features' => $features,
+            'recommended' => $plan->hasField('field_recommended') && (bool) $plan->get('field_recommended')->value,
+            'billing_cycle' => $plan->hasField('field_billing_cycle') ? (string) ($plan->get('field_billing_cycle')->value ?? 'monthly') : 'monthly',
+          ];
+        }
+      }
+    }
+
+    return $memberships;
   }
 
   /**
@@ -1166,6 +1777,16 @@ final class CoursePublicController extends ControllerBase {
         }
       }
 
+      // Count lessons across all chapters.
+      $lesson_count = 0;
+      if ($course->hasField('field_chapters') && !$course->get('field_chapters')->isEmpty()) {
+        foreach ($course->get('field_chapters')->referencedEntities() as $chapter) {
+          if ($chapter->hasField('field_lessons') && !$chapter->get('field_lessons')->isEmpty()) {
+            $lesson_count += $chapter->get('field_lessons')->count();
+          }
+        }
+      }
+
       $thumbnail_url = '';
       if ($course->hasField('field_thumbnail') && !$course->get('field_thumbnail')->isEmpty()) {
         $file = $course->get('field_thumbnail')->entity;
@@ -1183,12 +1804,12 @@ final class CoursePublicController extends ControllerBase {
         'id' => $course->id(),
         'name' => $course->label(),
         'short_description' => $course->get('field_short_description')->value ?? '',
-        'price' => $price > 0 ? '$' . number_format($price, 2) : 'Free',
+        'price' => $price > 0 ? '$' . number_format($price, 2) : (string) $this->t('Free'),
         'price_raw' => $price,
         'rating' => $course->hasField('field_rating') && !$course->get('field_rating')->isEmpty() ? (float) $course->get('field_rating')->value : 5.0,
-        'category' => $category?->label() ?? '',
+        'category' => $category?->label() ?? (string) $this->t('General'),
         'category_id' => $category?->id() ?? '',
-        'level' => $level?->label() ?? '',
+        'level' => $level?->label() ?? (string) $this->t('All Levels'),
         'level_id' => strtolower($level?->label() ?? ''),
         'duration' => $this->lmsHelper->formatDuration($duration),
         'bestseller' => (bool) $course->get('field_bestseller')->value,
@@ -1197,10 +1818,11 @@ final class CoursePublicController extends ControllerBase {
         'thumbnail_url' => $thumbnail_url,
         'url' => \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $course->id()])->toString(),
         'continue_url' => $continue_url,
-        'instructor_name' => $instructor_name,
+        'instructor_name' => $instructor_name !== '' ? $instructor_name : (string) $this->t('Instructor'),
         'instructor_avatar' => $instructor_avatar,
         'instructor_url' => $instructor_url,
         'is_enrolled' => $is_enrolled,
+        'lesson_count' => $lesson_count,
       ];
     }
     return $cards;

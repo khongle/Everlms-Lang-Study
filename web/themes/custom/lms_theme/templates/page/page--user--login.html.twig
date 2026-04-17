@@ -3,8 +3,13 @@
   {# Navbar — matches mockup #}
   <header class="lms-navbar">
     <div class="lms-navbar__container">
-      <a href="{{ path('<front>') }}" class="lms-navbar__brand">
-        <i class="fas fa-graduation-cap"></i> {{ 'EverLMS'|t }}
+      <a href="{{ path('<front>') }}" class="lms-navbar__brand" title="{{ site_logo_alt }}" aria-label="{{ site_name }}">
+        {% if site_logo_url %}
+          <img src="{{ site_logo_url }}" alt="{{ site_logo_alt }}" class="lms-brand-mark lms-brand-mark--header">
+        {% else %}
+          <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+          <span>{{ site_name }}</span>
+        {% endif %}
       </a>
       <div class="lms-navbar__actions">
         <a href="{{ path('user.register') }}" class="lms-navbar__link">{{ 'Register'|t }}</a>
@@ -24,18 +29,18 @@
           <h1>{{ 'Welcome Back'|t }}</h1>
           <p>{{ 'Sign in to access your courses and dashboard.'|t }}</p>
         </div>
-        <div class="lms-auth__social mb-4" style="display: flex; flex-direction: column; gap: 0.75rem;">
-          <a href="/user/login/google" class="lms-btn lms-btn--outline w-100" style="justify-content: center; display: flex; align-items: center;">
-            <i class="fab fa-google text-danger" style="margin-right: 0.5rem;"></i> {{ 'Continue with Google'|t }}
+        <div class="lms-auth__social mb-4">
+          <a href="/user/login/google" class="lms-btn lms-btn--outline w-100 lms-auth__social-btn">
+            <i class="fab fa-google text-danger me-2"></i> {{ 'Continue with Google'|t }}
           </a>
-          <a href="/user/login/facebook" class="lms-btn lms-btn--outline w-100" style="justify-content: center; display: flex; align-items: center;">
-            <i class="fab fa-facebook text-primary" style="margin-right: 0.5rem;"></i> {{ 'Continue with Facebook'|t }}
+          <a href="/user/login/facebook" class="lms-btn lms-btn--outline w-100 lms-auth__social-btn">
+            <i class="fab fa-facebook text-primary me-2"></i> {{ 'Continue with Facebook'|t }}
           </a>
         </div>
         
         <div class="text-center my-3 position-relative">
-          <hr class="text-muted" style="border-color: rgba(255,255,255,0.1) !important;">
-          <span class="position-absolute top-50 start-50 translate-middle px-3 text-muted" style="background: var(--lms-card-bg, #161b22); font-size: 0.85rem;">{{ 'or'|t }}</span>
+          <hr class="text-muted lms-auth__divider-line">
+          <span class="position-absolute top-50 start-50 translate-middle px-3 text-muted lms-auth__divider-label">{{ 'or'|t }}</span>
         </div>
 
         <div class="lms-auth__form-wrapper mt-4">
@@ -43,8 +48,8 @@
         </div>
         
         <div class="lms-auth__footer mt-4 text-center">
-          <p class="mb-2" style="color: #8b949e; font-size: 0.9rem;">{{ "Don't have an account?"|t }} <a href="{{ path('user.register') }}" style="color: var(--lms-primary-color); font-weight: 500;">{{ 'Sign up here'|t }}</a></p>
-          <p style="font-size: 0.9rem;"><a href="{{ path('user.pass') }}" style="color: var(--lms-primary-color);">{{ 'Forgot your password?'|t }}</a></p>
+          <p class="mb-2">{{ "Don't have an account?"|t }} <a href="{{ path('user.register') }}">{{ 'Sign up here'|t }}</a></p>
+          <p><a href="{{ path('user.pass') }}">{{ 'Forgot your password?'|t }}</a></p>
         </div>
       </div>
     </div>

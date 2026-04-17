@@ -1,0 +1,337 @@
+{{ attach_library('lms_theme/homepage_academy') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+
+<div class="academy-home">
+  {% if homepage_sections.hero ?? true %}
+  <section class="academy-hero academy-section-breakout">
+    <div class="academy-hero__frame">
+      {% if slideshows %}
+      <div id="academyHeroCarousel" class="carousel slide academy-carousel" data-bs-ride="carousel" data-bs-interval="6500">
+        {% if slideshows|length > 1 %}
+        <div class="carousel-indicators academy-carousel__indicators">
+          {% for slide in slideshows %}
+            <button type="button" data-bs-target="#academyHeroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="academy-carousel__indicator{% if loop.first %} active{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="carousel-inner academy-carousel__inner">
+          {% for slide in slideshows %}
+          <div class="carousel-item academy-carousel__item{% if loop.first %} active{% endif %}">
+            <div class="academy-carousel__media">
+              {% if slide.image_url %}
+                <img src="{{ slide.image_url }}" alt="{{ slide.heading }}" class="academy-carousel__image">
+              {% else %}
+                <div class="academy-carousel__fallback-mark"></div>
+              {% endif %}
+            </div>
+            <div class="academy-hero__content academy-shell">
+              <div class="academy-hero__card">
+                <span class="academy-eyebrow">{{ site_name|default('EverLMS') }}</span>
+                <h1 class="academy-hero__title">{{ slide.heading }}</h1>
+                <p class="academy-hero__subtitle">{{ slide.subheading|striptags }}</p>
+                <div class="academy-hero__actions">
+                  <a href="{{ slide.link_url }}" class="academy-btn academy-btn--primary">{{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}</a>
+                  <a href="{{ path('lms_course.catalog') }}" class="academy-btn academy-btn--secondary">{{ homepage_settings.hero_secondary_cta_text }}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="academy-hero__fallback academy-shell">
+        <div class="academy-hero__card academy-hero__card--fallback">
+          <span class="academy-eyebrow">{{ site_name|default('EverLMS') }}</span>
+          <h1 class="academy-hero__title">{{ homepage_settings.hero_fallback_heading }}</h1>
+          <p class="academy-hero__subtitle">{{ homepage_settings.hero_fallback_subtext }}</p>
+          <div class="academy-hero__actions">
+            <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="academy-btn academy-btn--primary">{{ homepage_settings.hero_fallback_cta_text }}</a>
+            <a href="{{ path('lms_course.catalog') }}" class="academy-btn academy-btn--secondary">{{ homepage_settings.hero_secondary_cta_text }}</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% if homepage_sections.stats ?? true %}
+    <div class="academy-stats academy-shell">
+      <div class="academy-stats__grid">
+        <div class="academy-stat"><span class="academy-stat__value">{{ stats.courses }}</span><span class="academy-stat__label">{{ stats.courses_label }}</span></div>
+        <div class="academy-stat"><span class="academy-stat__value">{{ stats.students }}</span><span class="academy-stat__label">{{ stats.students_label }}</span></div>
+        <div class="academy-stat"><span class="academy-stat__value">{{ stats.satisfaction }}</span><span class="academy-stat__label">{{ stats.satisfaction_label }}</span></div>
+        <div class="academy-stat"><span class="academy-stat__value">{{ categories|length }}</span><span class="academy-stat__label">{{ 'Disciplines'|t }}</span></div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+  <section class="academy-section academy-shell">
+    <div class="academy-section__header academy-section__header--split">
+      <div>
+        <span class="academy-section__kicker">{{ 'Current Study'|t }}</span>
+        <h2 class="academy-section__title">{{ 'Continue Learning'|t }}</h2>
+      </div>
+      <a href="{{ path('lms_progress.dashboard') }}" class="academy-link">{{ 'Open Dashboard'|t }}</a>
+    </div>
+    <div class="academy-study-grid">
+      {% for item in my_courses|slice(0,3) %}
+      <article class="academy-study-card">
+        <div class="academy-study-card__thumb">
+          {% if item.course.thumbnail_url %}
+            <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}">
+          {% else %}
+            <div class="academy-study-card__placeholder"><i class="fas fa-book-open"></i></div>
+          {% endif %}
+        </div>
+        <div class="academy-study-card__body">
+          <h3 class="academy-study-card__title"><a href="{{ item.course.continue_url }}">{{ item.course.name }}</a></h3>
+          <div class="academy-progress"><div class="academy-progress__fill lms-learning-progress__fill" data-progress="{{ item.progress }}"></div></div>
+          <div class="academy-study-card__meta">{{ item.progress }}% {{ 'Completed'|t }}</div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="academy-section academy-section--tinted academy-shell">
+    <div class="academy-section__header academy-section__header--center">
+      <span class="academy-section__kicker">{{ 'Catalog'|t }}</span>
+      <h2 class="academy-section__title">{{ homepage_settings.categories_section_title }}</h2>
+      {% set category_subtitle = homepage_settings.categories_section_subtitle|default('')|trim %}
+      {% if category_subtitle and not (category_subtitle matches '/browse training by subject area/i') %}
+        <p class="academy-section__lead">{{ category_subtitle }}</p>
+      {% endif %}
+    </div>
+    <div class="academy-category-grid">
+      {% set academy_category_icons = ['fa-graduation-cap', 'fa-shield-heart', 'fa-hands-helping', 'fa-helmet-safety', 'fa-user-doctor', 'fa-building-shield', 'fa-people-carry-box', 'fa-chart-line'] %}
+      {% for cat in categories|slice(0,8) %}
+      <a href="{{ path('lms_course.catalog') }}?category={{ cat.entity.id }}" class="academy-category-card">
+        <div class="academy-category-card__icon">
+          {% if cat.icon_url %}
+            <img src="{{ cat.icon_url }}" alt="{{ cat.name }}" class="academy-category-card__icon-img--icon">
+          {% elseif cat.thumbnail_url %}
+            <img src="{{ cat.thumbnail_url }}" alt="{{ cat.name }}">
+          {% else %}
+            <i class="fas {{ academy_category_icons[loop.index0 % academy_category_icons|length] }}" aria-hidden="true"></i>
+          {% endif %}
+        </div>
+        <h3 class="academy-category-card__title">{{ cat.name }}</h3>
+        <p class="academy-category-card__meta">{{ cat.course_count }} {{ 'Courses'|t }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="academy-section academy-shell">
+    <div class="academy-section__header academy-section__header--split">
+      <div>
+        <span class="academy-section__kicker">{{ 'Featured'|t }}</span>
+        <h2 class="academy-section__title">{{ homepage_settings.featured_section_title }}</h2>
+        {% if homepage_settings.featured_section_subtitle %}<p class="academy-section__lead">{{ homepage_settings.featured_section_subtitle }}</p>{% endif %}
+      </div>
+      <a href="{{ path('lms_course.catalog') }}" class="academy-link">{{ homepage_settings.featured_section_link_text }}</a>
+    </div>
+    <div class="academy-course-grid">
+      {% for card in featured_courses|slice(0,8) %}
+      <article class="academy-course-card">
+        <a href="{{ card.url }}" class="academy-course-card__media">
+          {% if card.thumbnail_url %}
+            <img src="{{ card.thumbnail_url }}" alt="{{ card.name }}">
+          {% else %}
+            <div class="academy-course-card__placeholder"><i class="fas fa-graduation-cap"></i></div>
+          {% endif %}
+        </a>
+        <div class="academy-course-card__body">
+          <div class="academy-course-card__topline"><span>{{ card.category|default('Course') }}</span><strong>{{ card.price }}</strong></div>
+          <h3 class="academy-course-card__title"><a href="{{ card.url }}">{{ card.name }}</a></h3>
+          {% if card.short_description %}<p class="academy-course-card__summary">{{ card.short_description|striptags }}</p>{% endif %}
+          <div class="academy-course-card__footer">
+            <span>{{ card.level|default('All Levels') }}</span>
+            <span>{{ card.duration }}</span>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.introductions ?? true) and introductions %}
+  <section class="academy-section academy-section--tinted academy-shell">
+    <div class="academy-section__header academy-section__header--center">
+      <span class="academy-section__kicker">{{ 'Highlights'|t }}</span>
+      <h2 class="academy-section__title">{{ homepage_settings.introductions_section_title }}</h2>
+      {% if homepage_settings.introductions_section_subtitle %}<p class="academy-section__lead">{{ homepage_settings.introductions_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="academy-feature-list">
+      {% for intro in introductions|slice(0,3) %}
+      <article class="academy-feature-card">
+        {% if intro.image_url %}<div class="academy-feature-card__media"><img src="{{ intro.image_url }}" alt="{{ intro.title }}"></div>{% endif %}
+        <div class="academy-feature-card__body">
+          {% if intro.subheading %}<span class="academy-feature-card__eyebrow">{{ intro.subheading }}</span>{% endif %}
+          <h3 class="academy-feature-card__title">{{ intro.title }}</h3>
+          <div class="academy-feature-card__copy">{{ intro.body|striptags }}</div>
+          {% if intro.link_url and intro.link_url != '#' %}<a href="{{ intro.link_url }}" class="academy-link">{{ intro.link_title|default(homepage_settings.default_intro_cta_text) }}</a>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.bundles ?? true) and bundles %}
+  <section class="academy-section academy-shell">
+    <div class="academy-section__header academy-section__header--center">
+      <span class="academy-section__kicker">{{ 'Pathways'|t }}</span>
+      <h2 class="academy-section__title">{{ homepage_settings.bundles_section_title }}</h2>
+      {% if homepage_settings.bundles_section_subtitle %}<p class="academy-section__lead">{{ homepage_settings.bundles_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="academy-bundle-grid">
+      {% for bundle in bundles|slice(0,3) %}
+      <article class="academy-bundle-card">
+        <span class="academy-bundle-card__label">{{ 'Pathway'|t }}</span>
+        <h3 class="academy-bundle-card__title">{{ bundle.title }}</h3>
+        <p class="academy-bundle-card__summary">{{ bundle.summary|striptags }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="academy-section academy-section--tinted academy-shell">
+    <div class="academy-section__header academy-section__header--center">
+      <span class="academy-section__kicker">{{ 'Reviews'|t }}</span>
+      <h2 class="academy-section__title">{{ homepage_settings.testimonials_section_title }}</h2>
+      {% if homepage_settings.testimonials_section_subtitle %}<p class="academy-section__lead">{{ homepage_settings.testimonials_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="academy-testimonial-grid">
+      {% for item in testimonials|slice(0,3) %}
+      <article class="academy-testimonial-card">
+        <div class="academy-testimonial-card__rating">{% for i in 1..item.rating|default(5) %}★{% endfor %}</div>
+        <blockquote class="academy-testimonial-card__quote">{{ item.content|striptags }}</blockquote>
+        <div class="academy-testimonial-card__head">
+          {% if item.avatar %}
+            <img src="{{ item.avatar }}" alt="{{ item.name }}" class="academy-testimonial-card__avatar">
+          {% else %}
+            <span class="academy-testimonial-card__avatar academy-testimonial-card__avatar--fallback">{{ item.name|slice(0, 1)|upper }}</span>
+          {% endif %}
+          <div class="academy-testimonial-card__author-wrap">
+            <div class="academy-testimonial-card__author">{{ item.name }}</div>
+            <div class="academy-testimonial-card__role">{{ item.role }}</div>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.news ?? true) and latest_news %}
+  <section class="academy-section academy-shell">
+    <div class="academy-section__header academy-section__header--split">
+      <div>
+        <span class="academy-section__kicker">{{ 'Bulletin'|t }}</span>
+        <h2 class="academy-section__title">{{ homepage_settings.news_section_title }}</h2>
+        {% if homepage_settings.news_section_subtitle %}<p class="academy-section__lead">{{ homepage_settings.news_section_subtitle }}</p>{% endif %}
+      </div>
+      <a href="{{ path('lms_blog.frontend.collection') }}" class="academy-link">{{ homepage_settings.news_section_link_text }}</a>
+    </div>
+    <div class="academy-news-grid">
+      {% for news in latest_news|slice(0,3) %}
+      <article class="academy-news-card">
+        {% if news.thumbnail_url %}<a href="{{ news.url }}" class="academy-news-card__media"><img src="{{ news.thumbnail_url }}" alt="{{ news.title }}"></a>{% endif %}
+        <div class="academy-news-card__body">
+          <div class="academy-news-card__date">{{ news.date }}</div>
+          <h3 class="academy-news-card__title"><a href="{{ news.url }}">{{ news.title }}</a></h3>
+          <p class="academy-news-card__summary">{{ news.summary|striptags }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.membership ?? true) and memberships %}
+  <section class="academy-section academy-section--tinted academy-shell">
+    <div class="academy-section__header academy-section__header--center">
+      <span class="academy-section__kicker">{{ 'Access'|t }}</span>
+      <h2 class="academy-section__title">{{ homepage_settings.membership_section_title }}</h2>
+      {% if homepage_settings.membership_section_subtitle %}<p class="academy-section__lead">{{ homepage_settings.membership_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="academy-pricing-grid">
+      {% for plan in memberships %}
+      <article class="academy-pricing-card{% if plan.recommended %} is-featured{% endif %}">
+        {% if plan.recommended %}<span class="academy-pricing-card__badge">{{ homepage_settings.membership_recommended_badge_text }}</span>{% endif %}
+        <h3 class="academy-pricing-card__title">{{ plan.name }}</h3>
+        <div class="academy-pricing-card__price">{% if plan.currency == 'USD' %}${% elseif plan.currency == 'EUR' %}€{% else %}£{% endif %}{{ plan.price }}</div>
+        <ul class="academy-pricing-card__features">
+          {% for feature in plan.features %}<li>{{ feature }}</li>{% endfor %}
+        </ul>
+        <a href="{{ path('lms_course.pricing') }}" class="academy-btn academy-btn--primary academy-btn--block">{% if plan.price == 0 %}{{ homepage_settings.membership_free_cta_text }}{% elseif plan.recommended %}{{ homepage_settings.membership_recommended_cta_text }}{% else %}{{ homepage_settings.membership_paid_cta_text }}{% endif %}</a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.training_process ?? true %}
+  <section class="academy-section academy-shell">
+    <div class="academy-process">
+      <div class="academy-process__copy">
+        <span class="academy-section__kicker">{{ 'Method'|t }}</span>
+        <h2 class="academy-section__title">{{ homepage_settings.training_process_section_title }}</h2>
+        {% if homepage_settings.training_process_section_subtitle %}<p class="academy-section__lead">{{ homepage_settings.training_process_section_subtitle }}</p>{% endif %}
+      </div>
+      <ol class="academy-process__steps">
+        <li><strong>{{ homepage_settings.training_process_step_1_title }}</strong><span>{{ homepage_settings.training_process_step_1_description }}</span></li>
+        <li><strong>{{ homepage_settings.training_process_step_2_title }}</strong><span>{{ homepage_settings.training_process_step_2_description }}</span></li>
+        <li><strong>{{ homepage_settings.training_process_step_3_title }}</strong><span>{{ homepage_settings.training_process_step_3_description }}</span></li>
+        <li><strong>{{ homepage_settings.training_process_step_4_title }}</strong><span>{{ homepage_settings.training_process_step_4_description }}</span></li>
+      </ol>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.faqs ?? true) and faqs %}
+  <section class="academy-section academy-section--tinted academy-shell">
+    <div class="academy-section__header academy-section__header--center">
+      <span class="academy-section__kicker">{{ 'FAQ'|t }}</span>
+      <h2 class="academy-section__title">{{ homepage_settings.faq_section_title }}</h2>
+      {% if homepage_settings.faq_section_subtitle %}<p class="academy-section__lead">{{ homepage_settings.faq_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="accordion academy-faq" id="academyFaq">
+      {% for faq in faqs %}
+      <div class="accordion-item academy-faq__item">
+        <h2 class="accordion-header" id="academyFaqHeading{{ loop.index }}">
+          <button class="accordion-button academy-faq__button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#academyFaqCollapse{{ loop.index }}" aria-expanded="{% if loop.first %}true{% else %}false{% endif %}" aria-controls="academyFaqCollapse{{ loop.index }}">{{ faq.question }}</button>
+        </h2>
+        <div id="academyFaqCollapse{{ loop.index }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="academyFaqHeading{{ loop.index }}" data-bs-parent="#academyFaq">
+          <div class="accordion-body academy-faq__body">{{ faq.answer|raw }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.cta_guest ?? true %}
+  <section class="academy-cta academy-shell">
+    <div class="academy-cta__box">
+      <span class="academy-section__kicker">{{ 'Enroll'|t }}</span>
+      <h2 class="academy-cta__title">{{ homepage_settings.cta_banner_title }}</h2>
+      <p class="academy-cta__copy">{{ homepage_settings.cta_banner_description }}</p>
+      <div class="academy-hero__actions academy-hero__actions--center">
+        <a href="{{ logged_in ? path('lms_progress.dashboard') : path('user.register') }}" class="academy-btn academy-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+        <a href="{{ path('lms_course.catalog') }}" class="academy-btn academy-btn--secondary">{{ logged_in ? homepage_settings.cta_logged_in_secondary_text : homepage_settings.cta_secondary_text }}</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</div>

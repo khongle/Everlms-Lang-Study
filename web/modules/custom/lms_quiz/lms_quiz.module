@@ -33,6 +33,7 @@ function lms_quiz_theme(): array {
     'lms_my_quiz_results' => [
       'variables' => [
         'results' => [],
+        'summary' => [],
       ],
       'template' => 'lms-my-quiz-results',
     ],

@@ -1,0 +1,368 @@
+{{ attach_library('lms_theme/homepage_editorial') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+{% set lead_slide = slideshows ? slideshows|first : null %}
+{% set secondary_slides = slideshows and slideshows|length > 1 ? slideshows|slice(1, 3) : [] %}
+
+<div class="editorial-home">
+  {% if homepage_sections.hero ?? true %}
+  <section class="editorial-hero editorial-breakout">
+    <div class="editorial-shell editorial-hero__layout">
+      <div class="editorial-hero__lead">
+        <span class="editorial-kicker">{{ site_name|default('EverLMS') }}</span>
+        <h1 class="editorial-hero__title">{{ lead_slide ? lead_slide.heading : homepage_settings.hero_fallback_heading }}</h1>
+        <p class="editorial-hero__copy">{{ lead_slide ? lead_slide.subheading|striptags : homepage_settings.hero_fallback_subtext }}</p>
+        <div class="editorial-hero__actions">
+          <a href="{{ lead_slide and lead_slide.link_url ? lead_slide.link_url : homepage_settings.hero_fallback_cta_url }}" class="editorial-btn editorial-btn--primary">{{ lead_slide and lead_slide.link_title ? lead_slide.link_title : homepage_settings.hero_fallback_cta_text }}</a>
+          <a href="{{ path('lms_course.catalog') }}" class="editorial-btn editorial-btn--secondary">{{ homepage_settings.hero_secondary_cta_text }}</a>
+        </div>
+      </div>
+      <div class="editorial-hero__feature">
+        <div class="editorial-hero__image-wrap">
+          {% if lead_slide and lead_slide.image_url %}
+            <img src="{{ lead_slide.image_url }}" alt="{{ lead_slide.heading }}" class="editorial-hero__image">
+          {% else %}
+            <div class="editorial-hero__image editorial-hero__image--fallback"></div>
+          {% endif %}
+          <div class="editorial-hero__caption">
+            <span class="editorial-hero__caption-label">{{ 'Lead Story'|t }}</span>
+            <strong>{{ homepage_settings.featured_section_title }}</strong>
+          </div>
+        </div>
+        {% if secondary_slides %}
+        <div class="editorial-hero__rail">
+          {% for slide in secondary_slides %}
+          <a href="{{ slide.link_url ? slide.link_url : path('lms_course.catalog') }}" class="editorial-hero__story">
+            {% if slide.image_url %}
+              <span class="editorial-hero__story-thumb"><img src="{{ slide.image_url }}" alt="{{ slide.heading }}"></span>
+            {% else %}
+              <span class="editorial-hero__story-thumb editorial-hero__story-thumb--fallback"></span>
+            {% endif %}
+            <span class="editorial-hero__story-copy">
+              <span class="editorial-hero__story-kicker">{{ 'Story'|t }} {{ loop.index + 1 }}</span>
+              <strong>{{ slide.heading }}</strong>
+              {% if slide.subheading %}<span>{{ slide.subheading|striptags|slice(0, 96) }}{% if slide.subheading|striptags|length > 96 %}...{% endif %}</span>{% endif %}
+            </span>
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% if homepage_sections.stats ?? true %}
+    <div class="editorial-shell editorial-masthead">
+      <div class="editorial-masthead__item"><span>{{ stats.courses }}</span><small>{{ stats.courses_label }}</small></div>
+      <div class="editorial-masthead__item"><span>{{ stats.students }}</span><small>{{ stats.students_label }}</small></div>
+      <div class="editorial-masthead__item"><span>{{ stats.satisfaction }}</span><small>{{ stats.satisfaction_label }}</small></div>
+      <div class="editorial-masthead__item"><span>{{ latest_news|length }}</span><small>{{ 'Dispatches'|t }}</small></div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+  <section class="editorial-section editorial-shell">
+    <div class="editorial-section__header editorial-section__header--split">
+      <div>
+        <h2 class="editorial-section__title">{{ 'Continue Learning'|t }}</h2>
+      </div>
+      <a href="{{ path('lms_progress.dashboard') }}" class="editorial-link">{{ 'Open Dashboard'|t }}</a>
+    </div>
+    <div class="editorial-study-list">
+      {% for item in my_courses|slice(0,3) %}
+      <article class="editorial-study-item">
+        {% if item.course.thumbnail_url %}
+          <div class="editorial-study-item__thumb"><img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}"></div>
+        {% else %}
+          <div class="editorial-study-item__thumb editorial-study-item__thumb--fallback"></div>
+        {% endif %}
+        <div class="editorial-study-item__meta">
+          <h3><a href="{{ item.course.continue_url }}">{{ item.course.name }}</a></h3>
+          <p>{{ item.progress }}% {{ 'Completed'|t }}</p>
+          <div class="editorial-study-item__bar"><div class="editorial-study-item__fill lms-learning-progress__fill" data-progress="{{ item.progress }}"></div></div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="editorial-section editorial-shell">
+    <div class="editorial-section__header editorial-section__header--split">
+      <div>
+        <span class="editorial-kicker">{{ 'Edition'|t }}</span>
+        <h2 class="editorial-section__title">{{ homepage_settings.featured_section_title }}</h2>
+        {% if homepage_settings.featured_section_subtitle %}<p class="editorial-section__lead">{{ homepage_settings.featured_section_subtitle }}</p>{% endif %}
+      </div>
+      <a href="{{ path('lms_course.catalog') }}" class="editorial-link">{{ homepage_settings.featured_section_link_text }}</a>
+    </div>
+    <div class="editorial-feature-grid">
+      {% for card in featured_courses|slice(0,4) %}
+      <article class="editorial-feature-card">
+        <a href="{{ card.url }}" class="editorial-feature-card__media">
+          {% if card.thumbnail_url %}<img src="{{ card.thumbnail_url }}" alt="{{ card.name }}">{% else %}<div class="editorial-feature-card__placeholder"></div>{% endif %}
+        </a>
+        <div class="editorial-feature-card__body">
+          <span class="editorial-feature-card__tag">{{ card.category|default('Course') }}</span>
+          <h3><a href="{{ card.url }}">{{ card.name }}</a></h3>
+          <p>{{ card.short_description|striptags }}</p>
+          <div class="editorial-feature-card__footer"><span>{{ card.duration }}</span><strong>{{ card.price }}</strong></div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="editorial-section editorial-section--paper editorial-breakout">
+    <div class="editorial-shell">
+      <div class="editorial-section__header editorial-section__header--center">
+        <span class="editorial-kicker">{{ 'Topics'|t }}</span>
+        <h2 class="editorial-section__title">{{ homepage_settings.categories_section_title }}</h2>
+        {% if homepage_settings.categories_section_subtitle %}<p class="editorial-section__lead">{{ homepage_settings.categories_section_subtitle }}</p>{% endif %}
+      </div>
+      <div class="editorial-topic-grid">
+        {% for cat in categories|slice(0,8) %}
+        <a href="{{ path('lms_course.catalog') }}?category={{ cat.entity.id }}" class="editorial-topic-card">
+          {% if cat.icon_url %}
+            <img src="{{ cat.icon_url }}" alt="{{ cat.name }}" class="editorial-topic-card__icon">
+          {% elseif cat.thumbnail_url %}
+            <img src="{{ cat.thumbnail_url }}" alt="{{ cat.name }}" class="editorial-topic-card__icon">
+          {% endif %}
+          <h3>{{ cat.name }}</h3>
+          <span class="editorial-topic-card__count">{{ cat.course_count }} {{ 'courses'|t }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.introductions ?? true) and introductions %}
+  <section class="editorial-section editorial-shell">
+    <div class="editorial-section__header editorial-section__header--center">
+      <span class="editorial-kicker">{{ 'Notebook'|t }}</span>
+      <h2 class="editorial-section__title">{{ homepage_settings.introductions_section_title }}</h2>
+      {% if homepage_settings.introductions_section_subtitle %}<p class="editorial-section__lead">{{ homepage_settings.introductions_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="editorial-notes-grid">
+      {% for intro in introductions|slice(0,3) %}
+      <article class="editorial-note-card">
+        {% if intro.image_url %}<div class="editorial-note-card__media"><img src="{{ intro.image_url }}" alt="{{ intro.title }}"></div>{% endif %}
+        <div class="editorial-note-card__body">
+          {% if intro.subheading %}<span class="editorial-note-card__eyebrow">{{ intro.subheading }}</span>{% endif %}
+          <h3>{{ intro.title }}</h3>
+          <p>{{ intro.body|striptags }}</p>
+          {% if intro.link_url and intro.link_url != '#' %}<a href="{{ intro.link_url }}" class="editorial-link">{{ intro.link_title|default(homepage_settings.default_intro_cta_text) }}</a>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.bundles ?? true) and bundles %}
+  <section class="editorial-section editorial-section--paper editorial-breakout">
+    <div class="editorial-shell">
+      <div class="editorial-section__header editorial-section__header--center">
+        <span class="editorial-kicker">{{ 'Series'|t }}</span>
+        <h2 class="editorial-section__title">{{ homepage_settings.bundles_section_title }}</h2>
+        {% if homepage_settings.bundles_section_subtitle %}<p class="editorial-section__lead">{{ homepage_settings.bundles_section_subtitle }}</p>{% endif %}
+      </div>
+      <div class="editorial-series-grid">
+        {% for bundle in bundles|slice(0,3) %}
+        <article class="editorial-series-card">
+          <span class="editorial-series-card__issue">{{ 'Series'|t }} {{ loop.index }}</span>
+          <h3>{{ bundle.title }}</h3>
+          <p>{{ bundle.summary|striptags }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.instructor ?? true %}
+    {# Pull up to 4 unique instructors from featured courses. #}
+    {% set contributors = [] %}
+    {% set contrib_seen = [] %}
+    {% for course in featured_courses|slice(0, 8) %}
+      {% set c_name = course.instructor_name ?? '' %}
+      {% if c_name and c_name not in contrib_seen and contributors|length < 4 %}
+        {% set contrib_seen = contrib_seen|merge([c_name]) %}
+        {% set contributors = contributors|merge([{
+          name: c_name,
+          url: (course.instructor_url is defined and course.instructor_url) ? course.instructor_url : (course.url ?? path('lms_course.catalog')),
+          avatar: course.instructor_avatar ?? '',
+          specialty: course.category ?? '',
+          focus: course.name ?? '',
+          copy: course.short_description ?? ''
+        }]) %}
+      {% endif %}
+    {% endfor %}
+    {% if contributors|length > 0 %}
+    <section class="editorial-section editorial-shell">
+      <div class="editorial-section__header editorial-section__header--split">
+        <div>
+          <span class="editorial-kicker">{{ 'Contributors'|t }}</span>
+          <h2 class="editorial-section__title">{{ homepage_settings.instructor_section_title|default('Meet the Instructors'|t) }}</h2>
+          {% if homepage_settings.instructor_section_subtitle %}<p class="editorial-section__lead">{{ homepage_settings.instructor_section_subtitle }}</p>{% endif %}
+        </div>
+        <a href="{{ path('lms_course.catalog') }}" class="editorial-link">{{ 'All Instructors'|t }}</a>
+      </div>
+      <div class="editorial-contributors">
+        {% for contrib in contributors %}
+        <article class="editorial-contributor">
+          <div class="editorial-contributor__avatar-wrap">
+            {% if contrib.avatar %}
+              <img src="{{ contrib.avatar }}" alt="{{ contrib.name }}" class="editorial-contributor__avatar">
+            {% else %}
+              <div class="editorial-contributor__avatar-initial">{{ contrib.name|slice(0,1)|upper }}</div>
+            {% endif %}
+          </div>
+          <div class="editorial-contributor__rule"></div>
+          <h3 class="editorial-contributor__name"><a href="{{ contrib.url }}">{{ contrib.name }}</a></h3>
+          <p class="editorial-contributor__title">{{ 'Lead Instructor'|t }}</p>
+          {% if contrib.specialty %}<span class="editorial-contributor__beat">{{ contrib.specialty }}</span>{% endif %}
+          {% if contrib.focus %}<p class="editorial-contributor__focus">{{ contrib.focus }}</p>{% endif %}
+          {% if contrib.copy %}<p class="editorial-contributor__copy">{{ contrib.copy|striptags|slice(0, 120) }}{% if contrib.copy|striptags|length > 120 %}...{% endif %}</p>{% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  {% endif %}
+
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="editorial-section editorial-shell">
+    <div class="editorial-section__header editorial-section__header--center">
+      <span class="editorial-kicker">{{ 'Responses'|t }}</span>
+      <h2 class="editorial-section__title">{{ homepage_settings.testimonials_section_title }}</h2>
+      {% if homepage_settings.testimonials_section_subtitle %}<p class="editorial-section__lead">{{ homepage_settings.testimonials_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="editorial-response-grid">
+      {% for item in testimonials|slice(0,3) %}
+      <article class="editorial-response-card">
+        <blockquote>{{ item.content|striptags }}</blockquote>
+        <div class="editorial-response-card__attr">
+          {% if item.avatar %}
+            <img src="{{ item.avatar }}" alt="{{ item.name }}" class="editorial-response-card__avatar">
+          {% else %}
+            <div class="editorial-response-card__initial">{{ item.name|slice(0,1)|upper }}</div>
+          {% endif %}
+          <div>
+            <strong>{{ item.name }}</strong>
+            <span>{{ item.role }}</span>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.news ?? true) and latest_news %}
+  <section class="editorial-section editorial-section--paper editorial-breakout">
+    <div class="editorial-shell">
+      <div class="editorial-section__header editorial-section__header--split">
+        <div>
+          <span class="editorial-kicker">{{ 'Dispatches'|t }}</span>
+          <h2 class="editorial-section__title">{{ homepage_settings.news_section_title }}</h2>
+          {% if homepage_settings.news_section_subtitle %}<p class="editorial-section__lead">{{ homepage_settings.news_section_subtitle }}</p>{% endif %}
+        </div>
+        <a href="{{ path('lms_blog.frontend.collection') }}" class="editorial-link">{{ homepage_settings.news_section_link_text }}</a>
+      </div>
+      <div class="editorial-dispatch-grid">
+        {% for news in latest_news|slice(0,3) %}
+        <article class="editorial-dispatch-card">
+          {% if news.thumbnail_url %}
+            <div class="editorial-dispatch-card__media"><img src="{{ news.thumbnail_url }}" alt="{{ news.title }}"></div>
+          {% else %}
+            <div class="editorial-dispatch-card__media--none"></div>
+          {% endif %}
+          <span class="editorial-dispatch-card__date">{{ news.date }}</span>
+          <h3><a href="{{ news.url }}">{{ news.title }}</a></h3>
+          <p>{{ news.summary|striptags }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.membership ?? true) and memberships %}
+  <section class="editorial-section editorial-shell">
+    <div class="editorial-section__header editorial-section__header--center">
+      <span class="editorial-kicker">{{ 'Subscription'|t }}</span>
+      <h2 class="editorial-section__title">{{ homepage_settings.membership_section_title }}</h2>
+      {% if homepage_settings.membership_section_subtitle %}<p class="editorial-section__lead">{{ homepage_settings.membership_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="editorial-pricing-grid">
+      {% for plan in memberships %}
+      <article class="editorial-pricing-card{% if plan.recommended %} is-featured{% endif %}">
+        {% if plan.recommended %}<span class="editorial-pricing-card__flag">{{ homepage_settings.membership_recommended_badge_text }}</span>{% endif %}
+        <h3>{{ plan.name }}</h3>
+        <div class="editorial-pricing-card__price">{% if plan.currency == 'USD' %}${% elseif plan.currency == 'EUR' %}€{% else %}£{% endif %}{{ plan.price }}</div>
+        <ul>{% for feature in plan.features %}<li>{{ feature }}</li>{% endfor %}</ul>
+        <a href="{{ path('lms_course.pricing') }}" class="editorial-btn editorial-btn--primary editorial-btn--block">{% if plan.price == 0 %}{{ homepage_settings.membership_free_cta_text }}{% elseif plan.recommended %}{{ homepage_settings.membership_recommended_cta_text }}{% else %}{{ homepage_settings.membership_paid_cta_text }}{% endif %}</a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.training_process ?? true %}
+  <section class="editorial-section editorial-section--paper editorial-breakout">
+    <div class="editorial-shell">
+      <div class="editorial-section__header editorial-section__header--center">
+        <span class="editorial-kicker">{{ 'Workflow'|t }}</span>
+        <h2 class="editorial-section__title">{{ homepage_settings.training_process_section_title }}</h2>
+        {% if homepage_settings.training_process_section_subtitle %}<p class="editorial-section__lead">{{ homepage_settings.training_process_section_subtitle }}</p>{% endif %}
+      </div>
+      <div class="editorial-steps-grid">
+        <article class="editorial-step-card"><span>01</span><h3>{{ homepage_settings.training_process_step_1_title }}</h3><p>{{ homepage_settings.training_process_step_1_description }}</p></article>
+        <article class="editorial-step-card"><span>02</span><h3>{{ homepage_settings.training_process_step_2_title }}</h3><p>{{ homepage_settings.training_process_step_2_description }}</p></article>
+        <article class="editorial-step-card"><span>03</span><h3>{{ homepage_settings.training_process_step_3_title }}</h3><p>{{ homepage_settings.training_process_step_3_description }}</p></article>
+        <article class="editorial-step-card"><span>04</span><h3>{{ homepage_settings.training_process_step_4_title }}</h3><p>{{ homepage_settings.training_process_step_4_description }}</p></article>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if (homepage_sections.faqs ?? true) and faqs %}
+  <section class="editorial-section editorial-shell">
+    <div class="editorial-section__header editorial-section__header--center">
+      <span class="editorial-kicker">{{ 'FAQ'|t }}</span>
+      <h2 class="editorial-section__title">{{ homepage_settings.faq_section_title }}</h2>
+      {% if homepage_settings.faq_section_subtitle %}<p class="editorial-section__lead">{{ homepage_settings.faq_section_subtitle }}</p>{% endif %}
+    </div>
+    <div class="accordion editorial-faq" id="editorialFaq">
+      {% for faq in faqs %}
+      <div class="accordion-item editorial-faq__item">
+        <h2 class="accordion-header" id="editorialFaqHeading{{ loop.index }}">
+          <button class="accordion-button editorial-faq__button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#editorialFaqCollapse{{ loop.index }}" aria-expanded="{% if loop.first %}true{% else %}false{% endif %}" aria-controls="editorialFaqCollapse{{ loop.index }}">{{ faq.question }}</button>
+        </h2>
+        <div id="editorialFaqCollapse{{ loop.index }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="editorialFaqHeading{{ loop.index }}" data-bs-parent="#editorialFaq">
+          <div class="accordion-body editorial-faq__body">{{ faq.answer|raw }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if homepage_sections.cta_guest ?? true %}
+  <section class="editorial-cta editorial-breakout">
+    <div class="editorial-cta__box">
+      <span class="editorial-kicker">{{ 'Final Call'|t }}</span>
+      <h2>{{ homepage_settings.cta_banner_title }}</h2>
+      <p>{{ homepage_settings.cta_banner_description }}</p>
+      <div class="editorial-hero__actions editorial-hero__actions--center">
+        <a href="{{ logged_in ? path('lms_progress.dashboard') : path('user.register') }}" class="editorial-btn editorial-btn--primary">{{ homepage_settings.cta_primary_text }}</a>
+        <a href="{{ path('lms_course.catalog') }}" class="editorial-btn editorial-btn--secondary">{{ logged_in ? homepage_settings.cta_logged_in_secondary_text : homepage_settings.cta_secondary_text }}</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</div>

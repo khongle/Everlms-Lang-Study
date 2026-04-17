@@ -1,0 +1,537 @@
+{{ attach_library('lms_theme/homepage_neon') }}
+{% set homepage_sections = homepage_settings.sections_enabled ?? {} %}
+
+<div class="neon-home">
+
+  {# ═══════════════════════════════════════════════
+     1. HERO — dark stage with neon glow + carousel
+  ══════════════════════════════════════════════════ #}
+  {% if homepage_sections.hero ?? true %}
+  <section class="neon-hero neon-breakout">
+    <div class="neon-hero__stage">
+      {% if slideshows %}
+      <div id="neonHeroCarousel" class="carousel slide neon-carousel" data-bs-ride="carousel" data-bs-interval="6000">
+        {% if slideshows|length > 1 %}
+        <div class="carousel-indicators neon-carousel__dots">
+          {% for slide in slideshows %}
+            <button type="button" data-bs-target="#neonHeroCarousel" data-bs-slide-to="{{ loop.index0 }}"
+              class="neon-carousel__dot{% if loop.first %} active{% endif %}"
+              aria-label="Slide {{ loop.index }}"></button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="carousel-inner">
+          {% for slide in slideshows %}
+          <div class="carousel-item{% if loop.first %} active{% endif %}">
+            {% if slide.image_url %}
+              <img src="{{ slide.image_url }}" alt="{{ slide.heading }}" class="neon-hero__bg-image">
+            {% endif %}
+            <div class="neon-hero__overlay"></div>
+            <div class="neon-shell neon-hero__content">
+              <span class="neon-eyebrow">
+                <i class="fas fa-bolt"></i> {{ site_name|default('EverLMS') }}
+              </span>
+              <h1 class="neon-hero__title">{{ slide.heading }}</h1>
+              <p class="neon-hero__subtitle">{{ slide.subheading|striptags }}</p>
+              <div class="neon-hero__actions">
+                <a href="{{ slide.link_url }}" class="neon-btn neon-btn--primary">
+                  {{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}
+                </a>
+                <a href="{{ path('lms_course.catalog') }}" class="neon-btn neon-btn--ghost">
+                  {{ homepage_settings.hero_secondary_cta_text }}
+                </a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% if slideshows|length > 1 %}
+        <button class="carousel-control-prev neon-carousel__arrow" type="button" data-bs-target="#neonHeroCarousel" data-bs-slide="prev">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="carousel-control-next neon-carousel__arrow" type="button" data-bs-target="#neonHeroCarousel" data-bs-slide="next">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="neon-hero__fallback">
+        <div class="neon-shell neon-hero__content">
+          <span class="neon-eyebrow"><i class="fas fa-bolt"></i> {{ site_name|default('EverLMS') }}</span>
+          <h1 class="neon-hero__title">{{ homepage_settings.hero_fallback_heading }}</h1>
+          <p class="neon-hero__subtitle">{{ homepage_settings.hero_fallback_subtext }}</p>
+          <div class="neon-hero__actions">
+            <a href="{{ homepage_settings.hero_fallback_cta_url }}" class="neon-btn neon-btn--primary">
+              {{ homepage_settings.hero_fallback_cta_text }}
+            </a>
+            <a href="{{ path('lms_course.catalog') }}" class="neon-btn neon-btn--ghost">
+              {{ homepage_settings.hero_secondary_cta_text }}
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {# 2. STATS BAR — sibling of hero #}
+    {% if homepage_sections.stats ?? true %}
+    <div class="neon-stats neon-shell">
+      <div class="neon-stats__grid">
+        <div class="neon-stat">
+          <span class="neon-stat__value neon-glow--cyan">{{ stats.courses }}</span>
+          <span class="neon-stat__label">{{ stats.courses_label }}</span>
+        </div>
+        <div class="neon-stat">
+          <span class="neon-stat__value neon-glow--magenta">{{ stats.students }}</span>
+          <span class="neon-stat__label">{{ stats.students_label }}</span>
+        </div>
+        <div class="neon-stat">
+          <span class="neon-stat__value neon-glow--lime">{{ stats.satisfaction }}</span>
+          <span class="neon-stat__label">{{ stats.satisfaction_label }}</span>
+        </div>
+        <div class="neon-stat">
+          <span class="neon-stat__value neon-glow--cyan">{{ categories|length }}</span>
+          <span class="neon-stat__label">{{ 'Active Domains'|t }}</span>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     3. CONTINUE LEARNING
+  ══════════════════════════════════════════════════ #}
+  {% if (homepage_sections.continue_learning ?? true) and logged_in and my_courses|length > 0 %}
+  <section class="neon-section neon-shell">
+    <div class="neon-section__head neon-section__head--split">
+      <div>
+        <span class="neon-kicker"><i class="fas fa-terminal"></i> {{ 'In Progress'|t }}</span>
+        <h2 class="neon-section__title">{{ 'Continue Learning'|t }}</h2>
+      </div>
+      <a href="{{ path('lms_progress.dashboard') }}" class="neon-link">
+        {{ 'Open Dashboard'|t }} <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+    <div class="neon-progress-grid">
+      {% for item in my_courses|slice(0, 3) %}
+      <article class="neon-progress-card">
+        <div class="neon-progress-card__thumb">
+          {% if item.course.thumbnail_url %}
+            <img src="{{ item.course.thumbnail_url }}" alt="{{ item.course.name }}">
+          {% else %}
+            <div class="neon-progress-card__placeholder">
+              <i class="fas fa-code"></i>
+            </div>
+          {% endif %}
+          <span class="neon-progress-card__pct">{{ item.progress }}%</span>
+        </div>
+        <div class="neon-progress-card__body">
+          <h3 class="neon-progress-card__title">
+            <a href="{{ item.course.continue_url }}">{{ item.course.name }}</a>
+          </h3>
+          <div class="neon-progress-bar">
+            <div class="neon-progress-bar__fill lms-learning-progress__fill" data-progress="{{ item.progress }}"></div>
+          </div>
+          <a href="{{ item.course.continue_url }}" class="neon-btn neon-btn--xs">
+            <i class="fas fa-play"></i> {{ 'Resume'|t }}
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     4. CATEGORIES
+  ══════════════════════════════════════════════════ #}
+  {% if (homepage_sections.categories ?? true) and categories %}
+  <section class="neon-section neon-section--surface neon-shell">
+    <div class="neon-section__head neon-section__head--center">
+      <span class="neon-kicker"><i class="fas fa-microchip"></i> {{ 'Domains'|t }}</span>
+      <h2 class="neon-section__title">{{ homepage_settings.categories_section_title }}</h2>
+      <p class="neon-section__subtitle">{{ homepage_settings.categories_section_subtitle }}</p>
+    </div>
+    <div class="neon-category-grid">
+      {% for category in categories %}
+      <a href="{{ category.url }}" class="neon-category-card">
+        <div class="neon-category-card__icon">
+          {% if category.image_url %}
+            <img src="{{ category.image_url }}" alt="{{ category.name }}">
+          {% else %}
+            <i class="fas fa-layer-group"></i>
+          {% endif %}
+        </div>
+        <span class="neon-category-card__name">{{ category.name }}</span>
+        {% if category.course_count is defined %}
+          <span class="neon-category-card__count">{{ category.course_count }} {{ 'courses'|t }}</span>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     5. FEATURED COURSES
+  ══════════════════════════════════════════════════ #}
+  {% if (homepage_sections.featured ?? true) and featured_courses %}
+  <section class="neon-section neon-shell">
+    <div class="neon-section__head neon-section__head--split">
+      <div>
+        <span class="neon-kicker"><i class="fas fa-star"></i> {{ 'Featured'|t }}</span>
+        <h2 class="neon-section__title">{{ homepage_settings.featured_section_title }}</h2>
+        <p class="neon-section__subtitle">{{ homepage_settings.featured_section_subtitle }}</p>
+      </div>
+      <a href="{{ path('lms_course.catalog') }}" class="neon-link">
+        {{ homepage_settings.featured_section_link_text }} <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+    <div class="neon-course-grid">
+      {% for course in featured_courses|slice(0, 6) %}
+      <article class="neon-course-card">
+        <a href="{{ course.url }}" class="neon-course-card__thumb-wrap">
+          {% if course.thumbnail_url %}
+            <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" class="neon-course-card__thumb">
+          {% else %}
+            <div class="neon-course-card__thumb-placeholder">
+              <i class="fas fa-laptop-code"></i>
+            </div>
+          {% endif %}
+          {% if course.is_free ?? false %}
+            <span class="neon-badge neon-badge--free">{{ 'FREE'|t }}</span>
+          {% endif %}
+        </a>
+        <div class="neon-course-card__body">
+          {% if course.category_name %}
+            <span class="neon-course-card__cat">{{ course.category_name }}</span>
+          {% endif %}
+          <h3 class="neon-course-card__title">
+            <a href="{{ course.url }}">{{ course.name }}</a>
+          </h3>
+          {% if course.instructor_name %}
+            <p class="neon-course-card__instructor">
+              <i class="fas fa-user-circle"></i> {{ course.instructor_name }}
+            </p>
+          {% endif %}
+          <div class="neon-course-card__footer">
+            {% if course.price is defined %}
+              <span class="neon-course-card__price">
+                {% if course.is_free ?? false %}{{ 'Free'|t }}{% else %}{{ course.price }}{% endif %}
+              </span>
+            {% endif %}
+            <a href="{{ course.url }}" class="neon-btn neon-btn--sm">{{ 'View Course'|t }}</a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     6. INTRODUCTIONS — alternating layout
+  ══════════════════════════════════════════════════ #}
+  {% if (homepage_sections.introductions ?? true) and introductions %}
+  <section class="neon-section neon-section--surface neon-shell">
+    <div class="neon-section__head neon-section__head--center">
+      <span class="neon-kicker"><i class="fas fa-code-branch"></i> {{ 'Our Mission'|t }}</span>
+      <h2 class="neon-section__title">{{ homepage_settings.introductions_section_title }}</h2>
+      <p class="neon-section__subtitle">{{ homepage_settings.introductions_section_subtitle }}</p>
+    </div>
+    <div class="neon-intro-list">
+      {% for intro in introductions %}
+      <div class="neon-intro-item{% if loop.index is even %} neon-intro-item--flip{% endif %}">
+        <div class="neon-intro-item__media">
+          {% if intro.image_url %}
+            <img src="{{ intro.image_url }}" alt="{{ intro.title }}">
+          {% else %}
+            <div class="neon-intro-item__placeholder">
+              <i class="fas fa-rocket"></i>
+            </div>
+          {% endif %}
+        </div>
+        <div class="neon-intro-item__content">
+          <h3 class="neon-intro-item__title">{{ intro.title }}</h3>
+          <div class="neon-intro-item__body">{{ intro.body|raw }}</div>
+          {% if intro.link_url %}
+            <a href="{{ intro.link_url }}" class="neon-btn neon-btn--ghost">
+              {{ intro.link_title|default('Learn More'|t) }} <i class="fas fa-arrow-right"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     7. BUNDLES / POWER STACKS
+  ══════════════════════════════════════════════════ #}
+  {% if (homepage_sections.bundles ?? true) and course_bundles %}
+  <section class="neon-section neon-shell">
+    <div class="neon-section__head neon-section__head--center">
+      <span class="neon-kicker"><i class="fas fa-layer-group"></i> {{ 'Bundles'|t }}</span>
+      <h2 class="neon-section__title">{{ homepage_settings.bundles_section_title }}</h2>
+      <p class="neon-section__subtitle">{{ homepage_settings.bundles_section_subtitle }}</p>
+    </div>
+    <div class="neon-bundle-grid">
+      {% for bundle in course_bundles|slice(0, 4) %}
+      <a href="{{ bundle.url }}" class="neon-bundle-card">
+        <div class="neon-bundle-card__icon">
+          <i class="fas fa-cubes"></i>
+        </div>
+        <h3 class="neon-bundle-card__title">{{ bundle.name }}</h3>
+        {% if bundle.description %}
+          <p class="neon-bundle-card__desc">{{ bundle.description|striptags|slice(0, 90) }}…</p>
+        {% endif %}
+        <span class="neon-bundle-card__cta">{{ 'View Stack'|t }} <i class="fas fa-arrow-right"></i></span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     8. TESTIMONIALS
+  ══════════════════════════════════════════════════ #}
+  {% if (homepage_sections.testimonials ?? true) and testimonials %}
+  <section class="neon-section neon-section--surface neon-shell">
+    <div class="neon-section__head neon-section__head--center">
+      <span class="neon-kicker"><i class="fas fa-comments"></i> {{ 'Reviews'|t }}</span>
+      <h2 class="neon-section__title">{{ homepage_settings.testimonials_section_title }}</h2>
+      <p class="neon-section__subtitle">{{ homepage_settings.testimonials_section_subtitle }}</p>
+    </div>
+    <div class="neon-testimonial-grid">
+      {% for item in testimonials|slice(0, 3) %}
+      <div class="neon-testimonial-card">
+        <div class="neon-testimonial-card__quote">
+          <i class="fas fa-quote-left neon-testimonial-card__icon"></i>
+          <p>{{ item.testimonial }}</p>
+        </div>
+        <div class="neon-testimonial-card__author">
+          {% if item.avatar_url %}
+            <img src="{{ item.avatar_url }}" alt="{{ item.author_name }}" class="neon-testimonial-card__avatar">
+          {% else %}
+            <div class="neon-testimonial-card__avatar-placeholder">
+              <i class="fas fa-user"></i>
+            </div>
+          {% endif %}
+          <div>
+            <strong class="neon-testimonial-card__name">{{ item.author_name }}</strong>
+            {% if item.author_role %}
+              <span class="neon-testimonial-card__role">{{ item.author_role }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     9. TRAINING PROCESS — 2-col with panel
+  ══════════════════════════════════════════════════ #}
+  {% if homepage_sections.training_process ?? true %}
+  <section class="neon-section neon-shell">
+    <div class="neon-section__head neon-section__head--center">
+      <span class="neon-kicker"><i class="fas fa-sitemap"></i> {{ 'Process'|t }}</span>
+      <h2 class="neon-section__title">{{ homepage_settings.training_process_section_title }}</h2>
+      <p class="neon-section__subtitle">{{ homepage_settings.training_process_section_subtitle }}</p>
+    </div>
+    <div class="neon-process-layout">
+      <div class="neon-process-steps">
+        {% set steps = [
+          { num: '01', title: homepage_settings.training_process_step_1_title, desc: homepage_settings.training_process_step_1_description },
+          { num: '02', title: homepage_settings.training_process_step_2_title, desc: homepage_settings.training_process_step_2_description },
+          { num: '03', title: homepage_settings.training_process_step_3_title, desc: homepage_settings.training_process_step_3_description },
+          { num: '04', title: homepage_settings.training_process_step_4_title, desc: homepage_settings.training_process_step_4_description },
+        ] %}
+        {% for step in steps %}
+        <div class="neon-step">
+          <span class="neon-step__num">{{ step.num }}</span>
+          <div class="neon-step__content">
+            <h3 class="neon-step__title">{{ step.title }}</h3>
+            <p class="neon-step__desc">{{ step.desc }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="neon-process-panel">
+        <h3 class="neon-process-panel__title">{{ homepage_settings.training_process_panel_title }}</h3>
+        <p class="neon-process-panel__subtitle">{{ homepage_settings.training_process_panel_subtitle }}</p>
+        <ul class="neon-feature-list">
+          {% set features = [
+            homepage_settings.training_process_feature_1,
+            homepage_settings.training_process_feature_2,
+            homepage_settings.training_process_feature_3,
+            homepage_settings.training_process_feature_4,
+            homepage_settings.training_process_feature_5,
+            homepage_settings.training_process_feature_6,
+          ] %}
+          {% for feat in features %}
+          <li class="neon-feature-item">
+            <i class="fas fa-check-circle"></i>
+            <span>{{ feat }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+        <a href="{{ path('lms_course.catalog') }}" class="neon-btn neon-btn--primary">
+          {{ homepage_settings.training_process_panel_cta_text }}
+        </a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     10. LATEST NEWS / BROADCAST FEED
+  ══════════════════════════════════════════════════ #}
+  {% if (homepage_sections.news ?? true) and news_items %}
+  <section class="neon-section neon-section--surface neon-shell">
+    <div class="neon-section__head neon-section__head--split">
+      <div>
+        <span class="neon-kicker"><i class="fas fa-rss"></i> {{ 'Updates'|t }}</span>
+        <h2 class="neon-section__title">{{ homepage_settings.news_section_title }}</h2>
+        <p class="neon-section__subtitle">{{ homepage_settings.news_section_subtitle }}</p>
+      </div>
+      <a href="{{ path('view.frontpage.page_1') }}" class="neon-link">
+        {{ homepage_settings.news_section_link_text }} <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+    <div class="neon-news-grid">
+      {% for item in news_items|slice(0, 3) %}
+      <article class="neon-news-card">
+        {% if item.image_url %}
+        <a href="{{ item.url }}" class="neon-news-card__thumb-wrap">
+          <img src="{{ item.image_url }}" alt="{{ item.title }}" class="neon-news-card__thumb">
+        </a>
+        {% endif %}
+        <div class="neon-news-card__body">
+          {% if item.date %}
+            <time class="neon-news-card__date">{{ item.date }}</time>
+          {% endif %}
+          <h3 class="neon-news-card__title">
+            <a href="{{ item.url }}">{{ item.title }}</a>
+          </h3>
+          {% if item.summary %}
+            <p class="neon-news-card__summary">{{ item.summary|striptags|slice(0, 110) }}…</p>
+          {% endif %}
+          <a href="{{ item.url }}" class="neon-link neon-link--sm">
+            {{ 'Read More'|t }} <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     11. MEMBERSHIP / PRICING
+  ══════════════════════════════════════════════════ #}
+  {% if (homepage_sections.membership ?? true) and membership_plans %}
+  <section class="neon-section neon-shell">
+    <div class="neon-section__head neon-section__head--center">
+      <span class="neon-kicker"><i class="fas fa-signal"></i> {{ 'Plans'|t }}</span>
+      <h2 class="neon-section__title">{{ homepage_settings.membership_section_title }}</h2>
+      <p class="neon-section__subtitle">{{ homepage_settings.membership_section_subtitle }}</p>
+    </div>
+    <div class="neon-plan-grid">
+      {% for plan in membership_plans %}
+      <div class="neon-plan-card{% if plan.is_recommended ?? false %} neon-plan-card--featured{% endif %}">
+        {% if plan.is_recommended ?? false %}
+          <span class="neon-plan-card__badge">
+            <i class="fas fa-bolt"></i>
+            {{ homepage_settings.membership_recommended_badge_text }}
+          </span>
+        {% endif %}
+        <h3 class="neon-plan-card__name">{{ plan.name }}</h3>
+        <div class="neon-plan-card__price">
+          {% if plan.price_display %}
+            <span class="neon-plan-card__amount">{{ plan.price_display }}</span>
+          {% endif %}
+          {% if plan.period %}
+            <span class="neon-plan-card__period">/ {{ plan.period }}</span>
+          {% endif %}
+        </div>
+        {% if plan.features %}
+        <ul class="neon-plan-card__features">
+          {% for feature in plan.features %}
+            <li><i class="fas fa-check"></i> {{ feature }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        <a href="{{ plan.url }}" class="neon-btn neon-btn--block{% if plan.is_recommended ?? false %} neon-btn--primary{% else %} neon-btn--outline{% endif %}">
+          {% if plan.is_free ?? false %}
+            {{ homepage_settings.membership_free_cta_text }}
+          {% elseif plan.is_recommended ?? false %}
+            {{ homepage_settings.membership_recommended_cta_text }}
+          {% else %}
+            {{ homepage_settings.membership_paid_cta_text }}
+          {% endif %}
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     12. FAQ ACCORDION
+  ══════════════════════════════════════════════════ #}
+  {% if (homepage_sections.faq ?? true) and faqs %}
+  <section class="neon-section neon-section--surface neon-shell">
+    <div class="neon-section__head neon-section__head--center">
+      <span class="neon-kicker"><i class="fas fa-terminal"></i> {{ 'FAQ'|t }}</span>
+      <h2 class="neon-section__title">{{ homepage_settings.faq_section_title }}</h2>
+      <p class="neon-section__subtitle">{{ homepage_settings.faq_section_subtitle }}</p>
+    </div>
+    <div class="neon-faq-list" id="neonFaqAccordion">
+      {% for faq in faqs %}
+      <div class="neon-faq-item">
+        <button class="neon-faq-item__question" type="button"
+          data-bs-toggle="collapse" data-bs-target="#neonFaq{{ loop.index }}"
+          aria-expanded="{{ loop.first ? 'true' : 'false' }}"
+          aria-controls="neonFaq{{ loop.index }}">
+          <span>{{ faq.question }}</span>
+          <i class="fas fa-chevron-down neon-faq-item__icon"></i>
+        </button>
+        <div id="neonFaq{{ loop.index }}" class="neon-faq-item__answer collapse{% if loop.first %} show{% endif %}" data-bs-parent="#neonFaqAccordion">
+          <div class="neon-faq-item__body">{{ faq.answer|raw }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     13. CTA BANNER — full power, final call
+  ══════════════════════════════════════════════════ #}
+  <section class="neon-cta-banner neon-breakout">
+    <div class="neon-shell neon-cta-banner__content">
+      <h2 class="neon-cta-banner__title">{{ homepage_settings.cta_banner_title }}</h2>
+      <p class="neon-cta-banner__desc">{{ homepage_settings.cta_banner_description }}</p>
+      <div class="neon-cta-banner__actions">
+        {% if not logged_in %}
+          <a href="{{ path('user.register') }}" class="neon-btn neon-btn--primary neon-btn--lg">
+            {{ homepage_settings.cta_primary_text }}
+          </a>
+        {% else %}
+          <a href="{{ path('lms_course.catalog') }}" class="neon-btn neon-btn--primary neon-btn--lg">
+            {{ homepage_settings.cta_primary_text }}
+          </a>
+        {% endif %}
+        <a href="{{ path('lms_course.catalog') }}" class="neon-btn neon-btn--ghost neon-btn--lg">
+          {{ homepage_settings.cta_secondary_text }}
+        </a>
+      </div>
+    </div>
+    <div class="neon-cta-banner__grid-lines" aria-hidden="true"></div>
+  </section>
+
+</div>{# .neon-home #}

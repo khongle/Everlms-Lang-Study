@@ -1,0 +1,1502 @@
+body.layout-medical {
+  --medical-bg: #ffffff;
+  --medical-surface: #ffffff;
+  --medical-surface-alt: rgba(246, 252, 255, 0.92);
+  --medical-border: rgba(0, 119, 182, 0.22);
+  --medical-border-soft: rgba(0, 0, 0, 0.08);
+
+  --medical-violet: #0077b6;
+  --medical-pink: #0096c7;
+  --medical-orange: #48cae4;
+  --medical-cyan: #00b4d8;
+
+  --medical-text: #12354a;
+  --medical-text-soft: #476273;
+  --medical-text-muted: #6f8796;
+  --medical-heading: #0f2c3d;
+
+  --medical-radius: 12px;
+  --medical-radius-sm: 10px;
+  --medical-shadow: 0 12px 28px rgba(0, 119, 182, 0.1);
+
+  --medical-font-display: 'Inter', system-ui, sans-serif;
+  --medical-font-body: 'Inter', system-ui, sans-serif;
+
+  background: var(--medical-bg);
+  color: var(--medical-text);
+  font-family: var(--medical-font-body);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+body.layout-medical .medical-shell {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+body.layout-medical.is-front-page .lms-page__content {
+  max-width: 100%;
+  padding: 0;
+}
+
+body.layout-medical .medical-shell--full {
+  max-width: 1520px;
+  padding-left: clamp(20px, 2.2vw, 34px);
+  padding-right: clamp(20px, 2.2vw, 34px);
+}
+
+body.layout-medical.is-front-page .medical-home > .medical-section.medical-shell,
+body.layout-medical.is-front-page .medical-home > .medical-cta .medical-shell {
+  max-width: 1520px;
+  padding-left: clamp(20px, 2.2vw, 34px);
+  padding-right: clamp(20px, 2.2vw, 34px);
+}
+
+body.layout-medical .medical-breakout {
+  width: 100%;
+}
+
+body.layout-medical .medical-home {
+  display: flex;
+  flex-direction: column;
+}
+
+body.layout-medical .medical-section {
+  padding: 64px 0;
+}
+
+body.layout-medical .medical-home > .medical-section:first-of-type {
+  padding-top: 0;
+}
+
+body.layout-medical .medical-home > .medical-section:first-of-type .medical-section__head {
+  margin-bottom: 14px;
+}
+
+body.layout-medical .medical-section--surface {
+  background: linear-gradient(180deg, rgba(0, 150, 199, 0.08) 0%, rgba(0, 119, 182, 0.04) 100%);
+}
+
+body.layout-medical h1,
+body.layout-medical h2,
+body.layout-medical h3,
+body.layout-medical h4 {
+  font-family: var(--medical-font-display);
+  color: var(--medical-heading);
+  line-height: 1.2;
+}
+
+body.layout-medical .medical-eyebrow,
+body.layout-medical .medical-kicker {
+  display: inline-block;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--medical-violet);
+}
+
+body.layout-medical .medical-section__title {
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  margin-bottom: 12px;
+}
+
+body.layout-medical .medical-section__subtitle {
+  color: var(--medical-text-soft) !important;
+  max-width: 650px;
+  margin: 0;
+}
+
+body.layout-medical .medical-section__lead {
+  color: var(--medical-text-soft) !important;
+}
+
+body.layout-medical .medical-section__head {
+  margin-bottom: 36px;
+}
+
+body.layout-medical .medical-section__head--center {
+  text-align: center;
+}
+
+body.layout-medical .medical-section__head--center .medical-section__subtitle {
+  margin: 0 auto;
+}
+
+body.layout-medical .medical-section__head--split {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+body.layout-medical .medical-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  padding: 10px 22px;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+body.layout-medical .medical-btn--primary {
+  color: #fff;
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 52%, var(--medical-orange) 100%);
+  box-shadow: 0 10px 22px rgba(0, 119, 182, 0.22);
+}
+
+body.layout-medical .medical-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(0, 119, 182, 0.32);
+}
+
+body.layout-medical .medical-btn--ghost {
+  color: var(--medical-violet);
+  border-color: rgba(0, 119, 182, 0.3);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+body.layout-medical .medical-btn--ghost:hover {
+  background: rgba(0, 119, 182, 0.06);
+}
+
+body.layout-medical .medical-btn--sm {
+  padding: 6px 12px;
+  font-size: 0.72rem;
+}
+
+body.layout-medical .medical-btn--block {
+  width: 100%;
+}
+
+body.layout-medical .medical-link {
+  color: var(--medical-violet);
+  text-decoration: none;
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+body.layout-medical .medical-link:hover {
+  color: var(--medical-pink);
+}
+
+body.layout-medical .medical-hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--medical-border-soft);
+}
+
+body.layout-medical .medical-hero__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(900px 480px at 85% 0%, rgba(0, 180, 216, 0.15), transparent 65%),
+    radial-gradient(860px 460px at 10% -10%, rgba(0, 119, 182, 0.1), transparent 64%),
+    linear-gradient(180deg, #ffffff 0%, #f0f8ff 100%);
+}
+
+body.layout-medical .medical-hero__frame {
+  position: relative;
+  z-index: 1;
+}
+
+body.layout-medical .medical-carousel__item {
+  position: relative;
+  min-height: 470px;
+}
+
+body.layout-medical .medical-carousel__image {
+  position: absolute;
+  inset: 0 0 0 50%;
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  opacity: 1;
+  filter: none;
+}
+
+body.layout-medical .medical-carousel__veil {
+  display: none;
+}
+
+body.layout-medical .medical-hero__content,
+body.layout-medical .medical-hero__fallback {
+  position: relative;
+  z-index: 2;
+  padding-top: 88px;
+  padding-bottom: 72px;
+}
+
+body.layout-medical .medical-carousel__item > .medical-shell.medical-hero__content {
+  width: 50%;
+  max-width: 50%;
+  height: 100%;
+  margin: 0;
+  padding-left: clamp(24px, 3vw, 56px);
+  padding-right: clamp(24px, 3vw, 50px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #ffffff;
+  border-right: 1px solid var(--medical-border-soft);
+  border-radius: 0;
+}
+
+body.layout-medical .medical-hero__fallback {
+  max-width: 760px;
+  padding-left: 24px;
+  padding-right: 24px;
+  background: rgba(255, 255, 255, 0.86);
+  border-radius: 14px;
+}
+
+body.layout-medical .medical-hero__title {
+  font-size: clamp(2.4rem, 5.8vw, 4.6rem);
+  margin-bottom: 18px;
+}
+
+body.layout-medical .medical-hero__subtitle {
+  color: var(--medical-text-soft);
+  font-size: 1.08rem;
+  margin-bottom: 32px;
+}
+
+body.layout-medical .medical-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+body.layout-medical .medical-carousel__indicators {
+  bottom: 18px;
+}
+
+body.layout-medical .medical-carousel__indicator {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 119, 182, 0.4);
+  background: rgba(0, 119, 182, 0.18);
+}
+
+body.layout-medical .medical-carousel__indicator.active {
+  background: var(--medical-violet);
+  border-color: var(--medical-violet);
+}
+
+body.layout-medical .medical-stats {
+  display: none;
+  padding: 28px 0;
+  border-top: 1px solid rgba(0, 119, 182, 0.14);
+  border-bottom: 1px solid rgba(0, 119, 182, 0.14);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+body.layout-medical .medical-stats__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  text-align: center;
+}
+
+body.layout-medical .medical-stat__value {
+  display: block;
+  font-size: clamp(2rem, 3.8vw, 3rem);
+  font-weight: 700;
+  background: linear-gradient(120deg, var(--medical-violet), var(--medical-pink), var(--medical-orange));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+body.layout-medical .medical-stat__label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--medical-text-muted);
+}
+
+body.layout-medical .medical-progress-grid,
+body.layout-medical .medical-course-grid,
+body.layout-medical .medical-news-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+body.layout-medical .medical-shell--full .medical-course-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+body.layout-medical .medical-progress-card,
+body.layout-medical .medical-course-card,
+body.layout-medical .medical-news-card,
+body.layout-medical .medical-testimonial-card,
+body.layout-medical .medical-plan-card,
+body.layout-medical .medical-bundle-card,
+body.layout-medical .medical-category-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--medical-surface-alt);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--medical-border-soft);
+  border-radius: var(--medical-radius);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+body.layout-medical .medical-progress-card:hover,
+body.layout-medical .medical-course-card:hover,
+body.layout-medical .medical-news-card:hover,
+body.layout-medical .medical-testimonial-card:hover,
+body.layout-medical .medical-plan-card:hover,
+body.layout-medical .medical-bundle-card:hover,
+body.layout-medical .medical-category-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--medical-border);
+  box-shadow: var(--medical-shadow);
+}
+
+body.layout-medical .medical-progress-card__thumb,
+body.layout-medical .medical-course-card__thumb-wrap {
+  aspect-ratio: 16 / 9;
+  background: #e1f2fc;
+}
+
+body.layout-medical .medical-progress-card__thumb img,
+body.layout-medical .medical-course-card__thumb,
+body.layout-medical .medical-news-card__thumb,
+body.layout-medical .medical-intro-item__media img,
+body.layout-medical .medical-category-card__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body.layout-medical .medical-progress-card__placeholder,
+body.layout-medical .medical-course-card__thumb-placeholder,
+body.layout-medical .medical-intro-item__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--medical-violet);
+  opacity: 0.65;
+}
+
+body.layout-medical .medical-progress-card__body,
+body.layout-medical .medical-course-card__body,
+body.layout-medical .medical-news-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 18px;
+}
+
+body.layout-medical .medical-progress-card__title,
+body.layout-medical .medical-course-card__title,
+body.layout-medical .medical-news-card__title,
+body.layout-medical .medical-bundle-card__title,
+body.layout-medical .medical-plan-card__title {
+  font-size: 1.12rem;
+  margin-bottom: 8px;
+}
+
+body.layout-medical .medical-progress-card__title a,
+body.layout-medical .medical-course-card__title a,
+body.layout-medical .medical-news-card__title a {
+  color: var(--medical-heading);
+  text-decoration: none;
+}
+
+body.layout-medical .medical-progress-card__title a:hover,
+body.layout-medical .medical-course-card__title a:hover,
+body.layout-medical .medical-news-card__title a:hover {
+  color: var(--medical-violet);
+}
+
+body.layout-medical .medical-progress {
+  height: 4px;
+  border-radius: 8px;
+  background: #c9e8f7;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+body.layout-medical .medical-progress__fill {
+  width: var(--progress, 0%);
+  height: 100%;
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 60%, var(--medical-orange) 100%);
+}
+
+body.layout-medical .medical-progress-card__meta,
+body.layout-medical .medical-course-card__instructor,
+body.layout-medical .medical-news-card__summary,
+body.layout-medical .medical-news-card__date,
+body.layout-medical .medical-bundle-card__desc,
+body.layout-medical .medical-intro-item__body,
+body.layout-medical .medical-step__desc,
+body.layout-medical .medical-testimonial-card__author span,
+body.layout-medical .medical-section__subtitle {
+  color: var(--medical-text-soft);
+}
+
+body.layout-medical .medical-course-card__cat {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--medical-cyan);
+}
+
+body.layout-medical .medical-course-card__footer {
+  margin-top: auto;
+  padding-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+body.layout-medical .medical-course-card__price {
+  color: var(--medical-violet);
+  font-weight: 700;
+}
+
+body.layout-medical .medical-category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+body.layout-medical .medical-category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+  padding: 20px 16px;
+}
+
+body.layout-medical .medical-category-card__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  margin: 0 auto 12px;
+  background: linear-gradient(135deg, rgba(0, 119, 182, 0.12), rgba(0, 150, 199, 0.14), rgba(72, 202, 228, 0.12));
+  border: 1px solid rgba(0, 119, 182, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--medical-violet);
+  overflow: hidden;
+}
+
+body.layout-medical .medical-category-card__name {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+body.layout-medical .medical-category-card__count {
+  font-size: 0.8rem;
+  color: var(--medical-text-muted);
+}
+
+body.layout-medical .medical-intro-list {
+  display: flex;
+  flex-direction: column;
+  gap: 54px;
+}
+
+body.layout-medical .medical-intro-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 44px;
+  align-items: center;
+}
+
+body.layout-medical .medical-intro-item--alt {
+  direction: rtl;
+}
+
+body.layout-medical .medical-intro-item--alt > * {
+  direction: ltr;
+}
+
+body.layout-medical .medical-intro-item__media {
+  border-radius: var(--medical-radius);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--medical-border-soft);
+}
+
+body.layout-medical .medical-intro-item__title {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+body.layout-medical .medical-intro-list--compact {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+body.layout-medical .medical-intro-list--compact .medical-intro-item {
+  grid-template-columns: 1fr;
+  gap: 0;
+  align-items: stretch;
+  background: #ffffff;
+  border: 1px solid var(--medical-border-soft);
+  border-radius: var(--medical-radius);
+  overflow: hidden;
+  box-shadow: 0 10px 22px rgba(0, 119, 182, 0.08);
+}
+
+body.layout-medical .medical-intro-list--compact .medical-intro-item__media {
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-bottom: 1px solid var(--medical-border-soft);
+}
+
+body.layout-medical .medical-intro-list--compact .medical-intro-item__content {
+  padding: 20px 22px 24px;
+}
+
+body.layout-medical .medical-intro-list--compact .medical-intro-item__title {
+  font-size: 1.35rem;
+  margin-bottom: 10px;
+}
+
+body.layout-medical .medical-intro-list--compact .medical-intro-item__body {
+  margin-bottom: 14px;
+}
+
+body.layout-medical .medical-bundle-grid,
+body.layout-medical .medical-testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+body.layout-medical .medical-bundle-card {
+  text-decoration: none;
+  color: inherit;
+  padding: 24px;
+}
+
+body.layout-medical .medical-bundle-card__link {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--medical-violet);
+}
+
+body.layout-medical .medical-bundle-card:hover .medical-bundle-card__link {
+  color: var(--medical-pink);
+}
+
+body.layout-medical .medical-testimonial-card {
+  padding: 24px;
+  border-top: 3px solid rgba(0, 119, 182, 0.36);
+  background: #ffffff;
+}
+
+body.layout-medical .medical-testimonial-card__quote {
+  margin: 0 0 18px;
+  color: var(--medical-text);
+  font-style: normal;
+  line-height: 1.68;
+}
+
+body.layout-medical .medical-testimonial-card__author {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+body.layout-medical .medical-testimonial-card__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(0, 119, 182, 0.2);
+  background: rgba(0, 119, 182, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--medical-violet);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+body.layout-medical .medical-testimonial-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body.layout-medical .medical-testimonial-card__author-meta {
+  min-width: 0;
+}
+
+body.layout-medical .medical-testimonial-card__author-meta strong {
+  display: block;
+  color: var(--medical-violet);
+}
+
+body.layout-medical .medical-testimonial-card__author-meta span,
+body.layout-medical .medical-testimonial-card__author-meta small {
+  display: block;
+  color: var(--medical-text-soft);
+  line-height: 1.4;
+}
+
+body.layout-medical .medical-testimonial-card__author-meta small {
+  font-size: 0.78rem;
+  color: var(--medical-text-muted);
+}
+
+body.layout-medical .medical-process-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 36px;
+}
+
+body.layout-medical .medical-process-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+body.layout-medical .medical-step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: rgba(0, 119, 182, 0.06);
+  border: 1px solid rgba(0, 119, 182, 0.18);
+  border-radius: var(--medical-radius-sm);
+  padding: 14px;
+}
+
+body.layout-medical .medical-step__num {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: linear-gradient(120deg, var(--medical-violet), var(--medical-pink));
+  flex-shrink: 0;
+}
+
+body.layout-medical .medical-step__title {
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+body.layout-medical .medical-process-panel {
+  background: linear-gradient(160deg, rgba(0, 119, 182, 0.1), rgba(72, 202, 228, 0.08));
+  border: 1px solid rgba(0, 119, 182, 0.22);
+  border-radius: var(--medical-radius);
+  padding: 26px;
+  box-shadow: var(--medical-shadow);
+}
+
+body.layout-medical .medical-process-panel__title {
+  font-size: 1.55rem;
+  margin-bottom: 8px;
+}
+
+body.layout-medical .medical-process-panel__subtitle {
+  color: var(--medical-text-soft);
+  margin-bottom: 16px;
+}
+
+body.layout-medical .medical-feature-list {
+  margin: 0 0 18px;
+  padding-left: 18px;
+  color: var(--medical-text-soft);
+}
+
+body.layout-medical .medical-feature-list li {
+  margin-bottom: 8px;
+}
+
+body.layout-medical .medical-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+body.layout-medical .medical-plan-card {
+  padding: 26px 22px;
+  position: relative;
+}
+
+body.layout-medical .medical-plan-card--recommended {
+  border-color: var(--medical-border);
+  box-shadow: var(--medical-shadow);
+}
+
+body.layout-medical .medical-plan-card__badge {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: linear-gradient(120deg, var(--medical-violet), var(--medical-pink));
+  color: #fff;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+body.layout-medical .medical-plan-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+body.layout-medical .medical-plan-card__amount {
+  font-size: 1.9rem;
+  color: var(--medical-violet);
+  font-weight: 700;
+}
+
+body.layout-medical .medical-plan-card__period {
+  color: var(--medical-text-muted);
+  font-size: 0.84rem;
+}
+
+body.layout-medical .medical-plan-card__features {
+  margin: 0 0 16px;
+  padding-left: 18px;
+  color: var(--medical-text-soft);
+}
+
+body.layout-medical .medical-plan-card__features li {
+  margin-bottom: 6px;
+}
+
+body.layout-medical .medical-faq {
+  max-width: none;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+body.layout-medical .medical-faq__item {
+  border: 1px solid var(--medical-border-soft);
+  border-radius: var(--medical-radius);
+  background: #ffffff;
+  box-shadow: 0 10px 22px rgba(0, 119, 182, 0.07);
+  overflow: hidden;
+}
+
+body.layout-medical .medical-faq__question {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: #fff;
+  color: var(--medical-heading);
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+body.layout-medical .medical-faq__question span {
+  flex: 1;
+}
+
+body.layout-medical .medical-faq__icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 119, 182, 0.1);
+  color: var(--medical-violet);
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+body.layout-medical .medical-faq__question[aria-expanded='true'] {
+  color: var(--medical-violet);
+}
+
+body.layout-medical .medical-faq__question[aria-expanded='true'] .medical-faq__icon {
+  transform: rotate(180deg);
+  background: var(--medical-violet);
+  color: #ffffff;
+}
+
+body.layout-medical .medical-faq__answer-body {
+  padding: 0 20px 18px;
+  color: var(--medical-text-soft);
+  background: #ffffff;
+  border-top: 1px solid var(--medical-border-soft);
+}
+
+body.layout-medical .medical-cta {
+  background: linear-gradient(120deg, rgba(0, 119, 182, 0.09), rgba(0, 180, 216, 0.08), rgba(72, 202, 228, 0.07));
+  padding: 84px 0;
+  border-top: 1px solid var(--medical-border-soft);
+}
+
+body.layout-medical .medical-cta__inner {
+  max-width: 1520px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 28px;
+  align-items: center;
+}
+
+body.layout-medical .medical-cta__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: clamp(320px, 30vw, 420px);
+  background: #ffffff;
+  border: 1px solid var(--medical-border-soft);
+  border-radius: var(--medical-radius);
+  padding: clamp(30px, 3vw, 42px);
+  box-shadow: 0 16px 28px rgba(0, 119, 182, 0.1);
+}
+
+body.layout-medical .medical-cta__media {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--medical-radius);
+  overflow: hidden;
+  border: 1px solid var(--medical-border-soft);
+  box-shadow: 0 16px 28px rgba(0, 119, 182, 0.1);
+  min-height: 0;
+  background: linear-gradient(135deg, rgba(0, 119, 182, 0.12), rgba(72, 202, 228, 0.16));
+}
+
+body.layout-medical .medical-cta__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body.layout-medical .medical-cta__media-fallback {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--medical-violet);
+  font-size: 3.2rem;
+}
+
+body.layout-medical .medical-cta__title {
+  font-size: clamp(2rem, 4.2vw, 3.3rem);
+  margin-bottom: 14px;
+}
+
+body.layout-medical .medical-cta__description {
+  color: var(--medical-text-soft);
+  margin-bottom: 30px;
+}
+
+body.layout-medical .medical-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+/* ============================================================
+   MEDICAL INNER PAGE HARMONIZATION
+   Scoped to medical classes to prevent cross-style bleed.
+   ============================================================ */
+body.layout-medical:not(.is-workspace) .lms-navbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--medical-border) !important;
+  box-shadow: 0 8px 18px rgba(0, 119, 182, 0.08) !important;
+}
+
+body.layout-medical:not(.is-workspace) .lms-navbar__brand,
+body.layout-medical:not(.is-workspace) .lms-navbar__brand i,
+body.layout-medical:not(.is-workspace) .lms-navbar__link,
+body.layout-medical:not(.is-workspace) .lms-navbar__icon-btn,
+body.layout-medical:not(.is-workspace) .lms-navbar__icon-btn i,
+body.layout-medical:not(.is-workspace) .lms-user-profile-link,
+body.layout-medical:not(.is-workspace) .lms-user-profile-link span,
+body.layout-medical:not(.is-workspace) .lms-user-profile-link i,
+body.layout-medical:not(.is-workspace) #lms-wishlist-icon {
+  color: var(--medical-heading) !important;
+}
+
+body.layout-medical:not(.is-workspace) .lms-navbar__link:hover,
+body.layout-medical:not(.is-workspace) .lms-navbar__link.active,
+body.layout-medical:not(.is-workspace) .lms-navbar__link--active,
+body.layout-medical:not(.is-workspace) .lms-navbar__icon-btn:hover,
+body.layout-medical:not(.is-workspace) .lms-user-profile-link:hover {
+  color: var(--medical-violet) !important;
+  background: rgba(0, 119, 182, 0.08) !important;
+}
+
+body.layout-medical:not(.is-workspace) .lms-navbar__dropdown,
+body.layout-medical:not(.is-workspace) .lms-mega-dropdown,
+body.layout-medical:not(.is-workspace) .lms-mega-dropdown--small {
+  background: #ffffff !important;
+  border: 1px solid var(--medical-border-soft) !important;
+  box-shadow: 0 14px 28px rgba(0, 119, 182, 0.14) !important;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer {
+  background: linear-gradient(180deg, #ffffff 0%, #f4fbff 100%) !important;
+  border-top: 1px solid var(--medical-border) !important;
+  padding-top: 3.3rem;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer__container {
+  max-width: 1500px;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer__grid {
+  gap: clamp(1.4rem, 2.6vw, 3rem);
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer__brand {
+  font-size: 1.55rem;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.85rem;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer,
+body.layout-medical:not(.is-workspace) .lms-footer p,
+body.layout-medical:not(.is-workspace) .lms-footer li,
+body.layout-medical:not(.is-workspace) .lms-footer a {
+  color: var(--medical-text-soft) !important;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer__brand,
+body.layout-medical:not(.is-workspace) .lms-footer__title,
+body.layout-medical:not(.is-workspace) .lms-footer h4 {
+  color: var(--medical-heading) !important;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer h4,
+body.layout-medical:not(.is-workspace) .lms-footer__title {
+  font-size: 0.94rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer ul li {
+  margin-bottom: 0.42rem;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer ul li i {
+  color: var(--medical-violet) !important;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer__bottom {
+  border-top-color: rgba(0, 119, 182, 0.2) !important;
+}
+
+body.layout-medical:not(.is-workspace) .lms-footer a:hover,
+body.layout-medical:not(.is-workspace) .lms-footer__link:hover,
+body.layout-medical:not(.is-workspace) .lms-footer__social a:hover {
+  color: var(--medical-violet) !important;
+}
+
+body.layout-medical:not(.is-workspace) #lms-back-to-top,
+body.layout-medical:not(.is-workspace) .lms-back-to-top {
+  position: fixed;
+  right: clamp(14px, 2vw, 28px) !important;
+  left: auto !important;
+  bottom: clamp(14px, 2vw, 28px) !important;
+  z-index: 1250;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #ffffff !important;
+  color: var(--medical-violet) !important;
+  border: 1px solid rgba(0, 119, 182, 0.24) !important;
+  box-shadow: 0 12px 24px rgba(0, 119, 182, 0.18) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, background 0.2s ease, color 0.2s ease !important;
+  transform: translateY(12px);
+}
+
+body.layout-medical:not(.is-workspace) #lms-back-to-top i,
+body.layout-medical:not(.is-workspace) .lms-back-to-top i {
+  font-size: 1rem;
+}
+
+body.layout-medical:not(.is-workspace) #lms-back-to-top.lms-back-to-top--visible,
+body.layout-medical:not(.is-workspace) .lms-back-to-top.lms-back-to-top--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+body.layout-medical:not(.is-workspace) #lms-back-to-top:hover,
+body.layout-medical:not(.is-workspace) .lms-back-to-top:hover {
+  transform: translateY(-4px);
+  background: var(--medical-violet) !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 32px rgba(0, 119, 182, 0.28) !important;
+}
+
+body.layout-medical:not(.is-workspace) #lms-back-to-top:focus-visible,
+body.layout-medical:not(.is-workspace) .lms-back-to-top:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.18), 0 14px 28px rgba(0, 119, 182, 0.22) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) {
+  background: #f6fcff !important;
+  color: var(--medical-text) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) h1,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) h2,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) h3,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) h4,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) h5 {
+  color: var(--medical-heading) !important;
+  font-family: var(--medical-font-display) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) p,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .text-muted,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lead {
+  color: var(--medical-text-soft) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) a {
+  color: var(--medical-violet);
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) a:hover {
+  color: var(--medical-pink);
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-toolbar,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-panel .card-glass,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-enroll-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__player,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__top-bar,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__sidebar,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__content,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__notes,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__discussion,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__summary,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-quiz__header-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-quiz__card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificates-page__summary-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-quiz-results-page__summary-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-quiz-results-board,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-quiz-result-row,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-profile__card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-profile__layout-redesign .lms-profile__header,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-profile__layout-redesign .lms-profile-info-item,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-profile__layout-redesign .lms-gamification-dashboard,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-about-hero__panel,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-about-section,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-about-banner,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-contact-hero__copy,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-contact-hero__panel,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-contact-info-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-contact-map-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-contact-action-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-catalog__sidebar,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-catalog__toolbar,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-category-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-forum-item,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-forum-post,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-forum-reply-form,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-forum-thread,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-forum-thread__main,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-pricing-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glossary-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-blog-card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .accordion-item,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-curriculum__chapter-header,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-auth__card,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form .ui-dialog-content {
+  background: #ffffff !important;
+  border: 1px solid var(--medical-border-soft) !important;
+  box-shadow: 0 12px 28px rgba(0, 119, 182, 0.08) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__main {
+  background: #f6fcff !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item {
+  color: var(--medical-text-soft) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link--active,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item.active {
+  color: var(--medical-violet) !important;
+  border-bottom-color: var(--medical-violet) !important;
+  background: rgba(0, 119, 182, 0.08) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-select,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-input,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glass-input,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-control,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-lms__input,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-text,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-email,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-url,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-number,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-search,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="text"],
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="email"],
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="password"],
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="number"],
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) select,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) textarea {
+  background: #ffffff !important;
+  color: var(--medical-text) !important;
+  border: 1px solid var(--medical-border) !important;
+  box-shadow: none !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-select:focus,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-input:focus,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-glass-input:focus,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-control:focus,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) input:focus,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) select:focus,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) textarea:focus {
+  border-color: var(--medical-violet) !important;
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.16) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) input::placeholder,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) textarea::placeholder {
+  color: var(--medical-text-muted) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .btn-lms-primary,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__notes-btn--save,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .form-submit,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) button[type="submit"],
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="submit"] {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 52%, var(--medical-orange) 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 20px rgba(0, 119, 182, 0.24) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-actions {
+  margin-top: 0.95rem !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-comments-wrapper--lesson .form-submit,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-comments-wrapper--lesson .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.62rem 1rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  line-height: 1.1;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--save {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 18px rgba(0, 119, 182, 0.2) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--delete {
+  background: #fff5f7 !important;
+  color: #b23a58 !important;
+  border-color: rgba(178, 58, 88, 0.28) !important;
+  box-shadow: none !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--delete:hover {
+  background: #ffeef2 !important;
+  color: #932744 !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .btn-lms-outline,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .medical-btn--ghost {
+  background: #ffffff !important;
+  color: var(--medical-violet) !important;
+  border: 1px solid rgba(0, 119, 182, 0.3) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-progress-bar,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .medical-progress,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .progress {
+  background: #d7ecf8 !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-progress-bar__fill,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-progress__fill,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .medical-progress__fill,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .progress-bar {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 60%, var(--medical-orange) 100%) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-checkout__payment input[type="radio"] {
+  accent-color: var(--medical-violet);
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notifications-wrapper {
+  background: #ffffff !important;
+  border: 1px solid var(--medical-border-soft) !important;
+  box-shadow: 0 12px 28px rgba(0, 119, 182, 0.08) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-btn-settings,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-filters .lms-filter-btn {
+  background: #ffffff !important;
+  color: var(--medical-text-soft) !important;
+  border-color: var(--medical-border) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-filters .lms-filter-btn.active {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-item {
+  background: #ffffff !important;
+  border: 1px solid var(--medical-border-soft) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-item--unread {
+  border-left-color: var(--medical-violet) !important;
+  background: linear-gradient(135deg, rgba(0, 119, 182, 0.07) 0%, #ffffff 70%) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notification-item__icon {
+  background: rgba(0, 119, 182, 0.12) !important;
+  color: var(--medical-violet) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notifications-wrapper .pager__item a {
+  background: #ffffff !important;
+  border-color: var(--medical-border) !important;
+  color: var(--medical-text-soft) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notifications-wrapper .pager__item.is-active a,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-notifications-wrapper .pager__item a:hover {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form .ui-dialog-titlebar {
+  background: #f4fbff !important;
+  border-bottom: 1px solid var(--medical-border-soft) !important;
+  color: var(--medical-heading) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form .ui-dialog-titlebar-close::before {
+  color: var(--medical-text-soft) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form input,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form select,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form textarea {
+  background: #ffffff !important;
+  color: var(--medical-text) !important;
+  border: 1px solid var(--medical-border) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form .form-submit,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui-dialog.lms-theme-dark-form .button {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+@media (max-width: 1024px) {
+  body.layout-medical .medical-process-layout {
+    grid-template-columns: 1fr;
+  }
+
+  body.layout-medical .medical-shell--full .medical-course-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  body.layout-medical .medical-category-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  body.layout-medical .medical-intro-list--compact {
+    grid-template-columns: 1fr;
+  }
+
+  body.layout-medical .medical-cta__inner {
+    grid-template-columns: 1fr;
+  }
+
+  body.layout-medical .medical-intro-item,
+  body.layout-medical .medical-intro-item--alt {
+    grid-template-columns: 1fr;
+    direction: ltr;
+  }
+}
+
+@media (max-width: 991px) {
+  body.layout-medical .medical-carousel__item {
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body.layout-medical .medical-carousel__image {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    object-position: center;
+    opacity: 1;
+  }
+
+  body.layout-medical .medical-carousel__veil {
+    display: none;
+  }
+
+  body.layout-medical .medical-carousel__item > .medical-shell.medical-hero__content {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 44px 22px 28px;
+    background: #ffffff;
+    border-right: 0;
+    border-bottom: 1px solid var(--medical-border-soft);
+    border-radius: 0;
+  }
+
+  body.layout-medical .medical-hero__title {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  body.layout-medical .medical-progress-grid,
+  body.layout-medical .medical-course-grid,
+  body.layout-medical .medical-news-grid,
+  body.layout-medical .medical-testimonial-grid,
+  body.layout-medical .medical-bundle-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  body.layout-medical .medical-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.layout-medical .medical-faq {
+    grid-template-columns: 1fr;
+  }
+
+  body.layout-medical .medical-stats__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  body.layout-medical .medical-section {
+    padding: 52px 0;
+  }
+
+  body.layout-medical .medical-shell--full {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  body.layout-medical .medical-hero__content,
+  body.layout-medical .medical-hero__fallback {
+    padding-top: 72px;
+    padding-bottom: 66px;
+  }
+
+  body.layout-medical .medical-progress-grid,
+  body.layout-medical .medical-course-grid,
+  body.layout-medical .medical-news-grid,
+  body.layout-medical .medical-category-grid,
+  body.layout-medical .medical-testimonial-grid,
+  body.layout-medical .medical-bundle-grid,
+  body.layout-medical .medical-plan-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.layout-medical .medical-section__head--split {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  body.layout-medical .medical-cta__content {
+    padding: 26px 20px;
+  }
+
+  body.layout-medical .medical-cta__actions {
+    justify-content: flex-start;
+  }
+
+  body.layout-medical .medical-cta__actions .medical-btn {
+    width: 100%;
+  }
+
+  body.layout-medical .medical-cta__media,
+  body.layout-medical .medical-cta__media-fallback {
+    min-height: 0;
+  }
+}

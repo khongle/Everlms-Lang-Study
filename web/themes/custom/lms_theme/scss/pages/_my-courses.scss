@@ -1,0 +1,76 @@
+.lms-my-courses-page__hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+    gap: $spacer-xl;
+    align-items: end;
+    margin-bottom: $spacer-xl;
+
+    @media (max-width: $breakpoint-lg) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.lms-my-courses-page__hero-copy {
+    max-width: 36rem;
+}
+
+.lms-my-courses-page__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    margin-bottom: $spacer-md;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    background: rgba($color-primary, 0.12);
+    border: 1px solid rgba($color-primary, 0.22);
+    color: rgba($color-text-primary, 0.78);
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.lms-my-courses-page__title {
+    margin: 0 0 $spacer-sm;
+    font-size: clamp(2.1rem, 3.4vw, 3rem);
+}
+
+.lms-my-courses-page__subtitle {
+    margin: 0;
+    color: $color-text-secondary;
+    font-size: 1rem;
+}
+
+.lms-my-courses-page__summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $spacer-md;
+
+    @media (max-width: $breakpoint-sm) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.lms-my-courses-page__summary-card {
+    @include glass-card;
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-xs;
+    padding: $spacer-lg;
+    background: rgba(13, 17, 23, 0.74);
+    box-shadow: $shadow-md;
+}
+
+.lms-my-courses-page__summary-value {
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: $font-weight-extrabold;
+    color: $color-text-primary;
+    line-height: 1;
+}
+
+.lms-my-courses-page__summary-label {
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}

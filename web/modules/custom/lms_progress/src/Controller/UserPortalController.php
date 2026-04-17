@@ -54,18 +54,15 @@ final class UserPortalController extends ControllerBase {
     $enrolled_courses = [];
     $in_progress = 0;
     $completed = 0;
+    $not_started = 0;
     foreach ($enrollments as $enrollment) {
       $course = $enrollment->get('field_course')->entity;
       if (!$course) {
         continue;
       }
       $status = $enrollment->get('field_status')->value;
-      if ($status === 'completed') {
-        $completed++;
-      }
-      else {
-        $in_progress++;
-      }
+      $course_lesson_ids = [];
+
       // Determine continue URL
       $continue_url = \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $course->id()])->toString();
       if (!$course->get('field_chapters')->isEmpty()) {
@@ -168,7 +165,8 @@ final class UserPortalController extends ControllerBase {
       $accurate_progress = 0;
       if ($status === 'completed') {
         $accurate_progress = 100;
-      } elseif (!empty($course_lesson_ids)) {
+      }
+      elseif (!empty($course_lesson_ids)) {
          $completed_progress_count = $this->entityTypeManager->getStorage('lms_user_lesson')
            ->getQuery()
            ->condition('uid', $uid)
@@ -180,10 +178,24 @@ final class UserPortalController extends ControllerBase {
          $accurate_progress = floor(($completed_progress_count / count($course_lesson_ids)) * 100);
       }
 
+      $course_state = 'completed';
+      if ($status === 'completed') {
+        $completed++;
+      }
+      elseif ($accurate_progress > 0) {
+        $course_state = 'in_progress';
+        $in_progress++;
+      }
+      else {
+        $course_state = 'not_started';
+        $not_started++;
+      }
+
       $enrolled_courses[] = [
         'course' => $course,
+        'title' => $course->label(),
         'progress' => (float) $accurate_progress,
-        'status' => ($status === 'completed') ? 'completed' : 'in_progress',
+        'status' => $course_state,
         'enrolled_at' => $enrollment->get('field_enrolled_at')->value,
         'url' => $continue_url,
         'thumbnail_url' => $thumbnail_url,
@@ -207,6 +219,12 @@ final class UserPortalController extends ControllerBase {
         'completed' => $completed,
         'certificates' => $cert_count,
       ],
+      '#course_summary' => [
+        'all' => count($enrolled_courses),
+        'in_progress' => $in_progress,
+        'completed' => $completed,
+        'not_started' => $not_started,
+      ],
       '#recent_courses' => $enrolled_courses,
     ];
   }
@@ -228,6 +246,9 @@ final class UserPortalController extends ControllerBase {
       : [];
 
     $courses = [];
+    $in_progress = 0;
+    $completed = 0;
+    $not_started = 0;
     foreach ($enrollments as $enrollment) {
       $course = $enrollment->get('field_course')->entity;
       $status = $enrollment->hasField('field_status') && !$enrollment->get('field_status')->isEmpty() 
@@ -236,6 +257,8 @@ final class UserPortalController extends ControllerBase {
       if (!$course) {
         continue;
       }
+      $course_lesson_ids = [];
+
       // Determine continue URL
       $continue_url = \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $course->id()])->toString();
       if (!$course->get('field_chapters')->isEmpty()) {
@@ -338,7 +361,8 @@ final class UserPortalController extends ControllerBase {
       $accurate_progress = 0;
       if ($status === 'completed') {
         $accurate_progress = 100;
-      } elseif (!empty($course_lesson_ids)) {
+      }
+      elseif (!empty($course_lesson_ids)) {
          $completed_progress_count = $this->entityTypeManager->getStorage('lms_user_lesson')
            ->getQuery()
            ->condition('uid', $uid)
@@ -350,11 +374,25 @@ final class UserPortalController extends ControllerBase {
          $accurate_progress = floor(($completed_progress_count / count($course_lesson_ids)) * 100);
       }
 
+      $course_state = 'completed';
+      if ($status === 'completed') {
+        $completed++;
+      }
+      elseif ($accurate_progress > 0) {
+        $course_state = 'in_progress';
+        $in_progress++;
+      }
+      else {
+        $course_state = 'not_started';
+        $not_started++;
+      }
+
       $courses[] = [
         'id' => $course->id(),
         'name' => $course->label(),
+        'title' => $course->label(),
         'progress' => (float) $accurate_progress,
-        'status' => ($status === 'completed') ? 'completed' : 'in_progress',
+        'status' => $course_state,
         'url' => $continue_url,
         'thumbnail_url' => $thumbnail_url,
         'category' => $category_name,
@@ -364,6 +402,12 @@ final class UserPortalController extends ControllerBase {
     return [
       '#theme' => 'lms_my_courses',
       '#courses' => $courses,
+      '#summary' => [
+        'all' => count($courses),
+        'in_progress' => $in_progress,
+        'completed' => $completed,
+        'not_started' => $not_started,
+      ],
     ];
   }
 
@@ -595,12 +639,18 @@ final class UserPortalController extends ControllerBase {
       : [];
 
     $certs = [];
+    $template_names = [];
     foreach ($certificates as $cert) {
       $template = $cert->get('field_template')->entity;
       $course = $cert->get('field_course')->entity;
+      $template_name = $template?->label() ?? '';
+      if ($template_name !== '') {
+        $template_names[$template_name] = TRUE;
+      }
+
       $certs[] = [
         'id' => $cert->id(),
-        'template_name' => $template?->label() ?? '',
+        'template_name' => $template_name,
         'course_name' => $course?->label() ?? '',
         'certificate_number' => $cert->get('field_certificate_number')->value,
         'issued_at' => $cert->get('field_issued_at')->value,
@@ -611,6 +661,11 @@ final class UserPortalController extends ControllerBase {
     return [
       '#theme' => 'lms_my_certificates',
       '#certificates' => $certs,
+      '#summary' => [
+        'total' => count($certs),
+        'templates' => count($template_names),
+        'latest_issue' => $certs[0]['issued_at'] ?? NULL,
+      ],
     ];
   }
 

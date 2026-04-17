@@ -49,20 +49,68 @@
         attach: function (context) {
             once('lms-tabs', '.lms-tabs', context).forEach(function (tabContainer) {
                 const links = tabContainer.querySelectorAll('.lms-tabs__link');
-                const panels = document.querySelectorAll('.lms-tab-panel');
+                const panelMap = new Map();
+                links.forEach(function (link) {
+                    const hash = link.getAttribute('href');
+                    if (!hash || hash.charAt(0) !== '#') {
+                        return;
+                    }
+
+                    const panel = document.querySelector(hash);
+                    if (panel) {
+                        panelMap.set(hash, panel);
+                    }
+                });
+
+                const panels = Array.from(panelMap.values());
+                if (!links.length || !panels.length) {
+                    return;
+                }
+
+                const activeSeed = tabContainer.querySelector('.lms-tabs__link--active') || links[0];
+                const inactiveSeed = Array.from(links).find(link => !link.classList.contains('lms-tabs__link--active')) || activeSeed;
+                const activeSeedStyles = activeSeed ? window.getComputedStyle(activeSeed) : null;
+                const inactiveSeedStyles = inactiveSeed ? window.getComputedStyle(inactiveSeed) : activeSeedStyles;
+                const tabStateStyles = {
+                    activeColor: activeSeedStyles ? activeSeedStyles.color : '',
+                    activeBorderColor: activeSeedStyles ? activeSeedStyles.borderBottomColor : '',
+                    activeBorderWidth: activeSeedStyles ? activeSeedStyles.borderBottomWidth : '2px',
+                    activeFontWeight: activeSeedStyles ? activeSeedStyles.fontWeight : '600',
+                    inactiveColor: inactiveSeedStyles ? inactiveSeedStyles.color : '',
+                    inactiveFontWeight: inactiveSeedStyles ? inactiveSeedStyles.fontWeight : '500'
+                };
+
+                function syncTabLinkStyles(activeLink) {
+                    links.forEach(function (link) {
+                        const isActive = link === activeLink;
+                        link.style.color = isActive ? tabStateStyles.activeColor : tabStateStyles.inactiveColor;
+                        link.style.borderBottomStyle = 'solid';
+                        link.style.borderBottomWidth = tabStateStyles.activeBorderWidth;
+                        link.style.borderBottomColor = isActive ? tabStateStyles.activeBorderColor : 'transparent';
+                        link.style.fontWeight = isActive ? tabStateStyles.activeFontWeight : tabStateStyles.inactiveFontWeight;
+                    });
+                }
 
                 function activateTab(hash) {
                     if (!hash) return false;
                     
                     const targetLink = tabContainer.querySelector(`a[href="${hash}"]`);
-                    const targetPanel = document.querySelector(hash);
+                    const targetPanel = panelMap.get(hash);
                     
                     if (targetLink && targetPanel) {
-                        links.forEach(l => l.classList.remove('lms-tabs__link--active'));
-                        panels.forEach(p => p.style.display = 'none');
+                        links.forEach(function (link) {
+                            const isActive = link === targetLink;
+                            link.classList.toggle('lms-tabs__link--active', isActive);
+                            link.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                        });
+                        panels.forEach(function (panel) {
+                            panel.style.display = 'none';
+                            panel.setAttribute('aria-hidden', 'true');
+                        });
                         
-                        targetLink.classList.add('lms-tabs__link--active');
+                        syncTabLinkStyles(targetLink);
                         targetPanel.style.display = 'block';
+                        targetPanel.setAttribute('aria-hidden', 'false');
                         targetPanel.style.animation = 'fadeIn 0.3s ease';
                         return true;
                     }
@@ -72,7 +120,9 @@
                 // Initial activation based on URL hash - Delayed to ensure DOM is ready
                 setTimeout(() => {
                     if (window.location.hash) {
-                        activateTab(window.location.hash);
+                        if (!activateTab(window.location.hash)) {
+                            activateTab(links[0].getAttribute('href'));
+                        }
                     } else if (links.length > 0) {
                         // Default to first tab if no hash
                         activateTab(links[0].getAttribute('href'));
@@ -88,6 +138,396 @@
                         history.pushState(null, null, hash);
                     });
                 });
+            });
+        }
+    };
+
+    /**
+     * Learning progress bars (dashboard + my-courses).
+     */
+    Drupal.behaviors.lmsLearningProgress = {
+        attach: function (context) {
+            once('lms-learning-progress', '.lms-learning-progress__fill[data-progress]', context).forEach(function (fill) {
+                var raw = parseFloat(fill.getAttribute('data-progress'));
+                var progress = Number.isFinite(raw) ? Math.max(0, Math.min(100, raw)) : 0;
+                fill.style.setProperty('--progress', progress + '%');
+            });
+
+            once('lms-lesson-progress', '.lms-progress-bar__fill[data-progress]', context).forEach(function (fill) {
+                var raw = parseFloat(fill.getAttribute('data-progress'));
+                var progress = Number.isFinite(raw) ? Math.max(0, Math.min(100, raw)) : 0;
+                fill.style.width = progress + '%';
+            });
+
+            once('lms-home-progress', '.lms-progress-fill[data-progress]', context).forEach(function (fill) {
+                var raw = parseFloat(fill.getAttribute('data-progress'));
+                var progress = Number.isFinite(raw) ? Math.max(0, Math.min(100, raw)) : 0;
+                fill.style.width = progress + '%';
+            });
+        }
+    };
+
+    /**
+     * Homepage FAQ toggles for custom skins using non-Bootstrap accordions.
+     */
+    Drupal.behaviors.lmsHomepageFaq = {
+        attach: function (context) {
+            once('lms-homepage-faq', '.layout-playful .faq-question, .layout-corporate .faq-question', context).forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var item = btn.closest('.faq-item');
+                    var scope = btn.closest('.layout-playful, .layout-corporate');
+
+                    if (!item || !scope) {
+                        return;
+                    }
+
+                    var isActive = item.classList.contains('active');
+                    scope.querySelectorAll('.faq-item').forEach(function (el) {
+                        el.classList.remove('active');
+                    });
+
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        }
+    };
+
+    /**
+     * Lesson view interactions (mark complete, notes, tabs, sidebar, SCORM API shim).
+     */
+    Drupal.behaviors.lmsLessonView = {
+        attach: function (context) {
+            once('lms-lesson-view', '.lms-learn[data-course-id][data-lesson-id]', context).forEach(function (container) {
+                var courseId = container.getAttribute('data-course-id');
+                var lessonId = container.getAttribute('data-lesson-id');
+                var lessonType = container.getAttribute('data-lesson-type') || '';
+                var myCoursesUrl = container.getAttribute('data-my-courses-url') || '/my-courses';
+
+                if (lessonType === 'scorm') {
+                    if (typeof window.API === 'undefined') {
+                        window.API = {
+                            LMSInitialize: function () { return 'true'; },
+                            LMSFinish: function () { return 'true'; },
+                            LMSGetValue: function () { return ''; },
+                            LMSSetValue: function () { return 'true'; },
+                            LMSCommit: function () { return 'true'; },
+                            LMSGetLastError: function () { return '0'; },
+                            LMSGetErrorString: function () { return 'No error'; },
+                            LMSGetDiagnostic: function () { return 'No error'; }
+                        };
+                    }
+                    if (typeof window.API_1484_11 === 'undefined') {
+                        window.API_1484_11 = {
+                            Initialize: function () { return 'true'; },
+                            Terminate: function () { return 'true'; },
+                            GetValue: function () { return ''; },
+                            SetValue: function () { return 'true'; },
+                            Commit: function () { return 'true'; },
+                            GetLastError: function () { return '0'; },
+                            GetErrorString: function () { return 'No error'; },
+                            GetDiagnostic: function () { return 'No error'; }
+                        };
+                    }
+                }
+
+                var markCompleteBtn = container.querySelector('#lms-mark-complete');
+                if (markCompleteBtn) {
+                    markCompleteBtn.addEventListener('click', async function () {
+                        var originalText = markCompleteBtn.innerHTML;
+                        markCompleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + Drupal.t('Processing...');
+                        markCompleteBtn.disabled = true;
+
+                        try {
+                            var response = await fetch('/api/lms/progress/mark-complete', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    course_id: courseId,
+                                    lesson_id: lessonId
+                                })
+                            });
+
+                            var data = {};
+                            try {
+                                data = await response.json();
+                            } catch (jsonErr) {
+                                data = {};
+                            }
+
+                            if (response.ok && data.success) {
+                                markCompleteBtn.innerHTML = '<i class="fas fa-check-double"></i> ' + Drupal.t('Completed!');
+                                markCompleteBtn.classList.add('is-completed');
+
+                                if (data.next_lesson_url) {
+                                    setTimeout(function () {
+                                        window.location.href = data.next_lesson_url;
+                                    }, 1000);
+                                } else if (data.course_completed) {
+                                    setTimeout(function () {
+                                        window.alert(Drupal.t('Congratulations! You have completed the course!'));
+                                        window.location.href = myCoursesUrl;
+                                    }, 1000);
+                                }
+                                return;
+                            }
+
+                            var errorMsg = data && data.error ? data.error : Drupal.t('Unable to complete this lesson.');
+                            markCompleteBtn.innerHTML = originalText;
+                            markCompleteBtn.disabled = false;
+                            window.alert(Drupal.t('Error: @message', { '@message': errorMsg }));
+                        } catch (err) {
+                            markCompleteBtn.innerHTML = originalText;
+                            markCompleteBtn.disabled = false;
+                            console.error(err);
+                        }
+                    });
+                }
+
+                var noteTextarea = container.querySelector('#lms-note-textarea');
+                var noteSaveBtn = container.querySelector('#lms-note-save-btn');
+                var noteDeleteBtn = container.querySelector('#lms-note-delete-btn');
+                var noteStatus = container.querySelector('#lms-note-status');
+
+                if (noteTextarea && noteSaveBtn && noteDeleteBtn && noteStatus) {
+                    var originalNoteText = '';
+                    var hasUnsavedChanges = false;
+
+                    var setDeleteVisible = function (visible) {
+                        noteDeleteBtn.classList.toggle('is-visible', visible);
+                    };
+
+                    var setSaveEnabled = function (enabled) {
+                        noteSaveBtn.disabled = !enabled;
+                    };
+
+                    var showStatus = function (html, tone) {
+                        noteStatus.innerHTML = html;
+                        noteStatus.classList.remove('is-muted', 'is-success', 'is-error');
+                        noteStatus.classList.add('is-visible');
+                        if (tone) {
+                            noteStatus.classList.add('is-' + tone);
+                        }
+                    };
+
+                    var hideStatus = function () {
+                        noteStatus.classList.remove('is-visible', 'is-muted', 'is-success', 'is-error');
+                    };
+
+                    window.addEventListener('beforeunload', function (e) {
+                        if (hasUnsavedChanges) {
+                            e.preventDefault();
+                            e.returnValue = '';
+                        }
+                    });
+
+                    noteTextarea.addEventListener('input', function () {
+                        hasUnsavedChanges = noteTextarea.value !== originalNoteText;
+                        setSaveEnabled(hasUnsavedChanges);
+                    });
+
+                    fetch('/api/lms/note/get?lesson_id=' + encodeURIComponent(lessonId))
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) {
+                            noteTextarea.disabled = false;
+                            noteTextarea.placeholder = Drupal.t('Type your notes here...');
+
+                            if (data && data.status === 'found') {
+                                noteTextarea.value = data.note_text || '';
+                                originalNoteText = noteTextarea.value;
+                                setDeleteVisible(true);
+                            } else {
+                                originalNoteText = '';
+                                setDeleteVisible(false);
+                            }
+
+                            hasUnsavedChanges = false;
+                            setSaveEnabled(false);
+                        })
+                        .catch(function () {
+                            noteTextarea.disabled = false;
+                            noteTextarea.placeholder = Drupal.t('Type your notes here...');
+                            setDeleteVisible(false);
+                            setSaveEnabled(false);
+                        });
+
+                    noteSaveBtn.addEventListener('click', async function () {
+                        showStatus('<i class="fas fa-spinner fa-spin"></i> ' + Drupal.t('Saving...'), 'muted');
+                        setSaveEnabled(false);
+
+                        try {
+                            var response = await fetch('/api/lms/note/save', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    course_id: courseId,
+                                    lesson_id: lessonId,
+                                    note_text: noteTextarea.value,
+                                    video_timestamp: 0
+                                })
+                            });
+
+                            if (response.ok) {
+                                showStatus('<i class="fas fa-check-circle lms-note-status-icon is-success"></i> ' + Drupal.t('Saved successfully!'), 'success');
+                                setDeleteVisible(true);
+
+                                originalNoteText = noteTextarea.value;
+                                hasUnsavedChanges = false;
+                                setSaveEnabled(false);
+
+                                setTimeout(hideStatus, 2000);
+                            } else {
+                                showStatus('<i class="fas fa-exclamation-triangle lms-note-status-icon is-error"></i> ' + Drupal.t('Error saving'), 'error');
+                                setSaveEnabled(true);
+                            }
+                        } catch (err) {
+                            showStatus('<i class="fas fa-exclamation-triangle lms-note-status-icon is-error"></i> ' + Drupal.t('Network error'), 'error');
+                            setSaveEnabled(true);
+                            console.error(err);
+                        }
+                    });
+
+                    noteDeleteBtn.addEventListener('click', async function () {
+                        if (!window.confirm(Drupal.t('Are you sure you want to delete this note?'))) {
+                            return;
+                        }
+
+                        noteDeleteBtn.disabled = true;
+                        showStatus('<i class="fas fa-spinner fa-spin"></i> ' + Drupal.t('Deleting...'), 'muted');
+
+                        try {
+                            var response = await fetch('/api/lms/note/delete', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    lesson_id: lessonId
+                                })
+                            });
+
+                            if (response.ok) {
+                                noteTextarea.value = '';
+                                originalNoteText = '';
+                                hasUnsavedChanges = false;
+
+                                setDeleteVisible(false);
+                                setSaveEnabled(false);
+                                showStatus('<i class="fas fa-trash-alt lms-note-status-icon is-error"></i> ' + Drupal.t('Deleted successfully!'), 'success');
+                                setTimeout(hideStatus, 2000);
+                            } else {
+                                showStatus('<i class="fas fa-exclamation-triangle lms-note-status-icon is-error"></i> ' + Drupal.t('Error deleting'), 'error');
+                            }
+                        } catch (err) {
+                            showStatus('<i class="fas fa-exclamation-triangle lms-note-status-icon is-error"></i> ' + Drupal.t('Network error'), 'error');
+                            console.error(err);
+                        } finally {
+                            noteDeleteBtn.disabled = false;
+                        }
+                    });
+                }
+
+                var tabItems = container.querySelectorAll('.lms-tab-item');
+                var tabPanes = container.querySelectorAll('.lms-tab-pane');
+                if (tabItems.length && tabPanes.length) {
+                    var activateLessonTab = function (tabName) {
+                        if (!tabName) {
+                            return;
+                        }
+
+                        tabItems.forEach(function (item) {
+                            var isActive = item.getAttribute('data-tab') === tabName;
+                            item.classList.toggle('active', isActive);
+                            item.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                        });
+
+                        tabPanes.forEach(function (pane) {
+                            pane.classList.remove('is-active');
+                            pane.setAttribute('aria-hidden', 'true');
+                        });
+
+                        var targetPane = container.querySelector('#tab-' + tabName);
+                        if (targetPane) {
+                            targetPane.classList.add('is-active');
+                            targetPane.setAttribute('aria-hidden', 'false');
+                        }
+                    };
+
+                    tabItems.forEach(function (tab) {
+                        tab.addEventListener('click', function () {
+                            activateLessonTab(tab.getAttribute('data-tab'));
+                        });
+                    });
+
+                    var currentTab = container.querySelector('.lms-tab-item.active');
+                    var initialTab = currentTab ? currentTab.getAttribute('data-tab') : null;
+                    if (!initialTab && tabItems[0]) {
+                        initialTab = tabItems[0].getAttribute('data-tab');
+                    }
+                    activateLessonTab(initialTab);
+                }
+
+                var sidebarToggleBtn = container.querySelector('#lms-sidebar-toggle');
+                var floatingToggleBtn = container.querySelector('#lms-floating-sidebar-toggle');
+                var readSidebarCollapsed = function () {
+                    try {
+                        return window.localStorage.getItem('lms_sidebar_collapsed') === 'true';
+                    } catch (e) {
+                        return false;
+                    }
+                };
+                var writeSidebarCollapsed = function (value) {
+                    try {
+                        window.localStorage.setItem('lms_sidebar_collapsed', value ? 'true' : 'false');
+                    } catch (e) {
+                        // Ignore localStorage access errors in restricted environments.
+                    }
+                };
+                var applySidebarIcons = function (isCollapsed) {
+                    if (sidebarToggleBtn) {
+                        var topIcon = sidebarToggleBtn.querySelector('i');
+                        if (topIcon) {
+                            topIcon.classList.toggle('fa-expand-arrows-alt', !isCollapsed);
+                            topIcon.classList.toggle('fa-compress-arrows-alt', isCollapsed);
+                        }
+                    }
+
+                    if (floatingToggleBtn) {
+                        var floatIcon = floatingToggleBtn.querySelector('i');
+                        if (floatIcon) {
+                            floatIcon.classList.toggle('fa-chevron-right', !isCollapsed);
+                            floatIcon.classList.toggle('fa-chevron-left', isCollapsed);
+                        }
+                    }
+                };
+
+                var toggleSidebar = function () {
+                    container.classList.toggle('lms-learn--sidebar-collapsed');
+                    var isCollapsed = container.classList.contains('lms-learn--sidebar-collapsed');
+                    writeSidebarCollapsed(isCollapsed);
+                    applySidebarIcons(isCollapsed);
+                };
+
+                var savedCollapsed = readSidebarCollapsed();
+                if (savedCollapsed) {
+                    container.classList.add('lms-learn--sidebar-collapsed');
+                }
+                applySidebarIcons(savedCollapsed);
+
+                if (sidebarToggleBtn) {
+                    sidebarToggleBtn.addEventListener('click', toggleSidebar);
+                }
+                if (floatingToggleBtn) {
+                    floatingToggleBtn.addEventListener('click', toggleSidebar);
+                }
             });
         }
     };
@@ -458,6 +898,40 @@
                         behavior: 'smooth'
                     });
                 });
+            });
+        }
+    };
+
+    Drupal.behaviors.lmsCourseFilters = {
+        attach: function (context) {
+            once('lms-course-filters', '[data-course-filter-root]', context).forEach(function (root) {
+                const buttons = root.querySelectorAll('[data-course-filter]');
+                const items = root.querySelectorAll('[data-course-status]');
+
+                if (!buttons.length || !items.length) {
+                    return;
+                }
+
+                function applyFilter(filterValue) {
+                    buttons.forEach(function (button) {
+                        const isActive = button.getAttribute('data-course-filter') === filterValue;
+                        button.classList.toggle('is-active', isActive);
+                        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                    });
+
+                    items.forEach(function (item) {
+                        const itemStatus = item.getAttribute('data-course-status');
+                        item.hidden = filterValue !== 'all' && itemStatus !== filterValue;
+                    });
+                }
+
+                buttons.forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        applyFilter(button.getAttribute('data-course-filter') || 'all');
+                    });
+                });
+
+                applyFilter('all');
             });
         }
     };
