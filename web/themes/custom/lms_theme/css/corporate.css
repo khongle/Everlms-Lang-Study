@@ -2,8 +2,7 @@
 
 /* Using .layout-corporate namespace to avoid style bleeding */
 
-.layout-corporate body,
-.layout-corporate html {
+body.layout-corporate {
   font-family: 'Inter', sans-serif;
   color: #1f2937;
   background: #ffffff;
@@ -35,7 +34,7 @@ body.layout-corporate.is-front-page .corporate-skin-wrapper {
 .layout-corporate .hero-corporate::after { content: ''; position: absolute; bottom: -40%; left: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(30,64,175,0.15) 0%, transparent 70%); }
 .layout-corporate .hero-corporate .container { position: relative; z-index: 1; }
 .layout-corporate .hero-label { display: inline-block; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9); padding: 6px 18px; border-radius: 20px; font-size: 13px; font-weight: 500; margin-bottom: 24px; letter-spacing: 0.3px; }
-.layout-corporate .hero-corporate h1 { font-family: 'Inter', sans-serif; font-size: 46px; font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 18px; letter-spacing: -0.5px; }
+.layout-corporate .hero-corporate h1 { font-family: 'Inter', sans-serif; font-size: 40px; font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 18px; letter-spacing: -0.5px; }
 .layout-corporate .hero-sub { font-family: 'Inter', sans-serif; font-size: 18px; color: rgba(255,255,255,0.75); max-width: 640px; margin: 0 auto 40px; line-height: 1.7; }
 .layout-corporate .hero-stats { display: flex; justify-content: center; gap: 48px; margin-bottom: 40px; }
 .layout-corporate .hero-stat-value { font-size: 36px; font-weight: 800; color: #fff; }
@@ -72,11 +71,16 @@ body.layout-corporate.is-front-page .corporate-skin-wrapper {
 
 /* Dynamic Carousel Professional Overlays */
 .layout-corporate .carousel-bg-wrapper { position: absolute; inset: 0; z-index: 1; }
-.layout-corporate .carousel-bg-img { width: 100%; height: 100%; background-size: cover; background-position: center; transition: transform 6s ease; transform: scale(1.05); }
-.layout-corporate .carousel-bg-img-media { width: 100%; height: 100%; object-fit: cover; transition: transform 6s ease; transform: scale(1.05); }
+/* Ken Burns: start at 1.0, zoom IN to 1.08 on active slide */
+.layout-corporate .carousel-bg-img { width: 100%; height: 100%; background-size: cover; background-position: center; transform: scale(1.0); }
+.layout-corporate .carousel-bg-img-media { width: 100%; height: 100%; object-fit: cover; transform: scale(1.0); }
 .layout-corporate .carousel-bg-img--fallback { background: linear-gradient(135deg, #1e40af 0%, #0f172a 100%); }
-.layout-corporate .active .carousel-bg-img { transform: scale(1); }
-.layout-corporate .active .carousel-bg-img-media { transform: scale(1); }
+.layout-corporate .active .carousel-bg-img { animation: corporateKenBurns 8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.layout-corporate .active .carousel-bg-img-media { animation: corporateKenBurns 8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+@keyframes corporateKenBurns {
+  from { transform: scale(1.0); }
+  to   { transform: scale(1.09); }
+}
 .layout-corporate .carousel-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,23,42,0.5) 0%, rgba(0,0,0,0) 30%); }
 .layout-corporate .corporate-hero-slide-container { min-height: 85vh; padding: 120px 24px 140px; z-index: 2; }
 
@@ -138,21 +142,21 @@ body.layout-corporate.is-front-page .corporate-skin-wrapper {
 
 
 /* Trusted By */
-.layout-corporate .trusted { padding: 48px 0; border-bottom: 1px solid #e5e7eb; background: #f9fafb; }
+.layout-corporate .trusted { padding: 48px 0; border-bottom: 1px solid #d1d5db; background: #f4f6f8; }
 .layout-corporate .trusted-label { text-align: center; font-size: 13px; color: #6b7280; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 24px; }
 .layout-corporate .trusted-logos { display: flex; justify-content: center; align-items: center; gap: 48px; flex-wrap: wrap; }
 .layout-corporate .trusted-logos span { font-size: 18px; font-weight: 700; color: #9ca3af; letter-spacing: -0.3px; }
 
 /* Section Shared */
 .layout-corporate .section { padding: 72px 0; }
-.layout-corporate .section-alt { background: #f9fafb; }
+.layout-corporate .section-alt { background: #f4f6f8; }
 .layout-corporate .section-title { font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 12px; letter-spacing: -0.3px; color: #111827; }
 .layout-corporate .section-desc { text-align: center; color: #6b7280; font-size: 16px; max-width: 600px; margin: 0 auto 48px; }
 
 /* Training Cards */
 .layout-corporate .training-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-.layout-corporate .training-card { background: #fff; border-radius: 8px; border: 1px solid #e5e7eb; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; text-decoration: none; display: block; color: inherit; }
-.layout-corporate .training-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); color: inherit; }
+.layout-corporate .training-card { background: #fff; border-radius: 8px; border: 1px solid #d1d5db; overflow: hidden; transition: box-shadow 0.2s; text-decoration: none; display: block; color: inherit; }
+.layout-corporate .training-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); color: inherit; }
 .layout-corporate .training-card-top { height: 5px; }
 .layout-corporate .training-card-top.blue { background: linear-gradient(90deg, #1e40af, #3b82f6); }
 .layout-corporate .training-card-top.green { background: linear-gradient(90deg, #059669, #34d399); }
@@ -208,8 +212,19 @@ body.layout-corporate.is-front-page .corporate-skin-wrapper {
 .layout-corporate .ntc-badge.success { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
 
 /* Steps / Capabilities */
-.layout-corporate .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center; }
-.layout-corporate .step-number { width: 48px; height: 48px; border-radius: 50%; background: #1e40af; color: #fff; font-size: 20px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.layout-corporate .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center; position: relative; }
+/* Dashed connector line between step circles */
+.layout-corporate .steps-grid::before {
+  content: '';
+  position: absolute;
+  top: 24px;
+  left: calc(12.5% + 8px);
+  right: calc(12.5% + 8px);
+  height: 2px;
+  border-top: 2px dashed #93c5fd;
+  z-index: 0;
+}
+.layout-corporate .step-number { width: 48px; height: 48px; border-radius: 50%; background: #1e40af; color: #fff; font-size: 20px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; position: relative; z-index: 1; }
 .layout-corporate .step-title { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 8px; }
 .layout-corporate .step-desc { font-size: 14px; color: #6b7280; line-height: 1.5; }
 
@@ -290,11 +305,12 @@ body.layout-corporate.is-front-page .corporate-skin-wrapper {
 .layout-corporate .testimonial-name { font-size: 16px; font-weight: 800; color: #111827; }
 .layout-corporate .testimonial-role { font-size: 13px; color: #6b7280; font-weight: 500; }
 .layout-corporate .testimonial-role--spaced { margin-bottom: 4px; }
+.layout-corporate .testimonial-company { font-size: 12px; color: #1e40af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
 .layout-corporate .testimonial-text { font-size: 15px; color: #374151; line-height: 1.8; position: relative; z-index: 1; font-style: italic; }
 
 /* Pricing */
 .layout-corporate .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.layout-corporate .pricing-card { background: #fff; border-radius: 8px; border: 1px solid #e5e7eb; padding: 36px 28px; text-align: center; position: relative; transition: box-shadow 0.2s; }
+.layout-corporate .pricing-card { background: #fff; border-radius: 8px; border: 1px solid #d1d5db; padding: 36px 28px; text-align: center; position: relative; transition: box-shadow 0.2s; }
 .layout-corporate .pricing-card.popular { border-color: #1e40af; box-shadow: 0 8px 32px rgba(30,64,175,0.12); }
 .layout-corporate .pricing-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #1e40af; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 16px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
 .layout-corporate .pricing-name { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 8px; }
@@ -455,7 +471,7 @@ body.layout-corporate.is-front-page .corporate-skin-wrapper {
    PHASE 1 — Continue Learning Section
    ========================================================= */
 .layout-corporate .corporate-continue-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.layout-corporate .corporate-continue-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+.layout-corporate .corporate-continue-card { background: #fff; border: 1px solid #d1d5db; border-radius: 12px; overflow: hidden; }
 .layout-corporate .corporate-continue-thumb img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
 .layout-corporate .corporate-continue-thumb--fallback { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, #dbeafe, #eff6ff); }
 .layout-corporate .corporate-continue-body { padding: 16px; }
@@ -472,7 +488,7 @@ body.layout-corporate.is-front-page .corporate-skin-wrapper {
 /* =========================================================
    PHASE 1 — Instructor Spotlight Section
    ========================================================= */
-.layout-corporate .corporate-instructor-section { background: #f9fafb; }
+.layout-corporate .corporate-instructor-section { background: #f4f6f8; }
 .layout-corporate .corporate-instructor-inner { display: flex; gap: 56px; align-items: center; }
 .layout-corporate .corporate-instructor-avatar-col { flex-shrink: 0; }
 .layout-corporate .corporate-instructor-img { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 4px solid #dbeafe; }
@@ -519,8 +535,9 @@ body.layout-corporate.is-front-page .navbar-brand img {
 /* Nav links */
 body.layout-corporate.is-front-page .lms-navbar__link,
 body.layout-corporate.is-front-page .navbar-nav .nav-link {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: #e2e8f0 !important;
   font-family: 'Inter', sans-serif;
+  font-weight: 500;
 }
 body.layout-corporate.is-front-page .lms-navbar__link:hover,
 body.layout-corporate.is-front-page .lms-navbar__link--active,
@@ -569,15 +586,16 @@ body.layout-corporate.is-front-page .lms-notification__badge {
    ========================================================= */
 body.layout-corporate:not(.is-workspace) .lms-footer,
 body.layout-corporate:not(.is-workspace) footer.lms-footer {
-  background: #0f172a !important;
-  color: #94a3b8;
+  background: #0c1526 !important;
+  color: #b0bfd4;
+  border-top: 3px solid #1e40af;
 }
 body.layout-corporate:not(.is-workspace) .lms-footer p,
 body.layout-corporate:not(.is-workspace) .lms-footer li,
 body.layout-corporate:not(.is-workspace) .lms-footer span,
 body.layout-corporate:not(.is-workspace) .lms-footer i,
 body.layout-corporate:not(.is-workspace) .lms-footer__description {
-  color: #94a3b8;
+  color: #b0bfd4;
 }
 body.layout-corporate:not(.is-workspace) .lms-footer h2,
 body.layout-corporate:not(.is-workspace) .lms-footer h3,
@@ -589,7 +607,7 @@ body.layout-corporate:not(.is-workspace) .lms-footer__title {
 }
 body.layout-corporate:not(.is-workspace) .lms-footer a,
 body.layout-corporate:not(.is-workspace) .lms-footer__social a {
-  color: #94a3b8;
+  color: #b0bfd4;
 }
 body.layout-corporate:not(.is-workspace) .lms-footer a:hover,
 body.layout-corporate:not(.is-workspace) .lms-footer__social a:hover {
@@ -607,7 +625,7 @@ body.layout-corporate:not(.is-workspace) .lms-footer__bottom p {
   color: #475569;
 }
 body.layout-corporate:not(.is-workspace) .lms-footer__social a {
-  color: #64748b;
+  color: #93c5fd;
 }
 body.layout-corporate:not(.is-workspace) .lms-footer__social a:hover {
   color: #ffffff;
@@ -664,11 +682,11 @@ body.layout-corporate:not(.is-workspace) .lms-back-to-top {
 /* =========================================================
    HERO REDESIGN — Clean corporate look, no glassmorphism
    ========================================================= */
-/* Lighter dual-direction gradient overlay — brighter look */
+/* Bright, vibrant overlay — natural photo tone visible */
 .layout-corporate .carousel-overlay {
   background:
-    linear-gradient(to right, rgba(10,20,40,0.38) 0%, rgba(10,20,40,0.18) 55%, rgba(10,20,40,0.02) 100%),
-    linear-gradient(to top, rgba(10,20,40,0.38) 0%, transparent 55%);
+    linear-gradient(to right, rgba(10,20,40,0.28) 0%, rgba(10,20,40,0.10) 55%, rgba(10,20,40,0.0) 100%),
+    linear-gradient(to top, rgba(10,20,40,0.30) 0%, transparent 45%);
 }
 
 /* Remove glassmorphism card hover — causes repaints & visual noise */
@@ -724,10 +742,10 @@ body.layout-corporate:not(.is-workspace) .lms-back-to-top {
 /* Hero h1 */
 .layout-corporate .hero-corporate h1,
 .layout-corporate .hero-title {
-  font-size: 52px !important;
+  font-size: 40px !important;
   font-weight: 800 !important;
   line-height: 1.12 !important;
-  letter-spacing: -0.8px !important;
+  letter-spacing: -0.5px !important;
   margin-bottom: 18px !important;
 }
 
@@ -745,7 +763,7 @@ body.layout-corporate:not(.is-workspace) .lms-back-to-top {
 }
 
 @media (max-width: 991px) {
-  .layout-corporate .hero-corporate h1, .layout-corporate .hero-title { font-size: 36px !important; }
+  .layout-corporate .hero-corporate h1, .layout-corporate .hero-title { font-size: 32px !important; }
 }
 @media (max-width: 575px) {
   .layout-corporate .hero-corporate h1, .layout-corporate .hero-title { font-size: 28px !important; }
@@ -775,7 +793,7 @@ body.layout-corporate:not(.is-workspace) .lms-back-to-top {
    FAQ — Sticky left column for visual balance
    ========================================================= */
 @media (min-width: 992px) {
-  .layout-corporate .corporate-faq-section .col-lg-5 {
+  .layout-corporate .corporate-faq-section .col-lg-4 {
     position: sticky;
     top: 28px;
   }
@@ -832,8 +850,9 @@ body.layout-corporate.layout-minimalist:not(.is-front-page):not(.is-workspace) .
 body.layout-corporate.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-header,
 body.layout-corporate.layout-minimalist:not(.is-front-page):not(.is-workspace) .navbar {
   background: #1B2A4A !important;
-  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.22) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+  border-bottom: 3px solid #2563eb !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3) !important;
 }
 body.layout-corporate.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-navbar__brand,
 body.layout-corporate.layout-minimalist:not(.is-front-page):not(.is-workspace) .navbar-brand {
@@ -845,7 +864,8 @@ body.layout-corporate.layout-minimalist:not(.is-front-page):not(.is-workspace) .
 }
 body.layout-corporate.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-navbar__link,
 body.layout-corporate.layout-minimalist:not(.is-front-page):not(.is-workspace) .navbar-nav .nav-link {
-  color: rgba(255,255,255,0.82) !important;
+  color: #d4dff0 !important;
+  font-weight: 500;
 }
 body.layout-corporate.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-navbar__link:hover,
 body.layout-corporate.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-navbar__link--active,
