@@ -257,6 +257,7 @@ body.layout-medical .medical-carousel__inner {
 
 body.layout-medical .medical-carousel__item {
   position: relative;
+  height: 560px;
   min-height: 560px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 251, 255, 0.95) 44%, rgba(236, 248, 255, 0.88) 100%);
 }
@@ -301,12 +302,14 @@ body.layout-medical .medical-hero__fallback::before {
 body.layout-medical .medical-carousel__item > .medical-shell.medical-hero__content {
   width: 51.5%;
   max-width: 51.5%;
+  height: 560px;
   min-height: 560px;
   margin: 0;
   padding: clamp(48px, 5vw, 74px) clamp(34px, 3.6vw, 64px);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow: hidden;
   background: transparent;
   border-right: 0;
   border-radius: 0;
@@ -401,6 +404,48 @@ body.layout-medical .medical-carousel__indicator.active {
   width: 54px;
   background: var(--medical-violet);
   border-color: var(--medical-violet);
+}
+
+/* Carousel prev/next controls */
+body.layout-medical .medical-carousel__control {
+  position: absolute;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 48px !important;
+  height: 48px;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 119, 182, 0.18);
+  transition: all 0.2s ease;
+  padding: 0;
+  opacity: 0.85;
+}
+body.layout-medical .medical-carousel__control--prev { left: clamp(12px, 2vw, 28px); }
+body.layout-medical .medical-carousel__control--next { right: clamp(12px, 2vw, 28px); }
+body.layout-medical .medical-carousel__control:hover {
+  background: #ffffff;
+  opacity: 1;
+  box-shadow: 0 6px 22px rgba(0, 119, 182, 0.28);
+}
+body.layout-medical .medical-carousel__control-icon {
+  color: var(--medical-violet);
+  font-size: 1rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Avatar placeholder — light style for white medical navbar */
+body.layout-medical:not(.is-workspace) .lms-user-profile-link > div {
+  background: rgba(0, 119, 182, 0.1) !important;
+  color: var(--medical-violet) !important;
+  border-color: rgba(0, 119, 182, 0.18) !important;
 }
 
 body.layout-medical .medical-stats {
@@ -843,14 +888,15 @@ body.layout-medical .medical-step {
 }
 
 body.layout-medical .medical-step__num {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   color: #fff;
   background: linear-gradient(120deg, var(--medical-violet), var(--medical-pink));
   flex-shrink: 0;
@@ -1098,9 +1144,12 @@ body.layout-medical:not(.is-workspace) .lms-navbar__icon-btn,
 body.layout-medical:not(.is-workspace) .lms-navbar__icon-btn i,
 body.layout-medical:not(.is-workspace) .lms-user-profile-link,
 body.layout-medical:not(.is-workspace) .lms-user-profile-link span,
-body.layout-medical:not(.is-workspace) .lms-user-profile-link i,
-body.layout-medical:not(.is-workspace) #lms-wishlist-icon {
+body.layout-medical:not(.is-workspace) .lms-user-profile-link i {
   color: var(--medical-heading) !important;
+}
+
+body.layout-medical:not(.is-workspace) #lms-wishlist-icon {
+  color: var(--medical-violet) !important;
 }
 
 body.layout-medical:not(.is-workspace) .lms-navbar__link:hover,
@@ -1709,4 +1758,231 @@ body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .ui
   body.layout-medical .medical-cta__media-fallback {
     min-height: 0;
   }
+}
+
+/* ============================================================
+   MEDICAL SKIN — BUG FIXES (error log 2026-04-18)
+   ============================================================ */
+
+/* G-02: Bell notification dropdown — dark skin bleed fix */
+body.layout-medical .lms-bell-dropdown {
+  background: #ffffff !important;
+  border: 1px solid var(--medical-border-soft) !important;
+  box-shadow: 0 14px 28px rgba(0, 119, 182, 0.12) !important;
+  color: var(--medical-text) !important;
+}
+body.layout-medical .lms-bell-dropdown-item__icon {
+  background: rgba(0, 119, 182, 0.1) !important;
+  color: var(--medical-violet) !important;
+}
+body.layout-medical .lms-bell-dropdown-item {
+  color: var(--medical-text) !important;
+}
+
+/* G-03: Footer — ensure white/light background (not transparent) */
+body.layout-medical .lms-footer {
+  background-color: #ffffff !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f4fbff 100%) !important;
+}
+
+/* G-04: Pagination active — medical blue (not community purple) */
+body.layout-medical .lms-pagination__item--active,
+body.layout-medical .lms-pagination__item--active a {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 100%) !important;
+  background-color: var(--medical-violet) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+body.layout-medical .lms-pagination__item a:hover {
+  border-color: var(--medical-border) !important;
+  color: var(--medical-violet) !important;
+}
+
+/* P06-01: Learn player sidebar — active lesson medical blue (not purple) */
+body.layout-medical .lms-learn__lesson-item--active {
+  background: rgba(0, 119, 182, 0.08) !important;
+  border-left-color: var(--medical-violet) !important;
+}
+body.layout-medical .lms-learn__lesson-item--active .lms-learn__lesson-link {
+  background: rgba(0, 119, 182, 0.1) !important;
+  color: var(--medical-violet) !important;
+  border-left-color: var(--medical-violet) !important;
+}
+
+/* P07-01: Login / auth page background — no purple tint */
+body.layout-medical .lms-auth__page,
+body.layout-medical .lms-auth__bg,
+body.layout-medical .lms-auth__wrapper {
+  background: linear-gradient(180deg, #f6fcff 0%, #edf6fb 100%) !important;
+}
+
+/* P10-01 / P14-01: KPI stat card icons — medical color family (not rainbow) */
+body.layout-medical .lms-kpi-card__icon--primary {
+  background: rgba(0, 119, 182, 0.12) !important;
+  color: var(--medical-violet) !important;
+}
+body.layout-medical .lms-kpi-card__icon--warning {
+  background: rgba(0, 150, 199, 0.12) !important;
+  color: var(--medical-pink) !important;
+}
+body.layout-medical .lms-kpi-card__icon--success {
+  background: rgba(0, 137, 123, 0.12) !important;
+  color: #00897b !important;
+}
+body.layout-medical .lms-kpi-card__icon--info {
+  background: rgba(72, 202, 228, 0.15) !important;
+  color: var(--medical-orange) !important;
+}
+
+/* P13-01: Pricing "MOST POPULAR" badge — medical blue (not purple gradient) */
+body.layout-medical .lms-pricing-card__badge,
+body.layout-medical [class*="lms-pricing"] [class*="badge"],
+body.layout-medical .lms-plan-badge {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 100%) !important;
+  color: #ffffff !important;
+}
+
+/* P13-02: Featured plan CTA — ensure filled (not transparent) */
+body.layout-medical .lms-pricing-card--featured .btn-lms-primary,
+body.layout-medical .lms-pricing-card--popular .btn-lms-primary,
+body.layout-medical .lms-plan-card--recommended .btn-lms-primary {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 52%, var(--medical-orange) 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 20px rgba(0, 119, 182, 0.24) !important;
+}
+
+/* P14-02: Dashboard filter tab active — medical blue (not indigo) */
+body.layout-medical .lms-learning-filters__button.is-active {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 100%) !important;
+  background-color: var(--medical-violet) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+/* P14-03: Dashboard spotlight media — medical blue (not purple gradient) */
+body.layout-medical .lms-learning-spotlight__media {
+  background-image: linear-gradient(135deg, rgba(0, 119, 182, 0.1), rgba(0, 150, 199, 0.08)) !important;
+}
+
+/* P15-01: My Courses empty state icon — medical blue (not purple) */
+body.layout-medical .lms-learning-empty__icon,
+body.layout-medical .lms-empty-state__icon {
+  color: var(--medical-violet) !important;
+  opacity: 0.75;
+}
+
+/* P17-01: Quiz result back/continue link — medical blue (not indigo) */
+body.layout-medical .lms-btn-back {
+  color: var(--medical-violet) !important;
+  border-color: rgba(0, 119, 182, 0.3) !important;
+}
+body.layout-medical .lms-btn-back:hover {
+  background: rgba(0, 119, 182, 0.06) !important;
+  color: var(--medical-pink) !important;
+}
+
+/* P25-01: About stat card labels — medical blue (not indigo) */
+body.layout-medical .lms-about-stat-card__label {
+  color: var(--medical-violet) !important;
+}
+
+/* P25-02: About feature icons — medical blue bg (not purple gradient) */
+body.layout-medical .lms-about-feature__icon,
+body.layout-medical .lms-about-feature__icon-wrap {
+  background: rgba(0, 119, 182, 0.1) !important;
+  background-image: none !important;
+  color: var(--medical-violet) !important;
+}
+
+/* P26-01: Contact info icons — medical blue bg (not purple gradient) */
+body.layout-medical .lms-contact-info-item__icon,
+body.layout-medical .lms-contact-info-card [class*="icon"],
+body.layout-medical [class*="lms-contact"] [class*="icon-wrap"] {
+  background: rgba(0, 119, 182, 0.1) !important;
+  background-image: none !important;
+  color: var(--medical-violet) !important;
+}
+
+/* ============================================================
+   MEDICAL SKIN — NAVBAR DROPDOWN TEXT & INTERACTIVE FIXES
+   ============================================================ */
+
+/* M-NAV-01: Mega dropdown — text visible on white background */
+body.layout-medical:not(.is-workspace) .lms-mega-col-title {
+  color: var(--medical-text-muted) !important;
+}
+body.layout-medical:not(.is-workspace) .lms-mega-link {
+  color: var(--medical-text) !important;
+}
+body.layout-medical:not(.is-workspace) .lms-mega-link:hover {
+  color: var(--medical-violet) !important;
+  background: rgba(0, 119, 182, 0.06) !important;
+}
+body.layout-medical:not(.is-workspace) .lms-mega-link-logout {
+  color: #dc2626 !important;
+}
+body.layout-medical:not(.is-workspace) .lms-mega-footer {
+  background: rgba(0, 119, 182, 0.04) !important;
+  border-top-color: var(--medical-border-soft) !important;
+}
+body.layout-medical:not(.is-workspace) .lms-mega-dropdown::before {
+  border-bottom-color: rgba(0, 119, 182, 0.16) !important;
+}
+body.layout-medical:not(.is-workspace) .lms-mega-dropdown::after {
+  border-bottom-color: #ffffff !important;
+}
+body.layout-medical:not(.is-workspace) .lms-mega-divider {
+  background-color: var(--medical-border-soft) !important;
+}
+
+/* M-NAV-02: Small nav dropdown links visible on white */
+body.layout-medical:not(.is-workspace) .lms-navbar__dropdown-link {
+  color: var(--medical-text-soft) !important;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__dropdown-link:hover {
+  color: var(--medical-violet) !important;
+  background: rgba(0, 119, 182, 0.06) !important;
+}
+
+/* M-NAV-03: Exit impersonation button — readable on white navbar */
+body.layout-medical:not(.is-workspace) .lms-nav__exit-impersonation {
+  background: rgba(220, 38, 38, 0.1) !important;
+  color: #dc2626 !important;
+  border: 1px solid rgba(220, 38, 38, 0.28) !important;
+  box-shadow: none !important;
+}
+body.layout-medical:not(.is-workspace) .lms-nav__exit-impersonation:hover {
+  background: rgba(220, 38, 38, 0.18) !important;
+  color: #b91c1c !important;
+}
+
+/* M-NAV-04: Bell dropdown header and arrow — white theme */
+body.layout-medical .lms-bell-dropdown::before {
+  background-color: #ffffff !important;
+  border-top-color: var(--medical-border-soft) !important;
+  border-left-color: var(--medical-border-soft) !important;
+}
+body.layout-medical .lms-bell-dropdown__header {
+  color: var(--medical-heading) !important;
+  border-bottom-color: var(--medical-border-soft) !important;
+}
+body.layout-medical .lms-bell-dropdown-item__title {
+  color: var(--medical-text) !important;
+}
+body.layout-medical .lms-bell-dropdown-item__time {
+  color: var(--medical-text-muted) !important;
+}
+
+/* ============================================================
+   MEDICAL SKIN — LESSON DETAIL PAGE FIXES
+   ============================================================ */
+
+/* M-LESSON-01: Notes & Q&A containers — add internal padding */
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-learn__discussion {
+  padding: clamp(1rem, 2.2vw, 1.35rem) !important;
+}
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-comments-wrapper--lesson {
+  padding: clamp(0.85rem, 1.8vw, 1.15rem) !important;
 }

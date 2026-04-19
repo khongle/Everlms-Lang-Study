@@ -286,6 +286,19 @@ function lms_course_preprocess(&$variables, $hook) {
     } else {
       $variables['current_user_name'] = 'Guest';
     }
+
+    // Inject site logo/name so admin sidebar can display the same logo as the frontend.
+    if (function_exists('lms_theme_get_site_logo_url')) {
+      $variables['site_logo_url'] = lms_theme_get_site_logo_url();
+    }
+    else {
+      $logo_url = trim((string) theme_get_setting('logo.url', 'lms_theme'));
+      $variables['site_logo_url'] = $logo_url;
+    }
+    $site_config = \Drupal::config('system.site');
+    $site_name = trim((string) ($site_config->get('name') ?? ''));
+    $variables['site_name'] = $site_name ?: 'EverLMS';
+    $variables['site_logo_alt'] = trim((string) (theme_get_setting('site_logo_alt', 'lms_theme') ?: ($site_name ?: 'EverLMS')));
   }
 }
 

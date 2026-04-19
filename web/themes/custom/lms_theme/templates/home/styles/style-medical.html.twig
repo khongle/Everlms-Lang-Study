@@ -53,6 +53,16 @@
           </div>
           {% endfor %}
         </div>
+        {% if slideshows|length > 1 %}
+        <button class="carousel-control-prev medical-carousel__control medical-carousel__control--prev" type="button" data-bs-target="#medicalHeroCarousel" data-bs-slide="prev">
+          <span class="medical-carousel__control-icon"><i class="fas fa-chevron-left"></i></span>
+          <span class="visually-hidden">{{ 'Previous'|t }}</span>
+        </button>
+        <button class="carousel-control-next medical-carousel__control medical-carousel__control--next" type="button" data-bs-target="#medicalHeroCarousel" data-bs-slide="next">
+          <span class="medical-carousel__control-icon"><i class="fas fa-chevron-right"></i></span>
+          <span class="visually-hidden">{{ 'Next'|t }}</span>
+        </button>
+        {% endif %}
       </div>
       {% else %}
       <div class="medical-shell medical-hero__fallback">

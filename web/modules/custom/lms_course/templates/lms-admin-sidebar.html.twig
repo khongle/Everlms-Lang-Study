@@ -413,7 +413,12 @@
 <aside class="lms-admin__sidebar">
   <div class="lms-admin__sidebar-brand">
     <a href="{{ path('<front>') }}">
-      <i class="fas fa-graduation-cap"></i> {{ 'EverLMS'|t }}
+      {% if site_logo_url %}
+        <img src="{{ site_logo_url }}" alt="{{ site_logo_alt }}" style="height: 64px; width: auto; max-width: 190px; object-fit: contain;">
+      {% else %}
+        <i class="fas fa-graduation-cap" style="font-size: 1.75rem;"></i>
+        <span>{{ site_name }}</span>
+      {% endif %}
     </a>
   </div>
   

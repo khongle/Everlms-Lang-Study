@@ -113,7 +113,7 @@
             </div>
             
             {% if is_impersonating %}
-              <a href="{{ switch_back_url }}" style="background: linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.25) 100%); color: #fecaca; border: 1px solid rgba(239,68,68,0.4); padding: 0.4rem 1.15rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.025em; display: flex; align-items: center; gap: 0.5rem; text-decoration: none; transition: all 0.25s ease; box-shadow: 0 0 12px rgba(239,68,68,0.1), inset 0 1px 0 rgba(255,255,255,0.1);" onmouseover="this.style.background='linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(220,38,38,0.35) 100%)'; this.style.boxShadow='0 0 20px rgba(239,68,68,0.2), inset 0 1px 0 rgba(255,255,255,0.2)'; this.style.color='#fff';" onmouseout="this.style.background='linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.25) 100%)'; this.style.boxShadow='0 0 12px rgba(239,68,68,0.1), inset 0 1px 0 rgba(255,255,255,0.1)'; this.style.color='#fecaca';">
+              <a href="{{ switch_back_url }}" class="lms-nav__exit-impersonation" style="background: linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.25) 100%); color: #fecaca; border: 1px solid rgba(239,68,68,0.4); padding: 0.4rem 1.15rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.025em; display: flex; align-items: center; gap: 0.5rem; text-decoration: none; transition: all 0.25s ease; box-shadow: 0 0 12px rgba(239,68,68,0.1), inset 0 1px 0 rgba(255,255,255,0.1);" onmouseover="this.style.background='linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(220,38,38,0.35) 100%)'; this.style.boxShadow='0 0 20px rgba(239,68,68,0.2), inset 0 1px 0 rgba(255,255,255,0.2)'; this.style.color='#fff';" onmouseout="this.style.background='linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.25) 100%)'; this.style.boxShadow='0 0 12px rgba(239,68,68,0.1), inset 0 1px 0 rgba(255,255,255,0.1)'; this.style.color='#fecaca';">
                 <i class="fas fa-user-secret" style="font-size: 0.875rem;"></i> {{ 'Exit Impersonation'|t }}
               </a>
             {% elseif is_manager %}
@@ -192,9 +192,6 @@
         <div class="lms-footer__col">
           <h4>{{ 'Contact Info'|t }}</h4>
           <ul>
-            {% if footer_address %}
-              <li><i class="fas fa-map-marker-alt"></i> {{ footer_address|nl2br }}</li>
-            {% endif %}
             {% if footer_phone %}
               <li><i class="fas fa-phone"></i> <a href="tel:{{ footer_phone|replace({' ': ''}) }}">{{ footer_phone }}</a></li>
             {% endif %}
