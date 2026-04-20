@@ -40,6 +40,19 @@ function lms_theme_get_site_logo_url(): string {
 /**
  * Returns shared theme variables used by page and homepage templates.
  */
+function lms_theme_get_footer_copyright_markup(): \Drupal\Component\Render\MarkupInterface {
+  $footer_copyright = trim((string) (theme_get_setting('footer_copyright', 'lms_theme') ?: "Copyright © 2025 EverLMS. Product by WeebPal (since 2012). All rights reserved.\nAuthored by Hai Nguyen, Maintained by the Phat Le & WeebPal Team, Developed by Claude."));
+  if ($footer_copyright === '') {
+    return \Drupal\Core\Render\Markup::create('');
+  }
+
+  $footer_copyright = nl2br($footer_copyright);
+  return \Drupal\Core\Render\Markup::create(\Drupal\Component\Utility\Xss::filterAdmin($footer_copyright));
+}
+
+/**
+ * Returns shared theme variables used by page and homepage templates.
+ */
 function lms_theme_get_shared_site_variables(): array {
   $site_config = \Drupal::config('system.site');
   $site_name = trim((string) ($site_config->get('name') ?? ''));
@@ -55,7 +68,7 @@ function lms_theme_get_shared_site_variables(): array {
     'footer_phone' => trim((string) (theme_get_setting('footer_phone', 'lms_theme') ?: '+01 00 200 0000')),
     'footer_email' => trim((string) (theme_get_setting('footer_email', 'lms_theme') ?: ($site_config->get('mail') ?? 'everlms@gmail.com'))),
     'footer_working_hours' => trim((string) theme_get_setting('footer_working_hours', 'lms_theme')),
-    'footer_copyright' => trim((string) (theme_get_setting('footer_copyright', 'lms_theme') ?: "Copyright © 2025 EverLMS. Product by WeebPal (since 2012). All rights reserved.\nAuthored by Hai Nguyen, Maintained by the Phat Le & WeebPal Team, Developed by Claude.")),
+    'footer_copyright' => lms_theme_get_footer_copyright_markup(),
     'footer_map_embed_url' => trim((string) theme_get_setting('footer_map_embed_url', 'lms_theme')),
     'app_store_url' => trim((string) theme_get_setting('app_store_url', 'lms_theme')),
     'google_play_url' => trim((string) theme_get_setting('google_play_url', 'lms_theme')),

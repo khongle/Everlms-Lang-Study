@@ -350,7 +350,7 @@ function lms_theme_form_system_theme_settings_alter(&$form, FormStateInterface $
   $form['lms_theme_settings']['footer_contact']['footer_copyright'] = [
     '#type' => 'textarea',
     '#title' => t('Footer copyright text'),
-    '#description' => t('Supports line breaks.'),
+    '#description' => t('Supports line breaks and safe HTML such as @a, @strong, and @br. Unsafe tags are removed.', ['@a' => '<a>', '@strong' => '<strong>', '@br' => '<br>']),
     '#default_value' => theme_get_setting('footer_copyright') ?? "Copyright © 2025 EverLMS. Product by WeebPal (since 2012). All rights reserved.\nAuthored by Hai Nguyen, Maintained by the Phat Le & WeebPal Team, Developed by Claude.",
     '#rows' => 3,
   ];
