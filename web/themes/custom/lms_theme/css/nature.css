@@ -144,7 +144,7 @@ body.layout-nature .nature-btn {
   align-items: center;
   gap: .4rem;
   padding: .75rem 1.75rem;
-  border-radius: var(--nature-radius);
+  border-radius: 50px; /* H01 — pill per spec (was: var(--nature-radius) 14px) */
   font-family: 'Nunito Sans', sans-serif;
   font-size: .9rem;
   font-weight: 700;
@@ -180,14 +180,7 @@ body.layout-nature .nature-hero {
 }
 
 body.layout-nature .nature-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(74vw 44vw at 12% 92%, rgba(244, 222, 170, 0.24), transparent 62%),
-    radial-gradient(66vw 40vw at 88% 8%, rgba(58, 107, 53, 0.26), transparent 63%);
-  pointer-events: none;
-  z-index: 1;
+  content: none; /* removed: was dimming the banner image */
 }
 
 body.layout-nature .nature-hero__frame {
@@ -200,27 +193,11 @@ body.layout-nature .nature-hero__frame {
 }
 
 body.layout-nature .nature-hero__frame::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(124deg, rgba(23, 41, 19, 0.56) 0%, rgba(23, 41, 19, 0.22) 42%, rgba(155, 122, 61, 0.22) 78%, rgba(240, 233, 218, 0.12) 100%),
-    radial-gradient(circle at 82% 16%, rgba(245, 231, 198, 0.35) 0%, rgba(245, 231, 198, 0) 44%);
-  pointer-events: none;
-  z-index: 1;
+  content: none; /* removed: was dimming the banner image */
 }
 
 body.layout-nature .nature-hero__frame::after {
-  content: '';
-  position: absolute;
-  inset: auto -2% -24% auto;
-  width: min(42vw, 520px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(250, 244, 230, 0.42) 0%, rgba(250, 244, 230, 0) 72%);
-  filter: blur(2px);
-  pointer-events: none;
-  z-index: 2;
+  content: none; /* removed: was adding a hazy light orb over the image */
 }
 
 body.layout-nature .nature-carousel__media {
@@ -228,12 +205,7 @@ body.layout-nature .nature-carousel__media {
 }
 
 body.layout-nature .nature-carousel__media::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(0deg, rgba(16, 27, 14, 0.46) 0%, rgba(16, 27, 14, 0.14) 40%, rgba(16, 27, 14, 0) 66%);
-  pointer-events: none;
-  z-index: 1;
+  content: none; /* removed: bottom dark gradient was softening the image */
 }
 
 body.layout-nature .nature-carousel__image {
@@ -355,6 +327,46 @@ body.layout-nature .nature-carousel__indicator {
 }
 body.layout-nature .nature-carousel__indicator.active { background: var(--nature-green); }
 
+/* Carousel prev/next control buttons */
+body.layout-nature .nature-carousel__control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(35, 53, 27, 0.22);
+  color: var(--nature-green-dark);
+  opacity: 1 !important;
+  transition: background .2s, transform .2s, box-shadow .2s;
+  cursor: pointer;
+  padding: 0;
+}
+body.layout-nature .nature-carousel__control--prev { left: 1.25rem; }
+body.layout-nature .nature-carousel__control--next { right: 1.25rem; }
+body.layout-nature .nature-carousel__control:hover {
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 6px 20px rgba(35, 53, 27, 0.32);
+  transform: translateY(-50%) scale(1.08);
+}
+body.layout-nature .nature-carousel__control-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--nature-green-dark);
+  line-height: 1;
+}
+/* Hide default Bootstrap carousel control icons */.carousel-control-prev-icon,
+body.layout-nature .carousel-control-prev-icon,
+body.layout-nature .carousel-control-next-icon { display: none !important; }
+
 /* =========================================================
    STATS BAR
    ========================================================= */
@@ -470,7 +482,7 @@ body.layout-nature .nature-course-grid {
   gap: 1.5rem;
 }
 body.layout-nature .nature-course-card {
-  background: var(--nature-surface);
+  background: #faf9f6; /* M01 — warm cream per spec (was: --nature-surface: #fff) */
   border-radius: var(--nature-radius);
   border: 1px solid var(--nature-border);
   overflow: hidden;
@@ -510,7 +522,7 @@ body.layout-nature .nature-course-card__topline {
   margin-bottom: .5rem;
 }
 body.layout-nature .nature-course-card__cat { font-size: .75rem; color: var(--nature-muted); text-transform: uppercase; letter-spacing: .06em; }
-body.layout-nature .nature-course-card__price { font-weight: 700; color: var(--nature-green); }
+body.layout-nature .nature-course-card__price { font-weight: 700; color: #c4956a; /* M02 — terracotta per spec */ }
 body.layout-nature .nature-course-card__title { font-family: 'Lora', serif; font-size: 1rem; font-weight: 600; color: var(--nature-text); margin: 0 0 .5rem; }
 body.layout-nature .nature-course-card__title a { color: inherit; text-decoration: none; }
 body.layout-nature .nature-course-card__title a:hover { color: var(--nature-green); }
@@ -870,6 +882,7 @@ body.layout-nature .nature-category-card__media--icon img {
   width: clamp(110px, 8vw, 132px);
   height: clamp(110px, 8vw, 132px);
   object-fit: contain;
+  mix-blend-mode: multiply;
 }
 
 body.layout-nature .nature-course-card--visual {
@@ -1205,17 +1218,31 @@ body.layout-nature:not(.is-workspace) .lms-navbar__link--active {
   color: #3a6b35 !important;
 }
 
+/* C01 — Footer: warm beige per spec (was: dark forest-green gradient) */
 body.layout-nature:not(.is-workspace) .lms-footer {
-  background: linear-gradient(160deg, #22321d 0%, #2d3f27 100%) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #f2efe9 !important;
+  border-top: 1px solid rgba(45, 82, 41, 0.2) !important;
 }
 
 body.layout-nature:not(.is-workspace) .lms-footer,
 body.layout-nature:not(.is-workspace) .lms-footer p,
 body.layout-nature:not(.is-workspace) .lms-footer li,
-body.layout-nature:not(.is-workspace) .lms-footer a,
 body.layout-nature:not(.is-workspace) .lms-footer h4 {
-  color: #eaf2e5 !important;
+  color: #2d3a2d !important;
+}
+
+body.layout-nature:not(.is-workspace) .lms-footer a {
+  color: #3a6b35 !important;
+}
+
+body.layout-nature:not(.is-workspace) .lms-footer a:hover {
+  color: #2d5229 !important;
+  text-decoration: underline;
+}
+
+body.layout-nature:not(.is-workspace) .lms-footer__bottom {
+  background: transparent !important;
+  border-top: 1px solid rgba(45, 82, 41, 0.12) !important;
 }
 
 body.layout-nature:not(.is-workspace) .lms-back-to-top {
@@ -1399,6 +1426,7 @@ body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms
 body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-auth button[type=submit],
 body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-auth .form-submit {
   background: linear-gradient(135deg, #3a6b35 0%, #587f45 58%, #9b7a3d 100%) !important;
+  border-radius: 50px !important; /* H02 — pill per spec (was: 6px) */
   box-shadow: 0 10px 20px rgba(45, 82, 41, 0.24) !important;
 }
 
@@ -1767,7 +1795,7 @@ body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms
 
 body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tabs__link,
 body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item {
-  color: #665a45 !important;
+  color: #7a6e5c !important;
 }
 
 body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tabs__link--active,
@@ -1775,14 +1803,15 @@ body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms
 body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item[style*="color: #fff"] {
   color: #2f5a2d !important;
   border-bottom-color: #3a6b35 !important;
-  background: rgba(58, 107, 53, 0.1) !important;
+  background: transparent !important;
+  font-weight: 700 !important;
   box-shadow: none !important;
 }
 
 body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tabs__link:hover:not(.lms-tabs__link--active),
 body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item:hover:not(.active) {
-  color: #2d2418 !important;
-  background: #f3ede1 !important;
+  color: #3a6b35 !important;
+  background: rgba(58, 107, 53, 0.06) !important;
 }
 
 body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-panel .card-glass,
@@ -2032,4 +2061,300 @@ body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms
   body.layout-nature .nature-cta__metrics {
     grid-template-columns: 1fr;
   }
+}
+
+/* =========================================================
+   BUG FIXES — 2026-04-22
+   C01-C05, H01-H03, M01-M05
+   ========================================================= */
+
+/* C02 — Global link color: eliminate GitHub-blue (#58a6ff) leak
+   Scoped to inner pages + global content areas.
+   Navbar links, mega-dropdown links and buttons are already
+   overridden elsewhere with !important. */
+body.layout-nature:not(.is-workspace) a:not(.btn):not([class*="lms-btn"]):not([class*="nature-btn"]):not(.lms-navbar__link):not(.lms-mega-link):not(.lms-mega-link-logout):not(.nav-link):not(.lms-bell-link) {
+  color: #5a7a5a;
+}
+body.layout-nature:not(.is-workspace) a:not(.btn):not([class*="lms-btn"]):not([class*="nature-btn"]):not(.lms-navbar__link):not(.lms-mega-link):not(.lms-mega-link-logout):not(.nav-link):not(.lms-bell-link):hover {
+  color: #4a6a4a;
+}
+
+/* Override inline-style blue leak (rgb(88,166,255) / #58a6ff from GitHub dark) */
+body.layout-nature:not(.is-workspace) [style*="color: rgb(88, 166, 255)"],
+body.layout-nature:not(.is-workspace) [style*="color: #58a6ff"],
+body.layout-nature:not(.is-workspace) [style*="color:#58a6ff"] {
+  color: #5a7a5a !important;
+}
+
+/* C03 — Forum "New Topic" button: replace blue gradient with sage green */
+body.layout-nature:not(.is-workspace) .lms-forum-new-btn {
+  background: linear-gradient(135deg, #5a7a5a 0%, #4a6a4a 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 50px !important;
+}
+body.layout-nature:not(.is-workspace) .lms-forum-new-btn:hover {
+  background: linear-gradient(135deg, #4a6a4a 0%, #3a5a3a 100%) !important;
+  transform: translateY(-2px);
+}
+
+/* C04 — Pricing /pricing page: "recommended" card indigo border → sage green */
+body.layout-nature:not(.is-workspace) .lms-pricing-card--recommended {
+  border-color: #5a7a5a !important;
+  background: linear-gradient(180deg, rgba(90, 122, 90, 0.06) 0%, #faf9f6 100%) !important;
+}
+body.layout-nature:not(.is-workspace) .lms-pricing-card--recommended:hover {
+  border-color: #3a6b35 !important;
+}
+body.layout-nature:not(.is-workspace) .lms-pricing-card__badge {
+  background: linear-gradient(135deg, #5a7a5a 0%, #3a6b35 100%) !important;
+}
+/* Pricing card general bg — warm cream body */
+body.layout-nature:not(.is-workspace) .lms-pricing-card {
+  background: #faf9f6 !important;
+  border-color: rgba(45, 82, 41, 0.2) !important;
+  color: #2d3a2d !important;
+}
+body.layout-nature:not(.is-workspace) .lms-pricing-card__name {
+  color: #2d3a2d !important;
+}
+body.layout-nature:not(.is-workspace) .lms-pricing-card__amount {
+  color: #3a6b35 !important;
+}
+body.layout-nature:not(.is-workspace) .lms-pricing-card__period,
+body.layout-nature:not(.is-workspace) .lms-pricing-card__features li {
+  color: #5a4f3d !important;
+  border-bottom-color: rgba(45, 82, 41, 0.12) !important;
+}
+body.layout-nature:not(.is-workspace) .lms-pricing-card__features li i {
+  color: #3a6b35 !important;
+}
+
+/* C05 — Dashboard / My Courses: empty-state & stat icons blue → sage */
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-empty {
+  background: rgba(242, 239, 233, 0.5) !important;
+  border-color: rgba(45, 82, 41, 0.2) !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-empty i,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-empty svg {
+  color: #5a7a5a !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-empty h3 {
+  color: #2d3a2d !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-empty,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-empty p,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-empty a {
+  color: #5a7a5a !important;
+}
+/* Stat widget icons on Dashboard */
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-dashboard-page .text-primary,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-courses-page .text-primary {
+  color: #5a7a5a !important;
+}
+/* My Courses summary card values */
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-courses-page__summary-value,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-my-courses-page__summary-label {
+  color: #2d3a2d !important;
+}
+
+/* H01 — Inner-page primary/outline buttons: 50px pill radius */
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .btn-lms-primary,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-btn,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-btn--primary,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-btn--outline,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .btn-lms-outline,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .btn-primary {
+  border-radius: 50px !important;
+}
+
+/* H03 — Pricing page CTA buttons: styled pill buttons (currently plain text links) */
+body.layout-nature:not(.is-workspace) .lms-pricing-card .lms-btn--primary,
+body.layout-nature:not(.is-workspace) .lms-pricing-card .btn-lms-primary,
+body.layout-nature:not(.is-workspace) .lms-pricing-card a.lms-btn {
+  display: inline-block !important;
+  background: linear-gradient(135deg, #5a7a5a 0%, #3a6b35 100%) !important;
+  color: #fff !important;
+  border-radius: 50px !important;
+  padding: 0.75rem 2rem !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  border: none !important;
+  text-align: center !important;
+}
+body.layout-nature:not(.is-workspace) .lms-pricing-card .lms-btn--primary:hover,
+body.layout-nature:not(.is-workspace) .lms-pricing-card a.lms-btn:hover {
+  filter: brightness(1.06) !important;
+  transform: translateY(-2px);
+}
+body.layout-nature:not(.is-workspace) .lms-pricing-card .lms-btn--outline {
+  background: transparent !important;
+  color: #3a6b35 !important;
+  border: 2px solid #5a7a5a !important;
+  border-radius: 50px !important;
+  padding: 0.75rem 2rem !important;
+  font-weight: 700 !important;
+}
+body.layout-nature:not(.is-workspace) .lms-pricing-card .lms-btn--outline:hover {
+  background: rgba(90, 122, 90, 0.1) !important;
+}
+
+/* M01 — Inner page course cards: warm cream bg */
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms--course {
+  background: #faf9f6 !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card {
+  background: #faf9f6 !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight {
+  background: #f4efe5 !important;
+}
+
+/* M03 — Checkbox & radio accent-color: sage green (was: browser-default blue) */
+body.layout-nature:not(.is-workspace) input[type="checkbox"],
+body.layout-nature:not(.is-workspace) input[type="radio"] {
+  accent-color: #5a7a5a;
+}
+
+/* M04 — Search / filter inputs: warm border (was: cool-gray #cbd5e1) */
+body.layout-nature:not(.is-workspace) input[type="search"],
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-catalog__search input,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-categories__search input,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-catalog__sidebar input {
+  border-color: #d9d4cb !important;
+}
+
+/* M05 — About / intro section cards: warm cream bg (was: pure white) */
+body.layout-nature .nature-intro-card,
+body.layout-nature .nature-path-card,
+body.layout-nature .nature-pricing-card,
+body.layout-nature .nature-study-card,
+body.layout-nature .nature-news-card,
+body.layout-nature .nature-testimonial-card {
+  background: #faf9f6;
+}
+
+/* =========================================================
+   BUG FIXES — ROUND 2 (2026-04-22)
+   Hero nav, mega-footer, card cover, footer bottom,
+   submit review text, tab active
+   ========================================================= */
+
+/* Fix 2 — Admin dropdown mega-footer strip (was: #0d1117 dark) */
+body.layout-nature:not(.is-workspace) .lms-mega-footer {
+  background: #f4eddf !important;
+  border-top: 1px solid rgba(45, 82, 41, 0.18) !important;
+}
+body.layout-nature:not(.is-workspace) .lms-mega-footer .lms-mega-link-logout {
+  color: #8b2f36 !important;
+}
+body.layout-nature:not(.is-workspace) .lms-mega-footer .lms-mega-link-logout:hover {
+  color: #71252b !important;
+}
+
+/* Fix 3 — Course card images: full-cover instead of contain+padded */
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms--course .card-lms__image img {
+  object-fit: cover !important;
+  object-position: center center !important;
+  padding: 0 !important;
+  transform: none !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms--course .card-lms__image {
+  aspect-ratio: 16 / 10 !important;
+  min-height: clamp(180px, 18vw, 280px);
+  background: linear-gradient(145deg, #ece4d6 0%, #faf6ed 100%) !important;
+  overflow: hidden;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms--course:hover .card-lms__image img {
+  transform: scale(1.04) !important;
+}
+/* Course card body: clearer typography */
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms--course .card-lms__title {
+  font-family: 'Lora', serif !important;
+  color: #2d2418 !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms--course .card-lms__price,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms--course [class*="price"] {
+  color: #c4956a !important;
+  font-weight: 700 !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms--course .card-lms__meta,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .card-lms--course .card-lms__instructor {
+  color: #6b6458 !important;
+  font-size: 0.82rem !important;
+}
+
+/* Fix 4 — Footer copyright strip: no gray/tinted box */
+body.layout-nature:not(.is-workspace) .lms-footer__bottom {
+  background: transparent !important;
+  border-top: 1px solid rgba(45, 82, 41, 0.15) !important;
+}
+body.layout-nature:not(.is-workspace) .lms-footer__bottom p,
+body.layout-nature:not(.is-workspace) .lms-footer__bottom a {
+  color: #5a4f3d !important;
+}
+body.layout-nature:not(.is-workspace) .lms-footer__bottom a:hover {
+  color: #3a6b35 !important;
+}
+
+/* Fix 5 — Submit Review button: white text on sage-green bg */
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) #reviews .form-submit,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) #reviews input[type="submit"],
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) #reviews button[type="submit"],
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-review-form .form-submit,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-review-form input[type="submit"] {
+  background: linear-gradient(135deg, #3a6b35 0%, #2d5229 100%) !important;
+  color: #fff !important;
+  border: 1px solid #284c25 !important;
+  border-radius: 50px !important;
+  padding: 0.65rem 1.75rem !important;
+  font-weight: 700 !important;
+  box-shadow: 0 8px 18px rgba(45, 82, 41, 0.24) !important;
+  cursor: pointer;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) #reviews .form-submit:hover,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) #reviews input[type="submit"]:hover,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-review-form .form-submit:hover {
+  filter: brightness(1.06) !important;
+}
+/* General form-submit on inner nature pages: white text */
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .form-submit,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="submit"],
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) button[type="submit"] {
+  color: #fff !important;
+}
+
+/* Fix 6 — Course detail tabs: cleaner active indicator */
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs {
+  background: #faf7f0 !important;
+  border-bottom: 2px solid rgba(45, 82, 41, 0.14) !important;
+  box-shadow: 0 2px 8px rgba(43, 36, 22, 0.06) !important;
+  padding: 0 clamp(1rem, 2.5vw, 2rem) !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tabs__link,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item {
+  color: #7a6e5c !important;
+  font-weight: 600 !important;
+  border-radius: 0 !important;
+  border-bottom: 3px solid transparent !important;
+  background: transparent !important;
+  padding: 0.85rem 1.1rem !important;
+  transition: color .18s, border-color .18s !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tabs__link--active,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item.active,
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item[style*="color: #fff"] {
+  color: #2f5a2d !important;
+  border-bottom: 3px solid #3a6b35 !important;
+  background: transparent !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tabs__link:hover:not(.lms-tabs__link--active),
+body.layout-nature.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item:hover:not(.active) {
+  color: #3a6b35 !important;
+  background: rgba(58, 107, 53, 0.06) !important;
+  border-bottom-color: rgba(58, 107, 53, 0.3) !important;
 }
