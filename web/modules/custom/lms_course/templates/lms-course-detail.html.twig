@@ -2,15 +2,15 @@
 {{ attach_library('lms_theme/global') }}
 
 {# Course Banner #}
-<section class="lms-course-banner" style="padding: 4rem 0; background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-bottom: 1px solid hsla(0,0%,100%,0.1); position: relative; overflow: hidden; display: flex; align-items: center;">
+<section class="lms-course-banner" style="padding: 4.5rem 0 3.75rem !important; background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%) !important; border-bottom: 1px solid #e2e8f0 !important; position: relative; overflow: hidden; display: flex; align-items: center;">
   <!-- Optional subtle background decoration -->
   <div style="position: absolute; top: -50%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(102,126,234,0.1) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; pointer-events: none;"></div>
   
   <div class="container" style="display: flex; gap: 4rem; align-items: center; position: relative; z-index: 1;">
     
     <div class="lms-course-banner__info" style="flex: 1;">
-      <div style="margin-bottom: 1.5rem;">
-        <span class="badge-lms badge-lms--primary" style="font-size: 0.85rem; padding: 0.4rem 1rem; border-radius: 2rem;">
+      <div style="margin-bottom: 1.5rem; padding-top: 0.35rem;">
+        <span class="badge-lms badge-lms--primary" style="display: inline-flex; align-items: center; min-height: 2.125rem; font-size: 0.85rem; padding: 0.4rem 1rem; border-radius: 2rem; box-shadow: 0 10px 22px rgba(79, 70, 229, 0.08);">
           {{ course.field_category.entity.name.value ?? 'Uncategorized' }}
         </span>
       </div>

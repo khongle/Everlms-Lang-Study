@@ -1,6 +1,53 @@
 {# My Quiz Results #}
 {{ attach_library('lms_theme/global') }}
 
+<style>
+  .lms-quiz-results-page .lms-quiz-result-row {
+    grid-template-columns: 3.75rem minmax(0, 1fr) auto auto;
+    gap: 1.1rem;
+    align-items: center;
+    padding: 1rem 1.15rem;
+  }
+
+  .lms-quiz-results-page .lms-quiz-result-row__icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #0369a1;
+  }
+
+  .lms-quiz-results-page .lms-quiz-result-row__content,
+  .lms-quiz-results-page .lms-quiz-result-row__score {
+    min-width: 0;
+  }
+
+  .lms-quiz-results-page .lms-quiz-result-row__title {
+    overflow-wrap: anywhere;
+  }
+
+  .lms-quiz-results-page .lms-quiz-result-row__action {
+    justify-self: end;
+    align-self: center;
+    min-height: 2.75rem;
+    padding-inline: 1.1rem;
+  }
+
+  @media (max-width: 991px) {
+    .lms-quiz-results-page .lms-quiz-result-row {
+      grid-template-columns: 1fr;
+    }
+
+    .lms-quiz-results-page .lms-quiz-result-row__action {
+      justify-self: stretch;
+      width: 100%;
+    }
+  }
+</style>
+
 <section class="lms-section lms-quiz-results-page">
   <div class="container">
     <div class="lms-quiz-results-page__hero">

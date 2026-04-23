@@ -75,3 +75,35 @@ function open_switcher_preprocess_menu(array &$variables): void {
     $variables['original_user_uid'] = NULL;
   }
 }
+
+/**
+ * Implements hook_page_attachments().
+ *
+ * Shows a one-time confirmation dialog after switching accounts instead of
+ * rendering a global status message banner.
+ */
+function open_switcher_page_attachments(array &$attachments): void {
+  $request = \Drupal::request();
+  if (!$request->hasSession()) {
+    return;
+  }
+
+  $session = $request->getSession();
+  $dialog = $session->get('open_switcher_dialog');
+  if (empty($dialog) || !is_array($dialog)) {
+    return;
+  }
+
+  $session->remove('open_switcher_dialog');
+
+  $attachments['#attached']['library'][] = 'open_switcher/impersonation_dialog';
+  $attachments['#attached']['drupalSettings']['openSwitcher']['dialog'] = [
+    'title' => (string) ($dialog['title'] ?? ''),
+    'message' => (string) ($dialog['message'] ?? ''),
+    'details' => (string) ($dialog['details'] ?? ''),
+    'confirmText' => (string) ($dialog['confirmText'] ?? 'Continue'),
+    'variant' => (string) ($dialog['variant'] ?? 'neutral'),
+  ];
+  $attachments['#cache']['max-age'] = 0;
+}
+

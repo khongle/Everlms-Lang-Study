@@ -56,14 +56,18 @@ class SwitchController extends ControllerBase {
     $session = $this->requestStack->getCurrentRequest()->getSession();
     $session->set('open_switcher_original_uid', (int) $this->currentUser()->id());
     $session->set('open_switcher_original_name', $this->currentUser()->getDisplayName());
+    $session->set('open_switcher_dialog', [
+      'title' => (string) $this->t('Impersonation active'),
+      'message' => (string) $this->t('You are now signed in as @name.', [
+        '@name' => $targetUser->getDisplayName(),
+      ]),
+      'details' => (string) $this->t('Use "Exit Impersonation" in the header when you want to return to your account.'),
+      'confirmText' => (string) $this->t('Continue'),
+      'variant' => 'success',
+    ]);
 
     // Switch the session to the target user.
     $this->switchSession((int) $targetUser->id());
-
-    $this->messenger()->addStatus($this->t('You are now impersonating <strong>@name</strong> (uid: @uid). Use "Switch Back" in the account menu to return.', [
-      '@name' => $targetUser->getDisplayName(),
-      '@uid' => $targetUser->id(),
-    ]));
 
     return new RedirectResponse(Url::fromRoute('<front>')->toString());
   }
@@ -84,13 +88,18 @@ class SwitchController extends ControllerBase {
     // Clear the switcher session data.
     $session->remove('open_switcher_original_uid');
     $session->remove('open_switcher_original_name');
+    $session->set('open_switcher_dialog', [
+      'title' => (string) $this->t('Back to your account'),
+      'message' => (string) $this->t('You are signed back in as @name.', [
+        '@name' => $originalName ?: (string) $this->t('your original account'),
+      ]),
+      'details' => '',
+      'confirmText' => (string) $this->t('Continue'),
+      'variant' => 'neutral',
+    ]);
 
     // Switch session back to original user.
     $this->switchSession($originalUid);
-
-    $this->messenger()->addStatus($this->t('Switched back to <strong>@name</strong>.', [
-      '@name' => $originalName ?: 'your original account',
-    ]));
 
     return new RedirectResponse(Url::fromRoute('<front>')->toString());
   }

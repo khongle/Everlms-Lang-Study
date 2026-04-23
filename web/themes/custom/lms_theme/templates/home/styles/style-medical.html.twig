@@ -34,7 +34,6 @@
             {% if hero_slide_image %}<img src="{{ hero_slide_image }}" alt="{{ slide.heading }}" class="medical-carousel__image">{% endif %}
             <div class="medical-carousel__veil"></div>
             <div class="medical-shell medical-hero__content">
-              <span class="medical-eyebrow">{{ site_name|default('EverLMS') }}</span>
               <h1 class="medical-hero__title">{{ slide.heading }}</h1>
               <p class="medical-hero__subtitle">{{ slide.subheading|striptags }}</p>
               <div class="medical-hero__trust" aria-label="{{ 'Training highlights'|t }}">
@@ -66,7 +65,6 @@
       </div>
       {% else %}
       <div class="medical-shell medical-hero__fallback">
-        <span class="medical-eyebrow">{{ site_name|default('EverLMS') }}</span>
         <h1 class="medical-hero__title">{{ homepage_settings.hero_fallback_heading }}</h1>
         <p class="medical-hero__subtitle">{{ homepage_settings.hero_fallback_subtext }}</p>
         <div class="medical-hero__trust" aria-label="{{ 'Training highlights'|t }}">
