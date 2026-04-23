@@ -257,8 +257,8 @@ body.layout-medical .medical-carousel__inner {
 
 body.layout-medical .medical-carousel__item {
   position: relative;
-  height: 560px;
-  min-height: 560px;
+  height: auto;
+  min-height: 620px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 251, 255, 0.95) 44%, rgba(236, 248, 255, 0.88) 100%);
 }
 
@@ -302,13 +302,13 @@ body.layout-medical .medical-hero__fallback::before {
 body.layout-medical .medical-carousel__item > .medical-shell.medical-hero__content {
   width: 51.5%;
   max-width: 51.5%;
-  height: 560px;
-  min-height: 560px;
+  height: auto;
+  min-height: 620px;
   margin: 0;
-  padding: clamp(48px, 5vw, 74px) clamp(34px, 3.6vw, 64px);
+  padding: clamp(52px, 5vw, 78px) clamp(34px, 3.6vw, 64px) clamp(112px, 11vw, 140px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   overflow: hidden;
   background: transparent;
   border-right: 0;
@@ -328,9 +328,9 @@ body.layout-medical .medical-hero__fallback::before {
 
 body.layout-medical .medical-hero__title {
   font-size: clamp(2.9rem, 5.1vw, 4.7rem);
-  line-height: 0.96;
+  line-height: 1.02;
   letter-spacing: -0.04em;
-  max-width: 11ch;
+  max-width: 13ch;
   margin-bottom: 20px;
 }
 
@@ -381,6 +381,7 @@ body.layout-medical .medical-hero__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  align-items: center;
 }
 
 body.layout-medical .medical-carousel__indicators {
@@ -451,7 +452,7 @@ body.layout-medical:not(.is-workspace) .lms-user-profile-link > div {
 body.layout-medical .medical-stats {
   display: block;
   max-width: 1680px;
-  margin: -52px auto 0;
+  margin: -32px auto 0;
   padding: 0 clamp(20px, 2.6vw, 42px) 10px;
   border: 0;
   background: transparent;
@@ -631,6 +632,41 @@ body.layout-medical .medical-course-card__footer {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+}
+
+body.layout-medical .medical-course-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+body.layout-medical .medical-course-card__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0, 119, 182, 0.06);
+  border: 1px solid rgba(0, 119, 182, 0.12);
+  color: var(--medical-text-soft);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+body.layout-medical .medical-course-card__meta i {
+  color: var(--medical-violet);
+}
+
+body.layout-medical .medical-course-card__summary {
+  margin: 0;
+  color: var(--medical-text-soft);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+body.layout-medical .medical-course-card__footer .medical-btn {
+  min-width: 88px;
 }
 
 body.layout-medical .medical-course-card__price {
@@ -1374,11 +1410,97 @@ body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lm
   color: var(--medical-text-soft) !important;
 }
 
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .container {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .container::-webkit-scrollbar {
+  display: none;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs {
+  flex-wrap: nowrap !important;
+  width: max-content;
+  min-width: 100%;
+  gap: 0.75rem !important;
+  padding: 0.55rem 0;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs li {
+  flex: 0 0 auto;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.1rem !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  white-space: nowrap;
+  margin-bottom: 0 !important;
+}
+
 body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link--active,
 body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item.active {
   color: var(--medical-violet) !important;
   border-bottom-color: var(--medical-violet) !important;
   background: rgba(0, 119, 182, 0.08) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link:hover:not(.lms-tabs__link--active) {
+  border-color: rgba(0, 119, 182, 0.14) !important;
+  background: rgba(0, 119, 182, 0.04) !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-news-list__media {
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-news-list__hover {
+  display: none !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-pricing-card .lms-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 1rem;
+  padding: 0.95rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-pricing-card .lms-btn--primary {
+  background: linear-gradient(120deg, var(--medical-violet) 0%, var(--medical-pink) 52%, var(--medical-orange) 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(0, 119, 182, 0.18);
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-pricing-card .lms-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px rgba(0, 119, 182, 0.22);
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-pricing-card .lms-btn--outline {
+  background: #ffffff;
+  color: var(--medical-violet);
+  border-color: rgba(0, 119, 182, 0.18);
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-pricing-card .lms-btn--outline:hover {
+  transform: translateY(-2px);
+  background: rgba(0, 119, 182, 0.05);
+  border-color: rgba(0, 119, 182, 0.28);
 }
 
 body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-select,

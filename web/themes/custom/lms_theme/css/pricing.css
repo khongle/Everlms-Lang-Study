@@ -127,3 +127,46 @@
   color: #8b949e;
   font-size: 1.125rem;
 }
+
+.lms-pricing-card .lms-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 1rem;
+  padding: 0.95rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.lms-pricing-card .lms-btn:hover {
+  transform: translateY(-2px);
+}
+
+.lms-pricing-card .lms-btn--primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.22);
+}
+
+.lms-pricing-card .lms-btn--primary:hover {
+  box-shadow: 0 16px 28px rgba(102, 126, 234, 0.28);
+}
+
+.lms-pricing-card .lms-btn--outline {
+  background: rgba(255, 255, 255, 0.04);
+  color: #e6edf3;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.lms-pricing-card .lms-btn--outline:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.26);
+  color: #ffffff;
+}

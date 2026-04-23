@@ -20,7 +20,7 @@
       {% set article_summary = article.body.summary|default(article.body.value|striptags|slice(0, 180)) %}
       <div class="col-md-4">
         <article class="card h-100 rounded-4 overflow-hidden lms-news-list__card">
-          <a href="{{ article_url }}" class="lms-news-list__media">
+          <a href="{{ article_url }}" class="lms-news-list__media" aria-label="{{ 'Open article'|t ~ ': ' ~ article.title.value }}">
           {% if article.field_thumb.entity %}
             <img src="{{ file_url(article.field_thumb.entity.uri.value) }}" class="card-img-top" alt="{{ article.title.value }}">
           {% else %}
@@ -28,7 +28,7 @@
               <span><i class="fas fa-image fa-3x"></i></span>
             </div>
           {% endif %}
-            <span class="lms-news-list__hover">
+            <span class="lms-news-list__hover" aria-hidden="true">
               <span class="lms-news-list__hover-label">{{ 'Open article'|t }}</span>
               <span class="lms-news-list__hover-copy">{{ article_summary|striptags|slice(0, 105) }}{% if article_summary|striptags|length > 105 %}...{% endif %}</span>
             </span>
