@@ -39,6 +39,14 @@
           </div>
           {% endfor %}
         </div>
+        {% if slideshows|length > 1 %}
+        <button class="carousel-control-prev community-carousel__control" type="button" data-bs-target="#communityHeroCarousel" data-bs-slide="prev" aria-label="{{ 'Previous slide'|t }}">
+          <span class="community-carousel__arrow-icon"><i class="fas fa-chevron-left"></i></span>
+        </button>
+        <button class="carousel-control-next community-carousel__control" type="button" data-bs-target="#communityHeroCarousel" data-bs-slide="next" aria-label="{{ 'Next slide'|t }}">
+          <span class="community-carousel__arrow-icon"><i class="fas fa-chevron-right"></i></span>
+        </button>
+        {% endif %}
       </div>
       {% else %}
       <div class="community-shell community-hero__fallback">

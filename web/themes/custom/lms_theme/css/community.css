@@ -7,7 +7,7 @@ body.layout-community:not(.is-workspace) {
 
   --community-violet: #6d5efc;
   --community-pink: #8b7bff;
-  --community-orange: #22c55e;
+  --community-orange: #f97316;
   --community-coral: #fb7185;
   --community-cyan: #14b8a6;
 
@@ -123,7 +123,7 @@ body.layout-community .community-btn {
 
 body.layout-community .community-btn--primary {
   color: #fff;
-  background: linear-gradient(120deg, var(--community-violet) 0%, var(--community-pink) 52%, var(--community-orange) 100%);
+  background: #7c3aed;
   box-shadow: 0 10px 20px rgba(124, 58, 237, 0.22);
 }
 
@@ -759,58 +759,62 @@ body.layout-community .community-cta__actions {
    ============================================================ */
 
 body.layout-community:not(.is-workspace) .lms-navbar {
-  background: linear-gradient(135deg, #2e2967 0%, #3f36a8 55%, #4a5ad9 100%) !important;
-  border-bottom: 1px solid rgba(139, 123, 255, 0.28) !important;
-  box-shadow: 0 10px 28px rgba(38, 26, 120, 0.24) !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid rgba(109, 94, 252, 0.16) !important;
+  box-shadow: 0 4px 16px rgba(109, 94, 252, 0.1) !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-navbar__brand,
-body.layout-community:not(.is-workspace) .lms-navbar__brand i,
+body.layout-community:not(.is-workspace) .lms-navbar__brand i {
+  color: #1f1a3f !important;
+}
+
 body.layout-community:not(.is-workspace) .lms-navbar__link {
-  color: #f1edff !important;
+  color: #475569 !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-navbar__link:hover,
 body.layout-community:not(.is-workspace) .lms-navbar__link--active {
-  color: #bcf7d4 !important;
+  color: #7c3aed !important;
+  background: rgba(124, 58, 237, 0.06) !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-navbar .lms-btn--primary {
-  background: linear-gradient(135deg, #6d5efc 0%, #22c55e 100%) !important;
+  background: #7c3aed !important;
   color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.22) !important;
+  border-color: transparent !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-footer {
-  background: linear-gradient(145deg, #211b4c 0%, #2f2968 55%, #3e3a86 100%) !important;
-  border-top: 1px solid rgba(167, 154, 255, 0.22) !important;
+  background: #f5f3ff !important;
+  border-top: 1px solid rgba(109, 94, 252, 0.16) !important;
   margin-top: 3rem;
 }
 
 body.layout-community:not(.is-workspace) .lms-footer__brand,
 body.layout-community:not(.is-workspace) .lms-footer h4 {
-  color: #f0ecff !important;
+  color: #1f1a3f !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-footer__description,
 body.layout-community:not(.is-workspace) .lms-footer ul li,
 body.layout-community:not(.is-workspace) .lms-footer ul li i,
 body.layout-community:not(.is-workspace) .lms-footer__bottom p {
-  color: #c8c2eb !important;
+  color: #5d5784 !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-footer a,
 body.layout-community:not(.is-workspace) .lms-footer__social a {
-  color: #ddf6e8 !important;
+  color: #7c3aed !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-footer a:hover,
 body.layout-community:not(.is-workspace) .lms-footer__social a:hover {
-  color: #ffffff !important;
+  color: #5b21b6 !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-footer__bottom {
-  border-top: 1px solid rgba(221, 246, 232, 0.2) !important;
+  border-top: 1px solid rgba(109, 94, 252, 0.16) !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-back-to-top {
@@ -821,7 +825,7 @@ body.layout-community:not(.is-workspace) .lms-back-to-top {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #6d5efc 0%, #22c55e 100%);
+  background: #7c3aed;
   color: #ffffff;
   box-shadow: 0 12px 24px rgba(57, 45, 157, 0.26);
   opacity: 0;
@@ -973,7 +977,7 @@ body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .
 body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-card__button,
 body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-quiz-result-row__action,
 body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-quiz__btn-submit {
-  background: linear-gradient(135deg, #6d5efc 0%, #22c55e 100%) !important;
+  background: #7c3aed !important;
   border-color: transparent !important;
   color: #ffffff !important;
 }
@@ -992,8 +996,8 @@ body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .
 body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs .lms-tab-item.active,
 body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs .lms-tab-item[style*="color: #fff"] {
   color: #ffffff !important;
-  background: linear-gradient(135deg, #6d5efc 0%, #22c55e 100%) !important;
-  box-shadow: 0 8px 18px rgba(77, 60, 210, 0.24) !important;
+  background: #7c3aed !important;
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.24) !important;
 }
 
 body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-mega-dropdown,
@@ -1942,7 +1946,7 @@ body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) #
 body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .form-submit,
 body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson .button,
 body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-comments-wrapper--lesson input[type="submit"] {
-  background: linear-gradient(135deg, #6d5efc 0%, #22c55e 100%) !important;
+  background: #7c3aed !important;
   color: #ffffff !important;
   border-color: transparent !important;
   box-shadow: 0 10px 20px rgba(67, 52, 175, 0.18) !important;
@@ -1964,31 +1968,31 @@ body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .
   box-shadow: none !important;
 }
 
-/* Footer text contrast in Community mode. */
+/* Footer text contrast in Community mode (light violet bg). */
 body.layout-community:not(.is-workspace) .lms-footer,
 body.layout-community:not(.is-workspace) .lms-footer p,
 body.layout-community:not(.is-workspace) .lms-footer li,
 body.layout-community:not(.is-workspace) .lms-footer span,
 body.layout-community:not(.is-workspace) .lms-footer i {
-  color: #e9e5ff !important;
+  color: #5d5784 !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-footer__brand,
 body.layout-community:not(.is-workspace) .lms-footer h4,
 body.layout-community:not(.is-workspace) .lms-footer__title {
-  color: #ffffff !important;
+  color: #1f1a3f !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-footer a,
 body.layout-community:not(.is-workspace) .lms-footer .lms-footer__link,
 body.layout-community:not(.is-workspace) .lms-footer__bottom p a {
-  color: #f4f2ff !important;
+  color: #7c3aed !important;
 }
 
 body.layout-community:not(.is-workspace) .lms-footer a:hover,
 body.layout-community:not(.is-workspace) .lms-footer .lms-footer__link:hover,
 body.layout-community:not(.is-workspace) .lms-footer__bottom p a:hover {
-  color: #b8ffe0 !important;
+  color: #5b21b6 !important;
 }
 
 @media (max-width: 767px) {
@@ -2012,6 +2016,83 @@ body.layout-community:not(.is-workspace) .lms-footer__bottom p a:hover {
    COMMUNITY — QA PATCH ROUND 3 (hero clarity + anti-jitter)
    ========================================================================== */
 
+/* ========================================================================== 
+   COMMUNITY — BUG FIX PATCH (2026-04-19)
+   BTN-01 / BTN-04: lms-btn--primary (pricing), forum new-btn → solid violet
+   P10-01: profile cover → community violet
+   FORM-01: checkbox accent-color → violet
+   ========================================================================== */
+
+/* Pricing page CTA buttons (lms-btn--primary / lms-btn--outline). */
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-btn.lms-btn--primary,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-pricing-card .lms-btn--primary {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 22px rgba(124, 58, 237, 0.22) !important;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-btn.lms-btn--primary:hover,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-pricing-card .lms-btn--primary:hover {
+  background: #6d28d9 !important;
+  color: #ffffff !important;
+}
+
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-btn.lms-btn--outline {
+  color: #7c3aed !important;
+  border-color: rgba(124, 58, 237, 0.4) !important;
+  background: transparent !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-width: 1px;
+  border-style: solid;
+}
+
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-btn.lms-btn--outline:hover {
+  background: rgba(124, 58, 237, 0.06) !important;
+}
+
+/* Forum "+ New Topic" button → solid violet. */
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-forum-new-btn {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.22) !important;
+}
+
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-forum-new-btn:hover {
+  background: #6d28d9 !important;
+  color: #ffffff !important;
+}
+
+/* Profile cover banner → community violet gradient (not dark navy). */
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-profile__cover {
+  background-color: #5b21b6 !important;
+  background-image:
+    radial-gradient(at 40% 20%, rgba(139, 123, 255, 0.55) 0px, transparent 52%),
+    radial-gradient(at 80% 0%, rgba(124, 58, 237, 0.6) 0px, transparent 52%),
+    radial-gradient(at 0% 50%, rgba(109, 94, 252, 0.45) 0px, transparent 52%) !important;
+}
+
+/* Checkboxes → violet accent (FORM-01). */
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) input[type="checkbox"] {
+  accent-color: #7c3aed;
+}
+
 /* Keep slideshow dimensions stable so slides do not jump on transition. */
 body.layout-community.is-front-page .community-carousel,
 body.layout-community.is-front-page .community-carousel .carousel-inner,
@@ -2027,9 +2108,16 @@ body.layout-community.is-front-page .community-carousel__item {
 body.layout-community.is-front-page .community-hero__content,
 body.layout-community.is-front-page .community-hero__fallback {
   height: 100%;
+  align-items: center; /* vertically center panel, not stuck to bottom */
 }
 
-/* Remove haze/cover effect to keep images sharp and unobstructed. */
+/* Remove the veil — panel card is opaque and handles readability itself.
+   Keeping any white gradient washes out the photo. */
+body.layout-community.is-front-page .community-carousel__veil {
+  background: none !important;
+}
+
+/* Sharper carousel image (no desaturation). */
 body.layout-community.is-front-page .community-carousel__image {
   opacity: 1 !important;
   filter: none !important;
@@ -2038,13 +2126,202 @@ body.layout-community.is-front-page .community-carousel__image {
   transform: translateZ(0);
 }
 
-body.layout-community.is-front-page .community-carousel__veil {
-  background: transparent !important;
-}
-
 /* Make fade transition smoother in this hero. */
 body.layout-community.is-front-page .community-carousel.carousel-fade .carousel-item {
   transition: opacity 0.7s ease-in-out;
+}
+
+/* ========================================================================== 
+   COMMUNITY — UI FIX PATCH II (2026-04-19)
+   Hero arrows · Mega-dropdown · Avatar · Footer inner-page sync
+   ========================================================================== */
+
+/* ---- 1. Carousel prev / next arrow buttons ---- */
+body.layout-community .community-carousel__control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(109, 94, 252, 0.3);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 4px 16px rgba(58, 45, 145, 0.18);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  padding: 0;
+}
+
+body.layout-community .community-carousel__control.carousel-control-prev {
+  left: clamp(14px, 2.4vw, 28px);
+}
+
+body.layout-community .community-carousel__control.carousel-control-next {
+  right: clamp(14px, 2.4vw, 28px);
+}
+
+body.layout-community .community-carousel__control:hover {
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(58, 45, 145, 0.26);
+  opacity: 1;
+  transform: translateY(-50%) scale(1.06);
+}
+
+body.layout-community .community-carousel__arrow-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7c3aed;
+  font-size: 1rem;
+}
+
+/* ---- 2. Hero panel: fully opaque, no backdrop-filter blur on image ---- */
+body.layout-community .community-hero__panel,
+body.layout-community.is-front-page .community-hero__panel {
+  background: #fafcff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ---- 3. Pricing card: recommended badge overlaps title on inner pages ---- */
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-pricing-card--recommended {
+  padding-top: 2.6rem;
+}
+
+/* ---- 4. Mega dropdown: dark logout footer → light violet ---- */
+body.layout-community:not(.is-workspace) .lms-mega-footer {
+  background: #f3f0ff !important;
+  border-top: 1px solid rgba(109, 94, 252, 0.16) !important;
+  border-bottom-left-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
+}
+
+body.layout-community:not(.is-workspace) .lms-mega-link-logout {
+  color: #dc2626 !important;
+}
+
+body.layout-community:not(.is-workspace) .lms-mega-link-logout:hover {
+  opacity: 0.8;
+}
+
+body.layout-community:not(.is-workspace) .lms-mega-col:not(:last-child) {
+  border-right: 1px solid rgba(109, 94, 252, 0.12) !important;
+}
+
+body.layout-community:not(.is-workspace) .lms-mega-col-title {
+  color: #8580a8 !important;
+}
+
+body.layout-community:not(.is-workspace) .lms-mega-divider {
+  background-color: rgba(109, 94, 252, 0.12) !important;
+}
+
+body.layout-community:not(.is-workspace) .lms-mega-dropdown::before {
+  border-bottom-color: rgba(109, 94, 252, 0.2) !important;
+}
+
+body.layout-community:not(.is-workspace) .lms-mega-dropdown::after {
+  border-bottom-color: #ffffff !important;
+}
+
+/* ---- 5. Navbar: dark avatar circle → violet · icon colors ---- */
+/* No-picture state: the avatar div has inline style dark bg → override */
+body.layout-community:not(.is-workspace) .lms-user-profile-link > div {
+  background: linear-gradient(135deg, #7c3aed 0%, #8b7bff 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(124, 58, 237, 0.3) !important;
+}
+
+/* With picture: give it a violet ring */
+body.layout-community:not(.is-workspace) .lms-user-profile-link > img {
+  border-color: rgba(124, 58, 237, 0.35) !important;
+}
+
+/* Username & chevron text color on white navbar */
+body.layout-community:not(.is-workspace) .lms-user-profile-link > span {
+  color: #475569 !important;
+}
+
+body.layout-community:not(.is-workspace) .lms-user-profile-link > i {
+  color: #8580a8 !important;
+}
+
+body.layout-community:not(.is-workspace) .lms-user-profile-link:hover {
+  background-color: rgba(124, 58, 237, 0.06) !important;
+}
+
+/* Wishlist & other icon buttons on white navbar */
+body.layout-community:not(.is-workspace) #lms-wishlist-icon {
+  color: #475569 !important;
+}
+
+body.layout-community:not(.is-workspace) .lms-navbar__icon-btn {
+  color: #475569 !important;
+}
+
+body.layout-community:not(.is-workspace) .lms-navbar__icon-btn:hover {
+  color: #7c3aed !important;
+  background: rgba(124, 58, 237, 0.08) !important;
+}
+
+/* ---- 6. Footer on inner pages: force high-specificity sync ---- */
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer {
+  background: #f5f3ff !important;
+  border-top: 1px solid rgba(109, 94, 252, 0.16) !important;
+}
+
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer__brand,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer h4,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer__title {
+  color: #1f1a3f !important;
+}
+
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer p,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer li,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer span,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer i,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer__description,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer__bottom {
+  color: #5d5784 !important;
+}
+
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer a,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer .lms-footer__link {
+  color: #7c3aed !important;
+}
+
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer a:hover,
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer .lms-footer__link:hover {
+  color: #5b21b6 !important;
+}
+
+body.layout-community.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-footer__bottom {
+  border-top: 1px solid rgba(109, 94, 252, 0.16) !important;
+}
+
+@media (max-width: 767px) {
+  body.layout-community .community-carousel__control {
+    width: 38px;
+    height: 38px;
+  }
+
+  body.layout-community .community-carousel__arrow-icon {
+    font-size: 0.85rem;
+  }
+
+  body.layout-community .community-carousel__control.carousel-control-prev {
+    left: 10px;
+  }
+
+  body.layout-community .community-carousel__control.carousel-control-next {
+    right: 10px;
+  }
 }
 
 @media (max-width: 767px) {

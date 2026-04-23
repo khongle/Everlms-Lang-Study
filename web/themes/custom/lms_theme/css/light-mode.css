@@ -2474,7 +2474,7 @@ body.layout-minimalist .lms-section__title {
    ============================================================== */
 /* Page-level background */
 body.layout-minimalist .lms-auth {
-  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f0f9ff 100%) !important;
+  background: #ffffff !important;
   min-height: 100vh !important;
 }
 
@@ -2482,7 +2482,7 @@ body.layout-minimalist .lms-auth {
 body.layout-minimalist .lms-auth__card {
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 4px 6px rgba(0,0,0,0.04) !important;
+  box-shadow: none !important;
   backdrop-filter: none !important;
 }
 
@@ -2495,7 +2495,7 @@ body.layout-minimalist .lms-auth__header p {
 }
 body.layout-minimalist .lms-auth__logo,
 body.layout-minimalist .lms-auth__logo i {
-  color: #4f46e5 !important;
+  color: #111827 !important;
 }
 
 /* Inputs */
@@ -2510,8 +2510,8 @@ body.layout-minimalist .lms-auth input[type=text]:focus,
 body.layout-minimalist .lms-auth input[type=email]:focus,
 body.layout-minimalist .lms-auth input[type=password]:focus {
   background: #ffffff !important;
-  border-color: #4f46e5 !important;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
+  border-color: #111827 !important;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1) !important;
 }
 body.layout-minimalist .lms-auth input::placeholder {
   color: #94a3b8 !important;
@@ -2527,14 +2527,16 @@ body.layout-minimalist .lms-auth label {
 body.layout-minimalist .lms-auth input[type=submit],
 body.layout-minimalist .lms-auth button[type=submit],
 body.layout-minimalist .lms-auth .form-submit {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
-  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4) !important;
+  background: #111827 !important;
+  box-shadow: none !important;
+  border-radius: 6px !important;
 }
 body.layout-minimalist .lms-auth input[type=submit]:hover,
 body.layout-minimalist .lms-auth button[type=submit]:hover,
 body.layout-minimalist .lms-auth .form-submit:hover {
-  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6) !important;
-  opacity: 0.95 !important;
+  background: #374151 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
 }
 
 /* Social login buttons */
@@ -2547,8 +2549,8 @@ body.layout-minimalist .lms-auth .lms-btn--outline {
 body.layout-minimalist .lms-auth .lms-btn--social:hover,
 body.layout-minimalist .lms-auth .lms-btn--outline:hover {
   background: #f1f5f9 !important;
-  border-color: #4f46e5 !important;
-  color: #4f46e5 !important;
+  border-color: #9ca3af !important;
+  color: #111827 !important;
 }
 
 /* OR divider */
@@ -2574,10 +2576,11 @@ body.layout-minimalist .lms-auth__footer p {
 }
 body.layout-minimalist .lms-auth__footer a,
 body.layout-minimalist .lms-auth p a {
-  color: #4f46e5 !important;
+  color: #374151 !important;
+  font-weight: 600;
 }
 body.layout-minimalist .lms-auth p a:hover {
-  color: #4338ca !important;
+  color: #111827 !important;
   text-decoration: underline !important;
 }
 

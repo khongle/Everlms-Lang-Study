@@ -268,7 +268,7 @@
       <p class="section-desc">{{ homepage_settings.introductions_section_subtitle }}</p>
       {% endif %}
       <div class="caps-grid">
-        {% for intro in introductions|slice(0,8) %}
+        {% for intro in introductions|slice(0,4) %}
         <a href="{{ intro.link_url and intro.link_url != '#' ? intro.link_url : path('lms_course.catalog') }}" class="cap-card advanced-cap-card advanced-cap-card--intro">
           {% if intro.image_url %}
             <div class="cap-image-wrap cap-image-wrap--intro">
@@ -343,6 +343,9 @@
             <div>
               <div class="testimonial-name">{{ item.name }}</div>
               <div class="testimonial-role testimonial-role--spaced">{{ item.role }}</div>
+              {% if item.company %}
+              <div class="testimonial-company">{{ item.company }}</div>
+              {% endif %}
               <div class="testimonial-stars">
                 {% for i in 1..item.rating|default(5) %}★{% endfor %}
               </div>
@@ -497,7 +500,10 @@
       <div class="cta-box">
         <h2>{{ homepage_settings.cta_banner_title }}</h2>
         <p>{{ homepage_settings.cta_banner_description }}</p>
-        <a href="{{ path('lms_course.catalog') }}" class="btn-primary corporate-cta-link">{{ homepage_settings.cta_primary_text }}</a>
+        <div class="cta-buttons d-flex gap-3 justify-content-center flex-wrap mt-2">
+          <a href="{{ homepage_settings.cta_primary_url ?? path('lms_course.catalog') }}" class="btn-primary corporate-cta-link">{{ homepage_settings.cta_primary_text }}</a>
+          <a href="{{ homepage_settings.cta_secondary_url ?? path('lms_course.catalog') }}" class="btn-secondary corporate-cta-link">{{ homepage_settings.cta_secondary_text ?? 'Start Free Trial'|t }}</a>
+        </div>
       </div>
     </div>
   </section>
