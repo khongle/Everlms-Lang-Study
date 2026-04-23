@@ -38,6 +38,14 @@
           </div>
           {% endfor %}
         </div>
+        {% if slideshows|length > 1 %}
+        <button class="carousel-control-prev nature-carousel__control nature-carousel__control--prev" type="button" data-bs-target="#natureHeroCarousel" data-bs-slide="prev" aria-label="{{ 'Previous slide'|t }}">
+          <span class="nature-carousel__control-icon" aria-hidden="true"><i class="fas fa-chevron-left"></i></span>
+        </button>
+        <button class="carousel-control-next nature-carousel__control nature-carousel__control--next" type="button" data-bs-target="#natureHeroCarousel" data-bs-slide="next" aria-label="{{ 'Next slide'|t }}">
+          <span class="nature-carousel__control-icon" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+        </button>
+        {% endif %}
       </div>
       {% else %}
       <div class="nature-hero__fallback nature-shell">

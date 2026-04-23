@@ -1,0 +1,153 @@
+{
+  "quiz": {
+    "title": "Bài kiểm tra cuối khóa: An toàn Vận hành Máy Thiết bị",
+    "course_ref": "course-004",
+    "instructions": "Đọc kỹ từng câu hỏi. Bài kiểm tra gồm 15 câu về an toàn vận hành máy móc thiết bị xây dựng. Thời gian làm bài là 40 phút. Yêu cầu đạt tối thiểu 80% điểm. Lưu ý: bài kiểm tra này chỉ có 2 lần thử.",
+    "pass_threshold": 80,
+    "time_limit": 40,
+    "max_attempts": 2,
+    "display_style": "question_step"
+  },
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Trước khi vận hành cẩu tháp (tower crane) tại công trường, người điều khiển phải thực hiện kiểm tra gì theo quy định?",
+      "points": 5,
+      "answers": [
+        {"text": "Chỉ cần kiểm tra bằng mắt thường từ bên ngoài cabin", "is_correct": false},
+        {"text": "Thực hiện kiểm tra trước ca (pre-shift inspection) theo danh mục quy định, bao gồm kiểm tra cơ cấu phanh, dây cáp, móc cẩu và thiết bị an toàn", "is_correct": true},
+        {"text": "Không cần kiểm tra nếu hôm trước đã vận hành bình thường", "is_correct": false},
+        {"text": "Chỉ cần kiểm tra dầu nhớt và nhiên liệu trước khi khởi động", "is_correct": false}
+      ],
+      "explanation": "Kiểm tra trước ca (pre-shift inspection) là bắt buộc trước mỗi ca vận hành cẩu tháp. Danh mục kiểm tra bao gồm: hệ thống phanh, dây cáp và móc cẩu, thiết bị hạn chế tải, thiết bị chống va chạm, hệ thống điện, và khu vực xung quanh. Kết quả phải được ghi vào sổ nhật ký vận hành."
+    },
+    {
+      "type": "single_choice",
+      "text": "Khi vận hành xe nâng (forklift) trong khu vực công trường có người lao động đi bộ, tốc độ tối đa cho phép trong khu vực này là bao nhiêu?",
+      "points": 5,
+      "answers": [
+        {"text": "15 km/h", "is_correct": false},
+        {"text": "10 km/h", "is_correct": false},
+        {"text": "5 km/h", "is_correct": true},
+        {"text": "20 km/h nếu còi hoạt động bình thường", "is_correct": false}
+      ],
+      "explanation": "Trong khu vực có người đi bộ, xe nâng chỉ được di chuyển tối đa 5 km/h. Tốc độ này cho phép người điều khiển dừng xe kịp thời và người đi bộ có thể phản ứng an toàn. Ở khu vực không có người, tốc độ có thể lên đến 10-15 km/h tùy quy định công trường."
+    },
+    {
+      "type": "single_choice",
+      "text": "Khi thực hiện bảo trì máy xúc (excavator) đang đỗ trên dốc, biện pháp an toàn nào là bắt buộc đầu tiên?",
+      "points": 5,
+      "answers": [
+        {"text": "Để động cơ nổ để duy trì áp suất thủy lực cho hệ thống phanh", "is_correct": false},
+        {"text": "Hạ gầu xuống chạm đất, tắt động cơ, chèn bánh xe và khóa hệ thống thủy lực", "is_correct": true},
+        {"text": "Chỉ cần kéo phanh tay và bắt đầu bảo trì ngay", "is_correct": false},
+        {"text": "Dựng biển cảnh báo xung quanh là đủ trước khi bắt đầu bảo trì", "is_correct": false}
+      ],
+      "explanation": "Trước khi bảo trì máy xúc trên dốc phải: hạ gầu xuống đất (để xả áp suất thủy lực), tắt động cơ, chèn bánh (hoặc chèn xích), khóa tay cần điều khiển bằng khóa cơ học, và thực hiện LOTO. Đây là biện pháp ngăn máy bất ngờ di chuyển hoặc cơ cấu thủy lực sụp đổ."
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Những điều kiện nào sau đây bắt buộc phải có trước khi cẩu trục (crane) được phép nâng tải tại công trường? (Chọn tất cả đáp án đúng)",
+      "points": 5,
+      "answers": [
+        {"text": "Tải trọng nâng phải được xác định và không vượt quá 80% tải trọng tối đa cho phép (SWL)", "is_correct": true},
+        {"text": "Phải có tín hiệu viên (rigger/signal person) được chứng nhận để ra hiệu cho người điều khiển", "is_correct": true},
+        {"text": "Vùng làm việc bên dưới và xung quanh phải được rào chắn và giải tỏa người", "is_correct": true},
+        {"text": "Có thể nâng tải vượt qua khu vực có người đứng miễn là tải được buộc chắc chắn", "is_correct": false}
+      ],
+      "explanation": "Nâng cẩu an toàn yêu cầu: không vượt 80% SWL (để có hệ số an toàn), tín hiệu viên được chứng nhận, và khu vực bên dưới phải được giải tỏa. Tuyệt đối không được nâng tải qua khu vực có người - đây là nguyên tắc không có ngoại lệ."
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Để được phép vận hành cẩu trục tại công trường Việt Nam, người điều khiển cẩu phải đáp ứng những điều kiện nào? (Chọn tất cả đáp án đúng)",
+      "points": 5,
+      "answers": [
+        {"text": "Có chứng chỉ đào tạo vận hành cẩu theo đúng loại và tải trọng của cẩu được điều khiển", "is_correct": true},
+        {"text": "Máy cẩu phải được kiểm định kỹ thuật an toàn và còn hiệu lực kiểm định", "is_correct": true},
+        {"text": "Có đủ sức khỏe theo quy định, không sử dụng thuốc, rượu bia khi làm việc", "is_correct": true},
+        {"text": "Chỉ cần có kinh nghiệm thực tế từ 2 năm trở lên mà không cần chứng chỉ", "is_correct": false}
+      ],
+      "explanation": "Người vận hành cẩu phải có: chứng chỉ đào tạo đúng chủng loại cẩu (do cơ quan có thẩm quyền cấp), cẩu phải có kiểm định còn hiệu lực, và người điều khiển phải đủ sức khỏe. Kinh nghiệm thực tế không thể thay thế chứng chỉ đào tạo theo quy định."
+    },
+    {
+      "type": "true_false",
+      "text": "Khi xe nâng đang mang tải, người điều khiển được phép chở thêm người ngồi trên khung xe nâng hoặc trên tải nếu khoảng cách di chuyển ngắn và tốc độ thấp.",
+      "points": 3,
+      "correct_answer": false,
+      "explanation": "Sai và cực kỳ nguy hiểm. Tuyệt đối không được phép chở người trên xe nâng đang mang tải hoặc trên tải. Tải có thể dịch chuyển đột ngột, xe có thể lật, hoặc người có thể bị kẹt giữa tải và kết cấu công trình. Đây là vi phạm nghiêm trọng trong mọi điều kiện."
+    },
+    {
+      "type": "true_false",
+      "text": "Việc kiểm định kỹ thuật an toàn định kỳ đối với cẩu trục là bắt buộc theo quy định pháp luật Việt Nam và chỉ được thực hiện bởi tổ chức kiểm định được Bộ Lao động - Thương binh và Xã hội chỉ định.",
+      "points": 3,
+      "correct_answer": true,
+      "explanation": "Đúng. Theo Thông tư 36/2019/TT-BLĐTBXH, cẩu trục thuộc danh mục máy, thiết bị có yêu cầu nghiêm ngặt về an toàn lao động, bắt buộc kiểm định định kỳ bởi tổ chức kiểm định được Bộ LĐTBXH chỉ định. Kết quả kiểm định phải được lưu trữ tại đơn vị sử dụng."
+    },
+    {
+      "type": "fill_blank",
+      "text": "Điền vào chỗ trống: Theo quy định, cẩu trục mới lắp đặt phải được kiểm định lần đầu trước khi đưa vào sử dụng, và sau đó kiểm định định kỳ mỗi ____ tháng một lần. Khi cẩu trục xảy ra sự cố nghiêm trọng, phải thực hiện kiểm định ____ trước khi đưa vào sử dụng lại.",
+      "points": 5,
+      "correct_answers": ["12", "bất thường"]
+    },
+    {
+      "type": "fill_blank",
+      "text": "Điền vào chỗ trống: Trước khi thực hiện công tác bảo trì, sửa chữa máy xúc hoặc cẩu trục, người thực hiện phải hoàn tất quy trình ____ để đảm bảo thiết bị không thể khởi động bất ngờ. Khối lượng tải tối đa cẩu được phép nâng an toàn được gọi là ____ (viết tắt tiếng Anh).",
+      "points": 5,
+      "correct_answers": ["Lockout/Tagout (LOTO)", "SWL"]
+    },
+    {
+      "type": "short_answer",
+      "text": "Bạn đang giám sát ca làm việc chiều và phát hiện người điều khiển máy xúc có biểu hiện mệt mỏi, phản ứng chậm và có mùi rượu bia. Thiết bị đang trong quá trình đào móng gần khu vực có công nhân làm việc. Mô tả chi tiết các bước bạn sẽ thực hiện ngay lập tức.",
+      "points": 5
+    },
+    {
+      "type": "matching",
+      "text": "Nối mỗi loại máy thiết bị xây dựng (cột trái) với nguy cơ tai nạn đặc trưng và biện pháp phòng ngừa chính (cột phải):",
+      "points": 8,
+      "pairs": [
+        {"left": "Cẩu tháp (Tower crane)", "right": "Nguy cơ quá tải và sập cẩu: kiểm soát chặt SWL và kiểm tra cơ cấu hạn chế tải hàng ngày"},
+        {"left": "Xe nâng (Forklift)", "right": "Nguy cơ lật xe và đâm người đi bộ: giới hạn tốc độ, phân làn giao thông và đèn cảnh báo"},
+        {"left": "Máy xúc (Excavator)", "right": "Nguy cơ trúng cần gầu và sập hố đào: thiết lập vùng cấm xung quanh bán kính hoạt động"},
+        {"left": "Xe lu (Road roller)", "right": "Nguy cơ cán người do tầm nhìn hạn chế phía sau: dùng người hướng dẫn (spotter) và camera lùi"},
+        {"left": "Máy khoan cọc (Pile driver)", "right": "Nguy cơ sụt lún nền và đứt cáp: kiểm tra địa chất và kiểm định cáp trước mỗi ca làm việc"}
+      ]
+    },
+    {
+      "type": "matching",
+      "text": "Nối mỗi ký hiệu tín hiệu tay (hand signal) trong vận hành cẩu (cột trái) với ý nghĩa chính xác (cột phải):",
+      "points": 8,
+      "pairs": [
+        {"left": "Giơ ngón cái lên, tay nắm lại thành nắm đấm", "right": "Nâng tải lên (Hoist up)"},
+        {"left": "Ngón cái chỉ xuống, tay nắm lại thành nắm đấm", "right": "Hạ tải xuống (Lower down)"},
+        {"left": "Hai tay giơ ngang, lòng bàn tay hướng xuống và hạ dần", "right": "Hạ từ từ (Lower slowly / Fine adjustment)"},
+        {"left": "Một tay giơ thẳng lên, lòng bàn tay mở hướng về phía cẩu cần di chuyển đến", "right": "Di chuyển cẩu theo hướng tay chỉ (Travel)"}
+      ]
+    },
+    {
+      "type": "ordering",
+      "text": "Sắp xếp các bước thực hiện kiểm định kỹ thuật an toàn cẩu trục định kỳ theo đúng trình tự từ bước 1 đến bước 5:",
+      "points": 8,
+      "items": [
+        {"text": "Chuẩn bị hồ sơ: lý lịch máy, biên bản kiểm định lần trước, nhật ký vận hành và bảo trì", "correct_position": 1},
+        {"text": "Kiểm tra kỹ thuật: kiểm tra ngoài, thử nghiệm không tải, thử tải tĩnh và tải động", "correct_position": 2},
+        {"text": "Đánh giá kết quả: so sánh với tiêu chuẩn kỹ thuật và tiêu chí chấp nhận", "correct_position": 3},
+        {"text": "Lập biên bản kiểm định: ghi kết quả, kết luận đạt/không đạt và các kiến nghị", "correct_position": 4},
+        {"text": "Cấp tem kiểm định và cập nhật lý lịch máy, lên lịch kiểm định lần tiếp theo", "correct_position": 5}
+      ]
+    },
+    {
+      "type": "essay",
+      "text": "Tại công trường bạn phụ trách, đội trưởng tổ cẩu đề xuất nâng một kết cấu thép nặng 12 tấn bằng cẩu tháp có tải trọng an toàn tối đa (SWL) là 12 tấn ở tầm với hiện tại. Đội trưởng lập luận rằng 'vừa đúng tải trọng, không sao cả'. Hãy phân tích vấn đề an toàn trong đề xuất này và trình bày quyết định bạn sẽ đưa ra, kèm theo đầy đủ lý do kỹ thuật và quy trình thực hiện an toàn thay thế.",
+      "points": 15,
+      "rubric": "Bài viết cần: (1) Giải thích đúng khái niệm SWL và tại sao không được nâng 100% SWL (yếu tố an toàn, dung sai) - 4 điểm; (2) Phân tích các rủi ro kỹ thuật cụ thể (uốn cẩu, trượt tải, dao động) - 3 điểm; (3) Đưa ra quyết định dừng và lý do pháp lý/kỹ thuật - 2 điểm; (4) Đề xuất phương án thay thế an toàn (cẩu lớn hơn, chia nhỏ tải, cẩu đôi) - 4 điểm; (5) Bài viết rõ ràng, logic, đủ số từ - 2 điểm.",
+      "min_words": 100
+    },
+    {
+      "type": "essay",
+      "text": "Xây dựng chương trình bảo trì phòng ngừa (Preventive Maintenance Program) cho một đội xe nâng gồm 5 chiếc đang hoạt động tại kho vật liệu công trường. Chương trình cần bao gồm: lịch bảo trì hàng ngày/tuần/tháng/quý, phân công trách nhiệm (tài xế vs. thợ bảo trì), danh sách hạng mục kiểm tra cho từng chu kỳ, quy trình xử lý khi phát hiện hư hỏng, và hệ thống hồ sơ theo dõi. Liên hệ với quy định về kiểm định an toàn thiết bị nâng.",
+      "points": 15,
+      "rubric": "Bài viết cần: (1) Thiết kế lịch bảo trì đa tầng hợp lý (ngày/tuần/tháng/quý) - 3 điểm; (2) Phân công trách nhiệm rõ ràng giữa tài xế và thợ bảo trì - 2 điểm; (3) Danh sách hạng mục kiểm tra đầy đủ và chính xác cho từng chu kỳ - 4 điểm; (4) Quy trình xử lý hư hỏng rõ ràng (dừng xe, báo cáo, sửa chữa, nghiệm thu) - 3 điểm; (5) Mô tả hệ thống hồ sơ theo dõi và liên hệ kiểm định định kỳ - 2 điểm; (6) Bài viết có cấu trúc, đủ số từ - 1 điểm.",
+      "min_words": 100
+    }
+  ]
+}

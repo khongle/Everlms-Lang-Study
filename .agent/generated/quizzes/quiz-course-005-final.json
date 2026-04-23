@@ -1,0 +1,153 @@
+{
+  "quiz": {
+    "title": "Bài kiểm tra cuối khóa: Sơ cứu và Ứng phó Sự cố",
+    "course_ref": "course-005",
+    "instructions": "Đọc kỹ từng câu hỏi. Bài kiểm tra gồm 15 câu về sơ cứu và ứng phó sự cố tại công trường xây dựng. Thời gian làm bài là 45 phút. Đây là kỹ năng có thể cứu sống người, hãy trả lời thật cẩn thận. Đạt yêu cầu khi đạt từ 75% điểm trở lên.",
+    "pass_threshold": 75,
+    "time_limit": 45,
+    "max_attempts": 3,
+    "display_style": "question_step"
+  },
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Theo hướng dẫn hồi sinh tim phổi (CPR) hiện đại của Hội Tim mạch Hoa Kỳ (AHA) 2020, tỷ lệ ép tim và thổi ngạt đúng cho người lớn là bao nhiêu?",
+      "points": 5,
+      "answers": [
+        {"text": "15 lần ép tim : 2 lần thổi ngạt", "is_correct": false},
+        {"text": "30 lần ép tim : 2 lần thổi ngạt", "is_correct": true},
+        {"text": "5 lần ép tim : 1 lần thổi ngạt", "is_correct": false},
+        {"text": "20 lần ép tim : 2 lần thổi ngạt", "is_correct": false}
+      ],
+      "explanation": "Theo hướng dẫn AHA 2020 (và hướng dẫn Hồi sinh quốc tế ILCOR), tỷ lệ chuẩn là 30 lần ép tim : 2 lần thổi ngạt. Ép tim phải sâu ít nhất 5cm, tốc độ 100-120 lần/phút, và để ngực phồng trở lại hoàn toàn giữa các lần ép."
+    },
+    {
+      "type": "single_choice",
+      "text": "Khi công nhân bị gãy xương cẳng tay tại công trường và vẫn còn tỉnh táo, biện pháp sơ cứu ban đầu đúng nhất là gì?",
+      "points": 5,
+      "answers": [
+        {"text": "Cố gắng nắn xương về đúng vị trí trước khi băng bó để tránh xương lành sai", "is_correct": false},
+        {"text": "Không di chuyển nạn nhân, bất động chi bị gãy bằng nẹp ở tư thế hiện tại, băng cố định và đưa đến cơ sở y tế", "is_correct": true},
+        {"text": "Bôi dầu nóng và xoa bóp mạnh vào vùng gãy để giảm đau cho nạn nhân", "is_correct": false},
+        {"text": "Cho nạn nhân uống thuốc giảm đau và để nghỉ ngơi tại chỗ cho đến hết ca làm việc", "is_correct": false}
+      ],
+      "explanation": "Khi sơ cứu gãy xương: KHÔNG bao giờ cố nắn xương (có thể gây thêm tổn thương mạch máu, dây thần kinh). Bất động chi ở tư thế hiện có bằng nẹp (có thể tạm dùng ván, que gỗ), băng cố định và đưa nạn nhân đến cơ sở y tế ngay."
+    },
+    {
+      "type": "single_choice",
+      "text": "Khi phát hiện đám cháy nhỏ tại công trường (mới phát sinh, diện tích nhỏ hơn 1 m², chưa có khói đặc), hành động đúng theo nguyên tắc PASS khi dùng bình cứu hỏa xách tay là gì?",
+      "points": 5,
+      "answers": [
+        {"text": "Pull (rút chốt) → Aim (hướng vòi vào gốc lửa) → Squeeze (bóp cò) → Sweep (quét ngang)", "is_correct": true},
+        {"text": "Press (nhấn van) → Aim (hướng vào ngọn lửa) → Spray (phun) → Step back (lùi ra)", "is_correct": false},
+        {"text": "Point (chỉ vào lửa) → Activate (kích hoạt) → Spray (phun) → Secure (bảo đảm)", "is_correct": false},
+        {"text": "Prepare (chuẩn bị) → Attack (tấn công lửa) → Spray (phun liên tục) → Safe (an toàn)", "is_correct": false}
+      ],
+      "explanation": "PASS là viết tắt của: Pull the pin (rút chốt an toàn), Aim at the base (hướng vòi vào GỐC lửa, không phải ngọn lửa), Squeeze the handle (bóp cò từ từ), Sweep side to side (quét ngang ở gốc lửa). Luôn đứng cách gốc lửa khoảng 1,5-2 mét và có lối thoát sau lưng."
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Trong tình huống có công nhân bị vùi lấp do sụt lún đất tại hố đào, những hành động nào sau đây là ĐÚNG và cần thực hiện? (Chọn tất cả đáp án đúng)",
+      "points": 5,
+      "answers": [
+        {"text": "Gọi cấp cứu 115 và thông báo cán bộ an toàn ngay lập tức", "is_correct": true},
+        {"text": "Đánh giá sự ổn định của khu vực trước khi cho người vào cứu để tránh thêm nạn nhân", "is_correct": true},
+        {"text": "Ngay lập tức nhảy xuống hố đào cứu nạn nhân bằng tay để tiết kiệm thời gian", "is_correct": false},
+        {"text": "Sử dụng thiết bị đào nhỏ cẩn thận hoặc dụng cụ thủ công để dọn đất, tránh gây thêm thương tích", "is_correct": true}
+      ],
+      "explanation": "Khi có người bị vùi lấp: gọi cứu hộ chuyên nghiệp ngay, đánh giá độ ổn định khu vực (tránh thêm người bị nạn), dùng dụng cụ thủ công cẩn thận để dọn đất. Nhảy vào hố không kiểm tra an toàn là sai - có thể tạo thêm nạn nhân và làm sụt thêm đất."
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Bộ sơ cứu (First Aid Kit) tại công trường xây dựng theo quy định phải có những vật tư tối thiểu nào? (Chọn tất cả đáp án đúng)",
+      "points": 5,
+      "answers": [
+        {"text": "Băng gạc vô trùng nhiều kích cỡ và băng cuộn", "is_correct": true},
+        {"text": "Kéo y tế, găng tay cao su không bột (nitrile gloves)", "is_correct": true},
+        {"text": "Thuốc kháng sinh và thuốc giảm đau không kê đơn", "is_correct": false},
+        {"text": "Dung dịch sát trùng, nẹp cứng và miếng che mắt vô trùng", "is_correct": true}
+      ],
+      "explanation": "Bộ sơ cứu chuẩn gồm: băng gạc, băng cuộn, kéo y tế, găng tay nitrile, dung dịch sát trùng, nẹp, miếng che mắt, túc hơi lạnh... Thuốc kháng sinh và giảm đau không kê đơn KHÔNG được phép để trong bộ sơ cứu cơ bản vì cần chỉ định y tế - chỉ nhân viên y tế có thẩm quyền mới được sử dụng."
+    },
+    {
+      "type": "true_false",
+      "text": "Khi nạn nhân bị chảy máu nghiêm trọng ở tay hoặc chân, băng garô (tourniquet) nên được áp dụng ngay lập tức như biện pháp đầu tiên để cầm máu nhanh nhất.",
+      "points": 3,
+      "correct_answer": false,
+      "explanation": "Sai. Garô là biện pháp cầm máu cuối cùng, chỉ dùng khi băng ép trực tiếp không hiệu quả hoặc trong trường hợp chi bị cắt đứt/nghiền nát. Biện pháp đầu tiên là băng ép trực tiếp (direct pressure) lên vết thương bằng gạc sạch trong ít nhất 10-15 phút. Garô cắt tuần hoàn máu hoàn toàn và có thể gây tổn thương mô nếu dùng không đúng."
+    },
+    {
+      "type": "true_false",
+      "text": "Khi sơ tán khẩn cấp công trường do hỏa hoạn, tất cả mọi người phải tập trung tại điểm tập kết đã định sẵn (muster point) và điểm danh trước khi bất kỳ ai được phép quay trở lại công trường.",
+      "points": 3,
+      "correct_answer": true,
+      "explanation": "Đúng. Quy trình sơ tán bắt buộc: di chuyển đến muster point, điểm danh 100% người có mặt (bao gồm cả khách và nhà thầu phụ), xác nhận không có ai còn kẹt bên trong. Không ai được phép quay vào công trường cho đến khi đội cứu hỏa/an toàn tuyên bố an toàn. Đây là nguyên tắc cứu người không thể vi phạm."
+    },
+    {
+      "type": "fill_blank",
+      "text": "Điền vào chỗ trống: Khi thực hiện ép tim ngoài lồng ngực cho người lớn, tay cứu hộ phải đặt ở vị trí ____ của xương ức, ép sâu ít nhất ____ cm mỗi lần ép.",
+      "points": 5,
+      "correct_answers": ["1/2 dưới", "5"]
+    },
+    {
+      "type": "fill_blank",
+      "text": "Điền vào chỗ trống: Theo quy định PCCC tại công trường, bình cứu hỏa xách tay phải được kiểm tra áp lực và bảo dưỡng định kỳ mỗi ____ tháng một lần. Số điện thoại cứu hỏa quốc gia tại Việt Nam là ____.",
+      "points": 5,
+      "correct_answers": ["6", "114"]
+    },
+    {
+      "type": "short_answer",
+      "text": "Một công nhân bị dính hóa chất kiềm mạnh (vôi xây dựng/cement) vào mắt trong khi trộn vữa. Anh ta đang rất đau và nhắm mắt chặt lại. Mô tả chính xác và đầy đủ các bước sơ cứu bạn cần thực hiện ngay lập tức trong 10 phút đầu tiên.",
+      "points": 5
+    },
+    {
+      "type": "matching",
+      "text": "Nối mỗi loại tai nạn lao động tại công trường (cột trái) với biện pháp sơ cứu ban đầu đúng nhất (cột phải):",
+      "points": 8,
+      "pairs": [
+        {"left": "Bỏng nhiệt độ cao (lửa, kim loại nóng) cấp độ 2 trên cánh tay", "right": "Làm mát vết bỏng bằng nước sạch mát trong 10-20 phút, không dùng đá lạnh, không bôi kem đánh răng"},
+        {"left": "Công nhân bất tỉnh không rõ nguyên nhân", "right": "Kiểm tra an toàn khu vực, gọi 115, kiểm tra ABC (Airway-Breathing-Circulation) và thực hiện CPR nếu cần"},
+        {"left": "Vết thương đâm thủng bụng, có vật nhọn còn cắm trong người", "right": "Không rút vật nhọn ra, cố định vật để không di chuyển, che đậy vết thương và chuyển viện khẩn"},
+        {"left": "Nghi ngờ chấn thương cột sống cổ sau tai nạn ngã từ cao", "right": "Không di chuyển nạn nhân trừ khi có nguy hiểm tức thì, cố định đầu-cổ thẳng trục và gọi cấp cứu"},
+        {"left": "Say nắng (heat stroke) trong ca làm việc ngoài trời nắng gắt", "right": "Chuyển nạn nhân vào bóng mát, làm mát cơ thể bằng khăn ướt lạnh, quạt mát và bổ sung nước điện giải"}
+      ]
+    },
+    {
+      "type": "matching",
+      "text": "Nối mỗi loại bình chữa cháy (cột trái) với loại đám cháy phù hợp để sử dụng (cột phải):",
+      "points": 8,
+      "pairs": [
+        {"left": "Bình CO2 (khí carbonic)", "right": "Đám cháy thiết bị điện (Class C) và đám cháy chất lỏng dễ cháy (Class B) - không để lại cặn"},
+        {"left": "Bình bột khô ABC (Dry powder)", "right": "Phù hợp cho hầu hết các loại đám cháy: vật liệu rắn (A), chất lỏng (B) và điện (C)"},
+        {"left": "Bình bọt (Foam AFFF)", "right": "Đám cháy chất lỏng dễ cháy (xăng, dầu) - Class B, hiệu quả nhất để phủ bề mặt ngăn bay hơi"},
+        {"left": "Bình nước (Water extinguisher)", "right": "Chỉ dùng cho đám cháy vật liệu rắn thông thường (gỗ, giấy, vải) - Class A, tuyệt đối không dùng cho điện"}
+      ]
+    },
+    {
+      "type": "ordering",
+      "text": "Sắp xếp các bước thực hiện sơ tán khẩn cấp công trường khi có báo động cháy theo đúng trình tự từ bước 1 đến bước 5:",
+      "points": 8,
+      "items": [
+        {"text": "Nghe còi báo động cháy hoặc nhận lệnh sơ tán, ngay lập tức dừng mọi công việc đang làm", "correct_position": 1},
+        {"text": "Di chuyển nhanh nhưng bình tĩnh đến lối thoát hiểm gần nhất, không sử dụng thang máy", "correct_position": 2},
+        {"text": "Đóng cửa (không khóa) phía sau khi di chuyển để làm chậm sự lan rộng của lửa", "correct_position": 3},
+        {"text": "Tập hợp tại điểm tập kết (muster point) đã được thông báo từ trước", "correct_position": 4},
+        {"text": "Báo cáo tình trạng điểm danh cho cán bộ phụ trách và chờ lệnh tiếp theo", "correct_position": 5}
+      ]
+    },
+    {
+      "type": "essay",
+      "text": "Tại công trường xây dựng của bạn vừa xảy ra một vụ tai nạn: một công nhân bị điện giật ngã từ độ cao 3 mét xuống, hiện bất tỉnh và nghi ngờ có chấn thương cột sống. Bạn là người đầu tiên đến hiện trường. Hãy mô tả chi tiết và theo đúng trình tự tất cả các hành động sơ cứu bạn sẽ thực hiện trong 15 phút đầu tiên, giải thích lý do y tế cho từng hành động, và nêu những điều KHÔNG được làm trong tình huống này.",
+      "points": 15,
+      "rubric": "Bài viết cần: (1) Mô tả đúng bước đảm bảo an toàn hiện trường trước khi tiếp cận - 2 điểm; (2) Mô tả đúng kiểm tra ABC và xử lý đường thở cho nạn nhân nghi chấn thương cổ - 4 điểm; (3) Mô tả đúng kỹ thuật CPR nếu cần và gọi cấp cứu 115 - 3 điểm; (4) Nêu đúng các điều không được làm (di chuyển nạn nhân tùy tiện, không rút vật nhọn) - 3 điểm; (5) Bài viết theo đúng trình tự, rõ ràng, đủ số từ - 3 điểm.",
+      "min_words": 100
+    },
+    {
+      "type": "essay",
+      "text": "Xây dựng kế hoạch ứng phó khẩn cấp (Emergency Response Plan - ERP) hoàn chỉnh cho công trường xây dựng cao tầng có 200 công nhân. Kế hoạch cần bao gồm: các tình huống khẩn cấp cần dự phòng (ít nhất 4 loại), sơ đồ tổ chức đội ứng phó khẩn cấp và phân công vai trò, quy trình thông báo và gọi cứu trợ bên ngoài, bố trí thiết bị sơ cứu và PCCC, kế hoạch sơ tán và điểm tập kết, cũng như lịch diễn tập định kỳ.",
+      "points": 15,
+      "rubric": "Bài viết cần: (1) Xác định đầy đủ ít nhất 4 loại tình huống khẩn cấp phù hợp với công trường cao tầng - 2 điểm; (2) Mô tả cơ cấu tổ chức đội ứng phó và phân công vai trò rõ ràng - 3 điểm; (3) Trình bày quy trình thông báo nội bộ và bên ngoài (cơ quan cứu hỏa, y tế, cơ quan quản lý nhà nước) - 3 điểm; (4) Mô tả bố trí thiết bị sơ cứu/PCCC hợp lý và kế hoạch sơ tán với điểm tập kết - 4 điểm; (5) Đề xuất lịch và nội dung diễn tập thực tế - 2 điểm; (6) Bài viết có cấu trúc, đủ số từ - 1 điểm.",
+      "min_words": 100
+    }
+  ]
+}

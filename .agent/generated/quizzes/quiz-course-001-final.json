@@ -1,0 +1,153 @@
+{
+  "quiz": {
+    "title": "Bài kiểm tra cuối khóa: An toàn Lao động Tổng quan",
+    "course_ref": "course-001",
+    "instructions": "Đọc kỹ từng câu hỏi trước khi trả lời. Bài kiểm tra gồm 15 câu hỏi với nhiều dạng khác nhau. Một số câu có thể có nhiều đáp án đúng. Thời gian làm bài là 45 phút. Đạt yêu cầu khi đạt từ 70% điểm trở lên.",
+    "pass_threshold": 70,
+    "time_limit": 45,
+    "max_attempts": 3,
+    "display_style": "question_step"
+  },
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Theo Luật An toàn, Vệ sinh Lao động 2015 (Luật số 84/2015/QH13), người sử dụng lao động có trách nhiệm nào sau đây đối với người lao động làm việc trong môi trường có yếu tố nguy hiểm?",
+      "points": 5,
+      "answers": [
+        {"text": "Chỉ cần thông báo miệng về các mối nguy trước khi bắt đầu ca làm việc", "is_correct": false},
+        {"text": "Tổ chức huấn luyện an toàn, vệ sinh lao động và cấp phát đầy đủ phương tiện bảo vệ cá nhân phù hợp", "is_correct": true},
+        {"text": "Để người lao động tự trang bị phương tiện bảo vệ cá nhân và tự huấn luyện an toàn", "is_correct": false},
+        {"text": "Chỉ cung cấp PPE khi người lao động yêu cầu bằng văn bản", "is_correct": false}
+      ],
+      "explanation": "Điều 17 Luật ATVSLĐ 2015 quy định người sử dụng lao động phải tổ chức huấn luyện ATVSLĐ, cung cấp đầy đủ phương tiện bảo vệ cá nhân và đảm bảo điều kiện làm việc an toàn cho người lao động."
+    },
+    {
+      "type": "single_choice",
+      "text": "Trong quá trình nhận diện mối nguy tại công trường xây dựng, phương pháp nào sau đây được coi là hiệu quả nhất để phát hiện các rủi ro tiềm ẩn?",
+      "points": 5,
+      "answers": [
+        {"text": "Chỉ dựa vào báo cáo tai nạn của các công trình trước đó", "is_correct": false},
+        {"text": "Để người lao động tự phát hiện và báo cáo mối nguy khi gặp phải", "is_correct": false},
+        {"text": "Thực hiện kiểm tra hiện trường định kỳ kết hợp với phân tích công việc an toàn (JSA) trước khi bắt đầu tác vụ", "is_correct": true},
+        {"text": "Chỉ kiểm tra khi có sự cố hoặc tai nạn xảy ra", "is_correct": false}
+      ],
+      "explanation": "Phân tích công việc an toàn (Job Safety Analysis - JSA) kết hợp kiểm tra hiện trường định kỳ là phương pháp chủ động và hiệu quả nhất để nhận diện mối nguy trước khi xảy ra sự cố."
+    },
+    {
+      "type": "single_choice",
+      "text": "Thứ tự ưu tiên trong kiểm soát rủi ro theo thang bậc kiểm soát (Hierarchy of Controls) từ hiệu quả nhất đến ít hiệu quả nhất là gì?",
+      "points": 5,
+      "answers": [
+        {"text": "PPE → Biển báo → Kiểm soát hành chính → Kiểm soát kỹ thuật → Thay thế → Loại bỏ", "is_correct": false},
+        {"text": "Loại bỏ → Thay thế → Kiểm soát kỹ thuật → Kiểm soát hành chính → PPE", "is_correct": true},
+        {"text": "Kiểm soát hành chính → Kiểm soát kỹ thuật → Thay thế → Loại bỏ → PPE", "is_correct": false},
+        {"text": "Thay thế → Loại bỏ → PPE → Kiểm soát hành chính → Kiểm soát kỹ thuật", "is_correct": false}
+      ],
+      "explanation": "Thang bậc kiểm soát rủi ro quốc tế (NIOSH Hierarchy of Controls) ưu tiên từ cao xuống thấp: Loại bỏ mối nguy > Thay thế > Kiểm soát kỹ thuật > Kiểm soát hành chính > PPE. PPE là biện pháp cuối cùng vì phụ thuộc vào hành vi người dùng."
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Phương tiện bảo vệ cá nhân (PPE) nào là BẮT BUỘC đối với công nhân làm việc tại khu vực thi công xây dựng theo quy định của Việt Nam? (Chọn tất cả đáp án đúng)",
+      "points": 5,
+      "answers": [
+        {"text": "Mũ bảo hộ lao động (helmet) đạt tiêu chuẩn TCVN 6407", "is_correct": true},
+        {"text": "Giày bảo hộ có đế chống đinh và mũi thép", "is_correct": true},
+        {"text": "Áo phản quang khi làm việc trong khu vực có phương tiện cơ giới lưu thông", "is_correct": true},
+        {"text": "Kính mắt thời trang để bảo vệ khỏi bụi thông thường", "is_correct": false}
+      ],
+      "explanation": "Mũ bảo hộ, giày bảo hộ và áo phản quang là PPE bắt buộc tại công trường. Kính mắt thời trang không đạt tiêu chuẩn bảo hộ lao động và không được chấp nhận thay thế kính bảo hộ chuyên dụng."
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Những yếu tố nào sau đây góp phần xây dựng văn hóa an toàn tích cực (Positive Safety Culture) tại công trường? (Chọn tất cả đáp án đúng)",
+      "points": 5,
+      "answers": [
+        {"text": "Lãnh đạo cam kết và làm gương về an toàn lao động", "is_correct": true},
+        {"text": "Khuyến khích công nhân báo cáo mối nguy và sự cố near-miss mà không bị trừng phạt", "is_correct": true},
+        {"text": "Tập trung vào việc trừng phạt công nhân vi phạm quy định an toàn", "is_correct": false},
+        {"text": "Tiến hành họp an toàn (toolbox talk) thường xuyên và cải thiện liên tục", "is_correct": true}
+      ],
+      "explanation": "Văn hóa an toàn tích cực được xây dựng trên nền tảng lãnh đạo gương mẫu, hệ thống báo cáo không trừng phạt và học hỏi liên tục. Văn hóa trừng phạt làm công nhân che giấu mối nguy, dẫn đến rủi ro cao hơn."
+    },
+    {
+      "type": "true_false",
+      "text": "Theo Luật ATVSLĐ 2015, người lao động có quyền từ chối làm công việc hoặc rời bỏ nơi làm việc mà không bị coi là vi phạm kỷ luật lao động, khi họ thấy rõ có nguy cơ xảy ra tai nạn lao động đe dọa nghiêm trọng tính mạng hoặc sức khỏe của mình.",
+      "points": 3,
+      "correct_answer": true,
+      "explanation": "Đúng. Điều 6 Luật ATVSLĐ 2015 quy định người lao động có quyền từ chối làm công việc hoặc rời bỏ nơi làm việc mà không bị coi là vi phạm kỷ luật lao động khi thấy rõ có nguy cơ xảy ra tai nạn lao động đe dọa nghiêm trọng tính mạng."
+    },
+    {
+      "type": "true_false",
+      "text": "PPE (Phương tiện bảo vệ cá nhân) là biện pháp kiểm soát rủi ro hiệu quả nhất và nên được ưu tiên áp dụng đầu tiên trước các biện pháp kiểm soát khác.",
+      "points": 3,
+      "correct_answer": false,
+      "explanation": "Sai. PPE là biện pháp kiểm soát ở mức độ thấp nhất trong thang bậc kiểm soát rủi ro (Hierarchy of Controls). Ưu tiên cao nhất là loại bỏ mối nguy, tiếp theo là thay thế, kiểm soát kỹ thuật, kiểm soát hành chính, và cuối cùng mới là PPE."
+    },
+    {
+      "type": "fill_blank",
+      "text": "Điền vào chỗ trống: Theo quy định, tất cả công nhân mới vào làm việc tại công trường xây dựng phải được huấn luyện an toàn lao động ____ trước khi bắt đầu làm việc. Cơ sở pháp lý là Nghị định ____ /2017/NĐ-CP về huấn luyện an toàn, vệ sinh lao động.",
+      "points": 5,
+      "correct_answers": ["bắt buộc", "44"]
+    },
+    {
+      "type": "fill_blank",
+      "text": "Điền vào chỗ trống: Mức phạt tiền đối với tổ chức vi phạm quy định về huấn luyện an toàn vệ sinh lao động theo Nghị định 12/2022/NĐ-CP có thể lên đến ____ triệu đồng. Khi xảy ra tai nạn lao động chết người, người sử dụng lao động phải khai báo với cơ quan có thẩm quyền trong vòng ____ giờ.",
+      "points": 5,
+      "correct_answers": ["100", "8"]
+    },
+    {
+      "type": "short_answer",
+      "text": "Mô tả quy trình báo cáo sự cố near-miss (suýt tai nạn) tại công trường xây dựng mà bạn đang làm việc. Tại sao việc báo cáo near-miss lại quan trọng trong công tác phòng ngừa tai nạn lao động?",
+      "points": 5
+    },
+    {
+      "type": "matching",
+      "text": "Nối mỗi loại mối nguy tại công trường (cột trái) với biện pháp kiểm soát kỹ thuật phù hợp nhất (cột phải):",
+      "points": 8,
+      "pairs": [
+        {"left": "Nguy cơ ngã từ trên cao (>2m)", "right": "Lắp đặt lan can bảo vệ và lưới an toàn"},
+        {"left": "Bụi silica từ cắt bê tông", "right": "Sử dụng phương pháp cắt ướt và hút bụi tại nguồn"},
+        {"left": "Điện giật từ thiết bị điện cầm tay", "right": "Lắp đặt ELCB/RCD và kiểm tra định kỳ thiết bị"},
+        {"left": "Vật rơi từ trên cao xuống khu vực bên dưới", "right": "Lắp tấm chắn bảo vệ (toe board) và lưới ngăn vật rơi"},
+        {"left": "Ngộ độc hóa chất khi sử dụng dung môi sơn", "right": "Đảm bảo thông gió đầy đủ và cung cấp mặt nạ lọc hóa chất"}
+      ]
+    },
+    {
+      "type": "matching",
+      "text": "Nối mỗi thuật ngữ an toàn lao động (cột trái) với định nghĩa chính xác (cột phải):",
+      "points": 8,
+      "pairs": [
+        {"left": "Tai nạn lao động", "right": "Tai nạn xảy ra trong quá trình lao động, gắn liền với việc thực hiện công việc"},
+        {"left": "Sự cố near-miss", "right": "Sự kiện không mong muốn xảy ra nhưng chưa gây thương tích hay thiệt hại"},
+        {"left": "Bệnh nghề nghiệp", "right": "Bệnh phát sinh do điều kiện lao động có hại của nghề nghiệp tác động"},
+        {"left": "Rủi ro (Risk)", "right": "Khả năng xảy ra tổn thất kết hợp với mức độ nghiêm trọng của tổn thất đó"}
+      ]
+    },
+    {
+      "type": "ordering",
+      "text": "Sắp xếp các bước thực hiện đánh giá rủi ro công việc (Risk Assessment) theo đúng trình tự từ bước 1 đến bước 5:",
+      "points": 8,
+      "items": [
+        {"text": "Xác định mối nguy hiểm tiềm ẩn trong công việc", "correct_position": 1},
+        {"text": "Đánh giá mức độ rủi ro (xác suất x hậu quả)", "correct_position": 2},
+        {"text": "Xác định và thực hiện các biện pháp kiểm soát", "correct_position": 3},
+        {"text": "Ghi chép và lưu trữ kết quả đánh giá rủi ro", "correct_position": 4},
+        {"text": "Xem xét và cập nhật đánh giá rủi ro định kỳ", "correct_position": 5}
+      ]
+    },
+    {
+      "type": "essay",
+      "text": "Phân tích tầm quan trọng của văn hóa an toàn trong ngành xây dựng tại Việt Nam. Dựa trên thực tế công trường, hãy đề xuất ít nhất 5 biện pháp cụ thể để nâng cao văn hóa an toàn, giảm thiểu tai nạn lao động. Liên hệ với quy định của Luật ATVSLĐ 2015 và kinh nghiệm thực tế.",
+      "points": 15,
+      "rubric": "Bài viết cần: (1) Phân tích được thực trạng tai nạn lao động trong xây dựng tại Việt Nam - 3 điểm; (2) Giải thích được khái niệm và các thành phần của văn hóa an toàn - 3 điểm; (3) Đề xuất ít nhất 5 biện pháp cụ thể, khả thi với lý giải rõ ràng - 6 điểm; (4) Liên hệ được với quy định pháp luật hiện hành - 2 điểm; (5) Bài viết rõ ràng, mạch lạc, đủ số từ - 1 điểm.",
+      "min_words": 100
+    },
+    {
+      "type": "essay",
+      "text": "Bạn là cán bộ an toàn tại một công trường xây dựng cao tầng vừa xảy ra tai nạn lao động nghiêm trọng (công nhân ngã từ tầng 5 xuống, bị gãy chân). Hãy mô tả đầy đủ các bước bạn cần thực hiện ngay sau khi tai nạn xảy ra, bao gồm: sơ cứu ban đầu, bảo vệ hiện trường, khai báo tai nạn theo quy định pháp luật, và các biện pháp phòng ngừa tái diễn.",
+      "points": 15,
+      "rubric": "Bài viết cần: (1) Mô tả đúng quy trình sơ cứu ban đầu và gọi cấp cứu - 3 điểm; (2) Nêu đúng quy trình bảo vệ hiện trường tai nạn - 2 điểm; (3) Mô tả đúng quy trình khai báo tai nạn lao động theo Điều 34-35 Luật ATVSLĐ 2015 (thời hạn, cơ quan tiếp nhận) - 4 điểm; (4) Đề xuất điều tra nguyên nhân và biện pháp phòng ngừa hiệu quả - 4 điểm; (5) Bài viết rõ ràng, đầy đủ, đúng trình tự - 2 điểm.",
+      "min_words": 100
+    }
+  ]
+}

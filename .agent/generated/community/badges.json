@@ -1,0 +1,11 @@
+{
+  "badges": [
+    {"name": "Tân binh An toàn", "criteria_type": "course_completion", "points": 10, "rarity": "common"},
+    {"name": "Chiến binh An toàn", "criteria_type": "course_completion", "points": 50, "rarity": "rare"},
+    {"name": "Chuyên gia An toàn", "criteria_type": "course_completion", "points": 100, "rarity": "epic"},
+    {"name": "Bậc thầy Kiểm tra", "criteria_type": "quiz_master", "points": 30, "rarity": "rare"},
+    {"name": "Học viên Kiên trì", "criteria_type": "streak", "points": 20, "rarity": "common"},
+    {"name": "Ngôi sao Cộng đồng", "criteria_type": "community", "points": 25, "rarity": "rare"},
+    {"name": "Huyền thoại Công trường", "criteria_type": "points", "points": 200, "rarity": "legendary"}
+  ]
+}

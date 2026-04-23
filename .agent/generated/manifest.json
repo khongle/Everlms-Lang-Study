@@ -1,0 +1,130 @@
+{
+  "generated_at": "2026-03-29T08:39:08.009187",
+  "generated_by": "Claude Code (Opus 4.6) + Haiku agents",
+  "seed_input_hash": "a91e3be0",
+  "summary": {
+    "total_courses": 5,
+    "total_chapters": 22,
+    "total_lessons": 79,
+    "total_quizzes": 5,
+    "total_questions": 75,
+    "total_instructors": 3,
+    "total_students": 15
+  },
+  "files": [
+    {
+      "path": "users/instructors.json",
+      "type": "users",
+      "status": "ready",
+      "size_kb": 1.4
+    },
+    {
+      "path": "users/students.json",
+      "type": "users",
+      "status": "ready",
+      "size_kb": 2.2
+    },
+    {
+      "path": "courses/course-001-an-toan-lao-dong-tong-quan.json",
+      "type": "courses",
+      "status": "ready",
+      "size_kb": 70.5
+    },
+    {
+      "path": "courses/course-002-an-toan-lam-viec-tren-cao.json",
+      "type": "courses",
+      "status": "ready",
+      "size_kb": 70.8
+    },
+    {
+      "path": "courses/course-003-an-toan-dien-cong-truong.json",
+      "type": "courses",
+      "status": "ready",
+      "size_kb": 19.6
+    },
+    {
+      "path": "courses/course-004-an-toan-van-hanh-may-thiet-bi.json",
+      "type": "courses",
+      "status": "ready",
+      "size_kb": 29.4
+    },
+    {
+      "path": "courses/course-005-so-cuu-ung-pho-su-co.json",
+      "type": "courses",
+      "status": "ready",
+      "size_kb": 21.9
+    },
+    {
+      "path": "quizzes/quiz-course-001-final.json",
+      "type": "quizzes",
+      "status": "ready",
+      "size_kb": 13.1
+    },
+    {
+      "path": "quizzes/quiz-course-002-final.json",
+      "type": "quizzes",
+      "status": "ready",
+      "size_kb": 13.2
+    },
+    {
+      "path": "quizzes/quiz-course-003-final.json",
+      "type": "quizzes",
+      "status": "ready",
+      "size_kb": 13.5
+    },
+    {
+      "path": "quizzes/quiz-course-004-final.json",
+      "type": "quizzes",
+      "status": "ready",
+      "size_kb": 14.1
+    },
+    {
+      "path": "quizzes/quiz-course-005-final.json",
+      "type": "quizzes",
+      "status": "ready",
+      "size_kb": 14.5
+    },
+    {
+      "path": "certificates/certificate-templates.json",
+      "type": "certificates",
+      "status": "ready",
+      "size_kb": 0.5
+    },
+    {
+      "path": "commerce/membership-plans.json",
+      "type": "commerce",
+      "status": "ready",
+      "size_kb": 0.5
+    },
+    {
+      "path": "community/forum-topics.json",
+      "type": "community",
+      "status": "ready",
+      "size_kb": 5.1
+    },
+    {
+      "path": "community/badges.json",
+      "type": "community",
+      "status": "ready",
+      "size_kb": 0.8
+    }
+  ],
+  "import_order": [
+    "users/instructors.json",
+    "users/students.json",
+    "courses/course-001-an-toan-lao-dong-tong-quan.json",
+    "courses/course-002-an-toan-lam-viec-tren-cao.json",
+    "courses/course-003-an-toan-dien-cong-truong.json",
+    "courses/course-004-an-toan-van-hanh-may-thiet-bi.json",
+    "courses/course-005-so-cuu-ung-pho-su-co.json",
+    "quizzes/quiz-course-001-final.json",
+    "quizzes/quiz-course-002-final.json",
+    "quizzes/quiz-course-003-final.json",
+    "quizzes/quiz-course-004-final.json",
+    "quizzes/quiz-course-005-final.json",
+    "certificates/certificate-templates.json",
+    "commerce/membership-plans.json",
+    "community/forum-topics.json",
+    "community/badges.json"
+  ]
+}

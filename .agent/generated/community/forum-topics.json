@@ -1,0 +1,43 @@
+{
+  "forum_topics": [
+    {
+      "title": "Kinh nghiệm xử lý tình huống ngã cao tại công trường",
+      "body": "<p>Chào các anh chị, em muốn hỏi về kinh nghiệm thực tế khi xử lý tình huống có công nhân bị ngã từ giàn giáo. Tại công trường em đang làm, tuần trước có 1 trường hợp công nhân trượt chân từ tầng 3 nhưng may mắn dây an toàn giữ lại. Các anh chị có kinh nghiệm gì về việc kiểm tra dây an toàn sau khi đã chịu tải không ạ?</p>",
+      "replies": [
+        {"body": "<p>Theo quy định, dây an toàn sau khi đã chịu tải (giữ người ngã) phải được loại bỏ ngay và thay thế bằng dây mới. Không được tiếp tục sử dụng vì cấu trúc sợi bên trong có thể đã bị tổn thương dù bên ngoài trông vẫn bình thường.</p>"},
+        {"body": "<p>Bổ sung thêm: ngoài việc thay dây, cần kiểm tra lại điểm neo và lập biên bản sự cố. Đây cũng là cơ hội tốt để tổ chức buổi toolbox talk nhắc nhở toàn bộ công nhân về quy trình làm việc trên cao.</p>"}
+      ]
+    },
+    {
+      "title": "Hỏi về quy trình Lockout/Tagout trên công trường VN",
+      "body": "<p>Các anh chị cho em hỏi, quy trình Lockout/Tagout (LOTO) áp dụng trên công trường xây dựng ở Việt Nam có khác gì so với tiêu chuẩn quốc tế không? Em đang soạn SOP cho công trường mới và muốn đảm bảo tuân thủ đúng quy định.</p>",
+      "replies": [
+        {"body": "<p>Về cơ bản nguyên tắc LOTO là giống nhau: cách ly nguồn năng lượng, khóa, gắn thẻ, kiểm tra. Tuy nhiên ở VN cần tham chiếu thêm QCVN 01:2008/BCT về an toàn điện và Thông tư 31/2018/TT-BLĐTBXH. Quan trọng là phải có biểu mẫu bằng tiếng Việt để công nhân đọc hiểu được.</p>"}
+      ]
+    },
+    {
+      "title": "Chia sẻ checklist kiểm tra giàn giáo hàng ngày",
+      "body": "<p>Em xin chia sẻ bản checklist kiểm tra giàn giáo mà công trường em đang sử dụng. Mong các anh chị góp ý thêm:</p><ul><li>Kiểm tra chân đế và tấm kê</li><li>Kiểm tra các mối nối và khóa liên kết</li><li>Kiểm tra sàn công tác và ván lót</li><li>Kiểm tra lan can bảo vệ (trên, giữa, chân)</li><li>Kiểm tra hệ thống chống đổ</li><li>Kiểm tra biển báo và rào chắn</li></ul>",
+      "replies": [
+        {"body": "<p>Checklist khá đầy đủ rồi. Em nên thêm mục kiểm tra tải trọng cho phép có được dán rõ ràng không, và kiểm tra xem giàn giáo có bị nghiêng hay lún không (dùng thước thủy). Ngoài ra nên có mục ký xác nhận của người kiểm tra và ngày giờ kiểm tra.</p>"},
+        {"body": "<p>Bổ sung: nên thêm mục kiểm tra thời tiết. Nếu gió trên cấp 5 hoặc mưa lớn thì phải ngừng làm việc trên giàn giáo theo TCVN 12484.</p>"}
+      ]
+    },
+    {
+      "title": "Cách tổ chức diễn tập PCCC hiệu quả trên công trường",
+      "body": "<p>Công trường em sắp tổ chức diễn tập PCCC theo quy định 6 tháng/lần. Các anh chị có kinh nghiệm gì để buổi diễn tập thực sự hiệu quả chứ không chỉ mang tính hình thức?</p>",
+      "replies": [
+        {"body": "<p>Theo kinh nghiệm của tôi, nên chia thành 2 phần: (1) Lý thuyết ngắn 15-20 phút nhắc lại vị trí bình chữa cháy, lối thoát hiểm, điểm tập trung; (2) Thực hành: cho từng tổ thử dùng bình chữa cháy thật (loại bột hoặc CO2). Quan trọng là mỗi công nhân đều phải được cầm bình và thử ít nhất 1 lần.</p>"},
+        {"body": "<p>Nên tạo kịch bản sát thực tế, ví dụ: cháy tại kho vật liệu, hoặc cháy tại phòng máy phát điện. Đừng báo trước giờ diễn tập để kiểm tra phản ứng thực sự của công nhân. Sau diễn tập phải họp rút kinh nghiệm và ghi biên bản.</p>"}
+      ]
+    },
+    {
+      "title": "PPE cho mùa nắng nóng — làm sao để công nhân chịu đeo?",
+      "body": "<p>Vấn đề muôn thuở: mùa hè nắng nóng 38-40°C, công nhân thường bỏ mũ bảo hộ, không đeo kính, cởi áo phản quang vì nóng. Các anh chị có giải pháp gì hiệu quả không ạ?</p>",
+      "replies": [
+        {"body": "<p>Một số giải pháp đã áp dụng hiệu quả: (1) Mua mũ bảo hộ có quạt tích hợp hoặc có lỗ thoát khí; (2) Phát khăn lạnh/băng đá cho công nhân; (3) Bố trí ca làm việc tránh giờ nắng gắt (11h-14h); (4) Đặt trạm nước uống ở nhiều vị trí trên công trường.</p>"},
+        {"body": "<p>Kinh nghiệm công trường tôi: kết hợp khen thưởng (thưởng tổ có tỷ lệ đeo PPE cao nhất) và kỷ luật (phạt trừ lương nếu vi phạm). Nhưng quan trọng nhất là giám sát phải gương mẫu đeo đầy đủ trước.</p>"}
+      ]
+    }
+  ]
+}

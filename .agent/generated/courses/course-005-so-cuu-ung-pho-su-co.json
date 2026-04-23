@@ -1,0 +1,175 @@
+{
+  "course": {
+    "title": "Sơ cứu và Ứng phó Sự cố trên Công trường",
+    "description": "<p>Khóa học chuyên sâu về sơ cứu và ứng phó sự cố dành cho đội ngũ lao động xây dựng. Khóa học bao gồm các kỹ năng sơ cứu cơ bản theo nguyên tắc DRABC, xử lý các chấn thương thường gặp như vết thương, gãy xương, bỏng và say nắng, kỹ thuật hồi sức tim phổi (CPR), sử dụng máy khử rung tim tự động (AED), và các biện pháp phòng cháy chữa cháy cùng kế hoạch ứng phó sự cố trên công trường. Qua khóa học này, các học viên sẽ có khả năng cứu sống những người gặp nạn và ứng phó hiệu quả với các tình huống khẩn cấp tại nơi làm việc.</p>",
+    "short_description": "Khóa học sơ cứu toàn diện, CPR, AED, phòng cháy chữa cháy và ứng phó sự cố cho công trường xây dựng.",
+    "category": "Other",
+    "level": "beginner",
+    "language": "vi",
+    "pricing_type": "free",
+    "price": 0,
+    "currency": "VND",
+    "duration": "16 hours",
+    "status": "published",
+    "featured": true,
+    "instructor_email": "huong.nguyen@thanhdat.vn"
+  },
+  "chapters": [
+    {
+      "title": "Nguyên tắc Sơ cứu Cơ bản",
+      "description": "Chương này giới thiệu các nguyên tắc cơ bản của sơ cứu, quy trình DRABC, đánh giá hiện trường, liên hệ với cơ quan cứu hộ và sử dụng hộp sơ cứu.",
+      "weight": 0,
+      "lessons": [
+        {
+          "title": "Giới thiệu về Sơ cứu và Tầm quan trọng của nó",
+          "type": "text",
+          "content": "<h2>Giới thiệu về Sơ cứu và Tầm quan trọng của nó</h2><p>Sơ cứu là những biện pháp y tế ban đầu được cung cấp cho một người bị thương hoặc bị bệnh trước khi họ nhận được sự chăm sóc y tế chuyên nghiệp. Trong ngành xây dựng, sơ cứu có vai trò cực kỳ quan trọng vì những tai nạn lao động có thể xảy ra bất cứ lúc nào.</p><p><strong>Tầm quan trọng của Sơ cứu:</strong></p><ul><li><strong>Cứu sống mạng sống:</strong> Một số tình huống cấp cứu có thể được cứu sống nếu sơ cứu được thực hiện đúng và kịp thời.</li><li><strong>Giảm nhẹ chấn thương:</strong> Sơ cứu có thể ngăn chặn tình trạng bệnh tiến triển xấu hơn.</li><li><strong>Giảm đau đớn:</strong> Các biện pháp sơ cứu giúp người bị thương cảm thấy thoải mái hơn.</li><li><strong>Tâm lý an tâm:</strong> Được chăm sóc kịp thời giúp người bị thương tinh thần ổn định hơn.</li></ul><p>Mỗi người lao động trên công trường nên được đào tạo cơ bản về sơ cứu để sẵn sàng giúp đỡ khi cần thiết.</p>",
+          "duration": 15,
+          "is_preview": true,
+          "weight": 0
+        },
+        {
+          "title": "Quy trình DRABC - Nền tảng của Sơ cứu",
+          "type": "text",
+          "content": "<h2>Quy trình DRABC - Nền tảng của Sơ cứu</h2><p>DRABC là một quy trình được công nhân rộng rãi để đánh giá và xử lý các tình huống cấp cứu. Mỗi chữ cái đại diện cho một bước:</p><p><strong>D - Danger (Nguy hiểm):</strong> Đánh giá xem liệu có nguy hiểm nào cho bản thân, người bị thương và những người xung quanh hay không. Nếu nơi đó nguy hiểm, hãy di chuyển nạn nhân đến nơi an toàn hoặc tìm sự giúp đỡ của cảnh sát, cứu hộ.</p><p><strong>R - Response (Phản ứng):</strong> Kiểm tra xem nạn nhân còn phản ứng hay không. Hãy gọi tên họ, vỗ nhẹ vai họ. Nếu họ không phản ứng, người bị thương có thể bất tỉnh.</p><p><strong>A - Airway (Đường thở):</strong> Kiểm tra xem đường thở của nạn nhân có bị tắc hay không. Mở miệng kiểm tra xem có dị vật, máu, hoặc chất tiết trong đó hay không. Nếu có, cẩn thận loại bỏ bằng tay.</p><p><strong>B - Breathing (Hô hấp):</strong> Kiểm tra xem nạn nhân có đang thở hay không. Quan sát nhứng động lên xuống của ngực, cảm nhận hơi thở trên má của bạn. Nếu không có hô hấp, chuẩn bị tiến hành CPR.</p><p><strong>C - Circulation (Tuần hoàn):</strong> Kiểm tra mạch đập tại cổ hoặc cổ tay. Nếu không có mạch, bắt đầu CPR ngay lập tức.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Đánh giá Hiện trường và Gọi Cứu hộ (115)",
+          "type": "text",
+          "content": "<h2>Đánh giá Hiện trường và Gọi Cứu hộ</h2><p>Trước khi tiếp cận nạn nhân, bạn phải đánh giá an toàn của hiện trường. Trên công trường xây dựng, các nguy hiểm bao gồm dây điện nổ tung, vật nặng sắp rơi, khí độc, hoặc hóa chất rò rỉ.</p><p><strong>Đánh giá Hiện trường:</strong> Kiểm tra xem có dây điện, vật nặng, hoặc các mối nguy khác. Đảm bảo không có khí độc hoặc hóa chất nguy hiểm. Nếu hiện trường không an toàn, hãy chờ cơ quan cứu hộ đến và không vượt quá vùng nguy hiểm.</p><p><strong>Gọi Cứu hộ (115):</strong> Nếu người bị thương nặng, gọi 115 ngay. Cung cấp: địa chỉ chính xác, tính chất tai nạn, số người bị thương, và các biện pháp đã thực hiện. Không nên di chuyển nạn nhân mà chưa được tư vấn, đặc biệt trong trường hợp gãy xương cột sống.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        },
+        {
+          "title": "Hộp Sơ cứu, Dụng cụ và Kiểm tra Định kỳ",
+          "type": "text",
+          "content": "<h2>Hộp Sơ cứu, Dụng cụ và Kiểm tra Định kỳ</h2><p>Mỗi công trường xây dựng phải có ít nhất một hộp sơ cứu đầy đủ dụng cụ và được kiểm tra thường xuyên.</p><p><strong>Nội dung Hộp Sơ cứu cần thiết:</strong> Băng cá nhân khác kích cỡ, gạc vô trùng, thuốc xay cỏ, ôn chỉ và kim may, kem chữa bỏng, nước rửa mắt (muối sinh lý), khẩu trang y tế, gang tay vô trùng, cắt nắt, kéo nhỏ, dây buộc chặt, cáng và vật đệm, danh sách số điện thoại cấp cứu.</p><p><strong>Kiểm tra Định kỳ:</strong> Hộp sơ cứu phải được kiểm tra hàng tháng hoặc hàng quý để đảm bảo tất cả dụng cụ vẫn còn hạn sử dụng và đầy đủ. Những dụng cụ hết hạn hoặc bị hỏng phải được thay thế ngay. Lưu giữ danh sách chi tiết những gì được cấp phát và khi nào.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 3
+        }
+      ]
+    },
+    {
+      "title": "Xử lý Chấn thương Thường gặp",
+      "description": "Chương này hướng dẫn cách xử lý các loại chấn thương phổ biến trên công trường xây dựng: vết thương hở, gãy xương, bỏng và say nắng.",
+      "weight": 1,
+      "lessons": [
+        {
+          "title": "Xử lý Vết thương Hở và Kiếm soát Chảy máu",
+          "type": "text",
+          "content": "<h2>Xử lý Vết thương Hở và Kiểm soát Chảy máu</h2><p><strong>Phân loại Vết thương:</strong> Vết mổ (cắt sạch), vết cào (mất lớp da bề ngoài), vết đâm (từ vật nhọn), và vết rách (mô xé nát).</p><p><strong>Các bước Xử lý:</strong> Rửa tay trước khi xử lý. Nếu chảy máu nhiều, áp dụng áp lực trực tiếp bằng gạc sạch 10-15 phút. Rửa vết thương bằng nước sạch hoặc muối sinh lý. Lau khô bằng gạc vô trùng. Thoa thuốc sát khuẩn. Phủ bằng gạc vô trùng hoặc băng. Nếu chảy máu không dừng sau 15 phút, gọi cứu hộ.</p><p><strong>Ngăn ngừa Nhiễm trùng:</strong> Luôn dùng dụng cụ sạch/vô trùng, không chạm trực tiếp vết thương bằng tay, và theo dõi dấu hiệu nhiễm trùng (sưng đỏ, mủ, sốt).</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 0
+        },
+        {
+          "title": "Xử lý Gãy Xương và Bong Gân",
+          "type": "text",
+          "content": "<h2>Xử lý Gãy Xương và Bong Gân</h2><p><strong>Dấu hiệu của Gãy Xương:</strong> Đau đớn từng tính, sưng tấy, mẫu đỏ, biến dạng, tiếng lạo xạo, và mất khả năng chịu lực.</p><p><strong>Các bước Xử lý:</strong> Yêu cầu nạn nhân ngừng di chuyển. Cố định chi bị thương bằng nẹp, chiếc khăn, hoặc bàn để ngăn chặn chuyển động. Áp dụng túi đá bọc trong khăn 15-20 phút để giảm sưng tấy. Nâng chi bị thương cao hơn mức tim nếu có thể. Không chuẩn chỉnh xương bị gãy, gọi cứu hộ ngay.</p><p><strong>Xử lý Bong Gân:</strong> Bong gân nhẹ hơn gãy xương nhưng có dấu hiệu tương tự. Xử lý giống như gãy xương nhưng nạn nhân thường có thể chịu lực sau vài tuần. Đi khám bác sĩ để chắc chắn không có gãy xương ẩn.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Xử lý Bỏng: Phân loại và Sơ cứu",
+          "type": "text",
+          "content": "<h2>Xử lý Bỏng: Phân loại và Sơ cứu</h2><p><strong>Phân loại Bỏng theo Mức độ:</strong> Bỏng độ 1 (đỏ bề mặt, không phồng nước). Bỏng độ 2 (phồng nước, đau dữ dội). Bỏng độ 3 (chết hoại, toàn bộ chiều sâu da, màu trắng hoặc đen).</p><p><strong>Các bước Xử lý Bỏng:</strong> Dừng lửa hoặc bức xạ nhiệt bằng nước sạch. Rửa vùng bỏng bằng nước chảy lạnh 10-20 phút. Cẩn thận loại bỏ quần áo nếu không dán vào da, nếu dán chặt hãy để yên. Phủ bằng gạc sạch hoặc khăn sạch (không bôi dầu hay krim). Cho nạn nhân uống nước nếu tỉnh táo. Gọi 115 nếu bỏng độ 2 hay 3.</p><p><strong>Những gì KHÔNG nên làm:</strong> Không bôi dầu, kem, hoặc chất khác lên vùng bỏng. Không chọc vỡ các phồng nước vì chúng bảo vệ vết bỏng khỏi nhiễm trùng.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        },
+        {
+          "title": "Xử lý Say Nắng và Kiệt Sức vì Nhiệt",
+          "type": "text",
+          "content": "<h2>Xử lý Say Nắng và Kiệt Sức vì Nhiệt</h2><p><strong>Dấu hiệu Say Nắng:</strong> Nhiệt độ cơ thể cao (trên 40°C), da nóng và khô, nhịp tim nhanh, đầu quay, chóng mặt, hoảng loạn, mất ý thức, hoặc co giật.</p><p><strong>Các bước Xử lý Say Nắng:</strong> Đưa nạn nhân đến nơi mát. Phun nước lạnh lên người, đắp nước lạnh lên cơ thể (ưu tiên cổ, nách, bẹn). Nâng chân cao hơn đầu nếu nạn nhân tỉnh táo. Cho uống nước lạnh từ từ. Gọi 115 ngay vì đây là tình huống nguy hiểm.</p><p><strong>Kiệt Sức vì Nhiệt:</strong> Nhẹ hơn say nắng với dấu hiệu da ướt mồ hôi, mệt mỏi, buồn nôn. Xử lý tương tự nhưng tình trạng cải thiện nhanh hơn. Phòng ngừa bằng uống nước đầy đủ và nghỉ ngơi thường xuyên.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 3
+        }
+      ]
+    },
+    {
+      "title": "Kỹ thuật CPR và Xử lý Ngạt thở",
+      "description": "Chương này dạy kỹ thuật hồi sức tim phổi (CPR) cho người lớn, cách sử dụng máy khử rung tim tự động (AED), thao tác Heimlich cho ngạt dị vật, và xử lý ngộ độc khí.",
+      "weight": 2,
+      "lessons": [
+        {
+          "title": "CPR Người Lớn: Các bước Chi tiết",
+          "type": "text",
+          "content": "<h2>CPR Người Lớn: Các bước Chi tiết</h2><p>Hồi sức Tim-Phổi (CPR) là kỹ thuật cứu sống khi tim ngừng đập hoặc người bị thương không còn thở. CPR kết hợp nén tim (chest compression) và nhân tạo hô hấp (rescue breathing).</p><p><strong>Chuẩn bị:</strong> Kiểm tra phản ứng. Gọi 115 ngay. Đặt nạn nhân nằm ngửa trên mặt cứng, phẳng. Mở đường thở: ngả đầu hơi lên, nâng cằm.</p><p><strong>Nén Tim:</strong> Đặt gót tay ở giữa ngực (giữa hai núm vú). Đặt tay khác lên tay thứ nhất, khóa các ngón tay. Nén xuống ít nhất 5cm với tốc độ 100-120 lần/phút. Cho phép ngực nở trở lại hoàn toàn sau mỗi lần nén. Tiếp tục ít nhất 2 phút trước khi kiểm tra lại.</p><p><strong>Nhân tạo Hô hấp:</strong> Sau 30 lần nén, thực hiện 2 lần nhân tạo hô hấp. Đóng mũi nạn nhân, thi hơi vào miệng. Mỗi lần kéo dài 1 giây, nhìn ngực nở lên. Quay lại nén tim. Tiếp tục cho đến khi có cứu hộ hoặc nạn nhân thở.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 0
+        },
+        {
+          "title": "Sử dụng Máy Khử rung Tim Tự động (AED)",
+          "type": "text",
+          "content": "<h2>Sử dụng Máy Khử rung Tim Tự động (AED)</h2><p>AED là một thiết bị cứu sống có thể khôi phục lại nhịp tim bình thường khi tim ngừng đập.</p><p><strong>Các bước Sử dụng AED:</strong> Bật máy AED (thường bằng nút ON hoặc tự động bật khi mở nắp). Phơi ngực nạn nhân. Dán hai miếng điện cực: một trên bên phải ngực (dưới xương đòn), một dưới cánh tay trái (dưới cạnh). AED sẽ phân tích nhịp tim và quyết định có cần sốc hay không. Nếu cần sốc, đảm bảo không ai chạm nạn nhân, nhấn nút SHOCK. Sau sốc, tiếp tục CPR khoảng 2 phút, sau đó AED phân tích lại.</p><p><strong>Mẹo Sử dụng AED:</strong> AED an toàn và gần như không có hại. Nếu không chắc, hãy sử dụng vì cơ hội cứu sống sẽ lớn hơn. Những công trường lớn nên có AED tại hiện trường.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Thao tác Heimlich - Xử lý Ngạt dị vật",
+          "type": "text",
+          "content": "<h2>Thao tác Heimlich - Xử lý Ngạt dị vật</h2><p><strong>Dấu hiệu Ngạt dị vật:</strong> Không thể nói, ho khó khăn hoặc không có tiếng, mặt đỏ hoặc tím tái, cơ thể co cứng.</p><p><strong>Các bước cho Người tỉnh táo:</strong> Đứng phía sau nạn nhân, ôm vòng quanh người. Đặt nắm tay vào vị trí giữa rốn và xương ức. Đặt tay khác trên tay nắm, khóa các ngón tay. Thực hiện động tác mạnh, nhanh hướng vào trong và hướng lên trên. Lặp lại 5-6 lần hoặc cho đến khi dị vật loại bỏ.</p><p><strong>Nếu Nạn nhân Bất tỉnh:</strong> Bắt đầu CPR. Trước nhân tạo hô hấp, mở miệng kiểm tra dị vật, loại bỏ nếu thấy. Tiếp tục CPR đến khi cứu hộ đến.</p><p><strong>Lưu ý:</strong> Không loại bỏ dị vật bằng dụng cụ hoặc tay nếu không thể nhìn thấy hoặc không dễ tiếp cận vì có thể làm tồi tệ hơn.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        },
+        {
+          "title": "Xử lý Ngộ độc Khí (Gas Inhalation)",
+          "type": "text",
+          "content": "<h2>Xử lý Ngộ độc Khí (Gas Inhalation)</h2><p><strong>Dấu hiệu Ngộ độc Khí:</strong> Đầu quay, chóng mặt, nhức đầu, buồn nôn, nôn mửa, khó thở, mất tỉnh táo hoặc bất tỉnh, nhịp tim nhanh hoặc bất thường.</p><p><strong>Các bước Xử lý:</strong> Đưa nạn nhân ra khỏi vùng có khí độc ngay. Nếu bạn cũng hít phải khí độc, thoát ra trước. Đặt nạn nhân nằm ngửa, mở đường thở. Nếu khó thở, cho dụng cụ thở oxy nếu có. Nếu không thở, thực hiện nhân tạo hô hấp. Liên hệ 115 ngay, cung cấp thông tin về loại khí độc. Theo dõi nạn nhân đến khi cứu hộ đến.</p><p><strong>Phòng ngừa:</strong> Đảm bảo thông gió khi làm việc ở không gian kín. Sử dụng khẩu trang hoặc máy thở nếu cần. Không bao giờ lao vào vùng khí độc mà chưa chắc chắn về an toàn.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 3
+        }
+      ]
+    },
+    {
+      "title": "Phòng cháy Chữa cháy và Kế hoạch Ứng phó",
+      "description": "Chương này giới thiệu các loại đám cháy, nguyên tắc sử dụng bình chữa cháy PASS, kế hoạch sơ tán và kế hoạch ứng phó sự cố (ERP) trên công trường.",
+      "weight": 3,
+      "lessons": [
+        {
+          "title": "Các Loại Đám cháy và Nguyên nhân",
+          "type": "text",
+          "content": "<h2>Các Loại Đám cháy và Nguyên nhân</h2><p><strong>Loại A - Cháy Chất rắn:</strong> Gỗ, giấy, vải, than, nhựa. Dập bằng nước, bọt hoặc bột khô.</p><p><strong>Loại B - Cháy Chất lỏng:</strong> Xăng, dầu, sơn, dầu diesel. KHÔNG dùng nước vì sẽ làm lan tỏa. Dùng bọt, CO2 hoặc bột khô.</p><p><strong>Loại C - Cháy Khí:</strong> Khí gas, methane, butane. Dập bằng tắt khí nếu có thể, sau đó dùng bột khô hoặc CO2.</p><p><strong>Loại D - Cháy Kim loại:</strong> Magnesium, lithium, sodium (hiếm trên công trường). KHÔNG dùng nước. Dùng cát khô hoặc bột khô đặc biệt.</p><p><strong>Loại E - Cháy Điện:</strong> Dây điện bị hỏng, quá tải. KHÔNG dùng nước. Tắt điện trước nếu có thể, dùng CO2 hoặc bột khô. Sau tắt, xử lý loại cháy cơ bản.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 0
+        },
+        {
+          "title": "Nguyên tắc PASS - Cách dùng Bình chữa cháy",
+          "type": "text",
+          "content": "<h2>Nguyên tắc PASS - Cách dùng Bình chữa cháy</h2><p>PASS là quy trình bốn bước để sử dụng bình chữa cháy cầm tay. Mỗi chữ cái đại diện cho một hành động.</p><p><strong>P - Pull (Kéo):</strong> Kéo chốt an toàn khỏi tay cầm bình chữa cháy.</p><p><strong>A - Aim (Nhắm):</strong> Nhắm ống phun về phía gốc của ngọn lửa, không phải đầu lửa. Đứng cách lửa khoảng 2 mét.</p><p><strong>S - Squeeze (Ấn):</strong> Ấn cần gạt trên tay cầm để phun chất dập cháy. Ấn từ từ và liên tục.</p><p><strong>S - Sweep (Quét):</strong> Quét ống phun từ trái sang phải, từ dưới lên trên, để phủ vùng cháy. Tiếp tục cho đến khi lửa tắt hoặc hết chất chữa cháy.</p><p><strong>Lưu ý:</strong> Luôn có đường thoát phía sau lưng. Nếu lửa không kiểm soát sau 10-15 giây, sơ tán ngay và gọi 114. Sau dập cháy, giám sát để tránh bùng phát lại.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Kế hoạch Sơ tán Người từ Hiện trường Cháy",
+          "type": "text",
+          "content": "<h2>Kế hoạch Sơ tán Người từ Hiện trường Cháy</h2><p>Kế hoạch sơ tán giúp mọi người thoát ra khỏi công trường một cách nhanh chóng và an toàn khi xảy ra cháy.</p><p><strong>Các yếu tố cần có:</strong> Lập bản đồ tất cả lối ra từ mỗi khu vực. Xác định điểm tập trung an toàn ngoài công trường (cách khoảng 100 mét). Chỉ định những người chịu trách nhiệm. Chuẩn bị công cụ giao tiếp (kèn, loa, điện thoại). Xác định điểm kiểm tra sự vắng mặt.</p><p><strong>Các bước:</strong> Khi chuông báo động, tất cả sơ tán ngay (không mang vật dụng). Đi nhanh nhưng không chạy. Gập quần áo che miệng để tránh khí độc. Không ẩn nấp hoặc quay lại. Đến điểm tập trung, chỉ định tăng báo cáo. Luyện tập ít nhất quý.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        },
+        {
+          "title": "Kế hoạch Ứng phó Sự cố (ERP) - Emergency Response Plan",
+          "type": "text",
+          "content": "<h2>Kế hoạch Ứng phó Sự cố (ERP) - Emergency Response Plan</h2><p>ERP là một kế hoạch toàn diện giúp công trường ứng phó với các tình huống khẩn cấp như cháy, tai nạn lao động, rò rỉ hóa chất, hoặc tình huống y tế nghiêm trọng.</p><p><strong>Các thành phần của ERP:</strong> Đánh giá rủi ro để xác định loại sự cố có khả năng xảy ra. Lập đội ứng phó (cấp cứu, PCCC, sơ tán, hỗ trợ). Chuẩn bị hệ thống báo động và danh bạ liên lạc. Chuẩn bị trang bị (hộp sơ cứu, bình chữa cháy, dụng cụ cứu hộ). Đào tạo toàn bộ nhân viên. Tổ chức luyện tập định kỳ. Lưu giữ hồ sơ để cải thiện liên tục.</p><p><strong>Mục tiêu:</strong> Giảm thiểu thương vong, hậu quả sự cố, và phục hồi nhanh chóng. ERP không chỉ là tài liệu mà phải được thực hành thường xuyên.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 3
+        }
+      ]
+    }
+  ]
+}

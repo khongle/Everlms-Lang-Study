@@ -1,0 +1,9 @@
+{
+  "templates": [
+    {"name": "Chứng nhận - An toàn Lao động Tổng quan", "layout": "landscape"},
+    {"name": "Chứng nhận - An toàn Làm việc trên Cao", "layout": "landscape"},
+    {"name": "Chứng nhận - An toàn Điện trên Công trường", "layout": "landscape"},
+    {"name": "Chứng nhận - An toàn Vận hành Máy và Thiết bị", "layout": "landscape"},
+    {"name": "Chứng nhận - Sơ cứu và Ứng phó Sự cố", "layout": "landscape"}
+  ]
+}

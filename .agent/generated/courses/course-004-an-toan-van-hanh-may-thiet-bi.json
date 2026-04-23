@@ -1,0 +1,174 @@
+{
+  "course": {
+    "title": "An toàn Vận hành Máy và Thiết bị Xây dựng",
+    "description": "<p>Khóa học toàn diện về an toàn vận hành máy móc và thiết bị xây dựng, được thiết kế cho các nhân viên vận hành, cán bộ an toàn, và quản lý công trường tại các doanh nghiệp xây dựng Việt Nam. Khóa học cung cấp kiến thức về phân loại thiết bị, yêu cầu chứng chỉ vận hành, quy định pháp luật, kỹ thuật vận hành an toàn, và quy trình bảo trì kiểm định thiết bị nặng phổ biến trên công trường.</p>",
+    "short_description": "Khóa học chuyên sâu về an toàn vận hành máy móc thiết bị xây dựng: cẩu trục, máy đào, máy xúc, xe ben, máy trộn bê tông, bơm bê tông, và quy trình bảo trì.",
+    "category": "Other",
+    "level": "intermediate",
+    "language": "vi",
+    "pricing_type": "paid",
+    "price": 500000,
+    "currency": "VND",
+    "duration": "20 hours",
+    "status": "published",
+    "featured": true,
+    "instructor_email": "nam.le@thanhdat.vn"
+  },
+  "chapters": [
+    {
+      "title": "Tổng quan An toàn Thiết bị Xây dựng",
+      "description": "Chương này giới thiệu về phân loại các thiết bị xây dựng, yêu cầu chứng chỉ vận hành, và các quy định pháp luật liên quan.",
+      "weight": 0,
+      "lessons": [
+        {
+          "title": "Phân loại Thiết bị Xây dựng",
+          "type": "text",
+          "content": "<h2>Phân loại Thiết bị Xây dựng</h2><p>Thiết bị xây dựng được phân loại dựa trên chức năng, tính năng kỹ thuật và mức độ nguy hiểm. Hiểu rõ sự phân loại này giúp xác định yêu cầu an toàn, chứng chỉ vận hành, và quy trình bảo trì phù hợp.</p><p><strong>Thiết bị Nâng và Vận chuyển:</strong> Cẩu tháp, cẩu di động, cẩu tời, thang máy công trình, xe nâng hàng. Những thiết bị này có tải trọng lớn, yêu cầu toán tử có chứng chỉ cao.</p><p><strong>Thiết bị Đào Xúc:</strong> Máy xúc, máy ủi, máy cảm, máy cuốc. Những thiết bị này hoạt động với mặt đất không bằng phẳng, đòi hỏi kỹ năng vận hành cao.</p><p><strong>Thiết bị Nén Rung:</strong> Máy ủi rung, máy nén bê tông, xe cán lẫn. Những thiết bị này tạo rung lắc, cần kiểm tra định kỳ.</p><p><strong>Thiết bị Công việc Bê tông:</strong> Máy trộn bê tông, bơm bê tông, tông bê tông. Những thiết bị này hoạt động với áp lực cao.</p><p><strong>Thiết bị Vận chuyển Vật liệu:</strong> Xe ben, xe tải, xe bồn. Những thiết bị này vận chuyển vật liệu, cần kiểm tra thường xuyên.</p><p>Mỗi loại thiết bị có những nguy hiểm riêng, yêu cầu các biện pháp an toàn khác nhau.</p>",
+          "duration": 15,
+          "is_preview": true,
+          "weight": 0
+        },
+        {
+          "title": "Yêu cầu Chứng chỉ Vận hành Thiết bị",
+          "type": "text",
+          "content": "<h2>Yêu cầu Chứng chỉ Vận hành Thiết bị</h2><p>Ở Việt Nam, các thiết bị xây dựng có độ nguy hiểm cao yêu cầu toán tử phải có chứng chỉ vận hành hợp lệ. Chứng chỉ này được cấp bởi các cơ quan nhà nước sau khi ứng viên vượt qua đào tạo lý thuyết và thi thực hành.</p><p><strong>Thiết bị Yêu cầu Chứng chỉ:</strong> Cẩu tháp, cẩu tời, cẩu di động, thang máy công trình, máy xúc loại lớn, bơm bê tông, và các thiết bị khác được xác định bởi Bộ Lao động.</p><p><strong>Nội dung Đào tạo:</strong> Lý thuyết (20-40 giờ) và thực hành (20-40 giờ) tùy thuộc loại thiết bị. Bao gồm cơ chế hoạt động, kỹ thuật vận hành, an toàn, bảo dưỡng, xử lý sự cố.</p><p><strong>Yêu cầu Cá nhân:</strong> Độ tuổi từ 18 trở lên, có sức khỏe tốt, không mù màu, thị lực đủ tiêu chuẩn, không bị các bệnh mãn tính ảnh hưởng đến an toàn.</p><p><strong>Thời hạn Chứng chỉ:</strong> Thông thường là 3-5 năm tùy loại thiết bị. Sau khi hết hạn, cần cấp lại sau khi học tập lại.</p><p><strong>Trách nhiệm Nhà tuyển dụng:</strong> Chỉ cho phép những người có chứng chỉ hợp lệ vận hành thiết bị tương ứng. Vi phạm sẽ bị phạt hành chính và có trách nhiệm bồi thường khi xảy ra tai nạn.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Quy định Pháp luật về Vận hành Thiết bị",
+          "type": "text",
+          "content": "<h2>Quy định Pháp luật về Vận hành Thiết bị</h2><p>Vận hành thiết bị xây dựng được quản lý bởi nhiều quy định pháp luật tại cấp quốc gia và địa phương. Các nhà tuyên dụng và toán tử phải tuân thủ đầy đủ các quy định này.</p><p><strong>Luật An toàn Vệ sinh Lao động:</strong> Quy định trách nhiệm của nhà tuyển dụng trong việc cung cấp thiết bị an toàn, đào tạo, kiểm tra, bảo dưỡng.</p><p><strong>Thông tư Bộ Lao động:</strong> Quy định chi tiết về tiêu chuẩn an toàn cho từng loại thiết bị, yêu cầu chứng chỉ vận hành, quy trình cấp giấy phép.</p><p><strong>Tiêu chuẩn Quốc gia (TCVN):</strong> Quy định các tiêu chuẩn kỹ thuật cho thiết bị (mẫu, độ bền, tải trọng tối đa, v.v.).</p><p><strong>Quy định của Bộ Xây dựng:</strong> Quy định về điều kiện an toàn công trình, bao gồm yêu cầu đối với thiết bị sử dụng trong quá trình xây dựng.</p><p><strong>Quy định Địa phương:</strong> Các tỉnh, thành phố có thể ban hành các quy định bổ sung phù hợp với điều kiện địa phương.</p><p><strong>Hình phạt Vi phạm:</strong> Phạt tiền từ 5-50 triệu đồng, tịch thu thiết bị, đình chỉ hoạt động, hoặc xử lý hình sự tùy mức độ vi phạm và hậu quả.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "title": "An toàn Cẩu trục và Thiết bị Nâng",
+      "description": "Chương này tập trung vào vận hành an toàn các loại cẩu trục (tháp, di động) và thiết bị nâng, bao gồm tải trọng, tín hiệu, vùng cấm.",
+      "weight": 1,
+      "lessons": [
+        {
+          "title": "Cẩu Tháp: Cấu trúc, Tải trọng và Vận hành",
+          "type": "text",
+          "content": "<h2>Cẩu Tháp: Cấu trúc, Tải trọng và Vận hành</h2><p>Cẩu tháp là thiết bị nâng vật liệu có tải trọng lớn (từ 10-80 tấn), được lắp đặt cố định trên công trường. Cẩu tháp là một trong những thiết bị nguy hiểm nhất trong xây dựng, đòi hỏi toán tử có chứng chỉ cao.</p><p><strong>Cấu trúc Cẩu Tháp:</strong> Gồm ba phần chính: phần tháp (trụ chính), phần cấu kiến (đầu cẩu), phần máy kéo. Các bộ phận này được kết nối bởi các bu lông, dây cáp cao cấp.</p><p><strong>Tải trọng Cực đại:</strong> Được quy định rõ ràng trên hộc ký kỹ thuật của mỗi cẩu. Vượt quá tải trọng có thể dẫn đến gãy cẩu, sụp đổ, đặc biệt nguy hiểm ở độ cao.</p><p><strong>Kiểm tra Trước Vận hành:</strong> Mỗi buổi sáng, toán tư phải kiểm tra tình trạng dây cáp, móc cẩu, các bu lông, hệ thống điện, phanh, cơ cấu báo động.</p><p><strong>Tín hiệu Vận hành:</strong> Sử dụng tín hiệu tay chuẩn quốc tế hoặc thiết bị liên lạc hai chiều giữa toán tư cẩu và người chỉ huy. Tín hiệu phải rõ ràng, không gây nhầm lẫn.</p><p><strong>Vùng Cấm:</strong> Không được vận hành cẩu khi có người đứng dưới tải, trong bán kính 15m từ vị trí làm việc, hoặc gần dây điện.</p><p><strong>Tốc độ Vận hành:</strong> Nâng/hạ chậm (0.5-1 m/s), di chuyển cẩu chậm, tránh va chạm đột ngột.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 0
+        },
+        {
+          "title": "Cẩu Di động, Cẩu Tời và An toàn Móc Cẩu",
+          "type": "text",
+          "content": "<h2>Cẩu Di động, Cẩu Tời và An toàn Móc Cẩu</h2><p>Ngoài cẩu tháp cố định, các dự án xây dựng còn sử dụng cẩu di động, cẩu tời, với các đặc điểm an toàn khác biệt.</p><p><strong>Cẩu Di động (Mobile Crane):</strong> Có bánh, có thể di chuyển giữa các công trường. Tải trọng từ 5-300 tấn tùy loại. Nguy hiểm là mất ổn định khi nâng, lật nghiêng, đặc biệt trên địa hình không bằng phẳng.</p><p><strong>Yêu cầu Vận hành Cẩu Di động:</strong> Chứng chỉ bắt buộc, kiểm tra mặt đất trước vận hành, cố định bánh với gối tựa, không vận hành khi có gió mạnh (50 km/h).</p><p><strong>Cẩu Tời (Lifting Jack):</strong> Thiết bị nâng nhỏ, tải trọng 1-10 tấn, sử dụng cho công việc nâng cục bộ. Nguy hiểm là tê lệch (jack lệch), làm vật bị lật.</p><p><strong>Yêu cầu An toàn Cẩu Tời:</strong> Đặt trên mặt phẳng vững chắc, sử dụng tối thiểu 2-4 jack, nâng chậm từ từ, dùng gối tựa để hạ vật.</p><p><strong>An toàn Móc Cẩu:</strong> Móc phải có chứng chỉ kiểm định, khả năng chịu tải ít nhất bằng 1.25 lần tải trọng thực tế. Kiểm tra định kỳ (6 tháng), không sử dụng móc bị méo, nứt, gỉ.</p><p><strong>Xích Cẩu:</strong> Phải là xích cấp công nghiệp, có chứng chỉ, không dùng xích thường hoặc xích bị hỏng. Kiểm tra độ dãn xích trước mỗi ca làm việc.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Tín hiệu Vận hành và Quy tắc An toàn với Cẩu",
+          "type": "text",
+          "content": "<h2>Tín hiệu Vận hành và Quy tắc An toàn với Cẩu</h2><p>Việc sử dụng tín hiệu rõ ràng là yếu tố cực kỳ quan trọng để tránh tai nạn. Sai sót trong tín hiệu có thể dẫn đến rơi vật, va chạm, hoặc tử vong.</p><p><strong>Tín hiệu Tay Chuẩn Quốc tế:</strong></p><ul><li><strong>Nâng lên:</strong> Cánh tay đưa thẳng lên, bàn tay hất gọng lên.</li><li><strong>Hạ xuống:</strong> Cánh tay đưa thẳng xuống, bàn tay lát hạ.</li><li><strong>Di chuyển về phía trước:</strong> Cả hai tay hất về phía trước.</li><li><strong>Di chuyển về phía sau:</strong> Cả hai tay hất về phía sau.</li><li><strong>Dừng ngay lập tức:</strong> Cả hai tay nâng cao, bàn tay chắp lại hoặc duỗi sang hai bên.</li><li><strong>Quay cấu kiến:</strong> Một tay chỉ hướng quay, tay kia vỗ vai hoặc chỉ vào vị trí muốn quay.</li></ul><p><strong>Liên lạc Bằng Thiết bị:</strong> Sử dụng bộ đàm 2 chiều cho những công trường lớn. Kiểm tra tín hiệu trước khi làm việc, nói rõ ràng, tránh tạp âm.</p><p><strong>Quy tắc An toàn Chung:</strong></p><ul><li>Chỉ người chỉ huy được phát tín hiệu, không được phát tín hiệu lẫn lộn.</li><li>Toán tử phải nhìn thấy tín hiệu hoặc nghe rõ lệnh trước khi hành động.</li><li>Dừng ngay lập tức nếu không chắc chắn tín hiệu.</li><li>Không vận hành cẩu ở độ kém sáng hoặc tầm nhìn hạn chế do mưa, sương mù.</li><li>Các người xung quanh phải luôn cảnh báo tiếng còi hoặc tín hiệu ánh sáng.</li></ul>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "title": "An toàn Máy đào, Máy xúc và Xe ben",
+      "description": "Chương này tập trung vào vận hành an toàn các máy đặc biệt như máy đào, máy xúc, và vận chuyển bằng xe ben, bao gồm vùng cấm, đào hố sâu.",
+      "weight": 2,
+      "lessons": [
+        {
+          "title": "Máy Đào và Máy Xúc: Cấu trúc, Vận hành và Nguy hiểm",
+          "type": "text",
+          "content": "<h2>Máy Đào và Máy Xúc: Cấu trúc, Vận hành và Nguy hiểm</h2><p>Máy đào và máy xúc là những thiết bị tầm quan trọng trên công trường xây dựng. Chúng được sử dụng để di chuyển đất, cát, sỏi, và vật liệu xây dựng khác. Những thiết bị này hoạt động với tốc độ cao, tải trọng lớn, và có nhiều điểm nguy hiểm.</p><p><strong>Cấu trúc Máy Đào/Máy Xúc:</strong> Gồm phần động cơ (diesel hoặc xăng), hệ thống thủy lực, cánh tay nâng, gàu đất, bánh xích, cabin tài xế với kính bảo vệ.</p><p><strong>Nguy hiểm Chính:</strong> Mất cân bằng khi nâng tải quá cao, bị lật trên dốc, bị rơi đất hoặc vật liệu từ gàu, quay đột ngột làm va chạm những người xung quanh, thay linh kiện khi máy đang hoạt động.</p><p><strong>Khoảng cách An toàn:</strong> Người xung quanh phải cách máy tối thiểu 2 lần chiều dài cánh tay máy (thường 20-30 mét) để tránh bị quay hit.</p><p><strong>Kiểm tra Hàng ngày:</strong> Kiểm tra dầu thủy lực, nước trong xy lanh, tình trạng bánh xích, cánh tay có bị nứt không, cabin có sạch không.</p><p><strong>Vận hành An toàn:</strong> Nâng tải chậm, tránh nâng quá cao, không nâng người, tắt máy khi thay linh kiện, trong mưa bão hoặc gió mạnh phải dừng hoạt động.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 0
+        },
+        {
+          "title": "Vùng Cấm và Đào Hố Sâu An toàn",
+          "type": "text",
+          "content": "<h2>Vùng Cấm và Đào Hố Sâu An toàn</h2><p>Máy đào và máy xúc tạo ra các vùng cấm nơi người lao động không được phép vào. Đào hố sâu còn gây thêm nguy hiểm về sạt lở, thiếu khí dưới lòng đất.</p><p><strong>Vùng Cấm Đặc biệt:</strong></p><ul><li><strong>Vùng Quay:</strong> Vùng phía sau cánh tay máy khi quay, khoảng cách từ trục trung tâm máy = khoảng cách từ trục đến đầu cánh tay + 2 mét.</li><li><strong>Vùng Dưới Gàu:</strong> Không được phép đứng dưới gàu đất hoặc vật liệu khi máy đang nâng.</li><li><strong>Vùng Gần Bánh Xích:</strong> Người không được gần bánh xích vì có nguy hiểm bị cuốn vào.</li><li><strong>Vùng Gần Động Cơ:</strong> Không được chạm vào động cơ, dây curoa khi máy đang chạy vì nguy hiểm bị cuốn vào.</li></ul><p><strong>An toàn Đào Hố Sâu:</strong> Hố sâu hơn 1.5 mét cần phải có kế hoạch an toàn chi tiết. Những yêu cầu chính bao gồm:</p><ul><li>Khảo sát mặt đất trước, xác định vị trí dây điện, ống nước, ống khí.</li><li>Lắp đặt hàng rào, biển báo xung quanh hố để ngăn người vào.</li><li>Kiểm tra không khí dưới hố (O2, CO, H2S) bằng thiết bị đo chuyên dụng.</li><li>Lắp đặt thang hoặc cầu để người vào/ra an toàn.</li><li>Nếu hố sâu hơn 2 mét, phải tính toán sạt lở, lắp đặt thanh ngang để tránh sạt.</li><li>Người vào hố sâu phải đeo dây an toàn, có người giám sát bên ngoài.</li></ul>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Xe Ben: Vận hành, Kiểm tra và Khoảng cách An toàn",
+          "type": "text",
+          "content": "<h2>Xe Ben: Vận hành, Kiểm tra và Khoảng cách An toàn</h2><p>Xe ben là phương tiện vận chuyển vật liệu xây dựng (cát, sỏi, đất, xi măng rơi lạc) phổ biến nhất. Mặc dù vẻ đơn giản nhưng xe ben gây ra nhiều tai nạn nếu không vận hành đúng cách.</p><p><strong>Kiểm tra Hàng ngày Xe Ben:</strong></p><ul><li>Kiểm tra lốp xe (áp suất, mâm bánh), đèn phanh, đèn xi nhan, gương chiếu hậu.</li><li>Kiểm tra hệ thống phanh, giới hạn độ cao thùng xe khi nâng.</li><li>Kiểm tra khóa thùng xe, không để thùng bị hở hoặc bị hỏng.</li><li>Kiểm tra cabin tài xế, đồng hồ công-tơ, dây an toàn tài xế.</li></ul><p><strong>Vận hành An toàn Xe Ben:</strong></p><ul><li>Không chở quá tải, tải trọng không vượt quá khả năng chịu tải của xe.</li><li>Phân bố tải đều trong thùng, tránh tập trung ở một bên.</li><li>Nâng thùng xe từ từ để vật liệu không rơi ra bên cạnh.</li><li>Hạ thùng xe hoàn toàn trước khi di chuyển, không di chuyển khi thùng nâng lên.</li><li>Chạy xe chậm khi lên xuống dốc, không đổi cặp khi chở tải.</li></ul><p><strong>Khoảng cách An toàn:</strong> Xe ben tạo bóng mù lớn phía sau, tài xế không nhìn thấy những người đi bộ. Người xung quanh phải giữ khoảng cách tối thiểu 5 mét từ xe ben, tránh đứng phía sau khi xe đang di chuyển hoặc nâng thùng.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "title": "An toàn Máy trộn Bê tông và Bơm Bê tông",
+      "description": "Chương này tập trung vào an toàn vận hành máy trộn bê tông, bơm bê tông, bao gồm vận hành, vệ sinh, khoảng cách an toàn.",
+      "weight": 3,
+      "lessons": [
+        {
+          "title": "Máy Trộn Bê tông: Cấu trúc, Vận hành và Nguy hiểm",
+          "type": "text",
+          "content": "<h2>Máy Trộn Bê tông: Cấu trúc, Vận hành và Nguy hiểm</h2><p>Máy trộn bê tông là thiết bị không thể thiếu trong hầu hết dự án xây dựng. Máy được sử dụng để trộn xi măng, cát, sỏi, nước và các chất phụ gia khác theo tỉ lệ đúng. Máy trộn có lực xoay mạnh, cần các biện pháp an toàn đặc biệt.</p><p><strong>Cấu trúc Máy Trộn:</strong> Gồm thùng trộn (hình trụ, xoay khoảng 45 độ), động cơ điện hoặc xăng, hộp số giảm tốc, phanh, gá lắp trên xe hoặc sàn bê tông.</p><p><strong>Nguy hiểm Chính:</strong> Bị cuốn tay vào lồng trộn khi máy đang quay, máy rơi khi lắp đặt không chắc, bị dầu đỏ nóng bắn ra, bị bê tông khô bắn vào mặt.</p><p><strong>Yêu cầu Trước Vận hành:</strong> Lắp đặt máy trên mặt phẳng vững chắc, không có nước, bụi. Kiểm tra lồng trộn có bị nứt không, kiểm tra gá lắp chắc chắn, kiểm tra động cơ có chạy bình thường không.</p><p><strong>Vận hành An toàn:</strong> Không được cho tay vào lồng trộn khi máy đang quay, thậm chí không được cho gậy vào để dạo. Tắt máy, chờ lồng dừng hoàn toàn mới can thiệp vào bên trong.</p><p><strong>Bảo vệ:</strong> Lồng trộn phải được bao quanh bằng lưới hoặc cầu ray để người không thể để tay vào được. Máy phải có phanh tự động ngắt động cơ khi lồng nâng lên.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 0
+        },
+        {
+          "title": "Bơm Bê tông: Vận hành, Áp suất và An toàn",
+          "type": "text",
+          "content": "<h2>Bơm Bê tông: Vận hành, Áp suất và An toàn</h2><p>Bơm bê tông là thiết bị nén bê tông tươi thông qua các ống dẫn lên các tầng cao. Bơm bê tông hoạt động dưới áp suất rất cao (60-200 bar), có nguy hiểm rất lớn nếu bị hỏng hoặc vận hành sai cách.</p><p><strong>Nguy hiểm Cao nhất:</strong> Bơm bê tông có thể tạo ra áp suất cao thổi bê tông tươi với lực cực mạnh. Nếu ống bị vỡ hoặc tháo ra khi máy đang bơm, bê tông sẽ phun ra như vũ khí và có thể xuyên qua cơ thể người.</p><p><strong>Yêu cầu An toàn Trước Bơm:</strong> Kiểm tra tất cả các kết nối ống, không có nơi rò rỉ. Kiểm tra các ống bị hư hỏng, méo mó. Tất cả các ống dẫn phải được giữ chắc bằng cáp, không để ống tự do.</p><p><strong>Khoảng cách An toàn:</strong> Người không được đứng ở đầu ống dẫn hoặc trực tiếp phía trước khi bơm đang hoạt động. Nếu bị tắc, tắt máy, thực hiện quy trình tháo thích hợp.</p><p><strong>Tắc Ống - Xử lý An toàn:</strong> Ống bị tắc là tình huống khẩn cấp. Không được dùng búa, kìm để ấn ống. Cách duy nhất là: tắt máy, đợi áp suất xả hết (mở van xả), sau đó từ từ tháo các ống ra, vệ sinh bê tông khô bên trong.</p><p><strong>Ống Dẫn Dự Phòng:</strong> Một số ống dẫn phải có van xả áp suất để tránh quá áp. Kiểm tra van này định kỳ (1 tháng) để đảm bảo hoạt động tốt.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Vệ sinh và Bảo dưỡng Định kỳ Thiết bị Bê tông",
+          "type": "text",
+          "content": "<h2>Vệ sinh và Bảo dưỡng Định kỳ Máy trộn và Bơm Bê tông</h2><p>Bê tông rất dễ khô và cứng lại trong ống dẫn, lồng trộn, và các bộ phận khác. Nếu không vệ sinh kỹ lưỡng hàng ngày, các thiết bị này sẽ bị tắc, hư hỏng nhanh chóng.</p><p><strong>Vệ sinh Máy Trộn Bê tông:</strong> Sau mỗi ca làm việc (hoặc ít nhất hàng ngày), cần vệ sinh thùng trộn. Quay máy, cho nước vào, để máy quay 5-10 phút để nước rửa sạch bê tông. Nước chảy ra phải đi vào bể lắng cát để bê tông lắng xuống, không để thải trực tiếp vào cống.</p><p><strong>Vệ sinh Bơm Bê tông:</strong> Sau khi bơm xong, phải vệ sinh ống dẫn bằng cách bơm nước liên tục qua các ống (thường cần 500 lít nước). Sau đó, tháo từng ống ra, dùng nước phun áp suất cao rửa sạch bên trong. Nếu không vệ sinh, bê tông sẽ khô cứng và ống sẽ hỏng hoàn toàn.</p><p><strong>Bảo dưỡng Định kỳ:</strong> Kiểm tra dầu trong hộp số giảm tốc hàng tháng, thay dầu theo quy định (thường 500-1000 giờ hoạt động). Kiểm tra phanh, giới hạn công suất hàng quý.</p><p><strong>Lưu ý Quan trọng:</strong> Bê tông khô ngoài ống phải được bảo vệ khỏi mưa, nắng. Nếu có vùng bê tông khô cứng cần phải vệ sinh bằng acid (HCl loãng) hoặc bằng cơ học, không sử dụng bom nước mạnh vì có nguy hiểm.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "title": "Bảo trì và Kiểm định Thiết bị",
+      "description": "Chương này tập trung vào quy trình bảo trì hàng ngày, bảo dưỡng định kỳ, kiểm định chính thức và lưu sổ nhật ký thiết bị.",
+      "weight": 4,
+      "lessons": [
+        {
+          "title": "Kiểm tra Hàng ngày và Bảo dưỡng Định kỳ Thiết bị",
+          "type": "text",
+          "content": "<h2>Kiểm tra Hàng ngày và Bảo dưỡng Định kỳ Thiết bị</h2><p>Kiểm tra hàng ngày và bảo dưỡng định kỳ là hai yếu tố chính để đảm bảo thiết bị hoạt động an toàn và bền lâu. Thiết bị không được kiểm tra thường xuyên sẽ nhanh chóng hư hỏng, gây nguy hiểm cho người vận hành và những người xung quanh.</p><p><strong>Kiểm tra Hàng ngày:</strong> Trước khi vận hành, toán tư phải kiểm tra tình trạng cơ bản của máy trong 10-15 phút. Bao gồm: kiểm tra dầu (màu, mức), nước, dây curoa, xi đu, bánh xe, tình trạng cơ thể máy, hệ thống điều khiển, báo động.</p><p><strong>Kiểm tra Hàng tuần:</strong> Kiểm tra chi tiết hơn, bao gồm: kiểm tra các bu lông có lỏng không, kiểm tra hệ thống hydraulic (dầu, ống), kiểm tra khe hở của máy có bụi không, rửa sạch khe hở.</p><p><strong>Kiểm tra Hàng tháng:</strong> Thay dầu (nếu cần), kiểm tra lọc dầu, kiểm tra phanh, kiểm tra hệ thống điện, kiểm tra độ rung khi máy chạy.</p><p><strong>Kiểm tra Hàng quý/Nửa năm:</strong> Kiểm tra sâu hơn, bao gồm: kiểm tra độ chặt của các khớp, kiểm tra hệ thống an toàn (phanh khẩn cấp, báo động), kiểm tra hiệu suất công suất.</p><p><strong>Ghi chép Bảo dưỡng:</strong> Tất cả kiểm tra, bảo dưỡng phải được ghi chép chi tiết trong sổ nhật ký thiết bị, bao gồm ngày, người kiểm tra, tình trạng, các bộ phận thay thế, chi phí.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 0
+        },
+        {
+          "title": "Quy trình Kiểm định Chính thức Thiết bị",
+          "type": "text",
+          "content": "<h2>Quy trình Kiểm định Chính thức Thiết bị</h2><p>Ngoài bảo dưỡng tự thực hiện, các thiết bị có độ nguy hiểm cao phải được kiểm định chính thức bởi các cơ quan chuyên môn theo thời gian quy định. Kiểm định chính thức là yêu cầu pháp luật bắt buộc.</p><p><strong>Thiết bị Cần Kiểm định Định kỳ:</strong> Cẩu tháp (hàng 1-2 năm), cẩu di động (hàng 2 năm), cẩu tời (hàng 2-3 năm), máy xúc (hàng 1-2 năm tùy độ tuổi), bơm bê tông (hàng 1-2 năm), thang máy công trình (hàng 3-6 tháng).</p><p><strong>Cơ quan Kiểm định:</strong> Thường là các trung tâm kiểm định có chứng chỉ từ Bộ Lao động, bộ Xây dựng, bộ Giao thông Vận tải, hoặc các tổ chức quốc tế như DNV GL, TÜV SÜD.</p><p><strong>Quy trình Kiểm định:</strong></p><ul><li><strong>Bước 1:</strong> Liên hệ cơ quan kiểm định, đặt lịch kiểm định phù hợp.</li><li><strong>Bước 2:</strong> Chuẩn bị hồ sơ (chứng chỉ, bảo dưỡng, lịch sử sửa chữa).</li><li><strong>Bước 3:</strong> Kiểm định viên thực hiện kiểm tra chi tiết (cơ cấu, an toàn, hiệu suất).</li><li><strong>Bước 4:</strong> Nếu đạt, cấp giấy kiểm định có hiệu lực nhất định. Nếu không đạt, yêu cầu sửa chữa và kiểm định lại.</li></ul><p><strong>Hình phạt Không Kiểm định:</strong> Phạt tiền từ 5-50 triệu đồng, tịch thu giấy chứng nhận, đình chỉ sử dụng thiết bị.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Sổ Nhật ký Thiết bị và Lưu trữ Hồ sơ Bảo dưỡng",
+          "type": "text",
+          "content": "<h2>Sổ Nhật ký Thiết bị và Lưu trữ Hồ sơ Bảo dưỡng</h2><p>Sổ nhật ký thiết bị là bản ghi chép chính thức về toàn bộ lịch sử hoạt động, bảo dưỡng, sửa chữa của thiết bị. Sổ này rất quan trọng cho mục đích quản lý, kiểm định, và xác định trách nhiệm khi xảy ra tai nạn.</p><p><strong>Nội dung Sổ Nhật ký Thiết bị:</strong></p><ul><li><strong>Thông tin Cơ bản:</strong> Tên thiết bị, loại, nhãn hiệu, năm sản xuất, số hiệu, vị trí lắp đặt, toán tử chính.</li><li><strong>Kiểm tra Hàng ngày:</strong> Ngày, giờ, tình trạng máy, các vấn đề phát hiện, ký tên toán tư.</li><li><strong>Bảo dưỡng Định kỳ:</strong> Ngày, loại bảo dưỡng, các bộ phận thay thế, chi phí, người thực hiện.</li><li><strong>Sửa chữa:</strong> Ngày, vấn đề, nguyên nhân, cách khắc phục, thời gian, chi phí, kết quả.</li><li><strong>Kiểm định:</strong> Ngày kiểm định, cơ quan kiểm định, kết quả, ngày hết hạn giấy kiểm định.</li><li><strong>Tai nạn hoặc Sự cố:</strong> Ngày, thời gian, tình trạng, nguyên nhân, hậu quả, xử lý.</li></ul><p><strong>Lưu trữ Hồ sơ:</strong> Sổ nhật ký phải được lưu trữ cẩn thận, không bị hỏng, ướt, hoặc mất mát. Nên lưu trữ cả bản giấy lẫn bản kỹ thuật số. Hồ sơ bảo dưỡng cần giữ lại ít nhất 5 năm sau khi thiết bị ngừng sử dụng.</p><p><strong>Trách nhiệm Pháp luật:</strong> Nếu xảy ra tai nạn, sổ nhật ký là bằng chứng quan trọng để xác định liệu nhà tuyển dụng có thực hiện bảo dưỡng đúng hay không. Không có sổ nhật ký là vi phạm pháp luật.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        }
+      ]
+    }
+  ]
+}
