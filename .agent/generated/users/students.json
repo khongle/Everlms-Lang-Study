@@ -1,0 +1,19 @@
+{
+  "students": [
+    {"username": "student01", "email": "student01@thanhdat.vn", "display_name": "Phạm Văn Hùng", "password": "Student@123", "role": "student"},
+    {"username": "student02", "email": "student02@thanhdat.vn", "display_name": "Ngô Thanh Tùng", "password": "Student@123", "role": "student"},
+    {"username": "student03", "email": "student03@thanhdat.vn", "display_name": "Đỗ Minh Tuấn", "password": "Student@123", "role": "student"},
+    {"username": "student04", "email": "student04@thanhdat.vn", "display_name": "Vũ Đức Thắng", "password": "Student@123", "role": "student"},
+    {"username": "student05", "email": "student05@thanhdat.vn", "display_name": "Hoàng Văn Lâm", "password": "Student@123", "role": "student"},
+    {"username": "student06", "email": "student06@thanhdat.vn", "display_name": "Bùi Quang Hải", "password": "Student@123", "role": "student"},
+    {"username": "student07", "email": "student07@thanhdat.vn", "display_name": "Lý Văn Đạt", "password": "Student@123", "role": "student"},
+    {"username": "student08", "email": "student08@thanhdat.vn", "display_name": "Trịnh Công Sơn", "password": "Student@123", "role": "student"},
+    {"username": "student09", "email": "student09@thanhdat.vn", "display_name": "Đinh Văn Phúc", "password": "Student@123", "role": "student"},
+    {"username": "student10", "email": "student10@thanhdat.vn", "display_name": "Nguyễn Hữu Toàn", "password": "Student@123", "role": "student"},
+    {"username": "student11", "email": "student11@thanhdat.vn", "display_name": "Trần Thị Mai", "password": "Student@123", "role": "student"},
+    {"username": "student12", "email": "student12@thanhdat.vn", "display_name": "Lê Văn Bình", "password": "Student@123", "role": "student"},
+    {"username": "student13", "email": "student13@thanhdat.vn", "display_name": "Phan Quốc Việt", "password": "Student@123", "role": "student"},
+    {"username": "student14", "email": "student14@thanhdat.vn", "display_name": "Đặng Văn Long", "password": "Student@123", "role": "student"},
+    {"username": "student15", "email": "student15@thanhdat.vn", "display_name": "Cao Minh Đức", "password": "Student@123", "role": "student"}
+  ]
+}

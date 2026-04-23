@@ -1,0 +1,144 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-03-28T10:00:00+07:00",
+  "organization": {
+    "name": "Công ty Cổ phần Xây dựng Thành Đạt",
+    "short_name": "Thành Đạt",
+    "industry": "Xây dựng dân dụng và công nghiệp",
+    "website": "https://thanhdat-construction.vn",
+    "description": "Thành Đạt là công ty xây dựng hàng đầu với hơn 15 năm kinh nghiệm trong lĩnh vực xây dựng dân dụng, công nghiệp và hạ tầng. Công ty chuyên thi công các công trình nhà cao tầng, nhà máy, cầu đường và các dự án hạ tầng kỹ thuật.",
+    "logo_url": ""
+  },
+  "training_program": {
+    "name": "Chương trình Đào tạo An toàn Lao động 2026",
+    "objectives": "Nâng cao nhận thức và kỹ năng an toàn lao động cho toàn bộ cán bộ công nhân viên, giảm thiểu tai nạn lao động, đảm bảo tuân thủ quy định pháp luật về an toàn vệ sinh lao động theo Luật An toàn vệ sinh lao động 2015.",
+    "target_audience": "Công nhân xây dựng, kỹ sư giám sát, cán bộ quản lý công trường, nhân viên an toàn lao động (HSE)",
+    "language": "vi",
+    "tone": "professional",
+    "detail_level": "detailed"
+  },
+  "courses": [
+    {
+      "id": 1,
+      "title": "An toàn Lao động Tổng quan",
+      "description": "Khóa học nền tảng về an toàn lao động trong ngành xây dựng, bao gồm pháp luật, quyền và nghĩa vụ, nhận diện nguy hiểm.",
+      "category": "Other",
+      "level": "beginner",
+      "chapters_count": 4,
+      "lessons_per_chapter": 4,
+      "has_final_quiz": true,
+      "has_certificate": true,
+      "pricing_type": "free",
+      "price": null,
+      "keywords": "an toàn lao động, pháp luật, Luật ATVSLĐ 2015, nhận diện nguy hiểm, quyền nghĩa vụ, văn hóa an toàn, tai nạn lao động",
+      "notes": "Bắt buộc cho tất cả nhân viên mới. Focus vào luật pháp Việt Nam."
+    },
+    {
+      "id": 2,
+      "title": "An toàn Làm việc trên Cao",
+      "description": "Khóa học chuyên sâu về quy tắc an toàn khi làm việc trên cao: giàn giáo, thang, mái nhà, kỹ thuật chống ngã.",
+      "category": "Other",
+      "level": "intermediate",
+      "chapters_count": 5,
+      "lessons_per_chapter": 4,
+      "has_final_quiz": true,
+      "has_certificate": true,
+      "pricing_type": "free",
+      "price": null,
+      "keywords": "làm việc trên cao, giàn giáo, thang, dây an toàn, chống ngã, lưới an toàn, rào chắn, PPE, TCVN",
+      "notes": "Bắt buộc cho công nhân làm việc từ 2m trở lên."
+    },
+    {
+      "id": 3,
+      "title": "An toàn Điện trên Công trường",
+      "description": "Khóa học về an toàn điện trong thi công xây dựng: phòng chống điện giật, hệ thống điện tạm, thiết bị bảo vệ.",
+      "category": "Other",
+      "level": "intermediate",
+      "chapters_count": 4,
+      "lessons_per_chapter": 3,
+      "has_final_quiz": true,
+      "has_certificate": true,
+      "pricing_type": "free",
+      "price": null,
+      "keywords": "an toàn điện, điện giật, nối đất, ELCB, RCD, điện tạm công trường, tủ điện, cáp điện, sơ cứu điện giật",
+      "notes": "Dành cho thợ điện và người vận hành thiết bị."
+    },
+    {
+      "id": 4,
+      "title": "An toàn Vận hành Máy và Thiết bị Xây dựng",
+      "description": "Khóa học về an toàn khi vận hành cẩu, máy xúc, máy trộn bê tông, xe nâng và các thiết bị nặng trên công trường.",
+      "category": "Other",
+      "level": "advanced",
+      "chapters_count": 5,
+      "lessons_per_chapter": 3,
+      "has_final_quiz": true,
+      "has_certificate": true,
+      "pricing_type": "paid",
+      "price": 500000,
+      "keywords": "cẩu trục, máy xúc, xe nâng, máy trộn bê tông, vùng nguy hiểm, tín hiệu, bảo trì thiết bị, chứng chỉ vận hành",
+      "notes": "Yêu cầu hoàn thành khóa An toàn Lao động Tổng quan trước."
+    },
+    {
+      "id": 5,
+      "title": "Sơ cứu và Ứng phó Sự cố trên Công trường",
+      "description": "Khóa học về kỹ năng sơ cứu, xử lý tình huống khẩn cấp, phòng cháy chữa cháy, sơ tán trên công trường xây dựng.",
+      "category": "Other",
+      "level": "beginner",
+      "chapters_count": 4,
+      "lessons_per_chapter": 4,
+      "has_final_quiz": true,
+      "has_certificate": true,
+      "pricing_type": "free",
+      "price": null,
+      "keywords": "sơ cứu, CPR, băng bó, gãy xương, bỏng, phòng cháy chữa cháy, bình chữa cháy, sơ tán, kế hoạch ứng phó khẩn cấp",
+      "notes": "Bắt buộc cho tổ trưởng, giám sát, nhân viên HSE."
+    }
+  ],
+  "instructors": [
+    {
+      "id": 1,
+      "name": "Trần Văn Minh",
+      "email": "minh.tran@thanhdat.vn",
+      "title": "Trưởng phòng An toàn Lao động (HSE Manager)",
+      "bio": "15 năm kinh nghiệm trong lĩnh vực an toàn lao động xây dựng. Chứng chỉ NEBOSH IGC, ISO 45001 Lead Auditor.",
+      "expertise": "An toàn lao động, ISO 45001, đánh giá rủi ro, điều tra tai nạn"
+    },
+    {
+      "id": 2,
+      "name": "Nguyễn Thị Hương",
+      "email": "huong.nguyen@thanhdat.vn",
+      "title": "Chuyên viên An toàn Lao động",
+      "bio": "8 năm kinh nghiệm đào tạo an toàn lao động. Giảng viên huấn luyện ATVSLĐ nhóm 1,2,3,4.",
+      "expertise": "Huấn luyện an toàn, sơ cứu, PCCC, làm việc trên cao"
+    },
+    {
+      "id": 3,
+      "name": "Lê Hoàng Nam",
+      "email": "nam.le@thanhdat.vn",
+      "title": "Kỹ sư An toàn Cơ điện",
+      "bio": "12 năm kinh nghiệm về an toàn điện và vận hành thiết bị xây dựng. Chứng chỉ an toàn điện hạng IV.",
+      "expertise": "An toàn điện, vận hành cẩu trục, máy xây dựng, bảo trì thiết bị"
+    }
+  ],
+  "sample_data": {
+    "students_count": 15,
+    "create_enrollments": true,
+    "create_progress": true,
+    "create_quiz_results": true,
+    "create_ratings": true,
+    "create_forum_topics": true,
+    "create_orders": true,
+    "create_membership_plans": true,
+    "create_notifications": false,
+    "create_badges": true,
+    "currency": "VND"
+  },
+  "advanced": {
+    "default_lesson_type": "text",
+    "video_placeholder_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "create_prerequisites": false,
+    "create_drip_content": false,
+    "create_bundles": false,
+    "additional_ai_prompt": "Nội dung phải tuân thủ quy định pháp luật Việt Nam về ATVSLĐ. Tham chiếu các TCVN, QCVN liên quan. Dùng ví dụ thực tế từ công trường xây dựng Việt Nam."
+  }
+}

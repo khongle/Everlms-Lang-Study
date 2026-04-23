@@ -79,9 +79,9 @@ yarn-error.log*
 
 # Ignore DDEV (if using DDEV)
 .ddev
-.agent
-.claude
-.backup-agent
+.agent/00-Guidelines/
+.agent/docs-deleted/
+#database
 
 # Ignore Behat
 /behat.local.yml

@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ddev drush:*)",
+      "Bash(find /home/hainn/projects/everlms -name *course* -type f)",
+      "Bash(find /home/hainn/projects/everlms -name *.json -path */courses/* -type f)",
+      "Bash(/home/hainn/projects/everlms/.agent/generated/courses/course-003-an-toan-dien-cong-truong.json:*)",
+      "Bash(/home/hainn/projects/everlms/.agent/generated/courses/course-005-so-cuu-ung-pho-su-co.json:*)",
+      "Bash(python3 -m json.tool /home/hainn/projects/everlms/.agent/generated/courses/course-004-an-toan-van-hanh-may-thiet-bi.json)",
+      "Bash(python3:*)",
+      "Bash(for f:*)",
+      "Bash(do python3:*)",
+      "Bash(echo \"FAIL: $f\")",
+      "Bash(done)"
+    ],
+    "additionalDirectories": [
+      "/home/hainn/.claude/projects/-home-hainn-projects-everlms/memory"
+    ]
+  }
+}

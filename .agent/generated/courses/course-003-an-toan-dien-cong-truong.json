@@ -1,0 +1,143 @@
+{
+  "course": {
+    "title": "An toàn Điện trên Công trường",
+    "description": "<p>Khóa học toàn diện về An toàn Điện dành cho công nhân xây dựng, nhấn mạnh vào kiến thức cơ bản về điện, hệ thống điện tạm trên công trường, thiết bị bảo vệ và quy trình sơ cứu. Đây là khóa học bắt buộc giúp công nhân hiểu biết rõ về nguy hiểm dòng điện và cách bảo vệ bản thân.</p>",
+    "short_description": "Khóa học An toàn Điện chuyên sâu cho công nhân xây dựng",
+    "category": "Other",
+    "level": "intermediate",
+    "language": "vi",
+    "pricing_type": "free",
+    "price": 0,
+    "currency": "VND",
+    "duration": "12 hours",
+    "status": "published",
+    "featured": false,
+    "instructor_email": "nam.le@thanhdat.vn"
+  },
+  "chapters": [
+    {
+      "title": "Kiến thức cơ bản về An toàn Điện",
+      "description": "Tìm hiểu những kiến thức nền tảng về dòng điện, tác động của nó lên cơ thể người và các ngưỡng an toàn. Chương này giúp bạn hiểu rõ tại sao An toàn Điện lại quan trọng trên công trường xây dựng.",
+      "weight": 0,
+      "lessons": [
+        {
+          "title": "Giới thiệu về Dòng điện và Nguy hiểm",
+          "type": "text",
+          "content": "<h2>Giới thiệu về Dòng điện và Nguy hiểm</h2><p>Dòng điện là sự chuyển động có hướng của các electron qua một vật dẫn. Trên công trường xây dựng, dòng điện được sử dụng rộng rãi để cấp năng lượng cho các thiết bị và công cụ. Tuy nhiên, nếu không được quản lý đúng cách, dòng điện có thể gây ra nguy hiểm nghiêm trọng cho tính mạng và sức khỏe.</p><p>Các nguy hiểm chính của dòng điện bao gồm: (1) Điện giật - xảy ra khi người tiếp xúc trực tiếp hoặc gián tiếp với phần tử tích điện; (2) Cháy điện - do quá tải hoặc đơn vị tiếp đất kém; (3) Vụ nổ - khi dòng điện điện gây ra mằn nhiệt cao. Trên công trường, những nguy hiểm này tăng lên do môi trường ẩm ướt, hệ thống điện tạm thời thiếu chuẩn và sự mệt mỏi của công nhân.</p><p>Hiểu biết về cơ chế hoạt động của dòng điện và cách nó tác động lên cơ thể là bước đầu tiên để bảo vệ bản thân. Mục tiêu của chương này là cung cấp nền tảng kiến thức để bạn có thể nhận diện nguy hiểm và thực hành biện pháp bảo vệ đúng cách.</p>",
+          "duration": 15,
+          "is_preview": true,
+          "weight": 0
+        },
+        {
+          "title": "Tác động của Dòng điện lên Cơ thể Người",
+          "type": "text",
+          "content": "<h2>Tác động của Dòng điện lên Cơ thể Người</h2><p>Khi dòng điện đi qua cơ thể người, nó tác động lên hệ thống thần kinh và cơ. Mức độ tác động phụ thuộc vào cường độ dòng điện (tính bằng Ampe), thời gian tiếp xúc, tần số, đường đi của dòng điện qua cơ thể và điều kiện da (khô hay ẩm).</p><p>Các mức độ tác động chính: (1) Dưới 1 mA: Không cảm thấy gì; (2) 1-5 mA: Cảm thấy xốc nhẹ, có thể rút tay được; (3) 5-10 mA: Đau đớn, khó rút tay (dòng điện gây tê liệt); (4) 10-20 mA: Cơ hô hấp bị liệt (nguy hiểm đến tính mạng); (5) Trên 50 mA: Rung tim, có thể chết. Điện giật từ 220V, 380V thường gây mức tác động nguy hiểm từ 10-100 mA trở lên.</p><p>Đặc biệt, đường đi của dòng điện quan trọng - dòng điện đi từ tay này sang tay kia hoặc từ tay xuống chân có nguy hiểm cao nhất vì nó đi qua tim. Hiểu biết này giúp bạn nhận diện nguy hiểm và tránh tiếp xúc trực tiếp với các phần tử tích điện.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Ngưỡng An toàn và Các yếu tố ảnh hưởng",
+          "type": "text",
+          "content": "<h2>Ngưỡng An toàn và Các yếu tố ảnh hưởng</h2><p>Ngưỡng an toàn điện là cường độ dòng điện tối đa mà cơ thể có thể chịu được mà không gây tổn thương vĩnh viễn. Theo tiêu chuẩn quốc tế, dòng điện dưới 0.5 mA được coi là an toàn, từ 0.5-10 mA gây đau đớn nhưng không gây tổn thương vĩnh viễn, trên 10 mA nguy hiểm đến tính mạng.</p><p>Các yếu tố ảnh hưởng đến ngưỡng an toàn: (1) Tần số dòng điện - dòng điện xoay chiều 50Hz nguy hiểm hơn dòng điện một chiều; (2) Thời gian tiếp xúc - càng lâu càng nguy hiểm; (3) Điều kiện da - da ẩm ướt có điện trở thấp hơn da khô, nên dễ bị tổn thương; (4) Vị trí tiếp xúc - tiếp xúc qua tim nguy hiểm hơn.</p><p>Trên công trường, điều kiện luôn thuận lợi cho dòng điện - mồ hôi, mưa làm da ẩm, làm giảm điện trở cơ thể xuống còn 800-1000 Ohm. Do đó, ngưỡng an toàn trên công trường thấp hơn rất nhiều so với điều kiện lý tưởng, đòi hỏi biện pháp bảo vệ nghiêm ngặt.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "title": "Hệ thống Điện tạm trên Công trường",
+      "description": "Tìm hiểu về cấu trúc, thiết kế và quản lý hệ thống điện tạm thời trên công trường. Nắm vững các quy chuẩn và tiêu chuẩn kỹ thuật liên quan đến An toàn Điện.",
+      "weight": 1,
+      "lessons": [
+        {
+          "title": "Tủ điện và Phân phối Điện trên Công trường",
+          "type": "text",
+          "content": "<h2>Tủ điện và Phân phối Điện trên Công trường</h2><p>Tủ điện là trung tâm phân phối điện trên công trường, nơi tiếp nhận dòng điện chính từ lưới điện quốc gia hoặc máy phát điện và phân phối đến các khu vực khác nhau. Tủ điện phải được đặt ở vị trí an toàn, dễ tiếp cận để vận hành và bảo trì nhưng không ở trong đường đi của công nhân.</p><p>Các yêu cầu cơ bản: (1) Tủ điện phải có chiều cao tối thiểu 0.5m từ mặt đất để tránh ngập nước; (2) Phải được khóa với khóa chính để ngăn tiếp cận trái phép; (3) Có biển cảnh báo rõ ràng bằng tiếng Việt với ký hiệu nguy hiểm điện; (4) Bên trong tủ phải có sơ đồ mạch điện rõ ràng; (5) Phải có dụng cụ cắt điện khẩn cấp (aptomat, ngắt tay).</p><p>Phân phối điện từ tủ chính đến các điểm sử dụng phải qua các đường dây có tiết diện đúng với tải. Các dây điện phải được bảo vệ bằng ống hoặc máng, tránh tiếp xúc trực tiếp. Trên công trường, hệ thống phân phối phải được kiểm tra định kỳ và bảo trì tốt để đảm bảo an toàn.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 0
+        },
+        {
+          "title": "Cáp điện, Ổ cắm và Các Đầu nối",
+          "type": "text",
+          "content": "<h2>Cáp điện, Ổ cắm và Các Đầu nối</h2><p>Cáp điện là các dây dẫn dòng điện từ nguồn đến thiết bị sử dụng. Trên công trường, phải sử dụng cáp có tiết diện (kích thước dây) phù hợp với công suất thiết bị. Cáp nhỏ hơn sẽ gây quá tải và sinh nhiệt, dẫn đến cháy nổ.</p><p>Các yêu cầu về cáp: (1) Tiết diện phù hợp - thường 1.5mm² cho đèn, 2.5mm² cho dụng cụ điện nhỏ, 4-6mm² cho máy công cụ; (2) Cáp phải có lớp cách điện toàn vẹn, không hoen gỉ hoặc bị cắt đứt; (3) Cáp phải được bảo vệ khỏi thương tích bằng ống hoặc máng; (4) Không buộc cáp chặt quanh vật nhọn.</p><p>Ổ cắm phải được chọn phù hợp với điện áp và dòng điện tối đa. Trên công trường, ổ cắm chống nước loại IP44 trở lên là bắt buộc. Các đầu nối phải được cố định chắc chắn, không được phơi bạo với mưa nước trực tiếp. Khi lắp đặt hay sửa chữa, luôn phải tắt điện trước.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Quy chuẩn QCVN về An toàn Điện trên Công trường",
+          "type": "text",
+          "content": "<h2>Quy chuẩn QCVN về An toàn Điện trên Công trường</h2><p>Quy chuẩn Kỹ thuật Quốc gia Việt Nam (QCVN) 04:2015/BXD quy định các yêu cầu về an toàn điện trên công trường xây dựng. Những quy chuẩn này là bắt buộc và mọi người làm việc trên công trường phải tuân theo.</p><p>Các quy định chính: (1) Hệ thống điện phải được thiết kế bởi kỹ sư điện có chứng chỉ; (2) Tất cả các thiết bị phải được kiểm tra trước khi sử dụng; (3) Phải có thiết bị bảo vệ ELCB/RCD trên mọi tủ điện; (4) Điện áp an toàn tối đa là 220V cho công nhân, 36V cho khu vực ẩm ướt; (5) Mọi công nhân làm việc với điện phải được đào tạo và có chứng chỉ.</p><p>QCVN cũng quy định về kiểm tra định kỳ, bảo trì hệ thống và sửa chữa khẩn cấp. Mỗi công trường phải có một người chuyên trách an toàn điện để giám sát tuân thủ quy chuẩn. Coi thường QCVN có thể dẫn đến phạt hành chính hoặc trách nhiệm pháp lý nếu xảy ra tai nạn.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "title": "Thiết bị Bảo vệ và Nối đất",
+      "description": "Học về các thiết bị bảo vệ như ELCB/RCD, cầu chì, aptomat và hệ thống nối đất. Hiểu cách chúng hoạt động để ngăn chặn tai nạn điện.",
+      "weight": 2,
+      "lessons": [
+        {
+          "title": "ELCB/RCD - Thiết bị Bảo vệ Dòng Rò",
+          "type": "text",
+          "content": "<h2>ELCB/RCD - Thiết bị Bảo vệ Dòng Rò</h2><p>ELCB (Earth Leakage Circuit Breaker) hay RCD (Residual Current Device) là thiết bị bảo vệ tự động ngắt dòng điện khi phát hiện dòng rò. Dòng rò là dòng điện chảy từ phần tử tích điện trực tiếp hoặc gián tiếp xuống đất qua con người hoặc các vật dẫn khác.</p><p>Nguyên lý hoạt động: ELCB/RCD luôn so sánh dòng điện vào và dòng điện ra. Nếu chênh lệch dòng vượt quá ngưỡng (thường 30mA), thiết bị sẽ ngắt mạch trong vài mili giây. Điều này giúp ngắt điện trước khi dòng rò gây tổn thương cho con người.</p><p>Yêu cầu lắp đặt: (1) Mọi tủ điện trên công trường phải có ELCB/RCD với ngưỡng 30mA; (2) Phải được lắp đặt sau thiết bị ngắt chính; (3) Phải được kiểm tra định kỳ bằng nút kiểm tra để đảm bảo hoạt động; (4) Hạn sử dụng thường 10 năm, sau đó phải thay mới. Trên công trường ẩm ướt, ELCB/RCD là lá chắn cuối cùng bảo vệ tính mạng công nhân.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 0
+        },
+        {
+          "title": "Cầu chì và Aptomat - Bảo vệ quá tải",
+          "type": "text",
+          "content": "<h2>Cầu chì và Aptomat - Bảo vệ quá tải</h2><p>Cầu chì (fuse) và aptomat (automatic circuit breaker) là các thiết bị bảo vệ quá tải, ngăn chặn cháy nổ do quá tải hoặc chập điện. Cầu chì là thiết bị một lần dùng - khi dòng điện vượt ngưỡng, sợi chì bên trong nó sẽ cháy đứt, ngắt mạch. Aptomat là thiết bị tái sử dụng - khi quá tải, aptomat sẽ ngắt mạch tự động, và sau khi hết nguyên nhân quá tải, có thể bấm lại để phục hồi.</p><p>Yêu cầu chọn cầu chì/aptomat: (1) Dòng định mức phải phù hợp với dòng tối đa của đường dây (không được dùng cầu chì lớn để thay cầu chì nhỏ); (2) Phải được lắp đặt trên dây pha, không được lắp trên dây trung tính; (3) Nếu cầu chì liên tục bị cháy đứt, phải kiểm tra lý do chứ không được tăng dòng định mức.</p><p>Lưu ý quan trọng: Cầu chì không bao giờ được dùng lại sau khi cháy đứt. Nếu không có cầu chì đúng kích cỡ, không được dùng dây bạc hay vật khác thay thế. Aptomat hiện nay được ưu tiên sử dụng hơn cầu chì do tiện dụng và an toàn hơn.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Hệ thống Nối đất và Tiếp đất An toàn",
+          "type": "text",
+          "content": "<h2>Hệ thống Nối đất và Tiếp đất An toàn</h2><p>Nối đất (grounding/earthing) là việc kết nối các phần tử kim loại của thiết bị điện (khung tủ, vỏ thiết bị) xuống đất thông qua dây nối đất. Tiếp đất là điểm kết nối vật lý với đất (thường là cọc hoặc tấm đồng chôn dưới đất). Hệ thống nối đất giúp dòng điện lỗi chảy xuống đất thay vì đi qua con người.</p><p>Nguyên lý: Khi xảy ra chập điện giữa dây pha và vỏ thiết bị, nếu thiết bị được nối đất tốt, dòng chập sẽ chạy nhanh xuống đất, gây ra dòng quá mức khiến aptomat/cầu chì ngắt mạch trong vài mili giây. Nếu không có nối đất, con người có thể trở thành con đường dòng điện chạy xuống đất.</p><p>Yêu cầu lắp đặt: (1) Điện trở tiếp đất phải dưới 4Ω cho khu vực có độ ẩm bình thường, dưới 10Ω cho khu vực khô; (2) Dây nối đất phải có tiết diện bằng hoặc lớn hơn dây dẫn; (3) Phải được kiểm tra định kỳ; (4) Trên công trường, nối đất phải được kiểm tra trước khi phát điện. Hệ thống nối đất tốt là yếu tố quyết định sự an toàn của hệ thống điện tạm.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "title": "Quy trình An toàn và Sơ cứu Điện giật",
+      "description": "Nắm vững các quy trình an toàn khi làm việc với điện, sử dụng PPE và thực hiện sơ cứu cấp cứu cho nạn nhân điện giật.",
+      "weight": 3,
+      "lessons": [
+        {
+          "title": "Lockout/Tagout - Cách ly Điện Năng trước Sửa chữa",
+          "type": "text",
+          "content": "<h2>Lockout/Tagout - Cách ly Điện Năng trước Sửa chữa</h2><p>Lockout/Tagout (LOTO) là quy trình cách ly năng lượng điện trước khi thực hiện bảo trì, sửa chữa hoặc kiểm tra thiết bị. Mục tiêu là đảm bảo không có ai bị điện giật do sự khởi động bất ngờ của thiết bị hoặc sự trở về của dòng điện.</p><p>Quy trình LOTO cơ bản: (1) Xác định tất cả các nguồn năng lượng của thiết bị (dòng điện chính, dòng điện phụ, máy phát backup); (2) Thông báo cho mọi người rằng thiết bị sẽ được tắt; (3) Tắt thiết bị hoặc hệ thống; (4) Khóa aptomat hoặc các thiết bị ngắt điện bằng khóa riêng (mỗi người sửa chữa phải có khóa của mình); (5) Treo biển \"DO NOT OPERATE - EQUIPMENT IS BEING SERVICED\" (Không vận hành - Thiết bị đang được bảo trì); (6) Xác minh rằng không có dòng điện bằng thiết bị đo thích hợp trước khi bắt đầu công việc.</p><p>Sau khi hoàn tất sửa chữa, mỗi người sửa chữa phải tháo khóa của mình, sau đó mới khôi phục điện. LOTO là quy trình bắt buộc trên tất cả các công trường và phải tuân thủ nghiêm ngặt.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 0
+        },
+        {
+          "title": "PPE Cách điện và Thiết bị Bảo vệ Cá nhân",
+          "type": "text",
+          "content": "<h2>PPE Cách điện và Thiết bị Bảo vệ Cá nhân</h2><p>PPE (Personal Protective Equipment) cách điện là các trang bị bảo vệ cá nhân giúp cách điện và ngăn chặn điện giật. Các loại PPE cách điện bao gồm: (1) Kính bảo vệ cách điện; (2) Mũ bảo vệ điện; (3) Quần áo cách điện (áo len hoặc quần áo dài); (4) Giày cách điện hoặc tất cách điện; (5) Găng tay cách điện (thường làm từ cao su).</p><p>Yêu cầu sử dụng PPE: (1) Phải chọn PPE phù hợp với mức điện áp (ví dụ, PPE cho 400V khác với PPE cho 1000V); (2) Phải kiểm tra PPE trước khi sử dụng - tìm các vết rách, lỗ hoặc dấu hiệu hỏng hóc; (3) PPE có tuổi thọ hạn chế - thường 3-5 năm, sau đó phải thay mới; (4) Phải lưu giữ sổ kiểm tra PPE; (5) Luôn mang PPE khi làm việc gần các phần tử tích điện.</p><p>Khi dùng PPE, cần nhớ rằng nó không phải là bảo vệ tuyệt đối - nó chỉ giảm rủi ro. Vẫn phải thực hiện lockout/tagout và tuân thủ các quy trình an toàn khác. PPE không bao giờ thay thế việc tắt điện hoặc cách ly năng lượng.</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 1
+        },
+        {
+          "title": "Sơ cứu Điện giật và Hồi sức CPR",
+          "type": "text",
+          "content": "<h2>Sơ cứu Điện giật và Hồi sức CPR</h2><p>Nạn nhân điện giật cần được cấp cứu ngay lập tức để tăng cơ hội sống sót. Các bước sơ cứu cơ bản: (1) Ngừng tiếp xúc với nguồn điện - tắt điện hoặc dùng vật không dẫn điện (gỗ khô, dây không dẫn) để tách nạn nhân khỏi nguồn điện. KHÔNG dùng tay trần; (2) Gọi cấp cứu 115 ngay; (3) Kiểm tra ý thức - gọi tên nạn nhân hoặc vỗ nhẹ vai; (4) Đặt nạn nhân ở vị trí nằm lưng, kiểm tra hô hấp.</p><p>Nếu nạn nhân không hô hấp hoặc tim ngừng đập, thực hiện CPR (Cardiopulmonary Resuscitation): (1) Đặt heel (gót) tay lên giữa xương sườn, tay kia ép chặt lên trên; (2) Ấn nén ngực với tốc độ 100-120 lần/phút, độ sâu ít nhất 5cm; (3) Sau 30 lần ấn nén, thực hiện 2 lần thổi nhân tạo (nếu đã được đào tạo); (4) Tiếp tục cho đến khi nạn nhân có dấu hiệu sống lại hoặc cấp cứu đến. Không dừng CPR sớm.</p><p>Lưu ý: Nạn nhân điện giật có thể bị cơm tim (fibrillation) - tim đập không đều và không có hiệu quả. Chỉ máy khử rung tim (defibrillator) mới có thể cứu được nạn nhân này. Do đó, việc gọi cấp cứu nhanh là rất quan trọng. Mỗi công trường lớn nên có máy khử rung tim (AED).</p>",
+          "duration": 15,
+          "is_preview": false,
+          "weight": 2
+        }
+      ]
+    }
+  ]
+}

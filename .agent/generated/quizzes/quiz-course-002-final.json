@@ -1,0 +1,153 @@
+{
+  "quiz": {
+    "title": "Bài kiểm tra cuối khóa: An toàn Làm việc trên Cao",
+    "course_ref": "course-002",
+    "instructions": "Đọc kỹ từng câu hỏi trước khi trả lời. Bài kiểm tra gồm 15 câu hỏi về an toàn làm việc trên cao. Một số câu có nhiều đáp án đúng. Thời gian làm bài là 40 phút. Đạt yêu cầu khi đạt từ 75% điểm trở lên.",
+    "pass_threshold": 75,
+    "time_limit": 40,
+    "max_attempts": 3,
+    "display_style": "question_step"
+  },
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Theo TCVN và quy định an toàn xây dựng Việt Nam, làm việc trên cao bắt buộc phải sử dụng hệ thống bảo vệ chống ngã khi làm việc ở độ cao từ bao nhiêu mét trở lên?",
+      "points": 5,
+      "answers": [
+        {"text": "1,0 mét", "is_correct": false},
+        {"text": "1,5 mét", "is_correct": false},
+        {"text": "2,0 mét", "is_correct": true},
+        {"text": "3,0 mét", "is_correct": false}
+      ],
+      "explanation": "Theo QCVN 18:2021/BXD và các tiêu chuẩn an toàn xây dựng Việt Nam, làm việc ở độ cao từ 2,0 mét trở lên bắt buộc phải có biện pháp bảo vệ chống ngã như lan can bảo vệ, dây an toàn hoặc lưới an toàn."
+    },
+    {
+      "type": "single_choice",
+      "text": "Khi kiểm tra giàn giáo trước khi đưa vào sử dụng, điều nào sau đây KHÔNG phải là tiêu chí kiểm tra bắt buộc?",
+      "points": 5,
+      "answers": [
+        {"text": "Kiểm tra độ thẳng đứng và độ ổn định của toàn bộ kết cấu giàn giáo", "is_correct": false},
+        {"text": "Kiểm tra màu sơn và thẩm mỹ của các cấu kiện giàn giáo", "is_correct": true},
+        {"text": "Kiểm tra khả năng chịu tải và tải trọng tối đa cho phép", "is_correct": false},
+        {"text": "Kiểm tra ván sàn công tác, lan can và toe board", "is_correct": false}
+      ],
+      "explanation": "Màu sơn và thẩm mỹ không phải tiêu chí kiểm tra an toàn giàn giáo. Các tiêu chí bắt buộc bao gồm: độ ổn định kết cấu, khả năng chịu tải, ván sàn công tác, lan can bảo vệ, toe board, và hệ thống neo giữ."
+    },
+    {
+      "type": "single_choice",
+      "text": "Trong quá trình sử dụng thang di động tại công trường, quy tắc '3 điểm tiếp xúc' (3-point contact rule) có nghĩa là gì?",
+      "points": 5,
+      "answers": [
+        {"text": "Thang phải được đặt tại 3 điểm tựa khác nhau trên mặt đất", "is_correct": false},
+        {"text": "Luôn duy trì 2 tay và 1 chân, hoặc 2 chân và 1 tay tiếp xúc với thang khi di chuyển", "is_correct": true},
+        {"text": "Cần có 3 công nhân giám sát khi một người leo thang", "is_correct": false},
+        {"text": "Thang phải có ít nhất 3 điểm cố định vào tường hoặc kết cấu", "is_correct": false}
+      ],
+      "explanation": "Quy tắc 3 điểm tiếp xúc yêu cầu người leo thang luôn duy trì 3 trong 4 chi (2 tay + 1 chân, hoặc 1 tay + 2 chân) tiếp xúc với thang. Điều này đảm bảo sự cân bằng và ngăn ngã khi di chuyển trên thang."
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Khi lắp dựng giàn giáo khung thép tại công trình xây dựng, những yêu cầu nào sau đây là BẮT BUỘC? (Chọn tất cả đáp án đúng)",
+      "points": 5,
+      "answers": [
+        {"text": "Giàn giáo phải được lắp dựng bởi người có chuyên môn và theo bản vẽ thiết kế", "is_correct": true},
+        {"text": "Phải có lan can bảo vệ cao tối thiểu 1,0 mét ở tất cả các cạnh hở", "is_correct": true},
+        {"text": "Ván sàn công tác phải được buộc chặt, không vượt quá khoảng cách cho phép giữa các đà đỡ", "is_correct": true},
+        {"text": "Cho phép công nhân tự ý tháo bỏ lan can khi cần thi công gần mép ngoài", "is_correct": false}
+      ],
+      "explanation": "Giàn giáo phải được lắp dựng đúng kỹ thuật, có lan can bảo vệ đúng quy chuẩn và ván sàn an toàn. Tuyệt đối không được tự ý tháo bỏ lan can - nếu cần làm việc gần mép phải sử dụng dây an toàn và được cấp phép."
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Hệ thống dây an toàn cá nhân (Personal Fall Arrest System - PFAS) gồm những thành phần nào sau đây? (Chọn tất cả đáp án đúng)",
+      "points": 5,
+      "answers": [
+        {"text": "Dây đai an toàn toàn thân (Full body harness) đạt tiêu chuẩn", "is_correct": true},
+        {"text": "Dây nối (Lanyard) có bộ phận giảm sốc (shock absorber)", "is_correct": true},
+        {"text": "Điểm neo (Anchor point) chịu được lực kéo tối thiểu 15 kN", "is_correct": true},
+        {"text": "Dây đai lưng đơn (waist belt) thay thế cho dây đai toàn thân", "is_correct": false}
+      ],
+      "explanation": "PFAS bao gồm: dây đai toàn thân, dây nối có shock absorber và điểm neo đủ bền. Dây đai lưng đơn KHÔNG được chấp nhận thay thế dây đai toàn thân vì khi ngã sẽ gây tổn thương nội tạng nghiêm trọng."
+    },
+    {
+      "type": "true_false",
+      "text": "Giàn giáo đã qua sử dụng và có dấu hiệu gỉ sét nhẹ vẫn có thể được đưa vào sử dụng ngay mà không cần kiểm tra lại, miễn là đã được kiểm định định kỳ trong 6 tháng gần nhất.",
+      "points": 3,
+      "correct_answer": false,
+      "explanation": "Sai. Giàn giáo phải được kiểm tra trực quan trước mỗi lần sử dụng, bất kể thời điểm kiểm định trước đó. Gỉ sét có thể làm giảm khả năng chịu tải nghiêm trọng. Mọi cấu kiện bị gỉ sét, cong vênh phải được thay thế trước khi sử dụng."
+    },
+    {
+      "type": "true_false",
+      "text": "Khi làm việc trên mái nhà dốc (độ dốc >15°), dây an toàn phải được móc vào điểm neo ở phía trên người lao động để hạn chế khoảng cách rơi tự do không quá 1,8 mét.",
+      "points": 3,
+      "correct_answer": true,
+      "explanation": "Đúng. Điểm neo phải ở phía trên hoặc ngang với người lao động để giảm thiểu khoảng rơi tự do. Khoảng rơi tự do tối đa cho phép là 1,8 mét theo tiêu chuẩn quốc tế, tổng khoảng cách dừng (bao gồm cả giãn dây và chiều cao người) không vượt quá 6 mét."
+    },
+    {
+      "type": "fill_blank",
+      "text": "Điền vào chỗ trống: Theo quy định, thang tựa (lean-to ladder) phải được đặt với góc nghiêng ____ độ so với mặt phẳng ngang (tỷ lệ 1:4 - cứ 4 đơn vị chiều cao thì chân thang cách tường ____ đơn vị).",
+      "points": 5,
+      "correct_answers": ["75", "1"]
+    },
+    {
+      "type": "fill_blank",
+      "text": "Điền vào chỗ trống: Giấy phép làm việc trên cao (Working at Height Permit) phải được cấp và ký xác nhận bởi ____ trước khi bắt đầu công việc. Giấy phép này thường có hiệu lực trong ____ ca làm việc hoặc theo thời gian quy định trong giấy phép.",
+      "points": 5,
+      "correct_answers": ["cán bộ an toàn hoặc người có thẩm quyền", "1"]
+    },
+    {
+      "type": "short_answer",
+      "text": "Tại công trường bạn đang làm việc, một công nhân muốn sử dụng thang đơn để lên tầng 3 (độ cao khoảng 8 mét) để lấy vật liệu xây dựng. Bạn sẽ xử lý tình huống này như thế nào? Nêu rõ những nguy cơ và biện pháp thay thế an toàn hơn.",
+      "points": 5
+    },
+    {
+      "type": "matching",
+      "text": "Nối mỗi loại thiết bị bảo vệ chống ngã (cột trái) với mô tả ứng dụng phù hợp nhất (cột phải):",
+      "points": 8,
+      "pairs": [
+        {"left": "Lưới an toàn nằm ngang (Safety net)", "right": "Đặt bên dưới khu vực làm việc để đỡ người khi ngã, thường dùng ở tầng cao có nhiều công nhân"},
+        {"left": "Hệ thống dây an toàn nằm ngang (Horizontal lifeline)", "right": "Cho phép công nhân di chuyển dọc theo mái hoặc cạnh công trình trong khi vẫn được bảo vệ"},
+        {"left": "Lan can bảo vệ tạm thời (Temporary guardrail)", "right": "Rào chắn cứng ngăn công nhân tiếp cận vùng nguy hiểm, lắp ở cạnh sàn hở hoặc lỗ mở"},
+        {"left": "Thiết bị chống rơi tự hãm (Self-retracting lifeline - SRL)", "right": "Dây cuốn tự động giới hạn khoảng rơi tự do trong vài cm khi có sự cố ngã"},
+        {"left": "Tấm che lỗ mở sàn (Floor opening cover)", "right": "Tấm đậy cứng có đánh dấu rõ ràng, cố định vào sàn để phòng ngã xuống lỗ kỹ thuật"}
+      ]
+    },
+    {
+      "type": "matching",
+      "text": "Nối mỗi tình huống nguy hiểm khi làm việc trên cao (cột trái) với nguyên nhân gốc rễ phổ biến nhất (cột phải):",
+      "points": 8,
+      "pairs": [
+        {"left": "Công nhân ngã khi trèo lên giàn giáo", "right": "Không sử dụng đường lên xuống đúng quy định, leo trèo qua lan can"},
+        {"left": "Vật liệu rơi từ sàn công tác xuống khu vực bên dưới", "right": "Không lắp đặt toe board và không sắp xếp vật liệu gọn gàng trên sàn"},
+        {"left": "Giàn giáo bị sập trong khi thi công", "right": "Lắp dựng sai kỹ thuật, quá tải hoặc thiếu hệ thống neo giằng"},
+        {"left": "Công nhân mất thăng bằng khi làm việc trên mái dốc", "right": "Không sử dụng dây an toàn và không có hệ thống bảo vệ cạnh mái"}
+      ]
+    },
+    {
+      "type": "ordering",
+      "text": "Sắp xếp các bước thực hiện kiểm tra giàn giáo trước khi đưa vào sử dụng theo đúng trình tự từ bước 1 đến bước 5:",
+      "points": 8,
+      "items": [
+        {"text": "Kiểm tra hồ sơ lắp dựng, bản vẽ thiết kế và tải trọng thiết kế của giàn giáo", "correct_position": 1},
+        {"text": "Kiểm tra trực quan toàn bộ kết cấu: cấu kiện, khớp nối, bu lông và hệ thống neo giằng", "correct_position": 2},
+        {"text": "Kiểm tra sàn công tác, ván sàn, lan can bảo vệ và toe board", "correct_position": 3},
+        {"text": "Thử tải giàn giáo theo quy định trước khi cho phép sử dụng chính thức", "correct_position": 4},
+        {"text": "Gắn biển kiểm tra (tag) màu xanh nếu đạt yêu cầu, hoặc màu đỏ nếu không đạt, cùng ngày kiểm tra tiếp theo", "correct_position": 5}
+      ]
+    },
+    {
+      "type": "essay",
+      "text": "Một công trình xây dựng cao tầng đang thi công phần vỏ bao che ở độ cao 20 mét. Bạn là cán bộ an toàn nhận thấy một số công nhân làm việc gần cạnh sàn mà không đeo dây an toàn, với lý do 'vướng víu, khó làm việc'. Hãy phân tích rủi ro trong tình huống này và trình bày kế hoạch hành động cụ thể để giải quyết vấn đề, bao gồm: xử lý vi phạm tức thời, cải thiện điều kiện làm việc, và giải pháp lâu dài để đảm bảo tuân thủ.",
+      "points": 15,
+      "rubric": "Bài viết cần: (1) Phân tích đúng mức độ rủi ro và hậu quả tiềm tàng - 3 điểm; (2) Mô tả hành động xử lý vi phạm tức thời đúng quy trình - 3 điểm; (3) Đề xuất giải pháp cải thiện điều kiện làm việc thực tế (điểm neo tốt hơn, loại dây phù hợp) - 4 điểm; (4) Trình bày giải pháp dài hạn về đào tạo, văn hóa an toàn và hệ thống giám sát - 3 điểm; (5) Bài viết rõ ràng, logic, đủ số từ - 2 điểm.",
+      "min_words": 100
+    },
+    {
+      "type": "essay",
+      "text": "Trình bày quy trình thiết lập, kiểm tra và quản lý một hệ thống giàn giáo hoàn chỉnh cho thi công mặt ngoài tòa nhà 10 tầng (độ cao khoảng 30 mét). Bao gồm: các yêu cầu kỹ thuật, nhân sự có trách nhiệm, tần suất kiểm tra định kỳ, các dấu hiệu cần tháo dỡ khẩn cấp, và quy trình tháo dỡ an toàn khi hoàn thành thi công.",
+      "points": 15,
+      "rubric": "Bài viết cần: (1) Mô tả đầy đủ yêu cầu kỹ thuật lắp dựng giàn giáo cao tầng - 3 điểm; (2) Xác định đúng nhân sự và phân công trách nhiệm kiểm tra - 2 điểm; (3) Nêu đúng tần suất và nội dung kiểm tra định kỳ - 3 điểm; (4) Liệt kê được các dấu hiệu cần tháo dỡ hoặc ngừng sử dụng khẩn cấp - 3 điểm; (5) Mô tả quy trình tháo dỡ an toàn đúng trình tự từ trên xuống - 2 điểm; (6) Bài viết rõ ràng, có cấu trúc - 2 điểm.",
+      "min_words": 100
+    }
+  ]
+}
