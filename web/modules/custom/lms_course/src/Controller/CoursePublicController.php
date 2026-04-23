@@ -1843,18 +1843,26 @@ final class CoursePublicController extends ControllerBase {
         $thumbnail_url = 'https://picsum.photos/seed/' . $encoded_title . '/600/338';
       }
 
+      $short_description = trim((string) ($course->get('field_short_description')->value ?? ''));
+      if ($short_description === '' && $course->hasField('field_description') && !$course->get('field_description')->isEmpty()) {
+        $short_description = trim(strip_tags((string) $course->get('field_description')->value));
+        $short_description = \Drupal\Component\Utility\Unicode::truncate($short_description, 160, TRUE, TRUE);
+      }
+
       $cards[] = [
         'id' => $course->id(),
         'name' => $course->label(),
-        'short_description' => $course->get('field_short_description')->value ?? '',
+        'short_description' => $short_description,
         'price' => $price > 0 ? '$' . number_format($price, 2) : (string) $this->t('Free'),
         'price_raw' => $price,
+        'is_free' => $price <= 0,
         'rating' => $course->hasField('field_rating') && !$course->get('field_rating')->isEmpty() ? (float) $course->get('field_rating')->value : 5.0,
         'category' => $category?->label() ?? (string) $this->t('General'),
+        'category_name' => $category?->label() ?? (string) $this->t('General'),
         'category_id' => $category?->id() ?? '',
         'level' => $level?->label() ?? (string) $this->t('All Levels'),
         'level_id' => strtolower($level?->label() ?? ''),
-        'duration' => $this->lmsHelper->formatDuration($duration),
+        'duration' => $duration > 0 ? $this->lmsHelper->formatDuration($duration) : '',
         'bestseller' => (bool) $course->get('field_bestseller')->value,
         'featured' => (bool) $course->get('field_featured')->value,
         'has_thumbnail' => !empty($thumbnail_url),

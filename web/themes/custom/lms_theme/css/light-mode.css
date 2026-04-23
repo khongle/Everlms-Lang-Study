@@ -292,6 +292,46 @@ body.layout-minimalist .lms-pricing-header p {
   color: #64748b;
 }
 
+body.layout-minimalist .lms-pricing-card .lms-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 1rem;
+  padding: 0.95rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+body.layout-minimalist .lms-pricing-card .lms-btn--primary {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+}
+
+body.layout-minimalist .lms-pricing-card .lms-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px rgba(79, 70, 229, 0.24);
+}
+
+body.layout-minimalist .lms-pricing-card .lms-btn--outline {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+body.layout-minimalist .lms-pricing-card .lms-btn--outline:hover {
+  transform: translateY(-2px);
+  background: #eef2ff;
+  border-color: #6366f1;
+  color: #4338ca;
+}
+
 /* FORM ELEMENTS GLOBALLY FOR LIGHT MODE */
 body.layout-minimalist .form-lms__input,
 body.layout-minimalist .form-text,
@@ -493,20 +533,48 @@ body.layout-minimalist .lms-course-tabs {
   border-bottom: 1px solid #e2e8f0 !important;
   box-shadow: none !important;
 }
+body.layout-minimalist .lms-course-tabs .container {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+body.layout-minimalist .lms-course-tabs .container::-webkit-scrollbar {
+  display: none;
+}
+body.layout-minimalist .lms-course-tabs .lms-tabs {
+  flex-wrap: nowrap !important;
+  width: max-content;
+  min-width: 100%;
+  gap: 0.75rem !important;
+  padding: 0.6rem 0;
+}
+body.layout-minimalist .lms-course-tabs .lms-tabs li {
+  flex: 0 0 auto;
+}
 body.layout-minimalist .lms-course-tabs a.lms-tabs__link {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
   color: #64748b !important;
   font-weight: 600 !important;
+  border: 1px solid transparent !important;
   border-bottom: 3px solid transparent !important;
-  padding: 1.25rem 0 !important;
-  margin-bottom: -1px !important;
+  border-radius: 999px !important;
+  padding: 0.85rem 1.1rem !important;
+  margin-bottom: 0 !important;
+  white-space: nowrap;
+  background: transparent !important;
 }
 body.layout-minimalist .lms-course-tabs a.lms-tabs__link--active {
   color: #4f46e5 !important;
   border-bottom: 3px solid #4f46e5 !important;
+  border-color: #c7d2fe !important;
+  background: #eef2ff !important;
 }
 body.layout-minimalist .lms-course-tabs a.lms-tabs__link:hover:not(.lms-tabs__link--active) {
   color: #0f172a !important;
   border-bottom: 3px solid #cbd5e1 !important;
+  border-color: #e2e8f0 !important;
+  background: #f8fafc !important;
 }
 
 /* Main Section Background */
@@ -537,6 +605,16 @@ body.layout-minimalist .lms-tab-panel .card-glass {
   box-shadow: none !important;
   padding: 2.5rem !important;
   border-radius: 1.25rem !important;
+}
+
+body.layout-minimalist .lms-news-list__media {
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+body.layout-minimalist .lms-news-list__hover {
+  display: none !important;
 }
 
 /* Curriculum Accordion */

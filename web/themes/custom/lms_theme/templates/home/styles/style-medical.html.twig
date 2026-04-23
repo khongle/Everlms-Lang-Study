@@ -171,6 +171,9 @@
     </div>
     <div class="medical-course-grid">
       {% for course in featured_courses|slice(0, 8) %}
+      {% set course_category = course.category_name ?? course.category ?? '' %}
+      {% set course_is_free = (course.is_free ?? false) or (course.price_raw is defined and course.price_raw <= 0) %}
+      {% set course_summary = course.short_description|default('')|striptags|trim %}
       <article class="medical-course-card">
         <a href="{{ course.url }}" class="medical-course-card__thumb-wrap">
           {% if course.thumbnail_url %}
@@ -180,12 +183,26 @@
           {% endif %}
         </a>
         <div class="medical-course-card__body">
-          {% if course.category_name %}<span class="medical-course-card__cat">{{ course.category_name }}</span>{% endif %}
+          {% if course_category %}<span class="medical-course-card__cat">{{ course_category }}</span>{% endif %}
           <h3 class="medical-course-card__title"><a href="{{ course.url }}">{{ course.name }}</a></h3>
           {% if course.instructor_name %}<p class="medical-course-card__instructor">{{ course.instructor_name }}</p>{% endif %}
+          <div class="medical-course-card__meta">
+            {% if course.level %}
+              <span><i class="fas fa-signal" aria-hidden="true"></i>{{ course.level }}</span>
+            {% endif %}
+            {% if course.duration %}
+              <span><i class="far fa-clock" aria-hidden="true"></i>{{ course.duration }}</span>
+            {% endif %}
+            {% if course.lesson_count %}
+              <span><i class="fas fa-list-ul" aria-hidden="true"></i>{{ course.lesson_count }} {{ course.lesson_count == 1 ? 'lesson'|t : 'lessons'|t }}</span>
+            {% endif %}
+          </div>
+          {% if course_summary %}
+            <p class="medical-course-card__summary">{{ course_summary|slice(0, 105) }}{% if course_summary|length > 105 %}...{% endif %}</p>
+          {% endif %}
           <div class="medical-course-card__footer">
-            {% if course.price is defined %}<span class="medical-course-card__price">{% if course.is_free ?? false %}{{ 'Free'|t }}{% else %}{{ course.price }}{% endif %}</span>{% endif %}
-            <a href="{{ course.url }}" class="medical-btn medical-btn--sm">{{ 'View'|t }}</a>
+            {% if course.price is defined %}<span class="medical-course-card__price">{% if course_is_free %}{{ 'Free'|t }}{% else %}{{ course.price }}{% endif %}</span>{% endif %}
+            <a href="{{ course.url }}" class="medical-btn medical-btn--ghost medical-btn--sm">{{ 'View'|t }}</a>
           </div>
         </div>
       </article>
