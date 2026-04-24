@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * LMS Mobile API module hooks.
+ */
+
+/**
+ * Implements hook_mail().
+ *
+ * Sends OTP verification emails for registration and password reset flows.
+ */
+function lms_mobile_api_mail(string $key, array &$message, array $params): void {
+  if ($key !== 'otp_email') {
+    return;
+  }
+
+  $otp_code = $params['otp_code'];
+  $type = $params['type'] ?? 'register';
+
+  if ($type === 'register') {
+    $message['subject'] = t('Your EverLMS verification code');
+    $message['body'][] = t('Thank you for registering with EverLMS!');
+    $message['body'][] = t('Your verification code is: @otp', ['@otp' => $otp_code]);
+    $message['body'][] = t('This code expires in 15 minutes. Do not share it with anyone.');
+  }
+  else {
+    $message['subject'] = t('Your EverLMS password reset code');
+    $message['body'][] = t('Your password reset code is: @otp', ['@otp' => $otp_code]);
+    $message['body'][] = t('This code expires in 15 minutes.');
+    $message['body'][] = t('If you did not request a password reset, please ignore this email.');
+  }
+}

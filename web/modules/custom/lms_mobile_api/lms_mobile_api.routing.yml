@@ -1,0 +1,80 @@
+lms_mobile_api.user.register:
+  path: '/api/v1/user/register'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileAuthController::register'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]
+
+lms_mobile_api.user.register.verify_otp:
+  path: '/api/v1/user/register/verify-otp'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileAuthController::verifyRegisterOtp'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]
+
+lms_mobile_api.user.register.resend_otp:
+  path: '/api/v1/user/register/resend-otp'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileAuthController::resendRegisterOtp'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]
+
+lms_mobile_api.user.forgot_password:
+  path: '/api/v1/user/forgot-password'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileAuthController::forgotPassword'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]
+
+lms_mobile_api.user.forgot_password.verify_otp:
+  path: '/api/v1/user/forgot-password/verify-otp'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileAuthController::verifyForgotPasswordOtp'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]
+
+lms_mobile_api.user.reset_password:
+  path: '/api/v1/user/reset-password'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileAuthController::resetPassword'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]
+
+lms_mobile_api.oauth.token:
+  path: '/api/v1/oauth/token'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileAuthController::oauthToken'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]
+
+lms_mobile_api.user.profile:
+  path: '/api/v1/user/profile'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileAuthController::getProfile'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [GET]
+
+lms_mobile_api.user.change_password:
+  path: '/api/v1/user/change-password'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileAuthController::changePassword'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]

@@ -1,0 +1,8 @@
+services:
+  lms_mobile_api.otp_service:
+    class: Drupal\lms_mobile_api\Service\OtpService
+    arguments:
+      - '@keyvalue.expirable'
+      - '@plugin.manager.mail'
+      - '@language_manager'
+      - '@config.factory'
