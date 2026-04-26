@@ -187,7 +187,7 @@
 
 ## Task ↔ Unit ↔ RISK / FIND / PROTO Map
 
-> Last updated: 2026-04-26. Companion table to the kanban in `D-Development/D05-tasks/`. Total tasks: **150** (74 → 150 expanded with test depth, devops, security expansion, a11y/i18n, course/commerce edge cases, gamification, marketing tools).
+> Last updated: 2026-04-26. Companion table to the kanban in `D-Development/D05-tasks/`. Total tasks: **241** (74 → 150 → 241; final pass added VN-market essentials, live-class deep, assessment advanced, search/discovery, SSO/integrations, reporting advanced, subscription UI, content moderation, ops advanced, perf advanced, a11y advanced, onboarding, pedagogy, migration tooling, multi-tenancy/white-label).
 
 ### Spike-then-implement (Hardening) — Run spikes FIRST
 
@@ -396,6 +396,172 @@
 | TASK-149 | P1 | Image style presets |
 | TASK-150 | P1 | Video handling decision + impl |
 
+### VN market essentials (newly added, TASK-151..160)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-151 | P0 | VNPay gateway |
+| TASK-152 | P0 | MoMo wallet gateway |
+| TASK-153 | P0 | VietQR + bank transfer auto-confirm |
+| TASK-154 | P1 | e-Invoicing (HĐĐT) per Decree 123 |
+| TASK-155 | P1 | VN business tax ID (mã số thuế) |
+| TASK-156 | P2 | Vietnamese name diacritics handling |
+| TASK-157 | P2 | VN phone format validation |
+| TASK-158 | P1 | Vietnamese fonts pipeline |
+| TASK-159 | P3 | VN holiday calendar awareness |
+| TASK-160 | P2 | Bank transfer slip / receipt upload |
+
+### Live class / synchronous (newly added, TASK-161..168)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-161 | P1 | Class schedule entity (extends Zoom) |
+| TASK-162 | P1 | Zoom recording auto-publish |
+| TASK-163 | P2 | Class attendance tracking |
+| TASK-164 | P2 | iCal calendar export |
+| TASK-165 | P3 | Google Calendar 2-way sync |
+| TASK-166 | P1 | Class reminder cadence (24h/1h/5min) |
+| TASK-167 | P3 | Instructor office hours scheduling |
+| TASK-168 | P2 | Cohort start dates |
+
+### Assessment advanced (newly added, TASK-169..176)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-169 | P2 | Question randomization per attempt |
+| TASK-170 | P2 | Question bank (reusable across quizzes) |
+| TASK-171 | P2 | Quiz attempt limits + cooldown |
+| TASK-172 | P2 | Quiz time-extended a11y accommodation |
+| TASK-173 | P3 | Webcam proctoring (opt-in) |
+| TASK-174 | P2 | Quiz results export (CSV/Excel) |
+| TASK-175 | P2 | Question difficulty + discrimination index |
+| TASK-176 | P2 | Practice vs Cert quiz distinction |
+
+### Search & discovery (newly added, TASK-177..182)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-177 | P2 | Recommendations engine |
+| TASK-178 | P2 | Personalized homepage rails |
+| TASK-179 | P2 | Recently viewed |
+| TASK-180 | P2 | Search autocomplete suggestions |
+| TASK-181 | P2 | Trending courses |
+| TASK-182 | P3 | Saved searches + email digest |
+
+### SSO + integrations (newly added, TASK-183..188)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-183 | P1 | SAML 2.0 SSO |
+| TASK-184 | P1 | OpenID Connect SSO |
+| TASK-185 | P2 | SCIM 2.0 user provisioning |
+| TASK-186 | P2 | LTI 1.3 Tool Provider |
+| TASK-187 | P2 | Outbound webhook system |
+| TASK-188 | P3 | Slack/Discord notifications |
+
+### Reporting advanced (newly added, TASK-189..196)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-189 | P1 | Course completion rate report |
+| TASK-190 | P1 | Revenue per instructor + course |
+| TASK-191 | P2 | Student progress report |
+| TASK-192 | P2 | Quiz performance report |
+| TASK-193 | P2 | Funnel analytics |
+| TASK-194 | P2 | Cohort analysis |
+| TASK-195 | P2 | Custom report builder |
+| TASK-196 | P2 | Scheduled reports email |
+
+### Subscription mgmt UI (newly added, TASK-197..201)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-197 | P1 | Subscription cancel/pause/resume |
+| TASK-198 | P1 | Payment method management |
+| TASK-199 | P2 | Subscription history |
+| TASK-200 | P1 | Trial period management |
+| TASK-201 | P2 | Upgrade/downgrade preview |
+
+### Content moderation (newly added, TASK-202..206)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-202 | P1 | Comment moderation queue |
+| TASK-203 | P1 | User report functionality |
+| TASK-204 | P2 | Auto-flag profanity + suspicious |
+| TASK-205 | P1 | Moderator role + dashboard |
+| TASK-206 | P2 | Mod action audit log |
+
+### Operations advanced (newly added, TASK-207..212)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-207 | P1 | Feature flag admin UI |
+| TASK-208 | P1 | Maintenance mode toggle |
+| TASK-209 | P2 | Public status page |
+| TASK-210 | P1 | Audit log UI |
+| TASK-211 | P2 | Banner / announcement system |
+| TASK-212 | P1 | Synthetic monitoring (uptime) |
+
+### Performance advanced (newly added, TASK-213..217)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-213 | P2 | PWA + service worker |
+| TASK-214 | P2 | Critical CSS inline |
+| TASK-215 | P1 | Image lazy loading |
+| TASK-216 | P1 | HTTP cache headers per route |
+| TASK-217 | P2 | HTTP/3 + QUIC support |
+
+### Accessibility advanced (newly added, TASK-218..221)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-218 | P2 | High-contrast theme variant |
+| TASK-219 | P2 | Reduced motion mode |
+| TASK-220 | P2 | Font size controls |
+| TASK-221 | P1 | Video captions/subtitles infra |
+
+### Onboarding & engagement (newly added, TASK-222..227)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-222 | P2 | Welcome email drip series |
+| TASK-223 | P2 | Instructor setup wizard |
+| TASK-224 | P2 | First-time UX tour |
+| TASK-225 | P1 | Empty state CTAs (Twig macro) |
+| TASK-226 | P2 | Course completion celebration |
+| TASK-227 | P2 | Re-engagement campaign |
+
+### Pedagogy / Course quality (newly added, TASK-228..233)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-228 | P2 | Drip content schedule |
+| TASK-229 | P1 | Course preview gating |
+| TASK-230 | P2 | Cohort-based courses |
+| TASK-231 | P2 | Microlearning bites |
+| TASK-232 | P3 | Spaced repetition flashcards |
+| TASK-233 | P3 | Adaptive difficulty |
+
+### Migration / Data import (newly added, TASK-234..237)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-234 | P2 | Migrate from Moodle |
+| TASK-235 | P3 | Migrate from Thinkific/Teachable |
+| TASK-236 | P1 | Demo data seeder (drush command) |
+| TASK-237 | P2 | User import templates |
+
+### Multi-tenancy / White-label (newly added, TASK-238..241)
+
+| TASK | Priority | Subject |
+|------|----------|---------|
+| TASK-238 | P2 | Org entity (multi-tenancy foundation) |
+| TASK-239 | P2 | Per-Org custom branding |
+| TASK-240 | P2 | Subdomain routing per Org |
+| TASK-241 | P2 | Org-level reports scope |
+
 ### Done (9 tasks)
 
 TASK-006 (U-036), TASK-007 (U-037), TASK-008 (U-038), TASK-010 (U-043), TASK-012 (U-047), TASK-013 (U-048), TASK-014 (U-050), TASK-023 (U-049), TASK-027 (U-076).
@@ -427,6 +593,21 @@ TASK-006 (U-036), TASK-007 (U-037), TASK-008 (U-038), TASK-010 (U-043), TASK-012
 | Communication (Q&A, comments, mentions, digest, prefs) | 5 features | 5 (TASK-136..140) | 0 |
 | Gamification (leaderboard, streaks, XP, achievements) | 4 features | 4 (TASK-141..144) | 0 |
 | Marketing/content (coupon campaigns, email campaign, CKEditor, media library, image styles, video) | 6 areas | 6 (TASK-145..150) | 0 |
+| VN market essentials (VNPay, MoMo, VietQR, e-Invoicing, MST, name, phone, fonts, holiday, slip OCR) | 10 areas | 10 (TASK-151..160) | 0 |
+| Live class / synchronous (schedule, recording, attendance, iCal, GCal, reminder, office hours, cohort) | 8 features | 8 (TASK-161..168) | 0 |
+| Assessment advanced (randomization, bank, attempts, time-extend, proctoring, export, analytics, practice-vs-cert) | 8 features | 8 (TASK-169..176) | 0 |
+| Search & discovery (recs, personalized, recently viewed, autocomplete, trending, saved) | 6 features | 6 (TASK-177..182) | 0 |
+| SSO + integrations (SAML, OIDC, SCIM, LTI, outbound webhook, Slack/Discord) | 6 areas | 6 (TASK-183..188) | 0 |
+| Reporting advanced (completion, revenue, progress, quiz perf, funnel, cohort, builder, scheduled) | 8 reports | 8 (TASK-189..196) | 0 |
+| Subscription mgmt UI (cancel/pause/resume, payment methods, history, trial, upgrade preview) | 5 features | 5 (TASK-197..201) | 0 |
+| Content moderation (queue, reports, auto-flag, dashboard, audit log) | 5 features | 5 (TASK-202..206) | 0 |
+| Operations advanced (FF UI, maintenance, status page, audit UI, banner, synthetic monitoring) | 6 areas | 6 (TASK-207..212) | 0 |
+| Performance advanced (PWA, critical CSS, lazy load, cache headers, HTTP/3) | 5 areas | 5 (TASK-213..217) | 0 |
+| A11y advanced (contrast, motion, font size, captions) | 4 features | 4 (TASK-218..221) | 0 |
+| Onboarding (welcome series, wizard, tour, empty states, celebration, re-engagement) | 6 features | 6 (TASK-222..227) | 0 |
+| Pedagogy (drip, preview gate, cohort, microlearning, spaced rep, adaptive) | 6 features | 6 (TASK-228..233) | 0 |
+| Migration tooling (Moodle, Thinkific/Teachable, demo seeder, CSV templates) | 4 areas | 4 (TASK-234..237) | 0 |
+| Multi-tenancy / White-label (org entity, branding, subdomain, reports scope) | 4 areas | 4 (TASK-238..241) | 0 |
 
 ---
 
