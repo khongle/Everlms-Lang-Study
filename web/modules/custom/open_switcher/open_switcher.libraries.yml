@@ -1,0 +1,11 @@
+impersonation_dialog:
+  version: 1.x
+  css:
+    theme:
+      css/impersonation-dialog.css: {}
+  js:
+    js/impersonation-dialog.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/once

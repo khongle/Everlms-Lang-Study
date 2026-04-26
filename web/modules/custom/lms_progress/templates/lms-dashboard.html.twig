@@ -1,22 +1,88 @@
 {# Dashboard page #}
 {{ attach_library('lms_theme/global') }}
 
+<style>
+  .lms-dashboard-page .lms-dashboard-page__hero {
+    grid-template-columns: 1fr !important;
+    align-items: stretch !important;
+  }
+
+  .lms-dashboard-page .lms-dashboard-page__hero-copy {
+    max-width: 60rem;
+  }
+
+  .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight {
+    height: 100%;
+    grid-template-columns: 1fr !important;
+    max-width: min(100%, 34rem);
+    justify-self: start;
+  }
+
+  .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight__media {
+    aspect-ratio: 16 / 9 !important;
+  }
+
+  .lms-dashboard-page .lms-learning-filters__button.is-active span {
+    background: rgba(255, 255, 255, 0.24) !important;
+    color: #ffffff !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+  }
+
+  .lms-dashboard-page .lms-learning-grid {
+    grid-auto-rows: 1fr;
+    align-items: stretch;
+  }
+
+  .lms-dashboard-page .lms-learning-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .lms-dashboard-page .lms-learning-card__body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .lms-dashboard-page .lms-learning-card__title {
+    line-height: 1.25;
+    min-height: 5.05rem;
+    max-height: 5.05rem;
+    overflow: hidden;
+  }
+
+  .lms-dashboard-page .lms-learning-card__body .lms-learning-progress {
+    margin-top: auto;
+  }
+
+  .lms-dashboard-page .lms-learning-card__cta {
+    margin-top: 0.75rem;
+  }
+
+  @media (max-width: 991px) {
+    .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight {
+      max-width: 100%;
+    }
+  }
+</style>
+
 {% set featured_course = recent_courses|first %}
 
 <section class="lms-section lms-dashboard-page">
   <div class="container">
-    <div class="lms-dashboard-page__hero">
+    <div class="lms-dashboard-page__hero" style="grid-template-columns: 1fr !important; align-items: stretch !important;">
       <div class="lms-dashboard-page__hero-copy">
-        <span class="lms-dashboard-page__eyebrow">{{ 'Learning overview'|t }}</span>
-        <h1 class="lms-dashboard-page__title">{{ 'Dashboard'|t }}</h1>
-        <p class="lms-dashboard-page__subtitle">{{ 'Track your active enrollments, jump back into recent lessons, and keep every learning streak moving.'|t }}</p>
+        <span class="lms-dashboard-page__eyebrow">{{ 'Learning dashboard'|t }}</span>
+        <h1 class="lms-dashboard-page__title">{{ 'Your learning dashboard'|t }}</h1>
+        <p class="lms-dashboard-page__subtitle">{{ 'See what to finish next, reopen the right lesson quickly, and keep every certificate on track.'|t }}</p>
       </div>
 
       {% if featured_course %}
         {% set featured_status = featured_course.status == 'completed' ? 'Completed'|t : (featured_course.status == 'not_started' ? 'Ready to start'|t : 'In progress'|t) %}
         {% set featured_action = featured_course.status == 'completed' ? 'Review Course'|t : (featured_course.status == 'not_started' ? 'Start Course'|t : 'Continue Learning'|t) %}
-        <article class="lms-learning-spotlight">
-          <a class="lms-learning-spotlight__media" href="{{ featured_course.url }}">
+        <article class="lms-learning-spotlight" style="height: 100%; grid-template-columns: 1fr !important; max-width: min(100%, 34rem); justify-self: start;">
+          <a class="lms-learning-spotlight__media" href="{{ featured_course.url }}" style="aspect-ratio: 16 / 9 !important;">
             {% if featured_course.thumbnail_url %}
               <img src="{{ featured_course.thumbnail_url }}" alt="{{ featured_course.title }}" loading="lazy">
             {% else %}
@@ -38,7 +104,7 @@
               <a href="{{ featured_course.url }}">{{ featured_course.title }}</a>
             </h2>
 
-            <p class="lms-learning-spotlight__copy">{{ 'Your next lesson is ready. Pick up from the latest checkpoint and keep your progress climbing.'|t }}</p>
+            <p class="lms-learning-spotlight__copy">{{ 'Resume from your latest checkpoint and keep your progress moving without losing your place.'|t }}</p>
 
             <div class="lms-learning-progress lms-learning-progress--hero">
               <div class="lms-learning-progress__meta">
@@ -107,7 +173,7 @@
         <div class="lms-learning-toolbar">
           <div>
             <h2 class="lms-learning-toolbar__title">{{ 'Continue learning'|t }}</h2>
-            <p class="lms-learning-toolbar__subtitle">{{ 'Filter your current queue and jump straight back into the right course.'|t }}</p>
+            <p class="lms-learning-toolbar__subtitle">{{ 'Filter by status and jump back into the right course faster.'|t }}</p>
           </div>
 
           <div class="lms-learning-filters" role="tablist" aria-label="{{ 'Filter courses'|t }}">

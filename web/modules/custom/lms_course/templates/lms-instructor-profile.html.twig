@@ -1,48 +1,48 @@
 {# Instructor Profile Page #}
-<div class="lms-page-wrapper lms-instructor-profile" style="background: #0d1117; min-height: 100vh; padding: 4rem 1.5rem; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<div class="lms-page-wrapper lms-instructor-profile" style="background: linear-gradient(180deg, var(--medical-bg, #ffffff) 0%, rgba(246, 252, 255, 0.92) 55%, #f7fbfe 100%); min-height: 100vh; padding: clamp(2.75rem, 4vw, 4.5rem) 1.5rem; color: var(--medical-text, #12354a); font-family: var(--medical-font-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif);">
   <div class="lms-container lms-instructor-profile__container" style="max-width: 1200px; margin: 0 auto;">
     
-    <div class="lms-instructor-profile__hero" style="background: linear-gradient(145deg, #161b22 0%, #0d1117 100%); border: 1px solid hsla(0,0%,100%,0.1); border-radius: 1rem; padding: 3rem; margin-bottom: 3rem; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; overflow: hidden;">
+    <div class="lms-instructor-profile__hero" style="background: linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 252, 255, 0.98) 100%); border: 1px solid var(--medical-border-soft, rgba(0, 0, 0, 0.08)); border-top: 4px solid var(--medical-violet, #0077b6); border-radius: 1.25rem; padding: clamp(2rem, 4vw, 3rem); margin-bottom: 3rem; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; overflow: hidden; box-shadow: 0 24px 48px rgba(0, 119, 182, 0.12);">
       
       {# Background abstract shapes #}
-      <div class="lms-instructor-profile__glow lms-instructor-profile__glow--one" style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(56, 189, 248, 0.1); filter: blur(60px); border-radius: 50%;"></div>
-      <div class="lms-instructor-profile__glow lms-instructor-profile__glow--two" style="position: absolute; bottom: -50px; right: -50px; width: 250px; height: 250px; background: rgba(168, 85, 247, 0.1); filter: blur(80px); border-radius: 50%;"></div>
+      <div class="lms-instructor-profile__glow lms-instructor-profile__glow--one" style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(0, 180, 216, 0.14); filter: blur(60px); border-radius: 50%;"></div>
+      <div class="lms-instructor-profile__glow lms-instructor-profile__glow--two" style="position: absolute; bottom: -50px; right: -50px; width: 250px; height: 250px; background: rgba(72, 202, 228, 0.16); filter: blur(80px); border-radius: 50%;"></div>
       
       {% if instructor_avatar %}
-        <div class="lms-instructor-profile__avatar-frame" style="width: 160px; height: 160px; border-radius: 50%; overflow: hidden; border: 4px solid #1f2937; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 1.5rem; position: relative; z-index: 1;">
+        <div class="lms-instructor-profile__avatar-frame" style="width: 160px; height: 160px; border-radius: 50%; overflow: hidden; border: 4px solid rgba(255, 255, 255, 0.95); box-shadow: 0 18px 34px rgba(15, 23, 42, 0.14); margin-bottom: 1.5rem; position: relative; z-index: 1; background: #ffffff;">
           <img src="{{ instructor_avatar }}" alt="{{ instructor_name }}" class="lms-instructor-profile__avatar" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
       {% else %}
-        <div class="lms-instructor-profile__avatar-frame lms-instructor-profile__avatar-frame--fallback" style="width: 160px; height: 160px; border-radius: 50%; background: #21262d; border: 4px solid #1f2937; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; font-size: 4rem; color: #8b949e; margin-bottom: 1.5rem; position: relative; z-index: 1;">
+        <div class="lms-instructor-profile__avatar-frame lms-instructor-profile__avatar-frame--fallback" style="width: 160px; height: 160px; border-radius: 50%; background: rgba(0, 119, 182, 0.08); border: 4px solid rgba(255, 255, 255, 0.95); box-shadow: 0 18px 34px rgba(15, 23, 42, 0.14); display: flex; align-items: center; justify-content: center; font-size: 4rem; color: var(--medical-violet, #0077b6); margin-bottom: 1.5rem; position: relative; z-index: 1;">
           <i class="fas fa-user-tie lms-instructor-profile__avatar-icon"></i>
         </div>
       {% endif %}
 
-      <h1 class="lms-section-title lms-instructor-profile__name" style="font-size: 2.5rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; position: relative; z-index: 1;">{{ instructor_name }}</h1>
+      <h1 class="lms-section-title lms-instructor-profile__name" style="font-size: 2.5rem; font-weight: 700; color: var(--medical-heading, #0f2c3d); margin-bottom: 0.5rem; position: relative; z-index: 1;">{{ instructor_name }}</h1>
       
       {% if job_title %}
-        <p class="lms-instructor-profile__role" style="font-size: 1.25rem; color: #38bdf8; margin-bottom: 1.5rem; position: relative; z-index: 1;">{{ job_title }}</p>
+        <p class="lms-instructor-profile__role" style="font-size: 1rem; color: var(--medical-violet, #0077b6); margin-bottom: 1.5rem; position: relative; z-index: 1; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">{{ job_title }}</p>
       {% endif %}
 
-      <div class="lms-instructor-profile__stats" style="display: inline-flex; gap: 2rem; background: rgba(0,0,0,0.3); padding: 1rem 2rem; border-radius: 3rem; border: 1px solid hsla(0,0%,100%,0.05); margin-bottom: 2rem; position: relative; z-index: 1; backdrop-filter: blur(10px);">
+      <div class="lms-instructor-profile__stats" style="display: inline-flex; gap: 2rem; background: rgba(255, 255, 255, 0.92); padding: 1rem 2rem; border-radius: 3rem; border: 1px solid rgba(0, 119, 182, 0.12); margin-bottom: 2rem; position: relative; z-index: 1; backdrop-filter: blur(14px); box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);">
         <div class="lms-instructor-profile__stat" style="display: flex; flex-direction: column; gap: 0.25rem;">
-          <strong class="lms-instructor-profile__stat-value" style="color: #fff; font-size: 1.5rem; line-height: 1;">{{ stats.students|number_format }}</strong>
-          <span class="lms-instructor-profile__stat-label" style="font-size: 0.85rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em;">{{ 'Students'|t }}</span>
+          <strong class="lms-instructor-profile__stat-value" style="color: var(--medical-heading, #0f2c3d); font-size: 1.5rem; line-height: 1;">{{ stats.students|number_format }}</strong>
+          <span class="lms-instructor-profile__stat-label" style="font-size: 0.85rem; color: var(--medical-text-muted, #6f8796); text-transform: uppercase; letter-spacing: 0.05em;">{{ 'Students'|t }}</span>
         </div>
         <div class="lms-instructor-profile__stat" style="display: flex; flex-direction: column; gap: 0.25rem;">
-          <strong class="lms-instructor-profile__stat-value" style="color: #fff; font-size: 1.5rem; line-height: 1;">{{ stats.courses|number_format }}</strong>
-          <span class="lms-instructor-profile__stat-label" style="font-size: 0.85rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em;">{{ 'Courses'|t }}</span>
+          <strong class="lms-instructor-profile__stat-value" style="color: var(--medical-heading, #0f2c3d); font-size: 1.5rem; line-height: 1;">{{ stats.courses|number_format }}</strong>
+          <span class="lms-instructor-profile__stat-label" style="font-size: 0.85rem; color: var(--medical-text-muted, #6f8796); text-transform: uppercase; letter-spacing: 0.05em;">{{ 'Courses'|t }}</span>
         </div>
         <div class="lms-instructor-profile__stat" style="display: flex; flex-direction: column; gap: 0.25rem;">
-          <strong class="lms-instructor-profile__stat-value lms-instructor-profile__stat-value--rating" style="color: #fff; font-size: 1.5rem; line-height: 1; display: flex; align-items: center; justify-content: center; gap: 4px;">
-            {{ stats.rating|number_format(1) }} <i class="fas fa-star" style="color: #eab308; font-size: 1.25rem;"></i>
+          <strong class="lms-instructor-profile__stat-value lms-instructor-profile__stat-value--rating" style="color: var(--medical-heading, #0f2c3d); font-size: 1.5rem; line-height: 1; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            {{ stats.rating|number_format(1) }} <i class="fas fa-star" style="color: #f59e0b; font-size: 1.25rem;"></i>
           </strong>
-          <span class="lms-instructor-profile__stat-label" style="font-size: 0.85rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em;">{{ 'Rating'|t }}</span>
+          <span class="lms-instructor-profile__stat-label" style="font-size: 0.85rem; color: var(--medical-text-muted, #6f8796); text-transform: uppercase; letter-spacing: 0.05em;">{{ 'Rating'|t }}</span>
         </div>
       </div>
 
       {% if bio %}
-        <div class="lms-instructor-profile__bio" style="max-width: 800px; margin: 0 auto; line-height: 1.7; font-size: 1.1rem; color: #9ca3af; position: relative; z-index: 1;">
+        <div class="lms-instructor-profile__bio" style="max-width: 800px; margin: 0 auto; line-height: 1.75; font-size: 1.05rem; color: var(--medical-text-soft, #476273); position: relative; z-index: 1;">
           {{ bio|striptags|nl2br }}
         </div>
       {% endif %}
@@ -57,7 +57,7 @@
              {% if platform == 'youtube' %} {% set icon_class = 'fab fa-youtube' %} {% set bg_hover = '#ff0000' %} {% endif %}
              {% if platform == 'website' %} {% set icon_class = 'fas fa-globe' %} {% set bg_hover = '#10b981' %} {% endif %}
              
-             <a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="lms-instructor-profile__social-link lms-instructor-profile__social-link--{{ platform }}" style="width: 44px; height: 44px; border-radius: 50%; background: #1f2937; border: 1px solid hsla(0,0%,100%,0.1); display: flex; align-items: center; justify-content: center; color: #d1d5db; text-decoration: none; font-size: 1.25rem; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" onmouseover="this.style.background='{{ bg_hover }}'; this.style.color='#fff'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='#1f2937'; this.style.color='#d1d5db'; this.style.transform='translateY(0)';">
+             <a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="lms-instructor-profile__social-link lms-instructor-profile__social-link--{{ platform }}" style="width: 44px; height: 44px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0, 119, 182, 0.12); display: flex; align-items: center; justify-content: center; color: var(--medical-text, #12354a); text-decoration: none; font-size: 1.25rem; transition: all 0.2s; box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);" onmouseover="this.style.background='{{ bg_hover }}'; this.style.color='#fff'; this.style.transform='translateY(-2px)'; this.style.borderColor='{{ bg_hover }}';" onmouseout="this.style.background='#ffffff'; this.style.color='var(--medical-text, #12354a)'; this.style.transform='translateY(0)'; this.style.borderColor='rgba(0, 119, 182, 0.12)';">
                <i class="{{ icon_class }}"></i>
              </a>
           {% endfor %}
@@ -66,7 +66,7 @@
 
     </div>
 
-    <h2 class="lms-instructor-profile__courses-title" style="font-size: 2rem; font-weight: 600; color: #fff; margin-bottom: 2rem; border-bottom: 1px solid #30363d; padding-bottom: 1rem;">
+    <h2 class="lms-instructor-profile__courses-title" style="font-size: 2rem; font-weight: 600; color: var(--medical-heading, #0f2c3d); margin-bottom: 2rem; border-bottom: 1px solid rgba(0, 119, 182, 0.12); padding-bottom: 1rem;">
       {{ 'Courses by'|t }} {{ instructor_name }}
     </h2>
 
@@ -77,10 +77,10 @@
         {% endfor %}
       </div>
     {% else %}
-      <div class="lms-instructor-profile__empty" style="background: #161b22; border: 1px dashed #30363d; padding: 4rem 2rem; border-radius: 1rem; text-align: center;">
-        <i class="fas fa-books lms-instructor-profile__empty-icon" style="font-size: 3rem; color: #4b5563; margin-bottom: 1rem;"></i>
-        <h3 class="lms-instructor-profile__empty-title" style="color: #fff; font-size: 1.5rem; margin-bottom: 0.5rem;">{{ 'No courses published yet'|t }}</h3>
-        <p class="lms-instructor-profile__empty-copy" style="color: #8b949e;">{{ instructor_name }} {{ 'is preparing something amazing. Check back later!'|t }}</p>
+      <div class="lms-instructor-profile__empty" style="background: #ffffff; border: 1px dashed rgba(0, 119, 182, 0.2); padding: 4rem 2rem; border-radius: 1rem; text-align: center; box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);">
+        <i class="fas fa-books lms-instructor-profile__empty-icon" style="font-size: 3rem; color: var(--medical-violet, #0077b6); margin-bottom: 1rem;"></i>
+        <h3 class="lms-instructor-profile__empty-title" style="color: var(--medical-heading, #0f2c3d); font-size: 1.5rem; margin-bottom: 0.5rem;">{{ 'No courses published yet'|t }}</h3>
+        <p class="lms-instructor-profile__empty-copy" style="color: var(--medical-text-muted, #6f8796);">{{ instructor_name }} {{ 'is preparing something amazing. Check back later!'|t }}</p>
       </div>
     {% endif %}
 

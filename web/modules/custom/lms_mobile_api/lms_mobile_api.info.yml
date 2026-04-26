@@ -1,0 +1,7 @@
+name: 'LMS Mobile API'
+type: module
+description: 'Mobile JSON API endpoints for the EverLMS student app (authentication, OTP, password reset).'
+core_version_requirement: ^10 || ^11
+package: LMS
+dependencies:
+  - drupal:user

@@ -1140,20 +1140,86 @@ body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-sideba
 
 /* Dashboard hero balance */
 body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-dashboard-page__hero {
-  grid-template-columns: minmax(0, 0.95fr) minmax(23rem, 1.15fr);
+  grid-template-columns: 1fr !important;
   align-items: stretch;
 }
 
 body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-dashboard-page__hero-copy {
-  max-width: none;
+  max-width: 60rem;
 }
 
 body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-dashboard-page__hero .lms-learning-spotlight {
   height: 100%;
+  grid-template-columns: 1fr !important;
+  max-width: min(100%, 34rem);
+  justify-self: start;
 }
 
 body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-dashboard-page__hero .lms-learning-spotlight__media {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 16 / 9 !important;
+}
+
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters__button.is-active span {
+  background-color: rgba(255, 255, 255, 0.24) !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+}
+
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-grid {
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+}
+
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card__body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card__title {
+  line-height: 1.25;
+  min-height: 5.05rem;
+  max-height: 5.05rem;
+  overflow: hidden;
+}
+
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card__body .lms-learning-progress {
+  margin-top: auto;
+}
+
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-card__cta {
+  margin-top: 0.75rem;
+}
+
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-quiz-result-row {
+  grid-template-columns: 3.75rem minmax(0, 1fr) auto auto;
+  gap: 1.1rem;
+  padding: 1rem 1.15rem;
+}
+
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-quiz-result-row__icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #0369a1;
+}
+
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-quiz-result-row__action {
+  justify-self: end;
+  align-self: center;
+  min-height: 2.75rem;
+  padding-inline: 1.1rem;
 }
 
 /* Lesson detail controls */
@@ -1462,4 +1528,359 @@ body.layout-minimalist .btn-lms-success:hover {
   background: #374151 !important;
   box-shadow: none !important;
   transform: none !important;
+}
+
+/* =========================================================
+   BUG FIXES — ref: minimalist-error.md (2026-04-25)
+   Strictly scoped to body.layout-minimalist.
+   ========================================================= */
+
+/* ERR-01: Hero background — flat white, remove gradient */
+body.layout-minimalist .saas-hero-bg {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+body.layout-minimalist .saas-hero-bg::before,
+body.layout-minimalist .saas-hero-bg::after {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+/* ERR-02: Hero — hide image slideshow, centre text column */
+body.layout-minimalist .saas-hero-media,
+body.layout-minimalist .saas-hero-carousel {
+  display: none !important;
+}
+body.layout-minimalist .saas-hero-copy {
+  text-align: center !important;
+  max-width: 720px !important;
+  margin-inline: auto !important;
+  flex: 0 0 100% !important;
+  width: 100% !important;
+}
+
+/* ERR-03: Hero — hide search bar */
+body.layout-minimalist .saas-hero-search {
+  display: none !important;
+}
+
+/* ERR-04: Hero stat icons — transparent bg, dark text */
+body.layout-minimalist .saas-hero-stat-icon {
+  background: transparent !important;
+  color: var(--text-primary, #111827) !important;
+  box-shadow: none !important;
+}
+
+/* ERR-05: saas-btn-primary — solid black (homepage hero + CTA) */
+body.layout-minimalist .saas-btn-primary {
+  background: var(--accent-primary, #111827) !important;
+  background-image: none !important;
+  border-color: var(--accent-primary, #111827) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist .saas-btn-primary:hover {
+  background: #374151 !important;
+  background-image: none !important;
+  border-color: #374151 !important;
+  box-shadow: none !important;
+}
+
+/* ERR-06: CTA section — light neutral bg, dark text (no dark navy) */
+body.layout-minimalist .saas-bg-dark {
+  background: var(--bg-secondary, #f8f9fa) !important;
+  color: var(--text-primary, #111827) !important;
+}
+body.layout-minimalist .saas-bg-dark h1,
+body.layout-minimalist .saas-bg-dark h2,
+body.layout-minimalist .saas-bg-dark h3,
+body.layout-minimalist .saas-bg-dark p,
+body.layout-minimalist .saas-bg-dark .minimal-cta-copy {
+  color: var(--text-primary, #111827) !important;
+}
+body.layout-minimalist .saas-section--cta {
+  background: var(--bg-secondary, #f8f9fa) !important;
+  color: var(--text-primary, #111827) !important;
+}
+/* Fix text/button that was previously designed for dark CTA bg */
+body.layout-minimalist .minimal-cta-copy {
+  color: var(--text-secondary, #6b7280) !important;
+}
+body.layout-minimalist .minimal-cta-outline-light {
+  background: transparent !important;
+  border: 1px solid #111827 !important;
+  color: #111827 !important;
+}
+body.layout-minimalist .minimal-cta-outline-light:hover {
+  background: #111827 !important;
+  color: #ffffff !important;
+}
+
+/* WARN-03: Category card (/categories) — no shadow */
+body.layout-minimalist [class*="category-card"] {
+  box-shadow: none !important;
+}
+
+/* WARN-04: Forum "New Topic" button — solid black, radius 6px */
+body.layout-minimalist .lms-forum-new-btn {
+  background: var(--accent-primary, #111827) !important;
+  background-image: none !important;
+  border-color: var(--accent-primary, #111827) !important;
+  color: #ffffff !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist .lms-forum-new-btn:hover {
+  background: #374151 !important;
+  border-color: #374151 !important;
+  box-shadow: none !important;
+}
+
+/* WARN-05: Course detail active tab — underline only, no fill */
+body.layout-minimalist .lms-tabs__link--active,
+body.layout-minimalist .lms-tabs__link.active {
+  background: transparent !important;
+  color: var(--text-primary, #111827) !important;
+  border-bottom-color: var(--accent-primary, #111827) !important;
+  box-shadow: none !important;
+}
+
+/* =========================================================
+   FOLLOW-UP FIXES — ref: minimalist-error.md + cross-page audit (2026-04-25)
+   Strictly scoped to body.layout-minimalist.
+   ========================================================= */
+
+/* NAV: Exit impersonation badge must stay readable on the light navbar. */
+body.layout-minimalist:not(.is-workspace) .lms-nav__exit-impersonation {
+  background: rgba(220, 38, 38, 0.08) !important;
+  color: #b91c1c !important;
+  border: 1px solid rgba(220, 38, 38, 0.24) !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist:not(.is-workspace) .lms-nav__exit-impersonation:hover {
+  background: rgba(220, 38, 38, 0.14) !important;
+  color: #991b1b !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist:not(.is-workspace) .lms-nav__exit-impersonation i {
+  color: currentColor !important;
+}
+
+/* DASHBOARD / MY COURSES: active filter label and count bubble need stronger contrast. */
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters__button {
+  color: #4b5563 !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters__button span {
+  background: #e5e7eb !important;
+  color: #4b5563 !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters__button.is-active {
+  background: #111827 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learning-filters__button.is-active span {
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+}
+
+/* PRICING: ensure CTA links render as real minimalist buttons, not plain links or blue pills. */
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .lms-btn,
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .btn-lms-primary,
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .btn-lms-outline {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-height: 46px !important;
+  margin-top: 1rem !important;
+  padding: 0.8rem 1.15rem !important;
+  border-radius: 6px !important;
+  border: 1px solid transparent !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .lms-btn--primary,
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .btn-lms-primary {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-color: #111827 !important;
+}
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .lms-btn--primary:hover,
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .btn-lms-primary:hover {
+  background: #374151 !important;
+  color: #ffffff !important;
+  border-color: #374151 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .lms-btn--outline,
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .btn-lms-outline {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #111827 !important;
+}
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .lms-btn--outline:hover,
+body.layout-minimalist:not(.is-workspace) .lms-pricing-card .btn-lms-outline:hover {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-color: #111827 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* LEARN PLAYER: align top-bar buttons with minimalist button system. */
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__top-btn {
+  min-height: 42px !important;
+  border-radius: 6px !important;
+  border: 1px solid #d1d5db !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__top-btn.btn-lms-primary {
+  background: #111827 !important;
+  border-color: #111827 !important;
+  color: #ffffff !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__top-btn.btn-lms-primary:hover {
+  background: #374151 !important;
+  border-color: #374151 !important;
+  color: #ffffff !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__top-btn.btn-lms-outline:hover,
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__top-btn:hover {
+  background: #f3f4f6 !important;
+  border-color: #9ca3af !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* LEARN PLAYER: mark-complete and completed buttons should be neutral, not green. */
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__action-mark,
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .btn-lms-success.lms-learn__action-mark {
+  background: #111827 !important;
+  border-color: #111827 !important;
+  color: #ffffff !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__action-mark:hover,
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .btn-lms-success.lms-learn__action-mark:hover {
+  background: #374151 !important;
+  border-color: #374151 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__action-completed {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #111827 !important;
+  border-radius: 6px !important;
+  opacity: 1 !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__action-completed i,
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-learn__action-completed span {
+  color: inherit !important;
+}
+
+/* LEARN PLAYER: tabs should use minimalist underline instead of blue pill styling. */
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs .lms-tab-item {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  color: #6b7280 !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs .lms-tab-item:hover {
+  color: #111827 !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs .lms-tab-item.active,
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-nav-tabs .lms-tab-item[style*="color: #fff"] {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 2px solid #111827 !important;
+  border-radius: 0 !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+}
+
+/* LEARN PLAYER: notes panel buttons and disabled state need explicit minimalist styling. */
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes,
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-qna .lms-learn__discussion {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  padding: 1rem !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-actions {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-textarea {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  color: #111827 !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-textarea:focus {
+  border-color: #111827 !important;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08) !important;
+  outline: none !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45rem;
+  min-height: 42px !important;
+  padding: 0.65rem 1rem !important;
+  border-radius: 6px !important;
+  border: 1px solid #d1d5db !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--save {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-color: #111827 !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--save:hover {
+  background: #374151 !important;
+  color: #ffffff !important;
+  border-color: #374151 !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--delete {
+  background: #ffffff !important;
+  color: #b91c1c !important;
+  border-color: #fecaca !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--delete:hover {
+  background: #fef2f2 !important;
+  color: #991b1b !important;
+  border-color: #fca5a5 !important;
+}
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn:disabled,
+body.layout-minimalist:not(.is-front-page):not(.is-workspace) #tab-notes .lms-learn__notes-btn--save:disabled {
+  background: #f3f4f6 !important;
+  color: #9ca3af !important;
+  border-color: #e5e7eb !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 1 !important;
 }
