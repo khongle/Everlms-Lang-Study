@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EverLMS Manage — Quizzes</title>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    .quiz-layout { display: flex; gap: 20px; align-items: flex-start; }
+    .quiz-main { flex: 1; min-width: 0; }
+    .qbank-panel { width: 320px; flex-shrink: 0; position: sticky; top: 20px; }
+    .filter-bar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 20px;
+    }
+    .filter-bar .form-select { width: auto; padding: 7px 12px; font-size: 14px; }
+    .filter-bar .search-wrap { position: relative; flex: 1; min-width: 180px; }
+    .filter-bar .search-wrap .form-control { width: 100%; padding-right: 32px; font-size:14px; }
+    .filter-bar .search-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .pagination { display: flex; gap: 4px; margin-top: 16px; }
+    .pagination a, .pagination span {
+      min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .pagination a:hover { background: var(--surface); text-decoration: none; }
+    .pagination .active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* Question Bank */
+    .qbank-entry {
+      padding: 12px 14px; border-bottom: 1px solid var(--border);
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .qbank-entry:last-child { border-bottom: none; }
+    .qbank-num { color: var(--text-muted); font-size: 13px; font-weight: 700; min-width: 20px; }
+    .qbank-text { font-size: 13px; flex: 1; line-height: 1.4; }
+    .qbank-meta { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    .type-tag {
+      display: inline-flex; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+    .tag-mc { background: rgba(59,130,246,.14); color: var(--primary); border: 1px solid rgba(59,130,246,.25); }
+    .tag-tf { background: rgba(34,197,94,.1); color: var(--success); border: 1px solid rgba(34,197,94,.25); }
+    .tag-short { background: rgba(245,158,11,.1); color: var(--warning); border: 1px solid rgba(245,158,11,.25); }
+    .tag-essay { background: rgba(139,92,246,.12); color: #a78bfa; border: 1px solid rgba(139,92,246,.25); }
+    .tab-bar { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+    .tab-bar a { padding: 8px 14px; color: var(--text-secondary); font-weight: 600; font-size: 14px; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tab-bar a:hover { color: var(--text-primary); text-decoration: none; }
+    .tab-bar a.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-bar .badge { font-size: 11px; margin-left: 4px; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <a href="../index.html" class="logo"><span class="logo-mark">E</span> EverLMS</a>
+      <h5 class="mt-4">Workspace</h5>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="courses.html">📚 Courses</a>
+      <a href="course-edit.html">✏️ Course editor</a>
+      <a href="quizzes.html" class="active">📝 Quizzes</a>
+      <h5>Commerce</h5>
+      <a href="orders.html">💳 Orders</a>
+      <a href="#">🎟 Coupons</a>
+      <a href="#">💎 Memberships</a>
+      <h5>Audience</h5>
+      <a href="users.html">👥 Users</a>
+      <a href="#">📈 Reports</a>
+      <h5>Configuration</h5>
+      <a href="#">⚙️ Settings</a>
+      <a href="#">🤖 AI provider</a>
+      <a href="#">💳 Payment</a>
+    </aside>
+
+    <main class="app-main">
+      <div class="app-topbar">
+        <div>
+          <h1>Assessment Management</h1>
+          <div class="text-secondary fs-14">Quizzes, question bank and grading queue</div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline btn-sm">📤 Export</button>
+          <button class="btn btn-primary btn-sm">+ Create quiz</button>
+        </div>
+      </div>
+
+      <!-- Sub-tabs -->
+      <div class="tab-bar">
+        <a href="#quizzes" class="active">Quizzes</a>
+        <a href="#question-bank">Question Bank</a>
+        <a href="#grading">Grading Queue <span class="badge badge-danger">5</span></a>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <select class="form-select">
+          <option value="">All Courses</option>
+          <option>Web Dev Bootcamp</option>
+          <option>React Masterclass</option>
+          <option>CSS Mastery</option>
+          <option>JavaScript Fundamentals</option>
+        </select>
+        <select class="form-select">
+          <option value="">All Status</option>
+          <option>Published</option>
+          <option>Draft</option>
+        </select>
+        <div class="search-wrap">
+          <input type="text" class="form-control" placeholder="Search quizzes…">
+          <span class="search-icon">🔍</span>
+        </div>
+      </div>
+
+      <div class="quiz-layout">
+        <!-- Quiz List -->
+        <div class="quiz-main">
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:36px;"><input type="checkbox" title="Select all"></th>
+                  <th>#</th>
+                  <th>Quiz Title</th>
+                  <th>Course</th>
+                  <th>Questions</th>
+                  <th>Pass %</th>
+                  <th>Attempts</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="text-muted fs-13">1</td>
+                  <td class="fw-semi fs-14">HTML Basics Quiz</td>
+                  <td class="text-secondary fs-13">Web Dev Bootcamp</td>
+                  <td class="fs-13">10</td>
+                  <td class="text-success fw-semi fs-13">70%</td>
+                  <td class="fs-13">234</td>
+                  <td><span class="badge badge-success">Published</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">👁</button>
+                    <button class="btn btn-ghost btn-sm">⋯</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="text-muted fs-13">2</td>
+                  <td class="fw-semi fs-14">CSS Selectors Test</td>
+                  <td class="text-secondary fs-13">CSS Mastery</td>
+                  <td class="fs-13">15</td>
+                  <td class="text-success fw-semi fs-13">60%</td>
+                  <td class="fs-13">156</td>
+                  <td><span class="badge badge-success">Published</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">👁</button>
+                    <button class="btn btn-ghost btn-sm">⋯</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="text-muted fs-13">3</td>
+                  <td class="fw-semi fs-14">JS Final Exam</td>
+                  <td class="text-secondary fs-13">JavaScript Fundamentals</td>
+                  <td class="fs-13">25</td>
+                  <td class="text-warning fw-semi fs-13">80%</td>
+                  <td class="fs-13">89</td>
+                  <td><span class="badge badge-warning">Draft</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">👁</button>
+                    <button class="btn btn-ghost btn-sm">⋯</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="text-muted fs-13">4</td>
+                  <td class="fw-semi fs-14">React Hooks Check</td>
+                  <td class="text-secondary fs-13">React Masterclass</td>
+                  <td class="fs-13">12</td>
+                  <td class="text-success fw-semi fs-13">75%</td>
+                  <td class="fs-13">312</td>
+                  <td><span class="badge badge-success">Published</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">👁</button>
+                    <button class="btn btn-ghost btn-sm">⋯</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="text-muted fs-13">5</td>
+                  <td class="fw-semi fs-14">Node.js REST API Quiz</td>
+                  <td class="text-secondary fs-13">Node.js Backend</td>
+                  <td class="fs-13">20</td>
+                  <td class="text-warning fw-semi fs-13">65%</td>
+                  <td class="fs-13">44</td>
+                  <td><span class="badge badge-warning">Draft</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">👁</button>
+                    <button class="btn btn-ghost btn-sm">⋯</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="text-muted fs-13">6</td>
+                  <td class="fw-semi fs-14">Python Intro Assessment</td>
+                  <td class="text-secondary fs-13">Python for Data Science</td>
+                  <td class="fs-13">18</td>
+                  <td class="text-success fw-semi fs-13">70%</td>
+                  <td class="fs-13">207</td>
+                  <td><span class="badge badge-success">Published</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">👁</button>
+                    <button class="btn btn-ghost btn-sm">⋯</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+            <a href="#">‹</a>
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">›</a>
+          </div>
+        </div>
+
+        <!-- Question Bank Preview -->
+        <div class="qbank-panel">
+          <div class="card">
+            <div class="card-body" style="padding:14px 14px 4px;">
+              <div class="d-flex justify-between align-center mb-3">
+                <span class="fw-semi fs-14">Question Bank</span>
+                <button class="btn btn-outline btn-sm">+ Add question</button>
+              </div>
+            </div>
+            <div class="qbank-entry">
+              <span class="qbank-num">1</span>
+              <div style="flex:1;">
+                <span class="type-tag tag-mc">MC</span>
+                <div class="qbank-text mt-1">What does HTML stand for?</div>
+                <div class="qbank-meta">Easy · Used in 3 quizzes · 10 pts</div>
+              </div>
+            </div>
+            <div class="qbank-entry">
+              <span class="qbank-num">2</span>
+              <div style="flex:1;">
+                <span class="type-tag tag-tf">T/F</span>
+                <div class="qbank-text mt-1">CSS stands for Cascading Style Sheets. True or False?</div>
+                <div class="qbank-meta">Easy · Used in 2 quizzes · 5 pts</div>
+              </div>
+            </div>
+            <div class="qbank-entry">
+              <span class="qbank-num">3</span>
+              <div style="flex:1;">
+                <span class="type-tag tag-short">Short</span>
+                <div class="qbank-text mt-1">Name the three pillars of the web.</div>
+                <div class="qbank-meta">Medium · Used in 1 quiz · 15 pts</div>
+              </div>
+            </div>
+            <div class="qbank-entry">
+              <span class="qbank-num">4</span>
+              <div style="flex:1;">
+                <span class="type-tag tag-essay">Essay</span>
+                <div class="qbank-text mt-1">Explain the CSS box model in your own words.</div>
+                <div class="qbank-meta">Hard · Used in 1 quiz · 25 pts · Manual grading</div>
+              </div>
+            </div>
+            <div class="card-body" style="padding:12px 14px;">
+              <a href="#" class="fs-13 text-primary">View full bank (142 questions) →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</body>
+</html>

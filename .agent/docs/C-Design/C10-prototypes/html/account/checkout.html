@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EverLMS — Checkout</title>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    .page-bg {
+      min-height: calc(100vh - 60px);
+      padding: 48px 0 80px;
+    }
+    /* Progress stepper */
+    .stepper {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-bottom: 40px;
+    }
+    .step {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600; color: var(--text-muted);
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: grid; place-items: center;
+      border: 2px solid var(--border); font-size: 12px;
+    }
+    .step.done .step-num { background: var(--success); border-color: var(--success); color: #07120c; }
+    .step.active .step-num { background: var(--primary); border-color: var(--primary); color: white; }
+    .step.active { color: var(--text-primary); }
+    .step-line { width: 48px; height: 2px; background: var(--border); margin: 0 8px; }
+    .step-line.done { background: var(--success); }
+
+    /* Payment method radios */
+    .pay-method {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0;
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    .pay-method-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px; cursor: pointer;
+      background: var(--surface);
+    }
+    .pay-method-header:hover { background: var(--surface-2); }
+    .pay-method.selected { border-color: var(--primary); }
+    .pay-method.selected .pay-method-header { background: var(--primary-soft); }
+    .pay-method-body {
+      display: none; padding: 16px 20px;
+      background: var(--surface-2);
+      border-top: 1px solid var(--border);
+    }
+    .pay-method.selected .pay-method-body { display: block; }
+
+    .pay-logo {
+      width: 40px; height: 24px; border-radius: 4px;
+      display: grid; place-items: center;
+      font-size: 16px; background: var(--surface-3);
+    }
+    .radio-circle {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid var(--border); margin-left: auto;
+    }
+    .pay-method.selected .radio-circle {
+      border-color: var(--primary); background: var(--primary);
+      box-shadow: inset 0 0 0 3px var(--surface);
+    }
+
+    /* Sticky summary */
+    .order-summary {
+      position: sticky; top: 80px;
+    }
+    .summary-thumb {
+      width: 60px; height: 42px; border-radius: 6px;
+      background: linear-gradient(135deg,#1e3a5f,#0e1f35);
+      display: grid; place-items: center; font-size: 20px; flex-shrink: 0;
+    }
+    .summary-line { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; }
+    .summary-total { display: flex; justify-content: space-between; font-size: 17px; font-weight: 700; padding-top: 12px; border-top: 1px solid var(--border); margin-top: 4px; }
+    .coupon-row { display: flex; gap: 8px; }
+    .coupon-row .form-control { flex: 1; }
+
+    /* QR placeholder */
+    .qr-placeholder {
+      width: 120px; height: 120px; border: 2px dashed var(--border-strong);
+      border-radius: var(--radius-sm); display: grid; place-items: center;
+      font-size: 11px; color: var(--text-muted); text-align: center; padding: 8px;
+    }
+    .bank-info { background: var(--surface-3); border-radius: var(--radius-sm); padding: 14px; }
+    .bank-info-row { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+    .bank-info-row:last-child { border-bottom: 0; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="logo"><span class="logo-mark">E</span> EverLMS</a>
+    <div class="navlinks">
+      <a href="../account/my-learning.html">My Learning</a>
+      <a href="../account/my-courses.html">My Courses</a>
+      <a href="../public/courses.html">Browse</a>
+    </div>
+    <div class="nav-actions">
+      <a href="#" class="btn btn-ghost btn-sm" title="Notifications">🔔</a>
+      <a href="../account/profile.html" class="btn btn-ghost btn-sm">👤 Hai N.</a>
+    </div>
+  </div>
+</nav>
+
+<main class="page-bg">
+  <div class="container">
+
+    <!-- Stepper -->
+    <div class="stepper">
+      <div class="step done">
+        <div class="step-num">✓</div>
+        <span>Cart</span>
+      </div>
+      <div class="step-line done"></div>
+      <div class="step active">
+        <div class="step-num">2</div>
+        <span>Payment</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <span>Confirmation</span>
+      </div>
+    </div>
+
+    <div class="row" style="align-items:flex-start">
+
+      <!-- LEFT: Payment methods (col-8) -->
+      <div class="col-8">
+        <h2 class="fs-20 fw-bold mb-4" style="margin-bottom:20px">Payment Method</h2>
+
+        <!-- 1. Stripe / Credit Card -->
+        <div class="pay-method selected mb-3" id="pm-stripe">
+          <div class="pay-method-header" onclick="selectMethod('stripe')">
+            <div class="pay-logo">💳</div>
+            <div>
+              <div class="fs-14 fw-semi">Credit / Debit Card</div>
+              <div class="fs-12 text-muted">Powered by Stripe — Visa, Mastercard, Amex</div>
+            </div>
+            <div class="radio-circle"></div>
+          </div>
+          <div class="pay-method-body">
+            <div class="form-group">
+              <label class="form-label">Card Number</label>
+              <input class="form-control" type="text" placeholder="1234 5678 9012 3456" maxlength="19">
+            </div>
+            <div class="d-flex gap-3">
+              <div class="form-group flex-grow">
+                <label class="form-label">Expiry (MM/YY)</label>
+                <input class="form-control" type="text" placeholder="MM / YY" maxlength="7">
+              </div>
+              <div class="form-group flex-grow">
+                <label class="form-label">CVV</label>
+                <input class="form-control" type="text" placeholder="&bull;&bull;&bull;" maxlength="4">
+              </div>
+            </div>
+            <div class="form-group mb-0">
+              <label class="form-label">Cardholder Name</label>
+              <input class="form-control" type="text" placeholder="Nguyen Van Hai">
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. PayPal -->
+        <div class="pay-method mb-3" id="pm-paypal">
+          <div class="pay-method-header" onclick="selectMethod('paypal')">
+            <div class="pay-logo">🅿️</div>
+            <div>
+              <div class="fs-14 fw-semi">PayPal</div>
+              <div class="fs-12 text-muted">Redirect to PayPal to complete payment</div>
+            </div>
+            <div class="radio-circle"></div>
+          </div>
+          <div class="pay-method-body">
+            <div class="alert alert-info" style="margin-bottom:0">
+              You will be redirected to PayPal to securely authorize this payment. Return here to confirm your order.
+            </div>
+            <a href="#" class="btn btn-primary mt-3" style="background:#003087;border-color:#003087;">
+              <span style="font-weight:800;letter-spacing:-0.02em">Pay<span style="color:#009cde">Pal</span></span>
+              &mdash; Pay with PayPal
+            </a>
+          </div>
+        </div>
+
+        <!-- 3. ZaloPay -->
+        <div class="pay-method mb-3" id="pm-zalopay">
+          <div class="pay-method-header" onclick="selectMethod('zalopay')">
+            <div class="pay-logo">🇻🇳</div>
+            <div>
+              <div class="fs-14 fw-semi">ZaloPay</div>
+              <div class="fs-12 text-muted">Scan QR with ZaloPay app (Vietnam)</div>
+            </div>
+            <div class="radio-circle"></div>
+          </div>
+          <div class="pay-method-body">
+            <div class="d-flex align-center gap-4">
+              <div class="qr-placeholder">
+                <div>
+                  <div style="font-size:32px">📲</div>
+                  <div>QR Code<br>placeholder</div>
+                </div>
+              </div>
+              <div>
+                <p class="fs-13 text-secondary mb-2" style="margin:0 0 8px">Open your <strong>ZaloPay</strong> app and scan the QR code to pay <strong>1,249,000 VND</strong>.</p>
+                <p class="fs-12 text-muted mb-0" style="margin:0">QR refreshes in <span style="color:var(--warning)">4:58</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Bank Transfer -->
+        <div class="pay-method mb-4" id="pm-bank">
+          <div class="pay-method-header" onclick="selectMethod('bank')">
+            <div class="pay-logo">🏦</div>
+            <div>
+              <div class="fs-14 fw-semi">Bank Transfer</div>
+              <div class="fs-12 text-muted">Manual transfer — 24 h to confirm</div>
+            </div>
+            <div class="radio-circle"></div>
+          </div>
+          <div class="pay-method-body">
+            <div class="bank-info mb-3">
+              <div class="bank-info-row"><span class="text-muted">Bank</span><span>Vietcombank</span></div>
+              <div class="bank-info-row"><span class="text-muted">Account name</span><span>EVERLMS JSC</span></div>
+              <div class="bank-info-row"><span class="text-muted">Account number</span><span class="fw-semi">0123456789</span></div>
+              <div class="bank-info-row"><span class="text-muted">Amount</span><span class="fw-bold text-success">$49.99 (VND 1,249,000)</span></div>
+              <div class="bank-info-row"><span class="text-muted">Reference</span><span class="fw-semi" style="color:var(--primary)">#EV-2026-00482</span></div>
+            </div>
+            <div class="alert alert-warning" style="margin-bottom:0;font-size:13px">
+              Include your order reference in the transfer note. Orders are activated within 24 hours of payment receipt.
+            </div>
+          </div>
+        </div>
+
+        <!-- Security note -->
+        <div class="d-flex align-center gap-2" style="color:var(--text-muted);font-size:13px">
+          <span>🔒</span>
+          <span>All transactions are encrypted with 256-bit TLS. EverLMS never stores raw card data.</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Order Summary (col-4) -->
+      <div class="col-4">
+        <div class="order-summary">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="fs-16 fw-bold mb-4" style="margin:0 0 16px">Order Summary</h3>
+
+              <!-- Course item -->
+              <div class="d-flex align-center gap-3 mb-4">
+                <div class="summary-thumb">📘</div>
+                <div>
+                  <div class="fs-13 fw-semi">Web Development Bootcamp</div>
+                  <div class="fs-12 text-muted">By John Doe</div>
+                </div>
+                <div class="fs-13 fw-bold" style="margin-left:auto;white-space:nowrap">$49.99</div>
+              </div>
+
+              <hr style="margin:16px 0">
+
+              <!-- Coupon entry -->
+              <div class="form-group mb-3">
+                <label class="form-label">Coupon Code</label>
+                <div class="coupon-row">
+                  <input class="form-control" type="text" placeholder="e.g. SAVE20" value="SAVE20">
+                  <button class="btn btn-outline btn-sm">Apply</button>
+                </div>
+                <div class="mt-1 fs-12 text-success">✓ SAVE20 applied — 10% off</div>
+              </div>
+
+              <hr style="margin:16px 0">
+
+              <!-- Totals breakdown -->
+              <div class="summary-line"><span class="text-muted">Subtotal</span><span>$49.99</span></div>
+              <div class="summary-line"><span class="text-muted">Discount (10%)</span><span class="text-success">−$5.00</span></div>
+              <div class="summary-line"><span class="text-muted">Tax (VAT 10%)</span><span>$4.50</span></div>
+              <div class="summary-total"><span>Total</span><span class="text-primary">$49.49</span></div>
+
+              <a href="checkout-success.html" class="btn btn-primary btn-lg btn-block mt-4">
+                🔒 Pay $49.49
+              </a>
+
+              <p class="fs-12 text-muted text-center mt-3 mb-0" style="margin:0">
+                30-day money-back guarantee
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-3">
+        <a href="../index.html" class="logo"><span class="logo-mark">E</span> EverLMS</a>
+        <p class="mt-3 fs-14">Premium online learning platform built on Drupal 11.</p>
+      </div>
+      <div class="col-3">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="../public/courses.html">Browse courses</a></li>
+          <li><a href="../public/pricing.html">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="col-3">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help center</a></li>
+          <li><a href="../public/faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="col-3">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 EverLMS. All rights reserved.</span>
+      <span>Privacy &middot; Terms &middot; Cookies</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var methods = ['stripe', 'paypal', 'zalopay', 'bank'];
+  function selectMethod(id) {
+    methods.forEach(function(m) {
+      var el = document.getElementById('pm-' + m);
+      if (el) el.classList.toggle('selected', m === id);
+    });
+  }
+</script>
+
+</body>
+</html>

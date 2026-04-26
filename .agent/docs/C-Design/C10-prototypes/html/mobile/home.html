@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EverLMS Mobile — Home / Explore</title>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    body { background: #050709; }
+
+    /* Search bar */
+    .m-search {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 14px;
+      margin-bottom: 16px;
+    }
+    .m-search input {
+      flex: 1; background: transparent; border: none; outline: none;
+      color: var(--text-primary); font-size: 15px; font-family: inherit;
+    }
+    .m-search input::placeholder { color: var(--text-muted); }
+    .m-search-icon { color: var(--text-muted); font-size: 16px; }
+
+    /* Category chips row */
+    .chip-row {
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 20px;
+      scrollbar-width: none;
+    }
+    .chip-row::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0; padding: 6px 14px; border-radius: 999px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--text-secondary); font-size: 13px; font-weight: 600;
+      white-space: nowrap; cursor: pointer;
+    }
+    .chip.active {
+      background: var(--primary-soft); color: var(--primary);
+      border-color: rgba(59,130,246,0.35);
+    }
+
+    /* Section header row */
+    .section-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
+    }
+    .section-row h3 { margin: 0; font-size: 15px; font-weight: 700; }
+    .section-row a { font-size: 13px; color: var(--primary); }
+
+    /* Continue learning card */
+    .continue-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 14px;
+      display: flex; gap: 12px; align-items: flex-start;
+      margin-bottom: 24px;
+    }
+    .continue-thumb {
+      width: 72px; height: 54px; border-radius: 8px; flex-shrink: 0;
+      background: linear-gradient(135deg, #1d2d50, #1a1f2e);
+      display: grid; place-items: center; font-size: 24px;
+    }
+    .continue-info { flex: 1; min-width: 0; }
+    .continue-info h4 { margin: 0 0 2px; font-size: 14px; font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .continue-info p { margin: 0 0 8px; font-size: 12px; color: var(--text-muted); }
+    .progress-label {
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;
+    }
+    .continue-btn {
+      display: inline-block; margin-top: 8px; padding: 6px 14px;
+      background: var(--primary); color: white; border-radius: 8px;
+      font-size: 13px; font-weight: 600; text-decoration: none;
+    }
+    .continue-btn:hover { background: var(--primary-600); text-decoration: none; color: white; }
+
+    /* Horizontal course rail */
+    .h-rail {
+      display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px;
+      margin-bottom: 24px; scrollbar-width: none;
+    }
+    .h-rail::-webkit-scrollbar { display: none; }
+    .rail-card {
+      flex-shrink: 0; width: 160px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); overflow: hidden;
+    }
+    .rail-thumb {
+      height: 90px; background: linear-gradient(135deg, #1f2937, #111827);
+      display: grid; place-items: center; font-size: 28px; position: relative;
+    }
+    .rail-thumb .rail-badge {
+      position: absolute; top: 6px; left: 6px;
+      background: rgba(59,130,246,0.85); color: white;
+      font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 999px;
+    }
+    .rail-body { padding: 10px; }
+    .rail-body h4 { margin: 0 0 4px; font-size: 13px; font-weight: 700; line-height: 1.3; }
+    .rail-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .rail-price { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .rail-price .old { font-weight: 400; color: var(--text-muted);
+      text-decoration: line-through; margin-left: 4px; font-size: 11px; }
+
+    /* Free this week card style — slightly wider */
+    .free-card { width: 200px; }
+    .free-thumb { height: 110px; font-size: 32px; }
+    .free-badge {
+      position: absolute; top: 6px; right: 6px;
+      background: var(--success); color: #07120c;
+      font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px;
+    }
+
+    /* Greeting row */
+    .greeting-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+    .greeting-row h2 { margin: 0; font-size: 18px; font-weight: 800; }
+    .notif-btn {
+      position: relative; width: 36px; height: 36px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 50%; display: grid; place-items: center;
+      font-size: 16px; cursor: pointer; flex-shrink: 0;
+    }
+    .notif-badge {
+      position: absolute; top: -2px; right: -2px;
+      width: 14px; height: 14px; background: var(--danger);
+      border-radius: 50%; font-size: 9px; font-weight: 700; color: white;
+      display: grid; place-items: center;
+    }
+
+    /* Stars inline */
+    .stars-sm { color: var(--warning); font-size: 11px; }
+  </style>
+</head>
+<body>
+  <a href="../index.html" style="position:fixed;top:20px;left:20px;color:#9aa3b2;font-size:13px;text-decoration:none;">← Back to hub</a>
+
+  <div class="mobile-frame">
+    <div class="mobile-status">
+      <span>9:41</span>
+      <span>● ● ● 5G</span>
+    </div>
+
+    <div style="padding: 8px 16px 80px;">
+
+      <!-- Greeting -->
+      <div class="greeting-row">
+        <div>
+          <p style="margin:0;font-size:12px;color:var(--text-muted);">Good morning,</p>
+          <h2>Hi, Hai 👋</h2>
+        </div>
+        <div class="notif-btn">
+          🔔
+          <span class="notif-badge">3</span>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="m-search">
+        <span class="m-search-icon">🔍</span>
+        <input type="text" placeholder="Search 1000+ courses…" readonly>
+      </div>
+
+      <!-- Category chips -->
+      <div class="chip-row">
+        <span class="chip active">All</span>
+        <span class="chip">💻 Programming</span>
+        <span class="chip">🎨 Design</span>
+        <span class="chip">📊 Business</span>
+        <span class="chip">📣 Marketing</span>
+        <span class="chip">📱 Mobile</span>
+        <span class="chip">🌐 Languages</span>
+      </div>
+
+      <!-- Continue learning -->
+      <div class="section-row">
+        <h3>Continue Learning</h3>
+        <a href="#">See all</a>
+      </div>
+      <div class="continue-card">
+        <div class="continue-thumb">⚛️</div>
+        <div class="continue-info">
+          <h4>React Masterclass 2025</h4>
+          <p>Chapter 3 · Lesson 2 — Hooks</p>
+          <div class="progress-label">
+            <span>Progress</span>
+            <span>72%</span>
+          </div>
+          <div class="progress" style="height:6px;">
+            <div class="progress-bar" style="width:72%;"></div>
+          </div>
+          <a href="lesson.html" class="continue-btn">Continue →</a>
+        </div>
+      </div>
+
+      <!-- Featured rail -->
+      <div class="section-row">
+        <h3>Featured Courses</h3>
+        <a href="#">See all</a>
+      </div>
+      <div class="h-rail">
+        <div class="rail-card">
+          <div class="rail-thumb">
+            ⚛️
+            <span class="rail-badge">HOT</span>
+          </div>
+          <div class="rail-body">
+            <h4>React Masterclass</h4>
+            <div class="rail-meta"><span class="stars-sm">⭐</span> 4.8 · 234 reviews</div>
+            <div class="rail-price">$79.99</div>
+          </div>
+        </div>
+        <div class="rail-card">
+          <div class="rail-thumb" style="background:linear-gradient(135deg,#1e2a1a,#111827);">
+            🐍
+          </div>
+          <div class="rail-body">
+            <h4>Python for AI</h4>
+            <div class="rail-meta"><span class="stars-sm">⭐</span> 4.6 · 189 reviews</div>
+            <div class="rail-price">$49.99</div>
+          </div>
+        </div>
+        <div class="rail-card">
+          <div class="rail-thumb" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">
+            🎨
+          </div>
+          <div class="rail-body">
+            <h4>UI/UX Design Bootcamp</h4>
+            <div class="rail-meta"><span class="stars-sm">⭐</span> 4.9 · 412 reviews</div>
+            <div class="rail-price">$59.99</div>
+          </div>
+        </div>
+        <div class="rail-card">
+          <div class="rail-thumb" style="background:linear-gradient(135deg,#1e1a0e,#2a1f07);">
+            ☁️
+          </div>
+          <div class="rail-body">
+            <h4>AWS Cloud Practitioner</h4>
+            <div class="rail-meta"><span class="stars-sm">⭐</span> 4.7 · 308 reviews</div>
+            <div class="rail-price">$89.99</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Free this week -->
+      <div class="section-row">
+        <h3>Free This Week 🎁</h3>
+        <a href="#">See all</a>
+      </div>
+      <div class="h-rail">
+        <div class="rail-card free-card">
+          <div class="rail-thumb free-thumb" style="background:linear-gradient(135deg,#0a1628,#0f2240);">
+            🐍
+            <span class="free-badge">FREE</span>
+          </div>
+          <div class="rail-body">
+            <h4>Python Basics for Beginners</h4>
+            <div class="rail-meta"><span class="stars-sm">⭐</span> 4.5 · 980 reviews</div>
+            <div class="rail-price" style="color:var(--success);">Free
+              <span class="old">$29.99</span>
+            </div>
+          </div>
+        </div>
+        <div class="rail-card free-card">
+          <div class="rail-thumb free-thumb" style="background:linear-gradient(135deg,#1a0e2a,#2a1040);">
+            🎨
+            <span class="free-badge">FREE</span>
+          </div>
+          <div class="rail-body">
+            <h4>Figma Crash Course</h4>
+            <div class="rail-meta"><span class="stars-sm">⭐</span> 4.7 · 643 reviews</div>
+            <div class="rail-price" style="color:var(--success);">Free
+              <span class="old">$19.99</span>
+            </div>
+          </div>
+        </div>
+        <div class="rail-card free-card">
+          <div class="rail-thumb free-thumb" style="background:linear-gradient(135deg,#0e1e1a,#0a2015);">
+            📊
+            <span class="free-badge">FREE</span>
+          </div>
+          <div class="rail-body">
+            <h4>Excel for Data Analysis</h4>
+            <div class="rail-meta"><span class="stars-sm">⭐</span> 4.3 · 521 reviews</div>
+            <div class="rail-price" style="color:var(--success);">Free
+              <span class="old">$24.99</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /screen content -->
+
+    <nav class="mobile-tabbar">
+      <a href="home.html" class="active">🏠<span>Home</span></a>
+      <a href="#">🔍<span>Search</span></a>
+      <a href="lesson.html">📚<span>Learn</span></a>
+      <a href="#">🔔<span>Inbox</span></a>
+      <a href="#">👤<span>Me</span></a>
+    </nav>
+  </div>
+</body>
+</html>

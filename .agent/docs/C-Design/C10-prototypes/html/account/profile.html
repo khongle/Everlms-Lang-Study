@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EverLMS — Profile</title>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    /* Profile page-local layout */
+    .profile-shell {
+      display: flex; gap: 0; min-height: calc(100vh - 60px);
+      border-top: 1px solid var(--border);
+    }
+
+    /* Left rail */
+    .profile-rail {
+      width: 280px; flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 32px 20px;
+      position: sticky; top: 60px;
+      height: calc(100vh - 60px);
+      overflow-y: auto;
+    }
+    .avatar-block { text-align: center; padding: 20px 0 24px; border-bottom: 1px solid var(--border); }
+    .avatar-circle {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      display: grid; place-items: center;
+      font-size: 32px; margin: 0 auto 12px; color: white; font-weight: 700;
+    }
+    .rail-nav { margin-top: 24px; }
+    .rail-nav-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); font-weight: 600; margin: 20px 12px 8px;
+    }
+    .rail-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: 8px;
+      color: var(--text-secondary); font-size: 14px; font-weight: 500;
+      text-decoration: none; transition: all 0.12s;
+    }
+    .rail-nav a:hover { background: var(--surface-2); color: var(--text-primary); }
+    .rail-nav a.active { background: var(--primary-soft); color: var(--primary); }
+    .rail-nav a .nav-icon { font-size: 16px; width: 22px; text-align: center; }
+
+    /* Right content area */
+    .profile-content { flex: 1; min-width: 0; padding: 40px 40px 80px; }
+    .section-header { margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+
+    /* Stat tiles in profile */
+    .stat-strip {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-mini {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 16px 14px; text-align: center;
+    }
+    .stat-mini-value { font-size: 24px; font-weight: 800; }
+    .stat-mini-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Avatar upload zone */
+    .avatar-upload-zone {
+      display: flex; align-items: center; gap: 20px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 20px;
+      margin-bottom: 24px;
+    }
+    .avatar-upload-preview {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      display: grid; place-items: center;
+      font-size: 28px; color: white; font-weight: 700; flex-shrink: 0;
+    }
+
+    /* Tab panels (JS toggle) */
+    .profile-tab-panel { display: none; }
+    .profile-tab-panel.active { display: block; }
+
+    /* Notification toggle rows */
+    .notif-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+    }
+    .notif-row:last-child { border-bottom: 0; }
+    /* CSS toggle switch */
+    .toggle-switch {
+      position: relative; width: 44px; height: 24px; cursor: pointer;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute; inset: 0; background: var(--surface-3);
+      border-radius: 999px; border: 1px solid var(--border); transition: 0.2s;
+    }
+    .toggle-thumb {
+      position: absolute; width: 18px; height: 18px; top: 2px; left: 2px;
+      background: var(--text-muted); border-radius: 50%; transition: 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-track { background: var(--primary); border-color: var(--primary); }
+    .toggle-switch input:checked ~ .toggle-thumb,
+    .toggle-switch input:checked + .toggle-track + .toggle-thumb { background: white; left: 22px; }
+
+    /* Membership card */
+    .membership-card {
+      background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(124,58,237,0.12));
+      border: 1px solid rgba(59,130,246,0.35);
+      border-radius: var(--radius-lg); padding: 28px 24px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="logo"><span class="logo-mark">E</span> EverLMS</a>
+    <div class="navlinks">
+      <a href="../account/my-learning.html">My Learning</a>
+      <a href="../account/my-courses.html">My Courses</a>
+      <a href="../public/courses.html">Browse</a>
+    </div>
+    <div class="nav-actions">
+      <a href="#" class="btn btn-ghost btn-sm" title="Notifications">🔔</a>
+      <a href="../account/profile.html" class="btn btn-ghost btn-sm">👤 Hai N.</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="profile-shell">
+
+    <!-- Left rail -->
+    <aside class="profile-rail">
+      <div class="avatar-block">
+        <div class="avatar-circle">H</div>
+        <div class="fw-semi">Nguyen Van Hai</div>
+        <div class="fs-13 text-muted mt-1">Student</div>
+        <div class="mt-2"><span class="badge badge-primary">Premium Member</span></div>
+      </div>
+
+      <nav class="rail-nav">
+        <div class="rail-nav-label">Account</div>
+        <a href="#" class="active" onclick="switchTab('profile',this)">
+          <span class="nav-icon">👤</span> Profile
+        </a>
+        <a href="#" onclick="switchTab('security',this)">
+          <span class="nav-icon">🔐</span> Security
+        </a>
+        <a href="#" onclick="switchTab('notifications',this)">
+          <span class="nav-icon">🔔</span> Notifications
+        </a>
+        <a href="#" onclick="switchTab('membership',this)">
+          <span class="nav-icon">⭐</span> Membership
+        </a>
+
+        <div class="rail-nav-label">Quick Links</div>
+        <a href="../account/my-courses.html">
+          <span class="nav-icon">📚</span> My Courses
+        </a>
+        <a href="../learn/certificate.html">
+          <span class="nav-icon">📜</span> Certificates
+        </a>
+        <a href="../account/orders.html">
+          <span class="nav-icon">🧾</span> Orders
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Right content -->
+    <div class="profile-content">
+
+      <!-- ====== TAB: Profile ====== -->
+      <div id="tab-profile" class="profile-tab-panel active">
+        <div class="section-header">
+          <h1 class="fs-24 fw-bold mb-1" style="margin:0 0 4px">Profile Settings</h1>
+          <p class="text-secondary mb-0" style="margin:0">Update your public profile and personal information.</p>
+        </div>
+
+        <!-- Stats strip -->
+        <div class="stat-strip">
+          <div class="stat-mini">
+            <div class="stat-mini-value text-primary">8</div>
+            <div class="stat-mini-label">Enrolled</div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-value text-success">3</div>
+            <div class="stat-mini-label">Completed</div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-value text-warning">2</div>
+            <div class="stat-mini-label">Certificates</div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-value" style="color:var(--info)">45h</div>
+            <div class="stat-mini-label">Study Time</div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-value" style="color:#c084fc">82%</div>
+            <div class="stat-mini-label">Quiz Avg.</div>
+          </div>
+        </div>
+
+        <!-- Avatar upload -->
+        <div class="avatar-upload-zone">
+          <div class="avatar-upload-preview">H</div>
+          <div>
+            <div class="fw-semi mb-1">Profile Photo</div>
+            <div class="fs-13 text-muted mb-3">JPG, PNG or GIF. Max 2 MB.</div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline btn-sm">Upload Photo</button>
+              <button class="btn btn-ghost btn-sm text-danger">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile form -->
+        <form onsubmit="return false">
+          <div class="row mb-3">
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input class="form-control" type="text" value="Hai">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input class="form-control" type="text" value="Nguyen">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-control" type="email" value="hainn.we@gmail.com">
+            <div class="form-help">Changing email requires verification.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Bio</label>
+            <textarea class="form-control" rows="3" placeholder="Tell the community a little about yourself…">Full-stack developer learning ML and cloud architecture.</textarea>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label">Language</label>
+                <select class="form-select">
+                  <option selected>English</option>
+                  <option>Vietnamese</option>
+                  <option>Japanese</option>
+                  <option>Korean</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label class="form-label">Timezone</label>
+                <select class="form-select">
+                  <option>UTC+7 (Indochina)</option>
+                  <option>UTC+0 (London)</option>
+                  <option>UTC−5 (New York)</option>
+                  <option>UTC+9 (Tokyo)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Website / Portfolio</label>
+            <input class="form-control" type="url" placeholder="https://yoursite.com">
+          </div>
+
+          <div class="d-flex gap-3 mt-4">
+            <button class="btn btn-primary" type="submit">Save Changes</button>
+            <button class="btn btn-ghost" type="button">Discard</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ====== TAB: Security ====== -->
+      <div id="tab-security" class="profile-tab-panel">
+        <div class="section-header">
+          <h1 class="fs-24 fw-bold mb-1" style="margin:0 0 4px">Security</h1>
+          <p class="text-secondary mb-0" style="margin:0">Manage your password and two-factor authentication.</p>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="fs-16 fw-semi mb-4" style="margin:0 0 20px">Change Password</h3>
+            <form onsubmit="return false">
+              <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <input class="form-control" type="password" placeholder="••••••••">
+              </div>
+              <div class="form-group">
+                <label class="form-label">New Password</label>
+                <input class="form-control" type="password" placeholder="Min 8 characters">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm New Password</label>
+                <input class="form-control" type="password" placeholder="••••••••">
+              </div>
+              <button class="btn btn-primary" type="submit">Update Password</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex align-center justify-between mb-3">
+              <div>
+                <div class="fs-15 fw-semi">Two-Factor Authentication</div>
+                <div class="fs-13 text-muted mt-1">Add an extra layer of security with TOTP app.</div>
+              </div>
+              <span class="badge badge-danger">Disabled</span>
+            </div>
+            <button class="btn btn-outline btn-sm">Enable 2FA</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== TAB: Notifications ====== -->
+      <div id="tab-notifications" class="profile-tab-panel">
+        <div class="section-header">
+          <h1 class="fs-24 fw-bold mb-1" style="margin:0 0 4px">Notifications</h1>
+          <p class="text-secondary mb-0" style="margin:0">Choose how and when EverLMS contacts you.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h3 class="fs-15 fw-semi mb-4" style="margin:0 0 16px">Email Notifications</h3>
+
+            <div class="notif-row">
+              <div>
+                <div class="fs-14 fw-semi">Course updates</div>
+                <div class="fs-13 text-muted">New lessons or announcements from instructors</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+
+            <div class="notif-row">
+              <div>
+                <div class="fs-14 fw-semi">Quiz results</div>
+                <div class="fs-13 text-muted">Score reports after completing quizzes</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+
+            <div class="notif-row">
+              <div>
+                <div class="fs-14 fw-semi">Certificate issued</div>
+                <div class="fs-13 text-muted">When your certificate is ready to download</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+
+            <div class="notif-row">
+              <div>
+                <div class="fs-14 fw-semi">Promotions &amp; offers</div>
+                <div class="fs-13 text-muted">Sales, coupons, and new course launches</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox">
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+
+            <div class="notif-row">
+              <div>
+                <div class="fs-14 fw-semi">Membership reminders</div>
+                <div class="fs-13 text-muted">Expiry warnings 30, 7, and 1 day before renewal</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+
+            <div class="notif-row">
+              <div>
+                <div class="fs-14 fw-semi">Weekly digest</div>
+                <div class="fs-13 text-muted">Summary of your learning progress every Monday</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox">
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary mt-4">Save Preferences</button>
+      </div>
+
+      <!-- ====== TAB: Membership ====== -->
+      <div id="tab-membership" class="profile-tab-panel">
+        <div class="section-header">
+          <h1 class="fs-24 fw-bold mb-1" style="margin:0 0 4px">Membership</h1>
+          <p class="text-secondary mb-0" style="margin:0">Manage your plan, billing, and perks.</p>
+        </div>
+
+        <div class="membership-card mb-4">
+          <div class="d-flex align-center justify-between flex-wrap gap-3">
+            <div>
+              <div class="d-flex align-center gap-2 mb-2">
+                <span class="badge badge-primary">Premium Annual</span>
+                <span class="badge badge-success">Active</span>
+              </div>
+              <div class="fs-24 fw-bold mb-1">$299 / year</div>
+              <div class="fs-13 text-secondary">Renews on <strong>Apr 26, 2027</strong> &middot; Auto-renew enabled</div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <a href="../public/pricing.html" class="btn btn-primary btn-sm">Upgrade</a>
+              <a href="#" class="btn btn-outline btn-sm">Manage Billing</a>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="row gap-3">
+            <div class="col-4">
+              <div class="fs-12 text-muted mb-1">Courses unlocked</div>
+              <div class="fw-semi">Unlimited access</div>
+            </div>
+            <div class="col-4">
+              <div class="fs-12 text-muted mb-1">Certificates</div>
+              <div class="fw-semi">Included</div>
+            </div>
+            <div class="col-4">
+              <div class="fs-12 text-muted mb-1">Downloads</div>
+              <div class="fw-semi">Offline mode</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="fs-16 fw-semi mb-3" style="margin:0 0 16px">Billing History</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Plan</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Apr 26, 2026</td>
+                  <td>Premium Annual</td>
+                  <td>$299.00</td>
+                  <td><span class="badge badge-success">Paid</span></td>
+                </tr>
+                <tr>
+                  <td>Apr 26, 2025</td>
+                  <td>Premium Annual</td>
+                  <td>$299.00</td>
+                  <td><span class="badge badge-success">Paid</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="alert alert-warning">
+          <strong>Cancel anytime</strong> — your access remains active until the end of your current billing period. <a href="#">Cancel membership</a>
+        </div>
+      </div>
+
+    </div><!-- /profile-content -->
+  </div><!-- /profile-shell -->
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-3">
+        <a href="../index.html" class="logo"><span class="logo-mark">E</span> EverLMS</a>
+        <p class="mt-3 fs-14">Premium online learning platform built on Drupal 11.</p>
+      </div>
+      <div class="col-3">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="../public/courses.html">Browse courses</a></li>
+          <li><a href="../public/learning-paths.html">Learning paths</a></li>
+          <li><a href="../public/pricing.html">Pricing</a></li>
+          <li><a href="../public/instructors.html">Instructors</a></li>
+        </ul>
+      </div>
+      <div class="col-3">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help center</a></li>
+          <li><a href="../public/faq.html">FAQ</a></li>
+          <li><a href="#">Forum</a></li>
+          <li><a href="../public/certificate-verify.html">Verify certificate</a></li>
+        </ul>
+      </div>
+      <div class="col-3">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../public/about.html">About us</a></li>
+          <li><a href="../public/blog.html">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 EverLMS. All rights reserved.</span>
+      <span>Privacy &middot; Terms &middot; Cookies</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function switchTab(tabId, linkEl) {
+    // Hide all panels
+    document.querySelectorAll('.profile-tab-panel').forEach(function(p) {
+      p.classList.remove('active');
+    });
+    // Deactivate all rail links
+    document.querySelectorAll('.rail-nav a').forEach(function(a) {
+      a.classList.remove('active');
+    });
+    // Show target panel
+    var panel = document.getElementById('tab-' + tabId);
+    if (panel) panel.classList.add('active');
+    if (linkEl) linkEl.classList.add('active');
+    return false;
+  }
+</script>
+
+</body>
+</html>
