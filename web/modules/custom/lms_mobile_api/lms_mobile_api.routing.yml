@@ -78,3 +78,45 @@ lms_mobile_api.user.change_password:
   requirements:
     _access: 'TRUE'
   methods: [POST]
+
+# ---------------------------------------------------------------------------
+# Course APIs (Feature 02-04)
+# ---------------------------------------------------------------------------
+
+lms_mobile_api.categories:
+  path: '/api/v1/categories'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileCourseController::listCategories'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [GET]
+
+lms_mobile_api.course.detail:
+  path: '/api/v1/courses/{courseId}'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileCourseController::getCourseDetail'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+    courseId: '\d+'
+  methods: [GET]
+
+lms_mobile_api.course.enroll_free:
+  path: '/api/v1/courses/{courseId}/enroll-free'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileCourseController::enrollFree'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+    courseId: '\d+'
+  methods: [POST]
+
+lms_mobile_api.dashboard:
+  path: '/api/v1/dashboard'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileCourseController::getDashboard'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [GET]

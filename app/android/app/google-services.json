@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "455865843953",
+    "project_id": "everlms-e7447",
+    "storage_bucket": "everlms-e7447.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:455865843953:android:7818abbbf91f9bcd18e950",
+        "android_client_info": {
+          "package_name": "com.weebpal.everlms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "455865843953-0jmdjs1kistu38qm5m8sd7qais5ff9e5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.weebpal.everlms",
+            "certificate_hash": "d6a7758714c3a798074525c40cedbe1047f26b6f"
+          }
+        },
+        {
+          "client_id": "455865843953-oi1u9a0vamg77rcmbvp7ta1iltgpak2b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.weebpal.everlms",
+            "certificate_hash": "e446b2bb8a22634bfa681fd817b0c3719c7a5139"
+          }
+        },
+        {
+          "client_id": "455865843953-pb9lenbo6c1p7fjdgltggl19l9j7i7b4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwCmND3kOI8Z0CRfS1CXEMvUm7d8-qSx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "455865843953-nsleq1pde2qgg20729kdh3tsdbusjpo2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "455865843953-8bagubcfsnuq5i0ravkb28bj5tocunvn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.weebpal.everlms"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

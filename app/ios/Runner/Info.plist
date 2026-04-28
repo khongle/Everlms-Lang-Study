@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>EverLMS</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>EverLMS</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<!-- <key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string> -->
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.455865843953-8bagubcfsnuq5i0ravkb28bj5tocunvn</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb1326089642081138</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>msauth.com.weebpal.everlms</string>
+			</array>
+		</dict>
+
+	</array>
+      <key>LSSupportsOpeningDocumentsInPlace</key>
+      <true/>
+      <key>UIFileSharingEnabled</key>
+      <true/>
+	<key>FacebookAppID</key>
+	<string>1326089642081138</string>
+	<key>FacebookClientToken</key>
+	<string>65dfbed3fb9cd9c930ca0d6dd65b884c</string>
+	<key>FacebookDisplayName</key>
+	<string>EverLMS</string>
+	<key>CFBundleVersion</key>
+	<!-- <string>$(CURRENT_PROJECT_VERSION)</string> -->
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>INIntentsSupported</key>
+	<array/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+		<string>msauthv2</string>
+		<string>msauthv3</string>
+        <string>fbapi</string>
+        <string>fb-messenger-share-api</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_http._tcp</string>
+	</array>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app requires access to your calendar to manage events and reminders.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>LMS app needs access to your camera for meetings.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app requires access to your contacts to provide a better user experience.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>This app requires access to the local network to serve SCORM content.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app requires access to the location to support feature .</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>LMS app needs access to your microphone for meetings.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to the photo library to support Profile Update.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+	<key>GIDClientID</key>
+	<string>455865843953-8bagubcfsnuq5i0ravkb28bj5tocunvn.apps.googleusercontent.com</string>
+</dict>
+</plist>
