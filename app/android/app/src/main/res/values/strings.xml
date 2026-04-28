@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EverLMS</string>
+    <string name="facebook_app_id">1326089642081138</string>
+    <string name="fb_login_protocol_scheme">fb1326089642081138</string>
+    <string name="facebook_client_token">71c9bc353de1a8260dad5a53f0636a4f</string>
+
+    <!-- flutter downloader package -->
+    <string name="flutter_downloader_notification_started">Download started</string>
+    <string name="flutter_downloader_notification_in_progress">Download in progress</string>
+    <string name="flutter_downloader_notification_canceled">Download canceled</string>
+    <string name="flutter_downloader_notification_failed">Download failed</string>
+    <string name="flutter_downloader_notification_complete">Download complete</string>
+    <string name="flutter_downloader_notification_paused">Download paused</string>
+</resources>

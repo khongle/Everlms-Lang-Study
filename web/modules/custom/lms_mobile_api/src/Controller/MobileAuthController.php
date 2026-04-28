@@ -32,10 +32,16 @@ class MobileAuthController extends ControllerBase {
 
   public function __construct(
     protected OtpService $otpService,
-    protected EntityTypeManagerInterface $entityTypeManager,
-    protected ConfigFactoryInterface $configFactory,
+    EntityTypeManagerInterface $entityTypeManager,
+    ConfigFactoryInterface $configFactory,
     protected LoggerInterface $logger,
-  ) {}
+  ) {
+    // Assign to parent-class untyped properties (avoids PHP 8.1 property-type
+    // redeclaration conflict with ControllerBase::$entityTypeManager and
+    // ControllerBase::$configFactory).
+    $this->entityTypeManager = $entityTypeManager;
+    $this->configFactory = $configFactory;
+  }
 
   /**
    * {@inheritdoc}

@@ -1,0 +1,155 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "26A360D1",
+  "nonRenewingSubscriptions" : [
+    {
+      "displayPrice" : "30.0",
+      "familyShareable" : false,
+      "internalID" : "6745693381",
+      "localizations" : [
+        {
+          "description" : "H5P course",
+          "displayName" : "H5P course",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "com.opencentric.h5p_course",
+      "referenceName" : "H5P course",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "20.0",
+      "familyShareable" : false,
+      "internalID" : "6745693461",
+      "localizations" : [
+        {
+          "description" : "Scorm course ",
+          "displayName" : "Scorm course",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "com.opencentric.scorm_course",
+      "referenceName" : "Scorm course",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "25.0",
+      "familyShareable" : false,
+      "internalID" : "6745692573",
+      "localizations" : [
+        {
+          "description" : "Youtube course",
+          "displayName" : "Youtube course",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "com.opencentric.youtube_course",
+      "referenceName" : "Youtube course",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "20.0",
+      "familyShareable" : false,
+      "internalID" : "6745693486",
+      "localizations" : [
+        {
+          "description" : "Youtube H5P course",
+          "displayName" : "Youtube H5P course",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "com.opencentric.youtube_h5p_course",
+      "referenceName" : "Youtube H5P course",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "0.29",
+      "familyShareable" : false,
+      "internalID" : "6745693392",
+      "localizations" : [
+        {
+          "description" : "Youtube Scrom course",
+          "displayName" : "Youtube Scrom course",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "com.opencentric.youtube_scorm_course",
+      "referenceName" : "Youtube Scorm course",
+      "type" : "NonRenewingSubscription"
+    }
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6740057996",
+    "_developerTeamID" : "HAQ6BQ4KCL",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 771999127.42578804,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

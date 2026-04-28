@@ -1,0 +1,143 @@
+{
+  "client_id" : "{{CLIENT_ID}}",
+  "authorization_user_agent" : "DEFAULT",
+  "redirect_uri" : "{{REDIRECT_URI}}",
+  "authorities": [
+    {
+      "type": "AAD",
+      "audience": {
+        "type": "AzureADandPersonalMicrosoftAccount"
+      },
+      "default": true
+    }
+  ],
+  "multiple_clouds_supported": false,
+  "broker_redirect_uri_registered": false,
+  "http": {
+    "connect_timeout": 10000,
+    "read_timeout": 30000
+  },
+  "logging": {
+    "pii_enabled": false,
+    "log_level": "WARNING",
+    "logcat_enabled": false
+  },
+  "shared_device_mode_supported": false,
+  "account_mode": "SINGLE",
+  "browser_safelist": [
+    {
+      "browser_package_name": "com.android.chrome",
+      "browser_signature_hashes": [
+        "7fmdu...2NDJg=="
+      ],
+      "browser_use_customTab" : true,
+      "browser_version_lower_bound": "45"
+    },
+    {
+      "browser_package_name": "com.android.chrome",
+      "browser_signature_hashes": [
+        "7fmdu...2NDJg=="
+      ],
+      "browser_use_customTab" : false
+    },
+    {
+      "browser_package_name": "org.mozilla.firefox",
+      "browser_signature_hashes": [
+        "2gCe6...idpVQ=="
+      ],
+      "browser_use_customTab" : false
+    },
+    {
+      "browser_package_name": "org.mozilla.firefox",
+      "browser_signature_hashes": [
+        "2gCe6...idpVQ=="
+      ],
+      "browser_use_customTab" : true,
+      "browser_version_lower_bound": "57"
+    },
+    {
+      "browser_package_name": "com.sec.android.app.sbrowser",
+      "browser_signature_hashes": [
+        "ABi2f...4O1Xgg=="
+      ],
+      "browser_use_customTab" : true,
+      "browser_version_lower_bound": "4.0"
+    },
+    {
+      "browser_package_name": "com.sec.android.app.sbrowser",
+      "browser_signature_hashes": [
+        "ABi2f...O1Xgg=="
+      ],
+      "browser_use_customTab" : false
+    },
+    {
+      "browser_package_name": "com.cloudmosa.puffinFree",
+      "browser_signature_hashes": [
+        "1WqG8...Mn8Ag=="
+      ],
+      "browser_use_customTab" : false
+    },
+    {
+      "browser_package_name": "com.duckduckgo.mobile.android",
+      "browser_signature_hashes": [
+        "S5Av4...jAi4Q=="
+      ],
+      "browser_use_customTab" : false
+    },
+    {
+      "browser_package_name": "com.explore.web.browser",
+      "browser_signature_hashes": [
+        "BzDzB...YHCag=="
+      ],
+      "browser_use_customTab" : false
+    },
+
+    {
+      "browser_package_name": "com.ksmobile.cb",
+      "browser_signature_hashes": [
+        "lFDYx...7nouw=="
+      ],
+      "browser_use_customTab" : false
+    },
+
+    {
+      "browser_package_name": "com.microsoft.emmx",
+      "browser_signature_hashes": [
+        "Ivy-R...A6fVQ=="
+      ],
+      "browser_use_customTab" : false
+    },
+
+    {
+      "browser_package_name": "com.opera.browser",
+      "browser_signature_hashes": [
+        "FIJ3I...jWJWw=="
+      ],
+      "browser_use_customTab" : false
+    },
+
+    {
+      "browser_package_name": "com.opera.mini.native",
+      "browser_signature_hashes": [
+        "TOTyH...mmUYQ=="
+      ],
+      "browser_use_customTab" : false
+    },
+
+    {
+      "browser_package_name": "mobi.mgeek.TunnyBrowser",
+      "browser_signature_hashes": [
+        "RMVoX...bkyyQ=="
+      ],
+      "browser_use_customTab" : false
+    },
+
+    {
+      "browser_package_name": "org.mozilla.focus",
+      "browser_signature_hashes": [
+        "L72dT...q0oYA=="
+      ],
+      "browser_use_customTab" : false
+    }
+  ]
+}
