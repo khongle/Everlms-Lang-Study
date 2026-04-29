@@ -83,6 +83,15 @@ lms_mobile_api.user.change_password:
 # Course APIs (Feature 02-04)
 # ---------------------------------------------------------------------------
 
+lms_mobile_api.courses.search:
+  path: '/api/v1/courses/search'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileCourseController::searchCourses'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [GET]
+
 lms_mobile_api.categories:
   path: '/api/v1/categories'
   defaults:
@@ -120,3 +129,75 @@ lms_mobile_api.dashboard:
   requirements:
     _access: 'TRUE'
   methods: [GET]
+
+lms_mobile_api.my_courses:
+  path: '/api/v1/my-courses'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileCourseController::getMyCourses'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [GET]
+
+# ---------------------------------------------------------------------------
+# Lesson / Quiz / Progress APIs (Feature 05-07)
+# ---------------------------------------------------------------------------
+
+lms_mobile_api.lesson.detail:
+  path: '/api/v1/courses/{courseId}/lessons/{lessonId}'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileLearningController::getLessonDetail'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+    courseId: '\d+'
+    lessonId: '\d+'
+  methods: [GET]
+
+lms_mobile_api.quiz.detail:
+  path: '/api/v1/quiz/{quizId}'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileLearningController::getQuiz'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+    quizId: '\d+'
+  methods: [GET]
+
+lms_mobile_api.quiz.submit:
+  path: '/api/v1/quiz/{quizId}/submit'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileLearningController::submitQuiz'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+    quizId: '\d+'
+  methods: [POST]
+
+lms_mobile_api.quiz.result:
+  path: '/api/v1/quiz/results/{resultId}'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileLearningController::getQuizResult'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+    resultId: '\d+'
+  methods: [GET]
+
+lms_mobile_api.quiz.my_results:
+  path: '/api/v1/quiz/my-results'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileLearningController::listMyQuizResults'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [GET]
+
+lms_mobile_api.progress.mark_complete:
+  path: '/api/v1/progress/mark-complete'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileLearningController::markLessonComplete'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]

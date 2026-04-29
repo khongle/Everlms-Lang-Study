@@ -16,10 +16,12 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * Handles mobile course API endpoints.
  *
  * Endpoints:
+ *   GET  /api/v1/courses/search
  *   GET  /api/v1/categories
  *   GET  /api/v1/courses/{courseId}
  *   POST /api/v1/courses/{courseId}/enroll-free
  *   GET  /api/v1/dashboard
+ *   GET  /api/v1/my-courses
  */
 class MobileCourseController extends ControllerBase {
 
@@ -36,6 +38,109 @@ class MobileCourseController extends ControllerBase {
       $container->get('logger.factory')->get('lms_mobile_api'),
       $container->get('file_url_generator'),
     );
+  }
+
+  // ---------------------------------------------------------------------------
+  // GET /api/v1/courses/search
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Searches published courses for the mobile app.
+   */
+  public function searchCourses(Request $request): JsonResponse {
+    $search = trim((string) $request->query->get('search', ''));
+    $query_all = $request->query->all();
+
+    $category_input = $query_all['category'] ?? $query_all['category[]'] ?? [];
+    $categories = is_array($category_input) ? $category_input : [$category_input];
+    $categories = array_values(array_filter(array_map('intval', $categories)));
+
+    $level_input = $query_all['level'] ?? $query_all['level[]'] ?? [];
+    $levels = is_array($level_input) ? $level_input : [$level_input];
+    $levels = array_values(array_filter(array_map('intval', $levels)));
+
+    $price_input = $query_all['price'] ?? $query_all['price[]'] ?? [];
+    $prices = is_array($price_input) ? $price_input : [$price_input];
+    $prices = array_values(array_filter(array_map('strval', $prices)));
+
+    $sort = (string) $request->query->get('sort', 'newest');
+    $page = max(0, (int) $request->query->get('page', 0));
+    $limit = max(1, min(100, (int) $request->query->get('limit', 20)));
+
+    $query = $this->entityTypeManager()->getStorage('lms_course')
+      ->getQuery()
+      ->condition('status', 1)
+      ->accessCheck(FALSE);
+
+    if ($search !== '') {
+      $query->condition('name', $search, 'CONTAINS');
+    }
+
+    if ($categories !== []) {
+      $query->condition('field_category', $categories, 'IN');
+    }
+
+    if ($levels !== []) {
+      $query->condition('field_level', $levels, 'IN');
+    }
+
+    if ($prices !== [] && count($prices) < 2) {
+      if (in_array('free', $prices, TRUE)) {
+        $query->condition('field_price_type', 'free');
+      }
+      elseif (in_array('paid', $prices, TRUE)) {
+        $query->condition('field_price_type', ['paid', 'membership'], 'IN');
+      }
+    }
+
+    switch ($sort) {
+      case 'popular':
+        $query->sort('field_bestseller', 'DESC')->sort('changed', 'DESC');
+        break;
+
+      case 'rating':
+        $query->sort('field_rating', 'DESC')->sort('changed', 'DESC');
+        break;
+
+      case 'price_asc':
+        $query->sort('field_price', 'ASC')->sort('changed', 'DESC');
+        break;
+
+      case 'price_desc':
+        $query->sort('field_price', 'DESC')->sort('changed', 'DESC');
+        break;
+
+      case 'newest':
+      default:
+        $query->sort('created', 'DESC');
+        break;
+    }
+
+    $count_query = clone $query;
+    $total = (int) $count_query->count()->execute();
+
+    $ids = $query
+      ->range($page * $limit, $limit)
+      ->execute();
+
+    $courses = $ids
+      ? $this->entityTypeManager()->getStorage('lms_course')->loadMultiple($ids)
+      : [];
+
+    $items = [];
+    foreach ($courses as $course) {
+      if (!$course->get('status')->value) {
+        continue;
+      }
+      $items[] = $this->buildCourseListItem($course);
+    }
+
+    return new JsonResponse([
+      'total' => $total,
+      'page' => $page,
+      'limit' => $limit,
+      'items' => array_values($items),
+    ]);
   }
 
   // ---------------------------------------------------------------------------
@@ -461,6 +566,92 @@ class MobileCourseController extends ControllerBase {
   }
 
   // ---------------------------------------------------------------------------
+  // GET /api/v1/my-courses
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Lists courses the authenticated user is enrolled in.
+   */
+  public function getMyCourses(Request $request): JsonResponse {
+    $user = $this->getAuthenticatedUser($request);
+    $uid = (int) $user->id();
+
+    $status = (string) $request->query->get('status', 'all');
+    $page = max(0, (int) $request->query->get('page', 0));
+    $limit = max(1, min(100, (int) $request->query->get('limit', 20)));
+
+    $query = $this->entityTypeManager()->getStorage('lms_user_course')
+      ->getQuery()
+      ->condition('uid', $uid)
+      ->accessCheck(FALSE);
+
+    if ($status === 'completed') {
+      $query->condition('field_status', 'completed');
+    }
+    elseif ($status === 'active') {
+      $query->condition('field_status', ['enrolled', 'in_progress'], 'IN');
+    }
+
+    $count_query = clone $query;
+    $total = (int) $count_query->count()->execute();
+
+    $ids = $query
+      ->sort('field_enrolled_at', 'DESC')
+      ->range($page * $limit, $limit)
+      ->execute();
+
+    $items = [];
+    $enrollments = $ids
+      ? $this->entityTypeManager()->getStorage('lms_user_course')->loadMultiple($ids)
+      : [];
+
+    foreach ($enrollments as $enrollment) {
+      $course = $enrollment->get('field_course')->entity;
+      if (!$course || !$course->get('status')->value) {
+        continue;
+      }
+
+      $lesson_ids = $this->getOrderedCourseLessonIds($course);
+      $completed_lesson_ids = $this->getCompletedLessonIds($uid, $lesson_ids);
+      $last_lesson_id = $this->findLastLessonId($uid, $lesson_ids, $completed_lesson_ids);
+      $last_lesson_title = NULL;
+      if ($last_lesson_id) {
+        $last_lesson = $this->entityTypeManager()->getStorage('lms_lesson')->load($last_lesson_id);
+        $last_lesson_title = $last_lesson?->label();
+      }
+
+      $primary_instructor = $this->getPrimaryInstructor($course);
+
+      $items[] = [
+        'enrollment_id' => (int) $enrollment->id(),
+        'course_id' => (int) $course->id(),
+        'course_title' => $course->label(),
+        'course_thumbnail_url' => $this->getImageUrl($course, 'field_thumbnail'),
+        'instructor_name' => $primary_instructor?->getDisplayName() ?? '',
+        'progress' => (float) ($enrollment->hasField('field_progress') ? ($enrollment->get('field_progress')->value ?? 0) : 0),
+        'status' => $enrollment->hasField('field_status') ? ($enrollment->get('field_status')->value ?? 'enrolled') : 'enrolled',
+        'enrolled_at' => $enrollment->hasField('field_enrolled_at') && !$enrollment->get('field_enrolled_at')->isEmpty()
+          ? date('c', (int) $enrollment->get('field_enrolled_at')->value)
+          : NULL,
+        'completed_at' => $enrollment->hasField('field_completed_at') && !$enrollment->get('field_completed_at')->isEmpty()
+          ? date('c', (int) $enrollment->get('field_completed_at')->value)
+          : NULL,
+        'last_lesson_id' => $last_lesson_id,
+        'last_lesson_title' => $last_lesson_title,
+        'total_lessons' => count($lesson_ids),
+        'completed_lessons' => count($completed_lesson_ids),
+      ];
+    }
+
+    return new JsonResponse([
+      'total' => $total,
+      'page' => $page,
+      'limit' => $limit,
+      'items' => $items,
+    ]);
+  }
+
+  // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
 
@@ -653,6 +844,86 @@ class MobileCourseController extends ControllerBase {
       'avatar_url' => $avatar_url,
       'bio' => $bio,
     ];
+  }
+
+  /**
+   * Builds a compact course list item for search responses.
+   */
+  private function buildCourseListItem(object $course): array {
+    $primary_instructor = $this->getPrimaryInstructor($course);
+    $rating_count = (int) $this->entityTypeManager()->getStorage('lms_rating')
+      ->getQuery()
+      ->condition('field_course', (int) $course->id())
+      ->condition('field_approved', TRUE)
+      ->accessCheck(FALSE)
+      ->count()
+      ->execute();
+
+    return [
+      'id' => (int) $course->id(),
+      'uuid' => $course->uuid(),
+      'title' => $course->label(),
+      'short_description' => $course->hasField('field_short_description') ? ($course->get('field_short_description')->value ?? '') : '',
+      'thumbnail_url' => $this->getImageUrl($course, 'field_thumbnail'),
+      'price' => (float) ($course->hasField('field_price') ? ($course->get('field_price')->value ?? 0) : 0),
+      'price_type' => $course->hasField('field_price_type') ? ($course->get('field_price_type')->value ?? 'free') : 'free',
+      'level' => $this->getTermData($course, 'field_level'),
+      'category' => $this->getTermData($course, 'field_category'),
+      'instructor' => $primary_instructor ? $this->buildInstructorData($primary_instructor) : NULL,
+      'rating' => (float) ($course->hasField('field_rating') ? ($course->get('field_rating')->value ?? 0) : 0),
+      'rating_count' => $rating_count,
+      'student_count' => $this->getStudentCount((int) $course->id()),
+      'duration_minutes' => (int) ($course->hasField('field_duration') ? ($course->get('field_duration')->value ?? 0) : 0),
+      'bestseller' => (bool) ($course->hasField('field_bestseller') ? $course->get('field_bestseller')->value : FALSE),
+      'featured' => (bool) ($course->hasField('field_featured') ? $course->get('field_featured')->value : FALSE),
+      'created' => date('c', (int) $course->get('created')->value),
+    ];
+  }
+
+  /**
+   * Returns ordered lesson IDs for a course.
+   *
+   * @return int[]
+   */
+  private function getOrderedCourseLessonIds(object $course): array {
+    $lesson_ids = [];
+    if (!$course->hasField('field_chapters') || $course->get('field_chapters')->isEmpty()) {
+      return $lesson_ids;
+    }
+
+    $chapters = $course->get('field_chapters')->referencedEntities();
+    usort($chapters, fn($a, $b) => ($a->get('weight')->value ?? 0) <=> ($b->get('weight')->value ?? 0));
+
+    foreach ($chapters as $chapter) {
+      if (!$chapter->get('status')->value) {
+        continue;
+      }
+      if (!$chapter->hasField('field_lessons') || $chapter->get('field_lessons')->isEmpty()) {
+        continue;
+      }
+      foreach ($chapter->get('field_lessons')->referencedEntities() as $lesson) {
+        if ($lesson->get('status')->value) {
+          $lesson_ids[] = (int) $lesson->id();
+        }
+      }
+    }
+
+    return $lesson_ids;
+  }
+
+  /**
+   * Returns the primary instructor for a course.
+   */
+  private function getPrimaryInstructor(object $course): ?\Drupal\user\UserInterface {
+    if ($course->hasField('field_instructor') && !$course->get('field_instructor')->isEmpty()) {
+      $instructors = $course->get('field_instructor')->referencedEntities();
+      $instructor = $instructors[0] ?? NULL;
+      if ($instructor instanceof \Drupal\user\UserInterface) {
+        return $instructor;
+      }
+    }
+    $owner = $course->get('uid')->entity;
+    return $owner instanceof \Drupal\user\UserInterface ? $owner : NULL;
   }
 
 }
