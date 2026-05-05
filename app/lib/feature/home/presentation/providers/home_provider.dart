@@ -1,5 +1,7 @@
 import 'package:everlms/core/providers/core_providers.dart';
 import 'package:everlms/core/utils/enum.dart';
+import 'package:everlms/feature/home/data/models/course_search_result.dart';
+import 'package:everlms/feature/home/data/models/dashboard_summary.dart';
 import 'package:everlms/feature/home/data/repositories/home_repository.dart';
 import 'package:everlms/feature/root/data/models/common/course.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +41,10 @@ class HomeState {
     this.categoryCourses = const {},
     this.isLoadingCourses = false,
     this.isLoadingMyCourses = false,
+    // phase-01
+    this.dashboardSummary,
+    this.featuredCourses = const [],
+    this.isLoadingDashboard = false,
   });
 
   final List<Course> allCourses;
@@ -47,12 +53,20 @@ class HomeState {
   final bool isLoadingCourses;
   final bool isLoadingMyCourses;
 
+  // phase-01 fields
+  final DashboardSummary? dashboardSummary;
+  final List<CourseSearchItem> featuredCourses;
+  final bool isLoadingDashboard;
+
   HomeState copyWith({
     List<Course>? allCourses,
     List<Course>? myCourses,
     Set<String>? categoryCourses,
     bool? isLoadingCourses,
     bool? isLoadingMyCourses,
+    DashboardSummary? dashboardSummary,
+    List<CourseSearchItem>? featuredCourses,
+    bool? isLoadingDashboard,
   }) {
     return HomeState(
       allCourses: allCourses ?? this.allCourses,
@@ -60,6 +74,9 @@ class HomeState {
       categoryCourses: categoryCourses ?? this.categoryCourses,
       isLoadingCourses: isLoadingCourses ?? this.isLoadingCourses,
       isLoadingMyCourses: isLoadingMyCourses ?? this.isLoadingMyCourses,
+      dashboardSummary: dashboardSummary ?? this.dashboardSummary,
+      featuredCourses: featuredCourses ?? this.featuredCourses,
+      isLoadingDashboard: isLoadingDashboard ?? this.isLoadingDashboard,
     );
   }
 }
@@ -71,19 +88,35 @@ class HomeNotifier extends AsyncNotifier<HomeState> {
   @override
   Future<HomeState> build() async {
     final repo = ref.read(homeRepositoryProvider);
-    final uid = repo.getUserUid();
-    if (uid.isEmpty) return const HomeState();
 
-    final courses = await repo.getCourseNotPurchase(uid);
-    final categories = <String>{};
-    for (final c in courses) {
-      if (c.fieldCategory != null && c.fieldCategory!.isNotEmpty) {
-        categories.add(c.fieldCategory!);
-      }
-    }
+    // Load phase-01 data in parallel. Legacy getCourseNotPurchase is NOT called
+    // here because the old lms-* endpoints return 401 when a Bearer token is
+    // present. Use refreshAllCourses() only when explicitly needed.
+    final results = await Future.wait([
+      repo.getDashboard(),
+      repo.searchCourses(featured: true),
+    ]);
+
+    final dashboard = results[0] as DashboardSummary?;
+    final searchResult = results[1]! as CourseSearchResult;
+
     return HomeState(
-      allCourses: courses,
-      categoryCourses: categories,
+      dashboardSummary: dashboard,
+      featuredCourses: searchResult.items,
+    );
+  }
+
+  Future<void> loadDashboard() async {
+    final current = state.valueOrNull ?? const HomeState();
+    state = AsyncData(current.copyWith(isLoadingDashboard: true));
+
+    final repo = ref.read(homeRepositoryProvider);
+    final dashboard = await repo.getDashboard();
+    state = AsyncData(
+      current.copyWith(
+        dashboardSummary: dashboard,
+        isLoadingDashboard: false,
+      ),
     );
   }
 
@@ -109,21 +142,20 @@ class HomeNotifier extends AsyncNotifier<HomeState> {
 
   Future<void> refreshAllCourses() async {
     final repo = ref.read(homeRepositoryProvider);
-    final uid = repo.getUserUid();
-    if (uid.isEmpty) return;
 
-    final courses = await repo.getCourseNotPurchase(uid);
-    final categories = <String>{};
-    for (final c in courses) {
-      if (c.fieldCategory != null && c.fieldCategory!.isNotEmpty) {
-        categories.add(c.fieldCategory!);
-      }
-    }
+    final results = await Future.wait([
+      repo.getDashboard(),
+      repo.searchCourses(featured: true),
+    ]);
+
+    final dashboard = results[0] as DashboardSummary?;
+    final searchResult = results[1]! as CourseSearchResult;
+
     final current = state.valueOrNull ?? const HomeState();
     state = AsyncData(
       current.copyWith(
-        allCourses: courses,
-        categoryCourses: categories,
+        dashboardSummary: dashboard,
+        featuredCourses: searchResult.items,
       ),
     );
   }

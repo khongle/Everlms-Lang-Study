@@ -14,6 +14,11 @@ class UserRepository {
     return _apiClient.getData(AppConstants.user(uid));
   }
 
+  /// Fetches current user's profile from GET /api/v1/user/me (phase-01).
+  Future<ApiResponse?> getMobileUserProfile() async {
+    return _apiClient.getData(AppConstants.mobileUserMe);
+  }
+
   Future<ApiResponse?> getProfile(String uid) async {
     return _apiClient.getData(AppConstants.updateUser(uid));
   }

@@ -1,12 +1,76 @@
 import 'package:everlms/core/api/api_client.dart';
 import 'package:everlms/core/api/api_response.dart';
 import 'package:everlms/core/utils/app_constants.dart';
+import 'package:everlms/feature/course_details/data/models/mobile_course_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CourseDetailRepository {
   const CourseDetailRepository(this._apiClient, this._prefs);
   final ApiClient _apiClient;
   final SharedPreferences _prefs;
+
+  // ---------------------------------------------------------------------------
+  // Mobile API — phase-01
+  // ---------------------------------------------------------------------------
+
+  /// GET /api/v1/courses/:courseId — full course detail including curriculum.
+  Future<MobileCourseDetail?> getCourseDetail(String courseId) async {
+    final response =
+        await _apiClient.getData(AppConstants.mobileCourseDetail(courseId));
+    if (response.statusCode == 200 && response.body is Map<String, dynamic>) {
+      return MobileCourseDetail.fromJson(response.body as Map<String, dynamic>);
+    }
+    return null;
+  }
+
+  /// POST /api/v1/courses/:courseId/enroll-free — enroll user in free course.
+  Future<bool> enrollFree(String courseId) async {
+    final response = await _apiClient.postData(
+      AppConstants.mobileEnrollFree(courseId),
+      {},
+    );
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  /// POST /api/lms/wishlist/toggle — toggle wishlist for a course.
+  Future<bool?> toggleWishlist(int courseId) async {
+    final response = await _apiClient.postData(
+      AppConstants.mobileWishlistToggle,
+      {'course_id': courseId},
+    );
+    if (response.statusCode == 200 && response.body is Map<String, dynamic>) {
+      final body = response.body as Map<String, dynamic>;
+      final added = body['wishlisted'] as bool? ??
+          body['added'] as bool? ??
+          body['status'] == 'added';
+      return added;
+    }
+    return null;
+  }
+
+  /// GET /api/v1/courses/:courseId/ratings — paginated ratings list.
+  Future<ApiResponse?> getCourseRatings(String courseId, {int page = 0}) async {
+    return _apiClient.getData(
+      AppConstants.mobileCourseRatings(courseId),
+      query: {'page': page},
+    );
+  }
+
+  /// POST /api/v1/ratings — submit a new rating.
+  Future<ApiResponse?> submitRating({
+    required int courseId,
+    required int score,
+    String review = '',
+  }) async {
+    return _apiClient.postData(
+      AppConstants.mobileRatingsSubmit,
+      {'course_id': courseId, 'score': score, 'review': review},
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Legacy methods — kept for backward compatibility
+  // ---------------------------------------------------------------------------
 
   Future<ApiResponse?> getReviews(int id, int pageNumber) async {
     return _apiClient.getData(

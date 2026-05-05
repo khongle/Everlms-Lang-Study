@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Polls the unread notification count every 2 minutes.
 /// Reuses the existing [notificationRepositoryProvider].
-final AutoDisposeStreamProvider<int> notificationBadgeProvider = StreamProvider.autoDispose<int>((ref) async* {
+final StreamProvider<int> notificationBadgeProvider = StreamProvider<int>((ref) async* {
   final repo = ref.read(notificationRepositoryProvider);
 
   // Emit immediately, then every 2 minutes.

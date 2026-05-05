@@ -33,7 +33,7 @@ class ApiClient {
       ),
     );
 
-    _dio.interceptors.add(_AuthInterceptor(this));
+    _dio.interceptors.add(_AuthInterceptor());
     _dio.interceptors.add(_ErrorInterceptor());
     if (foundation.kDebugMode) {
       _dio.interceptors.add(
@@ -68,24 +68,20 @@ class ApiClient {
     // Keep this.token in sync so interceptors see the latest state.
     this.token = token;
 
-    // When authenticated: Bearer token for Drupal OAuth.
-    // When anonymous: Basic Auth for server-level protection (nginx / Shield).
-    final authorization =
-        (token != null && token.isNotEmpty) ? 'Bearer $token' : (auth ?? '');
-
+    // Authorization always carries Basic Auth credentials so the server-level
+    // HTTP auth gate (nginx / Drupal Shield) is satisfied on every request.
+    // Bearer token is sent separately in X-Authorization so it reaches the
+    // Drupal custom auth controller without conflicting with Basic Auth.
     _mainHeaders = {
       'Content-Type': 'application/json; charset=UTF-8',
       'Cache-Control': 'no-cache',
-      'Authorization': authorization,
+      'Authorization': auth ?? '',
       AppConstants.localizationKey:
           languageCode ?? AppConstants.languages[0].languageCode!,
     };
 
-    // Always include Basic Auth credentials on every request so the domain's
-    // HTTP Basic Auth gate (nginx / Drupal Shield) is satisfied regardless of
-    // whether a Bearer token is also present.
-    if (auth != null && auth!.isNotEmpty) {
-      _mainHeaders['X-Authorization'] = auth!;
+    if (token != null && token.isNotEmpty) {
+      _mainHeaders['X-Authorization'] = 'Bearer $token';
     }
 
     final cookie = sharedPreferences.getString(AppConstants.cookie);
@@ -121,7 +117,10 @@ class ApiClient {
         uri,
         data: body != null ? jsonEncode(body) : null,
         queryParameters: query,
-        options: Options(method: 'GET', headers: headers ?? _mainHeaders),
+        options: Options(
+          method: 'GET',
+          headers: {..._mainHeaders, ...?headers},
+        ),
       );
       return _wrap(response);
     } on DioException {
@@ -144,7 +143,7 @@ class ApiClient {
         await _dio.post<dynamic>(
           uri,
           data: jsonEncode(body),
-          options: Options(headers: headers ?? _mainHeaders),
+          options: Options(headers: {..._mainHeaders, ...?headers}),
         ),
       );
     } on DioException {
@@ -167,7 +166,7 @@ class ApiClient {
         await _dio.patch<dynamic>(
           uri,
           data: jsonEncode(body),
-          options: Options(headers: headers ?? _mainHeaders),
+          options: Options(headers: {..._mainHeaders, ...?headers}),
         ),
       );
     } on DioException {
@@ -190,7 +189,7 @@ class ApiClient {
         await _dio.put<dynamic>(
           uri ?? '',
           data: jsonEncode(body),
-          options: Options(headers: headers ?? _mainHeaders),
+          options: Options(headers: {..._mainHeaders, ...?headers}),
         ),
       );
     } on DioException {
@@ -211,7 +210,7 @@ class ApiClient {
       return _wrap(
         await _dio.delete<dynamic>(
           uri ?? '',
-          options: Options(headers: headers ?? _mainHeaders),
+          options: Options(headers: {..._mainHeaders, ...?headers}),
         ),
       );
     } on DioException {
@@ -265,7 +264,7 @@ class ApiClient {
         await _dio.post<dynamic>(
           uri ?? '',
           data: formData,
-          options: Options(headers: headers ?? _mainHeaders),
+          options: Options(headers: {..._mainHeaders, ...?headers}),
         ),
       );
     } on DioException {
@@ -320,7 +319,28 @@ class ApiClient {
     updateHeader(null, sharedPreferences.getString(AppConstants.languageCode));
   }
 
-  /// Sends a POST request with [body] encoded as
+  /// GET request without Bearer token — for public endpoints that do not
+  /// require user authentication (anonymous access).
+  ///
+  /// Strips the X-Authorization Bearer header so Drupal doesn't attempt to
+  /// validate a user session on a public route.
+  Future<ApiResponse> getDataPublic(
+    String uri, {
+    Map<String, dynamic>? query,
+  }) async {
+    final lang = sharedPreferences.getString(AppConstants.languageCode) ??
+        AppConstants.languages[0].languageCode!;
+    final publicHeaders = <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Cache-Control': 'no-cache',
+      'Authorization': auth ?? '',
+      AppConstants.localizationKey: lang,
+      // Explicitly clear X-Authorization so no Bearer token is forwarded.
+      'X-Authorization': '',
+    };
+    return getData(uri, query: query, headers: publicHeaders);
+  }
+
   /// [application/x-www-form-urlencoded] — required by OAuth2 token endpoints.
   Future<ApiResponse> postFormUrlEncoded(
     String uri,
@@ -358,8 +378,7 @@ class ApiClient {
 /// Handles 401 by clearing session — but only for authenticated requests (when token exists).
 /// For unauthenticated endpoints like /oauth/token (login), 401 means invalid credentials.
 class _AuthInterceptor extends Interceptor {
-  _AuthInterceptor(this._client);
-  final ApiClient _client;
+  _AuthInterceptor();
 
   @override
   Future<void> onError(
@@ -367,23 +386,9 @@ class _AuthInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     if (err.response?.statusCode == 401) {
-      // Only clear session if a token actually exists (user was authenticated).
-      // For login/register endpoints, 401 means invalid credentials, not session expiration.
-      if (_client.token != null && _client.token!.isNotEmpty) {
-        await _client.refreshAccessToken();
-        return handler.next(
-          DioException(
-            requestOptions: err.requestOptions,
-            response: err.response,
-            type: err.type,
-            error: const ApiException(
-              statusCode: 401,
-              message: 'Session expired. Please sign in again.',
-            ),
-          ),
-        );
-      }
-      // No token saved → 401 is likely invalid credentials, let it bubble up.
+      // Do not auto-clear local auth state on any single 401 response.
+      // Some endpoints can return 401 for temporary upstream auth mismatch
+      // (e.g. Basic Auth gate) and should not force an app-wide logout.
       return handler.next(err);
     }
     return handler.next(err);

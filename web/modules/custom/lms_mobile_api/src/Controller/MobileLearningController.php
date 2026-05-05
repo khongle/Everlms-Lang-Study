@@ -504,7 +504,10 @@ class MobileLearningController extends ControllerBase {
    * Resolves the authenticated user from a bearer token.
    */
   protected function getAuthenticatedUser(Request $request): \Drupal\user\UserInterface {
-    $auth_header = $request->headers->get('Authorization', '');
+    // The Authorization header carries Basic Auth credentials for the server-
+    // level HTTP auth gate. The Bearer token is sent in X-Authorization.
+    $x_auth = $request->headers->get('X-Authorization', '');
+    $auth_header = preg_match('/Bearer\s+/i', $x_auth) ? $x_auth : $request->headers->get('Authorization', '');
 
     if (!preg_match('/Bearer\s+(\S+)/i', $auth_header, $matches)) {
       throw new AccessDeniedHttpException('Missing or invalid Authorization header.');

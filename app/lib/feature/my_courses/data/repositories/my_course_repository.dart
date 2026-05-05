@@ -10,6 +10,13 @@ class MyCourseRepository {
     return _apiClient.getData(AppConstants.myCourse(uid));
   }
 
+  Future<ApiResponse?> getMyCourseListMobile({String status = 'all'}) async {
+    return _apiClient.getData(
+      AppConstants.mobileEnrolledCourses,
+      query: {'status': status},
+    );
+  }
+
   Future<ApiResponse?> getTeacherCourseList(String teacherUid) async {
     return _apiClient.getData(AppConstants.teacherCourse(teacherUid));
   }

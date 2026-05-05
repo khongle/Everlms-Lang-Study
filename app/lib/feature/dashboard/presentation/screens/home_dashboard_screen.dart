@@ -1,9 +1,10 @@
 import 'package:everlms/core/router/app_router.dart';
-import 'package:everlms/core/theme/app_colors.dart';
+import 'package:everlms/feature/course_catalog/presentation/providers/course_list_provider.dart';
 import 'package:everlms/feature/dashboard/presentation/providers/dashboard_query_provider.dart';
 import 'package:everlms/feature/dashboard/presentation/providers/notification_badge_provider.dart';
 import 'package:everlms/feature/dashboard/presentation/widgets/continue_learning_card.dart';
 import 'package:everlms/feature/dashboard/presentation/widgets/featured_courses_section.dart';
+import 'package:everlms/feature/dashboard/presentation/widgets/popular_categories_section.dart';
 import 'package:everlms/feature/dashboard/presentation/widgets/stats_row_widget.dart';
 import 'package:everlms/feature/profile/presentation/providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
@@ -22,21 +23,27 @@ class HomeDashboardScreen extends ConsumerWidget {
     final dashboardAsync = ref.watch(dashboardQueryProvider);
     final featuredAsync = ref.watch(featuredCoursesQueryProvider);
     final badgeAsync = ref.watch(notificationBadgeProvider);
+    final categoriesAsync = ref.watch(categoriesQueryProvider);
 
     final profileAsync = ref.watch(userProfileProvider);
     final userName =
-        profileAsync.valueOrNull?.userData?.fullName?.split(' ').first ??
-            'there';
+        profileAsync.valueOrNull?.userData?.firstDisplayName.isNotEmpty == true
+            ? profileAsync.valueOrNull!.userData!.firstDisplayName
+            : 'there';
+
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppColors.bgPrimary,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: _buildAppBar(context, badgeAsync),
       body: RefreshIndicator(
-        color: AppColors.accentPrimary,
-        backgroundColor: AppColors.bgSecondary,
+        color: cs.primary,
+        backgroundColor: cs.surface,
         onRefresh: () async {
           ref.invalidate(dashboardQueryProvider);
           ref.invalidate(featuredCoursesQueryProvider);
+          ref.invalidate(categoriesQueryProvider);
           ref.invalidate(notificationBadgeProvider);
         },
         child: CustomScrollView(
@@ -47,11 +54,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
                 child: Text(
                   'Welcome back, $userName! 👋',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
+                  style: theme.textTheme.headlineSmall,
                 ),
               ),
             ),
@@ -70,25 +73,22 @@ class HomeDashboardScreen extends ConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: AppColors.bgSecondary,
-                          border: Border.all(color: AppColors.border),
+                          color: cs.surface,
+                          border: Border.all(color: cs.outline),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Column(
                             children: [
                               Icon(
                                 Icons.school_outlined,
-                                color: AppColors.textMuted,
+                                color: theme.hintColor,
                                 size: 40,
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Text(
                                 'No courses in progress',
-                                style: TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontSize: 14,
-                                ),
+                                style: theme.textTheme.bodySmall,
                               ),
                             ],
                           ),
@@ -97,33 +97,37 @@ class HomeDashboardScreen extends ConsumerWidget {
                     ),
                   );
                 }
-                return SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      if (index == 0) {
-                        return const _SectionHeader(title: 'Continue Learning');
-                      }
-                      final course = dashboard.inProgressCourses[index - 1];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: ContinueLearningCard(
-                          course: course,
-                          onCourseTap: () => context.push(
-                            '/courses/${course.id}',
-                          ),
-                          onContinue: () {
-                            if (course.lastLessonId != null) {
-                              context.push(
-                                '/courses/${course.id}/lessons/${course.lastLessonId}',
-                              );
-                            } else {
-                              context.push('/courses/${course.id}');
-                            }
+                return SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      const _SectionHeader(title: 'Continue Learning'),
+                      SizedBox(
+                        height: 132,
+                        child: PageView.builder(
+                          padEnds: false,
+                          controller: PageController(viewportFraction: 0.96),
+                          itemCount: dashboard.inProgressCourses.length,
+                          itemBuilder: (context, index) {
+                            final course = dashboard.inProgressCourses[index];
+                            return ContinueLearningCard(
+                              course: course,
+                              onCourseTap: () => context.push(
+                                '/courses/${course.id}',
+                              ),
+                              onContinue: () {
+                                if (course.lastLessonId != null) {
+                                  context.push(
+                                    '/courses/${course.id}/lessons/${course.lastLessonId}',
+                                  );
+                                } else {
+                                  context.push('/courses/${course.id}');
+                                }
+                              },
+                            );
                           },
                         ),
-                      );
-                    },
-                    childCount: dashboard.inProgressCourses.length + 1,
+                      ),
+                    ],
                   ),
                 );
               },
@@ -132,7 +136,7 @@ class HomeDashboardScreen extends ConsumerWidget {
             // Stats strip
             dashboardAsync.when(
               loading: () => SliverToBoxAdapter(
-                child: _buildStatsShimmer(),
+                child: _buildStatsShimmer(context),
               ),
               error: (_, __) => const SliverToBoxAdapter(child: SizedBox()),
               data: (dashboard) => SliverToBoxAdapter(
@@ -143,6 +147,30 @@ class HomeDashboardScreen extends ConsumerWidget {
                     completedCount: dashboard.completedCoursesCount,
                     certificatesCount: dashboard.certificatesCount,
                   ),
+                ),
+              ),
+            ),
+
+            // Popular Categories
+            const SliverToBoxAdapter(
+              child: _SectionHeader(title: 'Popular Categories'),
+            ),
+            categoriesAsync.when(
+              loading: () => const SliverToBoxAdapter(
+                child: SizedBox(height: 156),
+              ),
+              error: (_, __) => const SliverToBoxAdapter(child: SizedBox()),
+              data: (categories) => SliverToBoxAdapter(
+                child: PopularCategoriesSection(
+                  categories: categories,
+                  onCategoryTap: (category) {
+                    ref.read(courseListProvider.notifier).updateFilter(
+                          const CourseFilterParams().copyWith(
+                            categoryIds: [category.id],
+                          ),
+                        );
+                    context.push(AppRoutes.courseCatalog);
+                  },
                 ),
               ),
             ),
@@ -177,16 +205,15 @@ class HomeDashboardScreen extends ConsumerWidget {
   ) {
     final unreadCount = badgeAsync.valueOrNull ?? 0;
 
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+
     return AppBar(
-      backgroundColor: AppColors.bgSecondary,
+      backgroundColor: cs.surface,
       elevation: 0,
-      title: const Text(
+      title: Text(
         'EverLMS',
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-          color: AppColors.textPrimary,
-        ),
+        style: theme.textTheme.titleLarge,
       ),
       actions: [
         IconButton(
@@ -194,9 +221,9 @@ class HomeDashboardScreen extends ConsumerWidget {
           icon: Stack(
             clipBehavior: Clip.none,
             children: [
-              const Icon(
+              Icon(
                 Icons.notifications_outlined,
-                color: AppColors.textSecondary,
+                color: theme.iconTheme.color,
                 size: 24,
               ),
               if (unreadCount > 0)
@@ -206,8 +233,8 @@ class HomeDashboardScreen extends ConsumerWidget {
                   child: Container(
                     width: 16,
                     height: 16,
-                    decoration: const BoxDecoration(
-                      color: AppColors.accentPrimary,
+                    decoration: BoxDecoration(
+                      color: cs.primary,
                       shape: BoxShape.circle,
                     ),
                     child: Center(
@@ -230,7 +257,7 @@ class HomeDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatsShimmer() => Padding(
+  Widget _buildStatsShimmer(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           children: List.generate(
@@ -240,7 +267,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                 height: 80,
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.bgSecondary,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
@@ -261,11 +288,7 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: AppColors.textPrimary,
-        ),
+        style: Theme.of(context).textTheme.titleLarge,
       ),
     );
   }

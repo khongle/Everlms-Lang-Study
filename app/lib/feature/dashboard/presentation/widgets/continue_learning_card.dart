@@ -3,6 +3,8 @@ import 'package:everlms/core/widgets/custom_image.dart';
 import 'package:everlms/feature/dashboard/data/models/dashboard_dto.dart';
 import 'package:flutter/material.dart';
 
+// AppColors.accentPrimary and AppColors.gradientPrimary are kept for brand consistency.
+
 /// Card showing an in-progress course with a progress bar and Continue button.
 class ContinueLearningCard extends StatelessWidget {
   const ContinueLearningCard({
@@ -18,20 +20,22 @@ class ContinueLearningCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
     return GestureDetector(
       onTap: onCourseTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.bgCard,
-          border: Border.all(color: AppColors.border),
+          color: theme.cardColor,
+          border: Border.all(color: cs.outline),
           borderRadius: BorderRadius.circular(12),
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
-              color: Color(0x66000000),
+              color: theme.shadowColor.withAlpha(102),
               blurRadius: 12,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -56,10 +60,8 @@ class ContinueLearningCard extends StatelessWidget {
                     course.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
                       height: 1.3,
                     ),
                   ),
@@ -69,9 +71,9 @@ class ContinueLearningCard extends StatelessWidget {
                       course.lastLessonTitle!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.textSecondary,
+                        color: cs.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -82,7 +84,7 @@ class ContinueLearningCard extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: (course.progress / 100).clamp(0.0, 1.0),
                       minHeight: 4,
-                      backgroundColor: AppColors.bgTertiary,
+                      backgroundColor: cs.surfaceContainerHighest,
                       valueColor: const AlwaysStoppedAnimation<Color>(
                         AppColors.accentPrimary,
                       ),
@@ -91,9 +93,9 @@ class ContinueLearningCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     '${course.progress.toInt()}% complete',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: AppColors.textMuted,
+                      color: theme.hintColor,
                     ),
                   ),
                 ],

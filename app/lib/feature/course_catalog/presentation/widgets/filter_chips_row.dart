@@ -1,9 +1,7 @@
-import 'package:everlms/core/theme/app_colors.dart';
 import 'package:everlms/feature/course_catalog/data/models/course_catalog_dto.dart';
 import 'package:everlms/feature/course_catalog/presentation/providers/course_list_provider.dart';
 import 'package:flutter/material.dart';
 
-/// Horizontal scrolling row of filter chips for level / price / sort.
 class FilterChipsRow extends StatelessWidget {
   const FilterChipsRow({
     required this.categories,
@@ -122,6 +120,7 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -129,12 +128,14 @@ class _Chip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
           gradient: selected
-              ? const LinearGradient(colors: AppColors.gradientPrimary)
+              ? const LinearGradient(
+                  colors: [Color(0xFF6C63FF), Color(0xFF8B5CF6)],
+                )
               : null,
-          color: selected ? null : AppColors.bgTertiary,
+          color: selected ? null : cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: selected ? Colors.transparent : AppColors.border,
+            color: selected ? Colors.transparent : cs.outline,
           ),
         ),
         child: Text(
@@ -142,7 +143,7 @@ class _Chip extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
-            color: selected ? Colors.white : AppColors.textSecondary,
+            color: selected ? Colors.white : cs.onSurfaceVariant,
           ),
         ),
       ),

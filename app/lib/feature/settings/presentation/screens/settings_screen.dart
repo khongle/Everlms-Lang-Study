@@ -11,6 +11,7 @@ import 'package:everlms/core/widgets/select_domain.dart';
 import 'package:everlms/feature/settings/presentation/providers/theme_provider.dart';
 import 'package:everlms/feature/settings/presentation/widgets/settings_button_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -24,6 +25,18 @@ class SettingScreen extends ConsumerStatefulWidget {
 
 class _SettingScreenState extends ConsumerState<SettingScreen> {
   PackageInfo? _packageInfo;
+
+  IconData _themeIcon(ThemeMode mode) {
+    return switch (mode) {
+      ThemeMode.dark => Icons.dark_mode,
+      ThemeMode.light => Icons.light_mode,
+      ThemeMode.system =>
+        SchedulerBinding.instance.platformDispatcher.platformBrightness ==
+                Brightness.dark
+            ? Icons.dark_mode
+            : Icons.light_mode,
+    };
+  }
 
   @override
   void initState() {
@@ -53,11 +66,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
             SettingsButtonSection(
               titleBtn: tl(context).change_theme,
               leadingBtn: Images.darkMode,
-              trailing: switch (ref.watch(themeProvider)) {
-                ThemeMode.dark => Icons.dark_mode,
-                ThemeMode.light => Icons.light_mode,
-                ThemeMode.system => Icons.brightness_auto,
-              },
+              trailing: _themeIcon(ref.watch(themeProvider)),
               onTap: () => ref.read(themeProvider.notifier).toggleTheme(),
             ),
             // dividerSection(context),

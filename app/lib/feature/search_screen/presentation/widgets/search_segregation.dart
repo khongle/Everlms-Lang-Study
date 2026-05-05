@@ -1,7 +1,7 @@
 import 'package:everlms/core/utils/dimensions.dart';
-import 'package:everlms/core/widgets/featured_courses_widget.dart';
 import 'package:everlms/feature/home/presentation/providers/home_provider.dart';
 import 'package:everlms/feature/home/presentation/widgets/category_course_bar.dart';
+import 'package:everlms/feature/home/presentation/widgets/course_search_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -28,10 +28,7 @@ class SearchSegregation extends ConsumerWidget {
 
   Widget _listCourses(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeProvider).valueOrNull;
-    final list = homeState?.allCourses
-            .where((e) => e.isFeature == true)
-            .toList() ??
-        [];
+    final list = homeState?.featuredCourses ?? [];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -39,20 +36,14 @@ class SearchSegregation extends ConsumerWidget {
           'Feature courses',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
-        GridView.count(
-          padding: const EdgeInsets.symmetric(
-            vertical: Dimensions.paddingSizeDefault,
-          ),
-          childAspectRatio: 0.8,
-          crossAxisSpacing: 25,
-          mainAxisSpacing: 10,
-          crossAxisCount: 2,
-          primary: false,
+        const SizedBox(height: Dimensions.paddingSizeDefault),
+        ListView.separated(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          children: list
-              .map((course) => FeaturedCoursesWidget(course: course))
-              .toList(),
+          itemCount: list.length,
+          separatorBuilder: (_, __) =>
+              const SizedBox(height: Dimensions.paddingSizeSmall),
+          itemBuilder: (_, i) => CourseSearchItemWidget(course: list[i]),
         ),
       ],
     );

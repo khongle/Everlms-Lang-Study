@@ -28,6 +28,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final profile = ref.read(userProfileProvider).valueOrNull;
+      if (profile?.userData == null && !(profile?.isLoading ?? false)) {
+        ref.read(userProfileProvider.notifier).getUserProfile();
+      }
+    });
   }
 
   @override
@@ -36,9 +42,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   }
 
   Widget mainUI(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: CustomScrollView(
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
+        child: CustomScrollView(
           slivers: [
             SliverAppBar(
               expandedHeight: 50,
@@ -193,9 +200,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       builder: (context, ref, child) {
         final userState = ref.watch(userProfileProvider).valueOrNull;
         final userData = userState?.userData;
-        final name = userData?.name ?? '';
-        final mail = userData?.mail ?? '';
-        final image = userData?.image ?? '';
+        final name = userData?.displayName ?? '';
+        final mail = userData?.displayEmail ?? '';
+        final image = userData?.displayAvatarUrl ?? '';
         return Row(
           children: [
             Expanded(
@@ -209,7 +216,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          name,
+                          name.isEmpty ? 'Student' : name,
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         if (!mail.contains('.temp'))
@@ -229,26 +236,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   child: Image.network(
                     image,
                     fit: BoxFit.cover,
-                    height: 50,
-                    width: 50,
+                    height: 64,
+                    width: 64,
                     errorBuilder: (context, error, stackTrace) => Image.asset(
                       Images.placeholder,
                       fit: BoxFit.cover,
-                      height: 50,
-                      width: 50,
+                      height: 64,
+                      width: 64,
                     ),
                   ),
                 ),
               )
             else
               SizedBox(
-                width: 50,
+                width: 64,
                 child: CircleAvatar(
-                  radius: 30,
+                  radius: 32,
                   backgroundColor: Theme.of(context).shadowColor,
                   child: SvgPicture.asset(
                     Images.profile,
-                    height: 20,
+                    height: 24,
                     colorFilter: ColorFilter.mode(
                       Theme.of(context)
                           .colorScheme

@@ -20,22 +20,25 @@ class CourseCatalogRepository {
     int limit = 20,
   }) async {
     try {
-      final params = StringBuffer('?page=$page&limit=$limit&sort=$sort');
-      if (search != null && search.isNotEmpty) {
-        params.write('&search=${Uri.encodeComponent(search)}');
+      final query = <String, dynamic>{
+        'page': page,
+        'limit': limit,
+        'sort': sort,
+        if (search != null && search.isNotEmpty) 'search': search,
+      };
+      if (categoryIds != null && categoryIds.isNotEmpty) {
+        query['category[]'] = categoryIds.map((e) => '$e').toList();
       }
-      for (final id in categoryIds ?? []) {
-        params.write('&category[]=$id');
+      if (levelIds != null && levelIds.isNotEmpty) {
+        query['level[]'] = levelIds.map((e) => '$e').toList();
       }
-      for (final id in levelIds ?? []) {
-        params.write('&level[]=$id');
-      }
-      for (final p in priceFilters ?? []) {
-        params.write('&price[]=$p');
+      if (priceFilters != null && priceFilters.isNotEmpty) {
+        query['price[]'] = priceFilters;
       }
 
-      final response = await _apiClient.getData(
-        '${AppConstants.mobileCourseSearch}$params',
+      final response = await _apiClient.getDataPublic(
+        AppConstants.mobileCourseSearch,
+        query: query,
       );
 
       if (response.statusCode == 200) {

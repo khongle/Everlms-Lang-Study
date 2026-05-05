@@ -1,4 +1,5 @@
 import 'package:everlms/core/providers/core_providers.dart';
+import 'package:everlms/core/utils/app_constants.dart';
 import 'package:everlms/feature/dashboard/data/models/dashboard_dto.dart';
 import 'package:everlms/feature/dashboard/data/repositories/dashboard_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,8 +18,8 @@ final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
 
 /// Fetches the authenticated user's dashboard summary.
 /// Invalidated on pull-to-refresh or after enrollment.
-final AutoDisposeFutureProvider<DashboardDto> dashboardQueryProvider =
-    FutureProvider.autoDispose<DashboardDto>((ref) async {
+final FutureProvider<DashboardDto> dashboardQueryProvider =
+    FutureProvider<DashboardDto>((ref) async {
   return ref.read(dashboardRepositoryProvider).getDashboard();
 });
 
@@ -28,16 +29,19 @@ final AutoDisposeFutureProvider<DashboardDto> dashboardQueryProvider =
 
 /// Fetches featured courses for the horizontal scroll strip.
 /// Reuses the course search endpoint with `featured=1`.
-final AutoDisposeFutureProvider<List<Map<String, dynamic>>> featuredCoursesQueryProvider =
-    FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+final FutureProvider<List<Map<String, dynamic>>> featuredCoursesQueryProvider =
+    FutureProvider<List<Map<String, dynamic>>>((ref) async {
   final apiClient = ref.watch(apiClientProvider);
   try {
-    final response = await apiClient.getData(
-      'api/courses/search?featured=1&limit=6',
+    final response = await apiClient.getDataPublic(
+      AppConstants.mobileCourseSearch,
+      query: {'featured': '1', 'limit': '6'},
     );
     if (response.statusCode == 200) {
       final body = response.body as Map<String, dynamic>;
-      final items = body['items'] as List? ?? [];
+      // v1 endpoint returns 'items'; legacy endpoint returns 'courses'
+      final raw = body['items'] ?? body['courses'];
+      final items = raw is List ? raw : <dynamic>[];
       return items.whereType<Map<String, dynamic>>().toList();
     }
   } catch (_) {}

@@ -1,4 +1,5 @@
 import 'package:everlms/core/providers/core_providers.dart';
+import 'package:everlms/feature/course_details/data/models/mobile_course_detail.dart';
 import 'package:everlms/feature/course_details/data/models/user_review/review.dart';
 import 'package:everlms/feature/course_details/data/repositories/course_detail_repository.dart';
 import 'package:everlms/feature/root/data/models/common/course.dart';
@@ -32,6 +33,11 @@ class CourseDetailState {
     this.isBought,
     this.isStartedCourse,
     this.rating = 0.0,
+    // phase-01
+    this.mobileCourseDetail,
+    this.isWishlisted = false,
+    this.isLoadingCourseDetail = false,
+    this.isEnrolling = false,
   });
 
   final Course? course;
@@ -47,6 +53,12 @@ class CourseDetailState {
   final bool? isStartedCourse;
   final double rating;
 
+  // phase-01 fields
+  final MobileCourseDetail? mobileCourseDetail;
+  final bool isWishlisted;
+  final bool isLoadingCourseDetail;
+  final bool isEnrolling;
+
   CourseDetailState copyWith({
     Course? course,
     List<Chapter>? chapters,
@@ -60,6 +72,10 @@ class CourseDetailState {
     bool? isBought,
     bool? isStartedCourse,
     double? rating,
+    MobileCourseDetail? mobileCourseDetail,
+    bool? isWishlisted,
+    bool? isLoadingCourseDetail,
+    bool? isEnrolling,
   }) {
     return CourseDetailState(
       course: course ?? this.course,
@@ -74,6 +90,11 @@ class CourseDetailState {
       isBought: isBought ?? this.isBought,
       isStartedCourse: isStartedCourse ?? this.isStartedCourse,
       rating: rating ?? this.rating,
+      mobileCourseDetail: mobileCourseDetail ?? this.mobileCourseDetail,
+      isWishlisted: isWishlisted ?? this.isWishlisted,
+      isLoadingCourseDetail:
+          isLoadingCourseDetail ?? this.isLoadingCourseDetail,
+      isEnrolling: isEnrolling ?? this.isEnrolling,
     );
   }
 }
@@ -304,6 +325,62 @@ class CourseDetailNotifier extends FamilyAsyncNotifier<CourseDetailState, int> {
         chapters: chapters,
         isLoadingChapter: false,
       ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Mobile API — phase-01
+  // ---------------------------------------------------------------------------
+
+  /// Load full course detail from GET /api/v1/courses/:id.
+  Future<void> loadCourseDetail(int courseId) async {
+    final current = state.valueOrNull ?? const CourseDetailState();
+    state = AsyncData(current.copyWith(isLoadingCourseDetail: true));
+
+    final repo = ref.read(courseDetailRepositoryProvider);
+    final detail = await repo.getCourseDetail('$courseId');
+
+    final latest = state.valueOrNull ?? const CourseDetailState();
+    state = AsyncData(
+      latest.copyWith(
+        mobileCourseDetail: detail,
+        isWishlisted: detail?.isWishlisted ?? latest.isWishlisted,
+        isLoadingCourseDetail: false,
+      ),
+    );
+  }
+
+  /// Enroll current user in a free course.
+  Future<bool> enrollFree(int courseId) async {
+    final current = state.valueOrNull ?? const CourseDetailState();
+    state = AsyncData(current.copyWith(isEnrolling: true));
+
+    final repo = ref.read(courseDetailRepositoryProvider);
+    final success = await repo.enrollFree('$courseId');
+
+    final latest = state.valueOrNull ?? const CourseDetailState();
+    state = AsyncData(latest.copyWith(isEnrolling: false));
+
+    if (success) {
+      // Refresh detail so enrollment status is up to date.
+      await loadCourseDetail(courseId);
+    }
+    return success;
+  }
+
+  /// Toggle wishlist for a course; optimistically updates local state.
+  Future<void> toggleWishlist(int courseId) async {
+    final current = state.valueOrNull ?? const CourseDetailState();
+    final optimistic = !current.isWishlisted;
+    state = AsyncData(current.copyWith(isWishlisted: optimistic));
+
+    final repo = ref.read(courseDetailRepositoryProvider);
+    final result = await repo.toggleWishlist(courseId);
+
+    final latest = state.valueOrNull ?? const CourseDetailState();
+    // If server returns a definitive value, use it; otherwise keep optimistic.
+    state = AsyncData(
+      latest.copyWith(isWishlisted: result ?? optimistic),
     );
   }
 
