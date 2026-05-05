@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:everlms/core/theme/app_colors.dart';
 import 'package:everlms/feature/course_catalog/presentation/providers/course_list_provider.dart';
 import 'package:everlms/feature/course_catalog/presentation/widgets/course_card.dart';
 import 'package:everlms/feature/course_catalog/presentation/widgets/empty_state_widget.dart';
@@ -58,25 +57,24 @@ class _CourseCatalogScreenState extends ConsumerState<CourseCatalogScreen> {
     final state = ref.watch(courseListProvider);
     final categoriesAsync = ref.watch(categoriesQueryProvider);
 
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.bgPrimary,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.bgSecondary,
+        backgroundColor: cs.surface,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Courses',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
-          ),
+          style: theme.textTheme.titleLarge,
         ),
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        iconTheme: IconThemeData(color: theme.iconTheme.color),
       ),
       body: RefreshIndicator(
         onRefresh: () => ref.read(courseListProvider.notifier).refresh(),
-        color: AppColors.accentPrimary,
-        backgroundColor: AppColors.bgSecondary,
+        color: cs.primary,
+        backgroundColor: cs.surface,
         child: CustomScrollView(
           controller: _scrollController,
           slivers: [
@@ -86,25 +84,24 @@ class _CourseCatalogScreenState extends ConsumerState<CourseCatalogScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.bgTertiary,
+                    color: cs.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.border),
+                    border: Border.all(color: cs.outline),
                   ),
                   child: TextField(
                     controller: _searchController,
                     onChanged: _onSearchChanged,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: cs.onSurface,
                       fontSize: 14,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Search courses…',
                       hintStyle:
-                          TextStyle(color: AppColors.textMuted, fontSize: 14),
-                      prefixIcon:
-                          Icon(Icons.search, color: AppColors.textMuted),
+                          TextStyle(color: theme.hintColor, fontSize: 14),
+                      prefixIcon: Icon(Icons.search, color: theme.hintColor),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                 ),
@@ -130,10 +127,7 @@ class _CourseCatalogScreenState extends ConsumerState<CourseCatalogScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   '${state.total} courses found',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textMuted,
-                  ),
+                  style: theme.textTheme.labelSmall,
                 ),
               ),
             ),
@@ -177,12 +171,12 @@ class _CourseCatalogScreenState extends ConsumerState<CourseCatalogScreen> {
               ),
             // Load more indicator
             if (state.isLoadingMore)
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Center(
                     child: CircularProgressIndicator(
-                      color: AppColors.accentPrimary,
+                      color: cs.primary,
                       strokeWidth: 2,
                     ),
                   ),
@@ -200,6 +194,7 @@ class _CourseCatalogScreenState extends ConsumerState<CourseCatalogScreen> {
 class _ShimmerGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return SliverGrid(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -209,11 +204,11 @@ class _ShimmerGrid extends StatelessWidget {
       ),
       delegate: SliverChildBuilderDelegate(
         (_, __) => Shimmer.fromColors(
-          baseColor: AppColors.bgTertiary,
-          highlightColor: AppColors.bgSecondary,
+          baseColor: cs.surfaceContainerHighest,
+          highlightColor: cs.surface,
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.bgTertiary,
+              color: cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
             ),
           ),

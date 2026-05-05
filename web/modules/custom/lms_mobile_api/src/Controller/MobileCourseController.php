@@ -66,11 +66,17 @@ class MobileCourseController extends ControllerBase {
     $sort = (string) $request->query->get('sort', 'newest');
     $page = max(0, (int) $request->query->get('page', 0));
     $limit = max(1, min(100, (int) $request->query->get('limit', 20)));
+    $featured_only = filter_var($request->query->get('featured', ''), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === TRUE
+      || $request->query->get('featured') === '1';
 
     $query = $this->entityTypeManager()->getStorage('lms_course')
       ->getQuery()
       ->condition('status', 1)
       ->accessCheck(FALSE);
+
+    if ($featured_only) {
+      $query->condition('field_featured', TRUE);
+    }
 
     if ($search !== '') {
       $query->condition('name', $search, 'CONTAINS');
@@ -183,6 +189,7 @@ class MobileCourseController extends ControllerBase {
         'uuid' => $term->uuid(),
         'name' => $term->label(),
         'description' => $description,
+        'thumbnail_url' => $this->getImageUrl($term, 'field_category_thumbnail'),
         'course_count' => $course_count,
       ];
     }
@@ -661,7 +668,10 @@ class MobileCourseController extends ControllerBase {
    * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
    */
   protected function getAuthenticatedUser(Request $request): \Drupal\user\UserInterface {
-    $auth_header = $request->headers->get('Authorization', '');
+    // The Authorization header carries Basic Auth credentials for the server-
+    // level HTTP auth gate. The Bearer token is sent in X-Authorization.
+    $x_auth = $request->headers->get('X-Authorization', '');
+    $auth_header = preg_match('/Bearer\s+/i', $x_auth) ? $x_auth : $request->headers->get('Authorization', '');
 
     if (!preg_match('/Bearer\s+(\S+)/i', $auth_header, $matches)) {
       throw new AccessDeniedHttpException('Missing or invalid Authorization header.');

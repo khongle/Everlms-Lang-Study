@@ -267,10 +267,6 @@ class AuthRepository {
     required String email,
     required String password,
   }) async {
-    // Clear any stale Bearer token before login so the request is sent with
-    // Basic Auth only. A leftover token from a previous session can cause the
-    // server to return 404 on this endpoint.
-    _apiClient.updateHeader(null, _prefs.getString(AppConstants.languageCode));
     return _apiClient.postData(AppConstants.mobileLogin, {
       'username': email,
       'password': password,
@@ -331,6 +327,10 @@ class AuthRepository {
   }
 
   Future<void> clearSharedData() async {
+    // Get the current user UID before clearing it
+    final uid = _prefs.getString(AppConstants.uid);
+
+    // Remove auth-related data
     await _prefs.remove(AppConstants.token);
     await _prefs.remove(AppConstants.csrfToken);
     await _prefs.remove(AppConstants.uid);
@@ -339,6 +339,12 @@ class AuthRepository {
     await _prefs.remove(AppConstants.oauthRefreshToken);
     await _prefs.remove(AppConstants.otpSessionToken);
     await _prefs.remove(AppConstants.resetToken);
+
+    // Clear per-user theme preference
+    if (uid != null && uid.isNotEmpty) {
+      final themeKey = '${AppConstants.theme}_$uid';
+      await _prefs.remove(themeKey);
+    }
   }
 
   Future<void> saveUserNumberAndPassword(String number, String password) async {

@@ -16,8 +16,8 @@ final courseCatalogRepositoryProvider =
 // Categories query provider
 // ---------------------------------------------------------------------------
 
-final AutoDisposeFutureProvider<List<CategoryDto>> categoriesQueryProvider =
-    FutureProvider.autoDispose<List<CategoryDto>>((ref) async {
+final FutureProvider<List<CategoryDto>> categoriesQueryProvider =
+    FutureProvider<List<CategoryDto>>((ref) async {
   return ref.read(courseCatalogRepositoryProvider).getCategories();
 });
 

@@ -26,6 +26,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appBarTheme = Theme.of(context).appBarTheme;
+    final effectiveBg = bgColor ?? appBarTheme.backgroundColor;
+    final effectiveFg = titleColor ?? appBarTheme.foregroundColor;
+
     return AppBar(
       title: Padding(
         padding: const EdgeInsets.only(right: Dimensions.paddingSizeDefault),
@@ -35,7 +39,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           softWrap: true,
           style: robotoMedium.copyWith(
             fontSize: Dimensions.fontSizeLarge,
-            color: titleColor ?? Theme.of(context).colorScheme.onSurface,
+            color: effectiveFg,
           ),
         ),
       ),
@@ -47,22 +51,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               icon: const Icon(Icons.arrow_back),
               style: IconButton.styleFrom(
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                foregroundColor: effectiveFg,
               ),
               onPressed: () => onBackPressed != null
                   ? onBackPressed!()
                   : Navigator.pop(context),
             )
           : Container(),
-      backgroundColor: bgColor ?? Theme.of(context).colorScheme.surface,
+      backgroundColor: effectiveBg,
       elevation: 0,
       actions: showCart!
           ? [
               IconButton(
                 onPressed: () {},
                 icon: CartWidget(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Theme.of(context).primaryColorLight
-                      : Colors.white,
+                  color: effectiveFg ??
+                      Theme.of(context).iconTheme.color ??
+                      Colors.black,
                   size: Dimensions.cartWidgetSize,
                 ),
               ),

@@ -1,6 +1,8 @@
 import 'package:everlms/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
+// AppColors.accentPrimary is kept for brand icon color.
+
 /// Three-counter stats strip: enrolled / completed / certificates.
 class StatsRowWidget extends StatelessWidget {
   const StatsRowWidget({
@@ -56,12 +58,14 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
         decoration: BoxDecoration(
-          color: AppColors.bgSecondary,
-          border: Border.all(color: AppColors.border),
+          color: cs.surface,
+          border: Border.all(color: cs.outline),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -70,18 +74,18 @@ class _StatItem extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               '$value',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: cs.onSurface,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11,
-                color: AppColors.textSecondary,
+                color: theme.hintColor,
               ),
             ),
           ],

@@ -76,18 +76,15 @@ class MyCourseNotifier extends AsyncNotifier<MyCourseState> {
     state = AsyncData(current.copyWith(isLoading: true));
 
     final repo = ref.read(myCourseRepositoryProvider);
-    final prefs = ref.read(sharedPreferencesProvider);
-    final uid = prefs.getString(AppConstants.uid) ?? '';
-
-    final response = await repo.getMyCourseList(uid);
+    final response = await repo.getMyCourseListMobile();
 
     final courses = <LMSMyCourseModel>[];
     if (response != null && response.statusCode == 200) {
-      final data = response.body['data'];
-      if (data is Map<String, dynamic>) {
-        for (final entry in data.values) {
+      final items = response.body['items'];
+      if (items is List) {
+        for (final item in items) {
           courses.add(
-            LMSMyCourseModel.fromJson(entry as Map<String, dynamic>),
+            LMSMyCourseModel.fromMobileJson(item as Map<String, dynamic>),
           );
         }
       }

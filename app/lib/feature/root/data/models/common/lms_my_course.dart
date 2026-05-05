@@ -29,6 +29,19 @@ class LMSMyCourseModel {
     this.fieldFaq,
   });
 
+  /// Parses an item from `GET /api/v1/my-courses` (phase-01).
+  LMSMyCourseModel.fromMobileJson(Map<String, dynamic> json) {
+    id = json['course_id']?.toString();
+    courseName = json['course_title'] as String?;
+    fieldImage = json['course_thumbnail_url'] as String?;
+    lmsUserCourseId = json['enrollment_id']?.toString();
+    fieldTotalLessons = json['total_lessons']?.toString();
+    final rawProgress = json['progress'];
+    if (rawProgress is num) {
+      progress = rawProgress.toDouble() / 100;
+    }
+  }
+
   LMSMyCourseModel.fromJsonOffline(Map<String, dynamic> json) {
     id = json['product_id'];
     courseName = json['course_name'];

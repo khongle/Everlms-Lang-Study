@@ -1,4 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:everlms/core/theme/app_colors.dart';
 import 'package:everlms/core/theme/text_styles.dart';
 import 'package:everlms/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
@@ -95,7 +96,7 @@ class CustomTextFieldState extends State<CustomTextField> {
       style: robotoRegular.copyWith(
         fontSize: Dimensions.fontSizeLarge,
         color: widget.isEnabled == false
-            ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)
+            ? AppColors.textMuted
             : Theme.of(context).colorScheme.onSurface,
       ),
       textInputAction: widget.inputAction,
@@ -120,44 +121,41 @@ class CustomTextFieldState extends State<CustomTextField> {
                               ? [AutofillHints.password]
                               : null,
       obscureText: widget.isPassword! && _obscureText,
-
       decoration: InputDecoration(
         hintText: widget.hintText,
         label: widget.title != null ? Text(widget.title!) : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius!),
           borderSide: BorderSide(
-            color: widget.isShowBorder
-                ? Theme.of(context).colorScheme.outline
-                : Colors.transparent,
+            color: widget.isShowBorder ? AppColors.border : Colors.transparent,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius!),
           borderSide: BorderSide(
             color: widget.isShowBorder
-                ? Theme.of(context).primaryColor
+                ? AppColors.accentPrimary
                 : Colors.transparent,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius!),
-          borderSide: const BorderSide(color: Colors.transparent),
+          borderSide: const BorderSide(color: AppColors.accentDanger),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius!),
-          borderSide: const BorderSide(color: Colors.transparent),
+          borderSide: const BorderSide(color: AppColors.accentDanger),
         ),
         isDense: true,
         filled: true,
-        fillColor: widget.fillColor ?? Theme.of(context).cardColor,
+        fillColor: widget.fillColor ?? AppColors.bgTertiary,
         contentPadding: EdgeInsets.all(
           Directionality.of(context) == TextDirection.ltr
               ? Dimensions.paddingSizeSmall
               : Dimensions.paddingSizeExtraSmall,
         ),
         hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: Theme.of(context).hintColor.withValues(alpha: 0.8),
+              color: AppColors.textMuted,
             ),
         prefixIcon: widget.prefixIcon,
         suffixIcon: widget.isPassword!
@@ -167,7 +165,7 @@ class CustomTextFieldState extends State<CustomTextField> {
                 icon: Icon(
                   _obscureText ? Icons.visibility_off : Icons.visibility,
                   size: Dimensions.iconSizeLarge,
-                  color: Theme.of(context).hintColor,
+                  color: AppColors.textMuted,
                 ),
                 onPressed: _toggle,
               )
@@ -178,11 +176,11 @@ class CustomTextFieldState extends State<CustomTextField> {
                       _showClearIcon &&
                       !widget.isReadOnly) {
                     return InkWell(
-                      child: Icon(
-                        Icons.clear,
-                        color: Theme.of(context).dividerColor,
-                      ),
                       onTap: () => widget.controller?.clear(),
+                      child: const Icon(
+                        Icons.clear,
+                        color: AppColors.textMuted,
+                      ),
                     );
                   }
 

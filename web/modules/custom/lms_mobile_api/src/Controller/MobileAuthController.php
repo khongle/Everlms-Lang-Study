@@ -516,6 +516,56 @@ class MobileAuthController extends ControllerBase {
   }
 
   // ---------------------------------------------------------------------------
+  // GET /api/v1/user/me
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Returns the full authenticated user profile.
+   *
+   * Requires: X-Authorization: Bearer <access_token>
+   *
+   * Response 200:
+   *   id           int
+   *   uuid         string
+   *   name         string   display name
+   *   email        string
+   *   first_name   string
+   *   last_name    string
+   *   avatar_url   string|null
+   *   phone        string|null
+   *   gender       string|null
+   *   date_of_birth string|null
+   *   roles        string[]
+   */
+  public function getUserMe(Request $request): JsonResponse {
+    $user = $this->getAuthenticatedUser($request);
+
+    $avatar_url = NULL;
+    if ($user->hasField('user_picture') && !$user->get('user_picture')->isEmpty()) {
+      $file = $user->get('user_picture')->entity;
+      if ($file) {
+        $avatar_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+      }
+    }
+
+    $roles = array_values(array_diff($user->getRoles(), ['authenticated']));
+
+    return new JsonResponse([
+      'id'           => (int) $user->id(),
+      'uuid'         => $user->uuid(),
+      'name'         => $user->getDisplayName(),
+      'email'        => $user->getEmail(),
+      'first_name'   => $user->hasField('field_first_name') ? ($user->get('field_first_name')->value ?? '') : '',
+      'last_name'    => $user->hasField('field_last_name') ? ($user->get('field_last_name')->value ?? '') : '',
+      'avatar_url'   => $avatar_url,
+      'phone'        => $user->hasField('field_phone') ? ($user->get('field_phone')->value ?? NULL) : NULL,
+      'gender'       => $user->hasField('field_gender') ? ($user->get('field_gender')->value ?? NULL) : NULL,
+      'date_of_birth'=> $user->hasField('field_date_of_birth') ? ($user->get('field_date_of_birth')->value ?? NULL) : NULL,
+      'roles'        => $roles,
+    ]);
+  }
+
+  // ---------------------------------------------------------------------------
   // POST /api/v1/user/change-password
   // ---------------------------------------------------------------------------
 
@@ -603,7 +653,10 @@ class MobileAuthController extends ControllerBase {
    * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
    */
   protected function getAuthenticatedUser(Request $request): \Drupal\user\UserInterface {
-    $auth_header = $request->headers->get('Authorization', '');
+    // The Authorization header carries Basic Auth credentials for the server-
+    // level HTTP auth gate. The Bearer token is sent in X-Authorization.
+    $x_auth = $request->headers->get('X-Authorization', '');
+    $auth_header = preg_match('/Bearer\s+/i', $x_auth) ? $x_auth : $request->headers->get('Authorization', '');
 
     if (!preg_match('/Bearer\s+(\S+)/i', $auth_header, $matches)) {
       throw new AccessDeniedHttpException('Missing or invalid Authorization header.');

@@ -1,4 +1,5 @@
 import 'package:everlms/core/providers/core_providers.dart';
+import 'package:everlms/core/utils/app_constants.dart';
 import 'package:everlms/feature/profile/data/models/user_model/user_data.dart';
 import 'package:everlms/feature/profile/data/repositories/user_repository.dart';
 import 'package:everlms/feature/root/data/models/common/instructor.dart';
@@ -51,6 +52,23 @@ class UserProfileState {
 class UserProfileNotifier extends AsyncNotifier<UserProfileState> {
   @override
   Future<UserProfileState> build() async {
+    final prefs = ref.read(sharedPreferencesProvider);
+    final token = prefs.getString(AppConstants.token) ?? '';
+    if (token.isNotEmpty) {
+      final repo = ref.read(userRepositoryProvider);
+      final response = await repo.getMobileUserProfile();
+      if (response != null &&
+          response.statusCode == 200 &&
+          response.body is Map<String, dynamic>) {
+        final userData =
+            UserData.fromMobileJson(response.body as Map<String, dynamic>);
+        return UserProfileState(
+          userData: userData,
+          selectedGender: userData.gender,
+          selectedDate: userData.dateOfBirth,
+        );
+      }
+    }
     return const UserProfileState();
   }
 
@@ -60,29 +78,22 @@ class UserProfileNotifier extends AsyncNotifier<UserProfileState> {
     final current = state.valueOrNull ?? const UserProfileState();
     state = AsyncData(current.copyWith(isLoading: true));
 
-    final uid = _repo.getUserUid();
-    if (uid.isEmpty) {
-      state = AsyncData(current.copyWith(isLoading: false));
-      return;
-    }
-
-    final response = await _repo.getUser(uid);
+    final response = await _repo.getMobileUserProfile();
     UserData? userData;
-    if (response != null && response.statusCode == 200) {
-      final data = response.body['data'];
-      if (data is List && data.isNotEmpty) {
-        userData = UserData.fromJson(data[0] as Map<String, dynamic>);
-      } else if (data is Map<String, dynamic>) {
-        userData = UserData.fromJson(data);
-      }
+    if (response != null &&
+        response.statusCode == 200 &&
+        response.body is Map<String, dynamic>) {
+      userData = UserData.fromMobileJson(response.body as Map<String, dynamic>);
     }
 
-    state = AsyncData(current.copyWith(
-      userData: userData,
-      isLoading: false,
-      selectedGender: userData?.gender,
-      selectedDate: userData?.dateOfBirth,
-    ),);
+    state = AsyncData(
+      current.copyWith(
+        userData: userData,
+        isLoading: false,
+        selectedGender: userData?.gender,
+        selectedDate: userData?.dateOfBirth,
+      ),
+    );
   }
 
   Future<bool> editProfile({
@@ -152,8 +163,7 @@ final FutureProviderFamily<Instructor?, String> instructorByTeacherIdProvider =
   if (response != null && response.statusCode == 200) {
     final dataList = response.body['data'];
     if (dataList is! List || dataList.isEmpty) return null;
-    final instructor =
-        Instructor.fromJson(dataList[0] as Map<String, dynamic>);
+    final instructor = Instructor.fromJson(dataList[0] as Map<String, dynamic>);
     if ((instructor.name ?? '').isEmpty &&
         (instructor.expertise ?? '').isEmpty &&
         (instructor.biography ?? '').isEmpty) {

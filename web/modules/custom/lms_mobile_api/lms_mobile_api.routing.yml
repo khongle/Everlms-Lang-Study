@@ -70,6 +70,15 @@ lms_mobile_api.user.profile:
     _access: 'TRUE'
   methods: [GET]
 
+lms_mobile_api.user.me:
+  path: '/api/v1/user/me'
+  defaults:
+    _controller: '\Drupal\lms_mobile_api\Controller\MobileAuthController::getUserMe'
+    _format: 'json'
+  requirements:
+    _access: 'TRUE'
+  methods: [GET]
+
 lms_mobile_api.user.change_password:
   path: '/api/v1/user/change-password'
   defaults:

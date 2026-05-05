@@ -1,3 +1,4 @@
+import 'package:everlms/core/theme/app_colors.dart';
 import 'package:everlms/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -20,9 +21,10 @@ Future<void> customDialog({
     context: context,
     barrierDismissible: false,
     builder: (context) => Dialog(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: AppColors.bgSecondary,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+        borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+        side: const BorderSide(color: AppColors.border),
       ),
       insetPadding: const EdgeInsets.symmetric(horizontal: 50),
       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -52,14 +54,20 @@ Future<void> customDialog({
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineSmall,
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: AppColors.textPrimary),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
               child: Text(
                 middleTitle,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -75,13 +83,13 @@ Future<void> customDialog({
                       }
                     },
                     style: TextButton.styleFrom(
-                      // backgroundColor: Theme.of(context).highlightColor.withValues(alpha: 0.3),
                       padding: EdgeInsets.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
                           Dimensions.radiusSmall,
                         ),
+                        side: const BorderSide(color: AppColors.border),
                       ),
                     ),
                     child: Text(
@@ -90,7 +98,7 @@ Future<void> customDialog({
                       style: Theme.of(context)
                           .textTheme
                           .titleMedium!
-                          .copyWith(color: Theme.of(context).colorScheme.error),
+                          .copyWith(color: AppColors.accentDanger),
                     ),
                   ),
                 ),
@@ -105,7 +113,7 @@ Future<void> customDialog({
                       onConfirm();
                     },
                     style: TextButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: AppColors.accentPrimary,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       padding: EdgeInsets.zero,
                       shape: RoundedRectangleBorder(

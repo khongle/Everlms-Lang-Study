@@ -94,6 +94,7 @@ class CategoryDto {
     required this.name,
     required this.courseCount,
     this.description = '',
+    this.thumbnailUrl = '',
   });
 
   factory CategoryDto.fromJson(Map<String, dynamic> json) {
@@ -101,6 +102,7 @@ class CategoryDto {
       id: (json['id'] as num?)?.toInt() ?? 0,
       name: json['name'] as String? ?? '',
       description: json['description'] as String? ?? '',
+      thumbnailUrl: json['thumbnail_url'] as String? ?? '',
       courseCount: (json['course_count'] as num?)?.toInt() ?? 0,
     );
   }
@@ -108,6 +110,7 @@ class CategoryDto {
   final int id;
   final String name;
   final String description;
+  final String thumbnailUrl;
   final int courseCount;
 }
 

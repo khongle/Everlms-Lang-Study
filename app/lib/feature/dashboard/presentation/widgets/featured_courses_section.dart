@@ -3,6 +3,8 @@ import 'package:everlms/core/widgets/custom_image.dart';
 import 'package:everlms/core/widgets/rating_bar.dart';
 import 'package:flutter/material.dart';
 
+// AppColors.accentStar is kept for brand consistency (star icon color).
+
 /// Horizontal scroll strip of small featured course cards.
 class FeaturedCoursesSection extends StatelessWidget {
   const FeaturedCoursesSection({
@@ -17,7 +19,7 @@ class FeaturedCoursesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 180,
+      height: 200,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
@@ -46,8 +48,12 @@ class _FeaturedCourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
     final title = course['title'] as String? ?? '';
     final thumbnailUrl = course['thumbnail_url'] as String? ?? '';
+    final instructor = course['instructor'] as Map<String, dynamic>?;
+    final instructorName = instructor?['name'] as String? ?? '';
     final rating = (course['rating'] as num?)?.toDouble() ?? 0.0;
     final priceType = course['price_type'] as String? ?? 'paid';
     final price = (course['price'] as num?)?.toDouble() ?? 0.0;
@@ -58,14 +64,14 @@ class _FeaturedCourseCard extends StatelessWidget {
       child: Container(
         width: 150,
         decoration: BoxDecoration(
-          color: AppColors.bgCard,
-          border: Border.all(color: AppColors.border),
+          color: theme.cardColor,
+          border: Border.all(color: cs.outline),
           borderRadius: BorderRadius.circular(12),
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
-              color: Color(0x66000000),
+              color: theme.shadowColor.withAlpha(102),
               blurRadius: 12,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -91,13 +97,22 @@ class _FeaturedCourseCard extends StatelessWidget {
                     title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 12,
+                    style: theme.textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
                       height: 1.3,
                     ),
                   ),
+                  if (instructorName.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      instructorName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 4),
                   Row(
                     children: [
@@ -109,9 +124,9 @@ class _FeaturedCourseCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         rating.toStringAsFixed(1),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 11,
-                          color: AppColors.textMuted,
+                          color: theme.hintColor,
                         ),
                       ),
                       const Spacer(),

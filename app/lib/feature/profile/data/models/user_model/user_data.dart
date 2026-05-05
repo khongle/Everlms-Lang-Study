@@ -15,6 +15,7 @@ class UserData {
     this.uuid,
   });
 
+  /// Parses the legacy Drupal JSON API response from `lms-user/{uid}`.
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
         name: json['name'] != null && (json['name'] as List).isNotEmpty
             ? json['name'][0]['value'] as String?
@@ -65,6 +66,30 @@ class UserData {
             ? json['uuid'][0]['value'].toString()
             : null,
       );
+
+  /// Parses the phase-01 response from `GET /api/v1/user/me`.
+  factory UserData.fromMobileJson(Map<String, dynamic> json) {
+    final rawRoles = json['roles'];
+    String? role;
+    if (rawRoles is List && rawRoles.isNotEmpty) {
+      role = rawRoles.last?.toString();
+    }
+    return UserData(
+      uid: json['id']?.toString(),
+      uuid: json['uuid'] as String?,
+      name: json['name'] as String?,
+      mail: json['email'] as String?,
+      image: json['avatar_url'] as String?,
+      roles: role,
+      firstName: json['first_name'] as String?,
+      lastName: json['last_name'] as String?,
+      fullName: json['name'] as String?,
+      phone: json['phone'] as String?,
+      gender: json['gender'] as String?,
+      dateOfBirth: json['date_of_birth'] as String?,
+    );
+  }
+
   String? name;
   String? firstName;
   String? lastName;
@@ -78,6 +103,31 @@ class UserData {
   String? roles;
   String? uid;
   String? uuid;
+
+  String get displayName {
+    final candidates = [
+      fullName,
+      [firstName, lastName].whereType<String>().join(' ').trim(),
+      name,
+      if (mail != null && mail!.contains('@')) mail!.split('@').first else mail,
+    ];
+    for (final candidate in candidates) {
+      if (candidate != null && candidate.trim().isNotEmpty) {
+        return candidate.trim();
+      }
+    }
+    return '';
+  }
+
+  String get firstDisplayName {
+    final value = displayName;
+    if (value.isEmpty) return '';
+    return value.split(' ').first;
+  }
+
+  String get displayEmail => (mail ?? '').trim();
+
+  String get displayAvatarUrl => (image ?? '').trim();
 
   Map<String, dynamic> toJson() => {
         'name': name,

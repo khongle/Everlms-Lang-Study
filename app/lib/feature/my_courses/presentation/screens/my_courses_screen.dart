@@ -71,6 +71,7 @@ class _MyCoursesScreenState extends ConsumerState<MyCoursesScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: tl(context).my_courses,
         actions: [searchWidget()],

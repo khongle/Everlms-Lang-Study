@@ -1,3 +1,4 @@
+import 'package:everlms/core/theme/app_colors.dart';
 import 'package:everlms/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
@@ -32,33 +33,45 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final enabled = isActive ?? true;
+    final buttonHeight = height ?? 48;
+    final buttonWidth = width ?? MediaQuery.of(context).size.width;
+    final buttonRadius = BorderRadius.circular(radius ?? 8);
+    final borderColor =
+        transparent ? AppColors.accentPrimary : Colors.transparent;
+    final decoration = BoxDecoration(
+      color:
+          transparent ? Colors.transparent : bgColor ?? AppColors.accentPrimary,
+      gradient: transparent || bgColor != null
+          ? null
+          : LinearGradient(
+              colors: enabled
+                  ? AppColors.gradientPrimary
+                  : AppColors.gradientPrimary
+                      .map((color) => color.withValues(alpha: 0.45))
+                      .toList(),
+            ),
+      borderRadius: buttonRadius,
+      border: Border.all(color: borderColor),
+      boxShadow: transparent
+          ? null
+          : const [
+              BoxShadow(
+                color: Color(0x66000000),
+                blurRadius: 12,
+                offset: Offset(0, 4),
+              ),
+            ],
+    );
     final flatButtonStyle = TextButton.styleFrom(
-      backgroundColor: transparent
-          ? Colors.transparent
-          : bgColor ??
-              ((isActive ?? true)
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).primaryColor.withValues(alpha: 0.6)),
-      // backgroundColor: onPressed != null
-      //     ? bgColor ?? Theme.of(context).primaryColor
-      //     : Theme.of(context).primaryColor,
-      minimumSize: Size(
-        width != null ? width! : MediaQuery.of(context).size.width,
-        height != null ? height! : 45,
-      ),
+      backgroundColor: Colors.transparent,
+      minimumSize: Size(buttonWidth, buttonHeight),
       padding: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: transparent
-              ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)
-              : Colors.transparent,
-        ),
-        borderRadius: BorderRadius.circular(radius!),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: buttonRadius),
     );
 
     return SizedBox(
-      width: width ?? MediaQuery.of(context).size.width,
+      width: buttonWidth,
       child: Padding(
         padding: margin ??
             const EdgeInsets.fromLTRB(
@@ -67,20 +80,23 @@ class CustomButton extends StatelessWidget {
               Dimensions.paddingSizeLarge,
               Dimensions.paddingSizeExtraLarge,
             ),
-        child: TextButton(
-          onPressed: (isActive ?? true) ? onPressed : null,
-          style: flatButtonStyle,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: isRightIcon
-                ? [
-                    titleBtn(context),
-                    if (icon != null) iconBtn(context) else const SizedBox(),
-                  ]
-                : [
-                    if (icon != null) iconBtn(context) else const SizedBox(),
-                    titleBtn(context),
-                  ],
+        child: DecoratedBox(
+          decoration: decoration,
+          child: TextButton(
+            onPressed: enabled ? onPressed : null,
+            style: flatButtonStyle,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: isRightIcon
+                  ? [
+                      titleBtn(context),
+                      if (icon != null) iconBtn(context) else const SizedBox(),
+                    ]
+                  : [
+                      if (icon != null) iconBtn(context) else const SizedBox(),
+                      titleBtn(context),
+                    ],
+            ),
           ),
         ),
       ),
@@ -104,9 +120,7 @@ class CustomButton extends StatelessWidget {
         buttonText ?? '',
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: transparent
-                  ? Theme.of(context).textTheme.titleMedium!.color
-                  : Colors.white,
+              color: transparent ? AppColors.accentPrimary : Colors.white,
             ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:everlms/core/providers/core_providers.dart';
 import 'package:everlms/core/utils/app_constants.dart';
 import 'package:everlms/feature/cheek_out/data/models/payment_intent.dart';
 import 'package:everlms/feature/cheek_out/data/repositories/payment_repository.dart';
+import 'package:everlms/main.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -68,6 +69,7 @@ class PaymentNotifier extends Notifier<PaymentState> {
       url: WebUri('${Config.baseUrl}user/make-payment?lang=$langCode'),
       headers: {
         'Authorization': 'Bearer ${apiClient.token}',
+        'X-Authorization': basicAuthWeb,
         'Content-Type': 'application/json',
       },
     );
