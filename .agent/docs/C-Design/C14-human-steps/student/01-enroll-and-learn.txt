@@ -1,0 +1,7 @@
+- [/courses] - browse catalog - find a course - actor: Student - source: C-Design/C13-usecases/WF-001-enrollment-and-learning/UC-WF-001-001-enroll-and-complete-course.md
+- [/courses/{id}] - open course - review detail, price, curriculum - actor: Student - module: lms_course
+- [/courses/{id}/enroll-free] - enroll - free enroll (or /checkout/{id} if paid) - actor: Student - module: lms_progress - process: enrollment-and-learning
+- [/learn/{course}/{lesson}] - learn - watch lesson, take notes - actor: Student - module: lms_lesson
+- [/learn/{course}/{lesson}] - complete lesson - mark complete; progress updates - actor: Student - module: lms_progress
+- [/quiz/{quiz}/take] - take quiz - submit final quiz - actor: Student - module: lms_quiz - process: quiz-attempt-and-grading
+- [/my-certificates] - get certificate - download issued certificate - actor: Student - module: lms_certificate

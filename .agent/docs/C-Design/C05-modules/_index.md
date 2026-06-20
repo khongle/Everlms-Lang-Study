@@ -1,77 +1,37 @@
----
-documentation-mode: as-built
-generated: 2026-06-20
----
+# C05-modules - Module Index
 
-# C05 — Module Catalog
+28 custom modules (27 `lms_*` + `open_switcher`), plus the `lms_theme` **theme** documented here for completeness (the theme is not counted among the 28 modules; full theme contract in [C09](../C09-themes/_index.md)). Phase/Epic per [C01](../C01-architecture-decision/_index.md). Status: `done | in-progress | blocked` (as-built-backed, 2026-06-21).
 
-> Roll-up of all `{module-slug}.md` files in `C-Design/C05-modules/`. Source of truth is the per-module file. Module count: **28** custom modules (27 `lms_*` + `open_switcher`).
+| Module | Name | Phase | Epic | Status | Entities | Features | Workflows | Pages |
+| ------ | ---- | ----- | ---- | ------ | -------- | -------- | --------- | ----- |
+| [lms_base](lms_base.md) | Base / shared | 1 | E01 | done | — | F-023 | — | 0 |
+| [open_switcher](open_switcher.md) | Impersonation | 1 | E01 | done | — | F-021 | WF-007 | 1 |
+| [lms_theme](lms_theme.md) | Theme | 1 | E01 | done | — | F-024 | — | (theme) |
+| [lms_course](lms_course.md) | Courses | 2 | E02 | done | lms_course | F-001, F-002 | WF-001, WF-006 | 4 |
+| [lms_chapter](lms_chapter.md) | Chapters | 2 | E02 | done | lms_chapter | F-002 | WF-006 | 1 |
+| [lms_lesson](lms_lesson.md) | Lessons | 2 | E02 | done | lms_lesson | F-003 | WF-001 | 2 |
+| [lms_progress](lms_progress.md) | Progress | 3 | E03 | done | lms_user_course, lms_user_lesson | F-004, F-005 | WF-001 | 3 |
+| [lms_question](lms_question.md) | Questions | 4 | E04 | done | lms_question, lms_question_type, lms_answer, lms_matching_pair | F-006 | WF-002 | 2 |
+| [lms_quiz](lms_quiz.md) | Quizzes | 4 | E04 | done | lms_quiz, lms_quiz_result, lms_question_response | F-006 | WF-002 | 3 |
+| [lms_certificate](lms_certificate.md) | Certificates | 5 | E05 | done | lms_certificate_template, lms_user_certificate | F-007 | WF-003 | 2 |
+| [lms_badge](lms_badge.md) | Badges | 5 | E05 | blocked | lms_badge, lms_user_badge | F-008 | WF-002 | 1 |
+| [lms_payment](lms_payment.md) | Payments | 6 | E06 | in-progress | — | F-011 | WF-004 | 1 |
+| [lms_stripe](lms_stripe.md) | Stripe | 6 | E06 | done | — | F-011 | WF-004 | 0 |
+| [lms_paypal](lms_paypal.md) | PayPal (dup) | 6 | E06 | blocked | — | F-011 | WF-004 | 0 |
+| [lms_order](lms_order.md) | Orders | 6 | E06 | done | lms_order, lms_order_item | F-010 | WF-004, WF-009 | 2 |
+| [lms_bundle](lms_bundle.md) | Bundles | 6 | E06 | done | lms_course_bundle | F-009 | WF-004 | 2 |
+| [lms_membership](lms_membership.md) | Memberships | 7 | E07 | done | lms_membership_plan, lms_user_membership | F-012 | WF-005 | 2 |
+| [lms_forum](lms_forum.md) | Forum | 8 | E08 | done | lms_forum_topic, lms_forum_reply | F-013 | WF-008 | 3 |
+| [lms_rating](lms_rating.md) | Ratings | 8 | E08 | done | lms_rating | F-014 | WF-001 | 1 |
+| [lms_note](lms_note.md) | Notes | 8 | E08 | done | lms_note | F-015 | WF-001 | 1 |
+| [lms_wishlist](lms_wishlist.md) | Wishlist | 8 | E08 | done | lms_wishlist | F-015 | WF-001 | 1 |
+| [lms_blog](lms_blog.md) | Blog | 8 | E08 | done | lms_article | F-016 | WF-006 | 2 |
+| [lms_faq](lms_faq.md) | FAQ | 8 | E08 | done | lms_faq | F-016 | — | 1 |
+| [lms_zoom](lms_zoom.md) | Zoom | 8 | E08 | in-progress | — | F-022 | — | 1 |
+| [lms_notification](lms_notification.md) | Notifications | 9 | E09 | in-progress | lms_notification | F-017 | WF-008 | 1 |
+| [lms_ai](lms_ai.md) | AI authoring | 10 | E10 | done | — | F-018 | WF-010 | 1 |
+| [lms_mobile_api](lms_mobile_api.md) | Mobile API | 11 | E11 | done | — | F-019 | WF-007 | 0 |
+| [lms_analytics](lms_analytics.md) | Analytics | 12 | E12 | in-progress | — | F-020 | — | 3 |
+| [lms_content_tools](lms_content_tools.md) | Content tools | 13 | E13 | done | — | F-023 | — | 1 |
 
-| Module | Responsibility (one line) | Route Groups | Status |
-|--------|--------------------------|--------------|--------|
-| [lms_base](lms_base.md) | Foundation: shared `LmsHelper` service, taxonomy vocab creation, email-login form alter, demo-content Drush command | — (no routes) | DONE |
-| [lms_content_tools](lms_content_tools.md) | Admin data tooling: entity clean (3-step confirm), seed-input wizard, AI-generated content importer (13 content types) | Manage (`/workspace/content-tools`) | DONE |
-| [open_switcher](open_switcher.md) | "Open Platform" user impersonation utility — admins switch to any non-admin account and switch back | Admin (`/admin/switch-user`), App (`/app/switch-user`) | DONE |
-| [lms_course](lms_course.md) | Course entity + admin shell: public catalog/homepage, workspace CRUD for courses/quizzes/orders/users/content, breadcrumb | Public (`/courses`, `/categories`, `/homepage`), Manage (`/workspace`), Admin (`/workspace/*`) | DONE |
-| [lms_chapter](lms_chapter.md) | Chapter entity (thin): group lessons within a course; no routes of its own | — (entity links only) | DONE |
-| [lms_lesson](lms_lesson.md) | Lesson entity: 9 content types (video/text/quiz/h5p/scorm/pdf/pptx/zoom/mixed), SCORM extraction on save | — (entity links only) | DONE |
-| [lms_blog](lms_blog.md) | Dual-track blog: `lms_article` entity backs `/manage/blog` admin CRUD; frontend `/news` reads core `node:blog` | Manage (`/manage/blog`), Public (`/news`) | DONE |
-| [lms_faq](lms_faq.md) | FAQ entity (3-scope: global/course/lesson) — entity-only module, no custom routes or forms | — (entity links only) | DONE |
-| [lms_question](lms_question.md) | Question bank: `lms_question` (8 bundles), `lms_answer`, `lms_matching_pair` entities; grading strategies live in `lms_quiz` | — (entity links only) | DONE |
-| [lms_quiz](lms_quiz.md) | Quiz engine: take/submit/result routes, static `GradingStrategyFactory` + 8 strategy classes, `QuizPassedEvent` dispatch | App (`/quiz`, `/quiz-result`, `/my-quiz-results`) | DONE |
-| [lms_progress](lms_progress.md) | Enrollment and progress tracking: lesson-view UI, dashboard, my-courses, certificates page, mark-complete legacy API | App (`/learn`, `/my-courses`, `/dashboard`, `/my-certificates`), API (`/api/lms/progress/mark-complete`) | DONE |
-| [lms_note](lms_note.md) | Student notes per lesson: save/delete/get JSON API + my-notes listing page | App (`/my-notes`), API (`/api/lms/note/*`) | DONE |
-| [lms_forum](lms_forum.md) | Course discussion forums with threaded replies, best-answer marking, view-count tracking | Public (`/forum`, `/forum/*`) | IN_PROGRESS (bugs: ForumController dead code throws HARD DEBUG!; debug messenger left in LmsForumController) |
-| [lms_rating](lms_rating.md) | Course star ratings and text reviews with admin approve/feature workflow | Manage (`/workspace/ratings`) | IN_PROGRESS (3 runtime routes missing: .collection, .toggle_approve, .toggle_featured — RouteNotFoundException) |
-| [lms_notification](lms_notification.md) | In-app notification system: delivery, bell block, preferences, broadcast, cron cleanup; email/push channels are stubs | App (`/notifications`, `/manage/settings/notifications`), Admin (`/admin/lms/notifications/broadcast`), API (`/api/lms/notifications/unread-count`) | IN_PROGRESS (in-app channel only; email + push channels are stubs) |
-| [lms_order](lms_order.md) | Order management: checkout (course + membership), Stripe PaymentIntent, bank-transfer instructions/receipt upload, auto-enrollment on completion | Public (`/checkout/*`), Manage (`/manage/orders`) | DONE |
-| [lms_membership](lms_membership.md) | Membership plans and user subscriptions: plan CRUD, user portal, cron expiry, access guard on `/learn/` | App (`/my-membership`), Manage (`/workspace/pricing`, `/workspace/user-memberships`) | DONE |
-| [lms_payment](lms_payment.md) | Payment gateway plugin host: `PaymentGatewayManager`, `@PaymentGateway` annotation, settings form; `BankTransferGateway` (real), `PayPalGateway` (stub), `ZaloPayGateway` (stub) | Admin (`/admin/config/everlms/payment`) | IN_PROGRESS (plugin host real; PayPal/ZaloPay stubs; no webhook endpoints anywhere) |
-| [lms_stripe](lms_stripe.md) | Stripe payment gateway plugin: `StripeGateway` retrieves PaymentIntent via Stripe SDK; no webhook verification | — (no routes; plugin only) | IN_PROGRESS (processPayment real; handleWebhook stub — no signature verification; no webhook route) |
-| [lms_paypal](lms_paypal.md) | PayPal module: fully stub — wrong interface, no `@PaymentGateway` annotation, never discovered by plugin manager | — (dead code) | STUB |
-| [lms_wishlist](lms_wishlist.md) | Course wishlist: toggle/status JSON API + my-wishlist page with course cards | App (`/my-wishlist`), API (`/api/lms/wishlist/*`) | DONE |
-| [lms_bundle](lms_bundle.md) | Course bundle entity (data model only): entity definition with courses/price/discount fields; no checkout integration, no controllers | — (entity links only) | STUB |
-| [lms_certificate](lms_certificate.md) | Auto-issuance via `lms_quiz.passed` event, mPDF generation, revocation, public verification, admin templates/dashboard | Public (`/certificate/verify`), Manage (`/workspace/certificates`), Admin (`/admin/lms/certificates`) | DONE |
-| [lms_badge](lms_badge.md) | Gamification badge entities (`lms_badge`, `lms_user_badge`) — award criteria JSON field exists but **zero award logic implemented** | — (entity links only) | STUB |
-| [lms_zoom](lms_zoom.md) | Zoom live class integration: Server-to-Server OAuth, meeting lifecycle sync on lesson save, Web SDK join page, AI agenda generation, transcript summary cron | App (`/zoom/join/{meeting_id}`), Admin (`/admin/config/lms/zoom`), API (`/api/lms/websdk/signature`) | DONE (VTT download stub) |
-| [lms_ai](lms_ai.md) | AI platform: `AiProviderManager` (Drupal Plugin API), OpenAI/Gemini (full) + Pollinations (image-only) providers, AI Course Builder, SCORM/Google Slides generation, multi-step admin wizard | Admin (`/admin/config/lms/ai`, `/admin/everlms-ai-engine`), Manage (`/manage/courses/ai-builder`) | DONE (no rollback on partial failure) |
-| [lms_analytics](lms_analytics.md) | Internal LMS reporting: course/user/quiz analytics with raw SQL queries, CSV export; no GA4 despite module description | Admin (`/admin/lms/reports/*`) | DONE |
-| [lms_mobile_api](lms_mobile_api.md) | Flutter mobile backend: 22 `/api/v1/` routes across 3 controllers; custom keyvalue bearer token + OTP auth; `lms_quiz`/`lms_wishlist` deps undeclared | API (`/api/v1/*`) | DONE |
-
----
-
-## Status Key
-
-| Status | Meaning |
-|--------|---------|
-| DONE | All controllers, services, entities, and routes are real, functional code |
-| IN_PROGRESS | Core functionality implemented; specific sub-features are stubs or have known runtime bugs (RouteNotFoundException, TODO stubs, dead code artifacts) |
-| STUB | Entity/class scaffolding exists but core business logic is absent or is a TODO placeholder |
-
----
-
-## Notes on Undeclared Dependencies
-
-`lms_mobile_api` imports `GradingStrategyFactory` and `QuizPassedEvent` from `lms_quiz`, and queries `lms_wishlist` entity storage, but **neither `lms_quiz` nor `lms_wishlist` is listed in `lms_mobile_api.info.yml` dependencies**. Disabling either dependency module first will cause PHP fatal errors. See [lms_mobile_api](lms_mobile_api.md) for details.
-
-## Notes on Known Bugs and Risks
-
-- `lms_rating`: 3 runtime routes missing (`lms_rating.collection`, `lms_rating.toggle_approve`, `lms_rating.toggle_featured`) — `RatingListBuilder` operations throw `RouteNotFoundException`.
-- `lms_forum`: `ForumController::viewTopic()` opens with `throw new \Exception("HARD DEBUG!")` — dead code but dangerous if ever routed.
-- `lms_forum`: Debug `messenger()->addMessage("FRESH CONTROLLER LOADED!")` left in production `LmsForumController::viewTopic()`.
-- `lms_paypal`: Module exists but its `PayPalGateway` class implements the wrong interface and has no `@PaymentGateway` annotation — never discovered by the plugin manager (dead code).
-- All payment gateway webhook handlers: no routes defined anywhere; no signature verification implemented.
-- `lms_badge`: `field_criteria` documents a JSON format but no code evaluates it or awards badges.
-- Third-party secrets (OpenAI, Gemini, Stripe, Zoom, PayPal, Google RSA key) stored in plaintext committed config YAML — «secret in config — see security risk».
-
-## Route Group Counts (as-built)
-
-| Route Group | Route Count | Primary owners |
-|-------------|-------------|----------------|
-| Public | 19 | lms_course, lms_blog, lms_forum, lms_certificate |
-| App / Learn | 21 | lms_progress, lms_quiz, lms_note, lms_notification, lms_wishlist, lms_membership, lms_zoom |
-| Manage / Workspace | 47 | lms_course (admin shell), lms_membership, lms_certificate, lms_ai, lms_analytics, lms_notification |
-| Admin (`/admin/*`) | 17 | lms_payment, lms_zoom, lms_ai, lms_analytics, lms_certificate, open_switcher |
-| API (`/api/lms` legacy + `/api/v1` mobile) | 31 | lms_progress, lms_note, lms_wishlist, lms_notification, lms_zoom, **lms_mobile_api (22 routes)** |
-| Utility | 2 | open_switcher |
-| **Total** | **137** | |
+> 28 modules (data-derived). Every module has a contract file here and a [D07 code-map](../../D-Development/D07-code-map/README.md) entry.

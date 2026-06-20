@@ -1,0 +1,3 @@
+- [/quiz/{quiz}/take] - create object - learner starts a quiz attempt - module: lms_quiz - actors: Student
+- [/quiz/{quiz}/submit] - register answers - submit answers -> question responses - module: lms_quiz - process: quiz-attempt-and-grading
+- [internal] - grade - GradingStrategyFactory scores objective items - module: lms_quiz - actors: System

@@ -1,0 +1,4 @@
+- [/manage/blog] - manage blog - create/edit articles - actor: Content editor - module: lms_blog - source: C-Design/C13-usecases/WF-006-course-authoring-and-publishing/UC-WF-006-001-author-and-publish-course.md
+- [/workspace/content/faqs/add] - add faq - maintain FAQ entries - actor: Content editor - module: lms_faq
+- [/workspace/certificate-templates] - edit cert template - update branding/layout - actor: Content editor - module: lms_certificate
+- [/workspace/ratings] - moderate reviews - approve/feature ratings - actor: Content editor - module: lms_rating

@@ -1,31 +1,25 @@
 ---
-template: true
+id: E##S##T##
+title: <task title>
+status: todo
+story: E##S##
+owning_modules: [<module>]
+risk: <R-NNN or ->
+adequacy: NOT_RUN
 ---
 
-# Task: {TITLE}
+# E##S##T## - <Task title>
 
-**ID:** TASK-{NNN}
-**Unit:** U-{NNN}
-**Group:** G-{name}
-**Priority:** P0 / P1 / P2
-**Estimate:** {hours}h
-**Assigned:** unassigned
+## Goal
+<one sentence: what done looks like>
 
-## Description
-{What needs to be done. Single responsibility.}
+## Steps
+1. <step>
+2. <step>
 
-## Acceptance Criteria
-- [ ] {criterion 1}
-- [ ] {criterion 2}
+## Acceptance / gates
+- G1 Build · G2 Lint · G3 Tests · G4 Adversarial
+- <specific acceptance>
 
-## Technical Notes
-{Implementation notes, files to touch, dependencies.}
-
-## Dependencies
-- {TASK-XXX or "None"}
-
-## Definition of Done
-- [ ] Code complete
-- [ ] G1-G4 gates passed
-- [ ] Tests written + passing
-- [ ] No new debt introduced
+## Links
+[story](../../D03-stories/E##S##-<module>.md) · [risk](../../../G-Governance/G02-risk-register/_index.md)

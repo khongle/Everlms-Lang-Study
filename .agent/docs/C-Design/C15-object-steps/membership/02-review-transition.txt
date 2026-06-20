@@ -1,0 +1,3 @@
+- [/checkout/membership/{plan_id}] - activate - transition to approved_or_completed (active) on payment - module: lms_membership - process: membership-subscription - evidence: states submitted/approved_or_completed(active)/rejected_or_returned(cancelled)/archived(expired)
+- [/my-membership/{m}/cancel] - cancel - user cancels membership - module: lms_membership - actors: Student
+- [internal] - expire - transition to archived past end_date - module: lms_membership - actors: System

@@ -1,0 +1,3 @@
+- [internal] - issue - state approved_or_completed (issued, idempotent) - module: lms_certificate - process: certificate-issuance - evidence: states approved_or_completed/rejected_or_returned(revoked)/archived(expired)
+- [/admin/lms/certificates/{cert}/revoke] - revoke - transition to revoked with reason - module: lms_certificate - actors: Manager
+- [/workspace/certificates/{cert}/regenerate] - regenerate - re-render PDF after template change - module: lms_certificate - actors: Manager

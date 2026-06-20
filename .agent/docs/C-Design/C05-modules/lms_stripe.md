@@ -1,108 +1,36 @@
----
-module: lms_stripe
-service: Commerce
-route-groups: []
-status: DONE
----
+# C05 Module - lms_stripe
 
-# C05 — Module: LMS Stripe
+**Name:** Stripe gateway · **Phase:** 6 · **Epic:** [E06](../../D-Development/D02-epics/E06-commerce.md) · **Status:** done
 
-**Directory:** `web/modules/custom/lms_stripe/`
-**Responsibility:** Implements the `stripe` `@PaymentGateway` plugin that verifies Stripe PaymentIntent status server-side via the Stripe PHP SDK.
+## Responsibility
+Adds the `stripe` `@PaymentGateway` plugin using the Stripe PHP SDK — the primary card-payment path.
 
-**Documentation mode:** as-built
+## Owned / related entities
+- None.
 
----
+## Requirements features (B03)
+| Feature | Title |
+| ------- | ----- |
+| [F-011](../../B-Requirements/B03-features/F-011-payments-and-gateways.md) | Payments & gateways |
 
-## Route Bindings
+## Business workflows (B04)
+| Workflow | Title |
+| -------- | ----- |
+| [WF-004](../../B-Requirements/B04-business-workflows/WF-004-order-checkout-and-payment.md) | Order checkout & payment |
 
-| Route Group | Prefix | Controller | Paths |
-|-------------|--------|-----------|-------|
-| — | — | — | No routes defined |
+## Integrations / APIs (B06 / C06)
+- [INT-001 Stripe](../C06-apis/INT-001-stripe.md)
 
-> All Stripe UI (Elements widget, client-secret injection) is handled by `lms_order`'s `CheckoutForm` and the `lms_order/stripe_elements` JS library. `lms_stripe` contributes only the server-side plugin class.
+## Backing pages
+| Label | URL |
+| ----- | --- |
+| (Stripe checkout return handled by lms_payment) | `/payment/stripe/*` |
 
----
-
-## Public Interface
-
-| Export | Type | Description |
-|--------|------|-------------|
-| `StripeGateway` | Plugin (`stripe`) | `@PaymentGateway` plugin; `processPayment()` = REAL; `handleWebhook()` = STUB |
-
----
-
-## Internal Structure
-
-```
-web/modules/custom/lms_stripe/
-+-- lms_stripe.info.yml                     # deps: lms_payment (no services/routing/permissions)
-+-- src/
-    +-- Plugin/
-        +-- PaymentGateway/
-            +-- StripeGateway.php           # Only PHP file in this module
-```
-
-### `StripeGateway.php`
-
-**Annotation:**
-```
-@PaymentGateway(
-  id = "stripe",
-  label = @Translation("Stripe"),
-  description = @Translation("Process payments via Stripe Checkout.")
-)
-```
-
-Extends: `PaymentGatewayBase` (from `lms_payment`)
-
-| Method | Implementation | Status |
-|--------|---------------|--------|
-| `processPayment($order, array $payment_details)` | Reads `stripe_secret_key` from `lms_payment.settings` («secret in config — see security risk»); calls `\Stripe\Stripe::setApiKey()`; calls `\Stripe\PaymentIntent::retrieve($payment_details['payment_intent_id'])`; returns `status=success` if `$intent->status === 'succeeded'`, else `status=error` | REAL |
-| `handleWebhook($request)` | Logs receipt; returns HTTP 200. `// TODO: Implement webhook verification.` comment present | STUB — no `Stripe\WebhookSignature::verifyHeader()` call |
-
-### Runtime Stripe Payment Flow
-
-```
-1. CheckoutForm::buildForm()   → \Stripe\PaymentIntent::create()    [BUG: runs on every page load]
-                                 → client_secret injected via drupalSettings
-2. Browser (stripe_elements.js) → stripe.confirmCardPayment(clientSecret)
-                                 → sets hidden field payment_intent_id on success
-3. CheckoutForm::submitForm()  → plugin.manager.payment_gateway → StripeGateway::processPayment()
-4. StripeGateway              → \Stripe\PaymentIntent::retrieve(payment_intent_id)
-                                 → checks status === 'succeeded'
-5. On success                  → order status = completed → auto-enrollment fires
-```
-
-> The PaymentIntent is created in `lms_order/CheckoutForm::buildForm()` (not here), which is a build-time bug. See [lms_order](lms_order.md) §Known Issues.
-
-### Composer Dependency
-
-Uses `\Stripe\Stripe` and `\Stripe\PaymentIntent` — requires `stripe/stripe-php` package in `composer.json`. Version: **v19.4.1** (confirmed in `composer.lock`).
-
----
+## Cross references
+- Host [lms_payment](lms_payment.md); contract [INT-001](../C06-apis/INT-001-stripe.md).
 
 ## Dependencies
+- lms_payment.
 
-| Dependency | Type | Why |
-|-----------|------|-----|
-| `lms_payment` | Internal | `PaymentGatewayBase`, `@PaymentGateway` annotation, `PaymentGatewayManager` discovery, `lms_payment.settings` config |
-| `stripe/stripe-php` | External (Composer) | Stripe PHP SDK |
-
----
-
-## Known Issues
-
-| ID | Severity | Description |
-|----|----------|-------------|
-| STUB-STRIPE-WEBHOOK | High | `handleWebhook()` logs and returns 200 — no Stripe webhook signature verification (`Stripe\WebhookSignature::verifyHeader()`). Stripe cannot deliver async events. |
-| DEBT-SECRET-IN-CONFIG | Critical | `stripe_secret_key` read from `lms_payment.settings` YAML — committed to repository, no Key module. «secret in config — see security risk» |
-| DEBT-NO-WEBHOOK-ROUTE | High | No route defined in `lms_stripe` or any other module to receive Stripe webhook callbacks |
-| NOTE-BUILD-TIME-INTENT | High | PaymentIntent creation bug is in `lms_order/CheckoutForm::buildForm()`, not here — but affects Stripe directly |
-
----
-
-## Cross-links
-
-- Plugin host: [lms_payment](lms_payment.md)
-- Order consumer (Stripe Elements + buildForm bug): [lms_order](lms_order.md)
+## Implementation notes
+- `src/Plugin/PaymentGateway/StripeGateway.php`. ⚠️ Keys in config (R-001); **no Stripe webhook** (R-002) — add `/api/.../stripe/webhook` + signature verification.

@@ -1,0 +1,3 @@
+- [/workspace/orders] - monitor - review order list and status - module: lms_order - actors: Manager
+- [/admin/lms/reports/users/export] - export - export revenue/order data - module: lms_analytics
+- [/workspace/orders/{id}/edit] - archive - archive/refund completed order - module: lms_order - process: order-checkout-and-payment

@@ -1,0 +1,3 @@
+- [/workspace/user-memberships] - monitor - list active/expired memberships - module: lms_membership - actors: Manager
+- [/admin/lms/reports/users/export] - export - membership/revenue export - module: lms_analytics
+- [internal] - archive - lapsed membership revokes access (F-004) - module: lms_membership - process: membership-subscription

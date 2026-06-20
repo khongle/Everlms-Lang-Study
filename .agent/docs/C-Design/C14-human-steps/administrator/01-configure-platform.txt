@@ -1,0 +1,5 @@
+- [/admin/config/lms/ai] - configure ai - set AI provider + keys - actor: Administrator - module: lms_ai - source: C-Design/C13-usecases/WF-010-ai-assisted-content-generation/UC-WF-010-001-generate-course-draft.md
+- [/admin/config/everlms/payment] - configure payments - enable gateways, set keys - actor: Administrator - module: lms_payment
+- [/admin/config/lms/zoom] - configure zoom - set Zoom API credentials - actor: Administrator - module: lms_zoom
+- [/workspace/content-tools] - seed content - import/clean demo content - actor: Administrator - module: lms_content_tools
+- [/admin/switch-user] - impersonate - switch to a user to debug - actor: Administrator - module: open_switcher - process: user-registration-and-onboarding

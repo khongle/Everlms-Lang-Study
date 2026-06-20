@@ -1,0 +1,6 @@
+- [/workspace/courses] - open list - go to course management - actor: Instructor - source: C-Design/C13-usecases/WF-006-course-authoring-and-publishing/UC-WF-006-001-author-and-publish-course.md
+- [/workspace/courses/create] - create course - set title, category, price - actor: Instructor - module: lms_course - process: course-authoring-and-publishing
+- [/workspace/courses/{id}/edit] - build curriculum - add chapters and lessons with media - actor: Instructor - module: lms_lesson
+- [/manage/courses/ai-builder] - ai assist - generate draft content (optional) - actor: Instructor - module: lms_ai - process: ai-assisted-content-generation
+- [/workspace/quizzes/create] - add quiz - attach quiz to lesson/course - actor: Instructor - module: lms_quiz
+- [/workspace/courses/{id}/edit] - publish - publish course to catalog - actor: Instructor - module: lms_course

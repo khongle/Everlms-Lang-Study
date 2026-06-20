@@ -1,0 +1,3 @@
+- [/checkout/{course_id}] - create object - create "Order" at checkout - module: lms_order - actors: Student
+- [/checkout/{course_id}] - register lines - add order items (course/bundle/membership) - module: lms_order - process: order-checkout-and-payment
+- [/checkout/{course_id}] - apply coupon - optional discount - module: lms_order - process: coupon-discount-redemption

@@ -1,73 +1,37 @@
-# D07 — Code Map Index
+# D07-code-map - Code Map
 
-**Purpose:** Authoritative reverse-trace registry for all custom source files in EverLMS. Given any file, find its module, surface, and what it does. Given any route, find its controller and template.
+Module → key source locations (under `web/modules/custom/<module>/`). Mirrors [D03 stories](../D03-stories/_index.md) and [C05 modules](../../C-Design/C05-modules/_index.md) by module. Update on file create/modify.
 
-**Last verified:** 2026-06-20  
-**Source of truth:** `the 2026-06-20 route/controller code scan (web/modules/custom/*/*.routing.yml)` and `a 2026-06-20 code scan of web/modules/custom/`
+| Module | Key paths / classes |
+| ------ | ------------------- |
+| lms_base | `src/Commands/LmsDemoContentCommand.php`; shared services/base classes |
+| open_switcher | `src/Controller/*` (switch/switch-back); `*.routing.yml` |
+| lms_course | `src/Entity/Course.php`; `src/Controller/*` (catalog/detail/workspace, ~37 routes); `src/Form/*` |
+| lms_chapter | `src/Entity/Chapter.php` |
+| lms_lesson | `src/Entity/Lesson.php`; player controller; `field_h5p_upload` |
+| lms_progress | `src/Entity/{UserCourse,UserLesson}.php`; progress + gating controllers; `/dashboard` |
+| lms_question | `src/Entity/{Question,QuestionType,Answer,MatchingPair}.php` |
+| lms_quiz | `src/Entity/{Quiz,QuizResult,QuestionResponse}.php`; **`src/Grading/GradingStrategyFactory.php`** + `QuestionGradingInterface`; `QuizPassedEvent` |
+| lms_certificate | `src/Entity/{CertificateTemplate,UserCertificate}.php`; QuizPassedEvent subscriber; mPDF render |
+| lms_badge | `src/Entity/{Badge,UserBadge}.php` (⚠️ no award subscriber) |
+| lms_payment | `src/Plugin/PaymentGateway*` (`PaymentGatewayManager`, Base, Interface; BankTransfer/PayPal/ZaloPay) |
+| lms_stripe | `src/Plugin/PaymentGateway/StripeGateway.php` |
+| lms_paypal | `src/Plugin/PaymentGateway/PayPalGateway.php` (⚠️ duplicate — R-004) |
+| lms_order | `src/Entity/{Order,OrderItem}.php`; checkout controllers |
+| lms_bundle | `src/Entity/CourseBundle.php` |
+| lms_membership | `src/Entity/{MembershipPlan,UserMembership}.php` |
+| lms_forum | `src/Entity/{ForumTopic,ForumReply}.php` |
+| lms_rating | `src/Entity/Rating.php` |
+| lms_note | `src/Entity/Note.php`; AJAX `/api/lms/note/*` |
+| lms_wishlist | `src/Entity/Wishlist.php`; AJAX `/api/lms/wishlist/*` |
+| lms_blog | `src/Entity/LmsArticle.php`; `/news`, `/manage/blog` |
+| lms_faq | `src/Entity/Faq.php` |
+| lms_zoom | Zoom client service; `/zoom/*`, websdk signature |
+| lms_notification | `src/Entity/Notification.php`; `src/Commands/LmsNotificationCommands.php`; events + cron |
+| lms_ai | `src/Plugin/AiProvider/{OpenAi,Gemini,Pollinations}Provider.php` + `AiProviderManager`; `CourseContentGenerator.php` |
+| lms_mobile_api | `src/Controller/{MobileAuth,MobileCourse,MobileLearning}Controller.php`; `src/Service/OtpService.php`; `/api/v1/*` |
+| lms_analytics | report controllers; `/admin/lms/reports/*` |
+| lms_content_tools | `src/Service/ContentToolsManager.php`; `src/Controller/ContentToolsController.php`; `src/Form/SeedInputForm.php`; `src/Commands/ContentToolsCommands.php` |
+| lms_theme (theme) | `web/themes/custom/lms_theme/` — `*.info.yml` (16 regions), `*.libraries.yml` (21), `*.theme`, `templates/`, `scss/` |
 
----
-
-## Files in this folder
-
-| File | Contents |
-|------|----------|
-| [README.md](README.md) | This index; maintenance instructions |
-| [per-module-files.md](per-module-files.md) | Each of the 28 custom modules → its key `src/` files (entities, controllers, services, forms, plugins) |
-| [route-to-controller.md](route-to-controller.md) | All 137 routes → `Controller::method`, grouped by surface (Public / Learn / Workspace / Admin / API / Utility) |
-| [template-to-controller.md](template-to-controller.md) | All ~62 Twig templates → the controller method or hook that renders them |
-
----
-
-## Scope
-
-**Custom module root:** `web/modules/custom/`  
-**Custom theme root:** `web/themes/custom/`  
-**28 modules:** lms_base, lms_content_tools, lms_course, lms_chapter, lms_lesson, lms_blog, lms_faq, lms_quiz, lms_question, lms_progress, lms_note, lms_forum, lms_rating, lms_notification, lms_order, lms_membership, lms_payment, lms_stripe, lms_paypal, lms_wishlist, lms_bundle, lms_certificate, lms_badge, lms_zoom, lms_ai, lms_analytics, lms_mobile_api, open_switcher
-
-This map covers **PHP source files** (controllers, services, forms, entities, plugins, event subscribers, commands) and **Twig templates**. Config YAML, JavaScript, and CSS are out of scope except as noted.
-
----
-
-## Implementation-status legend
-
-| Tag | Meaning |
-|-----|---------|
-| **as-built** | Matches current code — fully functional |
-| **stub** | Method/class exists but has no real logic (returns placeholder, logs only, or TODO comment) |
-| **dead-code** | Not reachable via any route or service; should be removed |
-| **bug** | Confirmed runtime error or incorrect behaviour documented in facts base |
-
----
-
-## How to maintain
-
-1. **After every Story close-out:** add or update rows in `per-module-files.md` for any new or changed `src/` files.
-2. **When a new route is added:** add a row to `route-to-controller.md` in the correct surface group; update the route count totals.
-3. **When a new template is added:** add a row to `template-to-controller.md`.
-4. **Verification:** re-run the facts extraction scripts in `the 2026-06-20 code ground-truth scan` (or `web/modules/custom/*/src/`) to regenerate facts, then diff against this map.
-5. **Do not renumber** route groups A–F; add new groups at the bottom if a new surface is created.
-
----
-
-## Quick stats (as of 2026-06-20)
-
-| Metric | Count |
-|--------|-------|
-| Custom modules | 28 |
-| Custom routes | 137 |
-| Custom Twig templates (module-level) | ~62 |
-| Homepage style variant templates (theme-level) | 16 |
-| Controllers | ~26 classes |
-| Services | ~18 registered services |
-| Entity types (content) | 28 |
-| Entity types (config) | 1 (`lms_question_type`) |
-
----
-
-## Cross-references
-
-- Module architecture: [C05 modules index](../../C-Design/C05-modules/_index.md)
-- Entity catalogue: [C04 entities](../../C-Design/C04-entities/)
-- Sitemap / route tree: [C07-sitemap.md](../../C-Design/C07-sitemap.md)
-- API surface: [C06-apis/](../../C-Design/C06-apis/)
-- Known bugs from this map feed: [E02 issues](../../E-Quality/E02-issues/)
+Per-module detail files: [lms_base](lms_base.md) · [open_switcher](open_switcher.md) · [lms_course](lms_course.md) · [lms_chapter](lms_chapter.md) · [lms_lesson](lms_lesson.md) · [lms_progress](lms_progress.md) · [lms_question](lms_question.md) · [lms_quiz](lms_quiz.md) (others: see table above + [C05](../../C-Design/C05-modules/_index.md)).

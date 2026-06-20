@@ -1,0 +1,3 @@
+- [/checkout/membership/{plan_id}] - create object - create "User membership" on plan purchase - module: lms_membership - actors: Student
+- [internal] - register dates - set start/end, plan, status - module: lms_membership - process: membership-subscription
+- [/workspace/pricing] - plan - manager maintains plans - module: lms_membership - actors: Manager

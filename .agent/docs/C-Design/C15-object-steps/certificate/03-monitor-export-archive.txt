@@ -1,0 +1,3 @@
+- [/workspace/certificates] - monitor - list issued certificates - module: lms_certificate - actors: Manager
+- [/certificate/verify] - verify - public verification by number - module: lms_certificate - actors: Anyone
+- [internal] - archive - certificate expires past field_expiry_date - module: lms_certificate - process: certificate-issuance

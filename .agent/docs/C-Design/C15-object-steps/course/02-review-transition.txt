@@ -1,0 +1,3 @@
+- [/workspace/courses/{id}/edit] - draft - course in draft state - module: lms_course - process: course-authoring-and-publishing - evidence: states draft/in_review/approved_or_completed/archived
+- [/workspace/courses/{id}/edit] - publish - transition draft -> approved_or_completed (published) - module: lms_course - actors: Instructor, Manager
+- [/workspace/courses/{id}/edit] - archive - transition to archived (unpublish) - module: lms_course - actors: Manager

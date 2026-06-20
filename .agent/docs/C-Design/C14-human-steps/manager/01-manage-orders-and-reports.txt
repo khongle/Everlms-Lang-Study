@@ -1,0 +1,5 @@
+- [/workspace/orders] - review orders - view orders, confirm bank transfers - actor: Manager - module: lms_order - source: C-Design/C13-usecases/WF-004-order-checkout-and-payment/UC-WF-004-001-buy-a-course.md
+- [/workspace/orders/{id}/edit] - update order - mark paid / refund - actor: Manager - module: lms_order - process: order-checkout-and-payment
+- [/workspace/pricing] - manage plans - create/edit membership plans - actor: Manager - module: lms_membership
+- [/workspace/reports] - read reports - enrollments/completions/revenue - actor: Manager - module: lms_course
+- [/admin/lms/reports/courses] - export - export analytics CSV - actor: Manager - module: lms_analytics

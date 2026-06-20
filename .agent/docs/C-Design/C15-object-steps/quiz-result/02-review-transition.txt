@@ -1,0 +1,3 @@
+- [internal] - submit - state submitted on submission - module: lms_quiz - process: quiz-attempt-and-grading - evidence: states submitted/in_review(pending essay)/approved_or_completed(graded)/rejected_or_returned(failed)
+- [/quiz-result/{r}] - grade pending - instructor grades essays - module: lms_quiz - actors: Instructor
+- [internal] - finalize - pass/fail set vs threshold; pass fires QuizPassedEvent - module: lms_quiz - actors: System

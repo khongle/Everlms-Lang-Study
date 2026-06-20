@@ -1,0 +1,3 @@
+- [/my-quiz-results] - monitor (learner) - learner reviews own results - module: lms_quiz - actors: Student
+- [/admin/lms/reports/quizzes/{quiz_id}/export] - export - export quiz pass-rate report - module: lms_analytics - actors: Manager
+- [internal] - archive - old attempts retained for audit - module: lms_quiz - process: quiz-attempt-and-grading
