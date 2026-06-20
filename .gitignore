@@ -81,6 +81,7 @@ yarn-error.log*
 .ddev
 .agent/00-Guidelines/
 .agent/docs-deleted/
+.agent/docs-draft/
 #database
 
 # Ignore Behat
