@@ -13,13 +13,13 @@
 | [README.md](./README.md) | — | This index |
 | [data-model.md](./data-model.md) | as-built | ERD-style reference: all entity relationships, Course→Chapter→Lesson→Quiz hierarchy, progress/order/certificate relationships, denormalized caches, taxonomy-driven quiz_result pass/fail, known bugs |
 | [06-taxonomies.md](./06-taxonomies.md) | as-built | All 11 taxonomy vocabularies: id, label, hierarchy, what it categorizes, referencing entity fields, seeded terms, extra configurable fields |
-| 01-content-entities.md | *(planned)* | lms_course, lms_chapter, lms_lesson, lms_article |
-| 02-assessment-entities.md | *(planned)* | lms_quiz, lms_question (8 bundles), lms_answer, lms_matching_pair, lms_quiz_result, lms_question_response |
-| 03-progress-entities.md | *(planned)* | lms_user_course, lms_user_lesson |
-| 04-commerce-entities.md | *(planned)* | lms_order, lms_order_item, lms_membership_plan, lms_user_membership, lms_wishlist, lms_course_bundle |
-| 05-certificate-entities.md | *(planned)* | lms_certificate_template, lms_user_certificate |
-| 07-communication-entities.md | *(planned)* | lms_notification, lms_forum_topic, lms_forum_reply, lms_rating, lms_note, lms_faq |
-| 08-gamification-entities.md | *(planned)* | lms_badge, lms_user_badge |
+| 01-content-entities.md | as-built | lms_course, lms_chapter, lms_lesson, lms_article, lms_faq |
+| 02-assessment-entities.md | as-built | lms_quiz, lms_question (8 bundles), lms_answer, lms_matching_pair, lms_quiz_result, lms_question_response, lms_question_type |
+| 03-progress-entities.md | as-built | lms_user_course, lms_user_lesson, lms_note |
+| 04-commerce-entities.md | as-built | lms_order, lms_order_item, lms_membership_plan, lms_user_membership, lms_wishlist, lms_course_bundle |
+| 05-certificate-entities.md | as-built | lms_certificate_template, lms_user_certificate |
+| 07-communication-entities.md | as-built | lms_notification, lms_forum_topic, lms_forum_reply, lms_rating |
+| 08-gamification-entities.md | as-built | lms_badge, lms_user_badge |
 
 ---
 
@@ -114,7 +114,7 @@ All 11 active vocabularies — see [06-taxonomies.md](./06-taxonomies.md) for fu
 | `lms_user_course` | enrolled → in_progress → completed | lms_progress | Lesson completion event |
 | `lms_user_lesson` | not_started → in_progress → completed | lms_progress | Student lesson interaction |
 | `lms_user_membership` | active \| trial → expired \| cancelled | lms_membership | Cron / payment event |
-| `lms_quiz_result` | (graded) → pass \| fail; essay: pending_review | lms_quiz | GradingStrategyFactory; manual instructor grade |
+| `lms_quiz_result` | (graded) → Passed \| Failed; essay: pending_review (Pending term) | lms_quiz | GradingStrategyFactory; manual instructor grade |
 
 ---
 

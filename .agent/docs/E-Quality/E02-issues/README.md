@@ -27,7 +27,7 @@
 | [ISSUE-015](open/ISSUE-015-certificate-expiry-varchar.md) | `lms_user_certificate.field_expiry_date` stored as `varchar(20)` not `int` — timestamp sort/range queries silently fail | `MEDIUM` | open | `lms_certificate` | G4-Data Integrity | [hardening-security](../../D-Development/D03-stories/hardening-security.md) | 2026-06-20 |
 | [ISSUE-016](open/ISSUE-016-quiz-hardcoded-threshold-and-starttime.md) | `lms-quiz-result.html.twig` hardcodes 70% pass threshold (ignores `field_threshold`); `field_start_time` hardcoded to `now-60` instead of actual start | `MEDIUM` | open | `lms_quiz` | G4-Code Quality | — | 2026-06-20 |
 | [ISSUE-017](open/ISSUE-017-order-double-field-items-set.md) | `CheckoutController::createAndFulfillFreeMembershipOrder` calls `$order->set('field_items', ...)` twice — second call silently overwrites first | `LOW` | open | `lms_order` | G4-Code Quality | — | 2026-06-20 |
-| [ISSUE-018](open/ISSUE-018-lesson-chapter-field-naming-inconsistency.md) | Schema inconsistency — demo generator uses `lesson.field_chapter` (child→parent) while importer uses `chapter.field_lessons` (parent→child); `lms_lesson` hook references `field_chapter` absent from `baseFieldDefinitions` | `MEDIUM` | open | `lms_lesson`, `lms_chapter`, `lms_content_tools` | G4-Architecture | — | 2026-06-20 |
+| [ISSUE-018](open/ISSUE-018-lesson-chapter-field-naming-inconsistency.md) | Schema inconsistency — demo generator uses `lesson.field_chapter` (child→parent) while importer uses `chapter.field_lessons` (parent→child); `lms_lesson` hook references `field_chapter` absent from `baseFieldDefinitions` | `HIGH` | open | `lms_lesson`, `lms_chapter`, `lms_content_tools` | G4-Architecture | — | 2026-06-20 |
 
 ---
 
@@ -63,9 +63,9 @@
 | `lms_rating` | ISSUE-010 | HIGH |
 | `lms_stripe` | ISSUE-001, ISSUE-002, ISSUE-004 | CRITICAL |
 | `lms_zoom` | ISSUE-001, ISSUE-011 | CRITICAL |
-| `lms_lesson` | ISSUE-018 | MEDIUM |
-| `lms_chapter` | ISSUE-018 | MEDIUM |
-| `lms_content_tools` | ISSUE-018 | MEDIUM |
+| `lms_lesson` | ISSUE-018 | HIGH |
+| `lms_chapter` | ISSUE-018 | HIGH |
+| `lms_content_tools` | ISSUE-018 | HIGH |
 
 ---
 

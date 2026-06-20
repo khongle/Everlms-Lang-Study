@@ -6,7 +6,7 @@
 **Primary source:** `C-Design/C05-modules/lms_mobile_api.md`
 **Owning module(s):** lms_mobile_api
 **Service(s):** lms_mobile_api.otp_service (OtpService)
-**Epic:** E-08 (Integration & AI)
+**Epic:** E-09 (Mobile)
 **Contributes to Feature(s):** F-016 (Mobile App)
 **Design source(s):** `../C05-modules/lms_mobile_api.md`
 **Round:** N/A

@@ -49,14 +49,14 @@
 |---|---|---|---|---|---|
 | Performance | 5 | 0 | 0 | 0 | 5 |
 | Availability | 1 | 0 | 0 | 0 | 1 |
-| Security | 6 | 2 | 3 | 1 | 0 |
+| Security | 8 | 2 | 3 | 2 | 1 |
 | Maintainability | 4 | 2 | 1 | 0 | 1 |
 | Reliability | 3 | 0 | 2 | 0 | 0 (RISK: 1) |
 | Accessibility | 1 | 0 | 0 | 0 | 1 |
 | Internationalization | 2 | 2 | 0 | 0 | 0 |
 | Observability | 2 | 0 | 0 | 1 | 1 |
 | Scalability | 1 | 0 | 0 | 0 | 1 |
-| **Total** | **25** | **6** | **6** | **2** | **10 + 1 RISK** |
+| **Total** | **27** | **6** | **6** | **4** | **10 + 1 RISK** |
 
 ---
 

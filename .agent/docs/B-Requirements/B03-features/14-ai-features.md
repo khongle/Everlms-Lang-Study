@@ -3,7 +3,7 @@ id: F-014
 name: AI-Powered Content Generation
 priority: Must
 status: APPROVED
-parent-requirements: [BR-001]
+parent-requirements: [BR-011]
 owning_modules: [lms_ai, lms_zoom]
 primary_source: C05
 story_anchors: []

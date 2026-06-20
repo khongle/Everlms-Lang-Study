@@ -130,7 +130,7 @@ adequacy_run: null
 - **Region / Placement:** Claro admin `content` region
 - **Notes:**
   - Zoom uses Server-to-Server OAuth (Account Credentials grant). Token cached in Drupal State (`lms_zoom_access_token`, `lms_zoom_token_expires`).
-  - `ZoomController::generateSignature()` has a known bug: references wrong service ID (`«unverified»` — see known issues); generates HS256 JWT via `firebase/php-jwt`.
+  - `ZoomController::generateSignature()` has a confirmed bug (ISSUE-011): references non-existent service `lms_zoom.zoom_service`; correct registered ID is `lms_zoom.service` — throws `ServiceNotFoundException` for meeting hosts at runtime; generates HS256 JWT via `firebase/php-jwt` when the service lookup does not fail (attendee path).
   - `ZoomAiService::processSummaries()` VTT download is a stub (hardcoded simulated string).
   - Menu link: `lms_zoom.settings` under `system.admin_config` (weight: 50).
 - **How to implement (EN):** Form in `web/modules/custom/lms_zoom/src/Form/ZoomSettingsForm.php`. Access at `/admin/config/lms/zoom`.

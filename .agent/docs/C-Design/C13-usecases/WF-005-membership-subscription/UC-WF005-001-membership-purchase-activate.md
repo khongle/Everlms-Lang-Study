@@ -88,7 +88,7 @@ Student views `/pricing` (renders active `lms_membership_plan` entities via `Pag
 
 ## Notes
 
-- **Trial plans**: If `lms_membership_plan.field_trial_days > 0`, the created `lms_user_membership.field_status` should be `trial`. The `_lms_order_process_completed_order()` helper must distinguish trial vs. active — confirm exact field-setting logic in `lms_order.module` if implementation differs from this description.
+- **Trial plans (bug/gap):** `_lms_order_process_completed_order()` in `lms_order.module` always creates `lms_user_membership` with `field_status = 'active'`. It does NOT read `field_trial_days` from the plan or set `field_status = 'trial'`. Trial status must be assigned manually by an admin or via direct entity manipulation. The `→ trial` transition described in WF-005 is target-state, not as-built.
 - **Auto-renewal**: `field_auto_renew` is set to `TRUE` by default. When the plan expires, `hook_cron` in `lms_membership.module` logs a deferral message but does NOT initiate any charge. Auto-renewal is effectively a no-op at runtime — see [UC-WF005-002](UC-WF005-002-membership-expiry-cron.md).
 - **Admin bypass**: `MembershipManager::hasActiveMembership()` returns `TRUE` for any user with the `administer lms_course` permission, regardless of actual membership status.
 - Membership plan's `field_billing_cycle` (monthly/quarterly/yearly/lifetime) is descriptive only — no billing automation is implemented.

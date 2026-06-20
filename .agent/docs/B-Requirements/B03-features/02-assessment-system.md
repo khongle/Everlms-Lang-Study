@@ -3,7 +3,7 @@ id: F-002
 name: Assessment System
 priority: Must
 status: APPROVED
-parent-requirements: [BR-002]
+parent-requirements: [BR-003]
 owning_modules: [lms_quiz, lms_question]
 primary_source: C05
 story_anchors: []

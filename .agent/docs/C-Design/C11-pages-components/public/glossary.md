@@ -68,7 +68,7 @@ adequacy_run: null
 - **Edit smoke:** N/A (automatic)
 - **View mode / Projection:** Letter navigation bar
 - **Region / Placement:** Below hero, above term list
-- **Notes:** Drupal core `glossary` View uses `attachment_1` display with alphabetical grouping. Custom controller may replicate this; implementation detail not confirmed (method in unread portion of file)
+- **Notes:** Confirmed implemented in `CoursePublicController::glossary()`: the controller initialises `$alphabet = range('A', 'Z')` (plus `'#'` for non-alpha terms), groups nodes by `strtoupper(substr($title, 0, 1))`, and passes both `#terms` (keyed by letter) and `#alphabet` to the template. The Twig template `lms-glossary.html.twig` renders the full A–Z jump-link bar (lines 30–36), disabling letters that have no terms (confirmed in `lms-glossary.html.twig`).
 - **How to implement (EN):** Group loaded nodes by first letter of title; render letter navigation bar with anchor links; loop by letter below
 - **How to implement (VI):** Nhóm các node theo chữ cái đầu của tiêu đề; render thanh điều hướng chữ cái với anchor link; hiển thị theo chữ cái bên dưới
 - **Solution Architect Request:** —
@@ -88,7 +88,7 @@ adequacy_run: null
 - **Edit smoke:** Create `node:glossary` node (title="Adaptive Learning", body="...") → publish → reload `/glossary` → term appears under "A"
 - **View mode / Projection:** Term + definition (accordion or flat list per letter group)
 - **Region / Placement:** Main content area
-- **Notes:** `lms_content_tools` importer (`importGlossaries()`) creates `node:glossary` entities with `title` + `body` (definition). The glossary node bundle fields beyond title/body are «unverified» — may have `field_definition` or just `body`. Sort: alphabetical by title
+- **Notes:** `lms_content_tools` importer (`importGlossaries()`) creates `node:glossary` entities with `title` + `body` (definition). Confirmed in `CoursePublicController::glossary()`: the controller reads `body` first, falling back to `field_definition` if body is empty (lines 1926–1933). Additional optional fields confirmed: `field_glossary_category` (taxonomy reference, value shown as a badge) and `field_related_terms` (node reference list, rendered as "See also:" links). Items within each letter group are sorted alphabetically by title via `usort()` + `strcmp()`. Source: all published `node:glossary` nodes loaded via `loadByProperties(['type' => 'glossary', 'status' => 1])`, access-checked per node.
 - **How to implement (EN):** Load all published `node:glossary` nodes; sort by title ASC; group by first letter; pass grouped array to template; render each group with anchor ID matching the letter
 - **How to implement (VI):** Tải tất cả node `node:glossary` đã xuất bản; sắp xếp theo title ASC; nhóm theo chữ cái đầu; truyền mảng đã nhóm vào template; render mỗi nhóm với anchor ID theo chữ cái
 - **Solution Architect Request:** —
@@ -108,7 +108,7 @@ adequacy_run: null
 - **Edit smoke:** N/A
 - **View mode / Projection:** Search input above term list
 - **Region / Placement:** Below hero / above alphabet strip
-- **Notes:** Drupal core `search` module is configured but the custom glossary route does not use it. Client-side filtering is most likely approach for a glossary. Not confirmed in implementation facts
+- **Notes:** Client-side JS search is confirmed implemented in `lms-glossary.html.twig` (lines 268–307): an `input#glossary-search` element listens for `input` events, hides non-matching `.glossary-item-card` elements (matching on the `data-term` attribute which holds the term title in lowercase), hides letter sections that have no visible cards, and shows `#glossary-empty-state` when nothing matches. Filtering is on term title only (not definition body). No server-side AJAX is used.
 - **How to implement (EN):** Add a text input with JavaScript filter that shows/hides term entries matching the typed text; filter on both term title and definition text
 - **How to implement (VI):** Thêm trường text với JavaScript filter hiển thị/ẩn các mục term phù hợp với văn bản nhập; lọc theo cả tiêu đề và định nghĩa
 - **Solution Architect Request:** —
@@ -136,9 +136,9 @@ adequacy_run: null
 | Component | Status | Story | Notes |
 |---|---|---|---|
 | Route definition | DONE | — | `lms_course.glossary` route registered |
-| `CoursePublicController::glossary()` | DONE (method exists) | — | Method in unread portion; confirmed present via routing.yml |
+| `CoursePublicController::glossary()` | DONE (fully read) | — | Method confirmed at lines 1885–1966 of `CoursePublicController.php`; loads all published `node:glossary`, groups by first letter with A–Z + `#` buckets, sorts each group by title, passes `#terms` + `#alphabet` to template |
 | `lms-glossary.html.twig` | DONE | — | Template registered in hook_theme() |
 | Term List (node:glossary) | DONE | — | `importGlossaries()` confirms node:glossary bundle exists and is importable |
-| Alphabetical Index | «unverified» | — | Implementation detail not confirmed in facts |
-| Search / Filter | «unverified» | — | Client-side filter not confirmed |
+| Alphabetical Index | DONE | — | Confirmed in `CoursePublicController::glossary()`: `range('A','Z')` + `'#'` bucket; Twig renders jump-link bar with disabled state for empty letters |
+| Search / Filter | DONE | — | Client-side JS filter confirmed in `lms-glossary.html.twig` lines 268–307; filters on term title (`data-term` attribute); hides empty sections; shows empty state |
 | Route conflict with core Views glossary | NOTE | — | Drupal Views `glossary` view also at `/glossary`; custom route should take priority |

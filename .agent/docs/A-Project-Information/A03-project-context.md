@@ -140,7 +140,7 @@ These feed into [E02-issues/](../E-Quality/E02-issues/) and G02-risk-register.md
 | BUG-002 | `lms_forum/LmsForumController::viewTopic()` has debug `messenger()->addMessage("FRESH CONTROLLER LOADED!")` left in production code | `lms_forum/src/Controller/LmsForumController.php` |
 | BUG-003 | `lms_rating`: 3 missing routes (`lms_rating.collection`, `lms_rating.toggle_approve`, `lms_rating.toggle_featured`) — `RatingListBuilder` operations + `RatingController` redirects throw `RouteNotFoundException` at runtime | `lms_rating/src/` |
 | BUG-004 | `lms_zoom/ZoomController::generateSignature()` references wrong service id (see G02-risk-register.md) | `lms_zoom/src/Controller/ZoomController.php` |
-| BUG-005 | `lms_user_certificate.field_expiry_date` is declared as `datetime` but stored as varchar — type mismatch | `lms_certificate/src/Entity/UserCertificate.php` |
+| BUG-005 | `lms_user_certificate.field_expiry_date` is a Drupal `datetime` field (ISO8601 string storage); any code comparing against Unix integer timestamps silently fails — use `DrupalDateTime` for comparisons | `lms_certificate/src/Entity/UserCertificate.php` |
 | BUG-006 | `CheckoutForm::buildForm()` creates a Stripe PaymentIntent on every form BUILD (one per page load, not per submit) | `lms_order/src/Form/CheckoutForm.php` |
 | BUG-007 | No atomic transaction between order creation and enrollment — `lms_order_process_completed_order()` called from hook with no DB transaction wrapper | `lms_order/lms_order.module` |
 | BUG-008 | `/checkout/{course_id}` and `/checkout/membership/{plan_id}` have `_access: TRUE` — anonymous users can reach checkout (redirect to login is controller-level, not router-level) | `lms_order/lms_order.routing.yml` |
@@ -169,7 +169,7 @@ These feed into [E02-issues/](../E-Quality/E02-issues/) and G02-risk-register.md
 | 2026-04-16 | Payment gateway = Plugin host pattern (`PaymentGatewayManager` + `@PaymentGateway` annotation) | Same rationale — swap gateways without touching checkout logic | ADR-007 |
 | 2026-04-16 | Quiz grading = static PHP factory (`GradingStrategyFactory`) NOT a Drupal Plugin | Per-type strategy; binary pass/fail; no runtime plugin discovery overhead | ADR-005 |
 | 2026-04-16 | Certificates auto-issued via event subscriber on `lms_quiz.passed` | Decoupled; certificate module listens to quiz module event; traverses hierarchy to find course | — |
-| «unverified» | Mobile auth = custom bearer token via keyvalue.expirable + OTP (not OAuth2/JWT) | Lightweight; avoids OAuth2 server complexity for mobile-only token flow | — |
+| 2026-04-16 (est.) | Mobile auth = custom bearer token via keyvalue.expirable + OTP (not OAuth2/JWT) | Lightweight; avoids OAuth2 server complexity for mobile-only token flow; confirmed as-built per `lms_mobile_api` code scan | — |
 
 ---
 

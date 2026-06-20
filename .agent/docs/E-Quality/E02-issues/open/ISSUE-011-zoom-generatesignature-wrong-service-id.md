@@ -45,16 +45,16 @@ The controller references `lms_zoom.zoom_service`; the services file registers `
 
 ## Root Cause
 
-`ZoomController` was written (or edited) using the service ID `lms_zoom.zoom_service` — likely a copy-paste error or a rename of the service that was applied in `services.yml` but not propagated to the controller's `create()` factory method and/or constructor injection. The canonical service registration in `lms_zoom.services.yml` uses the ID `lms_zoom.service`.
+`ZoomController::generateSignature()` uses a static `\Drupal::service('lms_zoom.zoom_service')` call inside the method body (line ~95) to obtain `ZoomService` for the host ZAK token lookup — rather than using the already-injected `$this->zoomService` property. The static call uses the wrong service ID `lms_zoom.zoom_service` instead of the correct `lms_zoom.service`. The DI injection in `create()` (line 26) correctly uses `lms_zoom.service`, but a secondary static call bypasses DI and uses a stale service name.
 
 Source files:
 - `web/modules/custom/lms_zoom/lms_zoom.services.yml` — correct registration: `lms_zoom.service`
-- `web/modules/custom/lms_zoom/src/Controller/ZoomController.php` — incorrect reference: `lms_zoom.zoom_service`
+- `web/modules/custom/lms_zoom/src/Controller/ZoomController.php` — incorrect static call at line ~95: `\Drupal::service('lms_zoom.zoom_service')`
 
 ## Resolution (filled at RESOLVED)
 
 1. Open `web/modules/custom/lms_zoom/src/Controller/ZoomController.php`.
-2. In the `create(ContainerInterface $container)` static factory and/or constructor, change `$container->get('lms_zoom.zoom_service')` to `$container->get('lms_zoom.service')`.
+2. In `generateSignature()`, replace the static call `\Drupal::service('lms_zoom.zoom_service')` (line ~95) with `$this->zoomService` (use the already-injected property instead of a new static lookup).
 3. Verify the fix: clear caches (`drush cr`), then POST to `/api/lms/websdk/signature` as a host user and confirm a valid JWT is returned with no `ServiceNotFoundException`.
 4. Add integration test covering host-role signature generation.
 

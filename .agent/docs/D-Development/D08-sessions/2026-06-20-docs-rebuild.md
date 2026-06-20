@@ -28,7 +28,7 @@ agent: multi-agent-parallel (Sonnet 4.6 × N)
 
 ## Ground-Truth Method
 
-The codebase at `/home/hainn/projects/everlms` was pre-scanned into 13 facts files under `the 2026-06-20 code ground-truth scan`. Each agent read the relevant facts file(s) before writing — no direct codebase re-scan was performed during the write phase. Where a specific detail was not in the facts, the agent opened the exact source file (e.g., a `.routing.yml` or `.info.yml`) to confirm, then wrote the result. Claims that were genuinely unverifiable were tagged `«unverified»`.
+The codebase at `/home/hainn/projects/everlms` was pre-scanned into 13 facts files (listed in the table below). Each agent read the relevant facts file(s) before writing — no direct codebase re-scan was performed during the write phase. Where a specific detail was not in the facts file, the agent opened the exact source file (e.g., a `.routing.yml` or `.info.yml`) to confirm, then wrote the result. Claims that could not be confirmed from static source files (e.g., runtime behavior, production telemetry) were marked for later verification.
 
 **Facts files consumed:**
 

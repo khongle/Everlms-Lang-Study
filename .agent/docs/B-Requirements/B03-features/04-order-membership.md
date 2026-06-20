@@ -3,7 +3,7 @@ id: F-004
 name: Order and Membership
 priority: Must
 status: APPROVED
-parent-requirements: [BR-004]
+parent-requirements: [BR-005, BR-006]
 owning_modules: [lms_order, lms_membership, lms_payment, lms_stripe, lms_paypal, lms_wishlist, lms_bundle]
 primary_source: C05
 story_anchors: []

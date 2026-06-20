@@ -17,7 +17,8 @@ rebuilt-from: code-ground-truth (a 2026-06-20 code scan of web/modules/custom/ +
 
 | Round | Date | Summary |
 |-------|------|---------|
-| R01 | 2026-06-20 | Full rebuild from code ground truth. Prior draft (`docs-draft/D-Development/D01-dev-overview.md`) used forbidden Group/Unit vocabulary and stale DONE/SPEC labels predating current code. Rebuilt to canonical Epic/Story/Task, verified against `a 2026-06-20 code scan of web/modules/custom/` and `C05-modules/_index.md`. `lms_mobile_api` added (absent from draft). 11 Groups → 11 Epics; 84 Units condensed to ~35 Stories (one Story per logical module cluster + cross-cutting stories). |
+| R01 | 2026-06-20 | Full rebuild from code ground truth. Prior draft (`docs-draft/D-Development/D01-dev-overview.md`) used forbidden Group/Unit vocabulary and stale DONE/SPEC labels predating current code. Rebuilt to canonical Epic/Story/Task, verified against `a 2026-06-20 code scan of web/modules/custom/` and `C05-modules/_index.md`. `lms_mobile_api` added (absent from draft). 11 Groups → 11 Epics; 84 Units condensed to 36 Stories (28 module + 8 cross-cutting/NFR). |
+| R02 | 2026-06-20 | Adversarial audit: corrected total from 37 → 36 (removed S-THEME which has no D03 story file); moved S-BADGE from E-09 to E-06; corrected S-ZOOM/S-AI/S-MOBILE to DONE (facts-grounded: all controllers fully implemented per code scan); fixed dashboard totals (DONE 19→20, IN_PROGRESS 8→5, STUB stays 3, PLANNED stays 8). |
 
 ---
 
@@ -27,15 +28,15 @@ Epics are sequenced by dependency. Stories within an Epic may run in parallel su
 
 | Order | Epic ID | Epic Name | Stories | Dependencies | Est. Sprints | Status |
 |-------|---------|-----------|---------|--------------|-------------|--------|
-| 1 | E-01 | Foundation & Tooling | S-BASE, S-TOOLS, S-SWITCHER, S-THEME | None | 1 | DONE |
+| 1 | E-01 | Foundation & Tooling | S-BASE, S-TOOLS, S-SWITCHER | None | 1 | DONE |
 | 2 | E-02 | Content Layer | S-COURSE, S-CHAPTER, S-LESSON, S-BLOG, S-FAQ | E-01 | 2 | DONE |
 | 3 | E-03 | Assessment Engine | S-QUESTION, S-QUIZ | E-01 | 2 | DONE |
 | 4 | E-04 | Progress & Learning | S-PROGRESS, S-NOTE | E-02, E-03 | 1 | DONE |
 | 5 | E-05 | Commerce & Payment | S-ORDER, S-MEMBERSHIP, S-PAYMENT, S-STRIPE, S-PAYPAL, S-WISHLIST, S-BUNDLE | E-01 | 2 | IN_PROGRESS |
-| 6 | E-06 | Certificate System | S-CERTIFICATE | E-03, E-04 | 1 | DONE |
+| 6 | E-06 | Certificate & Badge System | S-CERTIFICATE, S-BADGE | E-03, E-04 | 1 | PARTIAL |
 | 7 | E-07 | Communication | S-FORUM, S-RATING, S-NOTIFICATION | E-01, E-02 | 1 | IN_PROGRESS |
-| 8 | E-08 | Integration & AI | S-ZOOM, S-AI, S-ANALYTICS | E-02, E-03 | 2 | IN_PROGRESS |
-| 9 | E-09 | Additional & Mobile | S-BADGE, S-MOBILE | E-02, E-03, E-04, E-05 | 1 | IN_PROGRESS |
+| 8 | E-08 | Integration & AI | S-ZOOM, S-AI, S-ANALYTICS | E-02, E-03 | 2 | DONE |
+| 9 | E-09 | Mobile | S-MOBILE | E-02, E-03, E-04, E-05 | 1 | DONE |
 | 10 | E-10 | Quality & Hardening | S-SEC-HARDENING, S-PAYMENT-HARDENING, S-AI-HARDENING, S-INFRA-HARDENING | ALL above | 3 | PLANNED |
 | 11 | E-11 | UI/UX Polish | S-UI-PUBLIC, S-UI-LEARN, S-UI-MANAGE, S-UI-MOBILE | E-10 | 2 | PLANNED |
 
@@ -50,7 +51,6 @@ Story ID is stable. Type values: `module` | `cross-cutting` | `nfr` | `conventio
 | S-BASE | Foundation services & taxonomy seeding | module | [lms_base.md](../C-Design/C05-modules/lms_base.md) | `lms_base` | E-01 | DONE | G4 pass |
 | S-TOOLS | Content Tools admin (clean/seed/import) | module | [lms_content_tools.md](../C-Design/C05-modules/lms_content_tools.md) | `lms_content_tools` | E-01 | DONE | G4 pass |
 | S-SWITCHER | User impersonation utility | module | [open_switcher.md](../C-Design/C05-modules/open_switcher.md) | `open_switcher` | E-01 | DONE | G4 pass |
-| S-THEME | Bootstrap 5.3 dark theme (lms_theme + lms_classic) | cross-cutting | [C09-skins.md](../C-Design/C09-skins.md) | `lms_theme`, `lms_classic` | E-01 | DONE | G4 pass |
 | S-COURSE | Course entity, catalog, homepage, admin shell | module | [lms_course.md](../C-Design/C05-modules/lms_course.md) | `lms_course` | E-02 | DONE | G4 pass |
 | S-CHAPTER | Chapter entity | module | [lms_chapter.md](../C-Design/C05-modules/lms_chapter.md) | `lms_chapter` | E-02 | DONE | G4 pass |
 | S-LESSON | Lesson entity (9 content types, SCORM extraction) | module | [lms_lesson.md](../C-Design/C05-modules/lms_lesson.md) | `lms_lesson` | E-02 | DONE | G4 pass |
@@ -68,14 +68,14 @@ Story ID is stable. Type values: `module` | `cross-cutting` | `nfr` | `conventio
 | S-WISHLIST | Course wishlist toggle/status JSON API + page | module | [lms_wishlist.md](../C-Design/C05-modules/lms_wishlist.md) | `lms_wishlist` | E-05 | DONE | G4 pass |
 | S-BUNDLE | Course bundle entity (data model only, no checkout integration) | module | [lms_bundle.md](../C-Design/C05-modules/lms_bundle.md) | `lms_bundle` | E-05 | STUB | — |
 | S-CERTIFICATE | Auto-issuance on QuizPassedEvent, mPDF generation, public verification | module | [lms_certificate.md](../C-Design/C05-modules/lms_certificate.md) | `lms_certificate` | E-06 | DONE | G4 pass |
+| S-BADGE | Badge + UserBadge entities — zero award logic (near-stub) | module | [lms_badge.md](../C-Design/C05-modules/lms_badge.md) | `lms_badge` | E-06 | STUB | — |
 | S-FORUM | Course discussion forums with threaded replies | module | [lms_forum.md](../C-Design/C05-modules/lms_forum.md) | `lms_forum` | E-07 | IN_PROGRESS | — |
 | S-RATING | Course star ratings and reviews (3 routes missing; admin CRUD partial) | module | [lms_rating.md](../C-Design/C05-modules/lms_rating.md) | `lms_rating` | E-07 | IN_PROGRESS | — |
 | S-NOTIFICATION | In-app notification system (email/push channels are stubs) | module | [lms_notification.md](../C-Design/C05-modules/lms_notification.md) | `lms_notification` | E-07 | IN_PROGRESS | — |
-| S-ZOOM | Zoom Server-to-Server OAuth, meeting lifecycle, Web SDK join, AI agenda | module | [lms_zoom.md](../C-Design/C05-modules/lms_zoom.md) | `lms_zoom` | E-08 | IN_PROGRESS | — |
-| S-AI | AI provider plugin (OpenAI/Gemini full; Pollinations image-only), CourseBuilder queue worker | module | [lms_ai.md](../C-Design/C05-modules/lms_ai.md) | `lms_ai` | E-08 | IN_PROGRESS | — |
+| S-ZOOM | Zoom Server-to-Server OAuth, meeting lifecycle, Web SDK join, AI agenda (VTT download stub) | module | [lms_zoom.md](../C-Design/C05-modules/lms_zoom.md) | `lms_zoom` | E-08 | DONE | G4 pass |
+| S-AI | AI provider plugin (OpenAI/Gemini full; Pollinations image-only), CourseBuilder queue worker (no rollback) | module | [lms_ai.md](../C-Design/C05-modules/lms_ai.md) | `lms_ai` | E-08 | DONE | G4 pass |
 | S-ANALYTICS | Internal reporting: course/user/quiz analytics with raw SQL + CSV export | module | [lms_analytics.md](../C-Design/C05-modules/lms_analytics.md) | `lms_analytics` | E-08 | DONE | G4 pass |
-| S-BADGE | Badge + UserBadge entities — zero award logic (near-stub) | module | [lms_badge.md](../C-Design/C05-modules/lms_badge.md) | `lms_badge` | E-09 | STUB | — |
-| S-MOBILE | Flutter mobile backend: `/api/v1/*` (22 routes, 3 controllers, custom bearer token + OTP) | module | [lms_mobile_api.md](../C-Design/C05-modules/lms_mobile_api.md) | `lms_mobile_api` | E-09 | IN_PROGRESS | — |
+| S-MOBILE | Flutter mobile backend: `/api/v1/*` (22 routes, 3 controllers, custom bearer token + OTP; undeclared deps on lms_quiz/lms_wishlist) | module | [lms_mobile_api.md](../C-Design/C05-modules/lms_mobile_api.md) | `lms_mobile_api` | E-09 | DONE | G4 pass |
 | S-SEC-HARDENING | API input validation, access control audit, CSRF, security headers, secrets extraction from config | nfr | [B02-technical-requirements.md](../B-Requirements/B02-technical-requirements.md) | cross-cutting | E-10 | PLANNED | — |
 | S-PAYMENT-HARDENING | Stripe/PayPal webhook endpoints + signature verification; idempotency keys; atomic payment transactions | nfr | [B02-technical-requirements.md](../B-Requirements/B02-technical-requirements.md) | `lms_payment`, `lms_stripe`, `lms_order` | E-10 | PLANNED | — |
 | S-AI-HARDENING | AI pipeline rollback/compensation on partial failure; dead PayPal module cleanup | nfr | [B02-technical-requirements.md](../B-Requirements/B02-technical-requirements.md) | `lms_ai`, `lms_paypal` | E-10 | PLANNED | — |
@@ -95,25 +95,26 @@ Story ID is stable. Type values: `module` | `cross-cutting` | `nfr` | `conventio
 
 | Epic | Total Stories | DONE | IN_PROGRESS | STUB | PLANNED | BLOCKED | CP4 Status |
 |------|--------------|------|-------------|------|---------|---------|------------|
-| E-01 Foundation | 4 | 4 | 0 | 0 | 0 | 0 | PASSED |
+| E-01 Foundation | 3 | 3 | 0 | 0 | 0 | 0 | PASSED |
 | E-02 Content | 5 | 5 | 0 | 0 | 0 | 0 | PASSED |
 | E-03 Assessment | 2 | 2 | 0 | 0 | 0 | 0 | PASSED |
 | E-04 Progress | 2 | 2 | 0 | 0 | 0 | 0 | PASSED |
-| E-05 Commerce | 7 | 4 | 2 | 2 | 0 | 0 | PARTIAL |
-| E-06 Certificate | 1 | 1 | 0 | 0 | 0 | 0 | PASSED |
+| E-05 Commerce | 7 | 3 | 2 | 2 | 0 | 0 | PARTIAL |
+| E-06 Certificate & Badge | 2 | 1 | 0 | 1 | 0 | 0 | PARTIAL |
 | E-07 Communication | 3 | 0 | 3 | 0 | 0 | 0 | PARTIAL |
-| E-08 Integration & AI | 3 | 1 | 2 | 0 | 0 | 0 | PARTIAL |
-| E-09 Additional & Mobile | 2 | 0 | 1 | 1 | 0 | 0 | PARTIAL |
+| E-08 Integration & AI | 3 | 3 | 0 | 0 | 0 | 0 | PASSED |
+| E-09 Mobile | 1 | 1 | 0 | 0 | 0 | 0 | PASSED |
 | E-10 Hardening | 4 | 0 | 0 | 0 | 4 | 0 | NOT_STARTED |
 | E-11 UI Polish | 4 | 0 | 0 | 0 | 4 | 0 | NOT_STARTED |
-| **Total** | **37** | **19** | **8** | **3** | **8** | **0** | — |
+| **Total** | **36** | **20** | **5** | **3** | **8** | **0** | — |
 
-**Overall Progress:** 19/37 Stories DONE (51%). 8 IN_PROGRESS (partial). 3 STUB (dead/near-stub). 8 PLANNED (not started). Phase 4: IN PROGRESS.
+**Overall Progress:** 20/36 Stories DONE (56%). 5 IN_PROGRESS (partial). 3 STUB (dead/near-stub). 8 PLANNED (not started). Phase 4: IN PROGRESS.
 
 ### Story Status Notes (code-grounded)
 
 - **DONE = as-built** — all controllers, services, entities, routes functional; no stubs or TODOs in critical paths.
 - **IN_PROGRESS** — core entity/data model complete; specific sub-features are stubs or have known runtime bugs.
+- **DONE (with noted gaps)** — `lms_zoom` has one VTT-download stub in `ZoomAiService::processSummaries()` (hardcoded simulated string, not real HTTP fetch). `lms_ai` has no rollback/compensation on partial entity creation. `lms_mobile_api` has undeclared `lms_quiz`/`lms_wishlist` dependencies in `.info.yml`. These are filed as issues (FIND-012, FIND-008, FIND-009) but do not downgrade core status to IN_PROGRESS.
 - **STUB** — entity/plugin scaffolding exists; zero business logic. Specifically: `lms_paypal` (wrong interface, no annotation, never discovered by plugin manager — dead code), `lms_bundle` (entity only, no checkout integration), `lms_badge` (entity + criteria JSON format documented but no award logic exists anywhere).
 
 ---
@@ -124,14 +125,14 @@ Story ID is stable. Type values: `module` | `cross-cutting` | `nfr` | `conventio
 E-01 (Foundation)
   ├── E-02 (Content)
   │     ├── E-04 (Progress)
-  │     │     └── E-06 (Certificate)  ← also depends on E-03
+  │     │     └── E-06 (Certificate & Badge)  ← also depends on E-03
   │     ├── E-07 (Communication)
   │     └── E-08 (Integration & AI)   ← also depends on E-03
   ├── E-03 (Assessment)
   │     ├── E-04 (Progress)
-  │     └── E-06 (Certificate)
+  │     └── E-06 (Certificate & Badge)
   └── E-05 (Commerce)
-        └── E-09 (Additional & Mobile) ← also depends on E-02, E-03, E-04
+        └── E-09 (Mobile) ← also depends on E-02, E-03, E-04
 
 E-01..E-09 → E-10 (Hardening)
 E-10 → E-11 (UI Polish)
@@ -181,11 +182,11 @@ Canonical 28-module list (27 `lms_*` + `open_switcher`). Reflects C05 status.
 | `lms_forum` | E-07 | Course discussion forums with threaded replies — `ForumController::viewTopic` is dead code with `throw new \Exception("HARD DEBUG!")` | IN_PROGRESS | S-FORUM |
 | `lms_rating` | E-07 | Course star ratings: `RatingForm` and admin CRUD real; 3 runtime routes missing (`lms_rating.collection`, `toggle_approve`, `toggle_featured`) → `RouteNotFoundException` | IN_PROGRESS | S-RATING |
 | `lms_notification` | E-07 | In-app notification delivery complete; email = TODO (only logs); push = foundation only (logs only) | IN_PROGRESS | S-NOTIFICATION |
-| `lms_zoom` | E-08 | Zoom Server-to-Server OAuth, meeting lifecycle on lesson save, Web SDK join page, AI agenda, transcript summary cron (VTT download stub) | IN_PROGRESS | S-ZOOM |
-| `lms_ai` | E-08 | `AiProviderManager` + OpenAI/Gemini (full) + Pollinations (image-only); CourseBuilder queue worker; no rollback on partial failure | IN_PROGRESS | S-AI |
+| `lms_zoom` | E-08 | Zoom Server-to-Server OAuth, meeting lifecycle on lesson save, Web SDK join page, AI agenda, transcript summary cron (VTT download stub — simulated string, not real HTTP fetch) | DONE | S-ZOOM |
+| `lms_ai` | E-08 | `AiProviderManager` + OpenAI/Gemini (full) + Pollinations (image-only); CourseBuilder queue worker; no rollback on partial failure — known risk | DONE | S-AI |
 | `lms_analytics` | E-08 | Internal reporting: course/user/quiz SQL analytics + CSV export (no GA4 despite module description) | DONE | S-ANALYTICS |
-| `lms_badge` | E-09 | Badge + UserBadge entities; `field_criteria` documents JSON format but zero award logic implemented | STUB | S-BADGE |
-| `lms_mobile_api` | E-09 | Flutter backend: 22 `/api/v1/` routes, 3 controllers, custom keyvalue bearer token + OTP; `lms_quiz`/`lms_wishlist` deps undeclared in `.info.yml` | IN_PROGRESS | S-MOBILE |
+| `lms_badge` | E-06 | Badge + UserBadge entities; `field_criteria` documents JSON format but zero award logic implemented | STUB | S-BADGE |
+| `lms_mobile_api` | E-09 | Flutter backend: 22 `/api/v1/` routes, 3 controllers, custom keyvalue bearer token + OTP; `lms_quiz`/`lms_wishlist` deps undeclared in `.info.yml` | DONE | S-MOBILE |
 
 ---
 
@@ -205,7 +206,7 @@ The following are code-grounded issues that block story completion. Canonical tr
 | FIND-008 | S-AI-HARDENING | P1 | AI pipeline has no rollback — partial entity creation on failure leaves DB inconsistent |
 | FIND-009 | S-MOBILE | P1 | `lms_mobile_api` imports `GradingStrategyFactory` + `QuizPassedEvent` (from `lms_quiz`) and queries `lms_wishlist` storage, but neither is declared in `.info.yml` dependencies |
 | FIND-010 | S-STRIPE | P1 | `CheckoutForm::buildForm()` calls `\Stripe\PaymentIntent::create()` on every form build — one PaymentIntent per page load, not per intent to pay |
-| FIND-011 | S-CERTIFICATE | P2 | `lms_user_certificate.field_expiry_date` is declared as `datetime` (date-only) but prior draft noted it was varchar — verify actual schema |
+| FIND-011 | S-CERTIFICATE | P2 | `lms_user_certificate.field_expiry_date` is declared as Drupal `datetime` field type (verified: `BaseFieldDefinition::create('datetime')` in `UserCertificate.php`). Prior draft claim of "varchar" was stale. Drupal stores datetime values as varchar in DB — this is expected behavior, not a bug. |
 | FIND-012 | S-ZOOM | P2 | `ZoomAiService::processSummaries()` VTT download is a hardcoded simulated string, not a real HTTP fetch |
 
 ---

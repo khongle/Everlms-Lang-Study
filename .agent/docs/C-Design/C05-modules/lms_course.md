@@ -200,7 +200,7 @@ web/modules/custom/lms_course/
 - **Static service call anti-pattern:** `hook_entity_access()` calls `\Drupal::service()` directly instead of injecting dependencies. Should be refactored to a proper event subscriber or service.
 - **Coarse permissions:** All `/workspace` actions gate on a single `administer lms_course` permission. No granular per-feature workspace permissions exist.
 - **Hardcoded mock data:** `AdminController::quizList()` has `pending_grading` hardcoded to `5`. `PageController::about()` has team member names hardcoded (John Smith, Sarah Johnson, etc.) — not entity-driven.
-- **Partial controller confirmation:** `categories()`, `categoryDetail()`, and `glossary()` methods in `CoursePublicController` are declared in routing.yml. Their implementation is confirmed present (the controller file is 1969 lines; these methods appear in the unread tail at line 1621+) but detailed behavior is «unverified».
+- **Confirmed controller methods:** `categories()` (line 1624) returns active categories from `course_category` vocabulary, filtered to those with at least one published course, with thumbnail URL and course count. `categoryDetail(TermInterface)` (line 1663) paginates courses (12/page) filtered by `field_category`, sorted by `created` DESC. `glossary()` (line 1885) loads `node` entities of type `glossary`, alphabetically buckets them A-Z plus `#`, and extracts `field_glossary_category`, `field_related_terms`, and `body`/`field_definition` per term.
 
 ---
 

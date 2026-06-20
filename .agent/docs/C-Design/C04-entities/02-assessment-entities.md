@@ -61,7 +61,7 @@ moderation_workflow: null
 | 7 | `field_body` | Instructions | text_long | 1 | No | — | Yes | — | `lms_quiz_field_data.field_body__value/format` | Shown to learner before quiz start |
 | 8 | `field_questions` | Questions | entity_reference → lms_question | unlimited | No | — | No | lms_question | `lms_quiz__field_questions` junction table | Ordered question pool |
 | 9 | `field_threshold` | Pass Threshold | integer | 1 | No | 70 | No | — | `lms_quiz_field_data.field_threshold` | Pass score %; integer 0-100 |
-| 10 | `field_time_limit` | Time Limit | integer | 1 | No | 0 | No | — | `lms_quiz_field_data.field_time_limit` | Minutes; 0=unlimited. Note: DB stores as `int` (seconds in dump — verify actual unit) |
+| 10 | `field_time_limit` | Time Limit | integer | 1 | No | 0 | No | — | `lms_quiz_field_data.field_time_limit` | Minutes; 0=unlimited (entity definition uses minutes; DB column is `int`) |
 | 11 | `field_display_right_answer` | Show Correct Answers | boolean | 1 | No | TRUE | No | — | `lms_quiz_field_data.field_display_right_answer` | Show correct answers after submit |
 | 12 | `field_form_style` | Form Style | list_string | 1 | No | one_page | No | one_page, question_step | `lms_quiz_field_data.field_form_style` | Display all questions vs paginated |
 | 13 | `field_question_count` | Random Question Count | integer | 1 | No | 0 | No | — | `lms_quiz_field_data.field_question_count` | 0=use all questions; >0=random draw N |
@@ -278,7 +278,7 @@ moderation_workflow: null
 
 - Created one-per-question by `QuizController::submitQuiz()` via `GradingStrategyFactory::getStrategy($bundle)->grade(...)`.
 - `field_correct` and `field_score` are set by the grading strategy (binary; no partial credit except for essay which sets both to 0/FALSE + `field_pending_review=TRUE`).
-- `field_teacher_feedback` entry point: «unverified» — no dedicated teacher grading UI route found in current codebase. Field exists but instructor workflow for adding feedback is not confirmed.
+- `field_teacher_feedback` entry point: no dedicated teacher grading UI route exists in the current codebase. The field is defined and stored in DB but there is no controller action or form that allows an instructor to populate it. Manual essay grading path is not implemented.
 
 ### DB scale (as of 2026-06-20)
 

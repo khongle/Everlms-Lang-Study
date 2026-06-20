@@ -152,7 +152,7 @@ AI queue (`lms_ai_content_generator`): processed by Drupal cron → `CourseConte
 | `CourseContentGenerator` queue worker | DONE (as-built) | Processes `lms_ai_content_generator` queue items |
 | Advanced AI Engine (`AiEngineUserForm`) | DONE (as-built) | Multi-step bulk pipeline; no rollback on partial failure |
 | Rollback/compensation on AI failure | NOT IMPLEMENTED (target-state) | No saga pattern; orphaned drafts on failure |
-| Course duration auto-calculation | «unverified» | `field_duration` on course is an integer field; whether it auto-sums lesson durations on save is unconfirmed |
+| Course duration auto-calculation | NOT IMPLEMENTED (manual only) | `field_duration` on `lms_course` is a plain integer field; no hook in `lms_course.module` or `lms_lesson.module` auto-sums lesson durations. Value is set manually by admins or by the AI engine pipeline (`AiEngineUserForm` sets `field_duration` directly). `lms_lesson` also has its own `field_duration` integer, read independently by `ZoomMeetingManager`, `MobileCourseController`, and `WishlistController` — none of them update the parent course total. |
 
 ## Acceptance (B05)
 

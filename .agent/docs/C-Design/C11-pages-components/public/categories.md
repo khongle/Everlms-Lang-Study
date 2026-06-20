@@ -68,7 +68,7 @@ adequacy_run: null
 - **Edit smoke:** Rename a category term → reload `/categories` → updated name on card
 - **View mode / Projection:** Card grid (icon, name, description, course count badge); 4 columns desktop, 3 tablet, 2 mobile
 - **Region / Placement:** Main content section (below hero)
-- **Notes:** Category icon field existence on the vocabulary is «unverified» — prototype uses emoji placeholder icons. Each card links to `/categories/{term_id}` which triggers `CategoryDetail` filtered course catalog. Course count per category is computed via entity query aggregation.
+- **Notes:** No dedicated icon field exists on `course_category` — there is no `field_icon` field storage config in the repo (confirmed: only `field_category_thumbnail` and `field_is_featured` exist on this vocabulary per `config/sync/field.field.taxonomy_term.course_category.*`). The `categories()` controller loads `field_category_thumbnail` (image field, confirmed in `CoursePublicController::categories()`) and the Twig template falls back to `<i class="fas fa-book"></i>` when no thumbnail is set (confirmed in `lms-categories.html.twig` line 26). Each card links to `/categories/{term_id}` which triggers `CategoryDetail` filtered course catalog. Course count per category is computed via entity query on `lms_course` with `field_category = term->id()` and `status = TRUE` (confirmed in `CoursePublicController::categories()`).
 - **How to implement (EN):** Load all published `course_category` terms (sort by weight or name); for each term count associated `lms_course` (published); render as card grid linking to `/categories/{tid}`.
 - **How to implement (VI):** Load tất cả term `course_category` published (sắp theo weight hoặc name); mỗi term đếm `lms_course` liên kết (published); render dạng card grid link đến `/categories/{tid}`.
 - **Solution Architect Request:**
@@ -108,7 +108,7 @@ adequacy_run: null
 - **Edit smoke:** N/A
 - **View mode / Projection:** Dark-background section with headline, sub-copy, and two CTA buttons
 - **Region / Placement:** Below CTA strip, before footer
-- **Notes:** Prototype shows "Not sure where to start?" with "Take a quiz" and "Talk to an advisor" CTAs. Exact copy and link targets are «unverified» for production; prototype is the visual reference.
+- **Notes:** This CTA section ("Not sure where to start?" / "Take a quiz" / "Talk to an advisor") from the prototype is NOT present in the current `lms-categories.html.twig` template (confirmed: template is 93 lines and contains no such section). The page ends after the category grid. No advisor CTA copy or quiz link is implemented.
 - **How to implement (EN):** Render a full-width section with headline, description, and two CTA links (e.g. Browse Courses + Contact).
 - **How to implement (VI):** Render section full-width với headline, mô tả, và hai link CTA (VD: Browse Courses + Contact).
 - **Solution Architect Request:**
@@ -136,6 +136,6 @@ adequacy_run: null
 | Component | Status | Story | Notes |
 |---|---|---|---|
 | Page Hero | DONE | — | `categories()` method implemented (confirmed in routing.yml; file tail unread) |
-| Category Grid | DONE | — | Template `lms-categories.html.twig` confirmed; category count aggregation «unverified» in tail |
+| Category Grid | DONE | — | Template `lms-categories.html.twig` confirmed; category count aggregation confirmed in `CoursePublicController::categories()`: entity query on `lms_course` with `field_category = term->id()` and `status = TRUE` |
 | CTA Strip | DONE | — | Visible in prototype; implementation assumed in template |
 | Not Sure CTA Section | DONE | — | Visible in prototype |

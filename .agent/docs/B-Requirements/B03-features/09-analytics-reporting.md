@@ -3,7 +3,7 @@ id: F-009
 name: Analytics & Reporting
 priority: Must
 status: APPROVED
-parent-requirements: [BR-009]
+parent-requirements: [BR-010]
 owning_modules: [lms_analytics]
 primary_source: C05
 story_anchors: []

@@ -26,7 +26,7 @@ EverLMS targets a **classic Drupal test pyramid** with an additional browser/E2E
 **Current reality (as-built as of 2026-06-20):** There are **no automated test files** in any `lms_*/tests/` directory. No CI pipeline exists. No visual regression or performance baseline has been run. This document is entirely a target strategy; all items below are planned.
 
 The strategy is grounded in:
-- 28 custom `lms_*` modules + `open_switcher` at `web/modules/custom/`
+- 27 custom `lms_*` modules + `open_switcher` (28 total) at `web/modules/custom/`
 - 137 routes (19 public, 21 learn/app, 47 workspace/manage, 17 admin, 31 API)
 - Priority critical logic: `GradingStrategyFactory` (8 strategies), `ProgressCascadeService`, certificate auto-issuance, `PaymentGatewayManager`
 - Known bugs and stubs that must be covered by negative tests or deferred (see [E02-issues/](E02-issues/) — planned layer)

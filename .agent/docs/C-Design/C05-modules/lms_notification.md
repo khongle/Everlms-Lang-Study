@@ -2,7 +2,7 @@
 module: lms_notification
 service: notification
 route-groups: [App, Admin, API]
-status: IN_PROGRESS
+status: DONE
 ---
 
 # C05 — Module: LMS Notification

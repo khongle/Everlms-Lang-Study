@@ -188,7 +188,7 @@ Most LMS feature access is NOT controlled by Drupal permission config alone. Thr
 - `/workspace/content-tools` via `administer lms content tools` — **not** assigned to manager in config; would require additional permission grant.
 - `switch users` — impersonate any non-admin account via open_switcher.
 - AI course builder (`/manage/courses/ai-builder`) — requires `administer lms_course`.
-- Blog article CRUD (`/manage/blog`) — requires `administer lms_blog` (not confirmed in config; «unverified»).
+- Blog article CRUD (`/manage/blog`) — requires `administer lms_blog`. **Not assigned to manager in config** (user.role.manager.yml has no `administer lms_blog`); managers cannot access `/manage/blog` unless given this permission explicitly.
 - Analytics reports at `/admin/lms/reports/courses` (requires `administer lms_course` — fulfilled).
 
 #### Denied

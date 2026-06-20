@@ -53,9 +53,9 @@ Stored in `lms_payment.settings` config YAML (`config/sync/lms_payment.settings.
 
 | Metric | Target | Measurement |
 |--------|--------|------------|
-| Latency (p95) | «unverified» | Not measured (stub) |
-| Availability | «unverified» | Not measured |
-| Throughput | «unverified» | Not measured |
+| Latency (p95) | not measured — local dev only, no production telemetry; no real API calls made (stub) | N/A |
+| Availability | not measured — no production deployment; stub does not contact PayPal | N/A |
+| Throughput | not measured — stub makes zero actual API calls; volume is effectively zero | N/A |
 | Error Rate | N/A | Stub always returns success |
 
 ---

@@ -35,7 +35,7 @@ Free, no-auth image generation service. Implemented as an `AiProviderInterface` 
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Latency (p95) | «unverified» — no SLA from provider | Drupal watchdog |
+| Latency (p95) | not measured — local dev only, no production telemetry; Pollinations publishes no SLA (free public service) | Drupal watchdog |
 | Availability | No SLA (free public service) | N/A |
 | Throughput | No stated limit; rate throttling possible | N/A |
 | Error Rate | < 10% acceptable (no business-critical path) | Drupal logger |
@@ -73,7 +73,7 @@ No structured JSON error envelope. Failures are detected by non-200 HTTP status 
 
 | Property | Value |
 |----------|-------|
-| Max Retries | «unverified» — no retry logic in `PollinationsProvider`; single HTTP GET per call |
+| Max Retries | 0 — confirmed single HTTP GET, no retry loop in `PollinationsProvider::generateImage()` (confirmed in PollinationsProvider.php) |
 | Backoff | None (as-built) |
 | Initial Delay | N/A |
 | Max Delay | N/A |

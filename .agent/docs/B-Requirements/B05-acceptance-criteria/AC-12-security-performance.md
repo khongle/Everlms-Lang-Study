@@ -143,7 +143,7 @@ status: DRAFT
 **Then** the following security headers are expected: `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and a `Content-Security-Policy` to be defined
 **And** session cookies should be set with `HttpOnly`, `Secure`, and `SameSite=Strict` flags
 
-> **Status:** These headers are not verified in `config/sync/` — they would be set at the nginx layer or via Drupal's `sites/default/services.yml` `session.storage.options`. This criterion is **target-state / planned** — current state is «unverified».
+> **Status:** These headers are not set anywhere in the repo — not in `config/sync/`, not in `web/sites/default/services.yml`, and not in any Drupal module. They would be set at the nginx/infrastructure layer (outside this repository). This criterion is **target-state / planned** — not measured and not in-repo; set at nginx layer, not in repo.
 
 ---
 

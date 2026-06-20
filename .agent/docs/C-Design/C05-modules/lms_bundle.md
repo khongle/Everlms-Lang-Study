@@ -2,7 +2,7 @@
 module: lms_bundle
 service: Commerce
 route-groups: [Manage]
-status: PROPOSED
+status: STUB
 ---
 
 # C05 — Module: LMS Bundle

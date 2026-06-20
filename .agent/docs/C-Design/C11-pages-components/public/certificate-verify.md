@@ -108,7 +108,7 @@ adequacy_run: null
 - **Edit smoke:** N/A
 - **View mode / Projection:** Accordion
 - **Region / Placement:** Bottom of page (per prototype)
-- **Notes:** Prototype shows "Common questions about certificates" accordion. Not confirmed in `VerificationForm` implementation. May be absent or target-state
+- **Notes:** Not implemented. `VerificationForm::buildForm()` and `::submitForm()` pass no FAQ data. `certificate-verification-result.html.twig` contains only the result table (recipient name, course, certificate code, issue date) with no FAQ section (confirmed by reading both files). The FAQ strip is absent from the as-built verification page; it exists only in the prototype design.
 - **How to implement (EN):** Load lms_faq where field_category=certificates/verify; render as accordion below result panel
 - **How to implement (VI):** Tải lms_faq với field_category=certificates; render dạng accordion bên dưới panel kết quả
 - **Solution Architect Request:** —
@@ -139,4 +139,4 @@ adequacy_run: null
 | Code Input Form | DONE | — | VerificationForm::buildForm() implemented |
 | Verification Result Panel | DONE | — | VerificationForm::submitForm() + certificate_verification_result theme; field_expiry_date varchar bug (see E02) |
 | Download PDF CTA | PLANNED | — | No public download route confirmed; admin can regenerate at /workspace/certificates/{id}/regenerate |
-| Certificate FAQ Strip | «unverified» | — | Not confirmed in VerificationForm implementation |
+| Certificate FAQ Strip | NOT IMPLEMENTED | — | `VerificationForm` passes no FAQ data; `certificate-verification-result.html.twig` has no FAQ section (confirmed). Prototype-only; absent from as-built page. |

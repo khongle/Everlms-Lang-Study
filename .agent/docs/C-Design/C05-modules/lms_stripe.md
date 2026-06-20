@@ -2,7 +2,7 @@
 module: lms_stripe
 service: Commerce
 route-groups: []
-status: IN_PROGRESS
+status: DONE
 ---
 
 # C05 — Module: LMS Stripe
@@ -78,7 +78,7 @@ Extends: `PaymentGatewayBase` (from `lms_payment`)
 
 ### Composer Dependency
 
-Uses `\Stripe\Stripe` and `\Stripe\PaymentIntent` — requires `stripe/stripe-php` package in `composer.json`. No version constraint documented in the facts base («unverified» — check `composer.lock`).
+Uses `\Stripe\Stripe` and `\Stripe\PaymentIntent` — requires `stripe/stripe-php` package in `composer.json`. Version: **v19.4.1** (confirmed in `composer.lock`).
 
 ---
 

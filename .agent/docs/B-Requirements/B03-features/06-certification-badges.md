@@ -3,7 +3,7 @@ id: F-006
 name: Certification & Badges
 priority: Must
 status: APPROVED
-parent-requirements: [BR-006]
+parent-requirements: [BR-007]
 owning_modules: [lms_certificate, lms_badge]
 primary_source: C05
 story_anchors: []

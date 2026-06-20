@@ -110,7 +110,7 @@ Selects from `users_field_data` (uid > 1 excludes anonymous/admin).
 | `getScoreDistribution(quiz_id)` | Fetches all scores; bins into 0–20, 21–40, 41–60, 61–80, 81–100 ranges; returns distribution array for Chart.js |
 | `getHardestQuestions(quiz_id, limit=5)` | JOINs `lms_question_response` with `lms_question_field_data`; calculates `correct_responses / total_responses` per question; sorts ascending (hardest first); returns top N |
 
-**Table dependency note:** `getHardestQuestions()` assumes `lms_question_response` table with columns `field_quiz`, `field_question`, `field_is_correct`. This table is not defined in `lms_question` entity — schema origin is «unverified».
+**Table dependency note:** `getHardestQuestions()` queries `lms_question_response` with columns `field_quiz`, `field_question`, `field_is_correct`. The `lms_question_response` entity is defined in `lms_quiz` (class `QuestionResponse`) — but the actual boolean field is named **`field_correct`**, not `field_is_correct`. The raw SQL expression `SUM(CASE WHEN qr.field_is_correct = 1 ...)` references a non-existent DB column and will throw a SQL error at runtime. **BUG: column name mismatch.**
 
 ---
 
@@ -146,7 +146,7 @@ Selects from `users_field_data` (uid > 1 excludes anonymous/admin).
 | `lms_quiz_result` | [lms_quiz](../C05-modules/lms_quiz.md) | Quiz attempt results |
 | `lms_quiz_field_data` | [lms_quiz](../C05-modules/lms_quiz.md) | Quiz entity field data |
 | `lms_user_certificate` | [lms_certificate](../C05-modules/lms_certificate.md) | Issued certificates |
-| `lms_question_response` | «unverified» | Per-question answer records (origin unclear) |
+| `lms_question_response` | [lms_quiz](../C05-modules/lms_quiz.md) | Per-question answer records (`QuestionResponse` entity defined in `lms_quiz`) |
 | `lms_question_field_data` | [lms_question](../C05-modules/lms_question.md) | Question entity field data |
 | `users_field_data` | Drupal core | User accounts |
 | `taxonomy_term_field_data` | Drupal core | Course category name resolution |
@@ -188,7 +188,7 @@ Selects from `users_field_data` (uid > 1 excludes anonymous/admin).
 | Ref | Severity | Description |
 |---|---|---|
 | MISLEAD | High | Module description claims "GA4 integration" — **no GA4 code exists**. Description is inaccurate. |
-| RISK | Medium | `getHardestQuestions()` queries `lms_question_response` table; this table is not defined by any known entity. If it does not exist at runtime, the quiz detail report throws a DB exception. |
+| BUG-COLUMN-MISMATCH | Critical | `getHardestQuestions()` queries `qr.field_is_correct` but the actual boolean field on `lms_question_response` (entity defined in `lms_quiz`) is `field_correct`. This SQL column-name mismatch causes a DB exception at runtime, breaking the quiz detail report entirely. Fix: rename `field_is_correct` → `field_correct` in `QuizAnalyticsManager::getHardestQuestions()`. |
 | DEBT | Medium | Quiz report routes use raw `{quiz_id}` integer path parameters instead of upcasted entity parameters — no automatic access check; `NotFoundHttpException` is thrown manually if quiz not found. |
 | DEBT | Medium | No caching layer on any report manager. Heavy SQL with sub-queries will degrade on large datasets. Reports should use `CacheBackendInterface` or Drupal render cache tags. |
 | DEBT | Low | `CourseReportController::export()` hardcodes `limit=10000` — not paginated. Large exports will exhaust memory on high-enrollment sites. |

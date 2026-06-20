@@ -186,7 +186,7 @@ Generates an HS256 JWT using `firebase/php-jwt` library with `sdk_key` and `sdk_
 }
 ```
 
-**Known bug:** `generateSignature()` in `ZoomController` references a wrong service ID when resolving the ZoomService — this may cause a runtime error. Verify before production use.
+**Known bug:** `generateSignature()` in `ZoomController` calls `\Drupal::service('lms_zoom.zoom_service')` (line 95) but the registered service ID is `lms_zoom.service` — will throw a Symfony `ServiceNotFoundException` at runtime when a host user joins a Zoom lesson. Fix: replace with `\Drupal::service('lms_zoom.service')` or inject via DI.
 
 ---
 

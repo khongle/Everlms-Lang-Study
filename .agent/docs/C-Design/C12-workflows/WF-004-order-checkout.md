@@ -34,8 +34,9 @@ adequacy_run: null
 | `/checkout/{course_id}` | checkout | GET+POST | `CheckoutForm` | — |
 | `/checkout/membership/{plan_id}` | checkout-membership | GET+POST | `MembershipCheckoutForm` | — |
 | `/checkout/bank-transfer/{lms_order}` | bank-transfer | GET+POST | `BankTransferForm` | — |
-| `/manage/orders` | admin-orders | GET | OrderListBuilder | `administer lms_order` |
-| `/manage/orders/{id}` | admin-order-detail | GET+POST | ContentEntityForm | `administer lms_order` |
+| `/workspace/orders` | admin-orders | GET | `AdminController::orderList` | `administer lms_course` |
+| `/workspace/orders/{lms_order}/edit` | admin-order-detail | GET+POST | `AdminController::orderEditForm` (embeds `ApproveOrderForm`) | `administer lms_course` |
+| `/manage/orders` | admin-orders (entity auto) | GET | `OrderListBuilder` | `administer lms_order` |
 
 ## Entities Touched
 
@@ -45,7 +46,7 @@ adequacy_run: null
 | `lms_order_item` | CREATE | `field_course` or `field_membership_plan`, `field_price`, `field_type` | — |
 | `lms_user_course` | CREATE (on fulfillment) | `uid`, `field_course`, `field_status=enrolled`, `field_progress=0`, `field_enrolled_at` | — → `enrolled` |
 | `lms_user_membership` | CREATE (on membership fulfillment) | `uid`, `field_plan`, `field_start_date`, `field_end_date`, `field_status=active`, `field_auto_renew=TRUE` | — → `active` |
-| `lms_notification` | CREATE | type=`enrollment` or `payment`, `field_channel=[in_app]` | — |
+| `lms_notification` | CREATE | type=`payment` (as-built: always `payment`; title and body differ based on whether order total = 0 for free or > 0 for paid), `field_channel=[in_app]` | — |
 | Drupal managed file | CREATE (bank transfer) | Receipt image at `public://payment_receipts/YYYY-MM/` | — |
 
 ## State Machine: lms_order.field_status
@@ -68,7 +69,7 @@ adequacy_run: null
        │       BankTransferGateway returns status=pending
        │         └──▶ pending
        │               │ [student uploads receipt → BankTransferForm]
-       │               │ [admin reviews → sets field_status=completed in /manage/orders]
+       │               │ [admin reviews → sets field_status=completed in /workspace/orders/{id}/edit]
        │               └──▶ completed (via hook_entity_update)
        │
        ├──▶ PayPal (STUB):
@@ -86,7 +87,7 @@ State guards:
 
 | Transition | Trigger | Guard | Side Effects |
 |---|---|---|---|
-| `pending → completed` | Admin edits order in `/manage/orders` + saves | `administer lms_order` | `hook_entity_update` → `_lms_order_process_completed_order()` |
+| `pending → completed` | Admin edits order in `/workspace/orders/{id}/edit` (`AdminController::orderEditForm`) + saves | `administer lms_course` | `hook_entity_update` → `_lms_order_process_completed_order()` |
 | `— → completed` | `submitForm()` Stripe success OR free order | `StripeGateway status=succeeded` OR `field_price=0` | `hook_entity_insert` → `_lms_order_process_completed_order()` |
 | `completed` (fulfillment) | `_lms_order_process_completed_order()` | `field_status=completed` detected | Creates `lms_user_course` or `lms_user_membership`; sends email; creates in-app notification |
 | `— → cancelled` / `refunded` | Admin manual only | `administer lms_order` | No automated access revocation — admin must handle manually |
@@ -102,7 +103,7 @@ lms_order.module (_lms_order_process_completed_order):
       CREATE lms_user_membership (uid, field_plan, field_start_date=now,
                                    field_end_date=now+field_duration_days, field_status=active)
   plugin.manager.mail → hook_mail key 'order_completed' → confirmation email
-  CREATE lms_notification (type=enrollment or payment, channel=[in_app])
+  CREATE lms_notification (type=payment [as-built: always 'payment'], channel=[in_app])
 ```
 
 ## Payment Gateway Reference
@@ -167,7 +168,7 @@ lms_order.module (_lms_order_process_completed_order):
 | Trigger | Recipient | Channel | Template / Key |
 |---|---|---|---|
 | Order `completed` | Student (buyer) | email (`hook_mail`) | `order_completed` |
-| Order `completed` | Student | in-app (`lms_notification`) | type=`enrollment` or `payment` |
+| Order `completed` | Student | in-app (`lms_notification`) | type=`payment` (always; free courses get title "Enrollment Successful", paid get "Order #N Completed") |
 | Stripe/PayPal async billing event | — | **None** — no webhook endpoint | Lost |
 
 > Email channel via `hook_mail` is real. In-app notification created directly in `_lms_order_process_completed_order()`. Push notification stub in `NotificationManager`.
@@ -184,13 +185,13 @@ lms_order.module (_lms_order_process_completed_order):
 
 | Page | Filters | Owner Role |
 |---|---|---|
-| `/manage/orders` | status (colour-coded), payment method | `administer lms_order` |
+| `/workspace/orders` (`AdminController::orderList`) | status (colour-coded), payment method, search | `administer lms_course` |
 
 ## Editorial / Management Surfaces
 
 | Entity / Content | Create/Edit UI | Role / Permission | State | Translation | Visible C11 Surfaces |
 |---|---|---|---|---|---|
-| `lms_order` | `/manage/orders/{id}` (edit-form) — admin only; creation via checkout flow | `administer lms_order` | `field_status` list_string | — | `/manage/orders` |
+| `lms_order` | `/workspace/orders/{id}/edit` (`AdminController::orderEditForm`) — custom workspace UI; auto-entity form also at `/manage/orders/{id}` | `administer lms_course` (workspace) / `administer lms_order` (entity admin) | `field_status` list_string | — | `/workspace/orders`, `/manage/orders` (entity auto) |
 | `lms_payment.settings` | `/admin/config/everlms/payment` (`PaymentSettingsForm`) | `administer site configuration` | — | — | — |
 
 ## Failure Modes

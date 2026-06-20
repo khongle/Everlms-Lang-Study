@@ -54,12 +54,11 @@
 
 | Status | Count |
 |---|---|
-| DONE | 18 |
+| DONE | 20 |
 | IN_PROGRESS | 5 |
 | BLOCKED | 3 |
 | SPEC | 7 |
 | SPEC (PARTIAL) | 1 |
-| SPEC (planned) | 0 |
 | **Total** | **36** |
 
 ---

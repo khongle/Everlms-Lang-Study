@@ -88,7 +88,7 @@ adequacy_run: null
 - **Edit smoke:** Update instructor avatar → reload `/instructors` → updated avatar in grid card
 - **View mode / Projection:** Card grid (avatar, name, specialty, rating stars, course count, student count, social links, "View courses" CTA); 4 columns desktop, 2 tablet, 1 mobile
 - **Region / Placement:** Main content area below featured spotlight
-- **Notes:** "View courses" button links to `/courses?instructor={uid}` (requires instructor filter support in catalog — «unverified» if implemented). Pagination may be needed for large instructor sets.
+- **Notes:** "View courses" button linking to `/courses?instructor={uid}` is NOT supported. `CoursePublicController::catalog()` (lines 1011–1113) reads only `search`, `category`, `level`, `price`, `rating`, and `sort` query parameters — there is no `instructor` parameter handled (confirmed by reading the full `catalog()` method). Filtering by instructor in the catalog is not implemented.
 - **How to implement (EN):** Query users with role `instructor`; load per-user stats; render as responsive card grid; each card links to `/instructor/{uid}`.
 - **How to implement (VI):** Query user có role `instructor`; load stats từng user; render dạng card grid responsive; mỗi card link đến `/instructor/{uid}`.
 - **Solution Architect Request:**

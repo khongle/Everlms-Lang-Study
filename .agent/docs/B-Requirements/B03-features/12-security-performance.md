@@ -3,7 +3,7 @@ id: F-012
 name: Security & Performance
 priority: Must
 status: APPROVED
-parent-requirements: [BR-012]
+parent-requirements: [BR-016]
 owning_modules: [lms_base, lms_payment, lms_stripe, lms_zoom, lms_ai, lms_mobile_api]
 primary_source: mixed
 story_anchors: []
@@ -144,7 +144,7 @@ Certificate PDFs and payment receipts should be served via a private file system
 | Dynamic Page Cache | target-state | Module available in Drupal 11 core; not confirmed active from config |
 | Render cache (tags + contexts) | as-built | Used by `lms_wishlist` (`lms_wishlist:{uid}` cache tag); other modules rely on Drupal entity cache defaults |
 | Object cache backend (Redis / Memcache) | target-state / planned | Not configured in current DDEV setup |
-| Views result caching | as-built | 15 Views defined; caching settings per-view are «unverified» from config |
+| Views result caching | as-built | 15 Views defined; 14 use `cache: type: tag` (tag-based cache invalidation), 1 (`watchdog`) uses `cache: type: none` — confirmed in all `config/sync/views.view.*.yml` files |
 
 ### Known Performance Issues
 

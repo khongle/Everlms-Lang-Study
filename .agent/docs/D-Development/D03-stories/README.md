@@ -64,10 +64,11 @@ Legend: `module` = module-scoped Story | `nfr` = Non-Functional Requirement | `i
 
 | Status | Count | Notes |
 |---|---|---|
-| DONE | 18 | Module stories with confirmed as-built implementation |
+| DONE | 20 | Module stories with confirmed as-built implementation (including lms_zoom, lms_ai, lms_mobile_api with noted partial gaps) |
 | IN_PROGRESS | 5 | Module stories partially implemented (lms_payment, lms_stripe, lms_forum, lms_rating, lms_notification) |
 | BLOCKED | 3 | Dead code or stub with no award/checkout logic (lms_paypal, lms_badge, lms_bundle) |
-| SPEC | 8 | Cross-cutting / NFR stories — not yet started; all are PLANNED |
+| SPEC | 7 | NFR/cross-cutting/integration stories — not yet started (E-10 hardening set) |
+| SPEC (PARTIAL) | 1 | public-surface-seo — partial spec only |
 | **Total** | **36** | |
 
 ---

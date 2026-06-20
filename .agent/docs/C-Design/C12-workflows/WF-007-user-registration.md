@@ -185,4 +185,4 @@ No queue processing in this workflow. OTP expiry and token TTL are enforced by `
 - Roles: [`C02-user-roles.md`](../C02-user-roles.md)
 - API: [`C06-apis/`](../C06-apis/)
 - B04 source: [`../../B-Requirements/B04-business-workflows/WF-007-user-registration.md`](../../B-Requirements/B04-business-workflows/WF-007-user-registration.md)
-- Downstream workflow: [`WF-001-enrollment-learning.md`](WF-001-enrollment-learning.md) (post-registration learning path — not yet in C12)
+- Downstream workflow: [`WF-001-enrollment-learning.md`](WF-001-enrollment-learning.md) (post-registration learning path)

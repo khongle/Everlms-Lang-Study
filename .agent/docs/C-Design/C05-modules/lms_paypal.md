@@ -2,7 +2,7 @@
 module: lms_paypal
 service: Commerce
 route-groups: []
-status: PROPOSED
+status: STUB
 ---
 
 # C05 — Module: LMS PayPal

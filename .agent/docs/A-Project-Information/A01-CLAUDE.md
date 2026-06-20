@@ -447,7 +447,7 @@ These are tracked issues logged as of 2026-06-20. Full register: `G-Governance/G
 | `ForumController::viewTopic` throws literal string `"HARD DEBUG!"` | `lms_forum/src/Controller/ForumController.php` | Any request to stale controller crashes with 500 |
 | 3 runtime routes missing for rating toggle/collection | `lms_rating` — `lms_rating.toggle_approve`, `lms_rating.toggle_featured`, `lms_rating.collection` | Admin rating list operations fail with 404 |
 | `ZoomController::generateSignature()` references wrong service ID | `lms_zoom/src/Controller/ZoomController.php` | Zoom WebSDK signature generation throws ServiceNotFoundException |
-| `lms_user_certificate.field_expiry_date` is `varchar` not `int` | `lms_certificate` entity field storage | Date comparison queries on expiry date silently fail |
+| `lms_user_certificate.field_expiry_date` is a Drupal `datetime` field (stored as ISO8601 string); any raw integer timestamp comparisons against it silently fail | `lms_certificate` entity field storage | Expiry-date logic must use `DrupalDateTime` objects, not Unix integer comparisons |
 | Stripe `PaymentIntent` created on form BUILD, not on submit | `lms_stripe` — `CheckoutController` / Stripe form | One PaymentIntent per page load; orphaned intents on back-button |
 | `lms_paypal` is dead code | `lms_paypal/src/` — wrong interface, no `@PaymentGateway` annotation | PayPal gateway never discovered; PayPal credentials in config are unused |
 

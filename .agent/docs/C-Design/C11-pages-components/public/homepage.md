@@ -88,7 +88,7 @@ adequacy_run: null
 - **Edit smoke:** Add/rename a category term → reload `/homepage` → updated category card appears
 - **View mode / Projection:** Category card (icon + name + count)
 - **Region / Placement:** Second content section
-- **Notes:** `homepage_categories_enabled` toggle controls visibility. Category thumbnails require a custom field on the `course_category` vocabulary (field presence «unverified»).
+- **Notes:** `homepage_categories_enabled` toggle controls visibility. Both `field_category_thumbnail` (image field) AND `field_icon` (separate image field) are read from each category term in `CoursePublicController::homepage()` (lines 122–144) and passed as `thumbnail_url` and `icon_url` respectively in the `#categories` array. `field_category_thumbnail` is confirmed present as a config-sync'd field (`config/sync/field.field.taxonomy_term.course_category.field_category_thumbnail.yml`). No `field_icon` field storage config exists in `config/sync` — the code reads it with `hasField()` guard so it silently returns empty string when absent.
 - **How to implement (EN):** Load published `course_category` terms; for each, count associated `lms_course` entities; render as card grid.
 - **How to implement (VI):** Tải term `course_category`; đếm `lms_course` liên kết; render dạng card grid.
 - **Solution Architect Request:**

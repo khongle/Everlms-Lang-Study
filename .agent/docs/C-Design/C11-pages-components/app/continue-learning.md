@@ -43,7 +43,7 @@ adequacy: NOT_RUN
       - Load lms_user_lesson WHERE uid = current, field_lesson = lesson_id.
       - If lms_user_lesson does not exist OR field_status != 'completed':
         → Set continue_url = /learn/{course_id}/{lesson_id}. STOP.
-3. If all lessons completed → continue_url points to first lesson (or is omitted — «unverified»).
+3. If all lessons completed → continue_url points to the first lesson in curriculum order (`$course_lesson_ids[0]`), i.e. lesson viewer restarts at lesson 1 (confirmed in `UserPortalController::dashboard()` line 137 and `::myCourses()` line 332).
 ```
 
 The resolved URL is stored in the `course_summary` array passed to the template, e.g. `course_summary[0]['continue_url']`.

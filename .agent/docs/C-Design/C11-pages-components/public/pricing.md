@@ -68,7 +68,7 @@ adequacy_run: null
 - **Edit smoke:** Create/edit `lms_membership_plan` → toggle status active → reload `/pricing` → plan card appears
 - **View mode / Projection:** Pricing card (name, price, duration, feature list, CTA)
 - **Region / Placement:** Main content area — card grid
-- **Notes:** CTA button links to `/checkout/membership/{plan_id}`. Plan `field_features` content format (JSON vs line-separated) not confirmed from facts — «unverified». Prototype shows plan comparison table and highlighted "recommended" plan card
+- **Notes:** CTA button links to `/checkout/membership/{plan_id}`. `field_features` is a `string` field with `CARDINALITY_UNLIMITED` — each feature is a separate string item (max 255 chars). `PageController::pricing()` collects each item's `->value` and joins with `\n`; `lms-pricing.html.twig` splits on `\n` and renders each non-empty line as a `<li>` (confirmed in `MembershipPlan::baseFieldDefinitions()` and `PageController::pricing()`). Prototype shows plan comparison table and highlighted "recommended" plan card.
 - **How to implement (EN):** Load all `lms_membership_plan` entities with `status=1`, sort by `field_price`; pass array to template; template renders one card per plan with name, price, features list, "Get Started" button linking to `/checkout/membership/{id}`
 - **How to implement (VI):** Tải tất cả `lms_membership_plan` với `status=1`, sắp xếp theo `field_price`; truyền mảng vào template; template render một thẻ mỗi gói với tên, giá, danh sách tính năng, nút "Get Started" link đến `/checkout/membership/{id}`
 - **Solution Architect Request:** —
@@ -108,7 +108,7 @@ adequacy_run: null
 - **Edit smoke:** N/A
 - **View mode / Projection:** Accordion
 - **Region / Placement:** Bottom of pricing page (per common pattern)
-- **Notes:** Not confirmed in `PageController::pricing()` facts — FAQs on pricing page may be absent or static. «unverified»
+- **Notes:** Not implemented. `PageController::pricing()` does not load any FAQ entities and `lms-pricing.html.twig` contains no FAQ section (confirmed by reading both files). The FAQ strip is absent from the as-built pricing page; it exists only in the prototype design.
 - **How to implement (EN):** Load `lms_faq` where `field_scope=global` and `field_category` matches a pricing FAQ category; render as accordion at bottom of pricing page
 - **How to implement (VI):** Tải `lms_faq` với `field_scope=global` và `field_category` tương ứng; render accordion ở cuối trang pricing
 - **Solution Architect Request:** —
@@ -138,4 +138,4 @@ adequacy_run: null
 | Page Hero | DONE | — | Copy from lms_theme.settings with defaults |
 | Membership Plan Cards | DONE | — | Loaded via getHomepageMemberships(), rendered in lms-pricing.html.twig |
 | Plan Comparison Table | DONE | — | Template implemented per prototype; feature fields are plan entity data |
-| Pricing FAQ Strip | «unverified» | — | Not confirmed in PageController::pricing() facts |
+| Pricing FAQ Strip | NOT IMPLEMENTED | — | `PageController::pricing()` passes no FAQ data and `lms-pricing.html.twig` has no FAQ section (confirmed). Prototype-only; absent from as-built page. |

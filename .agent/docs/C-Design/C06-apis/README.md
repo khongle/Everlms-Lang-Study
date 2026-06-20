@@ -100,7 +100,7 @@ All served by `lms_mobile_api` module. Base controller classes: `MobileAuthContr
 | lms_lesson | No routing.yml — lesson view at `/learn/{course}/{lesson}` (HTML); no lesson JSON detail endpoint except `/api/v1/courses/{courseId}/lessons/{lessonId}` (mobile only) | Web SPA has no lesson detail API |
 | lms_question | No routing.yml — question CRUD via entity form; no question bank JSON API | Cannot build question bank browser without new routes |
 | lms_stripe, lms_paypal | No webhook receiver endpoint in any module | Stripe/PayPal payment status cannot be confirmed server-side — **security risk** |
-| lms_zoom | `generateSignature()` references wrong service ID («unverified» — see bug tracker) | WebSDK signature generation may fail at runtime |
+| lms_zoom | `generateSignature()` references non-existent service `lms_zoom.zoom_service` — correct ID is `lms_zoom.service` — confirmed bug; throws `ServiceNotFoundException` for host users (ref ISSUE-011) | WebSDK signature generation fails with HTTP 500 for meeting hosts |
 
 ---
 

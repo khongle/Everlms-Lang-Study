@@ -2,7 +2,7 @@
 module: lms_rating
 service: rating
 route-groups: [Manage]
-status: IN_PROGRESS
+status: DONE
 ---
 
 # C05 — Module: LMS Rating

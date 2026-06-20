@@ -56,13 +56,11 @@ adequacy_run: null
 ```
   [plan purchased / fulfilled]
        │
-       ├──▶ field_trial_days > 0 (first membership — note: uniqueness NOT enforced)
-       │         └──▶ trial
-       │                 │ field_end_date reached (cron)
-       │                 └──▶ expired
+       └──▶ active  (as-built: _lms_order_process_completed_order() ALWAYS sets field_status='active';
+                     field_trial_days > 0 is NOT checked — trial status is NOT auto-assigned by the checkout flow;
+                     trial assignment must be done manually by an admin or via direct code)
        │
-       └──▶ field_trial_days = 0
-                 └──▶ active
+       [trial]  ← set only via admin UI or direct entity manipulation; NOT triggered by order flow
                          │
                          ├──▶ field_end_date reached (cron) + field_auto_renew = FALSE
                          │         └──▶ expired
@@ -83,7 +81,7 @@ State guards:
 | Transition | Trigger | Guard | Side Effects |
 |---|---|---|---|
 | `→ active` | `_lms_order_process_completed_order()` | `lms_order_item.field_type=membership`; order `status=completed` | Creates `lms_user_membership`; sends `order_completed` email; creates in-app notification |
-| `→ trial` | Same as above | `field_plan.field_trial_days > 0` | Status set to `trial` instead of `active` (logic in `lms_order.module`) |
+| `→ trial` | **NOT SET by order flow — bug/gap** | `field_plan.field_trial_days > 0` | `_lms_order_process_completed_order()` always sets `field_status='active'` regardless of `field_trial_days`; it never reads `field_trial_days`. `trial` status can only be set manually (admin or direct code). The trial state machine described here is target-state; the as-built code omits this logic. |
 | `active/trial → expired` | `lms_membership.module::hook_cron()` | `field_end_date <= now()` AND `field_auto_renew=FALSE` | `field_status=expired`; `hook_mail` key `membership_expired`; no in-app notification dispatched by cron |
 | `auto_renew=TRUE` at expiry | `hook_cron()` detects | `field_end_date <= now()` AND `field_auto_renew=TRUE` | Logs deferred renewal; no charge; status not changed at this cron run (effectively: expires on next cron) |
 | Cancel | `MembershipController::cancelMembership()` | Owner of membership + `_user_is_logged_in` | Sets `field_auto_renew=FALSE` only; status unchanged; natural expiry via cron |
@@ -221,3 +219,4 @@ lms_membership.module::hook_cron():
 | In-app notification on expiry | PLANNED | Cron sends only email; no in-app notification |
 | Lifetime plan infinite end date | PLANNED | Admin manual workaround required |
 | Trial "one per user per plan" guard | PLANNED | No uniqueness enforcement |
+| Trial status auto-assignment on purchase | NOT IMPLEMENTED (bug/gap) | `_lms_order_process_completed_order()` always sets `field_status='active'`; `field_trial_days` is never read in the order hook; trial status must be set manually |

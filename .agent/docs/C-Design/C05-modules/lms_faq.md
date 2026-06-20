@@ -82,7 +82,7 @@ No `.routing.yml`, `.services.yml`, `.permissions.yml`, `.module`, `.install`, `
 | field_category | entity_reference→taxonomy_term | 1; bundle: faq_category |
 | weight | integer | default=0; sort order |
 
-**No `field_lesson` reference field** despite the spec listing a lesson scope — FAQs scoped to a lesson (`field_scope=lesson`) have no entity reference back to the lesson. The lesson scope is declared but has no filtering mechanism in the current controllers («unverified» whether any controller actually uses `field_scope=lesson`).
+**No `field_lesson` reference field** despite the spec listing a lesson scope — FAQs scoped to a lesson (`field_scope=lesson`) have no entity reference back to the lesson. The lesson scope is declared but has no filtering mechanism: the entire `lms_faq` module contains only 2 files (`lms_faq.info.yml` and `Faq.php`) — no routing, no controller, no service. All FAQ display logic lives in `CoursePublicController` (lms_course), and inspection confirms no query ever filters on `field_scope=lesson`. The lesson scope is dead code in the current build.
 
 ---
 
@@ -102,7 +102,7 @@ No custom access handler. Uses Drupal core `EntityAccessControlHandler` defaults
 |-------------|-----------|-----------------|
 | `global` | `CoursePublicController::homepage()` | Homepage FAQ section |
 | `course` | `CoursePublicController::detail()` | Course detail page, filtered by `field_course` matching current course |
-| `lesson` | «unverified» — no controller confirmed | Not surfaced in any confirmed controller |
+| `lesson` | **Dead code — no controller exists** (confirmed) | `field_scope=lesson` is never queried; lms_faq has no routing or controller; lesson FAQ rendering is not implemented |
 
 ---
 

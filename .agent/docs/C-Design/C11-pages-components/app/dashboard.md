@@ -38,9 +38,9 @@ Authenticated learner landing page. Shows welcome greeting, a "continue learning
 | 1 | **Authenticated navbar** | `lms_theme/templates/` | Logo, nav links (My Learning, My Courses), notification bell (`lms_notification_bell_block`), user avatar/name |
 | 2 | **Hero greeting strip** | `lms-dashboard.html.twig` | "Welcome back, {name}" heading; streak badge (not implemented — template placeholder); "You have N courses in progress" subtext; "View all courses" link to `/my-courses` |
 | 3 | **Continue learning card** | `lms-dashboard.html.twig` | Shows the most recent in-progress `lms_user_course`; renders course thumbnail, chapter/lesson label, progress bar, % complete, "Continue Learning" button to `/learn/{course}/{lesson}`. Controller resolves next incomplete lesson via `lms_user_lesson` scan. |
-| 4 | **Stat tiles row** | `lms-dashboard.html.twig` | Four tiles: Courses Enrolled, Completed, (Hours Studied — not stored, «unverified»), (Quiz Average — not stored, «unverified»). Actual implemented stats: enrolled count, in_progress count, completed count, certificates count — passed as `stats` variable. |
+| 4 | **Stat tiles row** | `lms-dashboard.html.twig` | Four tiles implemented: Courses Enrolled, In Progress, Completed, Certificates — passed as `stats` variable with keys `enrolled`, `in_progress`, `completed`, `certificates` (confirmed in `UserPortalController::dashboard()`). Hours Studied and Quiz Average are not stored and not implemented (no corresponding fields or computed values). |
 | 5 | **In-progress course cards grid** | `lms-dashboard.html.twig` | Grid of `lms_course_card`-style cards for enrolled courses with `in_progress` status; each shows thumbnail, title, lesson position, progress bar %, "Continue" button. Passed as `course_summary` variable (array). |
-| 6 | **Recent activity feed** | `lms-dashboard.html.twig` | Passed as `recent_courses` variable. Implementation details «unverified» — may be subset of `course_summary`. |
+| 6 | **Recent activity feed** | `lms-dashboard.html.twig` | Passed as `recent_courses` variable. Contains the full `enrolled_courses` array — every enrolled course with keys: `course` (entity), `title`, `progress` (float 0–100), `status` (`in_progress`/`completed`/`not_started`), `enrolled_at`, `url` (continue URL), `thumbnail_url`, `category`. Not filtered or limited — all enrollments are passed (confirmed in `UserPortalController::dashboard()`). `course_summary` is a separate aggregate-counts array (`all`, `in_progress`, `completed`, `not_started`). |
 | 7 | **Footer** | `lms_theme/templates/` | Shared site footer |
 
 ---
@@ -60,9 +60,9 @@ Authenticated learner landing page. Shows welcome greeting, a "continue learning
 | In-progress card — thumbnail | `lms_course.field_thumbnail` | per card in `course_summary` | |
 | In-progress card — progress bar | `lms_user_course.field_progress` | per card | |
 | In-progress card — lesson label | `lms_lesson.name` (current) | per card | |
-| Recent courses | subset of enrolled courses | `recent_courses` | Exact logic «unverified» |
+| Recent courses | all enrolled `lms_user_course` records for current user | `recent_courses` | Full array of all enrollments; no limit or recency filter applied (confirmed in `UserPortalController::dashboard()`). Each entry: `title`, `progress`, `status`, `enrolled_at`, `url` (continue URL), `thumbnail_url`, `category`. |
 
-**Not implemented (prototype-only):** streak badge, hours-studied stat, quiz-average stat — no corresponding stored fields.
+**Not implemented (prototype-only):** streak badge, hours-studied stat, quiz-average stat — no corresponding stored fields or computed values in the controller.
 
 ---
 

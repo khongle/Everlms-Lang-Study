@@ -25,7 +25,7 @@ adequacy_run: null
 **Translation:** Monolingual EN
 **Related entities:** [`user`](../../C04-entities/01-content-entities.md), [`lms_course`](../../C04-entities/01-content-entities.md), [`lms_rating`](../../C04-entities/07-communication-entities.md)
 **Prototype reference:** _(no dedicated `instructor-profile.html` prototype; `instructors.html` shows card format as reference)_ [`../../C10-prototypes/html/public/instructors.html`](../../C10-prototypes/html/public/instructors.html)
-**Notes:** The `instructorProfile()` method is documented in the controller index as loading "instructor bio, social links, courses, student/rating stats." The exact user entity fields for bio and social links are «unverified» — Drupal core users do not have bio/social fields by default; these may be added as custom fields on the user entity or stored as user profile fields.
+**Notes:** The `instructorProfile()` method loads instructor bio, social links, courses, and computed student/rating stats. Confirmed custom user entity fields (source: `CoursePublicController::instructorProfile()` lines 1540–1619): `field_bio` (bio), `field_job_title` (specialty/title), `user_picture` (avatar), `field_linkedin`, `field_twitter`, `field_youtube`, `field_website` (social links). Reviews count is hardcoded to `0` with a `// Placeholder` comment — review aggregation is not yet implemented.
 
 ---
 
@@ -39,7 +39,7 @@ adequacy_run: null
 - **Implementation mechanism:** Twig block using user entity fields and computed stats from `instructorProfile()`
 - **Plugin / Module:** `CoursePublicController::instructorProfile` → `lms_course`
 - **Source content type / Entity:** `user` entity
-- **Backed by fields / config keys:** `user.name`, user picture, user bio field (custom — «unverified» field name), social link fields (custom — «unverified»); computed: instructor rating average, total students, course count, review count
+- **Backed by fields / config keys:** `user.name`, `user_picture`, `field_bio`, `field_job_title`, `field_linkedin`, `field_twitter`, `field_youtube`, `field_website`; computed: instructor rating average, total students, course count, review count (reviews hardcoded `0` — stub)
 - **Editable source:** `user` profile at `/user/{uid}/edit`
 - **Editor role / permission:** instructor — self-edit; administrator — `administer users` via `/workspace/users/{uid}/admin-edit`
 - **Editor management UI:** `/user/{uid}/edit`, `/workspace/users/{uid}/admin-edit`
@@ -48,7 +48,7 @@ adequacy_run: null
 - **Edit smoke:** Update instructor display name or bio → reload `/instructor/{uid}` → updated in profile header
 - **View mode / Projection:** Full-width header: large avatar, name, specialty/title, bio excerpt, 4 stat pills (rating, students, courses, reviews), social link icons
 - **Region / Placement:** Top of content, below navbar
-- **Notes:** Stats computed from: `lms_rating` (average, count); `lms_user_course` entity count per instructor; `lms_course` count where `field_instructor={uid}`. Social link fields on `user` entity are «unverified»; prototype shows LinkedIn, Twitter, YouTube, GitHub icons.
+- **Notes:** Stats computed from: `lms_rating` (average, count); `lms_user_course` entity count per instructor; `lms_course` count where `field_instructor={uid}`. Social link fields confirmed: `field_linkedin`, `field_twitter`, `field_youtube`, `field_website`. Note: prototype mockup shows a GitHub icon but the actual code maps `field_website` (generic URL) — there is no `field_github` field. Reviews count is hardcoded to `0` (placeholder) — review aggregation is not yet implemented.
 - **How to implement (EN):** Load user entity; compute stats via entity queries (courses, students, ratings); render header with avatar, bio, stats, and social icons.
 - **How to implement (VI):** Load user entity; tính stats qua entity queries (courses, students, ratings); render header với avatar, bio, stats, và icon mạng xã hội.
 - **Solution Architect Request:**
@@ -78,8 +78,8 @@ adequacy_run: null
 - **Scope:** Page-specific
 - **Implementation mechanism:** Twig block rendering full instructor bio field with markup
 - **Plugin / Module:** `CoursePublicController::instructorProfile` → `lms_course`
-- **Source content type / Entity:** `user` entity (bio field — custom field, «unverified» field name)
-- **Backed by fields / config keys:** User bio / description field (custom — possibly `field_bio` or `field_description` on user entity); «unverified»
+- **Source content type / Entity:** `user` entity (bio field — confirmed `field_bio`)
+- **Backed by fields / config keys:** `field_bio` (text_long) on user entity; `field_job_title` (plain text)
 - **Editable source:** `user` profile at `/user/{uid}/edit`
 - **Editor role / permission:** instructor — self-edit; administrator — `administer users`
 - **Editor management UI:** `/user/{uid}/edit`
@@ -88,9 +88,9 @@ adequacy_run: null
 - **Edit smoke:** Update bio field → reload `/instructor/{uid}` → updated bio visible
 - **View mode / Projection:** Text block with formatted HTML (bio, background, expertise areas)
 - **Region / Placement:** Below course grid or in a tabbed layout alongside courses
-- **Notes:** If no custom bio field is defined on the user entity, this section will be empty / not rendered. The implementation depends on custom user field configuration «unverified».
-- **How to implement (EN):** Check if user entity has `field_bio` (or similar); if present, render with `text_long` formatter.
-- **How to implement (VI):** Kiểm tra user entity có `field_bio` không; nếu có, render qua formatter `text_long`.
+- **Notes:** Confirmed: `field_bio` is defined on the user entity and accessed in `instructorProfile()` (line 1554). `field_job_title` is also loaded (line 1555).
+- **How to implement (EN):** Load `field_bio` with `text_long` formatter; render `field_job_title` as specialty subtitle.
+- **How to implement (VI):** Load `field_bio` qua formatter `text_long`; render `field_job_title` làm subtitle chuyên môn.
 - **Solution Architect Request:**
 
 ### 4. Student Reviews Summary — *Tóm tắt đánh giá học viên*
@@ -108,7 +108,7 @@ adequacy_run: null
 - **Edit smoke:** Approve a rating on one of instructor's courses → reload profile → rating count/average updates
 - **View mode / Projection:** Rating summary (aggregate average + star count) + 2–3 recent review cards
 - **Region / Placement:** Below bio section
-- **Notes:** Implementation of this aggregated reviews section in `instructorProfile()` is «unverified» — the controller documentation confirms loading "student/rating stats" but a full reviews section with cards may not be rendered on this page.
+- **Notes:** The reviews count in `instructorProfile()` is hardcoded to `0` with a `// Placeholder` comment (line 1615 of `CoursePublicController.php`). No real `lms_rating` aggregation is performed for the instructor profile. This section is a stub — the rating average and student count may be computed, but the review card section is not implemented.
 - **How to implement (EN):** Aggregate `lms_rating` where `entity_id IN (instructor's course IDs)` and `field_approved=1`; compute average + distribution; render summary card.
 - **How to implement (VI):** Tổng hợp `lms_rating` với `entity_id IN (danh sách course của instructor)` và `field_approved=1`; tính average + phân phối; render summary card.
 - **Solution Architect Request:**
@@ -119,23 +119,23 @@ adequacy_run: null
 
 | Component | Visible content | Source entity/config/View | Fields / keys | Editor UI | Role / permission | Revision/moderation | Translation | Cache tags/contexts | Smoke evidence |
 |---|---|---|---|---|---|---|---|---|---|
-| Profile Header | Avatar, name, specialty, bio excerpt, stat pills (rating, students, courses, reviews), social links | `user` entity + computed stats | `name`, picture, bio field («unverified»), social fields («unverified»); computed: rating avg, student count, course count | `/user/{uid}/edit`, `/workspace/users/{uid}/admin-edit` | instructor / self; administrator / `administer users` | No | N/A | `user:{uid}`, `lms_course_list` | Update name → reload → updated in header |
+| Profile Header | Avatar, name, specialty, bio excerpt, stat pills (rating, students, courses, reviews=0 stub), social links | `user` entity + computed stats | `user_picture`, `name`, `field_bio`, `field_job_title`, `field_linkedin`, `field_twitter`, `field_youtube`, `field_website`; computed: rating avg, student count, course count; reviews hardcoded `0` | `/user/{uid}/edit`, `/workspace/users/{uid}/admin-edit` | instructor / self; administrator / `administer users` | No | N/A | `user:{uid}`, `lms_course_list` | Update name → reload → updated in header |
 | Instructor Courses | Course card grid (thumbnail, title, price, rating, level) | `lms_course` entities (field_instructor={uid}) | `name`, `field_thumbnail`, `field_price`, `field_price_type`, `field_rating`, `field_level` | `/workspace/courses/{id}/edit` | instructor / `edit own lms_course` | No | Content translation | `lms_course_list`, per-entity tags | Publish new course for instructor → reload → card appears |
-| Bio Section | Full bio text, background, expertise | `user` entity bio field | bio field name «unverified» | `/user/{uid}/edit` | instructor / self-edit | No | N/A | `user:{uid}` | Update bio → reload → updated |
-| Reviews Summary | Aggregate rating avg, distribution, recent review cards | `lms_rating` entities (across instructor's courses) | `field_rating`, `field_review`, `uid` | `/workspace/ratings` | administrator / `administer lms_course` | No | N/A | `lms_rating_list` | Approve rating → reload → stats update |
+| Bio Section | Full bio text, background, expertise | `user` entity bio field | `field_bio` (text_long), `field_job_title` | `/user/{uid}/edit` | instructor / self-edit | No | N/A | `user:{uid}` | Update bio → reload → updated |
+| Reviews Summary | Aggregate rating avg, distribution, recent review cards | `lms_rating` entities (across instructor's courses) — STUB (reviews count = 0 hardcoded) | `field_rating`, `field_review`, `uid` | `/workspace/ratings` | administrator / `administer lms_course` | No | N/A | `lms_rating_list` | Not applicable (stub) |
 
 ## Hardcoded Content Exceptions
 
 | Visible value | Why not editor-managed | Exception authority | Expiry / revisit |
 |---|---|---|---|
-| Social link icons (LinkedIn, Twitter, etc.) | UI chrome icons | Template default | Social link fields on user entity «unverified»; revisit when fields confirmed |
+| Social link icons (LinkedIn, Twitter, YouTube, Website) | UI chrome icons rendered from confirmed fields: `field_linkedin`, `field_twitter`, `field_youtube`, `field_website` | Confirmed from `CoursePublicController.php` line 1558 | No `field_github` field exists; prototype mockup showing GitHub icon is incorrect |
 | Stat pill labels ("Instructor Rating", "Students", "Courses") | UI chrome | Template default | Interface-translatable |
 
 ## Implementation status
 
 | Component | Status | Story | Notes |
 |---|---|---|---|
-| Profile Header | DONE | — | `instructorProfile()` confirmed loading bio, social links, stats; exact user fields «unverified» |
-| Instructor Courses | DONE | — | `lms_course` query by `field_instructor={uid}` confirmed in method description |
-| Bio Section | DONE | — | Rendered from user entity bio field; field name «unverified» |
-| Reviews Summary | DONE | — | Controller described as loading "student/rating stats"; full review card section «unverified» |
+| Profile Header | DONE | — | Confirmed: `field_bio`, `field_job_title`, `user_picture`, `field_linkedin`, `field_twitter`, `field_youtube`, `field_website`; reviews count hardcoded `0` |
+| Instructor Courses | DONE | — | `lms_course` query by `field_instructor={uid}` confirmed |
+| Bio Section | DONE | — | Confirmed: `field_bio` (text_long) and `field_job_title` loaded at lines 1554–1555 |
+| Reviews Summary | NOT IMPLEMENTED (stub) | — | `reviews` is hardcoded to `0` with `// Placeholder` comment at line 1615; no real rating aggregation |

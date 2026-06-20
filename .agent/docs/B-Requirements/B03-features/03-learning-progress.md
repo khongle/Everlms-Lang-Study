@@ -3,7 +3,7 @@ id: F-003
 name: Learning Progress Tracking
 priority: Must
 status: APPROVED
-parent-requirements: [BR-003]
+parent-requirements: [BR-004]
 owning_modules: [lms_progress, lms_note, lms_forum, lms_rating, lms_notification]
 primary_source: C05
 story_anchors: []

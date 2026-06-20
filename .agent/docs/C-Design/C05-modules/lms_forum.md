@@ -124,8 +124,8 @@ Dependencies: `entity_type.manager`, `current_user`.
 
 | Method | Route | Description |
 |--------|-------|-------------|
-| `index()` | `lms_forum.index` | Loads all topics DESC; builds items with reply_count, author info (first_name/last_name with fallback to displayName), avatar; also renders new topic form for authenticated users; renders `lms_forum_index`. Includes debug `addMessage("FRESH CONTROLLER LOADED!")` — see BUG-FORUM-02. |
-| `viewTopic(ForumTopic)` | `entity.lms_forum_topic.canonical` (overridden) | Increments view count; loads replies for authenticated (anonymous gets teaser mode); builds replies array with mark-best, edit, delete URLs; renders `lms_forum_topic`. |
+| `index()` | `lms_forum.index` | Loads all topics DESC; builds items with reply_count, author info (first_name/last_name with fallback to displayName), avatar; also renders new topic form for authenticated users; renders `lms_forum_index`. |
+| `viewTopic(ForumTopic)` | `entity.lms_forum_topic.canonical` (overridden) | Increments view count; loads replies for authenticated (anonymous gets teaser mode); builds replies array with mark-best, edit, delete URLs; renders `lms_forum_topic`. Contains debug `addMessage("FRESH CONTROLLER LOADED!")` — see BUG-FORUM-02. |
 | `addTopic()` | `lms_forum.topic.add` | Creates blank `ForumTopic`; returns entity form wrapped in `lms_forum_new_topic_page` theme. |
 | `reply(ForumTopic)` | `lms_forum.reply.add` | Creates blank `ForumReply` with topic set; returns entity form directly. |
 | `markBestAnswer(ForumTopic, ForumReply)` | `lms_forum.reply.best_answer` | Sets `field_best_answer=TRUE` on reply; sets `field_resolved=TRUE` on topic if requester is owner or admin; redirects to topic canonical. Route requires only `access content` — any logged-in user can call this on any topic (see BUG-FORUM-03). |

@@ -148,7 +148,7 @@ adequacy_run: null
 - **Edit smoke:** Search for a non-existent term → empty state displays
 - **View mode / Projection:** Empty state card with suggestion
 - **Region / Placement:** Main content area (replaces results grid)
-- **Notes:** Should show "No courses found" + suggestion to browse all courses
+- **Notes:** Implemented in `lms-catalog.html.twig` via `{% else %}` branch on `{% if courses|length > 0 %}`. Renders a `lms-empty-state` div with icon (`fas fa-search`), heading "No courses found", and subtext "Try adjusting your filters" (confirmed in `lms-catalog.html.twig` lines 131–137). No link to clear-all-filters is present — only the static message.
 - **How to implement (EN):** Add Twig conditional `{% if courses is empty %}` block; show "No courses found" message with link to /courses (clear filters)
 - **How to implement (VI):** Thêm điều kiện Twig `{% if courses is empty %}`; hiển thị thông báo "Không tìm thấy khóa học" với link đến /courses (xóa bộ lọc)
 - **Solution Architect Request:** —
@@ -164,7 +164,7 @@ adequacy_run: null
 | Sort Control | Sort dropdown (newest, price, default) | UI control | ?sort= query param | N/A | N/A | N/A | Interface translation | Per-URL | Select sort → order changes |
 | Results Grid | Course cards (name, thumb, rating, price, level, instructor) | `lms_course` | name, field_thumbnail, field_short_description, field_price, field_rating, field_level | `/workspace/courses/{id}/edit` | manager / administer lms_course | N/A | EN | `lms_course_list` + per-nid | Edit course → card updates |
 | Pagination | Page numbers, prev/next | Computed | total, page, limit | N/A | N/A | N/A | Interface translation | Per-URL | 13+ results → pager appears |
-| Empty State | "No courses found" message, reset link | Static template | — | Template edit | Developer | N/A | Interface translation | N/A | Search non-existent term → empty state |
+| Empty State | "No courses found" message + "Try adjusting your filters" | Static template (`lms-catalog.html.twig`) | — | Template edit | Developer | N/A | Interface translation | N/A | Search non-existent term → empty state (confirmed in template) |
 
 ## Hardcoded Content Exceptions
 
@@ -185,7 +185,7 @@ adequacy_run: null
 | Sort Control | DONE | — | sort=newest|price|default supported |
 | Results Grid (lms-catalog.html.twig) | DONE | — | Shared with /courses catalog page |
 | Pagination | DONE | — | 12/page, pager metadata in searchApi() response |
-| Empty State | «unverified» | — | Template handling of empty results not confirmed |
+| Empty State | DONE | — | `{% else %}` block in `lms-catalog.html.twig`: renders `lms-empty-state` div with "No courses found" heading and "Try adjusting your filters" text (confirmed in `lms-catalog.html.twig`). |
 | Dedicated /search-results route | PLANNED | — | No standalone search-results page; search is catalog with filters |
 | Full-text LMS search (courses + lessons + blog) | PLANNED | — | Not implemented; would require search_api contrib or Elasticsearch |
 | Drupal core /search/node integration with LMS UI | NOT PLANNED | — | Core search is installed but not themed for LMS frontend |

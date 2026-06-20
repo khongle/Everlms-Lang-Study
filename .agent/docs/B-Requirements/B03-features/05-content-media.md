@@ -3,7 +3,7 @@ id: F-005
 name: Content & Media Management
 priority: Must
 status: APPROVED
-parent-requirements: [BR-005]
+parent-requirements: [BR-002]
 owning_modules: [lms_lesson, lms_zoom, lms_ai, lms_content_tools]
 primary_source: C05
 story_anchors: []

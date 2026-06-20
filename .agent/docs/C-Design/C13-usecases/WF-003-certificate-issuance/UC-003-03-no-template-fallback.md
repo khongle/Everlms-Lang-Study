@@ -78,6 +78,6 @@ type: edge
 
 ## Notes
 
-- If NO active template exists (all templates are `status=0` or no templates have been created), `checkAndIssueCertificate()` will have no template to use. The behavior in this extreme case depends on how the manager handles a null template — `«unverified»` whether it silently returns false or throws an exception.
+- If NO active template exists (all templates are `status=0` or no templates have been created), `CertificateManager::checkAndIssueCertificate()` reaches `if (!$template) { return FALSE; }` and silently returns `FALSE`. No exception is thrown; no log is written; no certificate is issued. This is confirmed in `CertificateManager.php` source.
 - The fallback is globally scoped — the same generic certificate design is used for all courses that lack a specific template. Instructors who want course-branded certificates must explicitly set `field_certificate_template` on each course.
 - Template `field_orientation` (landscape/portrait) is honored from whichever template is selected (specific or fallback); this field was added by `lms_certificate_update_10001`.

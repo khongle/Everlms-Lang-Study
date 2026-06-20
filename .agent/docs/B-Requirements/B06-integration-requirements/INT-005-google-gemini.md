@@ -29,7 +29,7 @@ Provides AI text generation (JSON structured output and free text) and image gen
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Latency (p95) | «unverified» — Google API SLA varies by model | APM / Drupal watchdog |
+| Latency (p95) | not measured — local dev only, no production telemetry; Google publishes no p95 SLA for Gemini API | APM / Drupal watchdog |
 | Availability | 99.9% (Google-published) | Health check |
 | Throughput | Free tier: 15 RPM; paid tier higher | Per-account quota |
 | Error Rate | < 5% | Drupal logger |
@@ -95,7 +95,7 @@ Provides AI text generation (JSON structured output and free text) and image gen
 
 | Property | Value |
 |----------|-------|
-| Max Retries | «unverified» — no retry logic implemented in `GeminiProvider`; single HTTP call |
+| Max Retries | 0 — confirmed single HTTP call, no retry loop in `GeminiProvider::request()` (confirmed in GeminiProvider.php) |
 | Backoff | None (as-built) |
 | Initial Delay | N/A |
 | Max Delay | N/A |

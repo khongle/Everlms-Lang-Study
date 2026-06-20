@@ -2,7 +2,7 @@
 module: lms_badge
 service: badge
 route-groups: []
-status: IN_PROGRESS
+status: STUB
 documentation-mode: as-built
 ---
 

@@ -59,7 +59,7 @@ Student visits `/checkout/{course_id}` (route `lms_order.checkout`, `_access: TR
 | 14 | **When** `lms_order.module::hook_entity_update()` fires on the completed order |
 | 15 | **Then** `_lms_order_process_completed_order()` iterates `field_items`; for the course item, it creates a `lms_user_course` entity with `field_course={course_id}`, `uid={student_uid}`, `field_status=enrolled`, `field_progress=0`, `field_enrolled_at={now}` |
 | 16 | **Then** `plugin.manager.mail` sends `order_completed` email to the student's address |
-| 17 | **Then** an in-app `lms_notification` entity is created for the student with `field_type=enrollment`, `field_channel=[in_app]` |
+| 17 | **Then** an in-app `lms_notification` entity is created for the student with `field_type=payment`, `field_channel=[in_app]` (title: "Order #N Completed"; as-built: `_lms_order_process_completed_order()` always uses `field_type='payment'`) |
 | 18 | **Then** the student is redirected to the course page or dashboard (outcome from `CheckoutForm`) |
 
 ---
@@ -77,7 +77,7 @@ Student visits `/checkout/{course_id}` (route `lms_order.checkout`, `_access: TR
 | `lms_user_course` | `field_status` | `enrolled` (created) |
 | `lms_user_course` | `field_progress` | `0.00` |
 | `lms_user_course` | `field_enrolled_at` | current timestamp |
-| `lms_notification` | all base fields | created with type=enrollment |
+| `lms_notification` | all base fields | created with type=`payment` |
 
 ---
 

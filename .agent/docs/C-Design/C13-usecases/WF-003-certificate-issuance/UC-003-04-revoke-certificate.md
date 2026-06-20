@@ -70,7 +70,7 @@ Admin submits `RevokeCertificateForm` at `/admin/lms/certificates/{id}/revoke`.
 | Signal | Mechanism | Details |
 |--------|-----------|---------|
 | Revoke operation visible | `hook_entity_operation()` | "Revoke" link shown in certificate entity list for users with `revoke any certificate` |
-| Revocation persisted | Entity save | No explicit log on revoke; entity delta visible in entity revision (if revisions were enabled — `«unverified»` whether `lms_user_certificate` is revisionable) |
+| Revocation persisted | Entity save | No explicit log on revoke; `lms_user_certificate` extends `ContentEntityBase` with no `revision_table` or `revision_metadata_keys` declared — entity is NOT revisionable; no revision history is kept |
 | Regeneration blocked | `CertificateAdminController::regenerateCertificate()` | Returns early if `field_revoked=true` — prevents regenerating a revoked cert |
 | Public verification result | `/certificate/verify` | Revoked status shown via `certificate_verification_result` theme |
 

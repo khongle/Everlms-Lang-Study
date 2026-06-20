@@ -198,7 +198,7 @@ Loaded by `AiEngineUserForm` from `prompt/*.txt` in module directory:
 | `lesson_detail.txt` | `ajaxGenerateLessonsDetail()` |
 | `slide_content.txt` | `ajaxGenerateSlideContent()` |
 
-Note: `google_slide_format.txt` is referenced in code but may not exist on disk — «unverified».
+Note: `google_slide_format.txt` is referenced in code but **does NOT exist on disk** (confirmed by directory listing of `prompt/`). Code referencing it will encounter a missing file error.
 
 ---
 

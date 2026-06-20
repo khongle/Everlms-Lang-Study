@@ -21,13 +21,13 @@ generated: 2026-06-20
 | [lms_quiz](lms_quiz.md) | Quiz engine: take/submit/result routes, static `GradingStrategyFactory` + 8 strategy classes, `QuizPassedEvent` dispatch | App (`/quiz`, `/quiz-result`, `/my-quiz-results`) | DONE |
 | [lms_progress](lms_progress.md) | Enrollment and progress tracking: lesson-view UI, dashboard, my-courses, certificates page, mark-complete legacy API | App (`/learn`, `/my-courses`, `/dashboard`, `/my-certificates`), API (`/api/lms/progress/mark-complete`) | DONE |
 | [lms_note](lms_note.md) | Student notes per lesson: save/delete/get JSON API + my-notes listing page | App (`/my-notes`), API (`/api/lms/note/*`) | DONE |
-| [lms_forum](lms_forum.md) | Course discussion forums with threaded replies, best-answer marking, view-count tracking | Public (`/forum`, `/forum/*`) | DONE |
-| [lms_rating](lms_rating.md) | Course star ratings and text reviews with admin approve/feature workflow | Manage (`/workspace/ratings`) | DONE (partial — 3 routes missing; see issues) |
-| [lms_notification](lms_notification.md) | In-app notification system: delivery, bell block, preferences, broadcast, cron cleanup; email/push channels are stubs | App (`/notifications`, `/manage/settings/notifications`), Admin (`/admin/lms/notifications/broadcast`), API (`/api/lms/notifications/unread-count`) | DONE (in-app only) |
+| [lms_forum](lms_forum.md) | Course discussion forums with threaded replies, best-answer marking, view-count tracking | Public (`/forum`, `/forum/*`) | IN_PROGRESS (bugs: ForumController dead code throws HARD DEBUG!; debug messenger left in LmsForumController) |
+| [lms_rating](lms_rating.md) | Course star ratings and text reviews with admin approve/feature workflow | Manage (`/workspace/ratings`) | IN_PROGRESS (3 runtime routes missing: .collection, .toggle_approve, .toggle_featured — RouteNotFoundException) |
+| [lms_notification](lms_notification.md) | In-app notification system: delivery, bell block, preferences, broadcast, cron cleanup; email/push channels are stubs | App (`/notifications`, `/manage/settings/notifications`), Admin (`/admin/lms/notifications/broadcast`), API (`/api/lms/notifications/unread-count`) | IN_PROGRESS (in-app channel only; email + push channels are stubs) |
 | [lms_order](lms_order.md) | Order management: checkout (course + membership), Stripe PaymentIntent, bank-transfer instructions/receipt upload, auto-enrollment on completion | Public (`/checkout/*`), Manage (`/manage/orders`) | DONE |
 | [lms_membership](lms_membership.md) | Membership plans and user subscriptions: plan CRUD, user portal, cron expiry, access guard on `/learn/` | App (`/my-membership`), Manage (`/workspace/pricing`, `/workspace/user-memberships`) | DONE |
-| [lms_payment](lms_payment.md) | Payment gateway plugin host: `PaymentGatewayManager`, `@PaymentGateway` annotation, settings form; `BankTransferGateway` (real), `PayPalGateway` (stub), `ZaloPayGateway` (stub) | Admin (`/admin/config/everlms/payment`) | DONE (plugin host real; PayPal/ZaloPay stubs) |
-| [lms_stripe](lms_stripe.md) | Stripe payment gateway plugin: `StripeGateway` retrieves PaymentIntent via Stripe SDK; no webhook verification | — (no routes; plugin only) | DONE (webhook TODO) |
+| [lms_payment](lms_payment.md) | Payment gateway plugin host: `PaymentGatewayManager`, `@PaymentGateway` annotation, settings form; `BankTransferGateway` (real), `PayPalGateway` (stub), `ZaloPayGateway` (stub) | Admin (`/admin/config/everlms/payment`) | IN_PROGRESS (plugin host real; PayPal/ZaloPay stubs; no webhook endpoints anywhere) |
+| [lms_stripe](lms_stripe.md) | Stripe payment gateway plugin: `StripeGateway` retrieves PaymentIntent via Stripe SDK; no webhook verification | — (no routes; plugin only) | IN_PROGRESS (processPayment real; handleWebhook stub — no signature verification; no webhook route) |
 | [lms_paypal](lms_paypal.md) | PayPal module: fully stub — wrong interface, no `@PaymentGateway` annotation, never discovered by plugin manager | — (dead code) | STUB |
 | [lms_wishlist](lms_wishlist.md) | Course wishlist: toggle/status JSON API + my-wishlist page with course cards | App (`/my-wishlist`), API (`/api/lms/wishlist/*`) | DONE |
 | [lms_bundle](lms_bundle.md) | Course bundle entity (data model only): entity definition with courses/price/discount fields; no checkout integration, no controllers | — (entity links only) | STUB |
@@ -45,7 +45,7 @@ generated: 2026-06-20
 | Status | Meaning |
 |--------|---------|
 | DONE | All controllers, services, entities, and routes are real, functional code |
-| DONE (partial) | Core functionality real; specific sub-features are stubs or have known runtime errors |
+| IN_PROGRESS | Core functionality implemented; specific sub-features are stubs or have known runtime bugs (RouteNotFoundException, TODO stubs, dead code artifacts) |
 | STUB | Entity/class scaffolding exists but core business logic is absent or is a TODO placeholder |
 
 ---

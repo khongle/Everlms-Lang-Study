@@ -163,7 +163,7 @@ SCORM content is served directly from `public://scorm_extracted/{id}/index.html`
 - **Synchronous SCORM extraction (bug-risk):** `_lms_lesson_extract_scorm()` runs inline in `hook_entity_insert/update`. Large zip files will exhaust the PHP request timeout. Should be moved to a Drupal Queue Worker. Tag: **RISK**.
 - **No manifest validation:** If `imsmanifest.xml` is malformed or absent, the function silently fails without logging an error or blocking the save.
 - **Direct `file_put_contents` call:** The auto-generated `index.html` redirect is written with `file_put_contents` bypassing Drupal's File API and stream wrappers. Not portable to S3/remote file systems.
-- **No back-reference field in baseFieldDefinitions:** `lms_course.module::hook_entity_access()` traverses `field_chapter → field_course` on `lms_lesson` to check membership access. However, `field_chapter` is not declared in `Lesson::baseFieldDefinitions()` — it may be set via a config-installed field or elsewhere. This is «unverified» and represents a potential fragility.
+- **`field_chapter` back-reference not configured (confirmed gap):** `lms_course.module::hook_entity_access()` calls `$entity->hasField('field_chapter')` on `lms_lesson` to traverse the chapter → course path for membership access checks. Inspection of `Lesson::baseFieldDefinitions()`, `config/sync/`, and the module codebase confirms `field_chapter` is NOT declared anywhere on `lms_lesson`. The code guards this with `hasField()` so it will not error, but the membership check traversal for lessons via this path silently does nothing — membership gating on lessons will NOT fire via this code path.
 
 ---
 

@@ -60,7 +60,7 @@ moderation_workflow: null
 |--------|-------|-------------|-------|
 | `lms_badge` | `field_type` | 1 | Stored as `int unsigned` FK in `lms_badge.field_type` → `taxonomy_term_data.tid` |
 
-**Seeded terms:** None seeded by `lms_base.install` for this vocabulary. Terms must be created manually (e.g., Achievement, Completion, Participation).
+**Seeded terms** (from `lms_base.install`): Completion, Streak, Quiz Master, Community Helper (confirmed from `lms_base_install()` `$default_terms` array).
 
 **Extra fields:** None beyond Drupal core taxonomy fields (`tid`, `vid`, `name`, `description`, `weight`, `parent`, `langcode`).
 
@@ -79,7 +79,7 @@ moderation_workflow: null
 |--------|-------|-------------|-------|
 | `node:blog` | `field_blog_tags` | 1 | Single-value entity_reference (field.storage.node.field_blog_tags, type: entity_reference) |
 
-**Seeded terms:** None seeded at install.
+**Seeded terms:** None (vocabulary installed via config YAML, not `lms_base_install()`; no default terms seeded).
 
 **Extra fields:** None.
 
@@ -108,16 +108,32 @@ moderation_workflow: null
 **Form display:** `core.entity_form_display.taxonomy_term.course_category.default` — both extra fields are editable in the term edit form.
 **View display:** `core.entity_view_display.taxonomy_term.course_category.default` — renders thumbnail + name on category listing pages.
 
-**Seeded terms** (created by `lms_base_hook_install` → `_lms_base_create_terms()`):
+**Seeded terms** (created by `lms_base_install()` → `_lms_base_create_terms()`; confirmed from `lms_base.install`):
 
 ```
 Programming
 ├── Frontend
-└── Backend
+│   ├── HTML/CSS
+│   ├── JavaScript
+│   └── React
+├── Backend
+│   ├── PHP
+│   ├── Node.js
+│   └── Python
 └── Mobile
+    ├── Flutter
+    └── React Native
+Business
+├── Marketing
+├── Finance
+└── Management
+Design
+├── UI/UX
+├── Graphic Design
+└── Video Production
 ```
 
-The install hook seeds a basic hierarchy. Additional top-level categories (Business, Design, etc.) are added via the AI-import pipeline (`everlms:import` Drush command → `importCategories()`).
+All categories above (including Business and Design) are seeded by `lms_base_install()`. The AI-import pipeline (`everlms:import` Drush command → `importCategories()`) may add further categories at runtime but the base hierarchy is installed by the module hook.
 
 **Business rules:**
 - Hierarchy is unlimited depth; Drupal core enforces the parent→child relationship via `taxonomy_term__parent`.
@@ -139,7 +155,7 @@ The install hook seeds a basic hierarchy. Additional top-level categories (Busin
 |--------|-------|-------------|-------|
 | `lms_course` | `field_language` | 1 | `int unsigned` FK in `lms_course_field_data.field_language` |
 
-**Seeded terms** (from `lms_base.install`): Vietnamese, English (exact term names «unverified» — seeds confirmed present, exact labels not recorded in facts base).
+**Seeded terms** (from `lms_base.install`): English, Vietnamese, Japanese (in that weight order; confirmed from `lms_base_install()` `$default_terms` array).
 
 **Extra fields:** None.
 
@@ -158,7 +174,7 @@ The install hook seeds a basic hierarchy. Additional top-level categories (Busin
 |--------|-------|-------------|-------|
 | `lms_course` | `field_level` | 1 | `int unsigned` FK in `lms_course_field_data.field_level` |
 
-**Seeded terms** (from `lms_base.install`): Beginner, Intermediate, Advanced (exact term names «unverified» — seeds confirmed present).
+**Seeded terms** (from `lms_base.install`): Beginner, Intermediate, Advanced (confirmed from `lms_base_install()` `$default_terms` array).
 
 **Extra fields:** None.
 
@@ -198,7 +214,7 @@ The install hook seeds a basic hierarchy. Additional top-level categories (Busin
 |--------|-------|-------------|-------|
 | `lms_faq` | `field_category` | 1 | `int unsigned` FK in `lms_faq_field_data.field_category` |
 
-**Seeded terms** (from `lms_base.install`): «unverified» — vocabulary is confirmed installed; default terms not recorded in facts base.
+**Seeded terms** (from `lms_base.install`): General, Payment, Technical (confirmed from `lms_base_install()` `$default_terms` array).
 
 **Extra fields:** None.
 
@@ -238,7 +254,7 @@ The install hook seeds a basic hierarchy. Additional top-level categories (Busin
 |--------|-------|-------------|-------|
 | `lms_question` | `field_difficulty` | 1 | `int unsigned` FK in `lms_question_field_data.field_difficulty` |
 
-**Seeded terms** (from `lms_base.install`): Easy, Medium, Hard (exact term names «unverified» — confirmed seeded).
+**Seeded terms** (from `lms_base.install`): Easy, Medium, Hard (confirmed from `lms_base_install()` `$default_terms` array).
 
 **Extra fields:** None.
 
@@ -257,9 +273,9 @@ The install hook seeds a basic hierarchy. Additional top-level categories (Busin
 |--------|-------|-------------|-------|
 | `lms_quiz_result` | `field_result` | 1 | `int unsigned` FK (`field_result` column in `lms_quiz_result`) → `taxonomy_term_data.tid` |
 
-**Pass/fail logic:** The `GradingStrategyFactory` in `lms_quiz` resolves the correct `quiz_results` term (Pass vs Fail) by comparing the student score against `lms_quiz.field_threshold`. The resolved TID is stored in `lms_quiz_result.field_result`. The `QuizPassedEvent` is dispatched only when the result term maps to a passing state.
+**Pass/fail logic:** The `GradingStrategyFactory` in `lms_quiz` resolves the correct `quiz_results` term (**Passed** vs **Failed**) by comparing the student score against `lms_quiz.field_threshold`. The resolved TID is stored in `lms_quiz_result.field_result`. The `QuizPassedEvent` is dispatched only when the result term maps to a passing state. A third term "Pending" may be created on-the-fly by `submitQuiz()` if essay questions are present.
 
-**Seeded terms** (from `lms_base.install`): Pass, Fail (exact term names «unverified» — confirmed seeded; the grading code maps to these by name or TID).
+**Seeded terms** (from `lms_base.install`): **Passed**, **Failed** (exact names confirmed from `lms_base_install()` `$default_terms` array — note: NOT "Pass"/"Fail"; grading code must map to these exact names).
 
 **Extra fields:** None.
 
@@ -319,7 +335,7 @@ The install hook seeds a basic hierarchy. Additional top-level categories (Busin
 | Vocabulary | Installed by | Method |
 |-----------|-------------|--------|
 | `badge_type` | `lms_base` | `hook_install()` — creates if not present |
-| `blog_tags` | `lms_base` | `hook_install()` |
+| `blog_tags` | Drupal config YAML (`taxonomy.vocabulary.blog_tags.yml`) | Config import — NOT in `lms_base_install()`; 8 vocabs in hook_install are: course_category, course_level, course_language, course_tags, quiz_difficulty, quiz_results, faq_category, badge_type |
 | `course_category` | `lms_base` | `hook_install()` — plus seeded nested terms |
 | `course_language` | `lms_base` | `hook_install()` |
 | `course_level` | `lms_base` | `hook_install()` |
@@ -330,7 +346,7 @@ The install hook seeds a basic hierarchy. Additional top-level categories (Busin
 | `quiz_results` | `lms_base` | `hook_install()` |
 | `tags` | Drupal core standard profile | config YAML |
 
-On `lms_base` uninstall (`hook_uninstall`), the 8 vocabularies it created are deleted. `forum_category` and `tags` survive uninstall.
+On `lms_base` uninstall (`hook_uninstall`), the 8 vocabularies it created are deleted (course_category, course_level, course_language, course_tags, quiz_difficulty, quiz_results, faq_category, badge_type). `blog_tags`, `forum_category`, and `tags` survive uninstall — they are not managed by `lms_base_uninstall()`.
 
 ---
 

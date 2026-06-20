@@ -2,7 +2,7 @@
 id: WF-003
 name: Certificate Issuance
 status: APPROVED
-features: [F-005]
+features: [F-006]
 ---
 
 # WF-003 — Certificate Issuance
@@ -31,16 +31,16 @@ End-to-end flow from a `QuizPassedEvent` through entity traversal, PDF generatio
 
 | Step | Actor | Action | System Response | Modules / Code | Feature |
 |------|-------|--------|----------------|----------------|---------|
-| 1 | System | `QuizPassedEvent` fired | `CertificateEventListener::onQuizPassed($event)` is invoked (registered in `lms_certificate.services.yml` as `event_subscriber`). Subscription is conditional: only registered if `QuizPassedEvent` class exists. | `lms_certificate/src/EventSubscriber/CertificateEventListener.php` | F-005 |
-| 2 | System | Entity traversal to find the Course | Starting from the `lms_quiz` entity obtained from the event, traverses: `lms_quiz` → `lms_lesson` (via `field_quiz`) → `lms_chapter` (via `field_lessons`) → `lms_course` (via `field_chapters`). | `CertificateEventListener::onQuizPassed()` | F-005 |
-| 3 | System | `CertificateManager::checkAndIssueCertificate()` | Checks whether a `lms_user_certificate` already exists for this user+course pair (prevents double-issue). If a certificate already exists, returns the existing entity without re-issuing. | `lms_certificate/src/Service/CertificateManager.php` | F-005 |
-| 4 | System | Find certificate template | Checks `lms_course.field_certificate_template` for a course-specific template. Falls back to first active `lms_certificate_template` entity if no course-specific template is set. | `CertificateManager::checkAndIssueCertificate()` | F-005 |
-| 5 | System | Generate unique certificate code | 10-character uppercase substring of an MD5 hash. | `CertificateManager` | F-005 |
-| 6 | System | `CertificateGenerator::generate()` | Renders `certificate_pdf` Twig theme to HTML (tokens: `[student_name]`, `[course_name]`, `[issue_date]`). `template_preprocess_certificate_pdf()` resolves file URIs (background, logo, signature, seal images) to server real-paths so mPDF can read them. Instantiates `\Mpdf\Mpdf` with A4 + orientation from `field_orientation`. Produces PDF binary. | `lms_certificate/src/Service/CertificateGenerator.php` | F-005 |
-| 7 | System | Save PDF as managed file | Saved to `public://certificates/issued/Certificate_{code}.pdf` as a Drupal managed file entity. Returns `FileInterface`. | `CertificateGenerator::generate()` | F-005 |
-| 8 | System | Persist `lms_user_certificate` | Entity saved with: `uid`, `field_template`, `field_quiz_result`, `field_course`, `field_certificate_number` (unique code), `field_pdf_file`, `field_issued_at`. | `CertificateManager::checkAndIssueCertificate()` | F-005 |
-| 9 | Student | Views `/my-certificates` | `UserPortalController::myCertificates()` loads all `lms_user_certificate` for user; renders `lms_my_certificates` theme with certificate list and download links. | `lms_progress` | F-005 |
-| 10 | Student / Public | Verifies certificate at `/certificate/verify` | `VerificationForm` accepts certificate number; queries by `field_certificate_number`; renders `certificate_verification_result` theme. Shows revoked status if `field_revoked=TRUE`. | `lms_certificate` | F-005 |
+| 1 | System | `QuizPassedEvent` fired | `CertificateEventListener::onQuizPassed($event)` is invoked (registered in `lms_certificate.services.yml` as `event_subscriber`). Subscription is conditional: only registered if `QuizPassedEvent` class exists. | `lms_certificate/src/EventSubscriber/CertificateEventListener.php` | F-006 |
+| 2 | System | Entity traversal to find the Course | Starting from the `lms_quiz` entity obtained from the event, traverses: `lms_quiz` → `lms_lesson` (via `field_quiz`) → `lms_chapter` (via `field_lessons`) → `lms_course` (via `field_chapters`). | `CertificateEventListener::onQuizPassed()` | F-006 |
+| 3 | System | `CertificateManager::checkAndIssueCertificate()` | Checks whether a `lms_user_certificate` already exists for this user+course pair (prevents double-issue). If a certificate already exists, returns the existing entity without re-issuing. | `lms_certificate/src/Service/CertificateManager.php` | F-006 |
+| 4 | System | Find certificate template | Checks `lms_course.field_certificate_template` for a course-specific template. Falls back to first active `lms_certificate_template` entity if no course-specific template is set. | `CertificateManager::checkAndIssueCertificate()` | F-006 |
+| 5 | System | Generate unique certificate code | 10-character uppercase substring of an MD5 hash. | `CertificateManager` | F-006 |
+| 6 | System | `CertificateGenerator::generate()` | Renders `certificate_pdf` Twig theme to HTML (tokens: `[student_name]`, `[course_name]`, `[issue_date]`). `template_preprocess_certificate_pdf()` resolves file URIs (background, logo, signature, seal images) to server real-paths so mPDF can read them. Instantiates `\Mpdf\Mpdf` with A4 + orientation from `field_orientation`. Produces PDF binary. | `lms_certificate/src/Service/CertificateGenerator.php` | F-006 |
+| 7 | System | Save PDF as managed file | Saved to `public://certificates/issued/Certificate_{code}.pdf` as a Drupal managed file entity. Returns `FileInterface`. | `CertificateGenerator::generate()` | F-006 |
+| 8 | System | Persist `lms_user_certificate` | Entity saved with: `uid`, `field_template`, `field_quiz_result`, `field_course`, `field_certificate_number` (unique code), `field_pdf_file`, `field_issued_at`. | `CertificateManager::checkAndIssueCertificate()` | F-006 |
+| 9 | Student | Views `/my-certificates` | `UserPortalController::myCertificates()` loads all `lms_user_certificate` for user; renders `lms_my_certificates` theme with certificate list and download links. | `lms_progress` | F-006 |
+| 10 | Student / Public | Verifies certificate at `/certificate/verify` | `VerificationForm` accepts certificate number; queries by `field_certificate_number`; renders `certificate_verification_result` theme. Shows revoked status if `field_revoked=TRUE`. | `lms_certificate` | F-006 |
 
 ## Error Paths
 

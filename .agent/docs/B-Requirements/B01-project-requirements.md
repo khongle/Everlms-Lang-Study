@@ -53,6 +53,7 @@
 | BR-013 | Gamification foundation — badge entity and award logic | Could | Learner motivation; badge entities exist but award logic is a stub (not yet implemented) | SH-005 |
 | BR-014 | Mobile app (Flutter, Android + iOS) with offline content download | Must | Mobile learning is expected by modern learners; app v1.0.10+33 is production-shaped | SH-005 |
 | BR-015 | White-label / multi-tenant capability — runtime domain switch, homepage skin switcher (15 skins) | Could | Commercial product differentiator; 15 skins implemented in `lms_theme`; mobile domain switch implemented | SH-001 |
+| BR-016 | Security & performance hardening — secrets management, input validation, webhook signature verification, access control, caching, and NFR compliance | Must | Production readiness; current gaps: secrets committed in config (no Key module), no payment webhook verification, ~0% automated test coverage | SH-001, SH-002 |
 
 ---
 

@@ -151,7 +151,9 @@ All code is **as-built**. Status confirmed by `modules-content.md` and `modules-
 
 - All 5 controllers fully implemented (no stubs, no TODOs).
 - `AdminController::quizList()` has one known mock: `pending_grading` hardcoded to `5`.
-- `CoursePublicController::categories()`, `::categoryDetail()`, `::glossary()` — implementation confirmed present in controller file (1969 lines); detailed behavior is «unverified» for the unread tail (lines 1621+).
+- `CoursePublicController::categories()` (lines 1624–1658): loads all `course_category` terms, filters to those with `count > 0` published courses (entity query with `field_category = term->id()` + `status = TRUE`), loads `field_category_thumbnail` image per term, passes as `#categories` array. No `field_icon` storage config exists; the `hasField()` guard means `icon_url` is always empty. Confirmed fully read.
+- `CoursePublicController::categoryDetail()` (lines 1663–1683): queries `lms_course` by `field_category = taxonomy_term->id()`, `status = TRUE`, `sort created DESC`, paginated 12/page; renders via `lms_catalog` theme hook (reuses catalog template). Confirmed fully read.
+- `CoursePublicController::glossary()` (lines 1885–1966): loads all published `node:glossary` nodes, groups by first letter (A–Z + `#` bucket), sorts each group by title ASC, passes `#terms` + `#alphabet` to `lms_glossary` template. Optional node fields read: `field_glossary_category` (taxonomy), `field_related_terms` (node references), `body` (primary) / `field_definition` (fallback). Client-side JS search confirmed in `lms-glossary.html.twig`. Confirmed fully read.
 - 27 templates all present; AJAX partials (`lms-admin-courses-table`, `lms-admin-users-table`, `lms-admin-content-table`) confirmed.
 - 3 update hooks implemented and tested.
 - `hook_entity_access` uses `\Drupal::service()` static call (anti-pattern) — tracked as debt.

@@ -1,7 +1,7 @@
 ---
 page: profile
 mode: as-built
-owner_module: lms_progress
+owner_module: lms_course
 route_group: app
 adequacy: NOT_RUN
 adequacy_run: null
@@ -12,7 +12,7 @@ adequacy_run: null
 **Canonical URL:** `/profile` *(per [`../../C07-sitemap.md`](../../C07-sitemap.md))*
 **Route name:** `lms_course.profile`
 **Solution:** Custom controller (`UserPortalController::profile` in `lms_progress`) loads the current `user` entity and renders it in `full` view mode via the entity view builder; returns the `lms_profile` theme render array.
-**Owner module:** [`lms_progress`](../../C05-modules/lms_progress.md) (controller); profile template is in `lms_course`'s template set
+**Owner module:** [`lms_course`](../../C05-modules/lms_course.md) (route registered in `lms_course.routing.yml`); controller `UserPortalController` is implemented in `lms_progress`; template is in `lms_course`'s template set
 **Primary source:** Drupal `user` entity (current user)
 **Editable source:** Drupal `user` entity fields — standard Drupal user edit form at `/user/{uid}/edit`; custom profile fields added by `lms_base` (`field_first_name`, `field_last_name`, `field_avatar`, `field_bio`, etc.)
 **Editor role:** Authenticated (self); Administrator (`administer users`)

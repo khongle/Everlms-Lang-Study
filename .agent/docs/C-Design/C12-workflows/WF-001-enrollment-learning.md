@@ -44,7 +44,7 @@ adequacy_run: null
 | `lms_order_item` | CREATE | `field_course`, `field_price`, `field_type=course` | — |
 | `lms_user_course` | CREATE / UPDATE | `uid`, `field_course`, `field_status`, `field_progress`, `field_enrolled_at`, `field_completed_at` | `enrolled` → `in_progress` → `completed` |
 | `lms_user_lesson` | UPSERT | `uid`, `field_lesson`, `field_status`, `field_completed_at` | `not_started` → `completed` |
-| `lms_notification` | CREATE | `uid`, `field_type=enrollment`, `field_channel=[in_app]`, `field_title`, `field_message` | — |
+| `lms_notification` | CREATE | `uid`, `field_type=payment`, `field_channel=[in_app]`, `field_title`, `field_message` | — |
 
 ## State Transitions
 
@@ -98,7 +98,7 @@ State guards:
 | Trigger | Recipient | Channel | Template / Key |
 |---|---|---|---|
 | Order `completed` | Student (buyer) | email (hook_mail) | `order_completed` |
-| Order `completed` | Student | in-app (lms_notification entity) | type=`enrollment` |
+| Order `completed` | Student | in-app (lms_notification entity) | type=`payment` (as-built: `_lms_order_process_completed_order()` always sets `field_type='payment'` regardless of item type) |
 | Membership expires (see WF-005) | Student | email | `membership_expired` |
 | Email/push for enrollment | Student | **email stub** — logs only; **push stub** — logs only | `lms_notification.NotificationManager` |
 

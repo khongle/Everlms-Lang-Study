@@ -215,7 +215,7 @@ lms_course, lms_chapter, lms_lesson, lms_blog, lms_faq, lms_content_tools
 lms_question (→ lms_base)
 lms_quiz (→ lms_base, lms_question)
   ↓
-lms_progress (→ lms_base, lms_course, lms_lesson, lms_quiz)
+lms_progress (→ lms_base, lms_course, lms_chapter, lms_lesson)
 lms_certificate (→ lms_base, lms_quiz)
   ↓
 lms_payment (→ lms_base)
@@ -229,9 +229,9 @@ lms_ai (→ lms_base, key:key)
 lms_zoom (→ lms_base, lms_lesson, lms_ai)
   ↓
 lms_analytics (→ lms_base)
-lms_note (→ lms_base)
-lms_forum (→ lms_base)
-lms_rating (→ lms_base)
+lms_note (→ lms_base, lms_lesson)
+lms_forum (→ lms_base, lms_course)
+lms_rating (→ lms_base, lms_course)
 lms_notification (→ lms_base)
 lms_badge (→ lms_base)             [NEAR-STUB — no award logic]
 lms_wishlist (→ lms_base, lms_course)

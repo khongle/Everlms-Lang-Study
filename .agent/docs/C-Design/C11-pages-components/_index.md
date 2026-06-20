@@ -74,7 +74,7 @@ Drupal `/admin/*` routes use Claro admin theme (stock vendor UI); most have no c
 | 2 | `/my-courses` | `lms_progress.my_courses` | My Courses | `lms_progress` | (planned) | — |
 | 3 | `/learn/{lms_course}/{lms_lesson}` | `lms_progress.lesson_view` | Lesson View | `lms_progress` | (planned) | — |
 | 4 | `/my-certificates` | `lms_progress.certificates` | My Certificates | `lms_progress` | (planned) | — |
-| 5 | `/profile` | `lms_course.profile` | My Profile | `lms_progress` | (planned) | — |
+| 5 | `/profile` | `lms_course.profile` | My Profile | `lms_course` | (planned) | — |
 | 6 | `/my-membership` | `lms_membership.my_membership` | My Membership | `lms_membership` | (planned) | — |
 | 7 | `/my-membership/{lms_user_membership}/cancel` | `lms_membership.cancel_membership` | Cancel membership (redirect) | `lms_membership` | (planned) | — |
 | 8 | `/my-notes` | `lms_note.my_notes` | My Notes | `lms_note` | (planned) | — |

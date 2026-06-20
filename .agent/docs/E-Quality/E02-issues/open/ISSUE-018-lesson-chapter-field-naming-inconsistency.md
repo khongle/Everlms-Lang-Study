@@ -9,7 +9,7 @@
 | Created | 2026-06-20 |
 | Updated | 2026-06-20 |
 | Status | `open` |
-| Severity | `MEDIUM` |
+| Severity | `HIGH` (confirmed: lesson-level membership gating is effectively bypassed — see Inconsistency 2) |
 | Affected page / route | `lms:generate-demo` Drush command; `everlms:import` Drush command; lesson-related hooks in `lms_lesson.module` |
 | Owning Epic | E-01 (Content) — |
 | Owning Story | [`lms_lesson`](../../../D-Development/D03-stories/lms_lesson.md) |
@@ -27,13 +27,13 @@ The lesson–chapter relationship is modelled inconsistently across three codeba
 | `ContentToolsCommands::importCourse()` (in `lms_content_tools`) | Parent → Child: chapter stores reference to lessons | `lms_chapter.field_lessons` (entity_reference, UNLIMITED → lms_lesson) |
 | `lms_chapter__field_lessons` DB table | Parent → Child | Junction table exists with data (`YES` per db-schema.md) |
 
-The database has a `lms_chapter__field_lessons` junction table containing data, which confirms the **parent→child direction** (`chapter.field_lessons`) is the canonical as-built schema. The `LmsDemoContentCommand` writes `lms_lesson.field_chapter` — but there is no evidence that `field_chapter` is declared in `lms_lesson.baseFieldDefinitions()`. If `field_chapter` does not exist as a proper base field, the demo command may silently fail to save the reference, or may rely on a stale field storage definition left over from an earlier schema version.
+The database has a `lms_chapter__field_lessons` junction table containing data, which confirms the **parent→child direction** (`chapter.field_lessons`) is the canonical as-built schema. **CONFIRMED (2026-06-20, full read of `Lesson.php`):** `field_chapter` is **not** declared in `Lesson::baseFieldDefinitions()` and **no** `field.field.lms_lesson.*field_chapter*` YAML exists in `config/sync/`. The `LmsDemoContentCommand` sets `field_chapter` on lesson creation, but the value is **silently discarded** (the field does not exist).
 
 The `db-schema.md` facts file lists no `lms_lesson__field_chapter` junction table (there is a `lms_chapter__field_lessons` table but no inverse), suggesting the child→parent direction is not the active stored field.
 
 ### Inconsistency 2 — lms_lesson hook references field_chapter absent from baseFieldDefinitions
 
-The facts base notes: "Note: Lesson `field_chapter` is referenced from lesson; chapter `field_course` is referenced from chapter. This is the INVERSE of the pattern used by the importer in lms_content_tools (which uses parent→child references)." A hook in `lms_lesson.module` also references `field_chapter` — but if this field is not declared in `lms_lesson.baseFieldDefinitions()`, the hook will throw a `FieldException` or silently return empty when the field is accessed.
+`lms_course.module::lms_course_entity_access()` traverses `field_chapter → field_course` on a lesson to enforce enrolled-only access. Because `field_chapter` does **not** exist on `lms_lesson` (confirmed above), the `hasField('field_chapter')` guard **always evaluates FALSE**, so the lesson-level membership/enrolment access check **never executes** — i.e. lesson-level access gating via this path is effectively bypassed (access falls through to other checks rather than the intended chapter→course enrolment gate). This is the security-relevant impact and the reason this issue is HIGH, not MEDIUM.
 
 This means content created via `lms:generate-demo` may have the chapter reference stored in a field that does not exist in the active entity schema, creating orphan demo data that is inconsistent with importer-created content.
 

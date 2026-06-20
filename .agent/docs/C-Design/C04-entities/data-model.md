@@ -263,9 +263,9 @@ TAXONOMY RELATIONSHIPS (SUMMARY)
 ────────────────────────────────────────────────────────────────────────────
 
 taxonomy_term (quiz_results)
-  └── lms_quiz_result.field_result (PASS/FAIL term TID)
-        The GradingStrategyFactory resolves a term TID for pass or fail,
-        dispatches QuizPassedEvent on pass term.
+  └── lms_quiz_result.field_result ("Passed"/"Failed" term TID; "Pending" created on-the-fly)
+        The GradingStrategyFactory resolves a term TID for "Passed" or "Failed",
+        dispatches QuizPassedEvent on "Passed" term.
 
 taxonomy_term (quiz_difficulty)
   └── lms_question.field_difficulty
@@ -436,8 +436,8 @@ GradingStrategyFactory (static PHP factory in lms_quiz)
 lms_quiz_result (created)
   field_score: decimal(5,2) percentage
   field_result ──► taxonomy_term (quiz_results)
-                   PASS term: score >= lms_quiz.field_threshold
-                   FAIL term: score < lms_quiz.field_threshold
+                   "Passed" term: score >= lms_quiz.field_threshold
+                   "Failed" term: score < lms_quiz.field_threshold
                    PENDING: when essay pending_review (result not set until graded)
   field_responses[]──► lms_question_response (one per question)
         │
@@ -466,7 +466,7 @@ lms_quiz_result (created)
 | `field_rating` | `lms_course_field_data` (decimal 3,1) | Average of approved `lms_rating.field_score` rows for the course | Rating created, updated, or deleted; responsibility of `lms_rating` module service/subscriber |
 | `field_replies_count` | `lms_forum_topic` (int) | Count of `lms_forum_reply` rows for the topic | Forum reply created or deleted |
 | `field_views` | `lms_forum_topic` (int) | Incremented on topic view | Each topic page request (via ForumController) |
-| `field_duration` | `lms_course_field_data` (int, minutes) | Sum of `lms_lesson.field_duration` for all lessons in course | «unverified» — field exists, update trigger not confirmed in facts |
+| `field_duration` | `lms_course_field_data` (int, minutes) | Sum of `lms_lesson.field_duration` for all lessons in course | No confirmed automatic update trigger in facts base; application code must recalculate on lesson duration change (no DB trigger, no cron) |
 
 ---
 

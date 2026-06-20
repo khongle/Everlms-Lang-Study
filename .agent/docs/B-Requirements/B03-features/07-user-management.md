@@ -3,7 +3,7 @@ id: F-007
 name: User Management
 priority: Must
 status: APPROVED
-parent-requirements: [BR-007]
+parent-requirements: [BR-001]
 owning_modules: [lms_base, lms_course, open_switcher]
 primary_source: C05
 story_anchors: []

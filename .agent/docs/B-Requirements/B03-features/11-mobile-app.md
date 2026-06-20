@@ -3,7 +3,7 @@ id: F-011
 name: Mobile App
 priority: Must
 status: APPROVED
-parent-requirements: [BR-011]
+parent-requirements: [BR-014]
 owning_modules: [lms_mobile_api]
 primary_source: mixed
 story_anchors: []
@@ -83,7 +83,7 @@ The `X-Authorization` header is used (rather than standard `Authorization`) to a
 ## In scope (as-built)
 
 - Custom bearer token auth with OTP-based registration and password reset.
-- Social auth in mobile app: Google, Facebook, Apple (iOS), Microsoft MSAL — all wired in Flutter; backend endpoint compatibility is «unverified» for all four.
+- Social auth in mobile app: Google, Facebook, Apple (iOS), Microsoft MSAL — all wired in Flutter; there is NO `/api/v1/auth/social-*` endpoint in `lms_mobile_api` (confirmed by `lms_mobile_api.routing.yml` — no such route exists). Flutter calls `repo.socialAuth()` which POSTs to `AppConstants.socialAuth = 'lms-social-auth'`, routing through the Drupal contrib `social_auth` / `social_auth_google` / `social_auth_facebook` modules (web session flow at `user/login/{network}` and `user/login/{network}/callback`). The constant `AppConstants.socialRegisterUrl = '/api/v1/auth/social-register'` (app_constants.dart line 417) exists but is **never referenced** in the codebase.
 - Full course catalog browsing, filtering, pagination via `/api/v1/courses/search`.
 - Course detail with curriculum, drip-lock, enrollment state, wishlist.
 - Free-course enrollment.
@@ -101,7 +101,7 @@ The `X-Authorization` header is used (rather than standard `Authorization`) to a
 
 ## Out of scope
 
-- Biometric login (Face ID / Fingerprint) — not confirmed in API or Flutter code from available facts («unverified»).
+- Biometric login (Face ID / Fingerprint) — absent: `local_auth` package is not in `app/pubspec.yaml` and no biometric code exists anywhere in `app/lib/` (confirmed by full search of pubspec.yaml and app/lib/).
 - OAuth2 / JWT token standard — replaced by custom keyvalue bearer token.
 - Silent token refresh — no refresh token mechanism exists.
 - SCORM runtime tracking (LRS) — SCORM URL served to WebView; completion tracked via `mark-complete` endpoint, not SCORM `cmi.core.lesson_status`.
@@ -135,6 +135,6 @@ A student installs the app, registers with email OTP verification, browses cours
 
 - [ ] CORS policy: production deployment must configure `sites/default/services.yml` CORS or nginx headers for `/api/v1/*`. Which origins are allowed?
 - [ ] No refresh token: what is the UX plan when the 7-day token expires (force re-login vs. silent refresh)?
-- [ ] Social auth (Google/Facebook/Apple/Microsoft) backend: does the Drupal backend have matching endpoints at `/api/v1/auth/social-register`? «unverified» from available facts.
+- [x] Social auth (Google/Facebook/Apple/Microsoft) backend: NO `/api/v1/auth/social-register` endpoint exists in `lms_mobile_api` (routing.yml has no such route). Flutter social auth hits the contrib `social_auth` web flow at `user/login/{network}` — not the mobile API. The constant `AppConstants.socialRegisterUrl` is defined but never used.
 - [ ] Release signing: `secret.properties` is a placeholder; Android release keystore (`file.keystore`) management needs a secure workflow before publishing to Google Play.
 - [ ] `.env` file containing test Stripe/PayPal keys is committed to the repo — this must be gitignored before any public repository exposure (see [F-012](./12-security-performance.md)).

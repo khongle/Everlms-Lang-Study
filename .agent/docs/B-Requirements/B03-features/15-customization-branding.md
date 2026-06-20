@@ -3,7 +3,7 @@ id: F-015
 name: Customization and Branding
 priority: Must
 status: APPROVED
-parent-requirements: [BR-001]
+parent-requirements: [BR-015]
 owning_modules: [lms_theme, open_switcher, lms_mobile_api]
 primary_source: C09
 story_anchors: []

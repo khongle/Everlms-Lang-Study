@@ -208,7 +208,7 @@ adequacy_run: null
 - **Edit smoke:** Assign same category to additional courses → reload detail → they appear in related section
 - **View mode / Projection:** `lms_course_card` (3–4 columns)
 - **Region / Placement:** Below tab content, before footer
-- **Notes:** Related section renders below main tabs. Implementation confirmed in prototype but `detail()` implementation details «unverified» — listed in routing.yml as implemented.
+- **Notes:** Not implemented in the current codebase. `CoursePublicController::detail()` (lines 1231–1535, fully read) does not query or pass any related-courses data to the template. The `lms-course-detail.html.twig` template (459 lines) contains zero references to "related" or "similar" courses. The section exists in the C10 prototype only. (confirmed by reading controller and template)
 - **How to implement (EN):** Query `lms_course` where `field_category={same term}` and `id != {current_id}`; limit 4; render as card row.
 - **How to implement (VI):** Query `lms_course` với `field_category={cùng term}` và `id != {id hiện tại}`; limit 4; render thành hàng card.
 - **Solution Architect Request:**
@@ -249,4 +249,4 @@ adequacy_run: null
 | Reviews Tab | DONE | — | Approved `lms_rating` entities; rating form for enrolled users |
 | FAQ Tab | DONE | — | `lms_faq` with `field_scope=course` + `field_course={id}` filter |
 | Purchase Sidebar | DONE | — | 5-state CTA logic; wishlist AJAX; `continue_url` computed |
-| Related Courses | DONE | — | Same-category `lms_course` query (implementation «unverified» in controller tail) |
+| Related Courses | NOT IMPLEMENTED | — | `CoursePublicController::detail()` (lines 1231–1535) does not query related courses; `lms-course-detail.html.twig` (459 lines) has no related-courses rendering; prototype only |
