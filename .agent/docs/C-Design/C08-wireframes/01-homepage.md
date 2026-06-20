@@ -94,3 +94,11 @@
 | 992-1199px | 3-col course grid, categories 3x3 |
 | 768-991px | 2-col course grid, stacked hero, hamburger menu |
 | <768px | 1-col everything, CTA buttons full-width |
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built.** Route `/homepage` → `CoursePublicController::homepage` → template `lms-homepage.html.twig`. The page is fully implemented and rendered by `lms_course` module. 15 switchable homepage style variants exist under `lms_theme/templates/home/styles/` (glassmorphism default, plus minimal, corporate, academy, community, creative, editorial, government, gradient, luxury, medical, nature, neon, playful, retro). The `homepage_style` variable is stored in `lms_base` settings and passed by the controller. The wireframe's hero + course grid + category sections are all rendered via this single template; actual content is pulled from `lms_course` entities.
+
+Related: [../C05-modules/lms_course.md](../C05-modules/lms_course.md) · [../C07-sitemap.md](../C07-sitemap.md)

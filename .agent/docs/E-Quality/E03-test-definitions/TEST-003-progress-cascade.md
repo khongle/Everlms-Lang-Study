@@ -1,75 +1,126 @@
+---
+id: TEST-003
+type: Kernel
+priority: P0 — Must
+ac: AC-027, AC-028, AC-029
+feature: F-003 (Learning Progress)
+module: lms_progress
+service: N/A (ProgressApiController delegates to entity API directly)
+status: NOT_YET_AUTOMATED
+---
+
 # TEST-003 — Progress Cascade
 
-| Field | Value |
-|-------|-------|
-| ID | TEST-003 |
-| Type | Integration |
-| Priority | P0 — Must |
-| Feature | Progress Tracking / F-PROGRESS |
-| Units | U-022 (ProgressCascadeService), U-059 (Race condition fix) |
-| Traceability | E2E-009 (E01), KT-10 (test-plan.md), ISSUE-002 |
-| Owner | Unassigned |
+> Verifies that marking a lesson complete correctly cascades: `lms_user_lesson` upsert → course progress recalculation → `lms_user_course.field_status` set to `completed` when all lessons are done. Also verifies idempotency (duplicate mark-complete calls do not double-count).
 
-## Scope
-
-Verify cascade logic: lesson complete → chapter progress → course progress. Đặc biệt test concurrency safety sau khi U-059 được implement.
-
-## Preconditions
-
-- Course với 2 chapters, mỗi chapter có 3 lessons
-- User đã enrolled (`user_course` active)
-- Tất cả `user_lesson` records ở trạng thái `not_started`
-
-## Test Cases
-
-### TC-003-A: Single lesson complete → chapter progress update
-
-**Given:** Chapter có 3 lessons, user complete lesson 1  
-**When:** `ProgressCascadeService::markLessonComplete(uid, lesson_id)`  
-**Then:**
-- `user_lesson.status = completed` cho lesson 1
-- `user_course.progress_percentage` tăng đúng tỷ lệ (1/6 = ~16.67%)
+**Story:** [D03 lms_progress](../../D-Development/D03-stories/lms_progress.md)
+**AC:** [AC-027 — Mark-complete updates lesson and course progress (B05 AC-03)](../../B-Requirements/B05-acceptance-criteria/AC-03-learning-progress.md) · [AC-028 — Idempotent re-marking (B05 AC-03)](../../B-Requirements/B05-acceptance-criteria/AC-03-learning-progress.md) · [AC-029 — Dashboard displays correct summary (B05 AC-03)](../../B-Requirements/B05-acceptance-criteria/AC-03-learning-progress.md)
+**C12 Workflow:** [WF-001 Enrollment & Learning](../../C-Design/C12-workflows/WF-001-enrollment-learning.md)
+**C05 Module:** [lms_progress](../../C-Design/C05-modules/lms_progress.md)
 
 ---
 
-### TC-003-B: Full chapter complete → course progress
+## TC-003-A: Marking one lesson complete updates `lms_user_lesson` and recalculates course progress
 
-**Given:** User complete toàn bộ 3 lessons trong chapter 1  
-**When:** Lesson 3 của chapter 1 được marked complete  
+**Layer:** Kernel
+**Given:**
+- A `lms_course` entity with 1 chapter that has 4 `lms_lesson` entities
+- A `lms_user_course` entity for the student with `field_progress = 0`, `field_status = enrolled`
+- No `lms_user_lesson` entities exist for this student
+
+**When:** `ProgressApiController::markComplete()` is called with `{course_id, lesson_id}` for the first lesson
+
 **Then:**
-- `user_course.progress_percentage = 50%` (3/6 lessons)
-- Không có duplicate `user_lesson` records
+- A `lms_user_lesson` entity is created with `field_lesson = <lesson_id>`, `field_status = completed`, `field_completed_at = <now>`
+- `lms_user_course.field_progress` is updated to `25.00` (1 of 4 = 25%)
+- `lms_user_course.field_status` remains `in_progress` (not 100% yet)
+- JSON response: `{success: true, lesson_completed: true, course_completed: false, progress: 25.0, next_lesson_url: ...}`
+
+### Test Data
+
+| Input | Expected Output |
+|-------|----------------|
+| Lesson 1 of 4 marked complete | `field_progress=25.0`, `field_status=in_progress` |
+| All 4 lessons marked complete | `field_progress=100.0`, `field_status=completed` |
+| No prior enrollment | API returns error (unauthenticated or no enrollment) |
 
 ---
 
-### TC-003-C: All lessons complete → 100% + certificate trigger
+## TC-003-B: Marking all lessons complete sets course status to `completed`
 
-**Given:** User complete tất cả 6 lessons  
-**When:** Lesson cuối cùng được marked complete  
+**Layer:** Kernel
+**Given:**
+- Course with 3 lessons; student has 2 `lms_user_lesson` records (`completed`) already
+- `lms_user_course.field_progress = 66.67`, `field_status = in_progress`
+
+**When:** The third lesson is marked complete via `markComplete()`
+
 **Then:**
-- `user_course.progress_percentage = 100%`
-- `user_course.status = completed`
-- Certificate issuance service được gọi (kiểm tra via mock/spy)
+- `lms_user_course.field_progress` is set to `100.0`
+- `lms_user_course.field_status` is set to `completed`
+- `lms_user_course.field_completed_at` is set to a non-null timestamp
+- JSON response: `{course_completed: true, progress: 100.0, next_lesson_url: null}`
+
+### Test Data
+
+| Input | Expected Output |
+|-------|----------------|
+| 3rd of 3 lessons completed | `course_completed=true`, `field_status=completed` |
+| 2nd of 3 lessons | `course_completed=false`, `field_status=in_progress` |
 
 ---
 
-### TC-003-D: Concurrent requests — no duplicate, no lost update
+## TC-003-C: Re-marking an already-completed lesson is idempotent
 
-**Given:** 3 concurrent requests đến `markLessonComplete` cho 3 lesson khác nhau  
-**When:** Tất cả xử lý đồng thời  
+**Layer:** Kernel
+**Given:**
+- `lms_user_lesson` entity already exists for student + lesson with `field_status = completed`
+- `lms_user_course.field_progress = 50.0` (2 of 4 lessons done)
+
+**When:** `markComplete()` is called again for the same lesson
+
 **Then:**
-- Sau khi tất cả settle: `user_lesson` count = 3 (không duplicate)
-- `user_course.progress_percentage` phản ánh đúng 3/6 = 50%
-- Không có `user_lesson` row bị lost
+- The existing `lms_user_lesson` entity is **updated** (not duplicated) — only one record per user+lesson
+- `lms_user_course.field_progress` remains `50.0` (not double-counted to 75%)
+- Response: `{lesson_completed: true, progress: 50.0}`
+- `SELECT COUNT(*) FROM lms_user_lesson WHERE uid=X AND field_lesson_target_id=Y` = 1
 
-**Ghi chú:** Test này validate ISSUE-002 fix. Chạy sau khi U-059 hoàn thành.
+### Test Data
 
-| Scenario | Expected |
-|----------|---------|
-| 3 concurrent complete (diff lessons) | 3 records, 50% |
-| 2 concurrent same lesson | 1 record (idempotent) |
+| Input | Expected Output |
+|-------|----------------|
+| Re-mark already-completed lesson | Count = 1; progress unchanged |
+| Mark incomplete lesson first time | Count = 1; progress incremented |
 
-## Công cụ
+---
 
-- PHPUnit KernelTestBase (transaction support)
-- Concurrency test: custom PHPUnit parallelism hoặc separate process forks
+## TC-003-D: Dashboard progress summary is accurate
+
+**Layer:** Kernel
+**Given:**
+- Student enrolled in 2 courses:
+  - Course A: 3 lessons, 1 completed (`field_progress = 33.33`, `field_status = in_progress`)
+  - Course B: 2 lessons, 2 completed (`field_progress = 100.0`, `field_status = completed`)
+
+**When:** `UserPortalController::dashboard()` renders for the student
+
+**Then:**
+- The render array stats object contains: `enrolled=2`, `in_progress=1`, `completed=1`
+- The "continue URL" points to the next incomplete lesson in Course A
+- The `lms_dashboard` theme hook is returned
+
+---
+
+## Setup / Teardown
+
+- Setup: Install `lms_base`, `lms_course`, `lms_chapter`, `lms_lesson`, `lms_progress`; install entity schemas for `lms_course`, `lms_chapter`, `lms_lesson`, `lms_user_course`, `lms_user_lesson`; create course hierarchy (course → chapter → N lessons); create student user; create `lms_user_course` enrollment record
+- Teardown: Entity storage cleared by KernelTestBase
+
+## Notes
+
+- `ProgressApiController::markComplete()` source: `web/modules/custom/lms_progress/src/Controller/ProgressApiController.php`
+- `UserPortalController::dashboard()` source: `web/modules/custom/lms_progress/src/Controller/UserPortalController.php`
+- Progress recalculation formula (as-built): `floor((completed_lessons / total_lessons) * 100)` — note `floor()` means 1/3 = 33% not 33.33%
+- Known code duplication: `dashboard()` and `myCourses()` share near-identical "find next lesson" logic — tests for one implicitly cover the other
+- The `markComplete()` endpoint (`/api/lms/progress/mark-complete`) is separate from the mobile API endpoint (`/api/v1/progress/mark-complete`) in `lms_mobile_api`. Both must be tested; this spec covers the web endpoint. See [TEST-008](TEST-008-mobile-api-auth-otp.md) for the mobile variant.
+- Expected file: `web/modules/custom/lms_progress/tests/src/Kernel/ProgressCascadeTest.php`

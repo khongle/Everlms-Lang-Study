@@ -1,94 +1,93 @@
-# A05 — Framework Structure Primer
+# A05-framework-primer.md — Framework Structure Primer
 
-> This project uses an AI-driven development framework. This primer distills the structural conventions so collaborators and new AI agents can work the project without access to `Guidelines/`. The authoritative source is held by the project owner.
+> This project uses an AI-driven development framework. This primer distills the structural conventions so project collaborators and new AI agents can work the project without access to `Guidelines/`. The authoritative source is held by the project owner.
+
+**Last Updated:** 2026-06-20
 
 ---
 
 ## Layer Map
 
+The framework defines 13 document layers (A through U). Each layer has a fixed letter, a canonical folder name, and a clear purpose. **In EverLMS, only layers A–E are materialized so far; layers F–U are planned but not yet created.**
+
 | Layer | Folder | Purpose | When to look here |
 |-------|--------|---------|-------------------|
-| A | `A-Project-Information/` | Per-project config, primers, living state | Start of every session |
-| B | `B-Requirements/` | Business/technical requirements, features, acceptance criteria, integrations | Scope or requirements questions |
-| C | `C-Design/` | Architecture, user roles, entities, modules, APIs, sitemap, wireframes, skins | Before touching structure or contracts |
-| D | `D-Development/` | Build order, group/unit specs, session status, task kanban, handoff, code map | Daily development work |
-| E | `E-Quality/` | Test strategy, issues, test definitions/results, traceability, patterns, NFR tracking | Test or quality work |
-| F | `F-Release/` | Deployment config, release checklists, changelog | Release cycles |
-| G | `G-Governance/` | ADRs, risk register, blockers, change requests | Decisions or risk management |
-| H | `H-Operations/` | Incidents, runbooks, dependencies, tech debt, feature flags, capacity, observability | Post-release and maintenance |
-| I | `I-External/` | Public API specs, SDK docs, webhook contracts, developer portal | External consumers |
-| S | `S-System/` | Service catalog, contracts, topology, data flows, dependency matrix, SLOs | Runtime/deployed system view |
-| K | `K-Knowledge/` | Domain glossary, coding conventions, architecture patterns, lessons learned | Onboarding and pattern recall |
-| M | `M-Maintenance/` | Maintenance workflows, decision trees, impact templates, monitoring, evolution log | Maintenance events |
+| A | `A-Project-Information/` | Per-project configuration, primers, and living state | Start of every session |
+| B | `B-Requirements/` | Business and technical requirements, features, acceptance criteria, integrations | When scope or requirements are in question |
+| C | `C-Design/` | Architecture, user roles, entities, modules, APIs, sitemap, wireframes, skins, prototypes | Before touching structure or contracts |
+| D | `D-Development/` | Development conventions, build order, Epic specs, Story specs, task kanban, session status, handoff, code map, per-session logs | Daily development work |
+| E | `E-Quality/` | Test strategy, issues, test definitions and results, traceability, retrospectives, NFR tracking | Any test- or quality-related work |
+| F | `F-Release/` | Deployment config, release checklists, changelog | Release cycles only (planned, layer F — not yet materialized) |
+| G | `G-Governance/` | ADRs, risk register, blockers, change requests | When making or recording decisions (planned, layer G — not yet materialized) |
+| H | `H-Operations/` | Incidents, runbooks, dependencies, tech debt, feature flags, capacity, observability-as-code | Post-release and maintenance (planned, layer H — not yet materialized) |
+| I | `I-External/` | Public API specs, SDK docs, webhook contracts, developer portal, API changelog, rate limits | Public-facing surface and external consumers (planned, layer I — not yet materialized) |
+| S | `S-System/` | Service catalog, service-to-service contracts, topology, data flows, dependency matrix, per-service SLOs | Runtime/deployed system view for on-call and DR (planned, layer S — not yet materialized) |
+| K | `K-Knowledge/` | Domain glossary, coding conventions, architecture patterns, lessons learned | Onboarding and pattern recall (planned, layer K — not yet materialized) |
+| M | `M-Maintenance/` | Maintenance workflows, decision trees, impact templates, post-release monitoring, evolution log | Maintenance events and framework evolution (planned, layer M — not yet materialized) |
+| U | `U-Userguide/` | End-user documentation, getting-started, tutorials, FAQ, admin guide | End-user and admin documentation (planned, layer U — not yet materialized) |
 
-## EverLMS Layer Inventory (as of 2026-04-16)
+> **Note on layer letter order:** the progression is A, B, C, D, E, F, G, H, I, then S (System), K (Knowledge), M (Maintenance), U (Userguide). The letters J, L, N, O, P, Q, R, T, V–Z are not used. This is intentional — S, K, M, and U were assigned their specific letters to match their purpose names.
 
-| Layer | Files | Key contents |
-|-------|-------|-------------|
-| B | 54 | 16 features, 9 workflows, 16 acceptance criteria, 8 integrations |
-| C | 76 | 10 entity files, 27 per-module files, 8 API specs, 18 wireframes |
-| D | 132 | 84 unit specs (41 DONE + 43 SPEC), 11 group specs, code map (114 routes), kanban board |
-| E | 23 | 5 issues, 5 test definitions, 2 solution patterns |
-| F | 6 | Deployment config, pre/post-release checklist templates, changelog |
-| G | 14 | 10 ADRs (8 accepted, 2 proposed), risk register (4 RISKs + 15 FINDs), 2 blockers |
-| H | 23 | 7 runbooks, capacity model, 10 observability seeds (dashboards/alerts/SLOs) |
-| I | 12 | Certificate verify + 3 planned endpoints, Stripe/PayPal webhook contracts |
-| S | 17 | Service catalog, 7 outbound contracts, topology, 3 critical-path data flows |
-| K | 4 | 70+ glossary terms, coding conventions, 8 architecture patterns, 10 lessons |
-| M | 12 | 5 maintenance playbooks, 2 impact templates, decision trees |
+---
 
-## ID Convention
+## ID and Numbering Convention
 
-- Each layer uses sequential numbering starting at `01` (e.g. `B01`, `C04`, `D03`).
-- Sub-files in folder slots use two-digit numbering within their folder.
-- Numeric IDs are stable contracts — never renumber to close gaps.
-- Layer letter progression: A, B, C, D, E, F, G, H, I, S, K, M.
+- Each layer uses its own sequential numbering starting at `01` (e.g., `B01`, `B02`, `C04`, `D03`).
+- Sub-files under a folder slot use two-digit sequential numbering within their folder (e.g., `B03-features/01-course-management.md`).
+- Numeric IDs are stable contracts. When an artifact is removed, do not renumber to close the gap — reserve it for future use.
+- The layer letter prefix (A–U) is fixed and never reassigned.
 
-## Tier 1 Always-Loaded Files
-
-Load at every session start (target: 3–6K tokens):
-
-1. `A-Project-Information/A01-CLAUDE.md` — AI config, commands, conventions, banned patterns
-2. `A-Project-Information/A03-project-context.md` — living state, phase, blockers, findings
-3. `D-Development/D04-session-status.md` — session log (latest first)
-4. `D-Development/D06-handoff-protocol.md` — pending work for next session
-
-## Tier 2 On-Demand Loading
-
-| Phase | Load |
-|-------|------|
-| Ideation | B01, B02, B03 |
-| Architecture | B01–B06, C01–C04, C08, G01, G02 |
-| Development | D01, D02-{group}, D03-{unit}, D05, D07, E01, H05 |
-| Development (G-HARDENING) | + G01/ADR-009, ADR-010; E02-issues/; S04-data-flow/ |
-| Quality | B02, B03, B05, E01–E11, H01–H07 |
-| Release | F01–F03, H01–H07 |
+---
 
 ## File vs Folder Convention
 
-- **Single file (.md)** when one canonical doc loaded whole: A01, A03, D01, D04, D06, F03, G02, G03, etc.
-- **Folder** when items grow over time: B03-features/, C04-entities/, D03-unit-specs/, G01-adrs/, etc.
-- When a folder slot currently has one file, keep it as a folder — future growth expected.
+- **Single file (`.md`):** used when the slot holds one canonical document that is read whole or updated in place — e.g., `A01-CLAUDE.md`, `D05-session-status.md`, `G02-risk-register.md`, `F03-changelog.md`.
+- **Folder:** used when the slot holds a growing collection with one file per item — e.g., `B03-features/`, `C04-entities/`, `D03-stories/`, `G01-adrs/`, `E02-issues/`.
+- When a folder slot currently holds only one file, keep it as a folder — future growth is expected.
+- Do not collapse a canonical folder into a single file, or split a canonical single file into a folder, without updating the authoritative structure document.
 
-## Kanban Board — D05-tasks/
+---
+
+## Tier 1 Always-Loaded Files
+
+Load these four files at the start of every agent session (target: 3–6K tokens combined):
+
+| # | File | Contents |
+|---|------|----------|
+| 1 | `A-Project-Information/A01-CLAUDE.md` | AI agent configuration: commands, conventions, thresholds, banned patterns, gate sequence |
+| 2 | `A-Project-Information/A03-project-context.md` | Living state: current phase, active Epic/Story, recent decisions, blockers |
+| 3 | `D-Development/D05-session-status.md` | Session log (append-only, latest first) |
+| 4 | `D-Development/D06-handoff-protocol.md` | Load order and pending work for the next session |
+
+Total context must stay under 80% of the model's context window. Load additional phase-specific files on demand, not upfront.
+
+---
+
+## Kanban Board — D04-tasks/
+
+Task files live in status subfolders. Move files between status folders rather than editing state in place.
 
 ```
-D05-tasks/
-├── backlog/       # planned, not yet committed
-├── todo/          # sprint-committed, ready to start
-├── in-progress/   # agent actively working
-├── blocked/       # dependency or SA decision needed
-├── in-review/     # code done, SA review pending
-├── closed/        # non-done closures (set closure_reason)
+D04-tasks/
+├── backlog/       # Planned — not yet committed to an Epic
+├── todo/          # Epic-committed, ready to start
+├── in-progress/   # Agent actively building
+├── blocked/       # Dependency or SA decision needed
+├── in-review/     # Code done, SA review pending
+├── closed/        # Non-done closures — set closure_reason frontmatter
 └── done/          # SA-approved, gate-passed
 ```
 
-Valid `closure_reason`: `wont-fix`, `duplicate`, `requirement-dropped`, `descoped`.
+Valid `closure_reason` values (set in frontmatter on every `closed/` task): `wont-fix`, `duplicate`, `requirement-dropped`, `descoped`.
+
+---
 
 ## Sharing Boundary
 
-- `Guidelines/` (if present) is SA-private framework reference — not required for day-to-day work.
-- Everything needed is in layers A through M; this primer + `A06-workflow-primer.md` distills the conventions.
+- `Guidelines/` is the authoritative framework reference read by SA and agent sessions. It is NOT shared with external collaborators.
+- `.agent/docs/` (including `A-Project-Information/`) is the shareable surface — readable by SA, agent sessions, and external collaborators alike.
+- This primer plus `A06-workflow-primer.md` provides enough context for an external collaborator to work the project without needing `Guidelines/` access.
+- When the framework evolves, re-sync A05/A06 and log the change in [`A07-evolution-log.md`](A07-evolution-log.md).
 
 ---
 

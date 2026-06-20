@@ -541,3 +541,25 @@
 | Commerce | Cart, Checkout, Payment, Success | S-50 → S-53 |
 | Other | Notifications, Downloads, My Learning | S-12, S-13 |
 | **Total** | **~25 screens** | |
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built (Flutter app v1.0.10+33 with 33 screens; backend API fully implemented).**
+
+The Flutter app (`app/` directory) is built with Riverpod/GoRouter/Dio and targets iOS/Android. Backend is served by `lms_mobile_api` module at `/api/v1/*` (22 REST endpoints + 9 web API endpoints).
+
+**Authentication (S-01 → S-06):** Fully implemented. Custom bearer token auth via keyvalue.expirable + OTP (NOT OAuth2/JWT despite unused `oauth_*` config keys). Endpoints: `/api/v1/user/register`, `/api/v1/user/register/verify-otp`, `/api/v1/oauth/token`, `/api/v1/user/forgot-password`, `/api/v1/user/reset-password`.
+
+**Course discovery (S-10, S-11, S-20 → S-23):** as-built. `/api/v1/courses/search`, `/api/v1/categories`, `/api/v1/courses/{id}`, `/api/v1/courses/{id}/enroll-free`.
+
+**Learning (S-30 → S-34):** as-built. `/api/v1/courses/{courseId}/lessons/{lessonId}`, `/api/v1/quiz/{quizId}`, `/api/v1/quiz/{quizId}/submit`, `/api/v1/progress/mark-complete`.
+
+**Commerce (S-50 → S-53):** The mobile checkout wireframe (Apple Pay/Google Pay style) depicts a payment flow. The `/api/v1/` API does **not** have a mobile checkout endpoint — mobile users are directed to the web checkout at `/checkout/{course_id}`. Mobile payment via native SDKs is **target-state**.
+
+**Offline / Downloads (S-12, S-13):** **target-state** — no offline content download API exists.
+
+All `/api/v1/*` routes declare `_access: 'TRUE'` but authentication is enforced at the controller level.
+
+Related: [../C07-sitemap.md](../C07-sitemap.md)

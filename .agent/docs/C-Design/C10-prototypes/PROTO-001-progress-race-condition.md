@@ -67,5 +67,16 @@
 - **Risk:** RISK-002 (G02-risk-register.md)
 - **Open decision:** DEC-003 (A03-project-context.md)
 - **ADRs:** ADR-008 (cascade strategy), ADR-010 (race condition strategy — PROPOSED)
-- **Affected unit:** U-059
 - **Implementation reference:** `web/modules/custom/lms_progress/src/Controller/ProgressApiController.php`
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**PENDING spike — race condition is still present in production code.**
+
+`ProgressApiController::markComplete()` at `/api/lms/progress/mark-complete` (POST) is fully implemented for the happy path: upserts `lms_user_lesson`, recalculates `lms_user_course.field_progress`, dispatches completion. However, **no locking or transaction wrapping exists**. Concurrent requests from the same user (multi-tab, double-click, mobile retry) can produce duplicate `CourseCompletedEvent` dispatches and double-issued certificates.
+
+This spike has **not been executed**. The race condition described is a known RISK (G02-risk-register.md) that remains open. No `SELECT FOR UPDATE`, queue worker, or optimistic lock has been added to the production codebase.
+
+Related code: [../C05-modules/lms_progress.md](../C05-modules/lms_progress.md)

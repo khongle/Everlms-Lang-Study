@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EverLMS — Home</title>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    /* Homepage-scoped extras */
+    .hero-home {
+      position: relative;
+      padding: 100px 0 80px;
+      background:
+        radial-gradient(circle at 15% 50%, rgba(59,130,246,0.22), transparent 55%),
+        radial-gradient(circle at 85% 20%, rgba(124,58,237,0.18), transparent 50%),
+        linear-gradient(135deg, #0e1116 0%, #161b22 100%);
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-home h1 { font-size: 48px; line-height: 1.1; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 18px; }
+    .hero-home p { font-size: 18px; color: var(--text-secondary); margin: 0 0 32px; max-width: 520px; }
+    .hero-stats { display: flex; gap: 32px; margin-top: 40px; }
+    .stat-item { display: flex; flex-direction: column; }
+    .stat-num { font-size: 24px; font-weight: 800; color: var(--primary); }
+    .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .hero-illustration {
+      width: 100%; aspect-ratio: 4/3; max-width: 360px;
+      background: linear-gradient(135deg, var(--surface-2), var(--surface-3));
+      border-radius: var(--radius-lg); border: 1px solid var(--border);
+      display: grid; place-items: center; font-size: 80px; color: var(--text-muted);
+    }
+    .section { padding: 80px 0; }
+    .section-alt { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+    .section-header h2 { margin: 0; font-size: 28px; font-weight: 700; }
+    .course-price { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+    .course-price-original { font-size: 14px; color: var(--text-muted); text-decoration: line-through; margin-left: 6px; }
+    .course-price-free { font-size: 18px; font-weight: 700; color: var(--success); }
+    .course-meta { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-muted); margin: 6px 0; }
+    .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .category-card {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 24px 16px; text-align: center;
+      cursor: pointer; transition: border-color 0.15s, transform 0.15s;
+    }
+    .category-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .category-icon { font-size: 36px; margin-bottom: 10px; }
+    .category-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .category-count { font-size: 12px; color: var(--text-muted); }
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .step-card {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 28px 20px; text-align: center;
+    }
+    .step-num {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--primary-soft); color: var(--primary);
+      font-size: 22px; font-weight: 800; display: inline-grid; place-items: center; margin-bottom: 16px;
+    }
+    .step-title { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+    .step-desc { font-size: 14px; color: var(--text-secondary); }
+    .testimonial-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; }
+    .testimonial-quote { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .avatar-circle {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      display: inline-grid; place-items: center; font-weight: 700; font-size: 14px; color: white;
+      flex-shrink: 0;
+    }
+    .cta-banner {
+      background:
+        radial-gradient(circle at 30% 50%, rgba(59,130,246,0.18), transparent 60%),
+        radial-gradient(circle at 80% 50%, rgba(124,58,237,0.14), transparent 55%),
+        var(--surface);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 80px 0; text-align: center;
+    }
+    .cta-banner h2 { font-size: 36px; font-weight: 800; margin: 0 0 12px; }
+    .cta-banner p { font-size: 18px; color: var(--text-secondary); margin: 0 0 32px; }
+    @media (max-width: 991px) {
+      .hero-home h1 { font-size: 36px; }
+      .category-grid { grid-template-columns: repeat(3, 1fr); }
+      .steps-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 575px) {
+      .hero-home h1 { font-size: 28px; }
+      .hero-home { padding: 60px 0 50px; }
+      .hero-illustration { display: none; }
+      .category-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- public navbar -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="logo">
+      <span class="logo-mark">E</span> EverLMS
+    </a>
+    <div class="navlinks">
+      <a href="../public/homepage.html" class="active">Home</a>
+      <a href="../public/courses.html">Courses</a>
+      <a href="../public/categories.html">Categories</a>
+      <a href="../public/pricing.html">Pricing</a>
+      <a href="../public/blog.html">Blog</a>
+    </div>
+    <div class="nav-actions">
+      <a href="../public/login.html" class="btn btn-ghost btn-sm">Login</a>
+      <a href="../public/register.html" class="btn btn-primary btn-sm">Sign up</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero-home">
+    <div class="container">
+      <div class="row align-center">
+        <div class="col" style="flex: 1 1 0; min-width: 0;">
+          <span class="badge badge-primary" style="margin-bottom: 16px;">✨ Premium Online Learning</span>
+          <h1>Transform Your Future<br>with <span class="text-primary">EverLMS</span></h1>
+          <p>Learn from world-class instructors at your own pace. Earn certificates, build real skills, and advance your career — all in one platform.</p>
+          <div class="d-flex gap-3 flex-wrap">
+            <a href="../public/courses.html" class="btn btn-primary btn-lg">Browse Courses</a>
+            <a href="../public/register.html" class="btn btn-outline btn-lg">Start Free Trial</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-num">1,000+</span>
+              <span class="stat-label">Courses</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">50k+</span>
+              <span class="stat-label">Students</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">98%</span>
+              <span class="stat-label">Satisfaction</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-illustration" style="flex-shrink: 0;">
+          🎓
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED COURSES -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Featured Courses</h2>
+        <a href="../public/courses.html" class="btn btn-ghost btn-sm">View All →</a>
+      </div>
+      <div class="row">
+
+        <!-- Course 1 -->
+        <div class="col-3 card card-hover" style="padding: 0;">
+          <div class="card-thumb">
+            <span>💻</span>
+            <span class="badge-corner badge badge-warning">Bestseller</span>
+          </div>
+          <div class="card-body">
+            <div class="fw-semi" style="margin-bottom: 4px; line-height: 1.35;">Complete Web Development Bootcamp</div>
+            <div class="fs-13 text-muted" style="margin-bottom: 6px;">👤 John Doe</div>
+            <div class="stars fs-13">★★★★☆</div>
+            <span class="fs-13 text-muted"> 4.5 (2,341)</span>
+            <div class="course-meta">
+              <span>⏱ 12h</span>
+              <span>📚 48 lessons</span>
+            </div>
+            <div>
+              <span class="course-price">$49.99</span>
+              <span class="course-price-original">$99.99</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 2 -->
+        <div class="col-3 card card-hover" style="padding: 0;">
+          <div class="card-thumb">
+            <span>⚛️</span>
+          </div>
+          <div class="card-body">
+            <div class="fw-semi" style="margin-bottom: 4px; line-height: 1.35;">Advanced React Patterns &amp; Performance</div>
+            <div class="fs-13 text-muted" style="margin-bottom: 6px;">👤 Sarah Lee</div>
+            <div class="stars fs-13">★★★★★</div>
+            <span class="fs-13 text-muted"> 5.0 (987)</span>
+            <div class="course-meta">
+              <span>⏱ 8h</span>
+              <span>📚 32 lessons</span>
+            </div>
+            <div>
+              <span class="course-price-free">FREE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 3 — Vietnamese-friendly content -->
+        <div class="col-3 card card-hover" style="padding: 0;">
+          <div class="card-thumb">
+            <span>📊</span>
+          </div>
+          <div class="card-body">
+            <div class="fw-semi" style="margin-bottom: 4px; line-height: 1.35;">Data Science với Python từ Cơ Bản</div>
+            <div class="fs-13 text-muted" style="margin-bottom: 6px;">👤 Nguyễn Minh Tuấn</div>
+            <div class="stars fs-13">★★★★☆</div>
+            <span class="fs-13 text-muted"> 4.3 (562)</span>
+            <div class="course-meta">
+              <span>⏱ 6h</span>
+              <span>📚 24 lessons</span>
+            </div>
+            <div>
+              <span class="course-price">$29.99</span>
+              <span class="course-price-original">$59.99</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 4 -->
+        <div class="col-3 card card-hover" style="padding: 0;">
+          <div class="card-thumb">
+            <span>🤖</span>
+            <span class="badge-corner badge badge-primary">New</span>
+          </div>
+          <div class="card-body">
+            <div class="fw-semi" style="margin-bottom: 4px; line-height: 1.35;">Machine Learning A–Z with TensorFlow</div>
+            <div class="fs-13 text-muted" style="margin-bottom: 6px;">👤 Mike Thompson</div>
+            <div class="stars fs-13">★★★☆☆</div>
+            <span class="fs-13 text-muted"> 3.8 (124)</span>
+            <div class="course-meta">
+              <span>⏱ 20h</span>
+              <span>📚 80 lessons</span>
+            </div>
+            <div>
+              <span class="course-price">$79.99</span>
+              <span class="course-price-original">$149.99</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 style="margin: 0 0 32px; font-size: 28px; font-weight: 700;">Popular Categories</h2>
+      <div class="category-grid">
+        <a href="../public/courses.html" class="category-card" style="text-decoration: none; color: inherit;">
+          <div class="category-icon">🖥️</div>
+          <div class="category-name">Programming</div>
+          <div class="category-count">312 courses</div>
+        </a>
+        <a href="../public/courses.html" class="category-card" style="text-decoration: none; color: inherit;">
+          <div class="category-icon">🎨</div>
+          <div class="category-name">Design</div>
+          <div class="category-count">184 courses</div>
+        </a>
+        <a href="../public/courses.html" class="category-card" style="text-decoration: none; color: inherit;">
+          <div class="category-icon">📊</div>
+          <div class="category-name">Business</div>
+          <div class="category-count">246 courses</div>
+        </a>
+        <a href="../public/courses.html" class="category-card" style="text-decoration: none; color: inherit;">
+          <div class="category-icon">📱</div>
+          <div class="category-name">Mobile</div>
+          <div class="category-count">97 courses</div>
+        </a>
+        <a href="../public/courses.html" class="category-card" style="text-decoration: none; color: inherit;">
+          <div class="category-icon">📈</div>
+          <div class="category-name">Marketing</div>
+          <div class="category-count">153 courses</div>
+        </a>
+        <a href="../public/courses.html" class="category-card" style="text-decoration: none; color: inherit;">
+          <div class="category-icon">🎵</div>
+          <div class="category-name">Music</div>
+          <div class="category-count">72 courses</div>
+        </a>
+        <a href="../public/courses.html" class="category-card" style="text-decoration: none; color: inherit;">
+          <div class="category-icon">📸</div>
+          <div class="category-name">Photography</div>
+          <div class="category-count">88 courses</div>
+        </a>
+        <a href="../public/courses.html" class="category-card" style="text-decoration: none; color: inherit;">
+          <div class="category-icon">🌐</div>
+          <div class="category-name">Languages</div>
+          <div class="category-count">119 courses</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section">
+    <div class="container">
+      <h2 style="text-align: center; margin: 0 0 48px; font-size: 28px; font-weight: 700;">How EverLMS Works</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">①</div>
+          <div class="step-title">Browse</div>
+          <div class="step-desc">Find courses that match your goals from our library of 1,000+ expert-led courses.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">②</div>
+          <div class="step-title">Enroll</div>
+          <div class="step-desc">Purchase a single course or subscribe for unlimited access. Free courses available too.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">③</div>
+          <div class="step-title">Learn</div>
+          <div class="step-desc">Watch videos, read articles, practice with quizzes, and complete hands-on projects.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">④</div>
+          <div class="step-title">Get Certified</div>
+          <div class="step-desc">Earn verifiable certificates upon completion to showcase your new skills.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 style="margin: 0 0 32px; font-size: 28px; font-weight: 700;">What Students Say</h2>
+      <div class="row">
+
+        <div class="col-4 testimonial-card">
+          <div class="stars" style="margin-bottom: 12px;">★★★★★</div>
+          <div class="testimonial-quote">"EverLMS completely changed how I learn. The course quality is incredible — structured, practical, and up-to-date. I landed my first dev job after finishing the bootcamp!"</div>
+          <div class="testimonial-author">
+            <div class="avatar-circle">JD</div>
+            <div>
+              <div class="fw-semi fs-14">John D.</div>
+              <div class="fs-13 text-muted">Web Developer</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4 testimonial-card">
+          <div class="stars" style="margin-bottom: 12px;">★★★★★</div>
+          <div class="testimonial-quote">"Changed my career trajectory entirely. I transitioned from finance into UX design in 6 months, thanks to the Design and Figma courses here. Worth every penny."</div>
+          <div class="testimonial-author">
+            <div class="avatar-circle">SL</div>
+            <div>
+              <div class="fw-semi fs-14">Sarah L.</div>
+              <div class="fs-13 text-muted">UX Designer</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4 testimonial-card">
+          <div class="stars" style="margin-bottom: 12px;">★★★★☆</div>
+          <div class="testimonial-quote">"Best data science courses I've found anywhere. The instructors explain complex concepts clearly, and the hands-on projects make everything stick. Highly recommended!"</div>
+          <div class="testimonial-author">
+            <div class="avatar-circle">MT</div>
+            <div>
+              <div class="fw-semi fs-14">Mike T.</div>
+              <div class="fs-13 text-muted">Data Analyst</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner">
+    <div class="container">
+      <h2>Ready to Start Learning?</h2>
+      <p>Join 50,000+ students building their future with EverLMS today.</p>
+      <div class="d-flex gap-3 justify-center flex-wrap">
+        <a href="../public/register.html" class="btn btn-primary btn-lg">Start Free Trial</a>
+        <a href="../public/courses.html" class="btn btn-outline btn-lg">Browse Courses</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-3">
+        <a href="../index.html" class="logo"><span class="logo-mark">E</span> EverLMS</a>
+        <p class="mt-3 fs-14">Premium online learning platform built on Drupal 11.</p>
+      </div>
+      <div class="col-3">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="../public/courses.html">Browse courses</a></li>
+          <li><a href="../public/learning-paths.html">Learning paths</a></li>
+          <li><a href="../public/pricing.html">Pricing</a></li>
+          <li><a href="../public/instructors.html">Instructors</a></li>
+        </ul>
+      </div>
+      <div class="col-3">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help center</a></li>
+          <li><a href="../public/faq.html">FAQ</a></li>
+          <li><a href="#">Forum</a></li>
+          <li><a href="../public/certificate-verify.html">Verify certificate</a></li>
+        </ul>
+      </div>
+      <div class="col-3">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../public/about.html">About us</a></li>
+          <li><a href="../public/blog.html">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 EverLMS. All rights reserved.</span>
+      <span>Privacy · Terms · Cookies</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

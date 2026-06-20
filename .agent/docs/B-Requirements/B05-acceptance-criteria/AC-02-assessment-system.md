@@ -1,72 +1,188 @@
-# AC-02 — Assessment System
+---
+feature: F-002
+status: DRAFT
+---
 
-**Feature ID:** F-002
-**Epic:** EPIC-B — Assessment & Grading
-**Epic Owner:** Instructor / System
-**Related Workflow:** [WF-002 — Quiz Submit & Grading](../B04-business-workflows/WF-002-quiz-grading.md)
-**Feature Doc:** [B03 F-002 Assessment System](../B03-features/02-assessment-system.md)
+# B05 — Acceptance Criteria for F-002 — Assessment System
+
+> Feature source: `../B03-features/02-assessment-system.md`
+> Implementing modules: `lms_quiz`, `lms_question`
+> Implementation maturity: **as-built** — quiz engine, grading strategies, result persistence, and event dispatch are all fully implemented. Known bugs noted per criterion.
 
 ---
 
-## Acceptance Criteria
-
-### AC-B01 — Auto-grading chính xác 100%
+## AC-013: Quiz take page loads with correct questions and question types
 
 **Priority:** Must
-**Given** Quiz có các câu hỏi thuộc 7 objective types (MC, SC, TF, Fill Blank, Short Answer, Matching, Ordering)
-**When** Student submit quiz với tất cả câu trả lời đúng
-**Then** Score = 100%; QuizResult.passed = true
-**And** Với tất cả test fixtures trong suite, auto-grading chính xác 100%
+**Given** a published `lms_quiz` entity exists with `field_questions` referencing `lms_question` entities of various bundles
+**When** an authenticated user requests `/quiz/{lms_quiz}/take`
+**Then** `QuizController::takeQuiz()` returns the `lms_quiz_take` theme render with all questions loaded
+**And** choice questions include their `field_choices` options; matching questions include their `field_matching_pairs`; ordering questions include shuffled `field_ordered_items`
+**And** if `field_question_count > 0`, the question list is randomized and truncated to that count
 
-### AC-B02 — Essay manual grading
+**Status:** as-built — `takeQuiz()` is fully implemented including randomization and per-type view-model building.
 
-**Priority:** Must
-**Given** Quiz có ≥1 câu hỏi Essay và student đã submit
-**When** Instructor truy cập grading interface và nhập score cho essay
-**Then** QuizResult.score cập nhật với essay component
-**And** QuizResult.status chuyển từ `pending` sang `graded`; student nhận notification
+---
 
-### AC-B03 — Quiz configuration enforced
+## AC-014: Prerequisite quizzes are enforced before allowing a quiz attempt
 
 **Priority:** Must
-**Given** Quiz được cấu hình với: passing_threshold=70, time_limit=30min, max_attempts=3
-**When** Student take quiz và đạt các giới hạn
-**Then** Timer đếm ngược chính xác; auto-submit khi hết giờ
-**And** Block retake sau 3 lần; hiển thị "Max attempts reached"
-**And** Score < 70% → status=failed; Score ≥ 70% → status=passed
+**Given** a `lms_quiz` has `field_prerequisite_quizzes` referencing one or more other quizzes
+**When** an authenticated user requests `/quiz/{lms_quiz}/take`
+**Then** `takeQuiz()` checks whether the user has a `lms_quiz_result` with `field_result` term label `Passed` for each prerequisite quiz
+**And** if any prerequisite is not passed, the take page is blocked (the user cannot proceed to submission)
 
-### AC-B04 — Quiz result & responses lưu đầy đủ
+**Status:** as-built — prerequisite check is implemented in `takeQuiz()`. The `field_prerequisite_quizzes` field was added via `lms_quiz_update_10001`.
+
+---
+
+## AC-015: Maximum attempt limit is enforced
 
 **Priority:** Must
-**Given** Student submit quiz với N câu hỏi
-**When** Server xử lý submission
-**Then** QuizResult record tồn tại với score, passed, attempt_number, submitted_at
-**And** N QuestionResponse records tồn tại, mỗi record có question_id + student_answer + is_correct
+**Given** a `lms_quiz` has `field_take_quiz_number > 0`
+**When** a user who has already reached that number of `lms_quiz_result` entities for this quiz requests `/quiz/{lms_quiz}/take`
+**Then** `takeQuiz()` detects the attempt count via an entity query and does not render the quiz form
+**And** the user sees a "maximum attempts reached" message or equivalent blocking response
 
-### AC-B05 — Quiz result history
+**Status:** as-built — attempt count check via entity query is implemented in `takeQuiz()`.
+
+---
+
+## AC-016: Auto-grading is strictly binary (all-or-nothing) for all objective question types
+
+**Priority:** Must
+**Given** a quiz submission via POST `/quiz/{lms_quiz}/submit` contains answers for `single_choice`, `multiple_choice`, `true_false`, `fill_blank`, `short_answer`, `ordering`, and `matching` question types
+**When** `QuizController::submitQuiz()` calls `GradingStrategyFactory::getStrategy($bundle)->grade()` for each question
+**Then** each strategy returns `is_correct=true` only when the user's answer exactly matches the stored correct answer(s); any partial match returns `is_correct=false`, `score=0.0`
+**And** no partial credit is awarded for any objective type (confirmed: `MultipleChoiceStrategy`, `OrderingStrategy`, and `MatchingStrategy` all use strict all-or-nothing comparison)
+
+**Status:** as-built — all 7 objective strategies are fully implemented with binary grading. No partial credit exists by design.
+
+---
+
+## AC-017: Essay questions are always queued for manual review
+
+**Priority:** Must
+**Given** a quiz submission includes an answer for a question with bundle `essay`
+**When** `EssayStrategy::grade()` is called
+**Then** the strategy returns `is_correct=false`, `score=0.0`, `pending_review=true` and stores the text answer in `field_text_answer`
+**And** the resulting `lms_question_response` entity has `field_pending_review=true`
+**And** the `lms_quiz_result` entity has `field_result` set to the `Pending` taxonomy term (not `Passed` or `Failed`)
+
+**Status:** as-built — `EssayStrategy` always returns `pending_review=true`; `submitQuiz()` maps this to the `Pending` term (creating it if missing).
+
+---
+
+## AC-018: Essay manual grading interface — blocked — not implemented
+
+**Priority:** Must
+**Given** a `lms_quiz_result` entity has `field_result = Pending` due to an essay question awaiting review
+**When** an instructor or admin navigates to a grading interface to enter a score for the essay response and submit
+**Then** the `lms_question_response.field_teacher_feedback` and `field_score` fields are saved; the `lms_quiz_result.field_result` term transitions from `Pending` to `Passed` or `Failed` based on the updated score; the student receives a notification
+
+**Status:** **blocked — not implemented.** No dedicated essay grading UI, grading form, or route exists anywhere in the codebase. The `field_teacher_feedback` field is defined on `lms_question_response` but no controller reads or writes it via a public route. Instructors cannot currently grade essays through the system. This is a known gap.
+
+---
+
+## AC-019: Quiz percentage score is calculated and persisted correctly
+
+**Priority:** Must
+**Given** a quiz with N questions, each worth `field_points` points, and a submitted response set
+**When** `submitQuiz()` processes the submission
+**Then** the score percentage = (sum of earned points / sum of max points) × 100 is stored in `lms_quiz_result.field_score` as a decimal with precision 5, scale 2
+**And** the `field_result` term is `Passed` if `score >= field_threshold`, `Failed` if `score < field_threshold` and no essay is pending, or `Pending` if any essay response has `field_pending_review=true`
+
+**Status:** as-built — score calculation and result term assignment are implemented in `submitQuiz()`.
+
+---
+
+## AC-020: QuizPassedEvent is dispatched on a passing result
+
+**Priority:** Must
+**Given** a quiz submission results in `field_result = Passed`
+**When** `submitQuiz()` determines the result
+**Then** `QuizPassedEvent` (event name `lms_quiz.passed`) is dispatched with the `QuizResult`, `Quiz`, and `AccountInterface` as payload
+**And** any registered event subscribers (e.g. `CertificateEventListener`, `NotificationEventSubscriber`) receive the event and can act on it
+
+**Status:** as-built — `QuizPassedEvent` is dispatched in `submitQuiz()` when result = Passed.
+
+---
+
+## AC-021: Quiz result page shows per-question breakdown
+
+**Priority:** Must
+**Given** a `lms_quiz_result` entity exists for the current user
+**When** the user requests `/quiz-result/{lms_quiz_result}`
+**Then** `QuizController::viewResult()` renders the `lms_quiz_result` theme with score percentage, pass/fail label, and a per-response breakdown including the user's answer, the correct/incorrect status, and any `field_teacher_feedback`
+**And** pending essay responses are displayed with a "pending review" indicator
+
+**Status:** as-built — `viewResult()` is fully implemented. Note: the result template hardcodes a 70% pass threshold display fallback independent of the quiz's actual `field_threshold` value; this is a cosmetic inconsistency in the template, not in the stored data.
+
+---
+
+## AC-022: My quiz results page aggregates history and summary stats
+
+**Priority:** Must
+**Given** the authenticated user has at least one `lms_quiz_result` entity
+**When** the user requests `/my-quiz-results`
+**Then** `QuizController::myResults()` loads all results for the current user, classifies each as `passed`, `review` (score within 15% below threshold but >= 50%), or `retry`, and returns a summary containing total, passed, review, retry, average_score, and best_score
+**And** the `lms_my_quiz_results` template renders the summary stats and a result list with per-row state icons
+
+**Status:** as-built — `myResults()` is fully implemented.
+
+---
+
+## AC-023: Quiz start time is tracked from page load
 
 **Priority:** Should
-**Given** Student đã làm quiz nhiều lần (max_attempts > 1)
-**When** Student vào "My Results" hoặc quiz result page
-**Then** Hiển thị tất cả attempts với score, date, pass/fail cho từng lần
-**And** Best score hoặc latest score được highlight theo cấu hình quiz
+**Given** a user loads the quiz take page and later submits
+**When** the `lms_quiz_result` entity is created
+**Then** `field_start_time` reflects the time the quiz page was first loaded, not an arbitrary offset
+
+**Status:** **blocked — not implemented (known bug).** `submitQuiz()` hardcodes `field_start_time = request_time - 60` (a 1-minute estimate). The quiz take page does not record a server-side start timestamp. `field_start_time` values are therefore inaccurate for all existing results.
 
 ---
 
-## Edge Cases
+## AC-024: Draft answers are auto-saved in the browser during a quiz
 
-| Case | Expected Behavior |
-|------|-----------------|
-| Submit quiz sau khi tab bị đóng | Auto-save AJAX giữ tiến trình; next open: resume hoặc timed out |
-| Concurrent submit từ 2 tab | Idempotency: chỉ tạo 1 QuizResult per attempt |
-| Matching với duplicate keys | Validation: không cho tạo question có duplicate match options |
-| Essay + other types cùng quiz | Auto-grade objective types; essay pending; final score pending |
-| Score tròn (e.g., 66.666%) | Làm tròn đúng theo cấu hình (floor hoặc round) |
+**Priority:** Should
+**Given** a user is answering a quiz on the take page
+**When** the user changes an answer but has not submitted the form
+**Then** the `lms-quiz-take.html.twig` JavaScript writes the current answer state to `localStorage` under a quiz-specific key
+**And** if the page is refreshed before submission, the previously entered answers are restored from `localStorage`
 
-## NFR Tie-ins
+**Status:** as-built — localStorage draft auto-save is implemented in the inline JavaScript within `lms-quiz-take.html.twig`.
 
-| NFR | Target |
-|-----|--------|
-| Performance | Quiz submit response ≤2s |
-| Data integrity | QuestionResponse không bị mất khi concurrent submit |
-| Security | Student không thể xem đáp án trước khi submit |
+---
+
+## AC-025: Time-limited quiz auto-submits when the countdown reaches zero
+
+**Priority:** Must
+**Given** a `lms_quiz` has `field_time_limit > 0`
+**When** the quiz take page renders and the countdown (stored in `localStorage`) reaches zero
+**Then** the quiz form is automatically submitted by the client-side JavaScript countdown handler
+**And** the submission is processed by `POST /quiz/{lms_quiz}/submit` as a normal submission
+
+**Status:** as-built — countdown timer and auto-submit are implemented in `lms-quiz-take.html.twig` JavaScript.
+
+---
+
+## Local traceability (F-002)
+
+| AC ID | Test Case | Implementing Story / Module | Status |
+|-------|-----------|-----------------------------|--------|
+| AC-013 | T-013 | quiz-take / lms_quiz | PENDING |
+| AC-014 | T-014 | quiz-prereq / lms_quiz | PENDING |
+| AC-015 | T-015 | quiz-max-attempts / lms_quiz | PENDING |
+| AC-016 | T-016 | quiz-grading-binary / lms_quiz | PENDING |
+| AC-017 | T-017 | quiz-essay-pending / lms_quiz | PENDING |
+| AC-018 | T-018 | quiz-essay-grading-ui / lms_quiz | PENDING |
+| AC-019 | T-019 | quiz-score-persist / lms_quiz | PENDING |
+| AC-020 | T-020 | quiz-passed-event / lms_quiz | PENDING |
+| AC-021 | T-021 | quiz-result-page / lms_quiz | PENDING |
+| AC-022 | T-022 | my-quiz-results / lms_quiz | PENDING |
+| AC-023 | T-023 | quiz-start-time / lms_quiz | PENDING |
+| AC-024 | T-024 | quiz-draft-save / lms_quiz | PENDING |
+| AC-025 | T-025 | quiz-auto-submit / lms_quiz | PENDING |
+
+> Cross-feature traceability lives in `E05-traceability.md`.

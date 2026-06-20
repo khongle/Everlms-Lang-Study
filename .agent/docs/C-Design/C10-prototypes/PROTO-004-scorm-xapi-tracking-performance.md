@@ -98,9 +98,29 @@
 - **Risks:** RISK-002 (race condition shared with PROTO-001), không có risk riêng (cần raise nếu spike phát hiện).
 - **Find candidates:** Có thể raise FIND mới về extractor security nếu test fail — track trong G02.
 - **Affected entity:** `lms_lesson` (đã có `field_scorm_package`)
-- **Affected unit:** lms_lesson SCORM type (chưa có unit ID — cần raise).
 - **Implementation reference:**
   - `web/modules/custom/lms_lesson/src/Entity/Lesson.php` (`field_scorm_package`, type enum `'scorm'`)
   - `web/modules/custom/lms_lesson/lms_lesson.module` (`_lms_lesson_extract_scorm()`)
   - `web/modules/custom/lms_progress/` (cascade target)
 - **External references:** SCORM 1.2 RTE spec; xAPI 1.0.3 spec (URLs to be added by implementer).
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**PARTIAL — SCORM package extraction exists; no SCORM runtime commit endpoint or xAPI endpoint.**
+
+What exists in production:
+- `lms_lesson` has `field_scorm_package` (file field) and `field_type` enum with `'scorm'` value.
+- `_lms_lesson_extract_scorm()` in `lms_lesson.module` handles extraction via PHP `ZipArchive` on `hook_entity_presave`. The spike's security tests (ZipSlip, symlink, bomb, extension whitelist) have **not been run** — current security posture is unknown.
+- `UserPortalController::lessonView()` handles `field_type='scorm'` rendering in `lms-lesson-view.html.twig` with the extracted package iframe.
+
+What does **not** exist:
+- No `POST /api/lms/scorm/{lesson_id}/commit` route for SCORM 1.2 `LMSCommit`.
+- No `lms_scorm_attempts` table or entity.
+- No xAPI statement inbox endpoint (`/api/lms/xapi/statements`).
+- SCORM completion currently relies on manual "Mark Complete" button — no runtime API bridging SCORM `cmi.core.lesson_status` to `ProgressApiController::markComplete()`.
+
+This spike has **not been executed**. SCORM lesson type is functional for display only; tracking/completion integration is target-state.
+
+Related code: [../C04-entities/01-content-entities.md](../C04-entities/01-content-entities.md) · [../C05-modules/lms_progress.md](../C05-modules/lms_progress.md)

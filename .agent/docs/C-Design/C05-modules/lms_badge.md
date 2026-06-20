@@ -1,83 +1,111 @@
-# lms_badge — Gamification Badges Module
+---
+module: lms_badge
+service: badge
+route-groups: []
+status: IN_PROGRESS
+documentation-mode: as-built
+---
 
-## Module Metadata
+# C05 — Module: LMS Badge
 
-| Key | Value |
-|-----|-------|
-| Module ID | `lms_badge` |
-| Name | LMS Badge |
-| Layer | **Communication / Gamification** |
-| Version / Lifecycle | stable, Drupal ^11 |
-| Package | EverLMS |
-| Dependencies | `lms_base` |
+**Directory:** `web/modules/custom/lms_badge/`
+**Responsibility:** Defines the Badge and UserBadge entities for gamification; award logic, routes, and services are not yet implemented (near-stub state).
 
-## Mô tả
-
-Module gamification badges và leaderboard. Cung cấp 2 entity: Badge (template) và UserBadge (instance đã trao). Module minimal — chỉ có entity definitions, không có route hay service riêng.
+> **Implementation status: NEAR-STUB.** Only entity definitions exist. No services, no routes, no `.module` hooks, no install hooks, and no badge award logic of any kind. The module cannot award badges automatically or manually at runtime.
 
 ---
 
-## Provided Entities
+## Route Bindings
 
-### `lms_badge` (Content Entity)
-| Fields | Description |
-|--------|-------------|
-| name | Tên huy hiệu |
-| description | Mô tả |
-| image | Icon huy hiệu |
-| criteria | Điều kiện trao (text) |
+No `lms_badge.routing.yml` exists. Entity canonical/collection links (via `AdminHtmlRouteProvider` on `lms_badge`) provide:
 
-### `lms_user_badge` (Content Entity)
-| Fields | Description |
-|--------|-------------|
-| uid | User nhận |
-| badge ref | → lms_badge |
-| awarded_at | Timestamp |
-| awarded_by | UID người trao / system |
-| reason | Lý do cụ thể |
+| Route | Path | Access |
+|---|---|---|
+| `entity.lms_badge.canonical` | `/manage/badges/{lms_badge}` | `administer lms_course` |
+| `entity.lms_badge.add_form` | `/manage/badges/add` | `administer lms_course` |
+| `entity.lms_badge.edit_form` | `/manage/badges/{lms_badge}/edit` | `administer lms_course` |
+| `entity.lms_badge.collection` | `/manage/badges` | `administer lms_course` |
+
+`lms_user_badge` has no route_provider — no routes generated.
 
 ---
 
-## Provided Routes
+## Public Interface
 
-Không có routing file.
-
----
-
-## Provided Services
-
-Không có services file.
+None. No services.yml exists. No exported services or interfaces.
 
 ---
 
-## Provided Plugins
+## Internal Structure
 
-Không có plugin.
+```
+web/modules/custom/lms_badge/
++-- lms_badge.info.yml        # deps: lms_base; lifecycle: stable
++-- src/
+    +-- Entity/
+        +-- Badge.php          # lms_badge content entity
+        +-- UserBadge.php      # lms_user_badge content entity (EntityOwnerTrait)
+```
+
+**Missing files (not implemented):**
+- `lms_badge.routing.yml` — no custom routes
+- `lms_badge.services.yml` — no services
+- `lms_badge.permissions.yml` — no custom permissions
+- `lms_badge.module` — no hooks
+- `lms_badge.install` — no schema updates
+- No controllers, forms, event subscribers, or queue workers
 
 ---
 
-## Hook Implementations
+## Entities Owned
 
-Không có `.module` file.
+### `lms_badge` (ContentEntity)
+
+Base table: `lms_badge`
+
+| Field | Type | Notes |
+|---|---|---|
+| id | serial | entity key |
+| uuid | uuid | entity key |
+| name | string (255) | required; label key |
+| field_description | text_long | |
+| field_icon | image | dir: `badges/icons` |
+| field_type | entity_reference (taxonomy_term) | bundle: `badge_type` vocabulary |
+| field_xp_reward | integer | default=0 |
+| field_criteria | string (1024) | JSON format: `{"type":"courses_completed","count":5}` — **documented but never evaluated** |
+
+Handlers: `EntityViewBuilder`, `EntityViewsData`, `ContentEntityForm` (core default), `ContentEntityDeleteForm`, `AdminHtmlRouteProvider`, `EntityAccessControlHandler`.
+
+### `lms_user_badge` (ContentEntity — EntityOwnerInterface)
+
+Base table: `lms_user_badge`
+
+| Field | Type | Notes |
+|---|---|---|
+| id | serial | entity key |
+| uuid | uuid | entity key |
+| uid | entity_reference (user) | owner (EntityOwnerTrait) |
+| field_badge | entity_reference (lms_badge) | required |
+| field_awarded_at | created | timestamp |
+
+Handlers: `EntityViewsData`, `EntityAccessControlHandler` only — no form handler, no route_provider.
 
 ---
 
-## Templates & Cache Strategy
+## Dependencies
 
-Không có template riêng. Badge display phụ thuộc vào các module khác render.
-
----
-
-## Related Units
-
-- **C03** § Gamification Domain — entities Badge, UserBadge
-- **C05** `04-certificate-communication.md` — layer overview
+| Dependency | Type | Why |
+|---|---|---|
+| `lms_base` | Internal | Base entity traits |
 
 ---
 
 ## Known Issues / Debt
 
-- Module scaffold-only level — entity definitions nhưng không có service để trao badge tự động.
-- Không có leaderboard implementation dù description đề cập "leaderboard".
-- Badge criteria là plain text field — không có automated criteria engine.
-- Không có route nào để user xem badges của mình — cần integrate với profile page.
+| Ref | Severity | Description |
+|---|---|---|
+| STUB | Critical | No badge award logic exists anywhere — criteria in `field_criteria` are never evaluated. No service, cron job, or event subscriber awards badges. |
+| STUB | High | No user-facing routes — learners cannot view their badges. No leaderboard implementation despite the module description mentioning it. |
+| STUB | High | `lms_user_badge` has no `awarded_by` or `reason` fields — cannot track who awarded a badge or why. |
+| DEBT | Medium | `field_criteria` uses a JSON string in a plain `string` field; no schema validation; the format `{"type":"courses_completed","count":5}` is documented only in code comments. |
+| PLANNED | — | Full badge award engine (criteria evaluator, event-driven awarding, leaderboard) is target-state / planned — not yet materialized. |

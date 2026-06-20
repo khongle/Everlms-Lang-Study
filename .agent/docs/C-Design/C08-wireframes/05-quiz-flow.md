@@ -60,3 +60,17 @@
 │ FOOTER                                                               │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built.**
+
+- Quiz take page: `/quiz/{lms_quiz}/take` → `QuizController::takeQuiz` → `lms-quiz-take.html.twig`. Displays questions per the 8 supported types (single_choice, multiple_choice, true_false, essay, fill_blank, matching, ordering, short_answer).
+- Quiz submit: POST `/quiz/{lms_quiz}/submit` → `QuizController::submitQuiz`. Grading via static `GradingStrategyFactory` + 8 strategy classes. Strictly binary (no partial credit). Essay → `pending_review` status.
+- Quiz result page: `/quiz-result/{lms_quiz_result}` → `QuizController::viewResult` → `lms-quiz-result.html.twig`. Shows per-question breakdown with correct/wrong indicators as depicted.
+- My results: `/my-quiz-results` → `QuizController::myResults` → `lms-my-quiz-results.html.twig`.
+- On pass: `QuizPassedEvent` is dispatched → triggers certificate issuance via `CertificateEventListener`.
+
+Related: [../C04-entities/01-content-entities.md](../C04-entities/01-content-entities.md) · [../C05-modules/lms_quiz.md](../C05-modules/lms_quiz.md)

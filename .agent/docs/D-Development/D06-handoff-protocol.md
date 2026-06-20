@@ -1,155 +1,190 @@
+---
+documentation-mode: as-built
+last-updated: 2026-06-20
+session: 1
+---
+
 # D06 — Handoff Protocol
 
-> **Tier 1** — always loaded at session start. Load order + handoff checklist.
-> Update: at the end of every session if next actions change.
+> Instructions for the next session. Updated at the end of every session.
+> The incoming session MUST read this file first after Tier 1 context.
+> **Rewrite-in-place** — this file always reflects only the next session's instructions.
+
+**Last Updated:** 2026-06-20 (Session 1 — Documentation Rebuild)
 
 ---
 
-## Load Order (Next Session)
+## Context Load Order
 
-### Step 1 — Tier 1 (ALWAYS, ~5K tokens)
-1. `A-Project-Information/A01-CLAUDE.md` — AI config, commands, conventions
-2. `A-Project-Information/A03-project-context.md` — living state (phase, progress, decisions)
-3. `A-Project-Information/A05-framework-primer.md` — distilled framework map (budget-safe)
-4. `D-Development/D04-session-status.md` — last session outcomes
-5. **`D-Development/D06-handoff-protocol.md`** (this file) — what's next
+Load these documents in order before starting work:
 
-### Step 2 — Phase-specific Tier 2 (~10-15K tokens)
-Current phase = **4-Development**. Load:
-- `D-Development/D01-dev-overview.md` — group/unit map, progress dashboard
-- `D-Development/D03-unit-specs/U-{XXX}-*.md` for the active unit(s) only
-- `D-Development/D07-code-map/` — slice relevant to active module
-- `E-Quality/E01-test-strategy.md` — how tests run
-- `H-Operations/H05-feature-flags.md` — for flagged changes
+```
+1. A-Project-Information/A01-CLAUDE.md
+2. A-Project-Information/A03-project-context.md
+3. D-Development/D05-session-status.md  (latest entry — Session 1)
+4. THIS FILE (D06-handoff-protocol.md)
+5. D-Development/D01-dev-overview.md
+6. Phase-specific docs listed below
+```
 
-### Step 3 — Work-type specific (load as needed)
+### Phase-Specific Context (next phase: E-10 Hardening — P0 issues first)
 
-| If working on… | Also load |
-|----------------|-----------|
-| **Commerce / checkout** | `B04-business-workflows/WF-004-order-management.md`, `WF-005-membership-subscription.md`, `B05-acceptance-criteria/AC-04-*.md`, `B06-integration-requirements/INT-001-stripe.md`, `INT-002-paypal.md` |
-| **Certificate** | `B04/WF-003-certificate-issuance.md`, `C04-entities/05-certificate-entities.md` |
-| **Assessment / quiz** | `C04-entities/02-assessment-entities.md`, ADR-005 (GradingStrategyFactory) |
-| **Progress cascade** | `C04-entities/03-progress-entities.md`, ADR-008, ADR-010 (pending), RISK-002 in G02 |
-| **Hardening (security)** | `B02-technical-requirements.md` §Security, `E01-test-strategy.md`, G02 RISK + FIND list |
-| **AI provider** | ADR-006, `B06-integration-requirements/INT-004-openai.md`, `INT-005-gemini.md`, `H05-feature-flags.md` §AI flags |
-| **Zoom integration** | `B06-integration-requirements/INT-003-zoom.md` |
-| **Deployment / release** | `F01-deployment.md`, `F02-release-checklist/` |
-
----
-
-## Next Actions (Priority Queue)
-
-### P0 — Blocks production readiness
-
-| Task | Why P0 | Related |
-|------|--------|---------|
-| **TASK-015** API input validation | RISK-001, NFR-008 | DEC-001, ADR-009 (pending SA sign-off) |
-| **TASK-016** Access-control hardening | FIND-004, FIND-013, NFR-007 | `_access: TRUE` routes audit |
-| **TASK-017** Progress atomicity | RISK-002, NFR-015 | DEC-003, ADR-010 (pending SA sign-off) |
-| **TASK-002** Stripe webhook verification | FIND-001, RISK-004, NFR-009 | U-060, requires `STRIPE_WEBHOOK_SECRET` env |
-| **U-060** Stripe webhook impl | Blocks payment launch | See TASK-002 |
-| **TASK-001** Checkout flow real integration | G-COMMERCE critical path | Depends on U-060 |
-| **TASK-006** Certificate issuance logic | G-CERTIFICATE | Depends on progress cascade fix |
-| **TASK-007** Certificate PDF generation | G-CERTIFICATE | dompdf font cache setup |
-| **TASK-008** Public cert verify | G-CERTIFICATE | `/verify/{code}` route |
-
-### P1 — Feature completion
-
-- **TASK-004** Membership lifecycle (expire/renew/upgrade)
-- **TASK-009** Notification dispatch (10 types actual delivery)
-- **TASK-010** Forum UI (topic create, reply, mention)
-- **TASK-014** Analytics dashboards (admin + instructor)
-- **TASK-018** Audit `\Drupal::` static calls across all modules
-
-### P2 — Polish
-
-- G-UI-POLISH group (14 units) — accessibility, responsive edge cases, error UX
+```
+- D-Development/D02-epics/E-10-hardening.md
+- D-Development/D03-stories/lms_payment.md    (S-PAYMENT — IN_PROGRESS)
+- D-Development/D03-stories/lms_stripe.md     (S-STRIPE — IN_PROGRESS)
+- D-Development/D03-stories/lms_forum.md      (S-FORUM — IN_PROGRESS)
+- D-Development/D00-conventions/README.md
+- D-Development/D00-conventions/CONV-001-php-strict-types-di.md
+- D-Development/D00-conventions/CONV-005-service-plugin-patterns.md
+- D-Development/D00-conventions/CONV-007-config-secrets-flags.md
+- C-Design/C05-modules/lms_payment.md
+- C-Design/C05-modules/lms_stripe.md
+- C-Design/C05-modules/lms_forum.md
+```
 
 ---
 
-## Gotchas (must know before touching code)
+## Module Spec Locations
 
-### Payment
-- **Stripe handler is a stub** (`FIND-001`): `handleWebhook()` returns 200 without signature verify. Do not enable live mode until U-060 merges.
-- **PayPal entirely TODO** (`FIND-002`, `FIND-009`): two duplicate `PayPalGateway` classes exist (`lms_payment` + `lms_paypal`); resolve to one.
-- **Anon checkout** (`FIND-004`): `/checkout` routes use `_access: TRUE`. Tracked by TASK-015 — do not launch paid tier before fix.
+All C05 module specs live at:
 
-### Progress
-- **Race condition** (`RISK-002`): two concurrent lesson-complete requests from different tabs can produce inconsistent `UserCourse.progress_pct`. Fix pending ADR-010 acceptance.
-- **No transaction between order + enrollment** (`FIND-005`): possible edge case where payment succeeds but enrollment row never inserts.
+```
+C-Design/C05-modules/<module-slug>.md   (one file per module, 28 total)
+C-Design/C05-modules/_index.md          (roll-up table)
+```
 
-### AI
-- **OpenAI no `max_tokens` cap** (`FIND-003`): risk of runaway cost. Admin **must** set via config before enabling `FF_FEAT_AI_BUILDER`.
-- **Gemini key in URL query** (`FIND-008`): leaks to access logs. Move to header.
-- **AI providers feature-flagged off** by default; enable only in dev.
+Direct links for currently active stories:
 
-### Architecture
-- **`\Drupal::` static calls still present** in multiple modules. Tracked by TASK-018; G4 should flag new instances.
-- **`readonly` properties in AJAX form classes break form rebuild**. Do not add `readonly` to such classes.
-- **Service IDs follow `lms_{module}.{service_name}`**; declaring differently breaks discovery.
-
-### Decisions pending SA
-- **DEC-001** input validation strategy (ADR-009 proposal)
-- **DEC-003** race condition handling (ADR-010 proposal)
-- Blockers: `BLK-001`, `BLK-002` in A03.
+| Story | Module Spec | Status |
+|-------|------------|--------|
+| S-PAYMENT | [C05-modules/lms_payment.md](../C-Design/C05-modules/lms_payment.md) | IN_PROGRESS |
+| S-STRIPE | [C05-modules/lms_stripe.md](../C-Design/C05-modules/lms_stripe.md) | IN_PROGRESS |
+| S-FORUM | [C05-modules/lms_forum.md](../C-Design/C05-modules/lms_forum.md) | IN_PROGRESS |
+| S-RATING | [C05-modules/lms_rating.md](../C-Design/C05-modules/lms_rating.md) | IN_PROGRESS |
+| S-NOTIFICATION | [C05-modules/lms_notification.md](../C-Design/C05-modules/lms_notification.md) | IN_PROGRESS |
+| S-ZOOM | [C05-modules/lms_zoom.md](../C-Design/C05-modules/lms_zoom.md) | IN_PROGRESS |
+| S-AI | [C05-modules/lms_ai.md](../C-Design/C05-modules/lms_ai.md) | IN_PROGRESS |
+| S-MOBILE | [C05-modules/lms_mobile_api.md](../C-Design/C05-modules/lms_mobile_api.md) | IN_PROGRESS |
+| S-BADGE | [C05-modules/lms_badge.md](../C-Design/C05-modules/lms_badge.md) | STUB |
 
 ---
 
-## Current State Snapshot
+## Current Work State
 
-| Dimension | Value | Source |
-|-----------|-------|--------|
-| Phase | 4-Development | A03 |
-| Active persona | Agent_PM (docs) → Agent_Coder next for G-HARDENING | A03 |
-| Progress | 41/84 units DONE (49%) | A03 Progress Summary |
-| Open Critical/High findings | 8 FINDs + 2 RISKs (payment + progress) | G02 |
-| Test coverage | Not measured (pre-test strategy fully wired) | E01 |
-| Health | WARNING — 43 SPEC units, 5 PARTIAL DONE units | A03 Health Check |
+### Active Story: None (Baseline)
 
-Groups by status:
-- **PASSED**: G-FOUNDATION, G-CONTENT, G-ASSESSMENT, G-PROGRESS, G-ADDITIONAL
-- **PARTIAL**: G-COMMERCE (5/10 DONE), G-CERTIFICATE (1/4), G-COMMUNICATION (3/6), G-INTEGRATION (2/6)
-- **NOT_STARTED**: G-HARDENING (0/14), G-UI-POLISH (0/14)
+No implementation story was active in Session 1 (documentation rebuild). The next session should target the highest-severity P0 issues from the `IN_PROGRESS` and `STUB` stories.
 
----
+**Story type:** N/A
+**Owning module(s):** N/A
+**Status:** BASELINE — documentation layer A–E complete; no implementation Task in progress
+**Epic:** Next: E-10 (Hardening) — P0 items first
+**Feature(s) contributed to:** N/A
+**Active Task(s):** None
 
-## Handoff Checklist (what sender owes receiver)
+### What Was Completed (Session 1)
 
-When ending a session, verify before writing this file:
+- Full A–E documentation layer rebuilt from code ground truth (`the 2026-06-20 code ground-truth scan`).
+- 28 C05 module specs written (27 `lms_*` + `open_switcher`), all as-built status verified.
+- 11 Epics registered in `D02-epics/`; 37 Stories registered in `D03-stories/`.
+- 8 coding conventions written in `D00-conventions/` (CONV-001 through CONV-008).
+- D01 dev overview rebuilt with canonical Epic/Story/Task vocabulary.
+- All stale Group/Unit vocabulary removed.
+- 12 known issues (FIND-001 through FIND-012) logged in D01; feeds E-Quality/E02-issues/ once materialized.
+- D05 seeded (this session entry), D06 seeded (this file), D08 sessions folder + README + session file created.
 
-- [ ] D04 session status updated with what was done
-- [ ] D03 unit specs updated for state changes (SPEC → IN_PROGRESS → DONE)
-- [ ] D07 code-map updated if new files created or modules restructured
-- [ ] A03 project context: phase, blockers, decisions refreshed
-- [ ] G4 adversarial proof attached if a unit reached REVIEW
-- [ ] E02 issues logged for any Medium/Low findings
-- [ ] This file (D06) updated: next actions, blockers, gotchas
-- [ ] Feature flags in H05 updated if any were added/toggled
-- [ ] If checkpoint approved → E07 retro entry + CP report in D08-sessions/
+### What Remains
 
-## Health Check Triggers
+1. **P0 — FIND-001:** Implement Stripe webhook endpoint + signature verification (`lms_stripe`, `lms_payment`). Story: S-PAYMENT-HARDENING (E-10).
+2. **P0 — FIND-002:** Fix or tombstone `lms_paypal` — wrong interface, missing `@PaymentGateway` annotation, never registered. Story: S-AI-HARDENING (E-10) / S-PAYPAL.
+3. **P0 — FIND-003:** Remove or fix `ForumController::viewTopic()` dead code (`throw new \Exception("HARD DEBUG!")`). Story: S-FORUM (E-07).
+4. **P0 — FIND-007:** Extract all plaintext secrets from committed config YAML into `drupal/key` module. Story: S-SEC-HARDENING (E-10).
+5. **P1 — FIND-005:** Add 3 missing routes to `lms_rating.routing.yml`. Story: S-RATING (E-07).
+6. **P1 — FIND-010:** Move Stripe PaymentIntent creation out of `buildForm()` to the submit handler. Story: S-STRIPE.
+7. **Cross-cutting:** Materialize E-Quality layer (`E02-issues/`, `E06-implementation-status.md`) — not yet created.
+8. **Cross-cutting:** Create `D04-tasks/` bucket files (backlog/todo/in-progress/blocked/in-review/done/closed) and migrate P0 issues to `todo/`.
 
-Run a health check (xem `A02-agent-protocol.md` §12) at:
-- Session start
-- Before any CP1-CP6 submission
-- Before release
-- Monthly during maintenance
+### Work In Progress
 
----
-
-## Escalation
-
-Escalate to SA when:
-- Gate fails 3 times (BLOCKED state)
-- Any new scope requires G04 change-request
-- Pending DEC-001/002/003 blocks implementation
-- NFR threshold can't be met (see E10)
-- G4 finds Critical security issue without an approved mitigation
-- Feature flag rollback needed
-- Dependency has Critical CVE (see H03)
-
-Escalation channel: hainn (SA). Log via `G03-blockers.md` entry.
+- No code files are partially modified. Documentation rebuild is complete; code changes have not started.
 
 ---
 
-*End of D06-handoff-protocol.md — Tier 1 artifact*
+## Blockers
+
+| ID | Description | Impact | Workaround |
+|----|-------------|--------|------------|
+| BLK-001 | `.agent/.env` with Stripe/PayPal test credentials committed — risk of exposure if repo goes public | Blocks S-SEC-HARDENING verification | Extract to `drupal/key` before any public push |
+| BLK-002 | `lms_paypal` dead code never discovered by plugin manager — safe to ignore at runtime, but misleading | Blocks S-PAYMENT-HARDENING audit completion | Tombstone or fix interface + annotation |
+| BLK-003 | E-Quality layer (E02-issues/) not yet materialized — no formal issue tracker inside docs | FIND-001..012 tracked only in D01 footnotes | Use D01 Known Issues table as interim tracker |
+
+---
+
+## Gate Sequence for Next Implementation Session
+
+```
+G1 Build    — ddev drush php:eval "print 'ok';"  (Drupal bootstrap)
+G2 Lint     — phpcs --standard=Drupal,DrupalPractice web/modules/custom/<module>/
+G3 Tests    — ddev drush test:run <module>  (no test suite exists yet — mark NOT_RUN)
+G4 Review   — adversarial review per A02 §4.2 (7 categories: Security, Error Handling,
+              Performance, Edge Cases, Architecture, Data Integrity, Maintainability)
+```
+
+Note: No PHPUnit test suite exists (`phpunit.xml` absent). G3 will be NOT_RUN until S-SEC-HARDENING or a dedicated test story creates one. Document this honestly in each session's D08 entry.
+
+---
+
+## Decisions Pending SA Input
+
+| Question | Context | Default if No Response |
+|----------|---------|------------------------|
+| Prioritize S-SEC-HARDENING (FIND-007 secrets) or S-FORUM bug fix (FIND-003) first? | FIND-007 is systemic risk; FIND-003 is a crash bug on a real route | Fix FIND-003 first (crash); then FIND-007 in E-10 sprint |
+| Tombstone `lms_paypal` or fix to a real gateway? | Dead code, wrong interface — no active PayPal business requirement visible | Tombstone (add `README.md` with "not implemented", disable module) |
+| Badge award logic (S-BADGE) — implement or defer? | Near-stub, no business logic | Defer to E-11 per current plan |
+| Materialize E-Quality layer before or after E-10 hardening work? | Issues would ideally live in E02-issues/ not just D01 | Materialize E02-issues/ at start of first E-10 task session |
+
+---
+
+## Gotchas & Notes
+
+- **Vocabulary:** Use Epic / Story / Task everywhere. "Group" and "Unit" are forbidden (appear in old draft, not in canonical docs).
+- **`lms_mobile_api` undeclared deps:** `lms_quiz` and `lms_wishlist` are used but not declared in `lms_mobile_api.info.yml`. Add them before any deployment to avoid module enable ordering issues.
+- **Stripe PaymentIntent on form BUILD:** `CheckoutForm::buildForm()` calls `\Stripe\PaymentIntent::create()` every page load — will multiply dangling Stripe objects. Fix in S-STRIPE (move to `submitForm()`).
+- **Certificate `field_expiry_date`:** Schema discrepancy noted (datetime vs varchar). Verify actual column type against `db-schema.md` facts before writing migrations.
+- **`lms_zoom` wrong service id:** `generateSignature()` references a wrong service id — runtime fatal if Zoom signing attempted. Confirm in `C05-modules/lms_zoom.md`.
+- **`lms_ai` no rollback:** If `CourseBuilder` queue worker fails mid-way, partial entities remain in DB with no cleanup. No compensation mechanism exists.
+- **IP separation:** `.agent/00-Guidelines/` is company-confidential — never copy verbatim into A05/A06 or any public-facing doc. Distilled summaries only.
+- **DDEV `.ddev/` is gitignored** — collaborators must run `ddev config` or be given the config separately. This is noted in `A02-project-overview.md`.
+- **No test suite exists** — `phpunit.xml` absent. G3 tests are NOT_RUN until a test story is started. First test story should target `lms_quiz` grading strategies (pure PHP, easiest to unit test).
+
+---
+
+## Feature Flag State
+
+| Flag ID | Status | Notes |
+|---------|--------|-------|
+| — | No active feature flags for next session | Feature flags infrastructure not yet in place (planned layer H, not yet materialized) |
+
+---
+
+## Estimated Remaining Work
+
+| Story | Tasks Remaining | Est. Hours | Gates Remaining |
+|-------|-----------------|-----------|-----------------|
+| S-FORUM (FIND-003/004) | ~2 tasks | 1–2 h | G1, G2, G4 |
+| S-RATING (FIND-005) | ~2 tasks | 2–3 h | G1, G2, G4 |
+| S-STRIPE (FIND-010) | ~3 tasks | 3–5 h | G1, G2, G4 |
+| S-SEC-HARDENING (FIND-007) | ~5 tasks | 8–12 h | G1, G2, G4 |
+| S-PAYMENT (webhooks) | ~4 tasks | 6–10 h | G1, G2, G4 |
+| S-MOBILE (dep fix + API hardening) | ~3 tasks | 3–5 h | G1, G2, G4 |
+| E-Quality materialization | ~3 tasks | 2 h | — |
+
+---
+
+## Session Priority
+
+1. **First:** Read Tier 1 context (A01, A03, D05 latest, this file, D01).
+2. **Then:** Confirm which P0 issue to fix with SA — recommended order: FIND-003 (crash), then FIND-005 (missing routes), then FIND-010 (Stripe build-time PaymentIntent), then FIND-007 (secrets).
+3. **Materialize E02-issues/** as part of the first E-10 task session so all FIND-* issues have canonical issue IDs.
+4. **If time:** Begin S-FORUM fix — remove `throw new \Exception("HARD DEBUG!")` from `ForumController::viewTopic()` and replace with proper view rendering. Simple, high-impact, P0.

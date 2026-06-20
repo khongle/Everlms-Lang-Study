@@ -61,3 +61,17 @@
 │ [+ Create New Course]               │ [Grade Now →]                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built.**
+
+- Workspace dashboard: `/workspace` → `AdminController::dashboard` → `lms-admin-dashboard.html.twig`. KPI stat cards (courses, enrollments, revenue, completion rate) are rendered from live data.
+- Reports overview: `/workspace/reports` → `AdminController::reports` → `lms-admin-reports.html.twig`.
+- Detailed analytics: `/admin/lms/reports/courses`, `/admin/lms/reports/users`, `/admin/lms/reports/quizzes` (lms_analytics module — all fully implemented with CSV export).
+- AI Course Builder: `/manage/courses/ai-builder` → `CourseBuilderForm` (AJAX, calls OpenAI/Gemini via plugin). Advanced AI engine wizard at `/admin/everlms-ai-engine`.
+- **Instructor dashboard sub-panel** (second wireframe panel with "My Courses" + "Grading Queue") is **target-state** as a distinct role view — currently all instructors use the same `/workspace` dashboard as admins; no separate instructor-role-scoped dashboard route exists.
+
+Related: [../C05-modules/lms_course.md](../C05-modules/lms_course.md) · [../C07-sitemap.md](../C07-sitemap.md)

@@ -53,3 +53,16 @@
 │ Pagination                                                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built.**
+
+- Dashboard: `/dashboard` → `UserPortalController::dashboard` → `lms-dashboard.html.twig`. Renders stats (enrolled/in_progress/completed/certificates) and "continue learning" link to next incomplete lesson.
+- My Courses: `/my-courses` → `UserPortalController::myCourses` → `lms-my-courses.html.twig`. Tabs (All / In Progress / Completed) and per-course progress bars are rendered.
+- Notifications page: `/notifications` → `NotificationController::listNotifications` → `lms-notifications.html.twig`. Pager(15), type filter, mark-read on visit. In-app notifications are fully implemented. **Email and push notification channels are stubs** — only in-app delivery works.
+- Notification bell: `lms_notification_bell_block` block plugin (rendered in header); AJAX unread count from `/api/lms/notifications/unread-count`.
+
+Related: [../C04-entities/03-progress-entities.md](../C04-entities/03-progress-entities.md) · [../C05-modules/lms_progress.md](../C05-modules/lms_progress.md)

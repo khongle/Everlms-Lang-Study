@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EverLMS Manage — Orders</title>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    .kpi-mini-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .kpi-mini {
+      flex: 1; min-width: 140px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .kpi-mini-icon { font-size: 22px; flex-shrink: 0; }
+    .kpi-mini-label { font-size: 12px; color: var(--text-muted); }
+    .kpi-mini-val { font-size: 20px; font-weight: 800; line-height: 1.1; }
+    .filter-bar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px;
+    }
+    .filter-bar .form-select { width: auto; padding: 7px 12px; font-size: 14px; }
+    .filter-bar .search-wrap { position: relative; flex: 1; min-width: 180px; }
+    .filter-bar .search-wrap .form-control { width: 100%; padding-right: 32px; font-size:14px; }
+    .filter-bar .search-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .bulk-action-bar {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 16px; margin-bottom: 12px;
+      font-size: 13px;
+    }
+    .bulk-action-bar .hint { font-size: 12px; color: var(--text-muted); }
+    .avatar-xs {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      display: inline-grid; place-items: center;
+      font-size: 11px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .customer-cell { display: flex; align-items: center; gap: 8px; }
+    .pagination { display: flex; gap: 4px; margin-top: 16px; }
+    .pagination a, .pagination span {
+      min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .pagination a:hover { background: var(--surface); text-decoration: none; }
+    .pagination .active { background: var(--primary); color: white; border-color: var(--primary); }
+    .pagination .ellipsis { border: none; }
+    .order-id { font-family: monospace; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <a href="../index.html" class="logo"><span class="logo-mark">E</span> EverLMS</a>
+      <h5 class="mt-4">Workspace</h5>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="courses.html">📚 Courses</a>
+      <a href="course-edit.html">✏️ Course editor</a>
+      <a href="quizzes.html">📝 Quizzes</a>
+      <h5>Commerce</h5>
+      <a href="orders.html" class="active">💳 Orders</a>
+      <a href="#">🎟 Coupons</a>
+      <a href="#">💎 Memberships</a>
+      <h5>Audience</h5>
+      <a href="users.html">👥 Users</a>
+      <a href="#">📈 Reports</a>
+      <h5>Configuration</h5>
+      <a href="#">⚙️ Settings</a>
+      <a href="#">🤖 AI provider</a>
+      <a href="#">💳 Payment</a>
+    </aside>
+
+    <main class="app-main">
+      <div class="app-topbar">
+        <div>
+          <h1>Order Management</h1>
+          <div class="text-secondary fs-14">Commerce transactions, refunds and payment status</div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline btn-sm">📤 Export CSV</button>
+          <button class="btn btn-outline btn-sm">📊 Revenue report</button>
+        </div>
+      </div>
+
+      <!-- KPI Mini Strip -->
+      <div class="kpi-mini-row">
+        <div class="kpi-mini">
+          <div class="kpi-mini-icon">💰</div>
+          <div>
+            <div class="kpi-mini-label">Today's Revenue</div>
+            <div class="kpi-mini-val text-success">$12,430</div>
+          </div>
+        </div>
+        <div class="kpi-mini">
+          <div class="kpi-mini-icon">📦</div>
+          <div>
+            <div class="kpi-mini-label">Total Orders</div>
+            <div class="kpi-mini-val">45</div>
+          </div>
+        </div>
+        <div class="kpi-mini">
+          <div class="kpi-mini-icon">↩️</div>
+          <div>
+            <div class="kpi-mini-label">Refunds</div>
+            <div class="kpi-mini-val text-danger">2</div>
+          </div>
+        </div>
+        <div class="kpi-mini">
+          <div class="kpi-mini-icon">⏳</div>
+          <div>
+            <div class="kpi-mini-label">Pending</div>
+            <div class="kpi-mini-val text-warning">5</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <select class="form-select">
+          <option value="">All Status</option>
+          <option>Paid</option>
+          <option>Pending</option>
+          <option>Refunded</option>
+          <option>Failed</option>
+        </select>
+        <select class="form-select">
+          <option value="">All Date</option>
+          <option>Today</option>
+          <option>Last 7 days</option>
+          <option>Last 30 days</option>
+          <option>Custom range</option>
+        </select>
+        <select class="form-select">
+          <option value="">All Methods</option>
+          <option>Stripe</option>
+          <option>PayPal</option>
+          <option>Bank transfer</option>
+        </select>
+        <div class="search-wrap">
+          <input type="text" class="form-control" placeholder="Search order ID or customer…">
+          <span class="search-icon">🔍</span>
+        </div>
+      </div>
+
+      <!-- Bulk Action Bar -->
+      <div class="bulk-action-bar">
+        <input type="checkbox" id="selectAll">
+        <label for="selectAll" class="text-secondary">Select all</label>
+        <span class="divider-y" style="height:18px;margin:0 4px;"></span>
+        <button class="btn btn-danger btn-sm disabled" disabled title="Select orders first">↩️ Refund selected</button>
+        <span class="hint">Select one or more orders to enable bulk refund</span>
+        <span style="flex:1;"></span>
+        <button class="btn btn-ghost btn-sm">🗑 Delete selected</button>
+      </div>
+
+      <!-- Orders Table -->
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width:36px;"><input type="checkbox"></th>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Course</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="order-id text-primary">#12350</td>
+              <td><div class="customer-cell"><div class="avatar-xs">JD</div> John Doe</div></td>
+              <td class="fs-13 text-secondary">Web Dev Bootcamp</td>
+              <td class="fw-semi">$49.99</td>
+              <td class="fs-13 text-muted">Stripe</td>
+              <td><span class="badge badge-success">Paid</span></td>
+              <td class="fs-13 text-muted">26 Apr 2026</td>
+              <td>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="Refund">↩️</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="order-id text-primary">#12349</td>
+              <td><div class="customer-cell"><div class="avatar-xs" style="background:linear-gradient(135deg,#22c55e,#059669);">SL</div> Sarah Lee</div></td>
+              <td class="fs-13 text-secondary">React Masterclass</td>
+              <td class="fw-semi">$299.00</td>
+              <td class="fs-13 text-muted">PayPal</td>
+              <td><span class="badge badge-success">Completed</span></td>
+              <td class="fs-13 text-muted">25 Apr 2026</td>
+              <td>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="Refund">↩️</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="order-id text-primary">#12348</td>
+              <td><div class="customer-cell"><div class="avatar-xs" style="background:linear-gradient(135deg,#f59e0b,#b45309);">MC</div> Mike Chen</div></td>
+              <td class="fs-13 text-secondary">Node.js Backend</td>
+              <td class="fw-semi">$29.99</td>
+              <td class="fs-13 text-muted">Stripe</td>
+              <td><span class="badge badge-warning">Pending</span></td>
+              <td class="fs-13 text-muted">25 Apr 2026</td>
+              <td>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="order-id text-primary">#12347</td>
+              <td><div class="customer-cell"><div class="avatar-xs" style="background:linear-gradient(135deg,#a78bfa,#7c3aed);">AW</div> Anna Wu</div></td>
+              <td class="fs-13 text-secondary">CSS Animation</td>
+              <td class="fw-semi">$49.99</td>
+              <td class="fs-13 text-muted">Stripe</td>
+              <td><span class="badge badge-danger">Refunded</span></td>
+              <td class="fs-13 text-muted">24 Apr 2026</td>
+              <td>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="order-id text-primary">#12346</td>
+              <td><div class="customer-cell"><div class="avatar-xs" style="background:linear-gradient(135deg,#38bdf8,#0284c7);">TR</div> Tom Rivers</div></td>
+              <td class="fs-13 text-secondary">Python Data Science</td>
+              <td class="fw-semi">$89.00</td>
+              <td class="fs-13 text-muted">Stripe</td>
+              <td><span class="badge badge-success">Paid</span></td>
+              <td class="fs-13 text-muted">23 Apr 2026</td>
+              <td>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="Refund">↩️</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="order-id text-primary">#12345</td>
+              <td><div class="customer-cell"><div class="avatar-xs" style="background:linear-gradient(135deg,#fb7185,#e11d48);">LT</div> Lisa Tran</div></td>
+              <td class="fs-13 text-secondary">Web Dev Bootcamp</td>
+              <td class="fw-semi">$49.99</td>
+              <td class="fs-13 text-muted">Bank transfer</td>
+              <td><span class="badge badge-warning">Pending</span></td>
+              <td class="fs-13 text-muted">22 Apr 2026</td>
+              <td>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="order-id text-primary">#12344</td>
+              <td><div class="customer-cell"><div class="avatar-xs" style="background:linear-gradient(135deg,#34d399,#059669);">KM</div> Kevin Marsh</div></td>
+              <td class="fs-13 text-secondary">Cybersecurity Fundamentals</td>
+              <td class="fw-semi">$79.00</td>
+              <td class="fs-13 text-muted">PayPal</td>
+              <td><span class="badge badge-success">Paid</span></td>
+              <td class="fs-13 text-muted">21 Apr 2026</td>
+              <td>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="Refund">↩️</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="order-id text-primary">#12343</td>
+              <td><div class="customer-cell"><div class="avatar-xs" style="background:linear-gradient(135deg,#fbbf24,#92400e);">JP</div> James Park</div></td>
+              <td class="fs-13 text-secondary">AWS Cloud Practitioner</td>
+              <td class="fw-semi">$129.00</td>
+              <td class="fs-13 text-muted">Stripe</td>
+              <td><span class="badge badge-danger">Failed</span></td>
+              <td class="fs-13 text-muted">20 Apr 2026</td>
+              <td>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="Retry">🔄</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination + count -->
+      <div class="d-flex justify-between align-center mt-3">
+        <span class="text-muted fs-13">Showing 1–8 of 1,234 orders</span>
+        <div class="pagination" style="margin-top:0;">
+          <a href="#">‹</a>
+          <a href="#" class="active">1</a>
+          <a href="#">2</a>
+          <a href="#">3</a>
+          <span class="ellipsis">…</span>
+          <a href="#">155</a>
+          <a href="#">›</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</body>
+</html>

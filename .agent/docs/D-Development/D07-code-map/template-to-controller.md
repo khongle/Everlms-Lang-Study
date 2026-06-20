@@ -1,203 +1,290 @@
-# D07 — Template-to-Controller Map
+# D07 — Template to Controller Map
 
-> Maps every `.html.twig` file under `web/modules/custom/` to its rendering controller(s) or form.
-> Enumerated 2026-04-16.
-> Columns: Template Name | File Path | Rendered By (Controller/Form FQCN) | Route ID(s) | Primary Unit
+**Purpose:** All Twig templates in custom modules and themes → the controller method or hook that renders them.
 
----
+**Last verified:** 2026-06-20  
+**Source:** `web/modules/custom/*/templates/`, `web/themes/custom/lms_theme/templates/`
 
-## lms_analytics
-
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-analytics-course-report.html.twig | `web/modules/custom/lms_analytics/templates/lms-analytics-course-report.html.twig` | `CourseReportController::build` | lms_analytics.course_report | U-050 |
-| lms-analytics-quiz-report-list.html.twig | `web/modules/custom/lms_analytics/templates/lms-analytics-quiz-report-list.html.twig` | `QuizReportController::buildList` | lms_analytics.quiz_report_list | U-050 |
-| lms-analytics-quiz-report-detail.html.twig | `web/modules/custom/lms_analytics/templates/lms-analytics-quiz-report-detail.html.twig` | `QuizReportController::buildDetail` | lms_analytics.quiz_report_detail | U-050 |
-| lms-analytics-user-report.html.twig | `web/modules/custom/lms_analytics/templates/lms-analytics-user-report.html.twig` | `UserReportController::build` | lms_analytics.user_report | U-050 |
+**Template count:** ~62 module-level templates + 16 homepage style variants (theme-level)
 
 ---
 
-## lms_blog
+## Legend
 
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-blog-list.html.twig | `web/modules/custom/lms_blog/templates/lms-blog-list.html.twig` | `LmsBlogController::index` | lms_blog.frontend.collection | U-056 |
-| lms-blog-single.html.twig | `web/modules/custom/lms_blog/templates/lms-blog-single.html.twig` | `LmsBlogController::view` | lms_blog.frontend.canonical | U-056 |
+| Column | Meaning |
+|--------|---------|
+| Template File | Path relative to module root (e.g. `lms_course/templates/lms-homepage.html.twig`) |
+| Theme Hook | `hook_theme()` key; registered in the module's `.module` file |
+| Rendered By | Controller method, Form class, or Block plugin that returns this theme as a render array |
+| Route | The route name whose response includes this template |
+| Notes | Architecture details, status flags |
 
----
-
-## lms_certificate
-
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| certificate-pdf.html.twig | `web/modules/custom/lms_certificate/templates/certificate-pdf.html.twig` | `CertificateGenerator` (service, not a controller route) | — (service-rendered via mPDF) | U-037 |
-| certificate-verification-result.html.twig | `web/modules/custom/lms_certificate/templates/certificate-verification-result.html.twig` | `VerificationForm` | lms_certificate.verify | U-038 |
-| lms-admin-certificates.html.twig | `web/modules/custom/lms_certificate/templates/lms-admin-certificates.html.twig` | `CertificateAdminController::adminDashboard` | lms_certificate.admin_dashboard | U-035 |
-| lms-admin-certificate-templates.html.twig | `web/modules/custom/lms_certificate/templates/lms-admin-certificate-templates.html.twig` | `CertificateAdminController::adminTemplates` | lms_certificate.admin_templates | U-035 |
+Status tags: **as-built** / **stub** / **dead-code** / **bug** — see [README.md](README.md).
 
 ---
 
-## lms_course
+## lms_analytics — `/templates/`
 
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-homepage.html.twig | `web/modules/custom/lms_course/templates/lms-homepage.html.twig` | `CoursePublicController::homepage` | lms_course.homepage | U-009 |
-| lms-catalog.html.twig | `web/modules/custom/lms_course/templates/lms-catalog.html.twig` | `CoursePublicController::catalog` | lms_course.catalog | U-008 |
-| lms-course-detail.html.twig | `web/modules/custom/lms_course/templates/lms-course-detail.html.twig` | `CoursePublicController::detail` | lms_course.detail | U-005 |
-| lms-course-card.html.twig | `web/modules/custom/lms_course/templates/lms-course-card.html.twig` | included by lms-catalog, lms-homepage | lms_course.catalog, .homepage | U-008 |
-| lms-categories.html.twig | `web/modules/custom/lms_course/templates/lms-categories.html.twig` | `CoursePublicController::categories` / `::categoryDetail` | lms_course.category, .category_detail | U-008 |
-| lms-instructor-profile.html.twig | `web/modules/custom/lms_course/templates/lms-instructor-profile.html.twig` | `CoursePublicController::instructorProfile` | lms_course.instructor_profile | U-008 |
-| lms-about.html.twig | `web/modules/custom/lms_course/templates/lms-about.html.twig` | `PageController::about` | lms_course.about | U-008 |
-| lms-contact.html.twig | `web/modules/custom/lms_course/templates/lms-contact.html.twig` | `PageController::contact` | lms_course.contact | U-008 |
-| lms-pricing.html.twig | `web/modules/custom/lms_course/templates/lms-pricing.html.twig` | `PageController::pricing` | lms_course.pricing | U-026 |
-| lms-glossary.html.twig | `web/modules/custom/lms_course/templates/lms-glossary.html.twig` | `CoursePublicController::glossary` | lms_course.glossary | U-008 |
-| lms-admin-dashboard.html.twig | `web/modules/custom/lms_course/templates/lms-admin-dashboard.html.twig` | `AdminController::dashboard` | lms_course.admin_dashboard | U-010 |
-| lms-admin-courses.html.twig | `web/modules/custom/lms_course/templates/lms-admin-courses.html.twig` | `AdminController::courseList` | lms_course.admin_courses | U-010 |
-| lms-admin-courses-table.html.twig | `web/modules/custom/lms_course/templates/lms-admin-courses-table.html.twig` | `AdminController::courseList` (partial) | lms_course.admin_courses | U-010 |
-| lms-admin-course-create.html.twig | `web/modules/custom/lms_course/templates/lms-admin-course-create.html.twig` | `AdminController::courseCreateWizard` | lms_course.admin_course_create | U-010 |
-| lms-admin-content.html.twig | `web/modules/custom/lms_course/templates/lms-admin-content.html.twig` | `WorkspaceContentController::contentList` | lms_course.workspace_content.list | U-010 |
-| lms-admin-content-table.html.twig | `web/modules/custom/lms_course/templates/lms-admin-content-table.html.twig` | `WorkspaceContentController::contentList` (partial) | lms_course.workspace_content.list | U-010 |
-| lms-admin-entity-form.html.twig | `web/modules/custom/lms_course/templates/lms-admin-entity-form.html.twig` | `WorkspaceContentController::contentCreateForm` / `::contentEditForm` | .workspace_content.add / .edit | U-010 |
-| lms-admin-entity-view.html.twig | `web/modules/custom/lms_course/templates/lms-admin-entity-view.html.twig` | `WorkspaceContentController::contentView` | lms_course.workspace_content.view | U-010 |
-| lms-admin-orders.html.twig | `web/modules/custom/lms_course/templates/lms-admin-orders.html.twig` | `AdminController::orderList` | lms_course.admin_orders | U-025 |
-| lms-admin-quizzes.html.twig | `web/modules/custom/lms_course/templates/lms-admin-quizzes.html.twig` | `AdminController::quizList` | lms_course.admin_quizzes | U-013 |
-| lms-admin-ratings.html.twig | `web/modules/custom/lms_course/templates/lms-admin-ratings.html.twig` | `RatingManagerController::list` | lms_rating.admin_list | U-041 |
-| lms-admin-reports.html.twig | `web/modules/custom/lms_course/templates/lms-admin-reports.html.twig` | `AdminController::reports` | lms_course.admin_reports | U-010, U-050 |
-| lms-admin-sidebar.html.twig | `web/modules/custom/lms_course/templates/lms-admin-sidebar.html.twig` | layout include — used by all admin controllers | multiple | U-010 |
-| lms-admin-users.html.twig | `web/modules/custom/lms_course/templates/lms-admin-users.html.twig` | `AdminController::userList` | lms_course.admin_users | U-010 |
-| lms-admin-users-table.html.twig | `web/modules/custom/lms_course/templates/lms-admin-users-table.html.twig` | `AdminController::userList` (partial) | lms_course.admin_users | U-010 |
-| lms-admin-user-form.html.twig | `web/modules/custom/lms_course/templates/lms-admin-user-form.html.twig` | `AdminController::userCreateForm` / `::userEditForm` | .admin.user.create / .edit | U-010 |
-| lms-profile.html.twig | `web/modules/custom/lms_course/templates/lms-profile.html.twig` | `UserPortalController::profile` | lms_course.profile | U-021 |
+Registered by: `lms_analytics.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-analytics-course-report.html.twig` | `lms_analytics_course_report` | `CourseReportController::build` | `lms_analytics.course_report` |
+| `lms-analytics-user-report.html.twig` | `lms_analytics_user_report` | `UserReportController::build` | `lms_analytics.user_report` |
+| `lms-analytics-quiz-report-list.html.twig` | `lms_analytics_quiz_report_list` | `QuizReportController::buildList` | `lms_analytics.quiz_report_list` |
+| `lms-analytics-quiz-report-detail.html.twig` | `lms_analytics_quiz_report_detail` | `QuizReportController::buildDetail` | `lms_analytics.quiz_report_detail` |
 
 ---
 
-## lms_forum
+## lms_blog — `lms_blog/templates/`
 
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-forum-index.html.twig | `web/modules/custom/lms_forum/templates/lms-forum-index.html.twig` | `LmsForumController::index` | lms_forum.index | U-043 |
-| lms-forum-topic.html.twig | `web/modules/custom/lms_forum/templates/lms-forum-topic.html.twig` | `LmsForumController` (topic detail — **no route defined**, FIND-007) | — (unmapped) | U-043 |
-| lms-forum-topic-form.html.twig | `web/modules/custom/lms_forum/templates/lms-forum-topic-form.html.twig` | `LmsForumController::addTopic` | lms_forum.topic.add | U-040 |
-| lms-forum-new-topic-page.html.twig | `web/modules/custom/lms_forum/templates/lms-forum-new-topic-page.html.twig` | `LmsForumController::addTopic` (page wrapper) | lms_forum.topic.add | U-040 |
-| lms-forum-edit-reply-page.html.twig | `web/modules/custom/lms_forum/templates/lms-forum-edit-reply-page.html.twig` | `LmsForumController::editReply` | lms_forum.reply.edit | U-040 |
+Registered by: `lms_blog.module hook_theme()`
 
----
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-blog-list.html.twig` | `lms_blog_list` | `LmsBlogController::index` | `lms_blog.frontend.collection` (`/news`) |
+| `lms-blog-single.html.twig` | `lms_blog_single` | `LmsBlogController::view` | `lms_blog.frontend.canonical` (`/news/{node}`) |
 
-## lms_membership
-
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-my-membership.html.twig | `web/modules/custom/lms_membership/templates/lms-my-membership.html.twig` | `MembershipController::myMembership` | lms_membership.my_membership | U-026 |
-| lms-admin-pricing.html.twig | `web/modules/custom/lms_membership/templates/lms-admin-pricing.html.twig` | `MembershipAdminController::pricingList` | lms_membership.admin_pricing | U-033 |
-| lms-admin-user-memberships.html.twig | `web/modules/custom/lms_membership/templates/lms-admin-user-memberships.html.twig` | `MembershipAdminController::userMembershipsList` | lms_membership.admin_user_memberships | U-033 |
+**Note:** Both templates display `node:blog` content (core node entities), not `lms_article`. The `lms_article` entity backs only the `/manage/blog` admin CRUD (entity forms, no custom template).
 
 ---
 
-## lms_note
+## lms_certificate — `lms_certificate/templates/`
 
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-my-notes.html.twig | `web/modules/custom/lms_note/templates/lms-my-notes.html.twig` | `NoteController::myNotes` | lms_note.my_notes | U-053 |
+Registered by: `lms_certificate.module hook_theme()`
 
----
-
-## lms_notification
-
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-notifications.html.twig | `web/modules/custom/lms_notification/templates/lms-notifications.html.twig` | `NotificationController::listNotifications` | lms_notification.list | U-039 |
-| lms-notification-bell.html.twig | `web/modules/custom/lms_notification/templates/lms-notification-bell.html.twig` | `NotificationBellBlock` (Block Plugin) | — (block, not a route) | U-039 |
+| Template File | Theme Hook | Rendered By | Route / Context |
+|---------------|------------|-------------|-----------------|
+| `certificate-pdf.html.twig` | `certificate_pdf` | `CertificateGenerator::generate()` (service) and `CertificateAdminController::regenerateCertificate` | PDF generation; also `CertificateAdminController::templatePreview` (inline preview) |
+| `certificate-verification-result.html.twig` | `certificate_verification_result` | `Form\VerificationForm` (rebuild output) | `lms_certificate.verify` (`/certificate/verify`) |
+| `lms-admin-certificates.html.twig` | `lms_admin_certificates` | `CertificateAdminController::adminDashboard` | `lms_certificate.admin_dashboard` (`/workspace/certificates`) |
+| `lms-admin-certificate-templates.html.twig` | `lms_admin_certificate_templates` | `CertificateAdminController::adminTemplates` | `lms_certificate.admin_templates` (`/workspace/certificate-templates`) |
 
 ---
 
-## lms_order
+## lms_course — `lms_course/templates/`
 
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-checkout.html.twig | `web/modules/custom/lms_order/templates/lms-checkout.html.twig` | `CheckoutController::checkout` / `::checkoutMembership` | lms_order.checkout, .checkout_membership | U-027 |
-| lms-bank-transfer.html.twig | `web/modules/custom/lms_order/templates/lms-bank-transfer.html.twig` | `CheckoutController::bankTransferInstruction` | lms_order.bank_transfer | U-027 |
+Registered by: `lms_course.module hook_theme()` (30+ hooks)
 
----
+### Public learner templates
 
-## lms_progress
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-homepage.html.twig` | `lms_homepage` | `CoursePublicController::homepage` | `lms_course.homepage` (`/homepage`) |
+| `lms-catalog.html.twig` | `lms_catalog` | `CoursePublicController::catalog` | `lms_course.catalog` (`/courses`) |
+| `lms-course-detail.html.twig` | `lms_course_detail` | `CoursePublicController::detail` | `lms_course.detail` (`/courses/{id}`) |
+| `lms-course-card.html.twig` | `lms_course_card` | Sub-component used inside catalog, homepage, my-courses | (included by parent templates) |
+| `lms-categories.html.twig` | `lms_categories` | `CoursePublicController::categories` | `lms_course.category` (`/categories`) |
+| `lms-glossary.html.twig` | `lms_glossary` | `CoursePublicController::glossary` | `lms_course.glossary` (`/glossary`) |
+| `lms-instructor-profile.html.twig` | `lms_instructor_profile` | `CoursePublicController::instructorProfile` | `lms_course.instructor_profile` (`/instructor/{user}`) |
+| `lms-about.html.twig` | `lms_about` | `PageController::about` | `lms_course.about` (`/about`) |
+| `lms-contact.html.twig` | `lms_contact` | `PageController::contact` | `lms_course.contact` (`/contact`) |
+| `lms-pricing.html.twig` | `lms_pricing` | `PageController::pricing` | `lms_course.pricing` (`/pricing`) |
+| `lms-profile.html.twig` | `lms_profile` | `UserPortalController::profile` *(lms_progress controller)* | `lms_course.profile` (`/profile`) |
 
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-dashboard.html.twig | `web/modules/custom/lms_progress/templates/lms-dashboard.html.twig` | `UserPortalController::dashboard` | lms_progress.dashboard | U-024 |
-| lms-lesson-view.html.twig | `web/modules/custom/lms_progress/templates/lms-lesson-view.html.twig` | `UserPortalController::lessonView` | lms_progress.lesson_view | U-022 |
-| lms-my-courses.html.twig | `web/modules/custom/lms_progress/templates/lms-my-courses.html.twig` | `UserPortalController::myCourses` | lms_progress.my_courses | U-021 |
-| lms-my-certificates.html.twig | `web/modules/custom/lms_progress/templates/lms-my-certificates.html.twig` | `UserPortalController::myCertificates` | lms_progress.certificates | U-035 |
+### Workspace admin templates
 
----
-
-## lms_quiz
-
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-quiz-take.html.twig | `web/modules/custom/lms_quiz/templates/lms-quiz-take.html.twig` | `QuizController::takeQuiz` | lms_quiz.take | U-017 |
-| lms-quiz-result.html.twig | `web/modules/custom/lms_quiz/templates/lms-quiz-result.html.twig` | `QuizController::viewResult` | lms_quiz.result | U-019 |
-| lms-my-quiz-results.html.twig | `web/modules/custom/lms_quiz/templates/lms-my-quiz-results.html.twig` | `QuizController::myResults` | lms_quiz.my_results | U-019 |
-
----
-
-## lms_wishlist
-
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-my-wishlist.html.twig | `web/modules/custom/lms_wishlist/templates/lms-my-wishlist.html.twig` | `WishlistController::myWishlist` | lms_wishlist.my_wishlist | U-051 |
-
----
-
-## lms_zoom
-
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| lms-zoom-web-player.html.twig | `web/modules/custom/lms_zoom/templates/lms-zoom-web-player.html.twig` | `ZoomController::joinMeeting` | lms_zoom.join_meeting | U-049 |
-| lms-zoom-join-block.html.twig | `web/modules/custom/lms_zoom/templates/lms-zoom-join-block.html.twig` | `ZoomJoinBlock` (Block Plugin) | — (block) | U-049 |
-| html--lms-zoom-web-player.html.twig | `web/modules/custom/lms_zoom/templates/html--lms-zoom-web-player.html.twig` | Drupal HTML layout override for Zoom player route | lms_zoom.join_meeting | U-049 |
-| page--lms-zoom-web-player.html.twig | `web/modules/custom/lms_zoom/templates/page--lms-zoom-web-player.html.twig` | Drupal page layout override for Zoom player route | lms_zoom.join_meeting | U-049 |
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-admin-dashboard.html.twig` | `lms_admin_dashboard` | `AdminController::dashboard` | `lms_course.admin_dashboard` (`/workspace`) |
+| `lms-admin-courses.html.twig` | `lms_admin_courses` | `AdminController::courseList` | `lms_course.admin_courses` (`/workspace/courses`) |
+| `lms-admin-courses-table.html.twig` | `lms_admin_courses_table` | `AdminController::courseList` (AJAX/HTMX sub-render) | (AJAX partial; no standalone route) |
+| `lms-admin-course-create.html.twig` | `lms_admin_course_create` | `AdminController::courseCreateWizard` | `lms_course.admin_course_create` (`/workspace/courses/create`) |
+| `lms-admin-quizzes.html.twig` | `lms_admin_quizzes` | `AdminController::quizList` | `lms_course.admin_quizzes` (`/workspace/quizzes`) |
+| `lms-admin-orders.html.twig` | `lms_admin_orders` | `AdminController::orderList` | `lms_course.admin_orders` (`/workspace/orders`) |
+| `lms-admin-users.html.twig` | `lms_admin_users` | `AdminController::userList` | `lms_course.admin_users` (`/workspace/users`) |
+| `lms-admin-users-table.html.twig` | `lms_admin_users_table` | `AdminController::userList` (AJAX sub-render) | (AJAX partial; no standalone route) |
+| `lms-admin-user-form.html.twig` | `lms_admin_user_form` | `AdminController::userEditForm`, `AdminController::userCreateForm` | `lms_course.admin.user.edit`, `lms_course.admin.user.create` |
+| `lms-admin-reports.html.twig` | `lms_admin_reports_v2` | `AdminController::reports` | `lms_course.admin_reports` (`/workspace/reports`) |
+| `lms-admin-content.html.twig` | `lms_admin_content` | `WorkspaceContentController::contentList` | `lms_course.workspace_content.list` |
+| `lms-admin-content-table.html.twig` | `lms_admin_content_table` | `WorkspaceContentController::contentList` (AJAX sub-render) | (AJAX partial) |
+| `lms-admin-entity-form.html.twig` | `lms_admin_entity_form` | Multiple: `contentCreateForm`, `contentEditForm`, `faqCreateForm`, `faqEditForm`, `orderEditForm`, `quizCreateForm`, `quizEditForm`, `courseEditForm`; also used by `MembershipAdminController::pricingAddForm`, `CertificateAdminController::templateAddForm` | Various `/workspace/*` edit/add routes |
+| `lms-admin-entity-view.html.twig` | `lms_admin_entity_view` | `WorkspaceContentController::contentView`, `WorkspaceContentController::faqView` | `lms_course.workspace_content.view`, `lms_course.workspace_faq.view` |
+| `lms-admin-ratings.html.twig` | `lms_admin_ratings` | `RatingManagerController::list` *(lms_rating controller)* | `lms_rating.admin_list` (`/workspace/ratings`) |
+| `lms-admin-sidebar.html.twig` | *(no dedicated hook — shared partial)* | Sub-include inside other admin templates | (included; no standalone route) |
 
 ---
 
-## open_switcher
+## lms_forum — `lms_forum/templates/`
 
-| Template | File Path | Rendered By | Route ID | Unit |
-|----------|-----------|-------------|----------|------|
-| open-switcher-page.html.twig | `web/modules/custom/open_switcher/templates/open-switcher-page.html.twig` | `SwitchFrontendController::page` | open_switcher.frontend | — |
+Registered by: `lms_forum.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-forum-index.html.twig` | `lms_forum_index` | `LmsForumController::index` | `lms_forum.index` (`/forum`) |
+| `lms-forum-topic.html.twig` | `lms_forum_topic` | `LmsForumController::viewTopic` | `entity.lms_forum_topic.canonical` (`/forum/{id}`) overridden via RouteSubscriber |
+| `lms-forum-new-topic-page.html.twig` | `lms_forum_new_topic_page` | `LmsForumController::addTopic` | `lms_forum.topic.add` (`/forum/new`) |
+| `lms-forum-edit-reply-page.html.twig` | `lms_forum_edit_reply_page` | `LmsForumController::editReply` | `lms_forum.reply.edit` (`/forum/reply/{id}/edit`) |
+| `lms-forum-topic-form.html.twig` | *(no dedicated hook; may be partial or twig override)* | Sub-include in new-topic-page template | (included; no standalone hook) |
 
 ---
 
-## Anomalies
+## lms_membership — `lms_membership/templates/`
 
-| Template | Issue |
+Registered by: `lms_membership.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-my-membership.html.twig` | `lms_my_membership` | `MembershipController::myMembership` | `lms_membership.my_membership` (`/my-membership`) |
+| `lms-admin-pricing.html.twig` | `lms_admin_pricing` | `MembershipAdminController::pricingList` | `lms_membership.admin_pricing` (`/workspace/pricing`) |
+| `lms-admin-user-memberships.html.twig` | `lms_admin_user_memberships` | `MembershipAdminController::userMembershipsList` | `lms_membership.admin_user_memberships` (`/workspace/user-memberships`) |
+
+---
+
+## lms_note — `lms_note/templates/`
+
+Registered by: `lms_note.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-my-notes.html.twig` | `lms_my_notes` | `NoteController::myNotes` | `lms_note.my_notes` (`/my-notes`) |
+
+---
+
+## lms_notification — `lms_notification/templates/`
+
+Registered by: `lms_notification.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route / Context |
+|---------------|------------|-------------|-----------------|
+| `lms-notifications.html.twig` | `lms_notifications` | `NotificationController::listNotifications` | `lms_notification.list` (`/notifications`) |
+| `lms-notification-bell.html.twig` | `lms_notification_bell` | `NotificationBellBlock::build` (Block plugin) | Rendered in site header via block placement; no dedicated route |
+
+---
+
+## lms_order — `lms_order/templates/`
+
+Registered by: `lms_order.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-checkout.html.twig` | `lms_checkout` | `CheckoutController::checkout`, `CheckoutController::checkoutMembership` | `lms_order.checkout`, `lms_order.checkout_membership` |
+| `lms-bank-transfer.html.twig` | `lms_bank_transfer` | `CheckoutController::bankTransferInstruction` | `lms_order.bank_transfer` (`/checkout/bank-transfer/{order}`) |
+
+---
+
+## lms_progress — `lms_progress/templates/`
+
+Registered by: `lms_progress.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-dashboard.html.twig` | `lms_dashboard` | `UserPortalController::dashboard` | `lms_progress.dashboard` (`/dashboard`) |
+| `lms-my-courses.html.twig` | `lms_my_courses` | `UserPortalController::myCourses` | `lms_progress.my_courses` (`/my-courses`) |
+| `lms-lesson-view.html.twig` | `lms_lesson_view` | `UserPortalController::lessonView` | `lms_progress.lesson_view` (`/learn/{course}/{lesson}`) |
+| `lms-my-certificates.html.twig` | `lms_my_certificates` | `UserPortalController::myCertificates` | `lms_progress.certificates` (`/my-certificates`) |
+
+---
+
+## lms_quiz — `lms_quiz/templates/`
+
+Registered by: `lms_quiz.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-quiz-take.html.twig` | `lms_quiz_take` | `QuizController::takeQuiz` | `lms_quiz.take` (`/quiz/{id}/take`) |
+| `lms-quiz-result.html.twig` | `lms_quiz_result` | `QuizController::viewResult` | `lms_quiz.result` (`/quiz-result/{result}`) |
+| `lms-my-quiz-results.html.twig` | `lms_my_quiz_results` | `QuizController::myResults` | `lms_quiz.my_results` (`/my-quiz-results`) |
+
+**Note:** `lms-quiz-result.html.twig` hardcodes `score >= 70` as pass threshold fallback, independent of `quiz.field_threshold`. This is a bug.
+
+---
+
+## lms_wishlist — `lms_wishlist/templates/`
+
+Registered by: `lms_wishlist.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `lms-my-wishlist.html.twig` | `lms_my_wishlist` | `WishlistController::myWishlist` | `lms_wishlist.my_wishlist` (`/my-wishlist`) |
+
+---
+
+## lms_zoom — `lms_zoom/templates/`
+
+Registered by: `lms_zoom.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route / Context |
+|---------------|------------|-------------|-----------------|
+| `lms-zoom-web-player.html.twig` | `lms_zoom_web_player` | `ZoomController::joinMeeting` | `lms_zoom.join_meeting` (`/zoom/join/{meeting_id}`) |
+| `html--lms-zoom-web-player.html.twig` | `html__lms_zoom_web_player` | Theme suggestion via `hook_theme_suggestions_html_alter` | Injected when route = `lms_zoom.join_meeting`; strips full HTML chrome |
+| `page--lms-zoom-web-player.html.twig` | `page__lms_zoom_web_player` | Theme suggestion via `hook_theme_suggestions_page_alter` | Same route; minimal page wrapper for full-screen WebSDK |
+| `lms-zoom-join-block.html.twig` | `lms_zoom_join_block` | `ZoomJoinBlock::build` (Block plugin) | Rendered in lesson view sidebar via block placement |
+
+---
+
+## open_switcher — `open_switcher/templates/`
+
+Registered by: `open_switcher.module hook_theme()`
+
+| Template File | Theme Hook | Rendered By | Route |
+|---------------|------------|-------------|-------|
+| `open-switcher-page.html.twig` | `open_switcher_page` | `SwitchFrontendController::page` | `open_switcher.frontend` (`/app/switch-user`) |
+
+---
+
+## lms_theme (custom theme) — Homepage Style Variants
+
+**Theme path:** `web/themes/custom/lms_theme/templates/home/styles/`
+
+These are style partials conditionally included by `lms-homepage.html.twig` based on the `homepage_style` variable passed by `CoursePublicController::homepage()`. The `lms_base` module stores the current style setting; `CoursePublicController::homepage` reads it via `getHomepageSettings()`.
+
+| Template File | Style Name | Notes |
+|---------------|------------|-------|
+| `lms-homepage.html.twig` *(theme root)* | Fallback / base | Theme-level override of `lms_homepage` hook; includes correct style partial |
+| `home/styles/style-1-glass.html.twig` | glassmorphism | Default style; dark glassmorphism hero |
+| `home/styles/style-2-minimal.html.twig` | minimalist | Clean minimal layout |
+| `home/styles/style-4-corporate.html.twig` | corporate | Enterprise/corporate layout |
+| `home/styles/style-academy.html.twig` | academy | Education-focused layout |
+| `home/styles/style-community.html.twig` | community | Social/community layout |
+| `home/styles/style-creative.html.twig` | creative | Design/creative layout |
+| `home/styles/style-editorial.html.twig` | editorial | Content/editorial layout |
+| `home/styles/style-government.html.twig` | government | Gov/public-sector layout |
+| `home/styles/style-gradient.html.twig` | gradient | Bold gradient layout |
+| `home/styles/style-luxury.html.twig` | luxury | Premium/luxury layout |
+| `home/styles/style-medical.html.twig` | medical | Healthcare layout |
+| `home/styles/style-nature.html.twig` | nature | Earth-tones/nature layout |
+| `home/styles/style-neon.html.twig` | neon | Neon/dark layout |
+| `home/styles/style-playful.html.twig` | playful | Fun/colorful layout |
+| `home/styles/style-retro.html.twig` | retro | Retro/vintage layout |
+
+**Total style variants: 15** (plus 1 base). The `homepage_style` default is `'glassmorphism'`.
+
+---
+
+## lms_theme / lms_classic — Layout & System Templates
+
+**Theme path:** `web/themes/custom/lms_theme/templates/` and `web/themes/custom/lms_classic/templates/`
+
+These are standard Drupal theme template overrides, not tied to a specific custom controller.
+
+| Template | Usage |
 |----------|-------|
-| `lms-forum-topic.html.twig` | Template exists but no canonical `/forum/{id}` route — orphaned template (FIND-007) |
-| `certificate-pdf.html.twig` | Rendered by `CertificateGenerator` service (mPDF), not a web route — PDF-only output |
-| `lms-notification-bell.html.twig` | Block plugin output; not tied to a route |
-| `lms-zoom-join-block.html.twig` | Block plugin output; not tied to a route |
+| `layout/html.html.twig` | Full HTML wrapper (outer `<html>` tag) |
+| `page/page.html.twig` | Generic page layout (header, main, footer regions) |
+| `page/page--user--login.html.twig` | Login page layout override |
+| `page/page--user--register.html.twig` | Register page layout override |
+| `page/page--user--password.html.twig` | Password reset page layout override |
+| `user/user-login-form.html.twig` | Login form widget override |
+| `user/user-register-form.html.twig` | Registration form widget override |
+| `form/lms-course-manager-edit-form.html.twig` | Course entity edit form override in theme context |
+| `navigation/breadcrumb.html.twig` | Breadcrumb block override |
+| `navigation/pager.html.twig` | Pager override |
 
 ---
 
-## Template Count Summary
+## Modules with NO templates
 
-| Module | Template Count |
-|--------|---------------|
-| lms_course | 27 |
-| lms_certificate | 4 |
-| lms_forum | 5 |
-| lms_progress | 4 |
-| lms_quiz | 3 |
-| lms_analytics | 4 |
-| lms_zoom | 4 |
-| lms_notification | 2 |
-| lms_order | 2 |
-| lms_membership | 3 |
-| lms_blog | 2 |
-| lms_note | 1 |
-| lms_wishlist | 1 |
-| open_switcher | 1 |
-| **Total** | **~63** |
+The following modules have no `templates/` directory — they are pure entity/service/API modules or their output is JSON:  
+lms_badge, lms_base, lms_bundle, lms_chapter, lms_content_tools, lms_faq, lms_lesson, lms_mobile_api, lms_payment, lms_paypal, lms_question, lms_rating *(no .module file, no hook_theme)*, lms_stripe
+
+**lms_rating note:** `RatingManagerController::list()` uses `#theme: lms_admin_ratings` — this hook is registered in `lms_course.module hook_theme()`, not in lms_rating itself. The template file lives in `lms_course/templates/lms-admin-ratings.html.twig`.
 
 ---
 
-*End of D07-code-map/template-to-controller.md*
+## Cross-references
+
+- Controller source files: [per-module-files.md](per-module-files.md)
+- Route → controller: [route-to-controller.md](route-to-controller.md)
+- Page/component designs: [C11-pages-components/](../../C-Design/C11-pages-components/)
+- Skin/homepage style system: [C09-skins.md](../../C-Design/C09-skins.md)

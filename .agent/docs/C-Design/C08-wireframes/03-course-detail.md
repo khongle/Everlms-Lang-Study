@@ -80,3 +80,11 @@
 ## Sidebar Sticky Behavior
 - Sidebar card sticks to top when scrolling
 - On mobile: sidebar moves below hero, floating "Enroll" button at bottom
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built.** Route `/courses/{lms_course}` → `CoursePublicController::detail` → `lms-course-detail.html.twig`. Free enrollment handled by `/courses/{lms_course}/enroll-free` (`CourseEnrollmentController::enrollFree`). Paid enrollment redirects to `/checkout/{course_id}`. Instructor profile linked at `/instructor/{user}`. Rating/review form is rendered via `lms_rating_block` block plugin. The depicted curriculum accordion, instructor bio, and "related courses" sections are all in the template. The sticky sidebar enroll card is present.
+
+Related: [../C04-entities/01-content-entities.md](../C04-entities/01-content-entities.md) · [../C05-modules/lms_course.md](../C05-modules/lms_course.md) · [../C07-sitemap.md](../C07-sitemap.md)

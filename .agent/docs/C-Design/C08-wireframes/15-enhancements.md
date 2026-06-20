@@ -181,3 +181,29 @@ Header (Dark):
 │ [📥 Export CSV]                                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**Wishlist and Notes: as-built. Bundles: data model only. Dark mode, Cart Recovery, Revenue Dashboard: varies.**
+
+**Wishlist:**
+- Heart button toggle: `/api/lms/wishlist/toggle` (POST, authenticated) → `WishlistController::toggle`. Status check: `/api/lms/wishlist/status`. My Wishlist page: `/my-wishlist` → `lms-my-wishlist.html.twig`. Fully implemented with cache invalidation.
+
+**In-lesson Notes:**
+- Save/delete/get: `/api/lms/note/save|delete|get`. My Notes page: `/my-notes` → `NoteController::myNotes` → `lms-my-notes.html.twig`. Notes grouped by course. Fully implemented.
+
+**Bundles:**
+- `lms_bundle` module has `lms_course_bundle` entity (name, description, courses, price, discount_percent, thumbnail). No checkout integration, no bundle-specific routes, no templates. **Data model only — target-state** for bundle purchase flow.
+
+**Dark Mode:**
+- `lms_theme` has 15 homepage style variants (including dark glassmorphism default). User-togglable dark/light mode switching is **not implemented** as a user preference — the theme is fixed server-side.
+
+**Cart Recovery:**
+- **Not implemented** — no cart entity, no abandoned-cart tracking or recovery email workflow exists.
+
+**Revenue Dashboard:**
+- The depicted dashboard (KPIs + per-course revenue table + CSV export) maps to `/admin/lms/reports/courses` → `CourseReportController` — **as-built**. CSV export available.
+
+Related: [../C04-entities/04-commerce-entities.md](../C04-entities/04-commerce-entities.md) · [../C05-modules/lms_wishlist.md](../C05-modules/lms_wishlist.md) · [../C05-modules/lms_note.md](../C05-modules/lms_note.md)

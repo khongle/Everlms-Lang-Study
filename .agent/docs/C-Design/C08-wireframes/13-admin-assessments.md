@@ -56,3 +56,18 @@
 │ └─────────────────────────────────────────────────────────┘         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built (quiz CRUD, 8 question types); manual grading panel is target-state.**
+
+- Quiz list: `/workspace/quizzes` → `AdminController::quizList` → `lms-admin-quizzes.html.twig`.
+- Quiz create/edit: `/workspace/quizzes/create`, `/workspace/quizzes/{id}/edit` → entity forms wrapped in `lms-admin-entity-form.html.twig`.
+- Question types: 8 bundles of `lms_question` entity — single_choice, multiple_choice, true_false, essay, fill_blank, matching, ordering, short_answer.
+- Grading: static `GradingStrategyFactory` + strategy classes in `lms_quiz`. Binary grading only (no partial credit). Essay questions result in `pending_review` status.
+- **Manual grading panel** depicted in the wireframe (rubric scoring for essays) is **target-state** — no dedicated grading UI route exists. Essay results stay as `pending_review` with no instructor UI to apply a score.
+- Quiz analytics: `/admin/lms/reports/quizzes` and `/admin/lms/reports/quizzes/{id}` — fully implemented with item analysis and CSV export.
+
+Related: [../C04-entities/01-content-entities.md](../C04-entities/01-content-entities.md) · [../C05-modules/lms_quiz.md](../C05-modules/lms_quiz.md)

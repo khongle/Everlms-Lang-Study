@@ -1,61 +1,56 @@
 # B06 — Integration Requirements
 
-> Index of all external integration definitions. Mỗi file mô tả một integration: direction, protocol, auth, data exchanged, rate limits, failure modes.
+> Roll-up index of all external integration definitions. One file per integration; this file is the dependency matrix and navigation entry point. Source of truth is each per-integration `INT-{NNN}.md` file.
+
+Last updated: 2026-06-20
 
 ---
 
 ## Integration Index
 
-| ID | File | Provider | Direction | Module | Status |
-|----|------|----------|-----------|--------|--------|
-| INT-001 | [INT-001-stripe.md](./INT-001-stripe.md) | Stripe | Outbound + Inbound (webhook) | `lms_stripe` | Stub |
-| INT-002 | [INT-002-paypal.md](./INT-002-paypal.md) | PayPal | Outbound + Inbound (IPN) | `lms_paypal` | Stub |
-| INT-003 | [INT-003-zoom.md](./INT-003-zoom.md) | Zoom | Outbound | `lms_zoom` | Stub |
-| INT-004 | [INT-004-openai.md](./INT-004-openai.md) | OpenAI | Outbound | `lms_ai` | Plugin |
-| INT-005 | [INT-005-google-gemini.md](./INT-005-google-gemini.md) | Google Gemini | Outbound | `lms_ai` | Plugin |
-| INT-006 | [INT-006-pollinations.md](./INT-006-pollinations.md) | Pollinations.ai | Outbound | `lms_ai` | Plugin |
-| INT-007 | [INT-007-smtp.md](./INT-007-smtp.md) | SMTP / Email | Outbound | `drupal/smtp` | Config ready |
-| INT-008 | [INT-008-drupal-search-api.md](./INT-008-drupal-search-api.md) | Search API | Internal | `search_api` | Config ready |
+| ID | File | Provider | Type | Direction | Module(s) | Status |
+|----|------|----------|------|-----------|-----------|--------|
+| INT-001 | [INT-001-stripe.md](./INT-001-stripe.md) | Stripe | REST | Outbound + Inbound (webhook) | `lms_stripe`, `lms_order`, `lms_payment` | as-built (webhook stub — no sig-verify) |
+| INT-002 | [INT-002-paypal.md](./INT-002-paypal.md) | PayPal | REST | Outbound | `lms_payment` plugin; `lms_paypal` dead-code | stub / dead-code |
+| INT-003 | [INT-003-zoom.md](./INT-003-zoom.md) | Zoom | REST + WebSDK | Bidirectional | `lms_zoom` | as-built (one minor stub in VTT download) |
+| INT-004 | [INT-004-openai.md](./INT-004-openai.md) | OpenAI | REST | Outbound | `lms_ai` — `OpenAiProvider` plugin | as-built |
 
 ---
 
 ## Integration by Category
 
 ### Payment
-- [INT-001 — Stripe](./INT-001-stripe.md)
-- [INT-002 — PayPal](./INT-002-paypal.md)
+- [INT-001 — Stripe](./INT-001-stripe.md) — primary payment gateway (real PaymentIntent; webhook is stub)
+- [INT-002 — PayPal](./INT-002-paypal.md) — secondary payment gateway (stub; `lms_paypal` module is dead code)
+
+### Video Conferencing / Live Lessons
+- [INT-003 — Zoom](./INT-003-zoom.md) — live class sessions via Server-to-Server OAuth + Web SDK
 
 ### AI / Content Generation
-- [INT-004 — OpenAI](./INT-004-openai.md)
-- [INT-005 — Google Gemini](./INT-005-google-gemini.md)
-- [INT-006 — Pollinations (image)](./INT-006-pollinations.md)
-
-### Communication
-- [INT-007 — SMTP / Email](./INT-007-smtp.md)
-- [INT-003 — Zoom (live sessions)](./INT-003-zoom.md)
-
-### Search / Discovery
-- [INT-008 — Drupal Search API](./INT-008-drupal-search-api.md)
+- [INT-004 — OpenAI](./INT-004-openai.md) — GPT-4o for text/JSON generation; DALL-E 3 for images
 
 ---
 
 ## Integration Dependency Matrix
 
-| Integration | Features | Workflows | Risk Level |
-|-------------|----------|-----------|-----------|
-| INT-001 Stripe | F-004 | WF-004, WF-005 | Critical |
-| INT-002 PayPal | F-004 | WF-004 | High |
-| INT-003 Zoom | F-001 | WF-001, WF-006 | Medium |
-| INT-004 OpenAI | F-014 | WF-006 | Medium |
-| INT-005 Gemini | F-014 | WF-006 | Medium |
-| INT-006 Pollinations | F-014 | WF-006 | Low |
-| INT-007 SMTP | F-008 | WF-003, WF-007 | High |
-| INT-008 Search API | F-001 | — | Low |
+| Integration | Direction | Features | Workflows | Risk Level | Security Risk |
+|-------------|-----------|----------|-----------|------------|---------------|
+| INT-001 Stripe | Outbound + Inbound | F-004 payments | WF-004 order management | Critical | Credentials in config YAML (plaintext, VCS) |
+| INT-002 PayPal | Outbound only (stub) | F-004 payments | WF-004 order management | High | Credentials in config YAML; no server verification |
+| INT-003 Zoom | Bidirectional | F-001 live lessons | WF-001 enrollment/learning | High | Credentials in config YAML (plaintext, VCS) |
+| INT-004 OpenAI | Outbound | F-014 AI features | AI course generation | Medium | API key in config YAML (plaintext, VCS) |
+
+---
+
+## Security Note — Credentials in Config YAML
+
+All third-party credentials (Stripe, PayPal, Zoom, OpenAI) are stored in **plaintext Drupal config YAML** files under `config/sync/` which is tracked by git. The Key module is installed as a dependency (`lms_ai` info.yml) but **no `key.key.*.yml` config files exist** — keys are stored directly in module settings config instead. This is a known critical risk; see `G02-risk-register.md` (planned, layer G — not yet materialized).
 
 ---
 
 ## Related Docs
 
-- [B04 — Business Workflows](../B04-business-workflows/) — workflows that use integrations
-- [B05 — Acceptance Criteria](../B05-acceptance-criteria/) — AC-10 (integrations), AC-14 (AI)
-- [B03 F-014 AI Features](../B03-features/14-ai-features.md)
+- [B04 — Business Workflows](../B04-business-workflows/) — workflows that trigger these integrations
+- [B05 — Acceptance Criteria](../B05-acceptance-criteria/) — integration acceptance tests
+- [B03-features/04-order-membership.md](../B03-features/04-order-membership.md) — payment features
+- [B03-features/14-ai-features.md](../B03-features/14-ai-features.md) — AI features

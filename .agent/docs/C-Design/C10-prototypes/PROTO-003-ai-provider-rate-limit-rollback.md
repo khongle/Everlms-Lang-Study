@@ -112,10 +112,24 @@
 
 - **Risks:** RISK-003 (G02), FIND-003, FIND-008
 - **ADRs:** ADR-006 (AI provider plugin — ACCEPTED, sẽ append consequences); proposed ADR-011 (saga compensation)
-- **Affected unit:** U-047
 - **Implementation reference:**
   - `web/modules/custom/lms_ai/src/Plugin/AiProviderInterface.php` (current)
   - `web/modules/custom/lms_ai/src/Plugin/AiProvider/OpenAiProvider.php`
   - `web/modules/custom/lms_ai/src/Plugin/AiProvider/GeminiProvider.php`
   - `web/modules/custom/lms_ai/src/Plugin/AiProvider/PollinationsProvider.php`
   - `web/modules/custom/lms_ai/src/QueueWorker/` (existing queue worker — reuse for resume-after-crash)
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**NOT IMPLEMENTED — no rollback, no rate limit, Gemini key still in URL query string.**
+
+Current production state of the AI module:
+- **No rollback/compensation:** `CourseBuilderService::generateCourseStructure()` has no saga or compensation mechanism. If creation fails after partial entity creation, orphaned entities remain in the database. `AiEngineUserForm` AJAX handlers also have no rollback — they log errors and count successes/failures but do not delete partially-created entities.
+- **No rate limit:** `AiProviderInterface` has no `AiCallOptions` value object, no per-user rate limiter, no cost cap. Any caller can trigger unlimited OpenAI/Gemini API calls.
+- **Gemini key in URL (FIND-008):** `GeminiProvider` passes the API key as a URL query parameter (`?key=...`). This is a security issue as it may appear in server logs and proxy access logs. The fix (move to `x-goog-api-key` header) has not been applied.
+- **No `max_tokens` enforcement:** OpenAI and Gemini calls do not pass `max_tokens` to the provider API, allowing runaway cost.
+- `CourseContentGenerator` queue worker (`lms_ai_content_generator`) is real and retries on exception — this is the only existing partial-failure recovery mechanism.
+
+This spike has **not been executed**. RISK-003 and FIND-003/FIND-008 remain open.

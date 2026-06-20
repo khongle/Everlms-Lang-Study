@@ -1,69 +1,93 @@
+---
+id: WF-003
+name: Certificate Issuance
+status: APPROVED
+features: [F-005]
+---
+
 # WF-003 — Certificate Issuance
 
-**ID:** WF-003
-**Trigger:** Event `quiz_passed` hoặc `course_completed` được dispatch
-**Actors:** System, Student
-**Preconditions:** Quiz passed hoặc course completion reached. CertificateTemplate được liên kết với quiz/course.
-**Related Features:** F-005 (Certification & Badges)
-**Related Entities:** UserCertificate, CertificateTemplate, User, Course/Quiz
+End-to-end flow from a `QuizPassedEvent` through entity traversal, PDF generation via mPDF, `lms_user_certificate` creation, and student-facing verification. Triggered automatically; no student action required.
 
----
+## Trigger
+
+`lms_quiz.passed` event dispatched by `QuizController::submitQuiz()` when a quiz result term = `Passed`.
+
+## Actors
+
+| Actor | Role |
+|-------|------|
+| System | Event subscriber, PDF generator, file manager |
+| Student | Passive recipient; views certificate in profile |
+| Admin | Optional: revoke certificate, regenerate PDF, manage templates |
+
+## Preconditions
+
+- `QuizPassedEvent` was dispatched (result term = `Passed`; no pending essay responses).
+- At least one active `lms_certificate_template` entity exists (`status=1`).
+- `mpdf/mpdf` Composer package is installed.
 
 ## Happy Path
 
-| Step | Actor | Action | System Response |
-|------|-------|--------|----------------|
-| 1 | System | Nhận event completion hoặc quiz pass | Kiểm tra CertificateTemplate có được gắn không |
-| 2 | System | Render PDF certificate | Fill template tokens (student name, course, date, score) |
-| 3 | System | Lưu file PDF | Store trong file system / managed files |
-| 4 | System | Tạo UserCertificate record | Generate unique certificate ID + verify link |
-| 5 | System | Gửi notification | Email đính kèm PDF + in-app notification |
-| 6 | Student | Truy cập profile | Xem danh sách certificates, download PDF |
-| 7 | Student | Chia sẻ verify link | Public page xác nhận certificate hợp lệ |
+| Step | Actor | Action | System Response | Modules / Code | Feature |
+|------|-------|--------|----------------|----------------|---------|
+| 1 | System | `QuizPassedEvent` fired | `CertificateEventListener::onQuizPassed($event)` is invoked (registered in `lms_certificate.services.yml` as `event_subscriber`). Subscription is conditional: only registered if `QuizPassedEvent` class exists. | `lms_certificate/src/EventSubscriber/CertificateEventListener.php` | F-005 |
+| 2 | System | Entity traversal to find the Course | Starting from the `lms_quiz` entity obtained from the event, traverses: `lms_quiz` → `lms_lesson` (via `field_quiz`) → `lms_chapter` (via `field_lessons`) → `lms_course` (via `field_chapters`). | `CertificateEventListener::onQuizPassed()` | F-005 |
+| 3 | System | `CertificateManager::checkAndIssueCertificate()` | Checks whether a `lms_user_certificate` already exists for this user+course pair (prevents double-issue). If a certificate already exists, returns the existing entity without re-issuing. | `lms_certificate/src/Service/CertificateManager.php` | F-005 |
+| 4 | System | Find certificate template | Checks `lms_course.field_certificate_template` for a course-specific template. Falls back to first active `lms_certificate_template` entity if no course-specific template is set. | `CertificateManager::checkAndIssueCertificate()` | F-005 |
+| 5 | System | Generate unique certificate code | 10-character uppercase substring of an MD5 hash. | `CertificateManager` | F-005 |
+| 6 | System | `CertificateGenerator::generate()` | Renders `certificate_pdf` Twig theme to HTML (tokens: `[student_name]`, `[course_name]`, `[issue_date]`). `template_preprocess_certificate_pdf()` resolves file URIs (background, logo, signature, seal images) to server real-paths so mPDF can read them. Instantiates `\Mpdf\Mpdf` with A4 + orientation from `field_orientation`. Produces PDF binary. | `lms_certificate/src/Service/CertificateGenerator.php` | F-005 |
+| 7 | System | Save PDF as managed file | Saved to `public://certificates/issued/Certificate_{code}.pdf` as a Drupal managed file entity. Returns `FileInterface`. | `CertificateGenerator::generate()` | F-005 |
+| 8 | System | Persist `lms_user_certificate` | Entity saved with: `uid`, `field_template`, `field_quiz_result`, `field_course`, `field_certificate_number` (unique code), `field_pdf_file`, `field_issued_at`. | `CertificateManager::checkAndIssueCertificate()` | F-005 |
+| 9 | Student | Views `/my-certificates` | `UserPortalController::myCertificates()` loads all `lms_user_certificate` for user; renders `lms_my_certificates` theme with certificate list and download links. | `lms_progress` | F-005 |
+| 10 | Student / Public | Verifies certificate at `/certificate/verify` | `VerificationForm` accepts certificate number; queries by `field_certificate_number`; renders `certificate_verification_result` theme. Shows revoked status if `field_revoked=TRUE`. | `lms_certificate` | F-005 |
 
 ## Error Paths
 
 | Step | Condition | System Response | Recovery |
 |------|-----------|----------------|----------|
-| 1a | Không có CertificateTemplate | Bỏ qua issuance | Log, không báo lỗi cho student |
-| 2a | PDF render lỗi | Log lỗi, retry job | Background job retry |
-| 3a | File storage lỗi | Rollback UserCertificate record | Alert admin |
-| 7a | Certificate bị revoke | Verify page trả "revoked" status | Admin action |
+| 1-E1 | `QuizPassedEvent` not dispatched (essay pending) | `CertificateEventListener` never fires | Instructor grades essay; event must be re-dispatched manually (no automated re-trigger — **planned/stub**) |
+| 2-E1 | Quiz not linked to any lesson (`field_quiz` empty on all lessons) | Traversal returns NULL course; `checkAndIssueCertificate()` not called; certificate silently not issued | Admin must ensure quiz is linked to a lesson |
+| 3-E1 | Duplicate: certificate already issued | `CertificateManager` returns existing entity; no new entity created | No action needed |
+| 4-E1 | No active `lms_certificate_template` | `CertificateManager` cannot find a template; returns `false`; no certificate issued | Admin creates and activates a template |
+| 6-E1 | `mpdf/mpdf` not installed | `CertificateGenerator::generate()` checks `class_exists('\Mpdf\Mpdf')`; logs error and returns `NULL` gracefully | Install `mpdf/mpdf` via Composer |
+| 6-E2 | Image file path not resolvable | `template_preprocess_certificate_pdf()` provides real-paths; if file missing, mPDF may skip image | Admin re-uploads template images |
+| 7-E1 | File system write fails | Generator logs error, returns `NULL`; `UserCertificate` not saved | Check `public://certificates/issued/` directory permissions |
 
-## Process Flow (Mermaid)
+## Admin Operations (as-built)
 
-```mermaid
-flowchart TD
-    A[Quiz Passed / Course Completed] --> B{Template Linked?}
-    B -->|No| C[No Certificate Issued]
-    B -->|Yes| D[Generate Certificate ID]
-    D --> E[Fill Template Tokens]
-    E --> F[Render PDF]
-    F --> G[Store PDF File]
-    G --> H[Create UserCertificate Record]
-    H --> I[Send Email + In-app Notification]
-    I --> J[Certificate in Student Profile]
-    J --> K[Public Verify Link Available]
-    K --> L[Verification Page - Valid/Revoked]
-```
+| Operation | Route | Access |
+|-----------|-------|--------|
+| View all certificates | `/workspace/certificates` | `administer lms_course` |
+| Revoke a certificate | `/admin/lms/certificates/{id}/revoke` | `revoke any certificate` |
+| Regenerate PDF | `/workspace/certificates/{id}/regenerate` | `administer lms_course` |
+| Manage templates | `/workspace/certificate-templates` | `administer lms_course` |
+| Preview template PDF | `/workspace/certificate-templates/{id}/preview` | `administer lms_course` |
+
+## Success Criteria
+
+- `lms_user_certificate` entity persists with `field_certificate_number`, `field_pdf_file`, `field_course`, `field_quiz_result`.
+- PDF file exists at `public://certificates/issued/Certificate_{code}.pdf`.
+- Student can download PDF from `/my-certificates`.
+- Public verification at `/certificate/verify` returns valid result for the issued code.
+- Duplicate invocation produces no second certificate (idempotent).
 
 ## Business Rules
 
-- Mỗi UserCertificate có UUID verify token duy nhất.
-- Verify endpoint là public (không cần đăng nhập).
-- Admin có thể revoke certificate — verify endpoint trả `status=revoked`.
-- Certificate PDF template được cấu hình per-course hoặc per-quiz.
-- Duplicate prevention: nếu đã có UserCertificate cho cùng student+course, không tạo thêm.
-
-## Postconditions
-
-- UserCertificate record với `status=issued`.
-- PDF stored trong managed files.
-- Student nhận email + in-app notification.
-- Public verify link hoạt động.
+- **Event-driven only**: certificate issuance is triggered exclusively by `QuizPassedEvent`. No scheduled or manual trigger exists in the current implementation.
+- **Deduplication**: `CertificateManager` queries `lms_user_certificate` by `uid` + `field_course` before issuing. One certificate per student per course.
+- **Template priority**: course-specific `field_certificate_template` on the `lms_course` entity takes precedence; falls back to the first active global template.
+- **Token support**: `field_body` in the template supports `[student_name]`, `[course_name]`, `[issue_date]`. Custom layout via `field_layout` (raw HTML/Twig).
+- **Revocation**: admin can revoke via `RevokeCertificateForm`; sets `field_revoked=TRUE` + `field_revoke_reason`. Public verify page shows revoked status.
+- **`field_expiry_date` type bug**: `lms_user_certificate.field_expiry_date` is stored as `datetime` in the entity definition but the DB column is `varchar` (not `int`/timestamp) — **bug, as-built**.
+- **Badge awards**: `lms_badge` module has entity definitions but **no award logic** — badges are not issued on certificate issuance or any other trigger. Fully a stub.
+- **No notification on issue**: `CertificateEventListener` does not dispatch a notification. The `lms_notification` `NotificationEventSubscriber` sends a `quiz_result` notification on `QuizPassedEvent`, but a dedicated `certificate` notification type is not dispatched automatically.
 
 ## Related Docs
 
-- [WF-001 — Enrollment & Learning](./WF-001-enrollment-learning.md)
-- [WF-002 — Quiz Submit & Grading](./WF-002-quiz-grading.md)
-- B03 Feature: [F-005 Certification & Badges](../B03-features/06-certification-badges.md)
+- [WF-002 — Quiz Submit & Grading](./WF-002-quiz-grading.md) — source of `QuizPassedEvent`
+- [WF-001 — Enrollment & Learning](./WF-001-enrollment-learning.md) — enrollment prerequisite
+- Source: `web/modules/custom/lms_certificate/src/EventSubscriber/CertificateEventListener.php`
+- Source: `web/modules/custom/lms_certificate/src/Service/CertificateManager.php`
+- Source: `web/modules/custom/lms_certificate/src/Service/CertificateGenerator.php`
+- Source: `web/modules/custom/lms_certificate/lms_certificate.module` (`template_preprocess_certificate_pdf`)

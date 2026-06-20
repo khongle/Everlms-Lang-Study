@@ -61,3 +61,19 @@
 │ [Save Draft]              [Next Step →]  │                          │
 └──────────────────────────────────────────┴──────────────────────────┘
 ```
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built.**
+
+- Course list: `/workspace/courses` → `AdminController::courseList` → `lms-admin-courses.html.twig`. AJAX table refresh via `lms-admin-courses-table.html.twig` partial.
+- Course create wizard: `/workspace/courses/create` → `AdminController::courseCreateWizard` → `lms-admin-course-create.html.twig`.
+- Course edit: `/workspace/courses/{lms_course}/edit` → `AdminController::courseEditForm` → `lms-admin-entity-form.html.twig` wrapper (entity form).
+- Chapter/lesson edit within workspace: `/workspace/chapters/{id}/admin-edit`, `/workspace/lessons/{id}/admin-edit`.
+- Workspace content (blog, FAQ): `/workspace/content/{content_type}` → `WorkspaceContentController`.
+- AI course builder panel: `/manage/courses/ai-builder`.
+- Categories are Drupal taxonomy terms (`course_category` vocabulary) — managed via standard Drupal admin at `/admin/structure/taxonomy`.
+
+Related: [../C04-entities/01-content-entities.md](../C04-entities/01-content-entities.md) · [../C05-modules/lms_course.md](../C05-modules/lms_course.md)

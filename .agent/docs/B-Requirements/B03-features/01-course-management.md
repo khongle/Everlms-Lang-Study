@@ -1,153 +1,127 @@
-# Feature: Course Management
-
-## 1. Tổng quan
-
-Quản lý khoá học là core feature của EverLMS, bao gồm toàn bộ lifecycle từ tạo, chỉnh sửa, xuất bản, đến lưu trữ khoá học. Kiến trúc 3 cấp: **Course → Chapter → Lesson**.
-
+---
+id: F-001
+name: Course Management
+priority: Must
+status: APPROVED
+parent-requirements: [BR-001]
+owning_modules: [lms_course, lms_chapter, lms_lesson, lms_faq, lms_base]
+primary_source: C05
+story_anchors: []
 ---
 
-## 2. Course (Khoá học)
+# F-001 — Course Management
 
-### 2.1 Course Creation
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| C-01 | Tạo khoá học mới | Form tạo: title, slug, description (rich text), thumbnail, banner image |
-| C-02 | Category assignment | Gắn khoá học vào 1 hoặc nhiều Category (taxonomy, multi-level) |
-| C-03 | Pricing | Loại giá: Free, Paid (fixed price), Membership-only |
-| C-04 | Instructor assignment | Gắn 1 hoặc nhiều instructor cho khoá học |
-| C-05 | Course level | Beginner / Intermediate / Advanced (taxonomy) |
-| C-06 | Course language | Ngôn ngữ giảng dạy (taxonomy) |
-| C-07 | Course duration | Tổng thời lượng ước tính (auto-calculate hoặc manual) |
-| C-08 | Prerequisites | Gắn khoá học prerequisite (entity reference) |
-| C-09 | Tags | Gắn tags cho SEO & search (taxonomy) |
-| C-10 | Course status | Draft → Published → Archived |
-| C-11 | Bestseller flag | Boolean field, có thể bật/tắt bởi admin |
-| C-12 | Featured course | Boolean field, hiển thị trên homepage |
+## User story
 
-### 2.2 Course Management
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| CM-01 | Listing với filters | Filter by: status, category, instructor, level, price type |
-| CM-02 | Bulk operations | Publish/Unpublish/Archive nhiều khoá học |
-| CM-03 | Duplicate course | Clone course + chapters + lessons (không clone enrollment) |
-| CM-04 | Course ordering | Drag-drop sắp xếp thứ tự hiển thị |
-| CM-05 | Course analytics | Số enrollment, completion rate, revenue |
+As an **instructor or administrator**, I want to create and manage courses with a structured curriculum of chapters and lessons, so that learners can discover and consume organised learning content.
 
----
+## Description
 
-## 3. Chapter (Chương)
+Course Management is the core content backbone of EverLMS. It delivers the full lifecycle of a course: creation, structuring, publishing, and catalogue browsing. The hierarchy is three levels deep: **Course → Chapter → Lesson**. Courses carry rich metadata (category, level, language, price type, instructors, tags, thumbnail/banner), chapters carry ordered groups of lessons, and lessons support nine content types (video, text, quiz, H5P, SCORM, PDF, PPTX, Zoom, mixed).
 
-### 3.1 Chapter Creation
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| CH-01 | Tạo chapter trong course | Title, description, ordering weight |
-| CH-02 | Chapter prerequisites | Bắt buộc hoàn thành chapter trước để mở chapter sau (tuỳ chọn) |
-| CH-03 | Chapter status | Published / Draft / Hidden |
+The feature covers both the learner-facing public surface (catalogue, detail page, categories, glossary, free-enroll flow, instructor profile) and the manager/admin workspace (dashboard, CRUD forms with role-differentiated views, content listing, FAQ management). `lms_course` acts as the admin shell module, hosting workspace and admin routes that span courses, quizzes, orders, users, and CMS content.
 
-### 3.2 Chapter Management
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| CHM-01 | Drag-drop reorder | Sắp xếp thứ tự chapters trong course |
-| CHM-02 | Inline editing | Sửa title/description trực tiếp từ course edit page |
-| CHM-03 | Bulk delete/move | Xoá hoặc di chuyển chapters giữa courses |
+Blog/news is a related but separate feature: the public `/news` front-end reads `node:blog` (Drupal core content); the `lms_article` entity backs the admin CRUD at `/manage/blog` only. FAQ entries have a three-scope model (global, course, lesson) consumed by `CoursePublicController`.
 
----
+## In scope
 
-## 4. Lesson (Bài học)
+- `lms_course` entity CRUD with all base fields: name, description, short description, what-to-learn, prerequisites, who-for, thumbnail, banner, chapters (reference), category, tags, level, language, instructor(s), price, price type (free/paid/membership), duration, rating, bestseller flag, featured flag, certificate template reference, status.
+- `lms_chapter` entity CRUD: name, description, ordered lessons (reference), weight, status.
+- `lms_lesson` entity CRUD supporting nine `field_type` values: `video`, `text`, `quiz`, `h5p`, `scorm`, `pdf`, `pptx`, `zoom`, `mixed`. Conditional form fields per type implemented via Drupal Form API `#states` in `LessonForm`.
+- SCORM package auto-extraction on insert/update via `_lms_lesson_extract_scorm()` (PHP `ZipArchive`, reads `imsmanifest.xml`, creates `index.html` redirect).
+- Drip-content field (`field_drip_days`): days after enrollment before a lesson unlocks.
+- Free-preview flag (`field_free_preview`): lesson viewable without enrollment.
+- Lesson file attachments (PDF, doc, ppt, xls, zip) and comments (`lesson_comment` comment type).
+- Public course catalogue (`/courses`) with paginated, filterable listing (search, category, level, price, rating, sort); AJAX search API (`/api/courses/search`).
+- Course detail page (`/courses/{lms_course}`) with curriculum tree, enrollment check (including membership gating via `hook_entity_access`), continue-URL calculation, per-course FAQs, reviews.
+- Free-enroll flow: `CourseEnrollmentController::enrollFree()` creates `lms_user_course` and optional in-app notification.
+- Category pages (`/categories`, `/categories/{taxonomy_term}`) backed by `course_category` vocabulary with thumbnail and featured-flag fields.
+- Instructor profile page (`/instructor/{user}`).
+- Workspace dashboard (`/workspace`) with KPI cards and recent orders.
+- Workspace course list (`/workspace/courses`) with AJAX-capable filters and role-aware edit forms (`admin_edit` vs `manager_edit` form modes).
+- Workspace content manager for CMS node bundles (slideshow, introduction, glossary, blog) and FAQ entities.
+- `lms_faq` entity with three scopes (`global`, `course`, `lesson`) and category (`faq_category` vocabulary).
+- `lms_article` entity (admin-only blog CRUD at `/manage/blog`) with optional AI writer widget (requires `lms_ai`).
+- 11 taxonomy vocabularies supporting metadata: `course_category`, `course_level`, `course_language`, `course_tags`, `faq_category`, `blog_tags`, `badge_type`, `forum_category`, `quiz_difficulty`, `quiz_results`, `tags`.
+- Pricing page (`/pricing`), about page (`/about`), contact page (`/contact`).
+- Role-based permission set: `administer lms_course`, `create lms_course`, `view lms_course`, `edit lms_course`, `edit own lms_course`, `delete lms_course`.
 
-### 4.1 Lesson Creation
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| L-01 | Tạo lesson trong chapter | Title, content (rich text), ordering weight |
-| L-02 | Lesson type | Video, Text, Quiz, H5P, SCORM, Mixed |
-| L-03 | Media attachment | Upload files: PDF, slides, documents |
-| L-04 | Lesson duration | Thời lượng bài học (minutes) |
-| L-05 | Free preview | Flag cho phép xem trước lesson mà không cần mua khoá học |
-| L-06 | Lesson prerequisites | Bắt buộc hoàn thành lesson trước (tuỳ chọn) |
-| L-07 | Lesson status | Published / Draft |
+## Out of scope
 
-### 4.2 Lesson Content Types
-| Type | Mô tả |
-|------|-------|
-| **Video** | YouTube / Vimeo embed hoặc upload trực tiếp |
-| **Text** | Rich text content với images & formatting |
-| **H5P** | Interactive content embedded via H5P integration |
-| **SCORM** | SCORM 1.2/2004 package embedded |
-| **Quiz** | Liên kết quiz entity |
-| **Mixed** | Kết hợp nhiều loại content trong 1 lesson |
+- Learning path / multi-course sequences with prerequisite enforcement between courses (no entity or routes exist for this — see D).
+- Drag-and-drop curriculum reordering in the UI (the `weight` field exists on chapter and lesson, but no drag-drop JS is implemented in this module).
+- Course duplication / clone functionality (not implemented).
+- Bulk publish/unpublish of courses via the workspace (bulk action is implemented for CMS nodes, not for `lms_course` entities).
+- Glossary and category-detail public methods (`categories()`, `categoryDetail()`, `glossary()`) are routed but their full implementation was not confirmed from available source coverage; treat as at-minimum stubbed.
+- About-page team data is hardcoded placeholder names, not loaded from any entity.
+- `lms_bundle` entity exists (data model only — no checkout integration, no listing route, no templates); bundle purchasing is not deliverable from this feature.
 
-### 4.3 Lesson Management
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| LM-01 | Drag-drop reorder | Sắp xếp thứ tự lessons trong chapter |
-| LM-02 | Quick edit | Sửa title/type nhanh từ chapter view |
-| LM-03 | Comment on lesson | Tính năng comment/discussion cho từng lesson |
-| LM-04 | FAQ per lesson | Quản lý FAQ riêng cho từng lesson |
+## Acceptance summary
 
----
+A manager can create a course with at least title, category, price type, and one chapter containing one lesson of any supported type; the course appears on the public catalogue and detail page; a learner can enroll for free and access the lesson view. Full Given/When/Then lives in `B05-acceptance-criteria/F-001.md`.
 
-## 5. Category Management
+## Content ownership / editability
 
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| CAT-01 | Multi-level categories | Hỗ trợ cây phân cấp (parent → child) |
-| CAT-02 | Category CRUD | Tạo / sửa / xoá / sắp xếp categories |
-| CAT-03 | Category image | Thumbnail cho mỗi category |
-| CAT-04 | Category description | Mô tả ngắn cho SEO & listing page |
-| CAT-05 | Category slug | URL-friendly slug tự động hoặc custom |
+| Visible content family | Business owner | Editor role | Expected edit surface | Notes |
+|---|---|---|---|---|
+| Course cards / catalogue | Instructors, Admins | manager, administrator | `/workspace/courses` entity forms | `admin_edit` and `manager_edit` form modes exist in config |
+| Chapter & lesson curriculum | Instructors, Admins | manager, administrator | `/workspace/courses/{id}/edit` inline entity form | Inline Entity Form contrib handles chapter/lesson nesting |
+| Homepage copy (hero, stats, section headings) | Platform owner | administrator | `lms_theme` settings form | 7 switchable homepage skin styles; copy defaults per style |
+| Categories | Admins | administrator | Drupal taxonomy UI + workspace | `course_category` vocab; thumbnail and featured-flag per term |
+| FAQs (global/course/lesson) | Content team | manager, administrator | `/workspace/content/faqs` | Scope drives display location; no publish/unpublish on FAQ |
+| CMS content (slideshows, introductions, glossaries, news) | Content team | manager, administrator | `/workspace/content/{content_type}` | Bulk action available for nodes (not for custom entities) |
+| Pricing page copy | Platform owner | administrator | `lms_theme` settings form | Reads from theme settings with defaults |
 
----
+## Dependencies (requirement-level only)
 
-## 6. Listing & Search
+| Type | Reference | Reason |
+|---|---|---|
+| Feature | F-002 | Lessons reference quizzes (lms_quiz); quiz results drive lesson completion |
+| Feature | F-003 | Enrollment entity (lms_user_course) tracks course and lesson progress |
+| Feature | F-004 | Paid and membership-gated courses require orders and membership checks |
+| Workflow | WF-001 | Enrollment and learning workflow starts at course detail |
 
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| LS-01 | Course listing page | Grid/List view, pagination, sort options |
-| LS-02 | Faceted search | Filter: category, level, price, rating, language |
-| LS-03 | Full-text search | Tìm kiếm theo title, description, instructor name |
-| LS-04 | Search suggestions | Autocomplete khi gõ |
-| LS-05 | Bestseller section | Hiển thị khoá học bestseller trên listing |
-| LS-06 | Related courses | Gợi ý khoá học liên quan dựa trên category/tags |
+## Backing modules and entities
 
----
+| Module | Role | Maturity |
+|---|---|---|
+| `lms_course` | Course entity, admin shell, workspace/admin routes, public catalogue routes, enrollment | as-built |
+| `lms_chapter` | Chapter entity (thin module, delegates permissions to lms_course) | as-built |
+| `lms_lesson` | Lesson entity, multi-type content, SCORM extraction, conditional form | as-built |
+| `lms_faq` | FAQ entity (entity-only, no routes of its own) | as-built |
+| `lms_blog` | lms_article entity (admin CRUD); LmsBlogController reads node:blog for frontend | as-built (dual-track architecture) |
+| `lms_bundle` | CourseBundle entity — data model only | stub / planned |
 
-## 7. Learning Paths (Lộ trình học)
+| Entity | Key fields | Maturity |
+|---|---|---|
+| `lms_course` | name, field_chapters, field_price, field_price_type (free/paid/membership), field_category, field_level, field_rating, field_certificate_template | as-built |
+| `lms_chapter` | name, field_lessons, weight | as-built |
+| `lms_lesson` | field_type (9 values), field_video_url, field_video_file, field_scorm_package, field_pptx_attachment, field_h5p_embed, field_quiz, field_free_preview, field_drip_days, field_attachments, field_comments | as-built |
+| `lms_faq` | question, field_answer, field_scope (global/course/lesson), field_course, field_category | as-built |
+| `lms_article` | title, content, thumbnail, seo_title, seo_description | as-built (admin only; no uid/author field) |
+| `lms_course_bundle` | name, field_courses, field_price, field_discount_percent, field_thumbnail | stub |
 
-> Kết hợp nhiều khoá học theo một trình tự có cấu trúc, dẫn tới mục tiêu career/skill.
+## Priority matrix
 
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| LP-01 | Learning path creation | Tạo lộ trình: title, description, target career/skill |
-| LP-02 | Course sequence | Sắp xếp courses theo thứ tự bắt buộc |
-| LP-03 | Prerequisite enforcement | Phải hoàn thành course trước mới mở course sau |
-| LP-04 | Path progress | Track tiến độ tổng thể theo learning path |
-| LP-05 | Path certificate | Cấp certificate khi hoàn thành toàn bộ path |
-| LP-06 | Path listing | Trang listing các learning paths |
-| LP-07 | Personalized path | Learner chọn path phù hợp với mục tiêu (placement test optional) |
+| Capability | Priority | Maturity |
+|---|---|---|
+| Course + Chapter + Lesson CRUD | Must | as-built |
+| Multi-type lesson (video, text, quiz, H5P, SCORM, PDF, PPTX, Zoom, mixed) | Must | as-built |
+| Public catalogue + detail + free-enroll | Must | as-built |
+| Role-differentiated edit forms (admin vs manager) | Must | as-built |
+| Drip-content unlock (`field_drip_days`) | Should | as-built (field + access check via hook_entity_access; UI enforcement depends on lms_progress) |
+| Free-preview flag | Should | as-built |
+| Lesson comments | Should | as-built (comment field on lesson; UI rendered in lms_progress lesson view) |
+| FAQ (global/course/lesson) | Should | as-built |
+| Glossary / category-detail public pages | Should | stub (routes declared; full method implementation unconfirmed) |
+| Blog / news admin CRUD + frontend | Should | as-built (dual-track: lms_article admin + node:blog frontend) |
+| AI blog writer | Could | as-built (requires lms_ai + OpenAI configured) |
+| Course bundle entity + checkout | Could | stub — data model only, no checkout integration |
+| Course duplication / learning paths | Could | planned — not implemented |
 
----
+## Open questions
 
-## 8. Content Scheduling & Lesson Locking
-
-> Kiểm soát khi nào content được available và điều kiện unlock.
-
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| CS-01 | Scheduled availability | Hẹn giờ publish/unpublish lesson (start date + end date) |
-| CS-02 | Drip content | Mở lesson theo frequency (e.g. 1 lesson/tuần sau enrollment) |
-| CS-03 | Progress-based unlock | Mở lesson tiếp theo chỉ khi hoàn thành lesson trước |
-| CS-04 | Quiz-based unlock | Mở lesson chỉ khi pass quiz trước đó |
-| CS-05 | Date-based unlock | Mở lesson vào ngày cụ thể |
-| CS-06 | Manual unlock | Admin/Instructor mở lesson thủ công cho specific users |
-
----
-
-## 9. AI-Powered Course Creation
-
-> Xem chi tiết → [14-ai-features.md](./14-ai-features.md)
-
-| # | Yêu cầu | Chi tiết |
-|---|---------|---------|
-| AI-01 | AI Course Builder | Tạo toàn bộ course structure từ topic input |
-| AI-02 | AI Content Assistant | Generate lesson content, descriptions, quizzes |
-| AI-03 | Content duplication/reuse | Copy course structures cho similar training cần thiết |
+- [ ] `categories()`, `categoryDetail()`, and `glossary()` methods in `CoursePublicController` — confirm full implementation (route-declared, body not confirmed from available source read).
+- [ ] The `lms_chapter` entity has no `field_course` back-reference; how the membership access check in `hook_entity_access` traverses Chapter → Course needs verification against production data.
+- [ ] About-page team members are hardcoded strings — is this acceptable long-term or should a Team entity/block be created?
+- [ ] `lms_bundle` — when is bundle checkout integration planned?

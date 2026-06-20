@@ -100,10 +100,29 @@
 
 - **Risks:** Không có active risk — spike để dự phòng và confirm tech choice.
 - **C01 mismatch:** C01 ghi `dompdf` nhưng code dùng `mPDF` — phải resolve.
-- **Affected unit:** lms_certificate generation flow (chưa có unit ID rõ ràng — cần raise nếu chuyển async).
 - **Implementation reference:**
   - `web/modules/custom/lms_certificate/src/Service/CertificateGenerator.php`
   - `web/modules/custom/lms_certificate/src/Service/CertificateManager.php`
-  - `web/modules/custom/lms_certificate/src/EventSubscriber/` (CourseCompletedEvent listener)
+  - `web/modules/custom/lms_certificate/src/EventSubscriber/CertificateEventListener.php`
   - `web/modules/custom/lms_certificate/src/Entity/CertificateTemplate.php` (config entity)
 - **External references:** mPDF docs (mpdf.github.io), endroid/qr-code (URLs to be added by implementer).
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**mPDF is already live in production — this spike validates quality/font/async choice, not the basic mechanism.**
+
+`CertificateGenerator` in `lms_certificate` is **fully implemented** using mPDF:
+- `generate(CertificateTemplate, User, Course, string $code)` — renders `certificate_pdf` Twig theme to HTML, instantiates `\Mpdf\Mpdf`, produces PDF saved as a managed file at `public://certificates/issued/Certificate_{code}.pdf`. Gracefully degrades if mPDF class is missing (logs error, returns NULL).
+- `preview(CertificateTemplate)` — renders with mock user/course, returns raw PDF binary.
+- `template_preprocess_certificate_pdf()` hook resolves file URIs to server real-paths for background/logo/signature/seal images.
+- Auto-issuance: `CertificateEventListener` subscribes to `lms_quiz.passed` event (conditional on `QuizPassedEvent` class existence), traverses Quiz → Lesson → Chapter → Course, calls `CertificateManager::checkAndIssueCertificate()`. Generation is **synchronous** within the event subscriber.
+
+**C01 mismatch confirmed:** C01-architecture-decision.md references `dompdf` but the code uses mPDF. This spike should update C01 to reflect mPDF as the chosen library (mPDF passes the Vietnamese diacritics requirement).
+
+**QR code:** `endroid/qr-code` integration for verification QR in the certificate layout is **not yet confirmed** from facts base — the spike should verify this is implemented or add it.
+
+**Sync vs async:** Currently synchronous in the event subscriber. Spike should benchmark to confirm this is acceptable (hypothesis: ≤ 1.5s P95 for standard A4 template).
+
+Related code: [../C04-entities/05-certificate-entities.md](../C04-entities/05-certificate-entities.md)

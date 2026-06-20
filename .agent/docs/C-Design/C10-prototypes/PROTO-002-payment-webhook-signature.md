@@ -105,9 +105,26 @@
 
 - **Risks:** RISK-004 (G02), FIND-001, FIND-002, FIND-009, FIND-005 (atomicity)
 - **ADRs:** ADR-007 (PaymentGatewayInterface — ACCEPTED)
-- **Affected units:** U-028, U-029, U-031, U-060, U-061, U-062
 - **Implementation reference:**
   - `web/modules/custom/lms_stripe/src/Plugin/PaymentGateway/StripeGateway.php`
   - `web/modules/custom/lms_paypal/src/Plugin/PaymentGateway/PayPalGateway.php`
   - `web/modules/custom/lms_payment/src/Plugin/PaymentGatewayInterface.php`
 - **External references:** Stripe webhook docs, PayPal Webhook Verification API docs (URLs to be added by implementer; do not link unverified URLs).
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**NOT IMPLEMENTED — no webhook endpoints exist anywhere in the codebase.**
+
+Confirmed from route map (137 routes): there are **zero** `/lms/webhook/*` or similar routes registered in any module's `routing.yml`. The `PaymentGatewayInterface::handleWebhook()` method exists but:
+- `StripeGateway::handleWebhook()` — logs receipt, returns 200; has `// TODO: Implement webhook verification.` comment. No signature verification.
+- `lms_payment`'s `PayPalGateway::handleWebhook()` — returns 200 no-op.
+- `BankTransferGateway::handleWebhook()` — returns 200 no-op (N/A for manual flow).
+- `lms_paypal` module's `PayPalGateway` — **dead code** (wrong interface, no `@PaymentGateway` annotation, never discovered by plugin manager).
+
+Stripe payment confirmation relies entirely on client-side PaymentIntent confirmation via Stripe Elements JS. There is no server-side async webhook to re-confirm or fulfill orders asynchronously. The `lms_payment_webhook_log` idempotency table described in this spike does **not exist** in the schema.
+
+This spike has **not been executed**. RISK-004 remains Critical/open.
+
+Related code: [../C05-modules/lms_payment.md](../C05-modules/lms_payment.md) · [../C05-modules/lms_stripe.md](../C05-modules/lms_stripe.md) · [../C07-sitemap.md](../C07-sitemap.md)

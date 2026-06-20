@@ -1,14 +1,28 @@
 # C10 — Prototypes
 
-> Spike areas và prototypes để validate kỹ thuật trước khi implement chính thức.
-> Mỗi spike là một file riêng trong folder này, đặt tên `PROTO-{NNN}-{slug}.md`.
-> UX/UI clickable prototype (HTML mid-to-high fidelity) đặt trong [`html/`](html/index.html).
+> Technical spike documentation and UX/UI clickable prototypes for EverLMS.
+> Each spike is a separate file named `PROTO-{NNN}-{slug}.md`.
+> UX/UI clickable prototype (HTML mid-to-high fidelity) is in [`html/`](html/index.html).
+
+## Related canonical documents
+
+| Doc | Purpose |
+|-----|---------|
+| [../C04-entities/01-content-entities.md](../C04-entities/01-content-entities.md) | Course, Lesson entity schemas (SCORM field) |
+| [../C04-entities/03-progress-entities.md](../C04-entities/03-progress-entities.md) | UserCourse / UserLesson progress entities |
+| [../C04-entities/04-commerce-entities.md](../C04-entities/04-commerce-entities.md) | Order, payment-method entities |
+| [../C04-entities/05-certificate-entities.md](../C04-entities/05-certificate-entities.md) | CertificateTemplate, UserCertificate entities |
+| [../C05-modules/lms_progress.md](../C05-modules/lms_progress.md) | Progress cascade / markComplete (PROTO-001) |
+| [../C05-modules/lms_payment.md](../C05-modules/lms_payment.md) | Payment gateway plugin host (PROTO-002) |
+| [../C05-modules/lms_stripe.md](../C05-modules/lms_stripe.md) | Stripe gateway — webhook stub (PROTO-002) |
+| [../C07-sitemap.md](../C07-sitemap.md) | Route map — confirms no webhook routes exist |
+| [../C08-wireframes/README.md](../C08-wireframes/README.md) | Wireframe index |
 
 ---
 
-## Trạng thái Hiện tại
+## Current State (as of 2026-06-20)
 
-**5 technical spike đã được định nghĩa** (PROTO-001 → PROTO-005), tất cả ở trạng thái `PENDING`. Phải execute các spike High-priority (PROTO-001, PROTO-002) trước khi mở khoá các unit downstream tương ứng (U-059 cho race condition, U-028/U-029/U-060/U-061 cho payment webhook). Các quyết định kiến trúc quan trọng đã được ghi trong C01 và G01 (ADRs); các prototype này nhằm validate những giả định kỹ thuật còn lại trước khi commit code sản phẩm.
+**5 technical spikes defined** (PROTO-001 → PROTO-005), all still `PENDING` — none have been executed. See per-file "Implementation status" sections for what is currently in production code vs. what the spike is meant to validate. Các quyết định kiến trúc quan trọng đã được ghi trong C01 và G01 (ADRs); các prototype này nhằm validate những giả định kỹ thuật còn lại trước khi commit code sản phẩm.
 
 **UX/UI clickable prototype** đã được materialized trong [`html/`](html/index.html) — 35 trang static HTML phủ 5 nhóm flow bắt buộc theo `docs-draft/09-prototype/README.md`: public conversion, enrollment + checkout, learning + quiz + certificate, account/portal, management operation, mobile key journeys. Foundation: shared `assets/theme.css` (mirror của `C09-skins.md`). 660/660 internal href resolved (zero broken link).
 
@@ -61,13 +75,13 @@ C10-prototypes/
 
 Dưới đây là các vấn đề kỹ thuật chưa được validate — nên được spike trước khi implement:
 
-| ID | Spike Area | Priority | Liên quan | Status |
-|----|-----------|----------|-----------|--------|
-| [PROTO-001](PROTO-001-progress-race-condition.md) | Progress cascade race condition: SELECT FOR UPDATE vs queue worker vs optimistic lock | High | DEC-003, RISK-002, ADR-010, U-059 | PENDING |
-| [PROTO-002](PROTO-002-payment-webhook-signature.md) | Stripe + PayPal webhook signature verification, idempotency, atomic fulfillment | High | RISK-004, FIND-001/002/005/009, ADR-007, U-028/029/060/061 | PENDING |
-| [PROTO-003](PROTO-003-ai-provider-rate-limit-rollback.md) | AI provider rate limit, cost cap, saga rollback, header-based credentials | Medium | RISK-003, FIND-003, FIND-008, ADR-006, U-047 | PENDING |
-| [PROTO-004](PROTO-004-scorm-xapi-tracking-performance.md) | SCORM 1.2 / xAPI tracking endpoint performance + extraction security | Medium | lms_lesson SCORM type, lms_progress | PENDING |
-| [PROTO-005](PROTO-005-mpdf-certificate-generation.md) | mPDF certificate generation: Vietnamese fidelity, QR verify, sync vs async | Low | lms_certificate, C01 (mPDF vs dompdf) | PENDING |
+| ID | Spike Area | Priority | Liên quan | Status | Code reality (2026-06-20) |
+|----|-----------|----------|-----------|--------|--------------------------|
+| [PROTO-001](PROTO-001-progress-race-condition.md) | Progress cascade race condition: SELECT FOR UPDATE vs queue worker vs optimistic lock | High | DEC-003, RISK-002, ADR-010 | PENDING | Race condition still exists in `ProgressApiController::markComplete()` — no lock implemented |
+| [PROTO-002](PROTO-002-payment-webhook-signature.md) | Stripe + PayPal webhook signature verification, idempotency, atomic fulfillment | High | RISK-004, FIND-001/002/005/009, ADR-007 | PENDING | No webhook routes exist anywhere — webhook endpoints are completely absent |
+| [PROTO-003](PROTO-003-ai-provider-rate-limit-rollback.md) | AI provider rate limit, cost cap, saga rollback, header-based credentials | Medium | RISK-003, FIND-003, FIND-008, ADR-006 | PENDING | No rollback/compensation in `CourseBuilderService`; Gemini key still in URL query string |
+| [PROTO-004](PROTO-004-scorm-xapi-tracking-performance.md) | SCORM 1.2 / xAPI tracking endpoint performance + extraction security | Medium | lms_lesson SCORM type, [../C05-modules/lms_progress.md](../C05-modules/lms_progress.md) | PENDING | SCORM package extraction exists in `lms_lesson.module`; no SCORM runtime commit endpoint |
+| [PROTO-005](PROTO-005-mpdf-certificate-generation.md) | mPDF certificate generation: Vietnamese fidelity, QR verify, sync vs async | Low | [../C04-entities/05-certificate-entities.md](../C04-entities/05-certificate-entities.md) | PENDING (mPDF **already live**) | `CertificateGenerator` using mPDF is fully implemented and in production |
 
 ---
 
@@ -82,15 +96,15 @@ Dưới đây là các vấn đề kỹ thuật chưa được validate — nên
 
 ## Prototype Summary
 
-| ID | Spike Area | Timebox | Outcome | Impact |
-|----|-----------|---------|---------|--------|
-| PROTO-001 | Progress cascade race condition | 1 ngày | _(chưa chạy)_ | _(chốt DEC-003)_ |
-| PROTO-002 | Payment webhook signature + idempotency | 1.5 ngày | _(chưa chạy)_ | _(unblock RISK-004)_ |
-| PROTO-003 | AI rate limit + cost cap + rollback | 1 ngày | _(chưa chạy)_ | _(resolve FIND-003/008, RISK-003)_ |
-| PROTO-004 | SCORM/xAPI endpoint + extraction | 1 ngày | _(chưa chạy)_ | _(promote SCORM lesson type)_ |
-| PROTO-005 | mPDF certificate render | 0.5 ngày | _(chưa chạy)_ | _(align C01 PDF tech choice)_ |
+| ID | Spike Area | Timebox | Outcome | Code reality (2026-06-20) |
+|----|-----------|---------|---------|--------------------------|
+| PROTO-001 | Progress cascade race condition | 1 ngày | _(chưa chạy)_ | Risk still open — no lock in markComplete |
+| PROTO-002 | Payment webhook signature + idempotency | 1.5 ngày | _(chưa chạy)_ | Not started — no webhook endpoints exist |
+| PROTO-003 | AI rate limit + cost cap + rollback | 1 ngày | _(chưa chạy)_ | Not started — no rollback, Gemini key in URL |
+| PROTO-004 | SCORM/xAPI endpoint + extraction | 1 ngày | _(chưa chạy)_ | SCORM extraction exists; no tracking endpoint |
+| PROTO-005 | mPDF certificate render | 0.5 ngày | _(chưa chạy)_ | mPDF already live — spike validates quality/async choice |
 
-**Tổng timebox:** ~5 ngày người. Khuyến nghị thực thi theo thứ tự priority: (PROTO-001, PROTO-002) song song → PROTO-003 → PROTO-004 → PROTO-005.
+**Total timebox estimate:** ~5 person-days. Recommended execution order: (PROTO-001, PROTO-002) in parallel → PROTO-003 → PROTO-004 → PROTO-005.
 
 ---
 
@@ -114,4 +128,4 @@ Static HTML prototype, mở trực tiếp trong browser từ [`html/index.html`]
 
 ---
 
-*Cập nhật lần cuối: 2026-04-26 — bổ sung PROTO-001 → PROTO-005 + 35 trang HTML clickable prototype, 0 broken link.*
+*Last updated: 2026-06-20 — added implementation status notes per prototype; corrected cross-links to C04-entities/, C05-modules/, C07-sitemap.md.*

@@ -69,3 +69,11 @@
 | 992-1199px | Left sidebar (col-3) | 2 columns |
 | 768-991px | Collapsible top panel | 2 columns |
 | <768px | Full-width modal filter | 1 column |
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built.** Route `/courses` → `CoursePublicController::catalog` → `lms-catalog.html.twig`. Route `/categories` → `CoursePublicController::categories` → `lms-categories.html.twig`. Category detail page at `/categories/{taxonomy_term}`. AJAX search API at `/api/courses/search` (`CoursePublicController::searchApi`). The depicted filter sidebar, course card grid, and search are implemented. Course cards use the reusable `lms-course-card.html.twig` sub-component. Cart/wishlist heart button toggles via `/api/lms/wishlist/toggle` (lms_wishlist module).
+
+Related: [../C04-entities/01-content-entities.md](../C04-entities/01-content-entities.md) · [../C05-modules/lms_course.md](../C05-modules/lms_course.md)

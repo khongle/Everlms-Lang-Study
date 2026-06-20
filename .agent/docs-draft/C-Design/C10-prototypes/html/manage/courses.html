@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EverLMS Manage — Courses</title>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    .filter-bar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 20px;
+    }
+    .filter-bar .form-select, .filter-bar .form-control {
+      width: auto; padding: 7px 12px; font-size: 14px;
+    }
+    .filter-bar .search-wrap { position: relative; flex: 1; min-width: 200px; }
+    .filter-bar .search-wrap .form-control { width: 100%; padding-right: 32px; }
+    .filter-bar .search-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; pointer-events: none; }
+    .thumb-cell { width: 52px; height: 34px; border-radius: 6px; background: linear-gradient(135deg, #1f2937, #111827); display: inline-flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .course-title-cell { display: flex; align-items: center; gap: 10px; }
+    .course-name { font-weight: 600; font-size: 14px; max-width: 220px; }
+    .course-name small { display: block; font-weight: 400; color: var(--text-muted); font-size: 12px; margin-top: 1px; }
+    .bulk-bar {
+      display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+      background: var(--surface-2); border-top: 1px solid var(--border);
+    }
+    .bulk-bar span { font-size: 13px; color: var(--text-secondary); }
+    .pagination { display: flex; align-items: center; gap: 4px; margin-top: 16px; }
+    .pagination a, .pagination span {
+      min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .pagination a:hover { background: var(--surface); text-decoration: none; }
+    .pagination .active { background: var(--primary); color: white; border-color: var(--primary); }
+    .pagination .ellipsis { border: none; color: var(--text-muted); }
+    .actions-cell { white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <a href="../index.html" class="logo"><span class="logo-mark">E</span> EverLMS</a>
+      <h5 class="mt-4">Workspace</h5>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="courses.html" class="active">📚 Courses</a>
+      <a href="course-edit.html">✏️ Course editor</a>
+      <a href="quizzes.html">📝 Quizzes</a>
+      <h5>Commerce</h5>
+      <a href="orders.html">💳 Orders</a>
+      <a href="#">🎟 Coupons</a>
+      <a href="#">💎 Memberships</a>
+      <h5>Audience</h5>
+      <a href="users.html">👥 Users</a>
+      <a href="#">📈 Reports</a>
+      <h5>Configuration</h5>
+      <a href="#">⚙️ Settings</a>
+      <a href="#">🤖 AI provider</a>
+      <a href="#">💳 Payment</a>
+    </aside>
+
+    <main class="app-main">
+      <div class="app-topbar">
+        <div>
+          <h1>Course Management</h1>
+          <div class="text-secondary fs-14">Manage, publish and organise all courses</div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline btn-sm">📤 Export</button>
+          <a href="course-edit.html" class="btn btn-primary btn-sm">+ Add course</a>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <select class="form-select">
+          <option value="">All Categories</option>
+          <option>Web Development</option>
+          <option>Frontend</option>
+          <option>Backend</option>
+          <option>Design</option>
+          <option>Data Science</option>
+        </select>
+        <select class="form-select">
+          <option value="">All Status</option>
+          <option>Published</option>
+          <option>Draft</option>
+          <option>Pending</option>
+          <option>Archived</option>
+        </select>
+        <select class="form-select">
+          <option value="">All Levels</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+        <div class="search-wrap">
+          <input type="text" class="form-control" placeholder="Search courses…" value="">
+          <span class="search-icon">🔍</span>
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width:36px;"><input type="checkbox" title="Select all"></th>
+              <th style="width:60px;"></th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Instructor</th>
+              <th>Students</th>
+              <th>Status</th>
+              <th>Updated</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td><div class="thumb-cell">🌐</div></td>
+              <td>
+                <div class="course-title-cell">
+                  <div class="course-name">Complete Web Development Bootcamp<small>Beginner · 52 lessons</small></div>
+                </div>
+              </td>
+              <td class="text-secondary fs-13">Web Dev</td>
+              <td class="fs-13">Sarah Lee</td>
+              <td class="fw-semi fs-13">1,234</td>
+              <td><span class="badge badge-success">Published</span></td>
+              <td class="text-muted fs-13">2 days ago</td>
+              <td class="actions-cell">
+                <a href="course-edit.html" class="btn btn-ghost btn-sm" title="Edit">✏️</a>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td><div class="thumb-cell">⚛️</div></td>
+              <td>
+                <div class="course-title-cell">
+                  <div class="course-name">React Masterclass 2026<small>Intermediate · 38 lessons</small></div>
+                </div>
+              </td>
+              <td class="text-secondary fs-13">Frontend</td>
+              <td class="fs-13">Sarah Lee</td>
+              <td class="fw-semi fs-13">567</td>
+              <td><span class="badge badge-success">Published</span></td>
+              <td class="text-muted fs-13">5 days ago</td>
+              <td class="actions-cell">
+                <a href="course-edit.html" class="btn btn-ghost btn-sm" title="Edit">✏️</a>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td><div class="thumb-cell">🎨</div></td>
+              <td>
+                <div class="course-title-cell">
+                  <div class="course-name">CSS Animation & Motion Design<small>Advanced · 24 lessons</small></div>
+                </div>
+              </td>
+              <td class="text-secondary fs-13">Design</td>
+              <td class="fs-13">Anna Wu</td>
+              <td class="fw-semi fs-13">234</td>
+              <td><span class="badge badge-warning">Draft</span></td>
+              <td class="text-muted fs-13">1 week ago</td>
+              <td class="actions-cell">
+                <a href="course-edit.html" class="btn btn-ghost btn-sm" title="Edit">✏️</a>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td><div class="thumb-cell">🟩</div></td>
+              <td>
+                <div class="course-title-cell">
+                  <div class="course-name">Node.js Backend Engineering<small>Intermediate · 45 lessons</small></div>
+                </div>
+              </td>
+              <td class="text-secondary fs-13">Backend</td>
+              <td class="fs-13">Mike Chen</td>
+              <td class="fw-semi fs-13">123</td>
+              <td><span class="badge badge-success">Published</span></td>
+              <td class="text-muted fs-13">3 days ago</td>
+              <td class="actions-cell">
+                <a href="course-edit.html" class="btn btn-ghost btn-sm" title="Edit">✏️</a>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td><div class="thumb-cell">🐍</div></td>
+              <td>
+                <div class="course-title-cell">
+                  <div class="course-name">Python for Data Science<small>Beginner · 60 lessons</small></div>
+                </div>
+              </td>
+              <td class="text-secondary fs-13">Data Science</td>
+              <td class="fs-13">Tom Rivers</td>
+              <td class="fw-semi fs-13">892</td>
+              <td><span class="badge badge-primary" style="background:rgba(139,92,246,.14);color:#a78bfa;border-color:rgba(139,92,246,.3);">Pending</span></td>
+              <td class="text-muted fs-13">8 hours ago</td>
+              <td class="actions-cell">
+                <a href="course-edit.html" class="btn btn-ghost btn-sm" title="Edit">✏️</a>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td><div class="thumb-cell">☁️</div></td>
+              <td>
+                <div class="course-title-cell">
+                  <div class="course-name">AWS Cloud Practitioner Prep<small>Intermediate · 32 lessons</small></div>
+                </div>
+              </td>
+              <td class="text-secondary fs-13">DevOps</td>
+              <td class="fs-13">James Park</td>
+              <td class="fw-semi fs-13">0</td>
+              <td><span class="badge badge-warning">Draft</span></td>
+              <td class="text-muted fs-13">2 hours ago</td>
+              <td class="actions-cell">
+                <a href="course-edit.html" class="btn btn-ghost btn-sm" title="Edit">✏️</a>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td><div class="thumb-cell">📊</div></td>
+              <td>
+                <div class="course-title-cell">
+                  <div class="course-name">Excel & Data Analytics Mastery<small>Beginner · 28 lessons</small></div>
+                </div>
+              </td>
+              <td class="text-secondary fs-13">Business</td>
+              <td class="fs-13">Lisa Tran</td>
+              <td class="fw-semi fs-13">345</td>
+              <td><span class="badge" style="background:rgba(107,114,128,.14);color:#9aa3b2;border-color:rgba(107,114,128,.3);">Archived</span></td>
+              <td class="text-muted fs-13">3 months ago</td>
+              <td class="actions-cell">
+                <a href="course-edit.html" class="btn btn-ghost btn-sm" title="Edit">✏️</a>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td><div class="thumb-cell">🔐</div></td>
+              <td>
+                <div class="course-title-cell">
+                  <div class="course-name">Cybersecurity Fundamentals<small>Beginner · 40 lessons</small></div>
+                </div>
+              </td>
+              <td class="text-secondary fs-13">Security</td>
+              <td class="fs-13">Kevin Marsh</td>
+              <td class="fw-semi fs-13">210</td>
+              <td><span class="badge badge-primary" style="background:rgba(139,92,246,.14);color:#a78bfa;border-color:rgba(139,92,246,.3);">Pending</span></td>
+              <td class="text-muted fs-13">1 day ago</td>
+              <td class="actions-cell">
+                <a href="course-edit.html" class="btn btn-ghost btn-sm" title="Edit">✏️</a>
+                <button class="btn btn-ghost btn-sm" title="View">👁</button>
+                <button class="btn btn-ghost btn-sm" title="More">⋯</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="bulk-bar">
+          <input type="checkbox" id="selectAll">
+          <label for="selectAll" class="text-secondary fs-13">Select all on page</label>
+          <span class="divider-y" style="height:20px;margin:0 6px;"></span>
+          <span>Bulk:</span>
+          <button class="btn btn-ghost btn-sm">🗑 Delete</button>
+          <button class="btn btn-ghost btn-sm">👁 Unpublish</button>
+          <button class="btn btn-ghost btn-sm">📤 Export</button>
+          <span class="flex-grow"></span>
+          <span class="text-muted fs-13">Showing 1–8 of 248</span>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <a href="#">‹</a>
+        <a href="#" class="active">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <span class="ellipsis">…</span>
+        <a href="#">13</a>
+        <a href="#">›</a>
+      </div>
+
+    </main>
+  </div>
+</body>
+</html>

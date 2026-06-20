@@ -97,3 +97,19 @@
 │ "Still have questions?" [Contact Support]                            │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built (Pricing, About, Contact, Blog); FAQ is as-built via lms_faq entity.**
+
+- Pricing page: `/pricing` → `PageController::pricing` → `lms-pricing.html.twig`. Static marketing page.
+- About page: `/about` → `PageController::about` → `lms-about.html.twig`. Static.
+- Contact page: `/contact` → `PageController::contact` → `lms-contact.html.twig`. Static.
+- Blog/News listing: `/news` → `LmsBlogController::index` → `lms-blog-list.html.twig`. **Dual-track:** public frontend reads core `node:blog`; the `lms_article` entity only backs `/manage/blog` admin CRUD.
+- Blog single post: `/news/{node}` → `LmsBlogController::view` → `lms-blog-single.html.twig`.
+- FAQ: `lms_faq` entity provides FAQ items managed at `/workspace/content/faqs`. Display is rendered within existing page templates or the glossary page at `/glossary` → `lms-glossary.html.twig`. No dedicated public `/faq` route exists — FAQ accordion is embedded in other page templates.
+- Certificate verification: `/certificate/verify` → `Form\VerificationForm` → `certificate-verification-result.html.twig`. Fully implemented (code lookup, revoked check).
+
+Related: [../C05-modules/lms_blog.md](../C05-modules/lms_blog.md) · [../C07-sitemap.md](../C07-sitemap.md)

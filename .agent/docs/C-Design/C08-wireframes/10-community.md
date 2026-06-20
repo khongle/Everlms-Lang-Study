@@ -58,3 +58,20 @@
 │    Duration: 30h │ Locked               │                          │
 └──────────────────────────────────────────┴──────────────────────────┘
 ```
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**Forum: as-built (with a known debug bug). Learning Path: not implemented.**
+
+**Forum:**
+- Forum listing: `/forum` → `LmsForumController::index` → `lms-forum-index.html.twig`. Topics list with reply count, author avatar, pin/lock indicators.
+- Topic view: `/forum/{lms_forum_topic}` → `LmsForumController::viewTopic` → `lms-forum-topic.html.twig`. Reply form, mark-best-answer, edit/delete reply.
+- New topic: `/forum/new` → `LmsForumController::addTopic`.
+- **Known bug:** `LmsForumController::viewTopic` has a `messenger()->addMessage("FRESH CONTROLLER LOADED!")` debug statement left in production code. The dead `ForumController::viewTopic` contains `throw new \Exception("HARD DEBUG!")` — dangerous if ever routed.
+- Anonymous users see topic content in teaser mode; replies visible only to authenticated users.
+
+**Learning Path:** The second panel depicted (sequential step-locked course path) is **not implemented** — no `lms_learning_path` entity or module exists. This is a target-state feature (planned, not yet materialized).
+
+Related: [../C04-entities/07-communication-entities.md](../C04-entities/07-communication-entities.md) · [../C05-modules/lms_forum.md](../C05-modules/lms_forum.md)

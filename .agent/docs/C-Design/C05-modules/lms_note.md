@@ -1,82 +1,128 @@
-# lms_note — Student Notes Module
+---
+module: lms_note
+service: note
+route-groups: [App, API]
+status: DONE
+---
 
-## Module Metadata
+# C05 — Module: LMS Note
 
-| Key | Value |
-|-----|-------|
-| Module ID | `lms_note` |
-| Name | LMS Note |
-| Layer | **Communication** |
-| Version / Lifecycle | stable, Drupal ^11 |
-| Package | EverLMS |
-| Dependencies | `lms_base`, `lms_lesson` |
+**Directory:** `web/modules/custom/lms_note/`
+**Responsibility:** Provides per-user, per-lesson note-taking with optional video timestamp anchoring, exposed via lightweight JSON API endpoints and a grouped "My Notes" portal page.
 
-## Mô tả
-
-Module ghi chú của học viên trên bài học. Hỗ trợ timestamp ghi chú gắn với video position. Cung cấp REST-like API endpoints để save/delete/get notes và trang `/my-notes` để xem tất cả ghi chú.
+> **Documentation mode:** as-built — matches current code (2026-06-20).
 
 ---
 
-## Provided Entities
+## Route Bindings
 
-### `lms_note` (Content Entity — `Note`)
-| Fields | Description |
-|--------|-------------|
-| uid | Người dùng |
-| lesson ref | → lms_lesson |
-| content | Nội dung ghi chú |
-| timestamp | Video timestamp (giây) |
-| created/changed | Timestamps |
+| Route Group | Prefix | Controller | Paths |
+|-------------|--------|------------|-------|
+| API (legacy) | `/api/lms` | `NoteController` | `/api/lms/note/save` [POST], `/api/lms/note/delete` [POST], `/api/lms/note/get` [GET] |
+| App | `/` | `NoteController` | `/my-notes` [GET] |
+
+All routes require `_user_is_logged_in: TRUE`.
 
 ---
 
-## Provided Routes
+## Public Interface
 
-| Route ID | Path | Controller | Method | Access |
-|----------|------|-----------|--------|--------|
-| `lms_note.save` | `/api/lms/note/save` | `NoteController::save` | POST | logged in |
-| `lms_note.delete` | `/api/lms/note/delete` | `NoteController::delete` | POST | logged in |
-| `lms_note.get` | `/api/lms/note/get` | `NoteController::getNote` | GET | logged in |
-| `lms_note.my_notes` | `/my-notes` | `NoteController::myNotes` | GET | logged in |
+| Export | Type | Description |
+|--------|------|-------------|
+| `NoteController` | Controller | JSON CRUD API for notes; renders My Notes page |
+| `lms_note` | Entity | Student note record (lesson, course, body, video timestamp) |
 
----
-
-## Provided Services
-
-Không có services file.
+No `lms_note.services.yml` — no exported services.
 
 ---
 
-## Provided Plugins
+## Internal Structure
 
-Không có plugin.
+```
+web/modules/custom/lms_note/
++-- lms_note.info.yml           # package: EverLMS; deps: lms_base, lms_lesson
++-- lms_note.routing.yml        # 4 routes (3 API + 1 App)
++-- lms_note.module             # hook_theme() only
++-- lms_note.install            # lms_note_update_10001() — adds field_course
++-- src/
+|   +-- Controller/
+|   |   +-- NoteController.php      # save(), delete(), getNote(), myNotes()
+|   +-- Entity/
+|   |   +-- Note.php                # lms_note content entity
++-- templates/
+|   +-- lms-my-notes.html.twig      # vars: grouped_notes
+```
+
+---
+
+## Entity: `lms_note` — Student Note
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| id | auto | — | PK |
+| uuid | auto | — | |
+| uid | entity_reference (user) | — | via `EntityOwnerTrait` |
+| field_course | entity_reference (lms_course) | TRUE | added by `lms_note_update_10001` |
+| field_lesson | entity_reference (lms_lesson) | TRUE | |
+| field_body | text_long | TRUE | |
+| field_video_timestamp | integer | — | seconds into video; default 0 |
+| created | created | — | |
+| changed | changed | — | |
+
+Table: `lms_note`. Admin permission: `administer lms_course`. Access handler: core default `EntityAccessControlHandler`.
+
+> **Schema note:** `field_course` was added post-initial-release via database update `lms_note_update_10001`. Pre-update records have no course linkage.
+
+---
+
+## Controllers
+
+### `NoteController` — as-built
+
+Dependencies: `entity_type.manager`, `current_user`.
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| `save(Request)` | `lms_note.save` [POST] | Accepts JSON `{lesson_id, course_id, note_text, video_timestamp}`; upserts `lms_note` (one note per user+lesson); invalidates cache tag `lms_note:{lesson_id}:{uid}`; returns JSON `{status: created\|updated, id}`. |
+| `delete(Request)` | `lms_note.delete` [POST] | Accepts JSON `{lesson_id}`; deletes all notes for current user + lesson; invalidates cache; returns JSON `{status: deleted\|not_found}`. |
+| `getNote(Request)` | `lms_note.get` [GET] | Query param `?lesson_id=`; returns JSON `{status, note_text}`. |
+| `myNotes()` | `lms_note.my_notes` [GET] | Loads all notes for current user sorted by `changed` DESC; groups by course ID; renders `lms_my_notes` template with `grouped_notes` array keyed by course ID. |
 
 ---
 
 ## Hook Implementations
 
-Không có `.module` file.
+| Hook | File | Description |
+|------|------|-------------|
+| `hook_theme()` | `lms_note.module` | Registers `lms_my_notes` template with variable `grouped_notes`. |
 
 ---
 
-## Templates & Cache Strategy
+## Dependencies
 
-- `/my-notes` page: cache per-user.
-- API endpoints: không cache (realtime data).
-
----
-
-## Related Units
-
-- **C03** § Communication Domain — entity Note
-- **C05** `04-certificate-communication.md` — layer overview
-- `lms_lesson.md` — lesson ref trong note
-- `lms_progress.md` — `lms-lesson-view` template hiển thị existing_note
+| Dependency | Type | Why |
+|-----------|------|-----|
+| `lms_base` | Internal | Shared base traits |
+| `lms_lesson` | Internal | `field_lesson` entity reference; lesson context in save/get |
+| `lms_course` | Internal (runtime, not declared in info.yml) | `field_course` added by update_10001; grouping in myNotes() |
+| `lms_progress` | Internal (runtime, not declared) | `UserPortalController::lessonView()` queries lms_note storage and passes `existing_note` to template |
 
 ---
 
-## Known Issues / Debt
+## Known Issues / Bugs
 
-- API endpoints không có CSRF protection riêng — phụ thuộc Drupal session cookie, cần kiểm tra nếu dùng từ SPA.
-- Không có ownership check trong delete endpoint — user có thể xóa note của người khác nếu biết ID.
-- Không có full-text search trên `/my-notes`.
+| ID | Severity | Description |
+|----|----------|-------------|
+| BUG-NOTE-01 | Medium | `delete()` deletes by `uid + field_lesson` — no ownership check against the note's own `uid` field; relies solely on `current_user`. Works correctly but verify entity query filters are enforced. |
+| DEBT-NOTE-01 | Low | No full-text search on `/my-notes`; large note collections require client-side filtering. |
+| DEBT-NOTE-02 | Low | API endpoints use session-cookie auth (Drupal default); no explicit CSRF token mechanism beyond Drupal's standard form API. If called from a cross-origin SPA, CSRF review is needed. |
+
+> These feed [E02 Issues](../../E-Quality/E02-issues/).
+
+---
+
+## Cross-Links
+
+- Entity detail: [C04 Content Entities](../C04-entities/01-content-entities.md)
+- Note displayed in lesson view: [lms_progress module](lms_progress.md) (`lessonView()` passes `existing_note`)
+- Lesson reference: [lms_lesson module](lms_lesson.md)

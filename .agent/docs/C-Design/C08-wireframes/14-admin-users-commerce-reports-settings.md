@@ -111,3 +111,29 @@
 │ [Save Changes]                                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built (all core sections); badges and some settings tabs are partial/stub.**
+
+**Users:**
+- `/workspace/users` → `AdminController::userList` → `lms-admin-users.html.twig`. Bulk actions via `/workspace/users/bulk`. User create/edit: `/workspace/users/create`, `/workspace/users/{user}/admin-edit`.
+- Impersonation: `/admin/switch-user` + `/app/switch-user` (`open_switcher` module).
+
+**Orders / Commerce:**
+- Order list: `/workspace/orders` → `AdminController::orderList` → `lms-admin-orders.html.twig`.
+- Membership plans: `/workspace/pricing` → `MembershipAdminController`. User memberships: `/workspace/user-memberships`.
+- Certificate management: `/workspace/certificates` → `CertificateAdminController`. Certificate template CRUD: `/workspace/certificate-templates`.
+- **Badges:** `lms_badge` module has entity definitions only — no award logic, no admin UI beyond auto-generated routes at `/manage/badges`. Effectively a near-stub.
+
+**Reports:**
+- Analytics: `/admin/lms/reports/courses|users|quizzes` — fully implemented. Note: `lms_analytics` module description mentions "GA4" but no GA4 code exists.
+
+**Settings:**
+- Payment settings: `/admin/config/everlms/payment` — real form, saves to `lms_payment.settings`. SECURITY NOTE: third-party keys (Stripe, PayPal, Gemini, OpenAI, Zoom) are stored in plaintext committed YAML config — no Key module («secret in config — see security risk»).
+- Zoom settings: `/admin/config/lms/zoom`.
+- AI settings: `/admin/config/lms/ai`.
+
+Related: [../C04-entities/04-commerce-entities.md](../C04-entities/04-commerce-entities.md) · [../C05-modules/lms_payment.md](../C05-modules/lms_payment.md) · [../C07-sitemap.md](../C07-sitemap.md)

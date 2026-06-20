@@ -1,85 +1,194 @@
-# lms_analytics — Analytics & Reporting Module
+---
+module: lms_analytics
+service: analytics
+route-groups: [Admin]
+status: DONE
+documentation-mode: as-built
+---
 
-## Module Metadata
+# C05 — Module: LMS Analytics
 
-| Key | Value |
-|-----|-------|
-| Module ID | `lms_analytics` |
-| Name | LMS Analytics |
-| Layer | **Integration** |
-| Version / Lifecycle | stable, Drupal ^11 |
-| Package | EverLMS |
-| Dependencies | `lms_base` |
+**Directory:** `web/modules/custom/lms_analytics/`
+**Responsibility:** Provides internal reporting for courses, users, and quiz performance via raw SQL queries against LMS database tables, with CSV export; does not integrate with GA4 despite the module description claiming otherwise.
 
-## Mô tả
-
-Module analytics và reporting nội bộ: báo cáo course (enrollment, completion rate), user activity, và quiz item analysis. Cung cấp export (CSV/Excel). Dự định tích hợp GA4 nhưng hiện tại chủ yếu là internal reporting từ database.
+> **Note on module description:** `lms_analytics.info.yml` description reads "Analytics integration (GA4) and internal reporting." — **no GA4 code exists** in this module. All reporting is internal SQL only.
 
 ---
 
-## Provided Entities
+## Route Bindings
 
-Không có entity riêng. Query trực tiếp từ entities của các module khác qua `@database`.
-
----
-
-## Provided Routes
-
-| Route ID | Path | Controller | Access |
-|----------|------|-----------|--------|
-| `lms_analytics.course_report` | `/admin/lms/reports/courses` | `CourseReportController::build` | `administer lms_course` |
-| `lms_analytics.course_report_export` | `/admin/lms/reports/courses/export` | `CourseReportController::export` | `administer lms_course` |
-| `lms_analytics.user_report` | `/admin/lms/reports/users` | `UserReportController::build` | `administer users` |
-| `lms_analytics.user_report_export` | `/admin/lms/reports/users/export` | `UserReportController::export` | `administer users` |
-| `lms_analytics.quiz_report_list` | `/admin/lms/reports/quizzes` | `QuizReportController::buildList` | `administer lms_quiz` |
-| `lms_analytics.quiz_report_detail` | `/admin/lms/reports/quizzes/{quiz_id}` | `QuizReportController::buildDetail` | `administer lms_quiz` |
-| `lms_analytics.quiz_report_export` | `/admin/lms/reports/quizzes/{quiz_id}/export` | `QuizReportController::exportItemAnalysis` | `administer lms_quiz` |
+| Route Group | Prefix | Controller | Paths |
+|---|---|---|---|
+| Admin | `/admin/lms/reports` | `CourseReportController` | `/courses` (view), `/courses/export` (CSV) |
+| Admin | `/admin/lms/reports` | `UserReportController` | `/users` (view), `/users/export` (CSV) |
+| Admin | `/admin/lms/reports` | `QuizReportController` | `/quizzes` (list), `/quizzes/{quiz_id}` (detail), `/quizzes/{quiz_id}/export` (CSV) |
 
 ---
 
-## Provided Services
+## Public Interface
 
-| Service ID | Class | Purpose |
-|-----------|-------|---------|
-| `lms_analytics.service` | `AnalyticsService` | General analytics queries; inject database, entity_type.manager |
-| `lms_analytics.course_report` | `CourseReportManager` | Course-specific aggregations: enrollment rates, completion rates, revenue |
-| `lms_analytics.user_report` | `UserReportManager` | User activity reporting: logins, enrollments, progress |
-| `lms_analytics.quiz_analytics` | `QuizAnalyticsManager` | Quiz item analysis: per-question pass rates, distractor analysis |
+| Export | Type | Description |
+|---|---|---|
+| `lms_analytics.service` | Service (`AnalyticsService`) | Global aggregates: total enrollments, total revenue, completion rate |
+| `lms_analytics.course_report` | Service (`CourseReportManager`) | Per-course stats with enrollment, completion, revenue breakdowns |
+| `lms_analytics.user_report` | Service (`UserReportManager`) | Per-user activity: enrolled/completed courses, quiz attempts, average score, certificates |
+| `lms_analytics.quiz_analytics` | Service (`QuizAnalyticsManager`) | Quiz-level analytics: pass rate, score distribution, hardest questions |
 
 ---
 
-## Provided Plugins
+## Internal Structure
 
-Không có plugin.
+```
+web/modules/custom/lms_analytics/
++-- lms_analytics.info.yml      # deps: lms_base; lifecycle: stable
++-- lms_analytics.routing.yml   # 7 routes
++-- lms_analytics.services.yml  # 4 services
++-- lms_analytics.module        # hook_theme() only
++-- src/
+|   +-- Service/
+|   |   +-- AnalyticsService.php         # Global aggregates (3 methods)
+|   |   +-- CourseReportManager.php      # getCourseStats() with access control + sub-queries
+|   |   +-- UserReportManager.php        # getOverviewList() with per-user tracking
+|   |   +-- QuizAnalyticsManager.php     # getQuizOverview(), getScoreDistribution(), getHardestQuestions()
+|   +-- Controller/
+|       +-- CourseReportController.php   # build(), export()
+|       +-- UserReportController.php     # build(), export()
+|       +-- QuizReportController.php     # buildList(), buildDetail(), exportItemAnalysis()
++-- templates/
+    +-- lms-analytics-course-report.html.twig
+    +-- lms-analytics-user-report.html.twig
+    +-- lms-analytics-quiz-report-list.html.twig
+    +-- lms-analytics-quiz-report-detail.html.twig
+```
+
+---
+
+## Service Details
+
+### `AnalyticsService` (as-built)
+
+| Method | SQL | Returns |
+|---|---|---|
+| `getTotalEnrollments()` | `COUNT(*)` from `lms_user_course` | int |
+| `getTotalRevenue()` | `SUM(field_total)` from `lms_order` WHERE `field_status='completed'` | float |
+| `getCompletionRate()` | `COUNT(*) WHERE field_status='completed'` / `COUNT(*)` from `lms_user_course` | float (percentage) |
+
+### `CourseReportManager::getCourseStats(filters, limit, offset)` (as-built)
+
+Selects from `lms_course_field_data c` with LEFT JOIN `taxonomy_term_field_data` (course category name).
+
+**Access control:** if current user lacks `administer lms_course` or `manager edit lms_course`, filters by `c.uid = current_user` (instructor scope).
+
+**Filters:** `status` (published/draft), `search` (LIKE on course name).
+
+**Sub-queries:**
+1. `lms_user_course`: COUNT enrollments + SUM(field_status='completed') GROUP BY `field_course`
+2. `lms_order__field_items` JOIN `lms_order_item` JOIN `lms_order`: SUM(`field_price`) WHERE status='completed' GROUP BY `field_course`
+
+**Returns per course:** id, title, category, status, price_type, enrollments, active (enrolled minus completed), completed, completion_rate, revenue.
+
+### `UserReportManager::getOverviewList(filters, limit, offset)` (as-built)
+
+Selects from `users_field_data` (uid > 1 excludes anonymous/admin).
+
+**Filters:** `search` (LIKE on name/mail), `inactive_days` (access < NOW() - threshold).
+
+**Sub-queries:**
+1. `lms_user_course`: enrolled count + completed sum per uid
+2. `lms_quiz_result`: attempt count + AVG(score) per uid
+3. `lms_user_certificate`: certificate count per uid
+4. `lms_user_course` JOIN `lms_course_field_data`: per-user course tracking list (title, status, progress)
+5. `lms_quiz_result` JOIN `lms_quiz_field_data`: per-user quiz tracking list (title, score)
+
+**Returns per user:** uid, name, email, created, last_login, enrolled, completed, quizzes, avg_score, certs, tracking.{courses, quizzes}.
+
+### `QuizAnalyticsManager` (as-built)
+
+| Method | Description |
+|---|---|
+| `getQuizOverview(filters, limit, offset)` | Selects from `lms_quiz_field_data`; JOINs `lms_quiz_result` for: total_attempts, unique_attempts, avg_score, passed_attempts (score >= field_threshold) |
+| `getScoreDistribution(quiz_id)` | Fetches all scores; bins into 0–20, 21–40, 41–60, 61–80, 81–100 ranges; returns distribution array for Chart.js |
+| `getHardestQuestions(quiz_id, limit=5)` | JOINs `lms_question_response` with `lms_question_field_data`; calculates `correct_responses / total_responses` per question; sorts ascending (hardest first); returns top N |
+
+**Table dependency note:** `getHardestQuestions()` assumes `lms_question_response` table with columns `field_quiz`, `field_question`, `field_is_correct`. This table is not defined in `lms_question` entity — schema origin is «unverified».
+
+---
+
+## Controllers
+
+### `CourseReportController` (as-built)
+
+- `build(Request)`: Reads `search`/`status` query params; calls `CourseReportManager::getCourseStats()`; returns `lms_analytics_course_report` render array.
+- `export(Request)`: Same query with `limit=10000`; returns `StreamedResponse` as CSV with **UTF-8 BOM** header.
+
+### `UserReportController` (as-built)
+
+- `build(Request)`: Reads `search`/`inactive_days`; returns `lms_analytics_user_report` render array.
+- `export(Request)`: CSV export with date formatting.
+
+### `QuizReportController` (as-built)
+
+- `buildList(Request)`: Returns `lms_analytics_quiz_report_list` render array.
+- `buildDetail(int $quiz_id)`: Fetches distribution + hardest questions; returns `lms_analytics_quiz_report_detail` render array; throws `NotFoundHttpException` if quiz not found.
+- `exportItemAnalysis(int $quiz_id)`: CSV export of item analysis (question-level pass rates).
+
+---
+
+## Database Tables Queried (raw SQL)
+
+| Table | Source module | Purpose in queries |
+|---|---|---|
+| `lms_user_course` | [lms_progress](../C05-modules/lms_progress.md) | Enrollment and completion tracking |
+| `lms_order` | [lms_order](../C05-modules/lms_order.md) | Order status / total |
+| `lms_order_item` | [lms_order](../C05-modules/lms_order.md) | Order item price / course link |
+| `lms_order__field_items` | [lms_order](../C05-modules/lms_order.md) | Join table for order items |
+| `lms_course_field_data` | [lms_course](../C05-modules/lms_course.md) | Course entity field data |
+| `lms_quiz_result` | [lms_quiz](../C05-modules/lms_quiz.md) | Quiz attempt results |
+| `lms_quiz_field_data` | [lms_quiz](../C05-modules/lms_quiz.md) | Quiz entity field data |
+| `lms_user_certificate` | [lms_certificate](../C05-modules/lms_certificate.md) | Issued certificates |
+| `lms_question_response` | «unverified» | Per-question answer records (origin unclear) |
+| `lms_question_field_data` | [lms_question](../C05-modules/lms_question.md) | Question entity field data |
+| `users_field_data` | Drupal core | User accounts |
+| `taxonomy_term_field_data` | Drupal core | Course category name resolution |
 
 ---
 
 ## Hook Implementations
 
-Không có `.module` file.
+| Hook | What it does |
+|---|---|
+| `hook_theme()` | Registers 4 templates: `lms_analytics_course_report`, `lms_analytics_user_report`, `lms_analytics_quiz_report_list`, `lms_analytics_quiz_report_detail` |
 
 ---
 
-## Templates & Cache Strategy
+## Dependencies
 
-Không có custom template. Reports render thông qua Drupal render array trả từ controllers. Export routes trả về BinaryFileResponse.
-
-Cache: reports nên có cache với moderate max-age (5-15 phút) vì query nặng. Chưa rõ có được implement chưa.
+| Dependency | Type | Why |
+|---|---|---|
+| `lms_base` | Internal | Shared base services |
+| `@database` | Drupal core service | All report managers use raw SQL via `Connection` |
+| `@entity_type.manager` | Drupal core service | Entity loading in service constructors |
+| `@current_user` | Drupal core service | Access-scoped filtering in `CourseReportManager` and `QuizAnalyticsManager` |
 
 ---
 
-## Related Units
+## Templates
 
-- **C05** `05-integration-theme.md` — layer overview
-- `lms_course.md` — admin_reports route point đến analytics
-- `lms_quiz.md` — quiz item analysis
-- `lms_progress.md` — enrollment/completion data source
+| Template | Purpose |
+|---|---|
+| `lms-analytics-course-report.html.twig` | Course report table with enrollment/completion/revenue columns |
+| `lms-analytics-user-report.html.twig` | User activity table with tracking details |
+| `lms-analytics-quiz-report-list.html.twig` | Quiz overview list with pass rates |
+| `lms-analytics-quiz-report-detail.html.twig` | Per-quiz drill-down: score distribution (Chart.js) + hardest questions |
 
 ---
 
 ## Known Issues / Debt
 
-- `{quiz_id}` trong route dùng raw integer, không phải entity parameter — mất access check tự động.
-- Không có caching layer cho reports — heavy SQL queries trên database lớn sẽ slow.
-- GA4 integration chỉ được đề cập trong description, không có code rõ ràng.
-- Không có role `administer lms_quiz` được define rõ ràng — cần audit permission.
+| Ref | Severity | Description |
+|---|---|---|
+| MISLEAD | High | Module description claims "GA4 integration" — **no GA4 code exists**. Description is inaccurate. |
+| RISK | Medium | `getHardestQuestions()` queries `lms_question_response` table; this table is not defined by any known entity. If it does not exist at runtime, the quiz detail report throws a DB exception. |
+| DEBT | Medium | Quiz report routes use raw `{quiz_id}` integer path parameters instead of upcasted entity parameters — no automatic access check; `NotFoundHttpException` is thrown manually if quiz not found. |
+| DEBT | Medium | No caching layer on any report manager. Heavy SQL with sub-queries will degrade on large datasets. Reports should use `CacheBackendInterface` or Drupal render cache tags. |
+| DEBT | Low | `CourseReportController::export()` hardcodes `limit=10000` — not paginated. Large exports will exhaust memory on high-enrollment sites. |

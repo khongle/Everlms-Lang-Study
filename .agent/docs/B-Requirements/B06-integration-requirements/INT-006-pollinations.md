@@ -1,64 +1,136 @@
-# INT-006 — Pollinations AI (Image Generation)
-
-**ID:** INT-006
-**Integration:** Pollinations.ai
-**Owner Module:** `lms_ai` — plugin `PollinationsProvider`
-**Direction:** Outbound
-**Protocol:** REST API (HTTP GET/POST)
-**Status:** Plugin implemented (`src/Plugin/AiProvider/PollinationsProvider.php`)
-
+---
+id: INT-006
+name: Pollinations.ai (Image Generation)
+type: REST
+direction: Outbound
+status: LIVE
 ---
 
-## Scope
+# INT-006 — Pollinations.ai
 
-AI image generation cho course thumbnails, lesson illustrations, và banner images. Pollinations là provider cho image generation (khác với OpenAI/Gemini là text generation).
+**Owner:** `lms_ai` module — plugin `PollinationsProvider` (`web/modules/custom/lms_ai/src/Plugin/AiProvider/PollinationsProvider.php`)
+**Documentation:** <https://pollinations.ai> / <https://image.pollinations.ai>
+
+Free, no-auth image generation service. Implemented as an `AiProviderInterface` plugin but supports **image generation only** — text and JSON generation methods return `NULL` with a logged warning. Used in `AiEngineUserForm` to generate user avatar images during AI-driven demo content seeding.
+
+## Scope (as-built)
+
+| Capability | Status |
+|------------|--------|
+| `generateImage()` | as-built — HTTP GET returns raw image bytes; base64-encoded for caller |
+| `generateJson()` | not supported — logs warning, returns NULL |
+| `generateText()` | not supported — logs warning, returns NULL |
 
 ## Connection
 
 | Property | Value |
 |----------|-------|
-| API Base URL | `https://image.pollinations.ai` |
-| Auth | None (public API) hoặc API token nếu dùng paid tier |
-| Endpoint | `/prompt/{encoded_prompt}` (GET) |
-| Protocol | HTTPS GET — returns image directly |
+| Endpoint | `https://image.pollinations.ai/prompt/{url_encoded_prompt}` |
+| Protocol | HTTPS GET |
+| Authentication | None — public free-tier endpoint |
+| Parameters (query string) | `width=1024`, `height=1024`, `nologo=true`, `model=flux` |
+| Rate Limit | Free tier — no published SLA; best-effort |
 
-## Data Exchanged
+## SLA
 
-| Direction | Data |
-|-----------|------|
-| Outbound | URL-encoded prompt, width, height, model, seed (optional) |
-| Inbound | Image file (JPEG/PNG) response |
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| Latency (p95) | «unverified» — no SLA from provider | Drupal watchdog |
+| Availability | No SLA (free public service) | N/A |
+| Throughput | No stated limit; rate throttling possible | N/A |
+| Error Rate | < 10% acceptable (no business-critical path) | Drupal logger |
 
-## Authentication
+## Request/Response Contract
 
-- Public endpoint không cần auth (free tier).
-- API key optional cho paid tier features; stored trong config nếu dùng.
+**Request (GET):**
 
-## Rate Limits & Quotas
+```
+GET https://image.pollinations.ai/prompt/{url_encoded_prompt}?width=1024&height=1024&nologo=true&model=flux
+```
 
-| Limit | Value |
-|-------|-------|
-| Free tier | Rate limited; no SLA |
-| Image size | Configurable: 512×512 đến 1792×1024 |
+No request body. No authentication header.
 
-## Failure Modes
+**Response (success):**
 
-| Scenario | Behavior |
-|----------|----------|
-| API timeout | Retry 2x; nếu fail: use placeholder image |
-| Service unavailable | Use placeholder image; log warning |
-| Inappropriate content generated | Requires instructor review before publish; content moderation flag |
+```
+HTTP 200
+Content-Type: image/jpeg  (or image/png)
+Body: raw image binary
+```
 
-## Use Cases
+The provider reads the raw binary response body and returns `base64_encode($raw_binary)` to the caller.
 
-| Use Case | Prompt Template |
-|----------|----------------|
-| Course thumbnail | `"Educational course thumbnail for {topic}, professional, clean design"` |
-| Lesson illustration | `"Illustration for {lesson_title}, educational style"` |
-| Category image | `"Icon for {category_name} subject"` |
+**Response (error):**
 
-## Related Docs
+```
+HTTP 4xx / 5xx
+Body: plain text error or empty
+```
 
-- [INT-004 — OpenAI](./INT-004-openai.md) — text generation provider
-- [INT-005 — Google Gemini](./INT-005-google-gemini.md) — text generation provider
-- [WF-006 — Course Creation](../B04-business-workflows/WF-006-course-creation.md)
+No structured JSON error envelope. Failures are detected by non-200 HTTP status or GuzzleHttp exception.
+
+## Retry Policy
+
+| Property | Value |
+|----------|-------|
+| Max Retries | «unverified» — no retry logic in `PollinationsProvider`; single HTTP GET per call |
+| Backoff | None (as-built) |
+| Initial Delay | N/A |
+| Max Delay | N/A |
+| Timeout | Not set explicitly; Drupal/GuzzleHttp default (~30s) |
+| Retry On | No automatic retry |
+
+## Fallback Behavior
+
+| Scenario | Behavior | Duration |
+|----------|----------|----------|
+| Service unavailable / timeout | Exception propagates; `AiEngineUserForm::ajaxRequestImages()` logs error, counts failure, continues to next item | Per image |
+| Non-200 HTTP response | GuzzleHttp exception caught upstream; image item skipped | Per image |
+| Rate limited (HTTP 429) | No backoff logic; caller skips image | Per image |
+
+## Circuit Breaker
+
+| Property | Value |
+|----------|-------|
+| Failure Threshold | None — no circuit breaker implemented |
+| Open Duration | N/A |
+| Half-Open Probes | N/A |
+| Recovery Criteria | N/A |
+
+## Data Flow
+
+- **Frequency:** Event-driven — triggered manually by admin via `AiEngineUserForm` "Generate Images" AJAX step
+- **Volume:** Low — one HTTP GET per user avatar during demo seeding (typically 10 users per batch per `ai_users.json`)
+- **Data Sensitivity:** Public (text prompts only; no PII in prompt)
+- **Encryption:** In-transit: TLS 1.2+; images not stored server-side by Pollinations
+
+## Usage in Pipeline (as-built)
+
+`AiEngineUserForm::ajaxRequestImages()`:
+1. Reads `ai_users.json` to get per-user `image_prompt` fields
+2. Calls `PollinationsProvider::generateImage($prompt)` for each user
+3. Decodes returned base64 string, saves as Drupal managed file (`public://ai-generated/user-{uid}.jpg`)
+4. Attaches file to `user_picture` field of the Drupal user entity
+
+No other pipeline step uses Pollinations. Course thumbnails and lesson illustrations use OpenAI DALL-E 3 (INT-004) or Gemini Imagen (INT-005).
+
+## Admin Configuration
+
+No configuration required. No API key, no settings form. Provider is always available as a plugin option in `AiProviderManager`.
+
+## Feature Flag
+
+- **Flag ID:** Not required
+- **Rationale:** Pollinations is a plugin discovered by `AiProviderManager`; it is always available but only invoked for image generation. No feature flag needed — the pipeline step that calls it (`ajaxRequestImages`) is only reachable through the AI Engine admin form by an administrator.
+
+## Known Limitations
+
+- Text/JSON generation is intentionally unsupported — this plugin is image-only.
+- No SLA or rate-limit guarantees from the free-tier public endpoint.
+- Model is hardcoded to `flux`; not configurable via admin UI.
+- Image dimensions are hardcoded to `1024x1024`; not configurable via admin UI.
+
+## Cross-links
+
+- [INT-004 OpenAI](./INT-004-openai.md) — primary provider (text + image via DALL-E 3)
+- [INT-005 Google Gemini](./INT-005-google-gemini.md) — secondary provider (text + image via Imagen 4.0)

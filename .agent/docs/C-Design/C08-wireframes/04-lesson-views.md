@@ -149,3 +149,21 @@
 │ Recording: [Available after session]    │
 └─────────────────────────────────────────┘
 ```
+
+---
+
+## Implementation status (as of 2026-06-20)
+
+**as-built (core); partial for SCORM/xAPI tracking.**
+
+Route `/learn/{lms_course}/{lms_lesson}` → `UserPortalController::lessonView` → `lms-lesson-view.html.twig`. The common layout shell (curriculum sidebar, progress bar, mark-complete button, in-lesson notes, comments) is fully implemented. Video embed (YouTube/Vimeo/direct URL), text/HTML content, and PDF attachment rendering are live.
+
+- **Video lesson:** as-built — video URL resolved from `field_video_url`; YouTube/Vimeo/direct variants handled.
+- **Text lesson:** as-built — `field_content` rendered as HTML.
+- **H5P lesson:** target-state — `field_type='h5p'` is a valid enum but H5P rendering depends on the `h5p` contrib module; not confirmed in current stack.
+- **SCORM lesson:** partial — `field_scorm_package` exists and `_lms_lesson_extract_scorm()` extracts the zip; however there is no SCORM runtime commit endpoint (`LMSCommit`) yet. See PROTO-004.
+- **Zoom lesson:** as-built — `lms_zoom_join_block` block renders the join button + countdown; `/zoom/join/{meeting_id}` → full-screen WebSDK player via theme suggestion override.
+
+In-lesson notes: `/api/lms/note/save|delete|get` — as-built. Mark-complete API: `/api/lms/progress/mark-complete` — as-built (note: concurrent-request race condition is a known risk, see [../C10-prototypes/PROTO-001-progress-race-condition.md](../C10-prototypes/PROTO-001-progress-race-condition.md)).
+
+Related: [../C04-entities/01-content-entities.md](../C04-entities/01-content-entities.md) · [../C04-entities/03-progress-entities.md](../C04-entities/03-progress-entities.md) · [../C05-modules/lms_progress.md](../C05-modules/lms_progress.md)
