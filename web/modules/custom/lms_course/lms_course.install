@@ -93,3 +93,29 @@ function lms_course_update_10003(&$sandbox) {
   }
   return 'Manager role not found.';
 }
+
+/**
+ * Grant least-privilege course authoring permissions to authoring roles.
+ */
+function lms_course_update_10004(&$sandbox) {
+  $permissions = [
+    'access h5p editor',
+    'create lms_course',
+    'edit own lms_course',
+    'view lms_course',
+    'view the administration theme',
+  ];
+
+  foreach (['instructor', 'content_editor'] as $role_id) {
+    $role = \Drupal\user\Entity\Role::load($role_id);
+    if (!$role) {
+      continue;
+    }
+    foreach ($permissions as $permission) {
+      $role->grantPermission($permission);
+    }
+    $role->save();
+  }
+
+  return 'Granted course authoring permissions to instructor and content editor roles.';
+}

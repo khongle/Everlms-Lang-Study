@@ -189,7 +189,7 @@ lms_course.admin_course_create:
     _controller: '\Drupal\lms_course\Controller\AdminController::courseCreateWizard'
     _title: 'Create New Course'
   requirements:
-    _permission: 'administer lms_course'
+    _entity_create_access: 'lms_course'
   options:
     _admin_route: TRUE
 
@@ -199,7 +199,7 @@ lms_course.admin_courses:
     _controller: '\Drupal\lms_course\Controller\AdminController::courseList'
     _title: 'Manage Courses'
   requirements:
-    _permission: 'administer lms_course'
+    _permission: 'view lms_course'
   options:
     _admin_route: TRUE
 

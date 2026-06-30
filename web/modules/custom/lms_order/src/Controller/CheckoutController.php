@@ -105,6 +105,7 @@ final class CheckoutController extends ControllerBase {
       '#coupon_code' => $pricing['coupon_code'],
       '#coupon_valid' => $pricing['coupon_valid'],
       '#thumbnail' => $thumbnail_url,
+      '#item_subtitle' => $this->t('Lifetime access'),
     ];
   }
 
@@ -158,6 +159,15 @@ final class CheckoutController extends ControllerBase {
     $coupon_code = $this->couponRedemption->normalizeCode((string) $request->query->get('coupon', ''));
     $pricing = $this->buildPricingSummary($price, $coupon_code);
     $form = $this->formBuilder()->getForm(MembershipCheckoutForm::class, $plan, $coupon_code);
+    $billing_cycle = $plan->hasField('field_billing_cycle')
+      ? (string) ($plan->get('field_billing_cycle')->value ?? 'monthly')
+      : 'monthly';
+    $billing_label = match ($billing_cycle) {
+      'yearly' => $this->t('Yearly membership access'),
+      'quarterly' => $this->t('Quarterly membership access'),
+      'lifetime' => $this->t('Lifetime membership access'),
+      default => $this->t('Monthly membership access'),
+    };
 
     return [
       '#theme' => 'lms_checkout',
@@ -170,6 +180,7 @@ final class CheckoutController extends ControllerBase {
       '#coupon_code' => $pricing['coupon_code'],
       '#coupon_valid' => $pricing['coupon_valid'],
       '#thumbnail' => '',
+      '#item_subtitle' => $billing_label,
     ];
   }
 

@@ -17,6 +17,13 @@
 | rejected_or_returned (revoked) | `field_revoked` set with reason |
 | archived (expired) | past `field_expiry_date` |
 
+## Issuance invariant
+- `QuizPassedEvent` must resolve the owning course before issuing a certificate.
+- Primary course source is `lms_quiz.field_course`.
+- Legacy fallback is `lms_lesson.field_quiz → lms_chapter.field_lessons → lms_course.field_chapters`.
+- Issuance is idempotent by learner/course: a learner can have multiple passed attempts but only one active `lms_user_certificate` for the course.
+- Public verification resolves by `field_certificate_number` and must show revoked certificates as invalid.
+
 ## Permission model
 - Initiator: system (event subscriber on `QuizPassedEvent`/completion).
 - Admin: manager can revoke/regenerate.

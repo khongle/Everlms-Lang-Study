@@ -69,7 +69,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
   }
   .lms-badge--active {
     background: rgba(16, 185, 129, 0.2);
@@ -120,16 +120,43 @@
     color: #fff;
     border-color: rgba(244, 63, 94, 0.5);
   }
+  .lms-membership-empty {
+    background: #1e293b;
+    border-radius: 8px;
+    padding: 3rem;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .lms-my-membership .lms-membership-empty__icon {
+    width: 4rem;
+    height: 4rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(29, 112, 245, 0.18);
+    color: #bfdbfe !important;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .lms-my-membership .lms-membership-empty h3 {
+    color: #f8fafc !important;
+    margin-bottom: 1rem;
+  }
+  .lms-my-membership .lms-membership-empty p {
+    color: #dbeafe !important;
+    margin-bottom: 2rem;
+  }
 </style>
 
 <div class="lms-my-membership">
   <h2>{{ 'My Memberships'|t }}</h2>
   
   {% if memberships is empty %}
-    <div style="background: #1e293b; border-radius: 1rem; padding: 3rem; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
-      <i class="fas fa-crown" style="font-size: 3rem; color: #475569; margin-bottom: 1.5rem;"></i>
-      <h3 style="color: #fff; margin-bottom: 1rem;">{{ 'No Active Plans'|t }}</h3>
-      <p style="color: #94a3b8; margin-bottom: 2rem;">{{ 'Unlock unlimited access to all courses by subscribing to a membership plan.'|t }}</p>
+    <div class="lms-membership-empty">
+      <span class="lms-membership-empty__icon"><i class="fas fa-crown"></i></span>
+      <h3 style="color: #f8fafc !important;">{{ 'No Active Plans'|t }}</h3>
+      <p style="color: #dbeafe !important;">{{ 'Unlock unlimited access to all courses by subscribing to a membership plan.'|t }}</p>
       <a href="{{ url('lms_course.pricing') }}" class="btn-lms-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; background: #1d70f5; color: white; text-decoration: none; font-weight: 600;">
         {{ 'View Pricing Plans'|t }} <i class="fas fa-arrow-right"></i>
       </a>

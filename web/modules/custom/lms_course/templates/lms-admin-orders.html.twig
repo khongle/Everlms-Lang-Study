@@ -1,6 +1,100 @@
 {# Admin Orders — matches 14-admin-orders.png #}
 {{ attach_library('lms_theme/global') }}
-<div class="lms-admin">
+<style>
+  .lms-admin-orders-page .lms-orders-table {
+    width: 100% !important;
+    min-width: 820px !important;
+    table-layout: fixed !important;
+  }
+
+  .lms-admin-orders-page .lms-orders-table th,
+  .lms-admin-orders-page .lms-orders-table td {
+    display: table-cell !important;
+    box-sizing: border-box;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    vertical-align: middle !important;
+  }
+
+  .lms-admin-orders-page .lms-orders-table th:first-child,
+  .lms-admin-orders-page .lms-orders-table td:first-child {
+    display: table-cell !important;
+    max-width: none !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+  }
+
+  .lms-admin-orders-page .lms-orders-table th:nth-child(2),
+  .lms-admin-orders-page .lms-orders-table td:nth-child(2) {
+    white-space: normal !important;
+    overflow-wrap: break-word;
+  }
+
+  .lms-admin-orders-page .lms-orders-table th:last-child,
+  .lms-admin-orders-page .lms-orders-table td:last-child {
+    padding-right: 1.5rem !important;
+    text-align: right !important;
+  }
+
+  .lms-admin.lms-admin-orders-page .lms-orders-table th.lms-orders-table__actions,
+  .lms-admin.lms-admin-orders-page .lms-orders-table td.lms-orders-table__actions {
+    display: table-cell !important;
+    width: 7rem !important;
+    min-width: 7rem !important;
+    max-width: 7rem !important;
+    white-space: nowrap !important;
+    text-align: right !important;
+  }
+
+  .lms-admin-orders-page .lms-order-id {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+
+  .lms-admin-orders-page .lms-order-action {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 4.75rem;
+    min-height: 2rem;
+    color: #ffffff !important;
+    background: #2563eb !important;
+    border: 1px solid #60a5fa !important;
+    border-radius: 6px !important;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 1 !important;
+    visibility: visible !important;
+    position: relative;
+    z-index: 2;
+    text-decoration: none !important;
+  }
+
+  .lms-admin.lms-admin-orders-page .lms-orders-table td.lms-orders-table__actions > a.lms-order-action {
+    display: inline-flex !important;
+    width: auto !important;
+    min-width: 4.75rem !important;
+    max-width: 100% !important;
+    height: 2rem !important;
+    margin: 0 !important;
+  }
+
+  .lms-admin-orders-page .lms-order-action:hover,
+  .lms-admin-orders-page .lms-order-action:focus-visible {
+    background: #1d4ed8 !important;
+    border-color: #93c5fd !important;
+  }
+
+  .lms-admin-orders-page .lms-badge--info {
+    background: rgba(59, 130, 246, 0.16);
+    color: #93c5fd;
+    border-color: rgba(147, 197, 253, 0.42);
+    box-shadow: none;
+  }
+</style>
+
+<div class="lms-admin lms-admin-orders-page">
   {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'orders' } %}
   <div class="lms-admin__main">
     <h1 class="lms-admin__title" style="margin-bottom: 2rem;">{{ 'Manage Orders'|t }}</h1>
@@ -16,6 +110,7 @@
         <select name="status" class="lms-admin-filter__select">
           <option value="all" {% if filters.status == 'all' %}selected{% endif %}>{{ 'All Statuses'|t }}</option>
           <option value="pending" {% if filters.status == 'pending' %}selected{% endif %}>{{ 'Pending'|t }}</option>
+          <option value="processing" {% if filters.status == 'processing' %}selected{% endif %}>{{ 'Processing'|t }}</option>
           <option value="completed" {% if filters.status == 'completed' %}selected{% endif %}>{{ 'Completed'|t }}</option>
           <option value="paid" {% if filters.status == 'paid' %}selected{% endif %}>{{ 'Paid'|t }}</option>
           <option value="failed" {% if filters.status == 'failed' %}selected{% endif %}>{{ 'Failed'|t }}</option>
@@ -29,25 +124,33 @@
 
     <div class="lms-card">
       <div class="lms-table-responsive">
-        <table class="lms-table">
-          <thead><tr><th>{{ 'Order ID'|t }}</th><th>{{ 'Learner'|t }}</th><th>{{ 'Amount'|t }}</th><th>{{ 'Date'|t }}</th><th>{{ 'Status'|t }}</th><th>{{ 'Actions'|t }}</th></tr></thead>
+        <table class="lms-table lms-orders-table">
+          <colgroup>
+            <col style="width: 7rem;">
+            <col>
+            <col style="width: 8rem;">
+            <col style="width: 10rem;">
+            <col style="width: 9rem;">
+            <col style="width: 7rem;">
+          </colgroup>
+          <thead><tr><th>{{ 'Order ID'|t }}</th><th>{{ 'Learner'|t }}</th><th>{{ 'Amount'|t }}</th><th>{{ 'Date'|t }}</th><th>{{ 'Status'|t }}</th><th class="lms-orders-table__actions">{{ 'Actions'|t }}</th></tr></thead>
           <tbody>
             {% for order in orders %}
               <tr>
-                <td>#{{ order.id }}</td>
+                <td class="lms-order-id">#{{ order.id }}</td>
                 <td>{{ order.learner }}</td>
                 <td>${{ order.total|number_format(2) }}</td>
                 <td>{{ order.created|date('M d, Y') }}</td>
                 <td>
-                  {% set sc = { 'paid': 'lms-badge--success', 'completed': 'lms-badge--success', 'pending': 'lms-badge--warning', 'failed': 'lms-badge--danger' } %}
+                  {% set sc = { 'paid': 'lms-badge--success', 'completed': 'lms-badge--success', 'pending': 'lms-badge--warning', 'processing': 'lms-badge--info', 'failed': 'lms-badge--danger' } %}
                   <span class="lms-badge {{ sc[order.status] ?? 'lms-badge--secondary' }}">{{ order.status|capitalize }}</span>
                 </td>
-                <td>
-                  <a href="{{ order.edit_url }}" class="lms-btn lms-btn--outline" style="padding: 4px 12px; font-size: 13px;">{{ 'Edit'|t }}</a>
+                <td class="lms-orders-table__actions">
+                  <a href="{{ order.edit_url }}" class="lms-order-action" style="padding: 6px 12px; font-size: 13px;" title="{{ 'Edit order @id'|t({'@id': order.id}) }}">{{ 'Edit'|t }}</a>
                 </td>
               </tr>
             {% else %}
-              <tr><td colspan="5" class="lms-text-center">{{ 'No orders'|t }}</td></tr>
+              <tr><td colspan="6" class="lms-text-center">{{ 'No orders'|t }}</td></tr>
             {% endfor %}
           </tbody>
         </table>

@@ -12,3 +12,6 @@
 
 ## Completion rule
 Closed when an active membership grants plan-scoped access.
+
+## Validity rule
+`active`/`trial` memberships count only when `field_end_date` is in the future. Re-subscribing to the same plan renews or reactivates the existing user/plan membership row rather than creating duplicate learner-facing memberships.

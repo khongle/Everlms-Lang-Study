@@ -6,9 +6,9 @@ C13 usecase → implementation work. Source: [C13](../C13-usecases/README.md).
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |
 | Learn | UC-WF-001-001 | controller + progress service | lms_progress | enroll/reuse + player + complete | C13 WF-001 | enroll/progress/dedupe |
 | Quiz | UC-WF-002-001 | quiz controller + factory | lms_quiz | take + grade + pending/final result | C13 WF-002 | grade/pending/event |
-| Cert | UC-WF-003-001 | event subscriber + mPDF | lms_certificate | issue idempotent | C13 WF-003 | idempotency |
-| Buy | UC-WF-004-001 | order/payment/receipt forms | lms_order/lms_payment | checkout + gateway + receipt review | C13 WF-004 | paid→access/receipt |
-| Subscribe | UC-WF-005-001 | membership + order | lms_membership | plan→active | C13 WF-005 | entitlement |
+| Cert | UC-WF-003-001 | event subscriber + mPDF + verification form | lms_certificate | issue/download/verify idempotently | C13 WF-003 | course-link/idempotency/verify |
+| Buy | UC-WF-004-001 | order/payment/receipt forms + manager order list | lms_order/lms_payment | checkout + gateway + processing receipt review | C13 WF-004 | paid→access/receipt/filter/action |
+| Subscribe | UC-WF-005-001 | membership + order | lms_membership/lms_order | plan→current active membership→course access | C13 WF-005 | entitlement/renewal/no duplicates |
 | Author | UC-WF-006-001 | entity forms | lms_course | curriculum + publish | C13 WF-006 | hierarchy |
 | Register | UC-WF-007-001 | core + OTP service | user/lms_mobile_api | verify→active | C13 WF-007 | otp/token |
 | Forum | UC-WF-008-001 | forum forms | lms_forum | topic/reply | C13 WF-008 | CRUD |

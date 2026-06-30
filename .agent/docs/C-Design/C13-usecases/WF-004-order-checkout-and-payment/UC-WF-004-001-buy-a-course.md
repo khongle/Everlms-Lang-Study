@@ -36,7 +36,7 @@ Buyer confirms checkout.
 3. Select gateway (stripe/bank_transfer/…); pay.
 4. Online gateway success → order paid/completed; enrollment granted (WF-001).
 5. Bank transfer success path → order stays `pending`, buyer sees QR/payment instructions, uploads receipt, order moves to `processing`.
-6. Manager verifies receipt/payment and marks order `completed`; entitlement is granted (WF-001).
+6. Manager opens P036 `/workspace/orders`, filters `processing`, reviews the receipt, and marks the order `completed`; entitlement is granted (WF-001).
 
 ## Alternate and exception flows
 - Declined → order pending; retry/switch gateway.
@@ -54,3 +54,4 @@ Buyer confirms checkout.
 ## Acceptance and test contract
 - Online paid order → entitlement; declined → no access (B05 F-010/F-011).
 - Bank transfer order records the exact payable total, shows transfer instructions, accepts receipt upload, moves to `processing`, and grants entitlement only after manager approval.
+- Manager order list supports a `Processing` filter and shows complete Order ID, learner, amount, date, status badge, and visible review/edit action without truncation at standard desktop width.

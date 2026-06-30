@@ -109,11 +109,22 @@ final class AdminController extends ControllerBase {
     $category_filter = $request->query->get('category');
     $instructor_filter = $request->query->get('instructor');
     $search_filter = $request->query->get('search');
+    $account = $this->currentUser();
 
     $query = $this->entityTypeManager->getStorage('lms_course')->getQuery()
       ->sort('created', 'DESC')
       ->accessCheck(FALSE)
       ->pager(10);
+
+    $can_manage_all = $account->hasPermission('administer lms_course') || $account->hasPermission('edit lms_course');
+    if (!$can_manage_all) {
+      if ($account->hasPermission('edit own lms_course') || $account->hasPermission('create lms_course')) {
+        $query->condition('uid', (int) $account->id());
+      }
+      else {
+        $query->condition('id', 0);
+      }
+    }
 
     if ($status_filter && $status_filter !== 'all') {
       $query->condition('status', $status_filter === 'published' ? 1 : 0);
@@ -642,8 +653,23 @@ final class AdminController extends ControllerBase {
    * Create New Course Wizard.
    */
   public function courseCreateWizard(): array {
+    $values = [
+      'uid' => (int) $this->currentUser()->id(),
+    ];
+    if (in_array('instructor', $this->currentUser()->getRoles(), TRUE)) {
+      $values['field_instructor'] = [
+        ['target_id' => (int) $this->currentUser()->id()],
+      ];
+    }
+
+    $course = $this->entityTypeManager->getStorage('lms_course')->create($values);
+    $form = \Drupal::service('entity.form_builder')->getForm($course, 'admin_edit');
+
     return [
-      '#theme' => 'lms_admin_course_create',
+      '#theme' => 'lms_admin_entity_form',
+      '#form' => $form,
+      '#title' => $this->t('Create New Course'),
+      '#active_menu' => 'courses',
     ];
   }
 

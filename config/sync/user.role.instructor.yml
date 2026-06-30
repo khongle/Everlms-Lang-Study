@@ -4,13 +4,21 @@ status: true
 dependencies:
   module:
     - comment
+    - h5peditor
+    - lms_course
+    - system
 id: instructor
 label: Instructor
 weight: 3
 is_admin: false
 permissions:
+  - 'access h5p editor'
   - 'access comments'
   - 'administer comments'
+  - 'create lms_course'
   - 'edit own comments'
+  - 'edit own lms_course'
   - 'post comments'
   - 'skip comment approval'
+  - 'view lms_course'
+  - 'view the administration theme'

@@ -10,6 +10,8 @@ dependencies:
     - comment
     - contextual
     - file
+    - h5peditor
+    - lms_course
     - node
     - path
     - system
@@ -26,9 +28,11 @@ permissions:
   - 'access content overview'
   - 'access contextual links'
   - 'access files overview'
+  - 'access h5p editor'
   - 'access toolbar'
   - 'administer url aliases'
   - 'create article content'
+  - 'create lms_course'
   - 'create page content'
   - 'create terms in tags'
   - 'create url aliases'
@@ -39,9 +43,11 @@ permissions:
   - 'delete page revisions'
   - 'edit own article content'
   - 'edit own comments'
+  - 'edit own lms_course'
   - 'edit own page content'
   - 'edit terms in tags'
   - 'revert all revisions'
+  - 'view lms_course'
   - 'view all revisions'
   - 'view own unpublished content'
   - 'view the administration theme'

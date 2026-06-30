@@ -5,6 +5,7 @@
 {% set checkout_discount = discount|default(0) %}
 {% set checkout_total = total|default(price) %}
 {% set item_label = course.label() %}
+{% set checkout_item_subtitle = item_subtitle|default('Lifetime access'|t) %}
 
 <style>
   .lms-checkout {
@@ -224,7 +225,7 @@
         {% endif %}
         <div>
           <div class="lms-checkout__course-title">{{ item_label }}</div>
-          <div style="color: #94a3b8; font-size: 0.875rem;">{{ 'Lifetime access'|t }}</div>
+          <div style="color: #94a3b8; font-size: 0.875rem;">{{ checkout_item_subtitle }}</div>
           {% if coupon_valid and coupon_code %}
             <div class="lms-checkout__coupon-badge">{{ coupon_code }}</div>
           {% endif %}

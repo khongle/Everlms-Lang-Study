@@ -30,6 +30,7 @@ class VerificationForm extends FormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    $form['#attached']['library'][] = 'lms_certificate/verification';
     $form['#attributes']['class'][] = 'lms-certificate-verification-form';
 
     $form['certificate_code'] = [

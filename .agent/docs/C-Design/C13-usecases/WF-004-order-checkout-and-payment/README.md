@@ -12,3 +12,6 @@
 
 ## Completion rule
 Closed when an online paid order grants course access, or when a bank transfer order moves from `pending` to `processing` after receipt upload and then to `completed` after manager verification.
+
+## Manager review rule
+For manual bank transfer, `processing` is the operational queue. P036 `/workspace/orders` must expose it as a filterable status with a clear badge and visible review/edit action; learner access is granted only after the manager changes the order to `completed`.

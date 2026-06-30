@@ -1,0 +1,4 @@
+verification:
+  css:
+    theme:
+      css/verification.css: {}

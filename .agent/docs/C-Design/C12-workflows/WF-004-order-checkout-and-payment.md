@@ -25,5 +25,11 @@
 - Responsible: payment gateway (capture); manager confirms bank_transfer.
 - Admin: manager edits/refunds orders.
 
+## Manager review contract
+- Bank transfer receipt upload changes the order to `processing`; it must not grant course entitlement yet.
+- `/workspace/orders` must allow managers to filter `processing` orders directly.
+- The manager order list must show complete Order ID, learner, amount, date, status badge, and a visible review/edit action at standard desktop widths.
+- Manager approval changes the order to `completed`; this is the point where course entitlement is granted.
+
 ## Notifications
 Order confirmation + receipt instructions to buyer. Bank transfer buyers upload a receipt; manager verification moves the order to completed and grants entitlement. ⚠️ No webhook reconciliation (R-002) — online gateways rely on synchronous return, while bank transfer remains manual.

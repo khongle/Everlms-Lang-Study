@@ -27,7 +27,13 @@ final class CourseForm extends ContentEntityForm {
         : $this->t('Course %label has been updated.', $message_args)
     );
 
-    $form_state->setRedirectUrl($entity->toUrl('collection'));
+    $route_name = \Drupal::routeMatch()->getRouteName();
+    if (is_string($route_name) && str_starts_with($route_name, 'lms_course.admin')) {
+      $form_state->setRedirect('lms_course.admin_courses');
+    }
+    else {
+      $form_state->setRedirectUrl($entity->toUrl('collection'));
+    }
 
     return $result;
   }

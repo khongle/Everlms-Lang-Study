@@ -22,5 +22,11 @@
 - Initiator: user (subscribe via order).
 - Admin: manager creates/edits memberships.
 
+## Membership validity contract
+- `active`/`trial` is valid only when `field_end_date` is in the future.
+- Learner-facing membership pages must hide stale active rows with missing or expired end dates.
+- Completing a membership order for an already-current user/plan extends the existing membership instead of creating a duplicate card.
+- Completing a membership order when only a stale row exists for the same user/plan reactivates that row with fresh start/end dates.
+
 ## Notifications
 Activation + renewal/expiry reminders (cron). Lapsed → access revoked in F-004 gating.

@@ -84,29 +84,7 @@ function _lms_order_process_completed_order(EntityInterface $entity) {
     }
 
     if ($plan_id && $user_id) {
-      \Drupal::logger('lms_order')->notice('Auto-assigning membership plan @plan to user @user following order @order payment.', [
-        '@user' => $user_id,
-        '@plan' => $plan_id,
-        '@order' => $entity->id(),
-      ]);
-
-      $plan = \Drupal::entityTypeManager()->getStorage('lms_membership_plan')->load($plan_id);
-      if ($plan) {
-        $days = (int) $plan->get('field_duration_days')->value ?: 30;
-        $start_date = time();
-        $end_date = $start_date + ($days * 86400);
-
-        $storage = \Drupal::entityTypeManager()->getStorage('lms_user_membership');
-        $user_membership = $storage->create([
-          'uid' => $user_id,
-          'field_plan' => $plan_id,
-          'field_status' => 'active',
-          'field_start_date' => $start_date,
-          'field_end_date' => $end_date,
-          'field_auto_renew' => TRUE,
-        ]);
-        $user_membership->save();
-      }
+      _lms_order_fulfill_membership_order($entity, (int) $user_id, (int) $plan_id);
     }
   }
       
@@ -162,6 +140,100 @@ function _lms_order_process_completed_order(EntityInterface $entity) {
 }
 
 /**
+ * Creates or extends a user's active membership for a completed order item.
+ */
+function _lms_order_fulfill_membership_order(EntityInterface $order, int $user_id, int $plan_id): void {
+  \Drupal::logger('lms_order')->notice('Auto-assigning membership plan @plan to user @user following order @order payment.', [
+    '@user' => $user_id,
+    '@plan' => $plan_id,
+    '@order' => $order->id(),
+  ]);
+
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $plan = $entity_type_manager->getStorage('lms_membership_plan')->load($plan_id);
+  if (!$plan) {
+    return;
+  }
+
+  $duration_days = $plan->hasField('field_duration_days')
+    ? (int) ($plan->get('field_duration_days')->value ?? 0)
+    : 0;
+  $duration_days = $duration_days > 0 ? $duration_days : 30;
+  $now = \Drupal::time()->getRequestTime();
+
+  $membership_storage = $entity_type_manager->getStorage('lms_user_membership');
+  $existing_ids = $membership_storage->getQuery()
+    ->condition('uid', $user_id)
+    ->condition('field_plan', $plan_id)
+    ->condition('field_status', ['active', 'trial'], 'IN')
+    ->condition('field_end_date', $now, '>')
+    ->accessCheck(FALSE)
+    ->sort('field_end_date', 'DESC')
+    ->range(0, 1)
+    ->execute();
+
+  if ($existing_ids) {
+    $membership = $membership_storage->load(reset($existing_ids));
+    if ($membership) {
+      $current_end = (int) ($membership->get('field_end_date')->value ?? 0);
+      $new_start = (int) ($membership->get('field_start_date')->value ?? 0) ?: $now;
+      $new_end = max($current_end, $now) + ($duration_days * 86400);
+      $membership->set('field_start_date', $new_start);
+      $membership->set('field_end_date', $new_end);
+      $membership->set('field_status', 'active');
+      $membership->set('field_auto_renew', TRUE);
+      $membership->save();
+
+      \Drupal::logger('lms_order')->notice('Extended membership @membership for user @user plan @plan following order @order.', [
+        '@membership' => $membership->id(),
+        '@user' => $user_id,
+        '@plan' => $plan_id,
+        '@order' => $order->id(),
+      ]);
+      return;
+    }
+  }
+
+  $stale_ids = $membership_storage->getQuery()
+    ->condition('uid', $user_id)
+    ->condition('field_plan', $plan_id)
+    ->condition('field_status', ['active', 'trial'], 'IN')
+    ->accessCheck(FALSE)
+    ->sort('id', 'DESC')
+    ->range(0, 1)
+    ->execute();
+
+  if ($stale_ids) {
+    $membership = $membership_storage->load(reset($stale_ids));
+    if ($membership) {
+      $membership->set('field_start_date', $now);
+      $membership->set('field_end_date', $now + ($duration_days * 86400));
+      $membership->set('field_status', 'active');
+      $membership->set('field_auto_renew', TRUE);
+      $membership->save();
+
+      \Drupal::logger('lms_order')->notice('Reactivated stale membership @membership for user @user plan @plan following order @order.', [
+        '@membership' => $membership->id(),
+        '@user' => $user_id,
+        '@plan' => $plan_id,
+        '@order' => $order->id(),
+      ]);
+      return;
+    }
+  }
+
+  $membership = $membership_storage->create([
+    'uid' => $user_id,
+    'field_plan' => $plan_id,
+    'field_status' => 'active',
+    'field_start_date' => $now,
+    'field_end_date' => $now + ($duration_days * 86400),
+    'field_auto_renew' => TRUE,
+  ]);
+  $membership->save();
+}
+
+/**
  * Implements hook_theme().
  */
 function lms_order_theme() {
@@ -177,6 +249,7 @@ function lms_order_theme() {
         'coupon_code' => '',
         'coupon_valid' => FALSE,
         'thumbnail' => '',
+        'item_subtitle' => '',
       ],
       'template' => 'lms-checkout',
     ],
