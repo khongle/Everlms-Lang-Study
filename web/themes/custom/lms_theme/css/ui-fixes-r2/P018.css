@@ -1,0 +1,156 @@
+/* ==========================================================================
+   P018 — My Courses (route--lms-progress-my-courses) — Round 2 UI fixes
+   This partial loads LAST. !important is used only to beat prior r1 partials
+   and inline styles on the same targets.
+   ========================================================================== */
+
+/* [P018] ISSUE 2-0185 + 2-0186: Course-card category/overline badge is clamped
+   to a single line with text-overflow:ellipsis (prior r1 rule used
+   -webkit-line-clamp:1; max-width:70%), so long taxonomy labels like
+   "MEDICAL KNOWLEDGE & ..." / "PALLIATIVE CARE & END O... LIFE" get cut
+   mid-word and the second fragment breaks the pill shape. Allow the badge to
+   wrap cleanly to two lines inside one contained pill: drop the single-line
+   clamp, widen the available space, and keep word boundaries intact. */
+body.route--lms-progress-my-courses .lms-learning-card__category {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  line-clamp: 2;
+  max-width: 100% !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  overflow-wrap: break-word;
+  word-break: normal;
+  line-height: 1.2 !important;
+  text-align: left;
+}
+
+/* [P018] ISSUE 2-0186: keep the chip row a single contained bar with a solid
+   scrim so a two-line category pill stays legible over the image and the
+   status badge does not get pushed into an uneven second row. */
+body.route--lms-progress-my-courses .lms-learning-card__chips {
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  gap: 0.5rem !important;
+}
+body.route--lms-progress-my-courses .lms-learning-card__badge {
+  flex: 0 0 auto !important;
+  white-space: nowrap;
+}
+
+/* [P018] ISSUE 2-0185 + 2-0186: tablet (481–1024px) is the captured viewport.
+   The chips sit pinned to the bottom of the thumbnail here; give the category
+   pill room for two lines and a solid backing box so it never clips mid-word. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-progress-my-courses .lms-learning-card__chips {
+    padding: 0.5rem 0.6rem;
+    background: linear-gradient(
+      to top,
+      rgba(8, 12, 18, 0.92) 0%,
+      rgba(8, 12, 18, 0.78) 55%,
+      rgba(8, 12, 18, 0) 100%
+    );
+  }
+  body.route--lms-progress-my-courses .lms-learning-card__category {
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2;
+    max-width: calc(100% - 7.5rem) !important; /* leave room for the status pill */
+    font-size: 0.65rem !important;
+    padding: 0.3rem 0.6rem !important;
+    background: rgba(8, 12, 18, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    color: #ffffff !important;
+  }
+}
+
+/* [P018] ISSUE 2-0187: Card titles vary 1–2 lines, so progress bar + CTA land
+   at different vertical offsets across a row. Reserve a fixed 2-line title
+   height and push the CTA to the bottom with margin-top:auto in a flex column
+   so footers align across the row. (Reinforces the r1 equal-height rules and
+   guarantees them on tablet, the captured viewport.) */
+body.route--lms-progress-my-courses .lms-learning-grid {
+  align-items: stretch;
+}
+body.route--lms-progress-my-courses .lms-learning-card {
+  display: flex;
+  flex-direction: column;
+}
+body.route--lms-progress-my-courses .lms-learning-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+body.route--lms-progress-my-courses .lms-learning-card__title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  overflow: hidden;
+  min-height: 3.375rem; /* 2 lines @ 1.35rem * 1.25 */
+}
+body.route--lms-progress-my-courses .lms-learning-card__cta {
+  margin-top: auto;
+}
+
+/* [P018] ISSUE 2-0188: At 0% / "Ready to start" every card shows an empty
+   progress track that carries no information. De-emphasise the empty track
+   (thin, low-contrast) and hide the redundant "0%" so the row reads as
+   "not started" rather than a wall of empty bars. Targets idle cards only;
+   in-progress / completed cards keep the full track + value.
+   NOTE: the meta row already shows the status label, so removing the numeric
+   "0%" here loses no information. */
+body.route--lms-progress-my-courses
+  .lms-learning-card[data-course-status="not_started"]
+  .lms-learning-progress__track {
+  height: 0.25rem;
+  opacity: 0.45;
+}
+body.route--lms-progress-my-courses
+  .lms-learning-card[data-course-status="not_started"]
+  .lms-learning-progress__meta strong {
+  opacity: 0.55;
+}
+
+/* [P018] ISSUE 2-0189: Header utility cluster (notification/cart icons + user
+   pill) sits with uneven gaps relative to logo/hamburger at tablet width.
+   Apply a consistent gap and vertical centering to the header actions
+   containers. Global header component — fixed via component classes, no page
+   scope; !important only where it must beat inline flex styles. */
+.lms-navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem; /* 14px even spacing */
+}
+.lms-mega-menu-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+.lms-mega-menu-wrapper .lms-user-profile-link {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.625rem !important;
+}
+
+/* [P018] ISSUE 2-0190: Primary CTAs ("Start Course"/"Continue Learning")
+   render with slightly differing gradient/edge/radius vs each other and the
+   hero "Start Learning" button. Normalise every primary CTA pill to one
+   gradient, radius, and min-height so siblings match. Global button component;
+   !important beats the per-card inline gradient/radius on .btn-lms-primary. */
+body.route--lms-progress-my-courses .lms-learning-card__cta.btn-lms-primary,
+body.route--lms-progress-my-courses .lms-learning-spotlight__cta.btn-lms-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+  border-radius: 999px !important;
+  min-height: 2.9rem !important;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+/* Secondary (completed/review) variant stays consistent across cards too. */
+body.route--lms-progress-my-courses .lms-learning-card__cta.is-secondary,
+body.route--lms-progress-my-courses .lms-learning-spotlight__cta.is-secondary {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}

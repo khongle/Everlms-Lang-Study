@@ -1,0 +1,104 @@
+/* P026 — My Membership (/my-membership) UI fixes. Loads LAST.
+   Root cause for the ghosted plan titles: light-mode.css
+   `body.layout-minimalist h3 { color:#0f172a }` (near-black) wins over the
+   in-template `.lms-membership-card__header h3 { color:#fff }`, so the plan
+   name renders dark-on-dark (#0f172a on the #1e293b card). We override with a
+   high-specificity, route-scoped rule + !important to force a light title. */
+
+/* [P026] ISSUE 1-0575, 1-0582, 1-0585: Plan-name title rendered near-black on the
+   dark navy card (fails WCAG AA). Force a near-white, high-contrast title across
+   all viewports so it reads as the card heading and no longer collides with the
+   avatar tile. #f8fafc on #1e293b ~= 14.8:1. */
+body.route--lms-membership-my-membership .lms-membership-card .lms-membership-card__header h3,
+body.route--lms-membership-my-membership .lms-membership-card .lms-membership-card__title h3,
+body.route--lms-membership-my-membership .lms-membership-card h3 {
+  color: #f8fafc !important;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* [P026] ISSUE 1-0579, 1-0585: Header row (avatar + title + ACTIVE badge) must
+   share one vertical center with a consistent gap; keep avatar from shrinking and
+   title from overlapping the avatar tile. */
+body.route--lms-membership-my-membership .lms-membership-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+body.route--lms-membership-my-membership .lms-membership-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+body.route--lms-membership-my-membership .lms-membership-icon {
+  flex: 0 0 40px;
+}
+
+/* [P026] ISSUE 1-0583: "Cancel Auto-Renewal" destructive button reads as a
+   disabled/ghost control (muted light text on a dark maroon translucent fill).
+   Make it a solid, legible destructive button: white label on solid red.
+   #ffffff on #c0392b ~= 4.9:1 (AA). */
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger,
+body.route--lms-membership-my-membership a.lms-btn--danger,
+body.route--lms-membership-my-membership a.lms-btn--danger:link,
+body.route--lms-membership-my-membership a.lms-btn--danger:visited {
+  background: #c0392b !important;
+  color: #ffffff !important;
+  border: 1px solid #c0392b !important;
+}
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger i,
+body.route--lms-membership-my-membership a.lms-btn--danger i {
+  color: #ffffff !important;
+}
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger:hover,
+body.route--lms-membership-my-membership a.lms-btn--danger:hover,
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger:focus,
+body.route--lms-membership-my-membership a.lms-btn--danger:focus {
+  background: #a93226 !important;
+  color: #ffffff !important;
+  border-color: #a93226 !important;
+}
+body.route--lms-membership-my-membership a.lms-btn--danger:focus-visible {
+  outline: 2px solid #fda4af;
+  outline-offset: 2px;
+}
+
+/* [P026] ISSUE 1-0586: ACTIVE status badge is tiny low-contrast green on a
+   translucent pill. Bump size and use a brighter green pill with darker text for
+   a legible at-a-glance status. #064e3b on #34d399 ~= 6.4:1 (AA). */
+body.route--lms-membership-my-membership .lms-badge {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+body.route--lms-membership-my-membership .lms-badge--active {
+  background: #34d399 !important;
+  color: #064e3b !important;
+  font-weight: 700;
+}
+
+/* [P026] ISSUE 1-0588: Excess empty white band between the last card and the
+   footer on mobile. Trim the page's large top/bottom margin so content sits
+   closer to the footer. */
+@media (max-width: 480px) {
+  body.route--lms-membership-my-membership .lms-my-membership {
+    margin: 1.5rem auto 1rem;
+  }
+}
+
+/* [P026] ISSUE 1-0590: Divider above the Cancel button should align to the same
+   inner gutter as the date rows (no stray inset / full inner-content width). */
+body.route--lms-membership-my-membership .lms-membership-card__actions {
+  margin-left: 0;
+  margin-right: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+body.route--lms-membership-my-membership .lms-membership-card__header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+body.route--lms-membership-my-membership .lms-membership-card__body p {
+  margin-left: 0;
+  margin-right: 0;
+}

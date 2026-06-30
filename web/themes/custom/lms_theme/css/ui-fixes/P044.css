@@ -1,0 +1,92 @@
+/* ==========================================================================
+   P044 — AI Course Builder (/manage/courses/ai-builder)
+   Page scope: body.route--lms-ai-course-builder-form
+   Loaded LAST. !important only used to beat inline/utility styles.
+   ========================================================================== */
+
+/* [P044] ISSUE 1-0915, 1-0930: Form labels — raise contrast to >=4.5:1 on pale tint */
+body.route--lms-ai-course-builder-form .form-item > label,
+body.route--lms-ai-course-builder-form .js-form-item > label,
+body.route--lms-ai-course-builder-form .form-item label.form-required,
+body.route--lms-ai-course-builder-form .form-item label {
+  /* #1f2d3d on the ~#f6fcff page tint ≈ 13:1 — well above WCAG AA */
+  color: #1f2d3d;
+}
+
+/* [P044] ISSUE 1-0914: Restore visual hierarchy — labels are the most prominent text */
+body.route--lms-ai-course-builder-form .form-item > label,
+body.route--lms-ai-course-builder-form .js-form-item > label {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* [P044] ISSUE 1-0914, 1-0928: Helper / "Example:" text — visually subordinate (smaller + muted) */
+body.route--lms-ai-course-builder-form .form-item .description,
+body.route--lms-ai-course-builder-form .js-form-item .description {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* [P044] ISSUE 1-0920: Even vertical rhythm — tight inside a group, larger between groups */
+body.route--lms-ai-course-builder-form .form-item,
+body.route--lms-ai-course-builder-form .js-form-item {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+/* [P044] ISSUE 1-0922: Hero heading (intro h2) cut off under the fixed 64px header on mobile.
+   Give the main content wrapper room to clear the fixed navbar; also set scroll-margin
+   so anchored scrolls don't tuck glyphs under the bar. */
+body.route--lms-ai-course-builder-form #main-content.lms-page__content {
+  scroll-margin-top: 80px;
+}
+@media (max-width: 480px) {
+  body.route--lms-ai-course-builder-form #main-content.lms-page__content {
+    /* navbar height (64px) + breathing gap */
+    padding-top: 5rem;
+  }
+  body.route--lms-ai-course-builder-form #main-content.lms-page__content h1,
+  body.route--lms-ai-course-builder-form #main-content.lms-page__content h2 {
+    scroll-margin-top: 80px;
+    line-height: 1.25;
+  }
+}
+
+/* [P044] ISSUE 1-0926: Primary "Build My Course!" CTA — replace heavy offset/blurred
+   shadow with a clean, centered, low-spread elevation matching other buttons. */
+body.route--lms-ai-course-builder-form .form-actions .button,
+body.route--lms-ai-course-builder-form .form-actions .form-submit,
+body.route--lms-ai-course-builder-form .form-actions input[type="submit"] {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+body.route--lms-ai-course-builder-form .form-actions .button:hover,
+body.route--lms-ai-course-builder-form .form-actions .form-submit:hover,
+body.route--lms-ai-course-builder-form .form-actions input[type="submit"]:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+/* [P044] ISSUE 1-0929: Footer link lists — uniform row spacing across all columns
+   (QUICK LINKS / COURSE / SUPPORTS / CONTACT INFO). Global footer component. */
+.lms-footer__col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lms-footer__col ul li {
+  margin: 0;
+  line-height: 1.5;
+}
+.lms-footer__col ul li + li {
+  margin-top: 0.5rem;
+}
+.lms-footer__col ul li a {
+  display: inline-block;
+  padding: 0;
+  line-height: 1.5;
+}

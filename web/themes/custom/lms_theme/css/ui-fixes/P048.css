@@ -1,0 +1,51 @@
+/* P048 — Zoom Configuration settings form (/admin/config/lms/zoom)
+   Page-specific rules scoped to the form id class .lms-zoom-settings-form
+   and the admin path body class. Global/core toolbar + form-data issues
+   (credential masking, help-text content, admin toolbar tray) require
+   PHP form / markup / JS changes and are handled outside CSS. */
+
+/* [P048] ISSUE 1-0975: even vertical rhythm between form rows whether or not a #description is present */
+.lms-zoom-settings-form .form-item,
+.lms-zoom-settings-form .js-form-item {
+  /* Consistent block separation so rows without help text don't sit tighter
+     than rows that carry a description below the input. */
+  margin-top: 0;
+  margin-bottom: 1.75rem;
+}
+
+/* Reserve description space so the gap below a field with no #description
+   matches the gap below a field that has one (keeps Account ID / Client ID
+   rhythm equal to Client Secret / Meeting SDK rows). */
+.lms-zoom-settings-form .form-item .form-item__description,
+.lms-zoom-settings-form .js-form-item .description {
+  margin-top: 0.5rem;
+  min-height: 1.25em;
+  line-height: 1.25;
+}
+
+.lms-zoom-settings-form .form-item:not(:has(.form-item__description)):not(:has(.description)) {
+  /* Add the equivalent of one description line of breathing room to rows
+     that have no help text, restoring an even vertical rhythm. */
+  padding-bottom: calc(1.25em + 0.5rem);
+}
+
+/* [P048] ISSUE 1-0979: H1 page heading clipped at the top on mobile (tight scroll/offset under fixed toolbar) */
+@media (max-width: 480px) {
+  body.path-admin {
+    /* Account for the fixed admin toolbar so in-page scroll never lands a
+       heading flush against the viewport top edge. */
+    scroll-padding-top: 4rem;
+  }
+
+  body.path-admin .page-title,
+  body.path-admin h1.page-title,
+  body.path-admin .block-page-title-block h1,
+  body.path-admin .region-highlighted + * h1.page-title {
+    /* Give the heading real top breathing room so its glyph ascenders are
+       not cut off by the content/scroll boundary. */
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+    line-height: 1.25;
+    overflow: visible;
+  }
+}

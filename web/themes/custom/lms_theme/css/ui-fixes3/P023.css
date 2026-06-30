@@ -1,0 +1,47 @@
+/* ==========================================================================
+   P023 — My Certificates (/my-certificates)   ROUND 3 (third pass)
+   route_class: route--lms-progress-certificates
+   Active skin: medical (body.layout-medical.layout-minimalist)
+   Loads LAST. Page content scoped under body.route--lms-progress-certificates;
+   global FAB fixed via its component id/class.
+   ========================================================================== */
+
+/* [P023] ISSUE 1-0543: Floating scroll-to-top FAB still overlapped the
+   top-right corner of the "No certificates yet" card on mobile.
+   ROOT CAUSE the prior (round-2) fix got wrong: it pushed the FAB UP with
+   `bottom: 84px`. Because the FAB is position:fixed, raising it 84px from the
+   viewport bottom dropped it straight into the vertical band occupied by the
+   short empty-state card — exactly the right edge of that card — instead of
+   resting under it. The base medical rule
+   `body.layout-medical:not(.is-workspace) .lms-back-to-top` also wins on
+   specificity over a plain route-class selector, so loose overrides are lost.
+
+   FIX: beat the medical rule with id + 3-class + :not() specificity and pin the
+   FAB back DOWN to the very bottom-right of the viewport where it floats clear
+   over whitespace, while nudging it a touch further from the right edge and
+   trimming the footprint so its halo never grazes a card. Also reserve bottom
+   padding on the page so the document has whitespace beneath the card at the
+   resting scroll position. */
+@media (max-width: 640px) {
+  body.layout-medical.route--lms-progress-certificates:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical.route--lms-progress-certificates:not(.is-workspace) .lms-back-to-top,
+  body.route--lms-progress-certificates #lms-back-to-top,
+  body.route--lms-progress-certificates .lms-back-to-top {
+    right: 14px !important;
+    bottom: 18px !important;
+    left: auto !important;
+    top: auto !important;
+    width: 44px !important;
+    height: 44px !important;
+    /* keep the drop-shadow halo tight so it cannot bleed onto a card edge */
+    box-shadow: 0 6px 16px rgba(0, 119, 182, 0.22) !important;
+  }
+
+  /* Give the document trailing whitespace so the bottom-pinned FAB rests over
+     empty background rather than against the empty-state card's lower edge. */
+  body.route--lms-progress-certificates .lms-page__content,
+  body.route--lms-progress-certificates .lms-certificates-page,
+  body.route--lms-progress-certificates .lms-section.lms-certificates-page {
+    padding-bottom: 5.5rem !important;
+  }
+}

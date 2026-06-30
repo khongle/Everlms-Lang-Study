@@ -1,0 +1,71 @@
+/* ==========================================================================
+   P010 — About page (route--lms-course-about), medical skin / SilverCare
+   Loads LAST. Scope global components by component class; page content under
+   body.route--lms-course-about. !important only used to beat earlier
+   !important rules in light-mode.css / main.css on the same targets.
+   ========================================================================== */
+
+/* [P010] ISSUE 1-0269: principle/value tile icons wash out (white glyph on
+   pale-lavender tile over white card). Darken glyph to medical brand blue and
+   deepen the tile tint so both glyph and tile read clearly (WCAG AA ~3:1
+   for non-text). */
+body.route--lms-course-about .lms-about-principle-card__icon,
+body.route--lms-course-about .lms-about-value-card__icon {
+  background: linear-gradient(135deg, rgba(0, 119, 182, 0.18), rgba(0, 150, 199, 0.14)) !important;
+  border-color: rgba(0, 119, 182, 0.32) !important;
+  color: #0a5c8a !important;
+}
+body.route--lms-course-about .lms-about-principle-card__icon i,
+body.route--lms-course-about .lms-about-value-card__icon i {
+  color: inherit !important;
+}
+
+/* [P010] ISSUE 1-0270 / 1-0282: hero stat labels were a light/saturated
+   purple on white — below AA 4.5:1 for small text and off the medical
+   navy/teal palette. Use a dark medical-navy that meets AA on #fff and
+   matches the skin accent. */
+body.route--lms-course-about .lms-about-stat-card__label {
+  color: #0a4f73 !important;
+  font-weight: 600 !important;
+}
+
+/* [P010] ISSUE 1-0271: orphaned gradient rule. .lms-about-hero__panel::after
+   draws a 2px gradient bar at inset:auto -10% -1px auto, so it pokes ~10%
+   past the right edge of the card and reads as a leftover divider artifact.
+   Remove it. */
+body.route--lms-course-about .lms-about-hero__panel::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* [P010] ISSUE 1-0275: mobile header overflow. Below the hamburger
+   breakpoint the inline Login link + Register button stay visible and the
+   Register button is clipped at the right edge. Tighten container padding,
+   actions gap, and action sizing so both fit inside the viewport.
+   (Global header components — no page scope.) */
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .lms-navbar__actions {
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  .lms-navbar__actions .lms-btn--sm {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  /* keep the brand from squeezing the actions off-screen */
+  .lms-navbar__brand .lms-brand-mark--header {
+    max-height: 28px;
+    width: auto;
+  }
+}

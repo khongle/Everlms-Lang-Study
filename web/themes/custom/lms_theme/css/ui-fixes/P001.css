@@ -1,0 +1,260 @@
+/* =====================================================================
+   P001 — Homepage (medical skin / SilverCare) UI fixes
+   Loaded LAST. Scope: global components by their own class; page-specific
+   content under body.route--lms-course-homepage (homepage / is-front-page).
+   ===================================================================== */
+
+/* [P001] ISSUE 1-0014,1-0044,1-0045,1-0076: Hero subtitle (and title) clipped by the prev (<) carousel arrow.
+   The prev control sits at left:clamp(12px,2vw,28px) on top of the hero text column.
+   Pull the prev/next arrows to the outer edge of the frame and give the hero
+   content left padding so no copy sits under the circular control. */
+body.route--lms-course-homepage .medical-carousel__control--prev {
+  left: 6px;
+}
+body.route--lms-course-homepage .medical-carousel__control--next {
+  right: 6px;
+}
+body.route--lms-course-homepage .medical-carousel__item > .medical-shell.medical-hero__content {
+  padding-left: clamp(64px, 5vw, 84px);
+}
+@media (max-width: 991px) {
+  /* On stacked mobile the image sits above the text, so arrows overlap the
+     image band, not the copy — restore comfortable text padding. */
+  body.route--lms-course-homepage .medical-carousel__item > .medical-shell.medical-hero__content {
+    padding-left: 22px;
+  }
+  body.route--lms-course-homepage .medical-carousel__control--prev { left: 22px; }
+  body.route--lms-course-homepage .medical-carousel__control--next { right: 22px; }
+}
+
+/* [P001] ISSUE 1-0060: Hero left column elements (subtitle, trust chips, CTAs)
+   are tightly packed — add consistent vertical rhythm. */
+body.route--lms-course-homepage .medical-hero__subtitle {
+  margin-bottom: 28px;
+}
+
+/* [P001] ISSUE 1-0010: Hero carousel pagination dots are too low-contrast.
+   Inactive dots get a clearly darker grey (>=3:1 for UI components on the
+   pale hero panel); active dot stays the saturated brand gradient.
+   Global carousel component — fix by its own class. */
+body.layout-medical .medical-carousel__indicator {
+  background: rgba(18, 53, 74, 0.32); /* #12354a @32% on light = perceptible grey */
+}
+body.layout-medical .medical-carousel__indicator:hover {
+  background: rgba(18, 53, 74, 0.5);
+}
+body.layout-medical .medical-carousel__indicator.active {
+  background: linear-gradient(120deg, #0077b6 0%, #0096c7 52%, #00b4d8 100%);
+  box-shadow: 0 6px 14px rgba(0, 119, 182, 0.32);
+}
+
+/* [P001] ISSUE 1-0064: Inactive hero slides bleed through (ghost "BROWSE
+   CATALOG" overlapping the dots). Clip the slide track and make sure
+   non-active Bootstrap carousel items never render over the active one. */
+body.layout-medical .medical-carousel,
+body.layout-medical .medical-carousel__inner {
+  overflow: hidden;
+}
+body.layout-medical .medical-carousel__inner > .carousel-item:not(.active):not(.carousel-item-start):not(.carousel-item-end):not(.carousel-item-next):not(.carousel-item-prev) {
+  display: none;
+}
+
+/* [P001] ISSUE 1-0011: Hero stat numerals clipped at the top edge of the
+   white stats card. Give the value a roomy line-height and a little top
+   padding inside the card so ascenders/tops are never cut. */
+body.layout-medical .medical-stat__value {
+  line-height: 1.18;
+  padding-top: 2px;
+}
+body.layout-medical .medical-stats__grid {
+  padding-top: 26px;
+}
+
+/* [P001] ISSUE 1-0059: Hero stat labels (COURSES / STUDENTS / ...) render in
+   a light grey below AA. Darken to the soft body colour for >=4.5:1. */
+body.layout-medical .medical-stat__label {
+  color: #3d5563; /* darker than --medical-text-muted (#6f8796) */
+}
+
+/* [P001] ISSUE 1-0029,1-0041: Category card titles wrap to 1 vs 2 lines, so
+   the "N courses" line sits at different heights. Reserve a fixed 2-line
+   title block so counts align across the row. */
+body.layout-medical .medical-category-card__name {
+  min-height: 2.6em;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.layout-medical .medical-category-card__count {
+  margin-top: auto;
+}
+
+/* [P001] ISSUE 1-0024,1-0042: Featured Programs cards — clamp title (2 lines)
+   and description (3 lines) so the internal body block is uniform and the
+   truncation is clean (no stray pre-ellipsis space). */
+body.layout-medical .medical-course-card__title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7em;
+  line-height: 1.35;
+}
+body.layout-medical .medical-course-card__summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* [P001] ISSUE 1-0056: Featured Programs footer (price + VIEW) must align to a
+   shared baseline regardless of title/description length. Body fills, footer
+   pins to the bottom. Reinforce the existing flex behaviour. */
+body.layout-medical .medical-course-card__body {
+  display: flex;
+  flex-direction: column;
+}
+body.layout-medical .medical-course-card__summary {
+  flex: 1 1 auto;
+}
+body.layout-medical .medical-course-card__footer {
+  margin-top: auto;
+}
+
+/* [P001] ISSUE 1-0054: Continue-Learning progress bars must show a visible
+   empty track even at 0%. Global progress component — give the track a solid
+   light-grey background independent of fill width. */
+body.layout-medical .medical-progress {
+  background: #c9e8f7;
+  min-height: 6px;
+}
+
+/* [P001] ISSUE 1-0005: Testimonial avatars should read as face-centered
+   head-shots. Force top-biased cover crop so the face (upper region) is the
+   focal point even for tall/full-body source images. */
+body.layout-medical .medical-testimonial-card__avatar img {
+  object-fit: cover;
+  object-position: center 18%;
+}
+
+/* [P001] ISSUE 1-0073: Testimonial course subline too light / disconnected.
+   Darken to AA-safe colour and tighten its spacing to the role above it. */
+body.layout-medical .medical-testimonial-card__author-meta small {
+  color: #4a6373; /* >=4.5:1 on #fff */
+  margin-top: 2px;
+}
+body.layout-medical .medical-testimonial-card__author-meta span {
+  color: #3d5563;
+}
+
+/* [P001] ISSUE 1-0071: About / intro body paragraphs are washed-out light
+   grey on the light gradient — darken for AA (>=4.5:1). */
+body.layout-medical .medical-intro-item__body,
+body.layout-medical .medical-intro-item__body p,
+body.layout-medical .medical-section__subtitle {
+  color: #3d5563;
+}
+
+/* [P001] ISSUE 1-0072: Expanded FAQ answer text is faint grey on white —
+   darken for AA readability. */
+body.layout-medical .medical-faq__answer-body,
+body.layout-medical .medical-faq__answer-body p {
+  color: #3a525f;
+}
+
+/* [P001] ISSUE 1-0066: Final-CTA primary button ("CREATE FREE ACCOUNT") text
+   clipped through its vertical middle. Give the button real height and a safe
+   line-height so the uppercase label is fully visible and centered.
+   Global button component. */
+body.layout-medical .medical-btn {
+  min-height: 44px;
+  line-height: 1.25;
+}
+
+/* [P001] ISSUE 1-0065: Mobile header — the red "Register" action is cut off at
+   the right edge because .lms-navbar__nav collapses (<=992px) but
+   .lms-navbar__actions stays inline and overflows. Tighten the container,
+   shrink the action cluster so Login + Register fit fully on screen, and
+   prevent any horizontal bleed. Global header component. */
+@media (max-width: 992px) {
+  .lms-navbar__container {
+    gap: 8px;
+  }
+  .lms-navbar__actions {
+    flex-shrink: 0;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .lms-navbar__actions .lms-btn {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    font-size: 0.85rem;
+  }
+  .lms-navbar__actions .lms-btn {
+    font-size: 0.7rem;
+    padding: 8px 10px;
+  }
+}
+
+/* [P001] ISSUE 1-0061,1-0062,1-0063,1-0074: Mobile Featured Programs cards
+   overflow the viewport (cards wider than screen, titles split word-by-word,
+   "Intermed..." badge clipped, price/CTA sliced at the right edge).
+   Force a single full-width column, contain overflow, and let inner content
+   wrap on word boundaries inside the card padding. */
+@media (max-width: 767px) {
+  body.layout-medical .lms-page {
+    overflow-x: hidden;
+  }
+  body.layout-medical .medical-shell--full .medical-course-grid,
+  body.layout-medical .medical-course-grid {
+    grid-template-columns: 1fr;
+  }
+  body.layout-medical .medical-course-card,
+  body.layout-medical .medical-course-card__body {
+    min-width: 0;
+    max-width: 100%;
+  }
+  body.layout-medical .medical-course-card__title,
+  body.layout-medical .medical-course-card__title a,
+  body.layout-medical .medical-course-card__summary {
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
+  }
+  /* Badges must not be clipped — allow the meta row to wrap chips fully. */
+  body.layout-medical .medical-course-card__meta {
+    flex-wrap: wrap;
+  }
+  body.layout-medical .medical-course-card__meta span {
+    white-space: nowrap;
+  }
+  /* Price/VIEW footer fully inside the card with breathing room above. */
+  body.layout-medical .medical-course-card__footer {
+    flex-wrap: wrap;
+    padding-top: 16px;
+  }
+}
+
+/* [P001] ISSUE 1-0075: Mobile section eyebrow labels (CATEGORIES / ABOUT /
+   TESTIMONIALS / FAQ) sit with large empty gaps above the heading.
+   Tighten the kicker-to-heading rhythm on mobile. */
+@media (max-width: 767px) {
+  body.layout-medical .medical-kicker {
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+  body.layout-medical .medical-section__head--center {
+    margin-bottom: 28px;
+  }
+}

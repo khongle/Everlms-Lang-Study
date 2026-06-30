@@ -1,0 +1,138 @@
+/* ==========================================================================
+   P038 — Manage Pricing (/workspace/pricing)
+   Theme: lms_theme | Skin: medical | Brand: SilverCare
+   Loads LAST. Scoped to the admin workspace shell (.lms-admin) which is the
+   most specific page container present (route_class is empty in the unit).
+   ========================================================================== */
+
+/* [P038] ISSUE 1-0815, 1-0828: Sidebar 'SilverCare' wordmark contrast (desktop+mobile) */
+/* Force the brand wordmark to a near-white, high-contrast value on the dark
+   sidebar (#161b22) so it clears WCAG AA 4.5:1 for small text. Beats the
+   global `a{color:#58a6ff}` link color that dims it to grey-blue. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span,
+.lms-admin .lms-admin__sidebar-brand a i {
+  color: #f0f4fa !important;        /* ~14.8:1 on #161b22 */
+  -webkit-text-fill-color: #f0f4fa; /* in case a gradient text-fill leaks in */
+  font-weight: 800;
+}
+
+/* [P038] ISSUE 1-0817, 1-0818: ACTIONS buttons — consistent pair + contrast */
+/* Build a deliberate primary/secondary pair of EQUAL height/padding/radius.
+   Edit = filled primary; Deactivate/Activate = outline secondary but with a
+   subtle tinted fill + brighter text so the amber clears AA. The Deactivate
+   button carries inline styles in markup, so these need !important. */
+.lms-admin .lms-table td .lms-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 16px !important;
+  font-size: 13px !important;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 0.5rem !important;
+  vertical-align: middle;
+}
+
+/* Edit (primary, solid blue) — keep filled, just normalize sizing above. */
+.lms-admin .lms-table td .lms-btn.btn-lms-primary {
+  background: #1d70f5 !important;
+  border: 1px solid #1d70f5 !important;
+  color: #ffffff !important;
+}
+
+/* Deactivate / Activate (secondary, outline). Brighten amber/green text and
+   add a low-opacity tinted fill so small text meets AA on the dark row bg. */
+.lms-admin .lms-table td .lms-btn:not(.btn-lms-primary) {
+  background: rgba(245, 158, 11, 0.14) !important;  /* subtle amber fill */
+  border: 1px solid #fbbf24 !important;             /* brighter amber border */
+  color: #fcd34d !important;                         /* ~9:1 on dark row bg */
+}
+.lms-admin .lms-table td .lms-btn:not(.btn-lms-primary):hover {
+  background: rgba(245, 158, 11, 0.24) !important;
+  border-color: #fcd34d !important;
+  color: #fde68a !important;
+}
+
+/* [P038] ISSUE 1-0819: Filter bar balance & alignment */
+/* Group the filter controls with even spacing and aligned bottom edges.
+   Constrain the search field so it no longer stretches and shoves Status +
+   Filter to the far right with a big empty gap. */
+.lms-admin .lms-admin-filter {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: flex-end !important;
+  gap: 1rem !important;
+  justify-content: flex-start;
+}
+.lms-admin .lms-admin-filter__group {
+  flex: 0 1 auto !important;
+}
+/* Search: a sensible, capped width instead of greedily filling the row. */
+.lms-admin .lms-admin-filter__group:first-child {
+  flex: 1 1 320px !important;
+  max-width: 420px;
+}
+/* Status select group: fixed, compact. */
+.lms-admin .lms-admin-filter__group:nth-child(2) {
+  flex: 0 0 200px !important;
+}
+/* Filter button group: hug content, sit right next to Status (no big gap). */
+.lms-admin .lms-admin-filter__group:last-child {
+  flex: 0 0 auto !important;
+}
+/* Equalize control heights so inputs, select and button share a bottom edge. */
+.lms-admin .lms-admin-filter__input,
+.lms-admin .lms-admin-filter__select {
+  height: 42px;
+  box-sizing: border-box;
+}
+.lms-admin .lms-admin-filter .lms-btn.btn-lms-primary {
+  height: 42px !important;
+  display: inline-flex !important;
+  align-items: center;
+  padding: 0 1.25rem !important;
+}
+
+/* [P038] ISSUE 1-0822: Mobile — reclaim viewport from the fixed 260px sidebar */
+/* CSS-only off-canvas: on small screens push the sidebar off the left edge
+   and remove the 260px content offset so the page content gets full width.
+   (A hamburger TOGGLE requires JS/markup and is deferred; this still resolves
+   the critical "content clipped to a narrow column" defect.) */
+@media (max-width: 768px) {
+  .lms-admin__sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.5);
+  }
+  /* Reveal when toggled open via :target or an .is-open hook if added later. */
+  .lms-admin__sidebar:target,
+  .lms-admin__sidebar.is-open {
+    transform: translateX(0);
+  }
+  .lms-admin__main {
+    margin-left: 0 !important;
+    padding: 1.25rem !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Stack the filter toolbar so each control spans the row cleanly. */
+  .lms-admin .lms-admin-filter__group,
+  .lms-admin .lms-admin-filter__group:first-child,
+  .lms-admin .lms-admin-filter__group:nth-child(2),
+  .lms-admin .lms-admin-filter__group:last-child {
+    flex: 1 1 100% !important;
+    max-width: none;
+  }
+  .lms-admin .lms-admin-filter .lms-btn.btn-lms-primary {
+    width: 100%;
+    justify-content: center;
+  }
+  /* Let action buttons wrap instead of overflowing the narrow row. */
+  .lms-admin .lms-table td .lms-btn {
+    margin-bottom: 4px;
+  }
+}

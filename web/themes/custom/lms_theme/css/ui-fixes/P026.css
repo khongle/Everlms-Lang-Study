@@ -1,0 +1,104 @@
+/* ============================================================
+   P026 — My Memberships (/my-membership)
+   route_class: route--lms-membership-my-membership
+   Cards are dark (#1e293b). The global rule
+   `body.layout-minimalist h3 { color:#0f172a }` overrides the
+   template's white card title, producing dark-on-dark text.
+   ============================================================ */
+
+/* [P026] ISSUE 1-0575, 1-0582, 1-0585: Plan title dark-on-dark inside dark card -> force light, legible title (WCAG AA on #1e293b) */
+body.route--lms-membership-my-membership .lms-membership-card__header h3 {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* [P026] ISSUE 1-0577, 1-0583: 'Cancel Auto-Renewal' destructive button — coherent red scheme, readable label (white on solid red beats inherited link-blue) */
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger,
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger:link,
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger:visited {
+  background: #c0392b;
+  color: #ffffff;
+  border: 1px solid #c0392b;
+}
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger i {
+  color: #ffffff;
+}
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger:hover,
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger:focus {
+  background: #e74c3c;
+  border-color: #e74c3c;
+  color: #ffffff;
+}
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger:focus-visible {
+  outline: 2px solid #fca5a5;
+  outline-offset: 2px;
+}
+
+/* [P026] ISSUE 1-0579: Header row — vertically center avatar, title and ACTIVE badge on one axis */
+body.route--lms-membership-my-membership .lms-membership-card__header {
+  align-items: center;
+}
+body.route--lms-membership-my-membership .lms-membership-card__title {
+  align-items: center;
+  gap: 0.75rem;
+}
+body.route--lms-membership-my-membership .lms-membership-icon {
+  flex: 0 0 40px;
+}
+
+/* [P026] ISSUE 1-0580: H1/H2 heading and card share the same left gutter (zero out heading inline padding so it is flush with the card container) */
+body.route--lms-membership-my-membership .lms-my-membership h2 {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+/* [P026] ISSUE 1-0581: Single card stranded on the left at desktop — constrain list to a comfortable centered width so it is not stretched/stranded across the full viewport */
+@media (min-width: 768px) {
+  body.route--lms-membership-my-membership .lms-membership-list {
+    grid-template-columns: repeat(auto-fill, minmax(360px, 480px));
+    justify-content: start;
+  }
+}
+
+/* [P026] ISSUE 1-0586: ACTIVE status badge — slightly larger and brighter for at-a-glance legibility on the dark card */
+body.route--lms-membership-my-membership .lms-badge {
+  font-size: 0.78rem;
+}
+body.route--lms-membership-my-membership .lms-badge--active {
+  background: rgba(16, 185, 129, 0.28);
+  color: #6ee7b7;
+}
+body.route--lms-membership-my-membership .lms-badge--expired {
+  background: rgba(244, 63, 94, 0.28);
+  color: #fda4af;
+}
+body.route--lms-membership-my-membership .lms-badge--trial {
+  background: rgba(245, 158, 11, 0.28);
+  color: #fcd34d;
+}
+
+/* [P026] ISSUE 1-0588: Excess empty band before footer on mobile — tighten the page block's vertical margins */
+@media (max-width: 480px) {
+  body.route--lms-membership-my-membership .lms-my-membership {
+    margin: 2rem auto;
+  }
+}
+
+/* [P026] ISSUE 1-0590: Date rows / divider share one consistent inner gutter (rows flush to card padding edges) */
+body.route--lms-membership-my-membership .lms-membership-card__body p {
+  margin: 0.75rem 0;
+}
+body.route--lms-membership-my-membership .lms-membership-card__actions {
+  margin-top: 1.25rem;
+}
+
+/* [P026] ISSUE 1-0589: Header notification bell '2' count badge — cleaner offset above-right so it does not overlap the glyph */
+.lms-navbar .lms-bell__badge,
+.lms-navbar__actions .lms-bell__badge,
+.lms-bell .lms-bell__badge {
+  top: -6px;
+  right: -6px;
+}

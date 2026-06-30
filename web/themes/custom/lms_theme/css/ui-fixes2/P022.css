@@ -1,0 +1,125 @@
+/* ==========================================================================
+   P022 — My Quiz Results (/my-quiz-results)
+   route_class: route--lms-quiz-my-results  (body also has .layout-minimalist + .layout-medical)
+   Active skin: medical + minimalist, brand SilverCare. Loads LAST.
+
+   NOTE on specificity: the skin base rules use selectors like
+   `body.layout-minimalist .lms-quiz-results-page__summary-card { ... !important }`
+   (specificity 0,2,0). Prior fixes scoped only `body.route--lms-quiz-my-results .x`
+   (also 0,2,0) and tied / lost. Here we chain BOTH body classes
+   `body.route--lms-quiz-my-results.layout-minimalist .x` (0,3,0) so we reliably
+   beat the base !important rules.
+   ========================================================================== */
+
+/* [P022] ISSUE 1-0519: stat cards reserve a large empty block below the value+label.
+   Base forces min-height:5.75rem and justify-content:center, but the tall fixed
+   min-height + the grid leaves a void. Drop the fixed min-height, let content size
+   the card, and center the value+label block with proportional padding. */
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary-card,
+body.route--lms-quiz-my-results.layout-medical .lms-quiz-results-page__summary-card {
+  min-height: 0 !important;
+  height: auto !important;
+  align-self: start !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 0.25rem !important;
+  padding: 1.05rem 1.15rem !important;
+}
+
+/* Keep the summary grid items from stretching to the tallest sibling (which
+   re-introduces the empty band). align-items:start sizes each card to content. */
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary {
+  align-items: start !important;
+}
+
+/* [P022] ISSUE 1-0523: sibling stat values use 3 different colors (black / green /
+   blue) with no semantic logic. light-mode forces is-success -> #15803d and
+   is-accent -> #0369a1. Normalize ALL four primary values to one heading color.
+   Specificity here (0,3,1) beats the base is-success/is-accent rules (0,3,1) by
+   load order and matches their structure exactly. */
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary-card .lms-quiz-results-page__summary-value,
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary-card.is-success .lms-quiz-results-page__summary-value,
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary-card.is-accent .lms-quiz-results-page__summary-value {
+  color: #0f172a !important;
+}
+
+/* [P022] ISSUE 1-0520: with a single result a tall void sits between the result
+   card and the footer. Reduce the section's reserved height so the gap before the
+   footer reads as intentional padding, and trim the board's bottom margin. */
+body.route--lms-quiz-my-results .lms-quiz-results-page {
+  min-height: 0 !important;
+  padding-bottom: 2.5rem !important;
+}
+body.route--lms-quiz-my-results .lms-quiz-results-board {
+  margin-bottom: 0 !important;
+}
+
+/* [P022] ISSUE 1-0522: give each result row a delimited, structured look so
+   multiple rows read as a list and the meta line is grouped rather than floating.
+   A bottom divider on every row (except the last) + consistent inner padding. */
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-board .lms-quiz-result-row {
+  padding: 1.1rem 1.25rem !important;
+}
+body.route--lms-quiz-my-results .lms-quiz-results-board .lms-quiz-result-row + .lms-quiz-result-row {
+  border-top: 1px solid #e2e8f0;
+}
+/* Group title + meta visually: tighten the gap between the title row and the meta
+   line so the "Threshold 80% · Completed ..." reads as part of the row, not loose. */
+body.route--lms-quiz-my-results .lms-quiz-result-row__meta {
+  margin-top: 0.15rem;
+}
+
+/* [P022] ISSUE 1-0521: "Review Result" primary button shadow looks heavier/clipped
+   on the right because the button sits flush to the card's right edge. Use a fully
+   centered (0 offset-x) even shadow, give the row a small right inset so the glow
+   isn't cut by the card boundary, and ensure nothing clips it. */
+body.route--lms-quiz-my-results .lms-quiz-result-row {
+  overflow: visible !important;
+}
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-result-row__action,
+body.route--lms-quiz-my-results .lms-quiz-result-row__action {
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.30) !important;
+  margin-right: 0.15rem;
+}
+body.route--lms-quiz-my-results .lms-quiz-result-row__action:hover {
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.40) !important;
+}
+
+/* [P022] ISSUE 1-0526 (mobile): the stat-card stack and the result card must share
+   one gutter. Normalize horizontal padding so the board/rows line up with the
+   summary cards (the board's 1rem inner padding offsets the rows; zero the row's
+   extra margins and align the board edge to the stack). */
+@media (max-width: 480px) {
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-board {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background: transparent !important;
+  }
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-result-row,
+  body.route--lms-quiz-my-results .lms-quiz-result-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary,
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-board {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* [P022] ISSUE 1-0527 (mobile): the floating back-to-top button overlaps the
+   top-right corner of cards. Pull it firmly into a clear margin, raise its
+   stacking context above content, and give it a stronger shadow so it reads as a
+   distinct overlay. Global component (medical skin) — match base selector
+   structure to beat its !important right/bottom values. */
+@media (max-width: 480px) {
+  body.layout-medical:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical:not(.is-workspace) .lms-back-to-top {
+    right: 12px !important;
+    bottom: 18px !important;
+    z-index: 1300 !important;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.32) !important;
+  }
+}

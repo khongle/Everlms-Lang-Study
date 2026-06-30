@@ -1,0 +1,63 @@
+/* P016a — Login page UI fixes (round 2). Active skin: medical. Loaded LAST. */
+
+/* [P016a] ISSUE 2-0162: Darken input placeholder text for WCAG AA contrast on white. */
+/* #4b5563 (gray-600) on #fff ≈ 7.5:1, well above 4.5:1. Scoped to auth form controls. */
+body.route--user-login .lms-auth input::placeholder,
+body.route--user-login .lms-auth textarea::placeholder,
+body.route--user-login .lms-auth .form-text::placeholder,
+body.route--user-login .lms-auth .form-control::placeholder {
+  color: #4b5563 !important;
+  opacity: 1; /* Firefox lowers placeholder opacity by default */
+}
+
+/* [P016a] ISSUE 2-0163: Darken "Welcome Back" subtitle for AA contrast. */
+/* The subtitle uses .text-muted (~#6f8796, ≈3.3:1). #4b5563 on white ≈ 7.5:1. */
+body.route--user-login .lms-auth__header p,
+body.route--user-login .lms-auth__header p.text-muted {
+  color: #4b5563 !important;
+}
+
+/* [P016a] ISSUE 2-0165: Replace absolutely-positioned "or" overlay with a symmetric flex divider. */
+/* Original markup: <div class="text-center my-3 position-relative"> with an <hr> and an
+   absolutely-centered <span>. Re-laying out the wrapper as flex makes both rule segments
+   equal length (flex:1) with symmetric padding around the centered label. */
+body.route--user-login .lms-auth .position-relative:has(> .lms-auth__divider-line) {
+  display: flex;
+  align-items: center;
+  position: static !important; /* drop relative context so the label is no longer absolute-overlaid */
+  gap: 0;
+}
+body.route--user-login .lms-auth .lms-auth__divider-line {
+  flex: 1 1 0;
+  margin: 0 !important;
+  border: none;
+  border-top: 1px solid var(--medical-border-soft, rgba(0, 0, 0, 0.12));
+  opacity: 1;
+  width: auto;
+}
+body.route--user-login .lms-auth .lms-auth__divider-label {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  flex: 0 0 auto;
+  padding: 0 1rem !important; /* symmetric gap on both sides of "or" */
+  color: #4b5563; /* keep label legible alongside the contrast fixes above */
+  white-space: nowrap;
+}
+
+/* [P016a] ISSUE 2-0166: Give OAuth buttons clearer button affordance. */
+/* Subtle tint, stronger resting border, and a hover state on the social buttons. */
+body.route--user-login .lms-auth .lms-auth__social-btn {
+  background-color: #f9fafb;
+  border: 1px solid #d1d5db;
+  color: #1f2937;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+body.route--user-login .lms-auth .lms-auth__social-btn:hover,
+body.route--user-login .lms-auth .lms-auth__social-btn:focus-visible {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+  color: #111827;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}

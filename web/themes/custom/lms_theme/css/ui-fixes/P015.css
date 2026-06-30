@@ -1,0 +1,120 @@
+/* ==========================================================================
+   P015 — Certificate Verify (/certificate/verify)
+   Skin: medical | Brand: SilverCare
+   Loaded LAST. Page scope: body.route--lms-certificate-verify
+   Global components (navbar, button) fixed via component class, no page scope.
+   ========================================================================== */
+
+/* [P015] ISSUE 1-0367, 1-0366: constrain + center the lone verify form
+   The default Drupal form stretches the full ~1250px content width and is
+   stranded at the top of a tall content area. Wrap it in a sensible max-width
+   and vertically center it within the main region. */
+body.route--lms-certificate-verify .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+body.route--lms-certificate-verify #block-lms-theme-content {
+  width: 100%;
+  max-width: 32rem; /* ~512px */
+  margin-left: auto;
+  margin-right: auto;
+}
+body.route--lms-certificate-verify .lms-certificate-verification-form {
+  width: 100%;
+}
+/* Input should not exceed its container; override the size="60" intrinsic width */
+body.route--lms-certificate-verify #edit-certificate-code,
+body.route--lms-certificate-verify .form-item-certificate-code .form-control {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* [P015] ISSUE 1-0369: helper/description contrast
+   Default .description gray is too light on the very light page background.
+   Use a dark slate that clears WCAG AA (4.5:1) for small body text. */
+body.route--lms-certificate-verify #edit-certificate-code--description,
+body.route--lms-certificate-verify .form-item-certificate-code .description {
+  color: #374151; /* slate-700, ~9.7:1 on white */
+  margin-top: 0.5rem;
+}
+
+/* [P015] ISSUE 1-0377: balance the helper-text wrapping on mobile */
+body.route--lms-certificate-verify #edit-certificate-code--description,
+body.route--lms-certificate-verify .form-item-certificate-code .description {
+  text-wrap: balance;
+}
+
+/* [P015] ISSUE 1-0370: placeholder contrast
+   Darken placeholder so it clears the 3:1 UI-text threshold while still
+   reading as placeholder. */
+body.route--lms-certificate-verify #edit-certificate-code::placeholder {
+  color: #6b7280; /* slate-500, ~4.8:1 on white */
+  opacity: 1;
+}
+
+/* [P015] ISSUE 1-0368, 1-0376: Verify button shadow
+   The submit button (Bootstrap .btn / .button--primary) renders a heavy,
+   offset blue glow. Replace with a subtle, symmetric elevation and tame the
+   focus glow so it matches the theme's primary buttons. Global component fix. */
+.lms-certificate-verification-form .form-submit.btn,
+.lms-certificate-verification-form #edit-submit {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+}
+.lms-certificate-verification-form .form-submit.btn:focus,
+.lms-certificate-verification-form .form-submit.btn:focus-visible,
+.lms-certificate-verification-form #edit-submit:focus,
+.lms-certificate-verification-form #edit-submit:focus-visible {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
+              0 0 0 3px rgba(102, 126, 234, 0.35) !important;
+}
+
+/* [P015] ISSUE 1-0375: hamburger icon contrast (global component)
+   On the light medical header the toggle inherits a near-white (#e6edf3)
+   color, leaving the menu icon invisible. Use the dark navy/slate brand text
+   color so it clears 3:1 against the white header. */
+.lms-navbar__toggle,
+.lms-navbar__toggle i,
+.lms-navbar__toggle .fas {
+  color: #1f2937; /* slate-800 navy, matches Login text */
+}
+
+/* [P015] ISSUE 1-0371: header auth links overflow on mobile (global component)
+   At <=992px the nav collapses but Login + Register + hamburger remain in a
+   single row and "Register" gets clipped at the viewport edge. Allow the
+   action group to shrink, tighten gaps/padding, and keep the Register button
+   fully visible. */
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    column-gap: 0.5rem;
+  }
+  .lms-navbar__actions {
+    gap: 0.5rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .lms-navbar__actions .lms-btn--sm {
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
+    white-space: nowrap;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    white-space: nowrap;
+  }
+}
+
+/* [P015] ISSUE 1-0378: footer top clearance on mobile
+   Ensure the footer brand block keeps adequate separation from preceding
+   content / the sticky header on small screens. */
+@media (max-width: 480px) {
+  body.route--lms-certificate-verify .lms-footer {
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+  }
+  body.route--lms-certificate-verify .lms-footer__brand {
+    margin-top: 0.5rem;
+  }
+}

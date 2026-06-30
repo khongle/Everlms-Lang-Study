@@ -1,0 +1,104 @@
+/* ==========================================================================
+   P037 — manage-content-faq (/workspace/content/faq)
+   This partial loads LAST. !important is used ONLY to beat inline styles on
+   the exact target element; otherwise normal specificity is used.
+
+   NOTE: The route currently resolves to a 403/404 (route--system-403 /
+   route--system-404). The fixes below make the fallback error state legible
+   and balanced. The missing route/controller and the in-SVG brand wordmark
+   contrast cannot be corrected in CSS and are deferred.
+   ========================================================================== */
+
+/* [P037] ISSUE 1-0800, 1-0814: center the sparse error/empty state inside the
+   main region so it does not leave a large empty band above the footer
+   (desktop ~400px void; mobile cavernous middle). The main content region is
+   the global page slot, but the centering only matters on the error states. */
+body.route--system-403 .lms-page__content,
+body.route--system-404 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 3rem 1.25rem;
+  box-sizing: border-box;
+}
+
+body.route--system-403 .lms-messages-wrapper,
+body.route--system-404 .lms-messages-wrapper {
+  width: 100%;
+}
+
+/* [P037] ISSUE 1-0799, 1-0807: give the plain "page not found / not
+   authorized" fallback text a designed empty-state card — centered, padded,
+   with a container, heading-like emphasis and breathing room. The error copy
+   renders inside #block-lms-theme-content on these routes. */
+body.route--system-403 #block-lms-theme-content,
+body.route--system-404 #block-lms-theme-content {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 44, 61, 0.08);
+  color: #0f2c3d;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+/* Decorative icon + emphasised first line to read as a real error state. */
+body.route--system-403 #block-lms-theme-content::before,
+body.route--system-404 #block-lms-theme-content::before {
+  content: "\f071"; /* Font Awesome exclamation-triangle */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  display: block;
+  font-size: 2.5rem;
+  line-height: 1;
+  margin-bottom: 1rem;
+  color: #0077b6;
+}
+
+/* [P037] ISSUE 1-0803: logged-in account name ("Jenny Pham") wraps to two
+   lines next to the dropdown caret. The name span carries an inline
+   white-space:nowrap that is defeated when the flex link is allowed to shrink;
+   force the link not to shrink and keep the name on one line, truncating if
+   space-constrained. Global header component — no page scope. */
+.lms-navbar .lms-user-profile-link {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  max-width: 220px;
+}
+
+.lms-navbar .lms-user-profile-link > span {
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* [P037] ISSUE 1-0811: footer Contact Info phone/email links render in a blue
+   (#0077b6) that is borderline for WCAG AA on the light footer surface.
+   Darken to #005f92 (>=4.5:1 on #ffffff/light blue tint). Global footer. */
+.lms-footer__col a[href^="tel:"],
+.lms-footer__col a[href^="mailto:"] {
+  color: #005f92 !important;
+}
+
+/* [P037] ISSUE 1-0813: on the sticky mobile header the bell notification
+   badge (top:-8px) sits at the very top edge and appears clipped by the bar.
+   Pull the badge inward and ensure the wrapper/header has headroom so the
+   badge stays fully contained. Global notification-bell component. */
+@media (max-width: 480px) {
+  .lms-navbar .lms-bell-counter {
+    top: -4px;
+    right: -8px;
+  }
+
+  .lms-navbar .lms-bell-icon-wrapper {
+    margin-top: 2px;
+  }
+}

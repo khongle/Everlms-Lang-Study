@@ -1,0 +1,155 @@
+/* P035 — Manage Users (/workspace/users). Page wrapper: .lms-admin.
+   Footer bar, filter row, table cells use INLINE flex styles -> override with !important. */
+
+/* [P035] ISSUE 1-0762, 1-0763: Bottom action bar — vertically center on a shared
+   baseline; keep the "0 selected" counter on one line so the label block no longer
+   sits higher than the buttons. Footer row is the flex parent inside .lms-table card. */
+.lms-admin #lms-bulk-users-form > div:last-child {
+  align-items: center !important;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+/* The bulk-action group (label + counter + buttons) */
+.lms-admin #lms-bulk-users-form > div:last-child > div:first-child {
+  align-items: center !important;
+  flex-wrap: wrap;
+}
+/* Counter must read on a single line */
+.lms-admin #bulk-selected-count {
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+/* "Total N users found on this page" should not wrap to two lines on desktop */
+.lms-admin #lms-bulk-users-form > div:last-child > div:last-child > span {
+  white-space: nowrap;
+}
+
+/* [P035] ISSUE 1-0767: ROLE badges — raise text contrast to meet WCAG AA (>=4.5:1)
+   on the dark #0b0f19/#1e293b rows. Inline color is set per-role, so override the
+   role <span> (the only rounded inline badge inside the Role cell, 5th td). */
+.lms-admin .lms-table td:nth-child(4) > span {
+  color: #cfe0ff !important;            /* light blue, AA on dark for the default/Student look */
+  background: rgba(59, 130, 246, 0.28) !important;
+  border-color: rgba(147, 197, 253, 0.45) !important;
+  font-weight: 600;
+}
+
+/* [P035] ISSUE 1-0768: USER column — enforce consistent row height and keep the
+   avatar + name on a single aligned line; truncate long names with ellipsis so
+   rows don't grow to 2-3 lines. (USER cell is the 2nd td, an inline flex.) */
+.lms-admin .lms-table tbody td {
+  vertical-align: middle !important;
+}
+.lms-admin .lms-table tbody tr {
+  height: 56px;
+}
+.lms-admin .lms-table td:nth-child(2) {
+  align-items: center !important;
+  min-height: 56px;
+}
+.lms-admin .lms-table td:nth-child(2) > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 220px;
+}
+.lms-admin .lms-table td:nth-child(2) > img {
+  flex: 0 0 auto;
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 480px) {
+
+  /* [P035] ISSUE 1-0782: Header — stack the H1 above the action buttons so the
+     wrapped title doesn't collide with the Add User control. */
+  .lms-admin .lms-admin__header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem;
+  }
+  .lms-admin .lms-admin__header > div {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  /* [P035] ISSUE 1-0781, 1-0780: Filter row — stack vertically full width and let
+     the search input fill the row so its placeholder is no longer truncated. The
+     filter card body and its inner groups are inline flex rows. */
+  .lms-admin .lms-admin-card > div[style*="space-between"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem;
+  }
+  .lms-admin .lms-admin-card > div[style*="space-between"] > div {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+    width: 100%;
+  }
+  .lms-admin .lms-admin-card > div[style*="space-between"] > div > div {
+    width: 100%;
+  }
+  .lms-admin .lms-admin-filter__input {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  .lms-admin .lms-admin-filter__input + i.fa-search,
+  .lms-admin .fa-search {
+    /* keep the search icon anchored inside the now full-width field */
+    right: 1rem;
+  }
+  .lms-admin .lms-admin-filter__select {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* [P035] ISSUE 1-0777: Bulk toolbar — stack the label/counter/buttons into a
+     single cohesive column instead of one-letter-per-line wrapping. */
+  .lms-admin #lms-bulk-users-form > div:last-child {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 1rem;
+  }
+  .lms-admin #lms-bulk-users-form > div:last-child > div:first-child {
+    flex-wrap: wrap;
+    align-items: center !important;
+    gap: 0.5rem 0.75rem !important;
+  }
+  .lms-admin #lms-bulk-users-form > div:last-child > div:first-child button {
+    flex: 1 1 auto;
+  }
+
+  /* [P035] ISSUE 1-0775: Pagination summary — give it room and allow normal wrap
+     instead of breaking one word per line. */
+  .lms-admin #lms-bulk-users-form > div:last-child > div:last-child {
+    flex-direction: column;
+    align-items: flex-start !important;
+    width: 100%;
+    gap: 0.75rem;
+  }
+  .lms-admin #lms-bulk-users-form > div:last-child > div:last-child > span {
+    white-space: normal !important;
+    width: 100%;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  /* [P035] ISSUE 1-0776: Pagination controls — wrap cleanly with even gaps, no
+     overlap of the numbered circles and Next/Last. */
+  .lms-admin .lms-pagination-container,
+  .lms-admin .lms-pagination-container .pager,
+  .lms-admin .lms-pagination-container ul.pager__items {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .lms-admin .lms-pagination-container li,
+  .lms-admin .lms-pagination-container .pager__item {
+    margin: 0;
+  }
+}

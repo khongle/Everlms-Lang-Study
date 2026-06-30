@@ -1,0 +1,107 @@
+/* ==========================================================================
+   P035 — Manage Users (User Management) — third-pass UI fixes
+   Loads LAST. Page renders in the custom lms_theme admin shell (.lms-admin).
+   Inline styles in the twig templates are stubborn, so !important is used.
+   ========================================================================== */
+
+/* [P035] ISSUE 1-0763: bulk selection counter must stay on one line */
+#bulk-selected-count {
+  white-space: nowrap !important;
+  display: inline-block !important;
+  flex: 0 0 auto !important;
+  min-width: max-content !important;
+}
+/* keep the whole bulk-action bar from squeezing the counter */
+#lms-bulk-users-form #bulk-selected-count {
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+}
+
+/* [P035] ISSUE 1-0764: bulk action buttons look disabled with 0 selection.
+   Pure-CSS state hook: when no .bulk-user-checkbox is :checked, the action
+   buttons (Activate / Deactivate / Export) are visually muted + not-allowed. */
+#lms-bulk-users-form:not(:has(.bulk-user-checkbox:checked)) button[name="action"] {
+  opacity: 0.45 !important;
+  filter: grayscale(35%) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+/* restore full appearance the moment at least one row is selected */
+#lms-bulk-users-form:has(.bulk-user-checkbox:checked) button[name="action"] {
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: pointer !important;
+}
+
+/* [P035] ISSUE 1-0767: ROLE column badges low contrast (pale text on dark).
+   The role span is the only inline-styled span inside the 4th <td>.
+   Replace the faint tint with a solid, AA-compliant filled chip per role. */
+.lms-admin .lms-table tbody td:nth-child(4) > span {
+  border: 1px solid transparent !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  background: #475569 !important; /* neutral fallback, >=4.5:1 on dark row */
+}
+/* Student (blue) */
+.lms-admin .lms-table tbody td:nth-child(4) > span[style*="59, 130, 246"] {
+  color: #ffffff !important;
+  background: #2563eb !important; /* solid blue, white text ~5.0:1 */
+}
+/* Instructor (amber) — dark text on amber for contrast */
+.lms-admin .lms-table tbody td:nth-child(4) > span[style*="245, 158, 11"] {
+  color: #1a1206 !important;
+  background: #f59e0b !important;
+}
+/* Manager (fuchsia) */
+.lms-admin .lms-table tbody td:nth-child(4) > span[style*="217, 70, 239"] {
+  color: #ffffff !important;
+  background: #c026d3 !important;
+}
+/* Admin (red) */
+.lms-admin .lms-table tbody td:nth-child(4) > span[style*="239, 68, 68"] {
+  color: #ffffff !important;
+  background: #dc2626 !important;
+}
+
+/* [P035] ISSUE 1-0769: uniform avatar treatment in the USER column.
+   All rows already use <img>; enforce identical size, circle and subtle
+   ring so monogram and photo avatars read as one consistent component. */
+.lms-admin .lms-table tbody td:nth-child(2) img {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  background: #21262d !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) !important;
+  flex: 0 0 auto !important;
+}
+
+/* [P035] ISSUE 1-0780: mobile search input truncates its placeholder.
+   The input is hard-coded to width:250px inline; let it fill the row on
+   small screens so the placeholder is not cut off mid-word. */
+@media (max-width: 768px) {
+  .lms-admin .lms-admin-filter__input[name="search"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  /* the search wrapper + its filter group should span full width on mobile */
+  .lms-admin .lms-admin-filter__input[name="search"] {
+    flex: 1 1 100% !important;
+  }
+  /* make the search field's positioning container stretch too */
+  .lms-admin form#lms-admin-user-filter-form .lms-admin-card [style*="position: relative"] {
+    width: 100% !important;
+    display: block !important;
+  }
+}
+
+/* [P035] ISSUE 1-0779: SilverCare brand wordmark contrast (text fallback only).
+   When the brand renders as text (no logo image), ensure AA contrast on the
+   dark sidebar. (When it renders as an <img>, contrast can't be fixed in CSS.) */
+.lms-admin__sidebar-brand a span {
+  color: #f1f5f9 !important;
+  opacity: 1 !important;
+}

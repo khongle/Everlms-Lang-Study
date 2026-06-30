@@ -1,0 +1,123 @@
+/* ==========================================================================
+   P030 — checkout-membership (My Memberships) — THIRD-PASS UI fixes
+   Route body class: body.route--lms-membership-my-membership
+   Active skin on this page: body.layout-minimalist (light theme).
+   This partial loads LAST (weight 1003 bundle). !important used to defeat the
+   stubborn cascade that broke prior fixes.
+   ========================================================================== */
+
+/* [P030] ISSUE 1-0646, 1-0655, 1-0654: Plan title (e.g. "Basic Access",
+   "Enterprise / Facility Plan") renders dark-on-dark on the #1e293b card,
+   failing WCAG AA. PRIOR FIX FAILED because the real winning rule is the skin
+   selector  `body.layout-minimalist h1,h2,h3,h4,h5,h6 { color:#0f172a }`
+   (in light-mode.css) which paints EVERY heading dark slate — the card's own
+   inline `<style> .lms-membership-card__header h3 {color:#fff}` is itself a
+   heading and gets repainted on light-mode pages. We force a near-white title
+   with !important and a selector that out-specifies the skin rule on BOTH the
+   route and the skin, across all viewports, so it can never be re-darkened.
+   This also resolves 1-0654: once both titles are light, sibling card headers
+   regain identical visual weight. */
+body.route--lms-membership-my-membership .lms-membership-card .lms-membership-card__header h3,
+body.route--lms-membership-my-membership .lms-membership-card__header h3,
+body.route--lms-membership-my-membership .lms-membership-card__title h3,
+body.layout-minimalist .lms-membership-card__header h3,
+body.layout-minimalist .lms-membership-card__title h3,
+.lms-membership-card__header h3 {
+  color: #f8fafc !important;       /* ~15.8:1 on #1e293b — passes WCAG AA/AAA */
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  margin: 0 !important;
+  -webkit-text-fill-color: #f8fafc !important; /* beat any text-gradient clip */
+}
+
+/* [P030] ISSUE 1-0654: keep the ACTIVE badge identical & vertically balanced so
+   sibling card headers read as the same structure. */
+body.route--lms-membership-my-membership .lms-membership-card__header,
+body.layout-minimalist .lms-membership-card__header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+body.route--lms-membership-my-membership .lms-membership-card__header .lms-badge,
+body.layout-minimalist .lms-membership-card__header .lms-badge {
+  flex: 0 0 auto !important;       /* badge never shrinks or wraps */
+  white-space: nowrap !important;
+  align-self: center !important;
+}
+
+/* [P030] ISSUE 1-0661: Clear horizontal gap between the BA/EN avatar badge and
+   the plan title so the (now-legible) title never sits behind/against the badge.
+   The avatar is fixed-width and the title column is allowed to wrap. */
+body.route--lms-membership-my-membership .lms-membership-card__title,
+body.layout-minimalist .lms-membership-card__title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.875rem !important;        /* explicit breathing room avatar -> title */
+  min-width: 0 !important;         /* allow long titles to wrap, not overflow */
+}
+body.route--lms-membership-my-membership .lms-membership-icon,
+body.layout-minimalist .lms-membership-icon {
+  flex: 0 0 40px !important;       /* avatar never compressed by long titles */
+  width: 40px !important;
+  height: 40px !important;
+}
+
+/* [P030] ISSUE 1-0662: The long "Enterprise / Facility Plan" title wraps to two
+   lines while ACTIVE stays one line. Keep the badge vertically centred against
+   the wrapped title and let the title wrap cleanly with a consistent rhythm. */
+body.route--lms-membership-my-membership .lms-membership-card__header h3,
+body.layout-minimalist .lms-membership-card__header h3 {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+/* [P030] ISSUE 1-0665: Start Date uses a grid calendar glyph (fa-calendar-alt)
+   while End Date uses a calendar-with-check glyph (fa-calendar-check) — the two
+   adjacent date rows look inconsistent. Standardise BOTH rows to the same plain
+   calendar glyph (\f073) by overriding the End-date icon's pseudo glyph. Scoped
+   to the membership card so other calendar-check icons site-wide are untouched. */
+body.route--lms-membership-my-membership .lms-membership-card__body .fa-calendar-check::before {
+  content: "\f073" !important;     /* fa-calendar-alt — matches Start Date row */
+}
+
+/* [P030] ISSUE 1-0660: On mobile the blue notification count badge ("2") crowds
+   the adjacent wishlist heart. The badge overhangs the bell by right:-12px and
+   the heart link only has margin-right:0.5rem. Add real clearance after the bell
+   cluster and pull the badge in a touch so it stops touching the heart region. */
+.lms-navbar__actions .lms-bell-icon-wrapper {
+  margin-right: 0.75rem !important;
+}
+.lms-bell-icon-wrapper .lms-bell-counter {
+  right: -8px !important;          /* less overhang toward the heart */
+  top: -7px !important;
+}
+@media (max-width: 480px) {
+  .lms-navbar__actions .lms-bell-icon-wrapper {
+    margin-right: 0.875rem !important;
+  }
+  .lms-bell-icon-wrapper .lms-bell-counter {
+    right: -6px !important;
+    top: -6px !important;
+  }
+}
+
+/* ----- Mobile reinforcement (<=480px) ----- */
+@media (max-width: 480px) {
+  /* [P030] ISSUE 1-0655: re-assert legible light title on small cards. */
+  body.route--lms-membership-my-membership .lms-membership-card__header h3,
+  body.layout-minimalist .lms-membership-card__header h3 {
+    color: #f8fafc !important;
+    -webkit-text-fill-color: #f8fafc !important;
+    font-size: 1.125rem !important;
+  }
+  /* [P030] ISSUE 1-0661: maintain avatar->title gap on narrow cards. */
+  body.route--lms-membership-my-membership .lms-membership-card__title {
+    gap: 0.75rem !important;
+  }
+  /* [P030] ISSUE 1-0662: keep header row centred so the wrapped title and the
+     single-line ACTIVE badge stay vertically aligned. */
+  body.route--lms-membership-my-membership .lms-membership-card__header {
+    align-items: center !important;
+  }
+}

@@ -1,0 +1,160 @@
+/* ==========================================================================
+   P034 — Manage Quizzes (/workspace/quizzes)
+   Fixes scoped to the admin workspace (.lms-admin) and shared admin components.
+   Loaded LAST. !important used only to beat inline styles on the targets.
+   ========================================================================== */
+
+/* [P034] ISSUE 1-0740, 1-0741: 'ACTIONS' header + edit icon clipped at right edge.
+   Root cause: inner two-column flex (table column + 300px stats) squeezes the
+   table so columns/last action icon overflow the card. Allow horizontal scroll
+   inside the card and guarantee the actions cell keeps inner padding so the
+   icons never sit flush against (or past) the card's right border. */
+.lms-admin .lms-table-responsive {
+  overflow-x: auto;
+}
+.lms-admin .lms-table {
+  /* let columns size to content so ACTIONS is never truncated */
+  min-width: 100%;
+}
+.lms-admin .lms-table th:last-child,
+.lms-admin .lms-table td:last-child {
+  padding-right: 1.5rem !important;
+  text-align: right;
+}
+/* keep the action controls fully inside the cell with a clear gap from the edge */
+.lms-admin .lms-table td:last-child a {
+  display: inline-block;
+}
+
+/* [P034] ISSUE 1-0746: single-line cell values top-align next to 3-4 line titles.
+   Center cell content vertically so the eye tracks across the row; cap the title
+   so rows do not grow excessively tall. */
+.lms-admin .lms-table td,
+.lms-admin .lms-table th {
+  vertical-align: middle !important;
+}
+.lms-admin .lms-table td:first-child {
+  /* clamp very long quiz titles to keep rows compact and scannable */
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 320px;
+}
+
+/* [P034] ISSUE 1-0745, 1-0757: 'SilverCare' brand wordmark too muted on the
+   dark sidebar (desktop + mobile). Force the text wordmark to a high-contrast
+   light gray (>= 4.5:1 on #161b22). Only affects the text fallback; image
+   logos are unaffected. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span {
+  color: #f1f5f9 !important; /* ~16:1 on #161b22 */
+}
+
+/* ==========================================================================
+   MOBILE (<= 480px) — page is not responsive: fixed 260px sidebar overlaps a
+   thin main strip; inner two-column flex + 4-col grid overflow the viewport.
+   Reclaim full width, single-column the layout, stop horizontal overflow.
+   ========================================================================== */
+@media (max-width: 480px) {
+
+  /* [P034] ISSUE 1-0750, 1-0754: main content squeezed / page wider than
+     viewport. Drop the 260px gutter, give main full width, kill overflow-x. */
+  .lms-admin {
+    flex-direction: column;
+  }
+  .lms-admin .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    padding: 1.25rem !important;
+    overflow-x: hidden;
+  }
+
+  /* [P034] ISSUE 1-0749 (layout reclaim): collapse the persistent desktop
+     sidebar off-canvas so it no longer steals the viewport width. A usable
+     hamburger toggle still requires markup/JS (deferred). */
+  .lms-admin .lms-admin__sidebar {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    height: auto !important;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .lms-admin .lms-admin__nav {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0 0.5rem;
+  }
+  .lms-admin .lms-admin__nav-label,
+  .lms-admin .lms-admin__sidebar-profile {
+    display: none;
+  }
+  .lms-admin .lms-admin__nav-item {
+    white-space: nowrap;
+  }
+
+  /* [P034] ISSUE 1-0752, 1-0753: H1 'Quiz Management' clipped / button overlaps
+     heading. Stack header title and action button vertically with a gap, and
+     shrink the heading so it fits the viewport. */
+  .lms-admin .lms-admin__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .lms-admin .lms-admin__title {
+    font-size: 1.375rem !important;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+  .lms-admin .lms-admin-header__actions .btn-lms-primary {
+    display: inline-block;
+  }
+
+  /* [P034] ISSUE 1-0750 (inner cols), 1-0756: inner two-column flex (table +
+     300px Quick Stats) and the stats card overflow. Stack to one column and
+     let the stats sidebar take full width. */
+  .lms-admin .lms-admin__main > [style*="display: flex"] {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+  .lms-admin .lms-admin__main > [style*="display: flex"] > [style*="width: 300px"] {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* [P034] ISSUE 1-0751: quiz rows clipped to a few characters. Once full width
+     is restored, allow titles/metadata to wrap instead of being cut; let the
+     table scroll horizontally within its card rather than clipping. */
+  .lms-admin .lms-table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lms-admin .lms-table td:first-child {
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    max-width: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* [P034] ISSUE 1-0755: Question Bank Preview 4-col grid runs off-screen.
+     Collapse to a single column so all cards fit and wrap. */
+  .lms-admin .lms-admin__main > [style*="grid-template-columns: repeat(4"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* [P034] ISSUE 1-0758: 'Question Bank Preview' heading breaks mid-word in the
+     squeezed column. With full width restored, ensure normal wrapping. */
+  .lms-admin .lms-admin__main h3 {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+}

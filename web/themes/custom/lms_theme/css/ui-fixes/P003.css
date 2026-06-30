@@ -1,0 +1,172 @@
+/* ==========================================================================
+   P003 — Course Detail (/courses/88) UI fixes
+   Loaded LAST. !important used only to beat inline styles on the target.
+   ========================================================================== */
+
+/* [P003] ISSUE 1-0117: Even vertical rhythm between enroll-card children */
+body.route--lms-course-detail .lms-enroll-card .lms-enroll-card__price {
+  margin-bottom: 1.25rem !important;
+}
+body.route--lms-course-detail .lms-enroll-card .btn-lms-primary,
+body.route--lms-course-detail .lms-enroll-card .btn-lms-outline {
+  margin-bottom: 1.25rem !important;
+}
+body.route--lms-course-detail .lms-enroll-card .lms-wishlist-toggle {
+  margin-bottom: 1.25rem !important;
+}
+/* guarantee line sits one consistent gap below the secondary CTA */
+body.route--lms-course-detail .lms-enroll-card .lms-wishlist-toggle + p {
+  margin-top: 0 !important;
+  margin-bottom: 1.75rem !important;
+}
+
+/* [P003] ISSUE 1-0118 + 1-0128: Active tab indicator centered to label, contained in bar */
+body.route--lms-course-detail .lms-course-tabs {
+  overflow: hidden;
+}
+body.route--lms-course-detail .lms-tabs__link {
+  position: relative;
+  border-bottom-color: transparent !important;
+}
+/* clean underline sized to the label content box, centered */
+body.route--lms-course-detail .lms-tabs__link--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: #667eea;
+  border-radius: 3px 3px 0 0;
+}
+
+/* [P003] ISSUE 1-0119: Section headings not clipped behind sticky header + tab bar */
+/* sticky header (64px) + sticky tab bar (~62px) ≈ 130px clearance */
+body.route--lms-course-detail .lms-tab-panel > h2,
+body.route--lms-course-detail .lms-tab-panel > h3,
+body.route--lms-course-detail .lms-tab-panel__title {
+  scroll-margin-top: 140px;
+}
+body.route--lms-course-detail .lms-tab-panel {
+  scroll-margin-top: 140px;
+}
+
+/* [P003] ISSUE 1-0121: Money-back guarantee caption meets WCAG AA on white card */
+body.route--lms-course-detail .lms-enroll-card .lms-wishlist-toggle + p {
+  color: #475569 !important; /* slate-600, >=4.5:1 on white */
+}
+
+/* [P003] ISSUE 1-0123: Social share icons/borders perceivable on light card */
+body.route--lms-course-detail .lms-enroll-card__share .lms-social-btn {
+  color: #334155 !important;          /* slate-700 icon */
+  border-color: #94a3b8 !important;   /* visible circular border */
+  background: #f1f5f9 !important;     /* subtle filled chip */
+}
+
+/* [P003] ISSUE 1-0124: Includes-list icons vertically centered with a fixed gutter */
+body.route--lms-course-detail .lms-enroll-card__includes > li {
+  display: flex !important;
+  align-items: center !important;
+}
+body.route--lms-course-detail .lms-enroll-card__includes > li > i {
+  width: 20px !important;
+  text-align: center !important;
+  flex: 0 0 20px !important;
+  line-height: 1 !important;
+}
+
+/* [P003] ISSUE 1-0131: Body / prerequisite paragraph text meets WCAG AA */
+body.route--lms-course-detail .lms-course-body,
+body.route--lms-course-detail .lms-course-body p,
+body.route--lms-course-detail .lms-course-body li,
+body.route--lms-course-detail .lms-learn-list,
+body.route--lms-course-detail .lms-learn-list li {
+  color: #334155 !important; /* slate-700 */
+}
+
+/* [P003] ISSUE 1-0132: Italic policy/disclaimer note made legible */
+body.route--lms-course-detail .lms-course-body em,
+body.route--lms-course-detail .lms-course-body i,
+body.route--lms-course-detail .lms-learn-list em,
+body.route--lms-course-detail .lms-learn-list i {
+  color: #334155 !important;
+  font-style: italic;
+}
+
+/* [P003] ISSUE 1-0136: Consistent corner radius across hero meta chips */
+body.route--lms-course-detail .lms-course-banner__meta > span,
+body.route--lms-course-detail .lms-course-banner__instructor,
+body.route--lms-course-detail .lms-course-banner__rating {
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   MOBILE (<= 480px / <= 640px) issues
+   ========================================================================== */
+
+/* [P003] ISSUE 1-0127: "What You'll Learn" collapses to one column on mobile */
+@media (max-width: 640px) {
+  body.route--lms-course-detail .lms-learn-list {
+    columns: 1 !important;
+    column-count: 1 !important;
+    column-gap: 0 !important;
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* [P003] ISSUE 1-0126: Tab strip horizontally scrollable, labels not clipped */
+@media (max-width: 640px) {
+  body.route--lms-course-detail .lms-course-tabs .container {
+    max-width: 100%;
+    overflow: hidden;
+  }
+  body.route--lms-course-detail .lms-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 1.25rem !important;
+    /* fade affordance on the right edge */
+    -webkit-mask-image: linear-gradient(to right, #000 88%, transparent 100%);
+    mask-image: linear-gradient(to right, #000 88%, transparent 100%);
+  }
+  body.route--lms-course-detail .lms-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  body.route--lms-course-detail .lms-tabs > li {
+    flex: 0 0 auto;
+  }
+  body.route--lms-course-detail .lms-tabs__link {
+    white-space: nowrap;
+  }
+}
+
+/* [P003] ISSUE 1-0125 + 1-0129: Header auth CTAs fit viewport; clear menu/auth grouping */
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    padding-left: 0.875rem !important;
+    padding-right: 0.875rem !important;
+    gap: 0.5rem;
+  }
+  .lms-navbar__actions {
+    flex-shrink: 1;
+    min-width: 0;
+    gap: 0.5rem !important;
+  }
+  /* shrink the Register button so it never clips at the right edge */
+  .lms-navbar__actions .lms-btn--sm {
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+    font-size: 0.8125rem !important;
+    white-space: nowrap;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    white-space: nowrap;
+    font-size: 0.8125rem;
+  }
+  /* clear separation between hamburger toggle and the auth cluster */
+  .lms-navbar__toggle {
+    margin-right: 0.5rem;
+    margin-left: 0;
+  }
+}

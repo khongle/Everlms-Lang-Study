@@ -1,0 +1,52 @@
+/* ==========================================================================
+   P045 — Workspace Reports & Analytics (/workspace/reports)  [THIRD PASS]
+   Admin layout injected by lms-admin-sidebar.html.twig: .lms-admin >
+   .lms-admin__sidebar + .lms-admin__main. Loaded LAST via the admin_ui_fixes
+   library. Inline <style> in the sidebar template + element inline style=""
+   attributes mean !important is required to win these stubborn cases.
+
+   ROOT CAUSE for the brand-contrast issues (why prior fixes FAILED):
+   The sidebar brand is NOT a text <span>. When a site logo is configured the
+   template renders ONLY an <img> (lms-admin-sidebar.html.twig L416-417); the
+   <span>{{ site_name }}</span> at L420 never renders. So every prior rule
+   coloring `.lms-admin__sidebar-brand a span` was a no-op. The "SilverCare"
+   wordmark lives INSIDE the SVG with fill="#0e2a47" (dark navy) on the dark
+   (#0b0f19) sidebar — hence the persistent low contrast. CSS cannot touch the
+   SVG's fill via <img>, but a CSS filter on the <img> can lighten the baked-in
+   artwork so it reads. We render the whole logo as high-contrast near-white.
+   ========================================================================== */
+
+/* [P045] ISSUE 1-0933, 1-0945: Sidebar brand wordmark "SilverCare" contrast
+   (desktop + mobile). The wordmark is a dark-navy fill baked into the <img>
+   SVG, so coloring the (non-existent) text span does nothing. Apply a filter
+   to the logo image that turns its dark artwork into a near-white monochrome
+   lockup: brightness(0) flattens to black, then invert(1) -> white, with a
+   touch of brightness back-off so it is soft-white (~#ededed) rather than pure
+   #fff. #ededed on #0b0f19 ~= 16:1 (passes WCAG AA comfortably).
+   Both the "S" tile and the "SilverCare" wordmark become legible white. */
+.lms-admin .lms-admin__sidebar-brand a img {
+  filter: brightness(0) invert(1) brightness(0.97) !important;
+}
+
+/* Belt-and-suspenders: in the fallback branch (no logo configured) the
+   wordmark IS a real <span>; keep it near-white too so it never regresses. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span,
+.lms-admin .lms-admin__sidebar-brand a i {
+  color: #f1f5f9 !important; /* slate-100 on #0b0f19 -> ~16:1 */
+  font-weight: 800;
+}
+
+/* [P045] ISSUE 1-0937: COMPLETIONS column looks empty/broken. The values ARE
+   bound (template L83: {{ course.completions }}) but the cell has no explicit
+   color/weight, so low completion counts — many of them "0" — render in the
+   table's dim inherited tone next to the bold ENROLLMENTS column and read as
+   blank. Give the Completions cell (3rd column of the Course Analytics table)
+   a clearly legible color + matching weight so every value, including 0, is
+   visible and the column reads as populated, not broken.
+   Column order: 1 Course Name | 2 Enrollments | 3 Completions | 4 Rate | 5 Revenue */
+.lms-admin #course-analytics .lms-table tbody td:nth-child(3) {
+  color: #e2e8f0 !important;          /* legible light slate on dark rows */
+  font-weight: 700 !important;        /* match the bold ENROLLMENTS column */
+  text-align: center !important;
+}

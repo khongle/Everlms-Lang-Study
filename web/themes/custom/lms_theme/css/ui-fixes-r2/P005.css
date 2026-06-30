@@ -1,0 +1,98 @@
+/* ==========================================================================
+   P005 — Category detail (route--lms-course-category-detail)
+   UI fixes round 2. Loaded last. Real selectors verified from live markup.
+   ========================================================================== */
+
+/* [P005] ISSUE 2-0047: Keep filters as a left sidebar beside results on tablet.
+   In main.css the catalog only stacks (flex-direction:column) at max-width:768px,
+   but on tablet portrait the panel still spans full width above results and the
+   wide single-column checkbox rows leave huge empty space. Restore the two-column
+   sidebar+results layout across the tablet range and cap checkbox-group width so
+   results appear without excessive scrolling. */
+@media (min-width: 600px) and (max-width: 1024px) {
+  body.route--lms-course-category-detail .lms-catalog {
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  body.route--lms-course-category-detail .lms-catalog__sidebar {
+    width: 240px;
+    min-width: 240px;
+    flex: 0 0 240px;
+    position: sticky;
+    top: 1rem;
+  }
+  body.route--lms-course-category-detail .lms-catalog__main {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  /* Constrain checkbox rows so labels don't stretch edge-to-edge. */
+  body.route--lms-course-category-detail .lms-catalog__checkbox {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* [P005] ISSUE 2-0055: Remove the oversized empty band between the filters panel
+   and the "12 courses found" results bar. The toolbar already has its own bottom
+   margin; trim the leading gap so vertical rhythm matches other sections. */
+body.route--lms-course-category-detail .lms-catalog__main {
+  margin-top: 0;
+}
+body.route--lms-course-category-detail .lms-catalog__toolbar {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+/* When stacked (mobile / narrow tablet) keep a normal, not oversized, gap
+   between the sidebar card and the results. */
+@media (max-width: 599px) {
+  body.route--lms-course-category-detail .lms-catalog {
+    gap: 1.25rem;
+  }
+  body.route--lms-course-category-detail .lms-catalog__main {
+    margin-top: 0;
+  }
+}
+
+/* [P005] ISSUE 2-0048: Reserve a consistent 2-line height for card titles so the
+   author row, description, rating and price align across cards in the same row.
+   main.css already clamps to 2 lines; add a matching min-height (2 * line). */
+body.route--lms-course-category-detail .card-lms__title {
+  min-height: 3.08rem; /* 2 lines @ font-size 1.1rem * line-height 1.4 */
+}
+
+/* [P005] ISSUE 2-0050 & 2-0051: Category badge. On a category-scoped listing every
+   card repeats the same category badge — redundant noise that also has weak
+   contrast over light/busy images. Hide the per-card badge on this page. */
+body.route--lms-course-category-detail .grid-courses .card-lms__category {
+  display: none !important; /* beats inline position:static; margin:0 on the span */
+}
+
+/* [P005] ISSUE 2-0052: Level indicator ("Beginner"/"Intermediate" + signal icon)
+   inherits the faint .card-lms__meta grey (#6e7681). Darken for AA contrast on
+   the white card and slightly enlarge the icon for legibility. */
+body.route--lms-course-category-detail .card-lms__level {
+  color: #475569; /* slate-600: >=4.5:1 on #fff */
+  font-weight: 600;
+}
+body.route--lms-course-category-detail .card-lms__level i {
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+/* [P005] ISSUE 2-0053: Sort control (#sort-courses .lms-select) reads as static
+   text — add a visible chevron affordance and a clear focus ring. The global
+   select{appearance:none} strips the native caret, so paint one via background. */
+body.route--lms-course-category-detail #sort-courses.lms-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%23e6edf3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.4rem;
+}
+body.route--lms-course-category-detail #sort-courses.lms-select:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  border-color: rgba(99, 102, 241, 0.6);
+}

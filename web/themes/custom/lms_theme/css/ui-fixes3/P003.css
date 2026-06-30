@@ -1,0 +1,97 @@
+/* ==========================================================================
+   P003 — Course Detail (/courses/88) UI fixes — round 3 (THIRD pass)
+   Loaded LAST via lms_theme. !important + matched specificity used to beat
+   the medical/minimalist skin rules (medical.css) that defeated prior fixes.
+   Active body class on this page: layout-medical layout-minimalist
+   route--lms-course-detail
+   ========================================================================== */
+
+/* [P003] ISSUE 1-0128: Active tab pill protrudes above the sticky tab bar.
+   ROOT CAUSE (why prior fix failed): the prior round-2 fix scoped its rules
+   under `body.route--lms-course-detail ...` (specificity ~0,2,0). The real
+   styling comes from medical.css under
+   `body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link--active`
+   (specificity ~0,6,1, with !important), which paints the link as a full
+   `border-radius:999px` pill with a tinted background. The pill is TALLER than
+   the bar's available vertical space (`.lms-tabs` had `padding:0.55rem 0`), so
+   its rounded top edge spills above the bar's 1px top border.
+   FIX: re-state the rules with the SAME high-specificity selector chain so we
+   actually win, give the tab list enough symmetric vertical padding to fully
+   contain the pill, vertically center the pill, and clip any residual vertical
+   overflow on the bar (horizontal scroll lives on the inner `.container`, so
+   clipping the bar's vertical axis does not break the scroll affordance). */
+
+/* Bar: clip vertical overflow so nothing can ever poke above the top border.
+   Horizontal scrolling is owned by the inner `.container`, untouched here. */
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs {
+  overflow-y: clip !important;
+}
+
+/* Tab list: give symmetric vertical padding large enough to hold the pill,
+   and center items so the pill sits in the middle of the bar, never at the edge. */
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs {
+  align-items: center !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+/* Each pill: keep it self-contained — no vertical margin, a hard line-height,
+   and a height that fits inside the padded bar. The bottom-border accent that
+   medical.css adds on the active state is dropped (it conflicts with the pill
+   shape and is what visually reads as a clipped half-round); the pill tint +
+   text color already mark the active tab. */
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  line-height: 1.2 !important;
+  vertical-align: middle !important;
+}
+
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link--active,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-tab-item.active {
+  border-bottom-color: transparent !important; /* kill the protruding accent line */
+  border-radius: 999px !important;             /* fully rounded, fully contained */
+}
+
+/* Mobile: same containment; the inner `.container` still scrolls horizontally. */
+@media (max-width: 640px) {
+  body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs {
+    overflow-y: clip !important;
+  }
+  body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs {
+    padding-top: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
+  }
+  body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-course-tabs .lms-tabs__link {
+    padding-top: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
+  }
+}
+
+/* [P003] ISSUE 1-0122: Anonymous "Add to Wishlist" CTA is a misleading affordance.
+   For logged-out visitors the wishlist toggle requires auth and will fail/redirect.
+   The enroll button already correctly reads "Log in to Enroll". We cannot change
+   the button label or its route from CSS, but we CAN make the affordance honest
+   by visually demoting the wishlist control to a quiet, link-like secondary
+   action (so it no longer competes as an actionable primary control) and signal
+   via cursor that it is a navigational/auth step rather than an instant toggle.
+   NOTE: body has no anonymous-specific class on this page, but the "Log in to
+   Enroll" sibling implies the anonymous state; we scope to that DOM context.
+   The proper label/route change is deferred to markup (see fix_hint). */
+body.route--lms-course-detail .lms-enroll-card .lms-wishlist-toggle {
+  /* demote from prominent outlined button to a quiet secondary action */
+  background: transparent !important;
+  box-shadow: none !important;
+  border-color: hsla(214, 100%, 36%, 0.25) !important;
+  opacity: 0.85;
+}
+body.route--lms-course-detail .lms-enroll-card .lms-wishlist-toggle:hover {
+  opacity: 1;
+  border-color: hsla(214, 100%, 36%, 0.45) !important;
+}
+
+/* ISSUE 1-0120 (brand "SilverCare DE" vs "SilverCare"): DEFERRED.
+   This is seeded/CMS body copy ("our SilverCare DE facilities"). The text lives
+   in the course Body field, not in theme markup, so it cannot be corrected from
+   CSS without hiding content. Standardize the brand string in the content/seed
+   data instead. No CSS rule emitted. */

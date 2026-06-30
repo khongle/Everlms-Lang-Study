@@ -1,0 +1,105 @@
+/* ============================================================
+   P042 — /workspace/content-tools  (system 403 / "Access denied")
+   Real body class (from live markup): body.route--system-403
+   Page structure (live curl):
+     .lms-page (min-height:100vh; flex column)
+       header.lms-navbar          <- brand + nav  (RENDERS)
+       main.lms-page__content     <- .lms-messages-wrapper (hidden)
+                                     + #block-lms-theme-content (the 1 line)
+       footer.lms-footer          <- full footer  (RENDERS)
+   => 1-0888 / 1-0890 / 1-0892 "missing header/footer/brand" are already
+      resolved at the MARKUP level (header + footer + logo are present in
+      the page template). The remaining CSS-addressable defect is the lone
+      error sentence being stranded at the top-left of an otherwise empty
+      content column with cramped spacing.
+   THIRD PASS: the prior min-height:60vh did not visibly center the block
+   (content column did not grow / specificity lost). This pass forces the
+   content area to truly fill the space between the rendered header and
+   footer and hard-centers the message with !important so it can no longer
+   read as a broken, top-anchored, empty page.
+   ============================================================ */
+
+/* [P042] ISSUE 1-0892,1-0895: force the 403 content column to grow into the
+   space between header and footer and HARD-center the lone message both
+   axes, so it is never stranded at the top of a blank column.
+   Uses !important to beat the base .lms-page__content rule and any earlier
+   pass that under-specified the height. */
+body.route--system-403 .lms-page__content {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  /* fill remaining viewport: header (~64px) + footer; min-height guarantees
+     a tall column even when the rendered footer is short. */
+  min-height: calc(100vh - 64px) !important;
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
+  gap: 1rem !important;
+}
+
+/* [P042] ISSUE 1-0895,1-0896: present the error text as a self-contained,
+   readable, centered card with comfortable max-width and even vertical
+   rhythm instead of a single sentence floating against blank white.
+   AA-contrast text on the light medical background. */
+body.route--system-403 #block-lms-theme-content {
+  max-width: 40rem !important;
+  margin: 0 auto !important;
+  padding: 2.5rem 2rem !important;
+  font-size: 1.125rem !important;
+  line-height: 1.7 !important;
+  color: #334155 !important;
+  text-align: center !important;
+}
+
+/* [P042] ISSUE 1-0896: give the access-denied message a clear, balanced
+   heading treatment + spacing so the heading and body do not crowd together
+   and the transition to body text is even (no abrupt cramped band edge). */
+body.route--system-403 .lms-page__content h1,
+body.route--system-403 #block-lms-theme-content h1 {
+  margin: 0 0 1rem !important;
+  font-size: 1.875rem !important;
+  line-height: 1.2 !important;
+  color: #1f2937 !important;
+}
+
+/* [P042] ISSUE 1-0895: collapse the empty/hidden messages wrapper so it
+   contributes no stray top whitespace above the centered message. */
+body.route--system-403 .lms-messages-wrapper:empty,
+body.route--system-403 .lms-messages-wrapper > .hidden,
+body.route--system-403 [data-drupal-messages-fallback].hidden {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* [P042] ISSUE 1-0894 (partial, CSS-only affordance): surface a friendly
+   recovery prompt under the bare one-line message so the page is not a
+   dead end. (A real, focusable "Go home" anchor needs a 403 template and
+   is deferred — this only adds guidance text via generated content.) */
+body.route--system-403 #block-lms-theme-content::after {
+  content: "Return to the SilverCare home page to continue.";
+  display: block;
+  margin-top: 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: #64748b;
+}
+
+/* [P042] ISSUE 1-0895,1-0896: mobile — keep the message centered and the
+   spacing intentional so the column never reads as a broken empty zone. */
+@media (max-width: 480px) {
+  body.route--system-403 .lms-page__content {
+    min-height: calc(100vh - 56px) !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+  body.route--system-403 #block-lms-theme-content {
+    padding: 1.75rem 1.25rem !important;
+    font-size: 1.0625rem !important;
+  }
+  body.route--system-403 .lms-page__content h1,
+  body.route--system-403 #block-lms-theme-content h1 {
+    font-size: 1.5rem !important;
+  }
+}

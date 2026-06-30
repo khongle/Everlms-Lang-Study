@@ -1,0 +1,137 @@
+/* ==========================================================================
+   P013 — Forum index (/forum) UI fixes
+   Active skin: medical (light-mode via body.layout-minimalist)
+   Card background context: #ffffff
+   This partial loads LAST.
+   ========================================================================== */
+
+/* [P013] ISSUE 1-0326: 'Community' H1 top edge clipped under sticky header */
+/* Give the page title container clearance and add scroll-padding for anchors. */
+html {
+  scroll-padding-top: 96px;
+}
+body.route--lms-forum-index .lms-forum-header {
+  margin-top: 0.5rem;
+}
+body.route--lms-forum-index .lms-forum-header h1 {
+  padding-top: 0.25rem;
+  line-height: 1.25;
+  overflow: visible;
+}
+
+/* [P013] ISSUE 1-0327: Thread meta (author + date) below WCAG AA on white card */
+/* Was #64748b (~4.5:1 borderline); darken to #5b6770 (~5.6:1 on #fff). */
+body.route--lms-forum-index .lms-forum-item__meta,
+body.route--lms-forum-index .lms-forum-item__meta span,
+body.route--lms-forum-index .lms-forum-item__meta i {
+  color: #5b6770;
+}
+
+/* [P013] ISSUE 1-0329 + 1-0338: Stat cluster vertically centered vs top-aligned
+   title block; on taller (multi-line) cards columns disagree. Top-align both
+   columns so the REPLIES/VIEWS column anchors consistently across all cards. */
+body.route--lms-forum-index .lms-forum-item {
+  align-items: flex-start;
+}
+body.route--lms-forum-index .lms-forum-item__stats {
+  align-items: flex-start;
+  padding-top: 0.25rem;
+}
+
+/* [P013] ISSUE 1-0339 + 1-0341: Long unbroken German terms crowd the stats
+   column and force ragged short lines; titles wrap tightly.
+   Break long words cleanly, keep a comfortable measure, and reserve a fixed
+   stat column so the text column reflows predictably. */
+body.route--lms-forum-index .lms-forum-item__content {
+  min-width: 0; /* allow flex child to shrink so wrapping works */
+}
+body.route--lms-forum-index .lms-forum-item__content h3,
+body.route--lms-forum-index .lms-forum-item__content h3 a,
+body.route--lms-forum-index .lms-forum-item__content p {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+body.route--lms-forum-index .lms-forum-item__content h3 {
+  line-height: 1.3;
+}
+body.route--lms-forum-index .lms-forum-item__content p {
+  line-height: 1.55;
+}
+body.route--lms-forum-index .lms-forum-item__stats {
+  min-width: 120px;
+  flex: 0 0 auto;
+}
+
+/* [P013] ISSUE 1-0340: Oversized empty band between last card and footer on
+   mobile (doubled section + content trailing padding). Trim trailing space to
+   normal section padding without breaking the sticky-footer flex layout. */
+@media (max-width: 480px) {
+  body.route--lms-forum-index .lms-section {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  body.route--lms-forum-index .lms-page__content {
+    padding-bottom: 1rem;
+  }
+}
+
+/* ==========================================================================
+   GLOBAL HEADER COMPONENT FIXES (no page scope — shared navbar component)
+   ========================================================================== */
+
+/* [P013] ISSUE 1-0331 + 1-0342: At mobile, the auth actions (Login text link +
+   Register button) sit beside the hamburger and overflow the viewport so
+   'Register' is clipped. Let the action row wrap inside the header, align the
+   two peer auth controls on a shared baseline, and guard against horizontal
+   overflow so nothing is clipped at the screen edge. */
+@media (max-width: 992px) {
+  .lms-navbar__container {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+  .lms-navbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .lms-navbar__actions .lms-navbar__link,
+  .lms-navbar__actions .lms-btn {
+    white-space: nowrap;
+  }
+}
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  /* Auth actions take their own full-width row so neither item is clipped. */
+  .lms-navbar__actions {
+    flex-basis: 100%;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  .lms-navbar__actions .lms-btn--sm {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+/* Safeguard: never allow the page to scroll/clip horizontally on mobile. */
+@media (max-width: 480px) {
+  body.route--lms-forum-index {
+    overflow-x: hidden;
+  }
+}
+
+/* [P013] ISSUE 1-0333: Hamburger (mobile menu toggle) icon too pale on the
+   white header. Force a dark, high-contrast color (#1b2a4a >= 3:1 on #fff). */
+.lms-navbar__toggle,
+.lms-navbar__toggle i,
+.lms-navbar__toggle .fa-bars {
+  color: #1b2a4a;
+}
+.lms-navbar__toggle:hover,
+.lms-navbar__toggle:hover i {
+  color: #6366f1;
+}

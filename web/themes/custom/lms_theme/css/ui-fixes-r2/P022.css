@@ -1,0 +1,59 @@
+/* ==========================================================================
+   P022 — My Quiz Results (/my-quiz-results)
+   Round-2 UI fixes. Loaded LAST.
+   !important is used only to beat existing skin/inline !important rules.
+   ========================================================================== */
+
+/* [P022] ISSUE 2-0224: stat-card KPI value and caption have near-equal weight,
+   so the metric does not dominate. Enlarge + bolden the value and soften the
+   label to a smaller muted caption to establish clear KPI hierarchy at tablet.
+   Page-scoped; overrides skin sizing on the value. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-quiz-my-results .lms-quiz-results-page__summary-value {
+    font-size: 2rem !important;        /* ~32px */
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.01em;
+  }
+
+  body.route--lms-quiz-my-results .lms-quiz-results-page__summary-label {
+    font-size: 0.78rem !important;     /* ~12.5px caption */
+    font-weight: 500 !important;
+    letter-spacing: 0.02em;
+    color: #475569 !important;         /* muted, WCAG AA on white */
+    text-transform: uppercase;
+  }
+}
+
+/* [P022] ISSUE 2-0226: header bell badge sits too tight on the glyph and has no
+   separation ring. Global component fix on .lms-bell-counter — beat the inline
+   top/right offsets and border:0 from the bell template so the badge floats with
+   breathing room and a thin white ring. */
+.lms-bell-icon-wrapper .lms-bell-counter {
+  top: -6px !important;
+  right: -8px !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(0, 119, 182, 0.18), 0 6px 14px rgba(0, 119, 182, 0.28) !important;
+}
+
+/* [P022] ISSUE 2-0227: floating back-to-top FAB crowds the Review Result card
+   action at tablet width. Global component fix — push the FAB further from the
+   bottom/right edge so it clears interactive card content at this viewport. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  #lms-back-to-top,
+  .lms-back-to-top {
+    right: 28px !important;
+    bottom: 32px !important;
+  }
+}
+
+/* [P022] ISSUE 2-0228: with few results the main content leaves an oversized
+   empty band above the footer divider at tablet width. Drop the forced section
+   min-height (set in round 1) at this viewport and balance bottom spacing with
+   the top so the gap reads as intentional padding, not a void. Page-scoped. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-quiz-my-results .lms-quiz-results-page {
+    min-height: 0 !important;
+    padding-bottom: 3rem !important;
+  }
+}

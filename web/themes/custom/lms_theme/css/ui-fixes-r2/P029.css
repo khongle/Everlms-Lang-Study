@@ -1,0 +1,85 @@
+/* =========================================================================
+   P029 — Checkout / Course detail (route--lms-course-detail)
+   Round-2 UI fixes. Loads LAST. !important used only to beat inline styles.
+   ========================================================================= */
+
+/* [P029] ISSUE 2-0281, 2-0283: Collapse course layout to a single full-width
+   column at tablet so the sidebar card spans the content width instead of
+   sitting in a narrow ~half-width left cell with a large empty right gutter.
+   The template sets inline flex + fixed 360px sidebar widths, so we override
+   with !important and switch the flex direction to column. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-course-detail .lms-course-layout {
+    flex-direction: column !important;
+    gap: 2rem !important;
+  }
+
+  body.route--lms-course-detail .lms-course-layout__main {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Sidebar (enrollment / "This course includes" card) goes full width and
+     centered; drop the fixed 360px so it fills the content container. */
+  body.route--lms-course-detail .lms-course-layout__sidebar {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* The card is sticky on desktop; once stacked, sticky/offset is pointless
+     and can clip oddly, so reset it to normal flow. */
+  body.route--lms-course-detail .lms-enroll-card {
+    position: static !important;
+    top: auto !important;
+  }
+}
+
+/* [P029] ISSUE 2-0282: On tablet, surface the price + primary CTA card BEFORE
+   the long descriptive sections instead of burying it at the bottom. Once the
+   layout is a flex column we can reorder children with CSS order. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-course-detail .lms-course-layout__sidebar {
+    order: -1 !important;
+  }
+  body.route--lms-course-detail .lms-course-layout__main {
+    order: 0 !important;
+  }
+}
+
+/* [P029] ISSUE 2-0288: Enrollment success notice ("You have successfully
+   enrolled...") rendered via Drupal status messages had weak light-gray text
+   on a near-white background. Apply a proper success alert treatment: light
+   green tint background with dark green text. Contrast of #14532d on #d7f5e3
+   is ~9.5:1 (well above WCAG AA 4.5:1). Global component — not page-scoped. */
+.messages--status {
+  background-color: #d7f5e3 !important;
+  border: 1px solid #34a76a !important;
+  border-left-width: 4px !important;
+  color: #14532d !important;
+}
+.messages--status a {
+  color: #0b3d20 !important;
+  text-decoration: underline;
+}
+
+/* [P029] ISSUE 2-0290: Active tab underline sat detached from the label
+   because the link has tall inline vertical padding (1.25rem 0) with the
+   border pinned to the bottom edge. Pull the underline up to the label
+   baseline and align the tab row's left edge with the content container.
+   Global tab component. */
+.lms-course-tabs .lms-tabs__link {
+  padding-bottom: 0.5rem !important;
+  margin-bottom: 0.75rem;
+  border-bottom-width: 3px;
+}
+.lms-course-tabs .lms-tabs__link--active {
+  border-bottom-color: #667eea;
+}
+/* Keep the tab strip flush with the body container's left padding so the
+   active indicator lines up with the section content below it. */
+.lms-course-tabs .lms-tabs {
+  padding-left: 0;
+}

@@ -1,0 +1,120 @@
+/* ==========================================================================
+   P010 — About page (route--lms-course-about) UI fixes, round 2
+   Active skin: medical / minimalist. Loaded LAST.
+   ========================================================================== */
+
+/* [P010] ISSUE 2-0099: Support Commitment badge renders empty (fa-shield-check
+   is not a Font Awesome 6 Free glyph, so the styled box shows no icon).
+   Render a valid lifebuoy glyph via CSS so the box is no longer blank. */
+body.route--lms-course-about .lms-about-banner__badge i {
+  display: none !important;
+}
+body.route--lms-course-about .lms-about-banner__badge::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f1cd"; /* fa-life-ring / lifebuoy */
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+/* [P010] ISSUE 2-0102: Hero stat cards collapse to single full-width column at
+   tablet width. Restore a compact 2x2 grid across the tablet range. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-course-about .lms-about-hero__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    align-content: center;
+  }
+  body.route--lms-course-about .lms-about-stat-card {
+    text-align: center;
+  }
+}
+
+/* [P010] ISSUE 2-0103: Back-to-top FAB overlaps the right edge of the content
+   card at tablet width. Push it clear into the gutter and lift its stacking. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-course-about #lms-back-to-top,
+  body.route--lms-course-about .lms-back-to-top {
+    right: 16px !important;
+    bottom: 20px !important;
+    z-index: 1300 !important;
+  }
+}
+
+/* [P010] ISSUE 2-0108: Hero subtitle is near-white (rgba(230,237,243,.78))
+   on the white medical card — fails AA. Use the medical body text token. */
+body.route--lms-course-about .lms-about-hero p,
+body.route--lms-course-about .lms-about-hero__copy p {
+  color: #476273; /* --medical-text-soft, ~6.2:1 on #fff */
+}
+
+/* [P010] ISSUE 2-0109: 'ABOUT' eyebrow pill text + outline are low-contrast on
+   the white card. Darken the text and strengthen the pill bg/border. */
+body.route--lms-course-about .lms-about-hero__eyebrow {
+  color: #0077b6; /* --medical-violet, ~4.9:1 on #fff */
+  background: rgba(0, 119, 182, 0.12);
+  border: 1px solid rgba(0, 119, 182, 0.45);
+}
+
+/* [P010] ISSUE 2-0110 + 2-0111: Eyebrow treatment + section-header alignment are
+   inconsistent across sections. Standardize: every section eyebrow becomes a
+   pill matching the hero, and all section headers align left consistently. */
+body.route--lms-course-about .lms-about-section__eyebrow,
+body.route--lms-course-about .lms-about-banner__eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(0, 119, 182, 0.12);
+  border: 1px solid rgba(0, 119, 182, 0.45);
+  color: #0077b6; /* --medical-violet */
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* 2-0111: force consistent left alignment for the center-variant headers. */
+body.route--lms-course-about .lms-about-section__header--center {
+  margin-left: 0;
+  margin-right: auto;
+  text-align: left;
+}
+body.route--lms-course-about .lms-about-section__header--center .lms-about-section__eyebrow {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* [P010] ISSUE 2-0104: Section icon tiles and leadership avatars use different
+   size/radius. Harmonize the size scale; keep avatars round but match scale. */
+body.route--lms-course-about .lms-about-principle-card__icon,
+body.route--lms-course-about .lms-about-value-card__icon,
+body.route--lms-course-about .lms-about-team-card__avatar {
+  width: 3.25rem;
+  height: 3.25rem;
+  font-size: 1.25rem;
+}
+
+/* [P010] ISSUE 2-0112: Core-value (and principle) card icon hugs the top edge,
+   giving uneven vertical vs horizontal padding. Add balanced top padding so the
+   icon top inset matches the card's horizontal padding (1.25rem). */
+body.route--lms-course-about .lms-about-value-card,
+body.route--lms-course-about .lms-about-principle-card,
+body.route--lms-course-about .lms-about-team-card {
+  padding-top: 1.5rem;
+}
+
+/* [P010] ISSUE 2-0113: Oversized empty gradient bands between section cards at
+   tablet width. Tighten the inter-section vertical rhythm to a consistent value. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-course-about .lms-about-section,
+  body.route--lms-course-about .lms-about-banner {
+    margin-top: 1.25rem;
+  }
+  body.route--lms-course-about .lms-about-hero {
+    margin-bottom: 1.25rem;
+  }
+  body.route--lms-course-about .lms-about-page {
+    padding: 2rem 0 2.5rem;
+  }
+}

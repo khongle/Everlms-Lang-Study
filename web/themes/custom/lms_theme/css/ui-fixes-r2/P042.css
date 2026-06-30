@@ -1,0 +1,12 @@
+/* [P042] ISSUE 2-0408: De-emphasize current (non-link) breadcrumb crumb vs link crumbs */
+/* The current-page crumb is the LAST span in .lms-breadcrumb (separators are spans that are
+   never last because they only render when not loop.last). It carries an inline style
+   color:#e6edf3;font-weight:600 making it look identical to the dark/bold link crumbs.
+   Mute it (WCAG AA muted gray on dark bg), drop the bold weight, and disable interaction. */
+.lms-breadcrumb span:last-child {
+  color: #9aa4b2 !important;
+  font-weight: 400 !important;
+  text-decoration: none !important;
+  pointer-events: none;
+  cursor: default;
+}

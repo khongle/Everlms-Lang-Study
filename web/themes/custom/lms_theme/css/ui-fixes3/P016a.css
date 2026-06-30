@@ -1,0 +1,72 @@
+/* ==========================================================================
+   P016a — User Login (/user/login)  THIRD-PASS fixes
+   Active skin: medical / minimalist (body.layout-medical.layout-minimalist)
+   route_class: route--user-login
+   This partial loads LAST. !important is used to beat base medical.css /
+   light-mode.css rules (.lms-auth{min-height:100vh} etc.).
+   ========================================================================== */
+
+/* [P016a] ISSUE 1-0390: mobile vertical balance — PRIOR FIX FAILED.
+   Root cause the previous pass missed: base medical.css sets
+   `.lms-auth { min-height:100vh; display:flex; align-items:center }`, BUT
+   `.lms-auth` lives inside `.lms-page__content` (padding:2rem) which itself
+   sits below a position:fixed 64px header. So the card is centered inside a
+   full 100vh box that is *pushed down* by the header + content padding,
+   producing the large empty gap above the card and a top-heavy composition.
+   The prior fix only re-stated align-items:center (already the default) so it
+   did nothing. Real fix: kill the wrapper's top padding on this route and make
+   the auth area only as tall as the viewport space actually left below the
+   fixed header, so true vertical centering lands inside the visible area. */
+body.route--user-login .lms-page__content {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+body.route--user-login .lms-auth {
+  min-height: calc(100vh - 64px) !important;
+  min-height: calc(100dvh - 64px) !important; /* honor mobile dynamic toolbars */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+@media (max-width: 480px) {
+  body.route--user-login .lms-auth {
+    /* Tall phones still leave excess room; trim symmetric padding and let
+       flex centering balance the remaining space top vs. bottom. */
+    padding: 1.5rem 1rem !important;
+    justify-content: center !important;
+  }
+  /* Guarantee the card never hugs the header: a small equal min top/bottom
+     keeps balance even when the card is taller than the viewport. */
+  body.route--user-login .lms-auth__container {
+    margin: auto 0 !important;
+  }
+}
+
+/* [P016a] ISSUE 1-0384: email field reads as permanently highlighted.
+   The email input carries autofocus, so its blue :focus ring shows even on a
+   first, un-interacted paint, making it look like inconsistent default styling
+   vs. the gray password field. Normalize BOTH inputs to an identical default
+   border, and only paint the focus ring on :focus-visible (keyboard/explicit
+   interaction) so a bare autofocus no longer renders the heavy blue ring on
+   load. Both fields now share one resting appearance. */
+body.route--user-login .lms-auth input.form-control,
+body.route--user-login .lms-auth input.form-text {
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+body.route--user-login .lms-auth input.form-control:focus-visible,
+body.route--user-login .lms-auth input.form-text:focus-visible {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18) !important;
+  outline: none !important;
+}
+/* Pointer-focus (click into a field) should also show the ring, but a plain
+   programmatic autofocus on load should not. */
+body.route--user-login .lms-auth input.form-control:focus:not(:focus-visible),
+body.route--user-login .lms-auth input.form-text:focus:not(:focus-visible) {
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
+}

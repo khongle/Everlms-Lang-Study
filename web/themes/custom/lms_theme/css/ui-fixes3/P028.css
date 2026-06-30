@@ -1,0 +1,86 @@
+/* ==========================================================================
+   P028 — Profile page (route--lms-course-profile) — THIRD-pass UI fixes
+   Template: themes/custom/lms_theme/templates/user/user--full.html.twig
+   Markup:
+     .lms-profile-info-grid > .lms-profile-info-item
+        > .lms-profile-info-item__icon
+        > .lms-profile-info-item__content
+             > .lms-profile-info-label
+             > .lms-profile-info-value   (holds {{ user.getEmail() }})
+   Loads LAST. !important used to beat existing main.css component rules.
+
+   ROOT CAUSE of the recurring failure (1-0612 / 1-0615): prior passes set
+   `overflow-wrap: anywhere`, which by spec permits a break at ANY character —
+   so a single unbroken token like an email splits mid-TLD ("example.c"/"om").
+   An email address has NO whitespace, so it is one token; the only reliable
+   CSS-only way to stop a mid-token break is to (a) forbid arbitrary breaking
+   (word-break:keep-all; overflow-wrap:normal) and (b) make the token actually
+   fit the available width — by giving the Email card the full grid row and
+   shrinking the value font so it lands on a single clean line.
+   ========================================================================== */
+
+/* [P028] ISSUE 1-0612 + 1-0615: stop the EMAIL value from ever breaking inside
+   a domain/TLD token. Forbid arbitrary character breaks everywhere first. */
+body.route--lms-course-profile .lms-profile__layout-redesign .lms-profile-info-value {
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  word-wrap: normal !important;
+  hyphens: none !important;
+  min-width: 0;
+}
+
+/* The email is the only long token; give its card the full grid row and force
+   a single line so it can never wrap mid-token. Target the Email card via its
+   envelope icon (no per-field class exists in the markup). */
+body.route--lms-course-profile .lms-profile__layout-redesign
+  .lms-profile-info-item:has(.fa-envelope) {
+  grid-column: 1 / -1;          /* span both columns of the 1fr 1fr grid */
+  align-items: center;
+}
+body.route--lms-course-profile .lms-profile__layout-redesign
+  .lms-profile-info-item:has(.fa-envelope) .lms-profile-info-item__content {
+  min-width: 0;                 /* allow the value box to use the full row */
+  flex: 1 1 auto;
+}
+body.route--lms-course-profile .lms-profile__layout-redesign
+  .lms-profile-info-item:has(.fa-envelope) .lms-profile-info-value {
+  white-space: nowrap !important;   /* one clean line — no split */
+  overflow: hidden;
+  text-overflow: ellipsis;          /* graceful only if a viewport is truly too narrow */
+  font-size: 0.9rem;                /* full-row width fits the address at this size */
+}
+
+/* ------------------------------------------------------------------ mobile */
+@media (max-width: 640px) {
+  /* [P028] ISSUE 1-0615: single-column grid leaves the full card width to the
+     email. Shrink the value enough that the address fits on one line with
+     nowrap, so it cannot break inside "example.com". */
+  body.route--lms-course-profile .lms-profile__layout-redesign
+    .lms-profile-info-item:has(.fa-envelope) .lms-profile-info-value {
+    font-size: 0.78rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* Reclaim horizontal room on narrow screens: shrink the icon column and the
+     row gap so the (nowrap) email has the maximum width before any ellipsis. */
+  body.route--lms-course-profile .lms-profile__layout-redesign
+    .lms-profile-info-item:has(.fa-envelope) {
+    gap: 0.75rem !important;
+    padding: 1rem !important;
+  }
+  body.route--lms-course-profile .lms-profile__layout-redesign
+    .lms-profile-info-item:has(.fa-envelope) .lms-profile-info-item__icon {
+    width: 32px !important;
+    height: 32px !important;
+    flex: 0 0 32px;
+    font-size: 0.95rem !important;
+  }
+
+  /* [P028] ISSUE 1-0621: with the email forced to a single line the Email card
+     is now the same height as the Location / Company cards, restoring sibling
+     consistency. Belt-and-braces: top-align icon+label so any residual height
+     delta keeps the icons aligned across cards. */
+  body.route--lms-course-profile .lms-profile__layout-redesign .lms-profile-info-item {
+    align-items: flex-start !important;
+  }
+}

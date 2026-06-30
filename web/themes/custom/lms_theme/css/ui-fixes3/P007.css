@@ -1,0 +1,23 @@
+/* ==========================================================================
+   P007 - Instructor profile (/instructor/56)
+   body.route--lms-course-instructor-profile
+   THIRD-PASS fixes. Loads LAST (aggregated after main/medical/layout themes).
+   !important is required: the green "Free" color comes from a low-specificity
+   but later-cascading base rule (.card-lms__price--free{color:#43e97b}) and the
+   prior pass omitted !important, so it lost. We force the match here.
+   ========================================================================== */
+
+/* [P007] ISSUE 1-0220: "Free" price must match numeric price color (PRIOR FIX FAILED)
+   Numeric prices resolve to .card-lms__price{color:#e6edf3;font-weight:700;font-size:1.125rem}.
+   The base rule .card-lms__price--free{color:#43e97b} repaints "Free" green, breaking
+   sibling consistency. Force identical color/weight/size on the free variant so it is
+   visually indistinguishable from numeric sibling prices. */
+body.route--lms-course-instructor-profile .card-lms__price.card-lms__price--free,
+body.route--lms-course-instructor-profile .card-lms__price--free {
+  color: #e6edf3 !important;
+  font-weight: 700 !important;
+  font-size: 1.25rem !important; /* matches the inline font-size:1.25rem on numeric price spans */
+  background: none !important;
+  -webkit-text-fill-color: #e6edf3 !important; /* defeat any gradient text-fill from theme layers */
+  -webkit-background-clip: border-box !important;
+}

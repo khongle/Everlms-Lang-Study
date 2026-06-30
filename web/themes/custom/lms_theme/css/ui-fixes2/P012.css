@@ -1,0 +1,40 @@
+/* [P012] ISSUE 1-0317: Glossary alphabet jump-bar — disabled letters too faint (contrast WCAG AA) */
+/* Default disabled style is color:#1e293b at opacity:0.4 over a light hero — far below 4.5:1.
+   Replace with a solid medium-grey that clears AA for the 600-weight letters and stays
+   visibly distinct from the active dark/blue letters. Scoped to the component class. */
+body.route--lms-course-glossary .lms-glossary-page .lms-letter-btn.disabled {
+  opacity: 1;
+  color: #6b7280; /* ~5.0:1 on the light grey hero background */
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* [P012] ISSUE 1-0320: Glossary card titles — inconsistent title-to-body vertical rhythm */
+/* The title sits in a flex header row (.d-flex.justify-content-between.align-items-start.mb-3).
+   Single-word titles ('ADLs') keep that row short while wrapped titles ('Family
+   Communication') push it taller, so the gap above the definition differs card to card.
+   Reserve a 2-line min-height on the header row and align its contents to the top so the
+   definition always starts at the same vertical position across sibling cards. */
+body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card-body > .d-flex.justify-content-between.align-items-start {
+  min-height: 3.3rem; /* ~2 lines of the 1.375rem/1.2 h3 title */
+  align-items: flex-start;
+}
+
+/* Keep the title itself tidy: clamp to 2 lines and align its baseline within the reserved row. */
+body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.2;
+}
+
+/* On narrow mobile the prior fix did not normalise the gap; re-assert the reserved header
+   height there too so 1-line and wrapped titles share the same title-to-body spacing. */
+@media (max-width: 480px) {
+  body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card-body > .d-flex.justify-content-between.align-items-start {
+    min-height: 3.1rem;
+    margin-bottom: 1rem;
+  }
+}

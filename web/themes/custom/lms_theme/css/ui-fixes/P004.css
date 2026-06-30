@@ -1,0 +1,102 @@
+/* ==========================================================================
+   P004 — Course Categories (/categories)
+   route_class: route--lms-course-category | skin: medical | brand: SilverCare
+   This partial loads LAST. !important used only to beat inline styles or
+   pre-existing !important rules on the same targets.
+   ========================================================================== */
+
+/* [P004] ISSUE 1-0139, 1-0138: equal-height cards with bottom-anchored badge.
+   Cards are <a class="lms-category-card"> with __icon, __content, __desc and
+   __meta. Make the card a flex column and push the meta (count badge) to the
+   bottom so every badge aligns across a row regardless of description length.
+   A min-height on the description region keeps cards with/without a desc the
+   same shape (content/data fix for the actual missing copy is deferred). */
+body.route--lms-course-category .lms-category-card {
+  display: flex;
+  flex-direction: column;
+}
+body.route--lms-course-category .lms-category-card__content {
+  flex: 1 1 auto;
+}
+body.route--lms-course-category .lms-category-card__desc {
+  min-height: 2.8rem; /* ~2 lines: keeps empty-desc cards level with copy cards */
+  margin-bottom: 0;
+}
+body.route--lms-course-category .lms-category-card__meta {
+  margin-top: auto; /* pin the count badge row to the bottom of the card */
+}
+
+/* [P004] ISSUE 1-0140: normalize the count pill so every "N Course(s)" badge
+   has identical typography, casing and padding/width. */
+body.route--lms-course-category .lms-category-card__meta .lms-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 5.5rem;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* [P004] ISSUE 1-0143: hero subtitle contrast. Inline style sets a light
+   #94a3b8; force a darker slate that meets WCAG AA (4.5:1) on the light hero
+   background. !important beats the inline color. */
+body.route--lms-course-category .lms-categories-hero p {
+  color: #334155 !important; /* ~8.9:1 on #fff, ~6:1 on pale blue */
+}
+
+/* [P004] ISSUE 1-0145: footer link / muted-text contrast. Footer is dark
+   (#161b22); lift the muted body text and links so small text clears AA.
+   Scoped to the footer component (no page scope). */
+.lms-footer ul li,
+.lms-footer ul li i,
+.lms-footer .lms-footer__bottom p {
+  color: #c9d1d9 !important; /* ~10:1 on #161b22 */
+}
+.lms-footer ul li a {
+  color: #79b8ff !important; /* ~6.4:1 on #161b22 */
+}
+.lms-footer ul li a:hover {
+  color: #a5cdff !important;
+}
+
+/* [P004] ISSUE 1-0146: mobile header overflow — the "Register" CTA in
+   .lms-navbar__actions was clipped by the right viewport edge. Keep the auth
+   actions visible but prevent horizontal overflow: tighten the gap, allow the
+   row to shrink, and compact the Register button so both fit on small screens.
+   Global component fix (no page scope). */
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+  .lms-navbar__actions {
+    gap: 0.5rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    font-size: 0.85rem;
+    padding-left: 0;
+    padding-right: 0;
+    white-space: nowrap;
+  }
+  .lms-navbar__actions .lms-btn--sm {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+}
+
+/* [P004] ISSUE 1-0155: floating back-to-top FAB overlapped the bottom cards.
+   Add bottom padding to the page content on small screens so the fixed FAB
+   (48px + ~28px offset) never sits over a card. Component-level safe gutter. */
+@media (max-width: 480px) {
+  body.route--lms-course-category .lms-page__content {
+    padding-bottom: 6rem;
+  }
+}

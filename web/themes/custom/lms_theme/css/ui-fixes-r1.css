@@ -1,0 +1,68 @@
+/**
+ * EverLMS / SilverCare — UI test Round 1 fixes (additive override layer).
+ * Loaded last via lms_theme.libraries.yml (global, high weight) so these win the cascade.
+ * Each block references the issue cluster it resolves. Surgical, real-selector fixes only.
+ */
+
+/* ============================================================
+ * Header / navbar — contrast + vertical alignment
+ * Cluster: low-contrast "Workspace"/"Dashboard"/nav links on white header,
+ * misaligned utility icons, username wrapping. (P001/all logged-in headers)
+ * ============================================================ */
+.lms-navbar__actions { align-items: center; }
+.lms-navbar__actions a,
+.lms-navbar__actions .lms-navbar__link { color: #1f2a37; }
+.lms-navbar__actions a:hover { color: #0e2a47; }
+/* user name should not wrap to two lines */
+.lms-navbar__actions .lms-navbar__user-name,
+.lms-navbar__actions [class*="user-name"],
+.lms-navbar__actions [class*="username"] { white-space: nowrap; }
+
+/* ============================================================
+ * Hero stat labels — low-contrast small-caps grey on light bg
+ * Cluster: COURSES/STUDENTS/SATISFACTION/DOMAINS labels (P001)
+ * ============================================================ */
+.medical-stat__label { color: #475569; font-weight: 600; }
+
+/* ============================================================
+ * Category cards — title wrap causes count-line misalignment
+ * Cluster: "X courses" baselines uneven, 1-line vs 2-line titles (P001)
+ * ============================================================ */
+.medical-category-card__name {
+  min-height: 2.6em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.medical-category-card { display: flex; flex-direction: column; }
+.medical-category-card__count { margin-top: auto; }
+
+/* ============================================================
+ * Course cards — unequal heights when titles wrap to 2 lines
+ * Cluster: catalog/home/dashboard course card rows not height-normalised
+ * ============================================================ */
+.medical-course-card { display: flex; flex-direction: column; height: 100%; }
+.medical-course-card__title,
+.medical-course-card__name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7em;
+}
+.medical-course-card__footer { margin-top: auto; }
+
+/* ============================================================
+ * Global: visible keyboard focus (a11y/interaction cluster)
+ * ============================================================ */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.lms-navbar__link:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #1556a0;
+  outline-offset: 2px;
+}

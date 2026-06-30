@@ -1,0 +1,63 @@
+/* ============================================================================
+   P011 — Contact page (route--lms-course-contact) UI fixes — ROUND 2
+   Skin: medical / light-mode (body.layout-medical .. .layout-minimalist)
+   Loads LAST. Page-specific rules scoped under body.route--lms-course-contact.
+   Global components (footer/header brand mark) scoped by component class.
+   ============================================================================ */
+
+/* [P011] ISSUE 1-0303: Footer "SilverCare" logo lockup is ~2x larger than the
+   header lockup on mobile. ROOT CAUSE (confirmed in cascade): at <=480px the
+   header brand mark is capped to max-height:28px (ui-fixes-r1-pages.css:1445)
+   "to stop it squeezing the actions off-screen", but the winning footer rule
+   stays at 56px (<=576px). So below 480px header=28px, footer=56px -> the
+   footer mark/wordmark reads clearly bigger. Earlier 56px/56px normalization
+   never accounted for the header's 28px mobile cap. Match the footer mark to
+   the header's actual rendered scale at each breakpoint.
+   (Global footer component — scoped by component class.) */
+.lms-footer .lms-brand-mark--footer {
+  height: 56px;
+}
+@media (max-width: 768px) {
+  .lms-footer .lms-brand-mark--footer {
+    height: 48px;
+  }
+}
+@media (max-width: 480px) {
+  /* Header mark is capped to 28px at this width; mirror it on the footer so the
+     two brand lockups stay visually consistent. */
+  .lms-footer .lms-brand-mark--footer {
+    height: 28px;
+    max-height: 28px;
+    width: auto;
+  }
+}
+
+/* [P011] ISSUE 1-0297: Hero "pills" ("Typical response: ..." / "Coverage: ...")
+   previously rendered near-white text on a near-white tint with the label/value
+   overlapping. Re-assert the readable, cleanly-separated treatment in this
+   last-loaded layer so it survives the cascade: visible tinted background +
+   border, dark slate text (>=4.5:1 AA), and flex gap separation between the
+   label and its <strong> value (no overlap; wraps cleanly on narrow screens). */
+body.route--lms-course-contact .lms-contact-hero__pills span {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .35rem;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155; /* slate-700 on #f1f5f9 ~ 8.6:1, passes WCAG AA */
+  font-weight: 500;
+}
+body.route--lms-course-contact .lms-contact-hero__pills span strong {
+  color: #1e293b; /* slate-800 — clearly distinct value */
+  font-weight: 700;
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  /* On mobile give each pill a touch more internal breathing room so the
+     label and value never visually collide. */
+  body.route--lms-course-contact .lms-contact-hero__pills span {
+    width: 100%;
+    line-height: 1.5;
+  }
+}

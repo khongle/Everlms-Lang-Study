@@ -1,0 +1,100 @@
+/* ==========================================================================
+   P040 — Certificate Templates (/workspace/certificate-templates)
+   Admin workspace layout (body.is-workspace). Selectors verified against:
+   - web/modules/custom/lms_certificate/templates/lms-admin-certificate-templates.html.twig
+   - web/modules/custom/lms_course/templates/lms-admin-sidebar.html.twig (inline <style>)
+   Loaded LAST. !important used only to beat the template's inline <style> /
+   inline attribute rules on the targets.
+   ========================================================================== */
+
+
+/* [P040] ISSUE 1-0853: STATUS header text vs 'Active' badge left-edge mismatch.
+   The th text starts at the cell's 1.5rem left padding. The td shares that same
+   1.5rem left padding, so the badge's BOX left edge already aligns with the
+   header text. A prior round used margin-left:-0.75rem which pulled the pill
+   0.75rem LEFT of the header (over-correction). Reset that pull and keep the
+   pill box flush with the header text's left edge. */
+body.is-workspace .lms-admin .lms-table td .lms-status {
+  margin-left: 0;
+}
+/* Make the STATUS th/td share identical left padding + alignment so the
+   header label and the badge box start on the same vertical line. */
+body.is-workspace .lms-admin .lms-table th:nth-child(3),
+body.is-workspace .lms-admin .lms-table td:nth-child(3) {
+  text-align: left;
+  padding-left: 1.5rem;
+}
+
+
+/* ==========================================================================
+   MOBILE (<=768px) — ISSUES 1-0859, 1-0862
+   Root cause: the admin table carries non-wrapping cells and a desktop min-width
+   that makes the .lms-admin-card wider than the phone viewport. Earlier rounds
+   collapsed the fixed sidebar but the table still pushed the CARD past the right
+   edge (STATUS badges clipped, ACTIONS column entirely off-screen) because the
+   horizontal scroll was never actually contained to the viewport width.
+   Fix: hard-cap every layout container to the viewport, kill page-level
+   horizontal overflow, and force the table's own wrapper to be the single
+   horizontal scroll surface so nothing is clipped off the right edge.
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Stop the whole document from scrolling sideways. */
+  body.is-workspace,
+  body.is-workspace .dialog-off-canvas-main-canvas,
+  body.is-workspace .lms-page {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Full-width single column; remove the desktop 260px sidebar offset. */
+  body.is-workspace .lms-admin {
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+  }
+  body.is-workspace .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 1.25rem !important;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  /* The card must never exceed the viewport; it becomes the visual clip box. */
+  body.is-workspace .lms-admin__main .lms-admin-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden; /* clip rounded corners; scrolling happens on the wrapper */
+  }
+
+  /* The scroll wrapper is the ONLY horizontal scroll surface, kept inside the
+     card (and thus inside the viewport). Table keeps a usable desktop width but
+     now scrolls internally instead of pushing the page wide / clipping columns. */
+  body.is-workspace .lms-admin__main .lms-table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.is-workspace .lms-admin__main .lms-table {
+    width: auto;
+    min-width: 560px; /* TEMPLATE NAME + CREATED + STATUS + ACTIONS legible */
+  }
+  body.is-workspace .lms-admin__main .lms-table th,
+  body.is-workspace .lms-admin__main .lms-table td {
+    white-space: nowrap;
+  }
+}
+
+/* Extra-small phones (<=480px): keep the same containment guarantees. */
+@media (max-width: 480px) {
+  body.is-workspace .lms-admin__main {
+    padding: 1rem !important;
+  }
+  body.is-workspace .lms-admin__main .lms-table-responsive {
+    overflow-x: auto;
+  }
+}

@@ -1,0 +1,134 @@
+/* =========================================================================
+   P002 — Course Catalog (/courses) — THIRD-PASS UI fixes
+   Route: body.route--lms-course-catalog (light theme via .layout-minimalist)
+   This partial loads LAST. !important used to beat inline styles / heavy rules.
+   ========================================================================= */
+
+/* [P002] ISSUE 1-0083: Footer column mislabeled 'Course' (holds News items).
+   Markup hard-codes <h4>Course</h4> in the 2nd footer column. Pure CSS cannot
+   edit text nodes, so we collapse the original glyph rendering and paint an
+   accurate 'Resources' label via ::before. Targets only the 2nd footer column
+   (the one whose list begins with a News & Notices link). */
+body.route--lms-course-catalog .lms-footer__grid > .lms-footer__col:nth-of-type(2) > h4 {
+  font-size: 0 !important;        /* hide original 'Course' text */
+  line-height: 0 !important;
+}
+body.route--lms-course-catalog .lms-footer__grid > .lms-footer__col:nth-of-type(2) > h4::before {
+  content: "Resources";
+  display: block;
+  font-size: 1.125rem;           /* restore the h4 size */
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+/* [P002] ISSUE 1-0084 / 1-0111: Card description + meta too faint (light grey
+   on white, below 4.5:1). Darken description, instructor name, level and the
+   numeric rating text to a #4b5563-range grey. Inline color:#a1a1aa on the
+   instructor name and rating count is overridden with !important. */
+body.route--lms-course-catalog .card-lms__desc,
+body.route--lms-course-catalog .card-lms__desc a {
+  color: #374151 !important;     /* ~8.9:1 on white */
+}
+body.route--lms-course-catalog .card-lms__instructor-name,
+body.route--lms-course-catalog .card-lms__instructor-name a,
+body.route--lms-course-catalog .card-lms__level,
+body.route--lms-course-catalog .card-lms__rating span {
+  color: #4b5563 !important;     /* ~7:1 on white */
+}
+
+/* [P002] ISSUE 1-0096 / 1-0108: Descriptions truncate mid-word with abrupt
+   ellipsis. Full text is server-rendered, so we enforce a clean 2-line CSS
+   line-clamp (block ellipsis at the line end, no per-character JS cut) and a
+   consistent height so every card clamps identically. */
+body.route--lms-course-catalog .card-lms__desc {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  min-height: 2.55em;            /* 2 lines * 0.85rem * ~1.5 line-height */
+}
+
+/* [P002] ISSUE 1-0101: 'Title' search input has no visible label, breaking the
+   uppercase-label pattern (CATEGORY/LEVEL/PRICE/RATING). Inject a styled label
+   above the input via ::before on its filter-group (the one containing
+   #course-search) and hide the now-redundant placeholder. */
+body.route--lms-course-catalog .lms-catalog__filter-group:has(> #course-search)::before {
+  content: "TITLE";
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+body.route--lms-course-catalog #course-search::placeholder {
+  color: transparent;            /* label now carries the meaning */
+}
+
+/* [P002] ISSUE 1-0105: Long category badge stretches edge-to-edge over the
+   card image with minimal inset. The badge is forced position:static inside a
+   flex wrapper via inline style. Constrain width, add inset, padding and
+   single-line ellipsis for very long labels like 'PALLIATIVE CARE & END OF
+   LIFE'. The inline-styled flex wrapper is the badge's parent. */
+body.route--lms-course-catalog .card-lms__category {
+  max-width: calc(100% - 1.5rem) !important;
+  margin-left: 0.25rem !important;
+  padding: 0.3rem 0.85rem !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+/* Keep the absolute-positioned wrapper off the very edge of the image. */
+body.route--lms-course-catalog .card-lms__image > div[style*="position: absolute"] {
+  max-width: calc(100% - 1rem);
+}
+
+/* [P002] ISSUE 1-0106 (mobile) / 1-0086 (filled affordance): 'Enroll Now' is a
+   weak ghost outline button with thin low-contrast blue text. Make it a solid
+   filled brand-gradient primary CTA so it reads as the main conversion action.
+   Overrides inline border-color / transparent background with !important. */
+body.route--lms-course-catalog .card-lms__footer .btn-lms-outline {
+  background: linear-gradient(to right, #6366f1, #a855f7) !important;
+  border: 1px solid transparent !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3) !important;
+}
+body.route--lms-course-catalog .card-lms__footer .btn-lms-outline:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.45) !important;
+}
+
+/* [P002] ISSUE 1-0107: 'Most Popular' sort control gives no dropdown
+   affordance. It is a native <select id="sort-courses">; on mobile the native
+   caret is often hidden. Force a custom chevron via background image and pad
+   the right side so options open clearly. */
+body.route--lms-course-catalog #sort-courses {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  padding-right: 2rem !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236366f1' d='M6 8 0 0h12z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 10px 7px !important;
+}
+
+/* [P002] ISSUE 1-0110: Inconsistent card title height — single vs two line
+   titles offset the byline/description across cards. Reserve a 2-line block. */
+body.route--lms-course-catalog .card-lms__title {
+  min-height: 3.08em;            /* 2 lines * 1.1rem * 1.4 line-height */
+}
+
+/* [P002] ISSUE 1-0112: RATING filter empty stars use dark slate fill that
+   reads as filled. The empty stars carry .text-muted (#6e7681). Render them as
+   a light-grey, hollow-looking star so filled gold vs empty is obvious. */
+body.route--lms-course-catalog .lms-rating-stars .fa-star.text-muted {
+  color: #cbd5e1 !important;     /* light grey, clearly empty */
+}
+body.route--lms-course-catalog .lms-rating-stars .fa-star.text-warning {
+  color: #f59e0b !important;     /* solid gold, clearly filled */
+}

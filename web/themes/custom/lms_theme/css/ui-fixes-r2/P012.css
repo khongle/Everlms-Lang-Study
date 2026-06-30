@@ -1,0 +1,63 @@
+/* ==========================================================================
+   P012 — Glossary (route--lms-course-glossary) UI fixes (round 2)
+   Loaded last. Page-specific rules scoped under body.route--lms-course-glossary.
+   ========================================================================== */
+
+/* [P012] ISSUE 2-0125: Tighten the empty band between term title and definition */
+/* The title row uses .mb-3 (16px) and the definition .mb-4; combined with the
+   card's d-flex flex-column layout this reads as a large, sparse gap. Pull the
+   title row's bottom margin down to a tight, consistent rhythm. */
+body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card-body > .d-flex.justify-content-between {
+  margin-bottom: 0.75rem; /* ~12px, replaces mb-3 (16px) */
+}
+body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card-title {
+  margin-bottom: 0; /* keep title flush; gap is controlled by the row above */
+  line-height: 1.25;
+}
+body.route--lms-course-glossary .lms-glossary-page .lms-glossary-definition {
+  margin-top: 0;
+}
+body.route--lms-course-glossary .lms-glossary-page .lms-glossary-definition p {
+  margin-top: 0;
+}
+
+/* [P012] ISSUE 2-0126: Give alphabet section headings consistent top clearance */
+/* Add separation above each letter group and a scroll offset so deep-linking to
+   #letter-X doesn't tuck the heading under the sticky navbar. */
+body.route--lms-course-glossary .lms-glossary-page .glossary-group-section {
+  scroll-margin-top: 96px;
+}
+body.route--lms-course-glossary .lms-glossary-page .glossary-group-section + .glossary-group-section {
+  margin-top: 1.5rem;
+}
+body.route--lms-course-glossary .lms-glossary-page .lms-letter-heading {
+  margin-top: 0.5rem;
+  scroll-margin-top: 96px;
+}
+
+/* [P012] ISSUE 2-0127 + 2-0128: Disabled (no-entry) alphabet letters — keep the
+   chip shape and raise contrast so they read as clearly-but-legibly disabled,
+   consistent with the active chips (same container, only a state difference). */
+body.route--lms-course-glossary .lms-glossary-page .lms-letter-btn.disabled {
+  opacity: 1;               /* drop the 0.4 wash that pushed text below 3:1 */
+  background: #e2e8f0;      /* slate-200 chip so shape matches active chips */
+  border: 1px solid #cbd5e1;/* slate-300 border, visible affordance */
+  color: #475569;           /* slate-600 on slate-200 ≈ 5.8:1, passes AA */
+  box-shadow: none;
+  cursor: default;
+}
+
+/* [P012] ISSUE 2-0129 + 2-0130: Darken definition body copy to a single uniform
+   slate so non-bold running text meets WCAG AA on white and the perceived
+   blue-tinted/mottled lightness against the bold spans is eliminated. */
+body.route--lms-course-glossary .lms-glossary-page .lms-glossary-definition,
+body.route--lms-course-glossary .lms-glossary-page .lms-glossary-definition p,
+body.route--lms-course-glossary .lms-glossary-page .lms-glossary-definition li {
+  color: #334155 !important; /* slate-700 on white ≈ 10.7:1, beats .text-muted */
+}
+/* Keep emphasized program names slightly darker but in the same hue family so
+   the paragraph reads as one consistent color block rather than mottled. */
+body.route--lms-course-glossary .lms-glossary-page .lms-glossary-definition strong,
+body.route--lms-course-glossary .lms-glossary-page .lms-glossary-definition b {
+  color: #1e293b !important; /* slate-800 */
+}

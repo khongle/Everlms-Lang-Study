@@ -1,0 +1,76 @@
+/* ==========================================================================
+   P038 - Membership Pricing (/workspace/pricing)
+   Third-pass UI fixes. This partial loads LAST; uses !important to beat the
+   inline styles in lms-admin-pricing.html.twig and the <style> block in
+   lms-admin-sidebar.html.twig.
+   ========================================================================== */
+
+/* [P038] ISSUE 1-0817 + 1-0818: Action buttons consistency + contrast.
+   Edit (.btn-lms-primary) is a solid blue filled button; Deactivate is an
+   inline-styled orange OUTLINE button with low-contrast amber text on the
+   dark transparent row. Prior fix failed because the orange border/color are
+   INLINE on the <a> tag, so only !important can override them.
+   Make the Deactivate button a deliberate paired "danger" button: same
+   height/padding/radius as Edit, a subtle amber fill behind brighter amber
+   text to lift effective contrast above AA, and a clear secondary hierarchy. */
+.lms-admin__main .lms-table td .lms-btn {
+  /* Shared base so Edit + Deactivate are an equal-sized pair */
+  height: 32px !important;
+  padding: 0 14px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  border-radius: 0.5rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+}
+
+/* Deactivate / Activate = the non-primary action button in the row.
+   It is the only .lms-btn in the cell that is NOT .btn-lms-primary. */
+.lms-admin__main .lms-table td .lms-btn:not(.btn-lms-primary) {
+  background: rgba(245, 158, 11, 0.15) !important; /* subtle fill raises contrast */
+  border: 1px solid rgba(245, 158, 11, 0.55) !important;
+  color: #fcd34d !important;                       /* brighter amber, AA on dark fill */
+  text-decoration: none !important;
+}
+.lms-admin__main .lms-table td .lms-btn:not(.btn-lms-primary):hover {
+  background: rgba(245, 158, 11, 0.28) !important;
+  border-color: #f59e0b !important;
+  color: #fde68a !important;
+}
+
+/* [P038] ISSUE 1-0819: Filter toolbar alignment / large gap.
+   The toolbar (.lms-admin-filter) stretches the Status group via flex:1 and
+   uses a 1.5rem gap, leaving a wide void between Search and Status and pushing
+   Filter to the far right. Prior fix failed because the per-group flex sizing
+   came from the sidebar <style> block. Constrain group widths, tighten the gap,
+   and align everything to the bottom edge so it reads as one balanced toolbar. */
+.lms-admin__main .lms-admin-filter {
+  gap: 1rem !important;
+  align-items: flex-end !important;
+  justify-content: flex-start !important;
+  flex-wrap: wrap !important;
+}
+/* Search group: take available space but cap it so it doesn't strand Status */
+.lms-admin__main .lms-admin-filter__group:first-child {
+  flex: 1 1 380px !important;
+  max-width: 480px !important;
+}
+/* Status group: size to content, do not stretch */
+.lms-admin__main .lms-admin-filter__group:nth-child(2) {
+  flex: 0 0 220px !important;
+  max-width: 220px !important;
+}
+/* Filter button group: hug content, sit right after Status (no far-right push) */
+.lms-admin__main .lms-admin-filter__group:last-child {
+  flex: 0 0 auto !important;
+}
+/* Make the Filter button share the input/select height for an even baseline */
+.lms-admin__main .lms-admin-filter__group:last-child .lms-btn {
+  height: 42px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}

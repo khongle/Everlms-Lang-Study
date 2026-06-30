@@ -1,0 +1,80 @@
+/* ==========================================================================
+   P014 — Forum topic (route--entity-lms-forum-topic-canonical)
+   Round-2 UI fixes. Loaded LAST. !important only used to beat inline styles.
+   ========================================================================== */
+
+/* [P014] ISSUE 2-0145: Breadcrumb current-page label truncates mid-word at tablet.
+   The current-item <span> carries inline white-space:nowrap;overflow:hidden;
+   text-overflow:ellipsis. Allow it to wrap gracefully at tablet width and let
+   the breadcrumb box grow to full width instead of staying inline. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--entity-lms-forum-topic-canonical .lms-breadcrumb {
+    display: flex !important;
+    max-width: 100% !important;
+    flex-wrap: wrap;
+    align-items: flex-start !important;
+  }
+  body.route--entity-lms-forum-topic-canonical .lms-breadcrumb > span:last-child {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    line-height: 1.4;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+}
+
+/* [P014] ISSUE 2-0146: Paired CTAs in the "Join the Discussion" card use unrelated
+   colors — Log In is brand green (#238636) while Register is near-black (#21262d),
+   which reads as disabled. Restyle Register as a brand-blue outlined secondary so
+   the two CTAs share one visual system. Inline background/color need !important. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta a.button:not(.button--primary) {
+  background: transparent !important;
+  color: #58a6ff !important;
+  border: 1px solid #58a6ff !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta a.button:not(.button--primary):hover {
+  background: rgba(88, 166, 255, 0.12) !important;
+  color: #79b8ff !important;
+  border-color: #79b8ff !important;
+}
+
+/* [P014] ISSUE 2-0149: Leaked debug/status message sits at a different left inset
+   than the breadcrumb box and topic card, creating an uneven left rail. The status
+   message lives in .lms-messages-wrapper (full-bleed) while content lives in
+   .container. Align the messages wrapper to the same container gutter so the left
+   edge matches the cards below. (Removing the debug text itself is a controller
+   change handled separately.) */
+body.route--entity-lms-forum-topic-canonical .lms-messages-wrapper {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* [P014] ISSUE 2-0151: Like / Share action buttons show uneven icon-to-text gaps
+   because the heart and share glyphs render at different widths. Lock a fixed-width
+   icon and a shared gap so the sibling buttons match exactly. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge {
+  gap: 0.4rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge > i {
+  width: 1em;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* [P014] ISSUE 2-0152: Tall empty band between the Join card and the footer makes
+   the page feel unfinished. Trim the trailing whitespace below the content region
+   for this route at tablet width. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--entity-lms-forum-topic-canonical .lms-page__content {
+    padding-bottom: 1.5rem;
+  }
+  body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta {
+    margin-bottom: 0;
+  }
+}

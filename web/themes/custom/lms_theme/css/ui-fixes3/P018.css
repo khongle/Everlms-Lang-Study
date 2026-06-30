@@ -1,0 +1,136 @@
+/* ==========================================================================
+   P018 — My Courses (route--lms-progress-my-courses)
+   THIRD-pass UI defect fixes. Loaded LAST. Brand SilverCare (medical/blue).
+   Several issues are marked PRIOR FIX FAILED — these use higher-specificity
+   selectors + !important to actually beat the stubborn base/earlier rules.
+   ========================================================================== */
+
+/* [P018] ISSUE 1-0446: "All" filter chip has no visible total count.
+   The template DOES output <span>{{ summary.all }}</span> on the All button,
+   but when the chip is .is-active the gradient background + the small white
+   count badge read as a bare "toggle switch" with no number. Force the count
+   badge on every filter button (active included) to be a clearly visible,
+   high-contrast pill so the count on "All" matches its siblings. */
+body.route--lms-progress-my-courses .lms-learning-filters__button > span {
+  display: inline-flex !important;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0 0.5rem;
+  background: rgba(0, 119, 182, 0.14);
+  color: #0a4f7a;
+  font-weight: 700;
+  border-radius: 999px;
+}
+/* On the active (gradient) chip, the count must read on the dark gradient. */
+body.route--lms-progress-my-courses .lms-learning-filters__button.is-active > span {
+  background: rgba(255, 255, 255, 0.92);
+  color: #4453b8;
+}
+
+/* [P018] ISSUE 1-0448: redundant zero-state indicators on the queue card.
+   PRIOR FIX FAILED — it only hid the status word in the meta row, so the card
+   still showed "0% complete" (meta) AND "Progress 0%" (progress block) AND an
+   empty track: four indicators of the same state. Root cause: the entire
+   .lms-learning-card__meta row duplicates the labelled progress block beneath
+   it. Remove the meta row entirely and keep the single, labelled progress
+   indicator ("Progress …%" + track) as the one source of truth. */
+body.route--lms-progress-my-courses .lms-learning-card__meta {
+  display: none !important;
+}
+
+/* [P018] ISSUE 1-0457: queue card meta/progress text fails WCAG AA on white.
+   PRIOR FIX FAILED — the base rule
+   `.lms-learning-card__meta,.lms-learning-empty{color:#8b949e}` (~3.1:1) and the
+   light-grey progress label were not beaten. Force the progress label/value to
+   an AA-passing dark grey with !important so the faint text is gone. The meta
+   row is now hidden (1-0448), but the progress block remains visible, so we
+   harden its colours here. */
+body.route--lms-progress-my-courses .lms-learning-progress__meta,
+body.route--lms-progress-my-courses .lms-learning-progress__meta span {
+  color: #4a5560 !important; /* ~6.7:1 on #fff */
+}
+body.route--lms-progress-my-courses .lms-learning-progress__meta strong {
+  color: #1f2933 !important;
+}
+
+/* ==========================================================================
+   MOBILE (<=767px) — covers the mobile capture width regardless of the
+   exact device width the verifier used (prior 480px breakpoint was too tight).
+   ========================================================================== */
+@media (max-width: 767px) {
+
+  /* [P018] ISSUE 1-0450: category + status pills float across the thumbnail
+     covering the artwork. PRIOR FIX FAILED TWICE — translucent backings still
+     sat over the centre of the image. The chips are children of the media link
+     (cannot be moved to the card body via CSS), so instead pin the chip row to
+     the BOTTOM edge of the image, make it a full-width contained bar with a
+     solid dark scrim behind it, and stack the chips so they never straddle or
+     cover the central artwork. */
+  body.route--lms-progress-my-courses .lms-learning-card__media {
+    position: relative;
+  }
+  body.route--lms-progress-my-courses .lms-learning-card__chips {
+    position: absolute !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+    padding: 0.5rem 0.6rem !important;
+    gap: 0.4rem !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    background: linear-gradient(
+      to top,
+      rgba(8, 12, 18, 0.92) 0%,
+      rgba(8, 12, 18, 0.78) 60%,
+      rgba(8, 12, 18, 0) 100%
+    ) !important;
+  }
+  body.route--lms-progress-my-courses .lms-learning-card__category {
+    max-width: 100%;
+    flex: 0 1 auto;
+    padding: 0.25rem 0.55rem !important;
+    font-size: 0.6rem !important;
+    line-height: 1.25 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: rgba(0, 0, 0, 0.45) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    color: #ffffff !important;
+  }
+  body.route--lms-progress-my-courses .lms-learning-card__badge {
+    min-height: auto !important;
+    padding: 0.22rem 0.55rem !important;
+    font-size: 0.6rem !important;
+  }
+  body.route--lms-progress-my-courses .lms-learning-card__badge.is-idle {
+    background: rgba(0, 119, 182, 0.95) !important;
+    border-color: rgba(0, 119, 182, 0.95) !important;
+    color: #ffffff !important;
+  }
+  body.route--lms-progress-my-courses .lms-learning-card__badge.is-completed {
+    background: rgba(67, 233, 123, 0.95) !important;
+    border-color: rgba(67, 233, 123, 0.95) !important;
+    color: #0b2e1a !important;
+  }
+
+  /* [P018] ISSUE 1-0454: hero stat cards (IN PROGRESS/COMPLETED/NOT STARTED)
+     duplicate the counts already on the queue filter chips, doubling vertical
+     bloat on mobile. PRIOR FIX FAILED — the 480px breakpoint was narrower than
+     the captured viewport so the stat cards were never hidden. Collapse the
+     hero summary on mobile here (≤767px); the filter chips remain the single
+     source of the counts. */
+  body.route--lms-progress-my-courses .lms-my-courses-page__summary {
+    display: none !important;
+  }
+
+  /* [P018] ISSUE 1-0457 (mobile reinforce): progress meta text AA contrast. */
+  body.route--lms-progress-my-courses .lms-learning-progress__meta,
+  body.route--lms-progress-my-courses .lms-learning-progress__meta span {
+    color: #4a5560 !important;
+  }
+}

@@ -1,0 +1,152 @@
+/* ==========================================================================
+   P006 — Pricing page UI fixes
+   Page scope: body.route--lms-course-pricing
+   Loads LAST. !important only where needed to beat earlier skin rules.
+   ========================================================================== */
+
+/* [P006] ISSUE 1-0177, 1-0178, 1-0195: equal-height cards, common top edge,
+   CTA pinned to a shared bottom baseline.
+   Root cause: .lms-pricing-grid used `align-items: center`, which vertically
+   centred each card by its own content height -> staggered tops/bottoms and
+   misaligned CTA buttons. Switch to stretch + flex-column cards so all cards
+   share top/bottom edges and the CTA sits at the bottom of every card. */
+body.route--lms-course-pricing .lms-pricing-grid {
+  align-items: stretch !important;
+}
+
+body.route--lms-course-pricing .lms-pricing-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Feature list grows to fill remaining space so the CTA aligns across cards. */
+body.route--lms-course-pricing .lms-pricing-card__features {
+  flex: 1 1 auto;
+  margin-bottom: 1.5rem;
+}
+
+/* Push the CTA to the bottom of each card for a common button baseline. */
+body.route--lms-course-pricing .lms-pricing-card .lms-btn {
+  margin-top: auto !important;
+}
+
+/* [P006] ISSUE 1-0179, 1-0184: reserve an equal header zone on every card so
+   the plan name and large price figures line up horizontally across columns.
+   The "Most Popular" badge is absolutely positioned at the card top on the
+   recommended card; non-recommended cards have no badge band, so their content
+   started higher. Reserve consistent top padding on all cards, and add extra
+   top padding on the recommended card to clear the absolute badge bar. */
+body.route--lms-course-pricing .lms-pricing-card {
+  padding-top: 3rem;
+}
+
+body.route--lms-course-pricing .lms-pricing-card--recommended {
+  padding-top: 3.5rem;
+}
+
+/* Uniform title-to-price rhythm and a fixed-height price band on every card
+   (incl. the "Free" card with no /month suffix) so baselines match. */
+body.route--lms-course-pricing .lms-pricing-card__name {
+  margin-bottom: 1rem;
+  min-height: 1.6em;
+}
+
+body.route--lms-course-pricing .lms-pricing-card__price {
+  margin-bottom: 2rem;
+  min-height: 3rem;
+  align-items: baseline;
+}
+
+/* [P006] ISSUE 1-0187, 1-0197: improve "/month" suffix legibility and align it
+   to the price baseline. Darken to a higher-contrast gray (>= 4.5:1 on white)
+   and bump size slightly; baseline alignment via the flex price row above. */
+body.route--lms-course-pricing .lms-pricing-card__period {
+  color: #475569 !important;
+  font-size: 1rem !important;
+  align-self: baseline;
+}
+
+/* [P006] ISSUE 1-0193: feature list body text contrast.
+   Darken muted grey to meet WCAG AA (>= 4.5:1 on #ffffff card). */
+body.route--lms-course-pricing .lms-pricing-card__features li {
+  color: #374151 !important;
+}
+
+/* [P006] ISSUE 1-0194: "Most Popular" ribbon corner mismatch.
+   Match the card's top corner radius so the bar integrates cleanly, and use
+   the brand gradient for consistency with the active CTA. */
+body.route--lms-course-pricing .lms-pricing-card__badge {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  background: linear-gradient(120deg, #4f46e5 0%, #6366f1 100%) !important;
+}
+
+/* [P006] ISSUE 1-0185, 1-0191: CTA hierarchy consistency across sibling cards.
+   Basic (free) and Enterprise both used the outline style. Give the highest-
+   value Enterprise card a clear stronger treatment than the free tier: keep a
+   bordered look but with a solid brand-tinted fill and brand text so the
+   conversion hierarchy reads free < enterprise < recommended.
+   Targets the 3rd card's CTA (Enterprise) without markup changes. */
+body.route--lms-course-pricing .lms-pricing-grid > .lms-pricing-card:last-child .lms-btn--outline {
+  background: #eef2ff !important;
+  color: #4338ca !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.12);
+}
+
+body.route--lms-course-pricing .lms-pricing-grid > .lms-pricing-card:last-child .lms-btn--outline:hover {
+  background: #e0e7ff !important;
+  border-color: #4f46e5 !important;
+  color: #3730a3 !important;
+}
+
+/* [P006] ISSUE 1-0186: excess empty space between cards and footer.
+   Cap the pricing section's bottom padding so the page is not bottom-heavy. */
+body.route--lms-course-pricing .lms-section {
+  padding-bottom: 3rem !important;
+}
+
+/* [P006] ISSUE 1-0196: hero subtitle near-orphan line break.
+   Balance wrapping so a single trailing word does not sit alone. */
+body.route--lms-course-pricing .lms-pricing-header p {
+  text-wrap: balance;
+}
+
+/* ==========================================================================
+   GLOBAL HEADER (component-scoped, no page scope) — mobile
+   ========================================================================== */
+
+/* [P006] ISSUE 1-0188, 1-0189: mobile header overflow + competing nav.
+   At <=992px the hamburger (.lms-navbar__toggle) appears and the main nav is
+   hidden, but the inline auth cluster (.lms-navbar__actions: Login + Register)
+   stayed visible and overflowed the viewport ("Re..." clipped). The auth links
+   live outside the JS hamburger drawer, so we cannot move them in via CSS.
+   Resolution: on mobile hide the secondary "Login" text link to cut clutter
+   and width, keep the primary "Register" CTA, and shrink/allow the cluster so
+   the button fits within 100vw without overflow. */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    flex-shrink: 1;
+    min-width: 0;
+    gap: 0.5rem;
+  }
+  /* Hide the inline "Login" text link on mobile to remove competing nav. */
+  .lms-navbar__actions > a.lms-navbar__link {
+    display: none;
+  }
+  .lms-navbar__actions .lms-btn {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .lms-navbar__actions .lms-btn {
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    font-size: 0.75rem;
+  }
+}

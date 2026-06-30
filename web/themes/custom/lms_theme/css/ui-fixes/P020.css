@@ -1,0 +1,176 @@
+/* ==========================================================================
+   P020 - Quiz Take (/quiz/43/take)  route--lms-quiz-take
+   UI defect fixes. This partial loads LAST.
+   Page markup uses an inline <style> block in lms-quiz-take.html.twig, so
+   most rules below need to beat that inline-block specificity; we use the
+   same class selectors with slightly higher specificity (body scope) or
+   !important only where required to override inline element styles.
+   ========================================================================== */
+
+/* [P020] ISSUE 1-0479: Persistent timer - make the quiz meta bar sticky so the
+   countdown stays visible while scrolling the long 15-question page. */
+body.route--lms-quiz-take .lms-quiz__meta {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 1rem;
+  z-index: 50;
+  /* Give it a solid backdrop so question cards do not show through. */
+  background: #11243a;
+  background: rgba(13, 17, 23, 0.96);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* [P020] ISSUE 1-0479: emphasise the live timer value so it reads as the
+   primary persistent stat. */
+body.route--lms-quiz-take .lms-quiz__meta #lms-quiz-timer {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* [P020] ISSUE 1-0485 & 1-0489: Style the matching <select> to match the
+   theme option-box system (radius, border, height, padding) and reserve
+   room for the native arrow so the "— Select Match —" text is never clipped. */
+body.route--lms-quiz-take .lms-quiz__match-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background-color: #0d1117;
+  color: #e6edf3;
+  font-size: 1rem;
+  line-height: 1.4;
+  padding: 0.6rem 2.25rem 0.6rem 1rem; /* extra right padding for the custom arrow */
+  /* Custom caret so we control its position regardless of OS chrome. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238b949e' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px 8px;
+}
+body.route--lms-quiz-take .lms-quiz__match-select:hover {
+  border-color: #8b949e;
+}
+body.route--lms-quiz-take .lms-quiz__match-select:focus {
+  outline: none;
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+}
+
+/* [P020] ISSUE 1-0486: Header user-profile dropdown trigger + Dashboard button.
+   Give consistent breathing room between the avatar/name block, its caret, and
+   the adjacent Dashboard control; keep the caret as a clear dropdown affordance. */
+.lms-navbar .lms-user-profile-link {
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+.lms-navbar .lms-user-profile-link:hover,
+.lms-navbar .lms-mega-menu-wrapper:hover .lms-user-profile-link {
+  background: rgba(255, 255, 255, 0.05);
+}
+.lms-navbar .lms-user-profile-link .fa-chevron-down {
+  margin-left: 0.35rem !important; /* beat inline ms-1 cramped spacing */
+  transition: transform 0.2s ease;
+}
+.lms-navbar .lms-mega-menu-wrapper:hover .lms-user-profile-link .fa-chevron-down {
+  transform: rotate(180deg); /* visible affordance that the menu opens */
+}
+
+/* [P020] ISSUE 1-0487 & 1-0488: Mobile overflow of the 3-stat meta row.
+   Allow wrapping, drop fixed spacing in favour of gap, and keep the grey box
+   fully inside the card padding (no bleed past the rounded corner). */
+@media (max-width: 480px) {
+  body.route--lms-quiz-take .lms-quiz__header-card {
+    overflow: hidden; /* clip any stray child past the rounded corner */
+  }
+  body.route--lms-quiz-take .lms-quiz__meta {
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0.85rem 1rem;
+    /* sticky offset relative to mobile; keep contained */
+    top: 0.5rem;
+  }
+  body.route--lms-quiz-take .lms-quiz__meta span {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+  }
+}
+
+/* [P020] ISSUE 1-0490 & 1-0489: Mobile matching rows - stack the term label
+   above a full-width select for comfortable tap targets and full placeholder. */
+@media (max-width: 640px) {
+  body.route--lms-quiz-take .lms-quiz__match-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  body.route--lms-quiz-take .lms-quiz__match-left {
+    flex: none;
+    width: 100%;
+  }
+  body.route--lms-quiz-take .lms-quiz__match-select {
+    flex: none;
+    width: 100%;
+  }
+}
+
+/* [P020] ISSUE 1-0491 & 1-0492: Align radio/checkbox controls to the FIRST
+   line of multi-line option labels (consistent with single-line options). */
+body.route--lms-quiz-take .lms-quiz__choice-box {
+  align-items: flex-start;
+}
+body.route--lms-quiz-take .lms-quiz__choice-box input {
+  margin-top: 0.15rem; /* optically align with first text line (line-height ~1.5) */
+  flex: 0 0 auto;
+}
+body.route--lms-quiz-take .lms-quiz__choice-box span {
+  line-height: 1.5;
+}
+
+/* [P020] ISSUE 1-0493: Uniform vertical rhythm between ordering option cards.
+   The choices container already uses gap; normalise the sortable list the same
+   way and remove competing per-item bottom margins. */
+body.route--lms-quiz-take .lms-sortable-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+body.route--lms-quiz-take .lms-sortable-item {
+  margin-bottom: 0;
+}
+
+/* [P020] ISSUE 1-0494: Reduce ugly single-word orphan last lines on option
+   labels by balancing wrapped text. Progressive enhancement - ignored where
+   unsupported, no layout harm. */
+body.route--lms-quiz-take .lms-quiz__choice-box span,
+body.route--lms-quiz-take .lms-sortable-item span,
+body.route--lms-quiz-take .lms-quiz__match-left {
+  text-wrap: balance;
+}
+
+/* [P020] ISSUE 1-0495: 'Submit Final Answers' CTA wrapping to 2 lines on
+   mobile and orphaning the paper-plane icon. Keep the label on one line,
+   reduce horizontal padding, and let the button take comfortable width;
+   keep the icon inline-aligned with the text. */
+body.route--lms-quiz-take .lms-quiz__btn-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+@media (max-width: 480px) {
+  body.route--lms-quiz-take .lms-quiz__btn-submit {
+    width: 100%;
+    max-width: 360px;
+    padding: 0.9rem 1.25rem;
+    font-size: 1.1rem;
+    white-space: nowrap;
+  }
+}

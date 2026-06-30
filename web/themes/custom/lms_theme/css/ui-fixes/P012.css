@@ -1,0 +1,109 @@
+/* =============================================================
+   P012 — Glossary (route--lms-course-glossary)
+   UI defect fixes. Loaded LAST.
+   ============================================================= */
+
+/* [P012] ISSUE 1-0311, 1-0317: A-Z jump-nav inactive (disabled) letters too pale -> raise contrast (WCAG AA) */
+body.route--lms-course-glossary .lms-glossary-alphabet-nav .lms-letter-btn {
+  color: #0077b6; /* active letters: medical primary, ~4.6:1 on white */
+  font-weight: 600;
+}
+body.route--lms-course-glossary .lms-glossary-alphabet-nav .lms-letter-btn.disabled,
+body.route--lms-course-glossary .lms-glossary-alphabet-nav .lms-letter-btn[disabled] {
+  color: #4b5563 !important;            /* slate-600, >7:1 on white, clearly legible */
+  opacity: 1 !important;                 /* beat Bootstrap .disabled opacity:.65 fade */
+  border: 1px solid rgba(75, 85, 99, 0.30);
+  border-radius: 6px;
+  padding: 0.05rem 0.4rem;
+  background: rgba(75, 85, 99, 0.06);
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+}
+
+/* [P012] ISSUE 1-0313: Hero search input border too faint against tinted hero -> strengthen border + keep search icon visible */
+body.route--lms-course-glossary .lms-glossary-search .lms-glass-input,
+body.route--lms-course-glossary .lms-glossary-search input.form-control {
+  border: 1.5px solid rgba(0, 119, 182, 0.45);
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 44, 61, 0.06);
+}
+body.route--lms-course-glossary .lms-glossary-search .lms-glass-input:focus,
+body.route--lms-course-glossary .lms-glossary-search input.form-control:focus {
+  border-color: #0077b6;
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.18);
+  outline: none;
+}
+body.route--lms-course-glossary .lms-glossary-search .fa-search {
+  color: #0077b6; /* stronger than text-muted so the affordance reads as "search" */
+}
+
+/* [P012] ISSUE 1-0312: Single-item sections leave a large empty right column -> let a lone card span full width */
+body.route--lms-course-glossary .glossary-group-section .row.g-4 > .glossary-item-card:only-child {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+/* [P012] ISSUE 1-0319: Card body paragraph text (text-muted) too light on white -> meet 4.5:1 */
+body.route--lms-course-glossary .lms-glass-card .lms-glossary-definition,
+body.route--lms-course-glossary .lms-glass-card .card-text.text-muted,
+body.route--lms-course-glossary .lms-glass-card .lms-glossary-definition p {
+  color: #374151 !important; /* slate-700, ~10:1 on white */
+}
+
+/* [P012] ISSUE 1-0320: Inconsistent card title height (1- vs 2-line) breaks title/body rhythm -> reserve title block height */
+body.route--lms-course-glossary .glossary-item-card .card-body > .d-flex.justify-content-between {
+  min-height: 3.2rem; /* fits up to two title lines so body start aligns across siblings */
+  align-items: flex-start;
+}
+
+/* [P012] ISSUE 1-0314: On mobile, Login/Register actions overflow viewport (Register clipped) -> collapse into hamburger breakpoint, keep within viewport */
+@media (max-width: 992px) {
+  .lms-navbar__container {
+    flex-wrap: wrap;
+  }
+  .lms-navbar__actions {
+    gap: 0.5rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .lms-navbar__actions .lms-btn--sm {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    padding: 0.3rem 0.4rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    column-gap: 0.4rem;
+  }
+  .lms-navbar__actions {
+    gap: 0.35rem;
+  }
+  .lms-navbar__actions .lms-btn--sm {
+    padding: 0.28rem 0.55rem;
+    font-size: 0.75rem;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    padding: 0.28rem 0.3rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* [P012] ISSUE 1-0318: Floating back-to-top FAB overlapping first card corner on mobile -> lift offset + give content right-edge breathing room on small screens */
+@media (max-width: 480px) {
+  body.route--lms-course-glossary #lms-back-to-top,
+  body.route--lms-course-glossary .lms-back-to-top {
+    right: 12px !important;
+    bottom: 18px !important;
+    width: 42px;
+    height: 42px;
+  }
+}

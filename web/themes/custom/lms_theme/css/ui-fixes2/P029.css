@@ -1,0 +1,156 @@
+/* ============================================================
+   P029 — checkout-course (route--lms-course-detail)
+   UI defect fixes. Loaded LAST.
+   ============================================================ */
+
+/* [P029] ISSUE 1-0628, 1-0638: style Drupal status/success message as a proper alert
+   (icon, light-green background, border, padding, AA-contrast text).
+   Global component — Drupal core status-messages markup, no page scope. */
+.lms-messages-wrapper .messages,
+.region-highlighted .messages,
+.messages.messages--status,
+.messages.messages--success {
+  position: relative;
+  margin: 1rem 0 1.5rem;
+  padding: 1rem 1.125rem 1rem 3rem;
+  border-radius: 12px;
+  border: 1px solid #b7e4c7;
+  background: #e9f9ef;
+  color: #14532d; /* dark green on light green: contrast ratio ~9:1, passes AA */
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  box-shadow: 0 4px 14px rgba(20, 83, 45, 0.08);
+  list-style: none;
+}
+
+/* success/status variant icon (check-circle) */
+.lms-messages-wrapper .messages.messages--status::before,
+.messages.messages--status::before,
+.messages.messages--success::before {
+  content: "\f058"; /* fa-check-circle */
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", FontAwesome;
+  font-weight: 900;
+  position: absolute;
+  left: 1.05rem;
+  top: 1rem;
+  font-size: 1.125rem;
+  color: #2e9e5b;
+  line-height: 1.2;
+}
+
+/* error variant — keep a distinct, accessible red */
+.lms-messages-wrapper .messages.messages--error,
+.messages.messages--error {
+  border-color: #f5c2c7;
+  background: #fdecee;
+  color: #842029; /* AA on light red */
+}
+.lms-messages-wrapper .messages.messages--error::before,
+.messages.messages--error::before {
+  content: "\f06a"; /* fa-exclamation-circle */
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", FontAwesome;
+  font-weight: 900;
+  position: absolute;
+  left: 1.05rem;
+  top: 1rem;
+  font-size: 1.125rem;
+  color: #c0392b;
+}
+
+/* warning variant */
+.lms-messages-wrapper .messages.messages--warning,
+.messages.messages--warning {
+  border-color: #ffe69c;
+  background: #fff8e6;
+  color: #664d03; /* AA on light amber */
+}
+.lms-messages-wrapper .messages.messages--warning::before,
+.messages.messages--warning::before {
+  content: "\f071"; /* fa-exclamation-triangle */
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", FontAwesome;
+  font-weight: 900;
+  position: absolute;
+  left: 1.05rem;
+  top: 1rem;
+  font-size: 1.125rem;
+  color: #b8860b;
+}
+
+/* hide the legacy plain heading if present, keep message text readable */
+.messages .messages__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.messages .messages__item {
+  list-style: none;
+}
+
+/* [P029] ISSUE 1-0630: header utility row — share a common vertical center.
+   The two-line user name pushes the row baseline; lock items to center and
+   prevent the name from increasing row height.
+   Global header component — no page scope. */
+.lms-navbar__actions > div {
+  align-items: center;
+}
+.lms-navbar__actions .lms-user-profile-link {
+  align-items: center;
+  line-height: 1.2;
+}
+/* keep the name on a single line so it cannot push the row height */
+.lms-navbar__actions .lms-user-profile-link span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 14ch;
+  line-height: 1.2;
+  align-self: center;
+}
+/* normalize the icon buttons (bell/heart) to the same vertical center */
+.lms-navbar__actions .lms-navbar__link {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* [P029] ISSUE 1-0640: "What You'll Learn" multicol balance on mobile.
+   Inline `columns:2` splits unevenly and breaks bold terms mid-phrase.
+   Prevent list items from breaking across columns; collapse to one column
+   on small viewports. Scoped to course-detail page. */
+body.route--lms-course-detail .lms-learn-list li,
+body.route--lms-course-detail .lms-learn-list p,
+body.route--lms-course-detail .lms-learn-list strong,
+body.route--lms-course-detail .lms-learn-list b {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+}
+body.route--lms-course-detail .lms-learn-list strong,
+body.route--lms-course-detail .lms-learn-list b {
+  white-space: nowrap; /* keep DSGVO/GDPR, Pflegebericht intact */
+}
+
+@media (max-width: 768px) {
+  body.route--lms-course-detail .lms-learn-list {
+    columns: 1 !important; /* beats inline columns:2 */
+    column-count: 1 !important;
+    column-gap: 0 !important;
+  }
+  body.route--lms-course-detail .lms-learn-list strong,
+  body.route--lms-course-detail .lms-learn-list b {
+    white-space: normal; /* single column has full width; allow natural wrap */
+  }
+}
+
+/* [P029] ISSUE 1-0643: floating back-to-top button overlaps footer contact
+   text on mobile. Lift it above the footer content on small screens.
+   Global component. */
+@media (max-width: 480px) {
+  #lms-back-to-top,
+  .lms-back-to-top {
+    right: 12px !important;
+    bottom: 84px !important; /* clears footer contact/phone line */
+    width: 44px;
+    height: 44px;
+    z-index: 1300 !important;
+  }
+}

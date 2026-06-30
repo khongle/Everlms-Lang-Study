@@ -1,0 +1,126 @@
+/* ============================================================
+   P017 - Learning dashboard (/dashboard)
+   route_class: route--lms-progress-dashboard
+   Page section scope: .lms-dashboard-page
+   Loads LAST. !important used only to beat inline styles on target.
+   ============================================================ */
+
+/* [P017] ISSUE 1-0413: Hero panel has a huge right-side dead zone (card fills only ~45%).
+   The template forces a single-column hero and pins the spotlight card to the start with
+   max-width:34rem, leaving the right half empty. Center the card and constrain the hero
+   copy so the panel reads as an intentional centered layout instead of half-empty. */
+.lms-dashboard-page .lms-dashboard-page__hero {
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lms-dashboard-page .lms-dashboard-page__hero-copy {
+  max-width: 64rem !important;
+}
+.lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight {
+  max-width: min(100%, 64rem) !important;
+  justify-self: center !important;
+}
+/* Let the spotlight use a real two-column layout (media + body) to fill the width
+   and remove the empty band, instead of a tall narrow single column. */
+@media (min-width: 768px) {
+  .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) !important;
+    align-items: stretch;
+  }
+  .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight__media {
+    height: 100%;
+    aspect-ratio: auto !important;
+  }
+  .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight__body {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* [P017] ISSUE 1-0419: Hero subtitle muted grey (#8b949e ~3.3:1 on white) fails WCAG AA.
+   Darken to #4f5862 (~7.1:1 on #fff) for comfortable AA on small body text. */
+.lms-dashboard-page .lms-dashboard-page__subtitle {
+  color: #4f5862 !important;
+}
+
+/* [P017] ISSUE 1-0422: Uneven vertical rhythm - gap above the stats row is larger than
+   the gap below it before "Continue learning". Normalize the KPI block spacing so the
+   top and bottom gaps match. */
+.lms-dashboard-page .lms-kpi-grid {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+.lms-dashboard-page .lms-dashboard-page__section {
+  margin-top: 0; /* spacing now owned by the KPI block's equal bottom margin */
+}
+
+/* [P017] ISSUE 1-0424: Header "Dashboard" control reads as an ambiguous blue link on the
+   dashboard page. Give the outline button a clear, intentional button affordance and an
+   active/current-page state when we are on the dashboard route. */
+.lms-navbar__actions .lms-btn--outline {
+  font-weight: 600;
+}
+body.route--lms-progress-dashboard .lms-navbar__actions .lms-btn--outline {
+  background: #0077b6;
+  border-color: #0077b6;
+  color: #ffffff;
+}
+body.route--lms-progress-dashboard .lms-navbar__actions .lms-btn--outline:hover,
+body.route--lms-progress-dashboard .lms-navbar__actions .lms-btn--outline:focus-visible {
+  background: #02639a;
+  border-color: #02639a;
+  color: #ffffff;
+}
+body.route--lms-progress-dashboard .lms-navbar__actions .lms-btn--outline:focus-visible {
+  outline: 2px solid #02639a;
+  outline-offset: 2px;
+}
+
+/* [P017] ISSUE 1-0427: Same "READY TO START" status renders in two color treatments -
+   purple on the hero spotlight (no is-idle class in markup) vs yellow/cream is-idle on the
+   list cards. Unify by making the idle badge use the same purple/lavender treatment as the
+   default status badge so the identical status looks identical everywhere. */
+.lms-learning-spotlight__status.is-idle,
+.lms-learning-card__badge.is-idle {
+  background: rgba(102, 126, 234, 0.16);
+  border-color: rgba(102, 126, 234, 0.24);
+  color: #4338ca;
+}
+
+/* [P017] ISSUE 1-0430: The category pill wraps onto two lines on the hero card but stays on
+   one line on the list card, giving the same label two different shapes. Force single-line
+   with truncation and a consistent max-width on both card variants. */
+.lms-learning-spotlight__category,
+.lms-learning-card__category {
+  max-width: 14rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* [P017] ISSUE 1-0432: At 0% the progress track is a near-invisible faint bar. Darken the
+   unfilled track so it is discernible against the white card, and add a subtle start dot at
+   the left edge so a 0% state still reads as "started from here". */
+.lms-dashboard-page .lms-learning-progress__track {
+  background: rgba(15, 44, 61, 0.14);
+  position: relative;
+}
+.lms-dashboard-page .lms-learning-progress__track::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.18rem;
+  width: 0.32rem;
+  height: 0.32rem;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: #0077b6;
+  opacity: 0.85;
+  z-index: 1;
+}

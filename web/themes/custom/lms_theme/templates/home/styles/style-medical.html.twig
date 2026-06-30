@@ -149,7 +149,7 @@
             {% endif %}
           </div>
           <h3 class="medical-category-card__name">{{ category.name }}</h3>
-          {% if category.course_count is defined %}<span class="medical-category-card__count">{{ category.course_count }} {{ 'courses'|t }}</span>{% endif %}
+          {% if category.course_count is defined %}<span class="medical-category-card__count">{% trans %}{{ category.course_count }} course{% plural category.course_count %}{{ category.course_count }} courses{% endtrans %}</span>{% endif %}
         </a>
         {% endfor %}
       </div>

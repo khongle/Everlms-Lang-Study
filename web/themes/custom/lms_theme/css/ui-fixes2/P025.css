@@ -1,0 +1,66 @@
+/* ==========================================================================
+   P025 — My Wishlist (route--lms-wishlist-my-wishlist)
+   UI defect fixes. Loads LAST.
+   ========================================================================== */
+
+/* [P025] ISSUE 1-0565: Normalize header "Dashboard" trigger to match nav links.
+   The header Dashboard control (.lms-btn--outline) renders blue at rest, while
+   primary nav links sit at the dark-gray heading color and only turn blue on
+   hover/active. Bring the Dashboard outline button to the same dark default and
+   reveal the brand blue only on hover/focus so the header reads consistently. */
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline {
+  color: #0f2c3d; /* --medical-heading, same as nav links at rest */
+  border-color: rgba(15, 44, 61, 0.25);
+  background: transparent;
+  font-weight: 600;
+  transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:hover,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:focus-visible,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline.active {
+  color: #0077b6; /* --medical-violet, matches nav-link hover */
+  border-color: #0077b6;
+  background: rgba(0, 119, 182, 0.08);
+}
+
+/* [P025] ISSUE 1-0572: Make the empty-state broken-heart icon an on-brand,
+   higher-contrast illustrative anchor instead of a muted disabled-gray glyph.
+   The template sets an inline color:#484f58, so !important is required to beat it.
+   Tint it the brand violet and bump the size/weight so it clearly anchors the
+   empty state. Applies on all viewports; emphasised on mobile per the report. */
+body.route--lms-wishlist-my-wishlist .lms-empty-state i.fa-heart-broken {
+  color: #0077b6 !important; /* --medical-violet brand color */
+  font-size: 3.5rem;
+  opacity: 1;
+}
+@media (max-width: 480px) {
+  body.route--lms-wishlist-my-wishlist .lms-empty-state i.fa-heart-broken {
+    font-size: 3rem;
+  }
+}
+
+/* [P025] ISSUE 1-0574: Remove the large empty light-blue band between the
+   empty-state card and the footer on tall mobile viewports by vertically
+   centering the short empty state within the available content height instead
+   of leaving it pinned to the top with the page padding trailing below it. */
+@media (max-width: 480px) {
+  body.route--lms-wishlist-my-wishlist .lms-page__content {
+    display: flex;
+    flex-direction: column;
+  }
+  body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  /* Tighten the oversized page padding (inline 2rem) on small screens. */
+  body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-container {
+    padding: 1.25rem !important;
+    width: 100%;
+  }
+  /* Trim the tall empty-state card padding so it sits closer to centered. */
+  body.route--lms-wishlist-my-wishlist .lms-empty-state {
+    padding: 2.5rem 1.25rem !important;
+  }
+}

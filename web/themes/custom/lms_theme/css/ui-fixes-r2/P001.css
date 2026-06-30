@@ -1,0 +1,122 @@
+/* ==========================================================================
+   P001 — Homepage (route--lms-course-homepage, skin: medical / SilverCare)
+   Round-2 UI fixes. Loads LAST. Scope page content under body.route--lms-course-homepage;
+   global components (footer) fixed via their component class.
+   ========================================================================== */
+
+/* [P001] ISSUE 2-0002 + 2-0003: Featured Programs cards — uniform 3-line clamp
+   on descriptions for clean, consistent ellipsis and so meta/price/CTA rows
+   align across the row. Equal-height grid items keep footers baseline-aligned. */
+body.route--lms-course-homepage .medical-course-grid {
+  align-items: stretch;
+}
+body.route--lms-course-homepage .medical-course-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+body.route--lms-course-homepage .medical-course-card__summary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* reserve the 3-line block so cards with shorter copy keep meta/footer aligned */
+  min-height: calc(3 * 1.6em);
+  margin-bottom: 0;
+}
+/* footer already uses margin-top:auto in the skin; reinforce so the price/VIEW
+   row is pinned to the bottom edge regardless of body-copy length */
+body.route--lms-course-homepage .medical-course-card__footer {
+  margin-top: auto;
+}
+
+/* [P001] ISSUE 2-0004: Explore Categories — reserve a 2-line title area so the
+   "N courses" sub-label aligns horizontally across cards regardless of title
+   wrapping. Center the count and let the title block grow downward uniformly. */
+body.route--lms-course-homepage .medical-category-card {
+  justify-content: flex-start;
+}
+body.route--lms-course-homepage .medical-category-card__name {
+  min-height: calc(2 * 1.3em);
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.route--lms-course-homepage .medical-category-card__count {
+  margin-top: auto;
+}
+
+/* [P001] ISSUE 2-0006: Hero carousel prev/next chevrons — guarantee the glyph
+   is optically centered in the round control (kill inherited line-height) and
+   keep symmetric horizontal inset so the control row reads balanced. */
+body.route--lms-course-homepage .medical-carousel__control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.route--lms-course-homepage .medical-carousel__control-icon,
+body.route--lms-course-homepage .medical-carousel__control-icon > i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+/* vertically center the indicator track with the chevrons' mid-line */
+body.route--lms-course-homepage .medical-carousel__indicators {
+  align-items: center;
+}
+
+/* [P001] ISSUE 2-0007: Hero subtitle contrast — lift from soft slate (#476273)
+   to the darker primary text token (#12354a ≈ 11:1 on white) for AA body copy. */
+body.route--lms-course-homepage .medical-hero__subtitle {
+  color: #12354a;
+}
+
+/* [P001] ISSUE 2-0008: Section eyebrow labels (CATEGORIES / FEATURED / ABOUT /
+   TESTIMONIALS / FAQ) — darken teal from #0077b6 to #005a8c (~6.5:1 on the
+   light-blue section surface) and keep bold weight for small-uppercase legibility. */
+body.route--lms-course-homepage .medical-kicker {
+  color: #005a8c;
+  font-weight: 700;
+}
+
+/* [P001] ISSUE 2-0009: FAQ open answer paragraph — darken body text against the
+   light panel to meet AA (#476273 -> #2a4554 ≈ 8:1 on white). */
+body.route--lms-course-homepage .medical-faq__answer-body {
+  color: #2a4554;
+}
+
+/* [P001] ISSUE 2-0011: Footer brand strapline — global footer component.
+   Bump from #6e7681 (~4.0:1, fails AA on pale footer) to #475569 (~7:1). */
+.lms-footer__description {
+  color: #475569;
+}
+
+/* [P001] ISSUE 2-0012: Hero stats 2x2 grid — balance row vs column gap and add a
+   consistent gap between each big number and its uppercase caption. */
+body.route--lms-course-homepage .medical-stats__grid {
+  row-gap: 26px;
+  column-gap: 20px;
+}
+body.route--lms-course-homepage .medical-stat__value {
+  margin-bottom: 8px;
+}
+
+/* Tablet refinements (issue viewport: 481–1024px) — keep the equal-height card
+   footers and the reserved title/summary blocks holding at this breakpoint. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-course-homepage .medical-course-card__summary {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    min-height: calc(3 * 1.6em);
+  }
+  body.route--lms-course-homepage .medical-category-card__name {
+    min-height: calc(2 * 1.3em);
+  }
+  body.route--lms-course-homepage .medical-stats__grid {
+    row-gap: 24px;
+  }
+}

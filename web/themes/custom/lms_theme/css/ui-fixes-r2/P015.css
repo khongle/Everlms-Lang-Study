@@ -1,0 +1,74 @@
+/* ============================================================
+   P015 — Certificate Verify (route--lms-certificate-verify)
+   Round-2 UI fixes. Loads LAST.
+   ============================================================ */
+
+/* [P015] ISSUE 2-0154, 2-0155: constrain + center the lone verify form as a card, reduce empty band */
+body.route--lms-certificate-verify .lms-certificate-verification-form {
+  max-width: 520px;
+  margin-inline: auto;
+  margin-block: clamp(24px, 5vw, 56px);
+  padding: clamp(24px, 4vw, 40px);
+  background: #ffffff;
+  border: 1px solid rgba(0, 119, 182, 0.16);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 119, 182, 0.10);
+}
+
+/* [P015] ISSUE 2-0155: tighten the sparse vertical band below the form */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-certificate-verify main,
+  body.route--lms-certificate-verify .lms-main,
+  body.route--lms-certificate-verify .region-content {
+    min-height: auto;
+    padding-bottom: clamp(24px, 5vw, 48px);
+  }
+}
+
+/* [P015] ISSUE 2-0156: darken input placeholder to meet WCAG AA on white field */
+body.route--lms-certificate-verify .lms-certificate-verification-form input::placeholder {
+  color: #586273 !important;
+  opacity: 1 !important;
+}
+
+/* [P015] ISSUE 2-0157: stronger, darker, slightly larger field label */
+body.route--lms-certificate-verify .lms-certificate-verification-form .form-item label,
+body.route--lms-certificate-verify .lms-certificate-verification-form label[for="edit-certificate-code"] {
+  color: #1f2a37;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+/* [P015] ISSUE 2-0159: required asterisk cue + clearly visible focus ring on the input */
+body.route--lms-certificate-verify .lms-certificate-verification-form label.form-required::after,
+body.route--lms-certificate-verify .lms-certificate-verification-form label.js-form-required::after {
+  content: " *";
+  color: #c1121f;
+  font-weight: 700;
+}
+
+body.route--lms-certificate-verify .lms-certificate-verification-form #edit-certificate-code:focus-visible,
+body.route--lms-certificate-verify .lms-certificate-verification-form input.form-control:focus-visible {
+  outline: 3px solid rgba(0, 119, 182, 0.45);
+  outline-offset: 2px;
+  border-color: #0077b6;
+}
+
+/* [P015] ISSUE 2-0160: comfortable, balanced padding + 44px touch target for Verify CTA */
+body.route--lms-certificate-verify .lms-certificate-verification-form #edit-submit,
+body.route--lms-certificate-verify .lms-certificate-verification-form input.button--primary[type="submit"] {
+  padding-block: 12px;
+  padding-inline: 28px;
+  min-height: 44px;
+  margin-top: 8px;
+}
+
+/* [P015] ISSUE 2-0161: keep the back-to-top FAB clear of footer copyright on tablet */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-certificate-verify #lms-back-to-top,
+  body.route--lms-certificate-verify .lms-back-to-top {
+    bottom: clamp(28px, 5vw, 56px) !important;
+  }
+}

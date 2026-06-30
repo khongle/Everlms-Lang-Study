@@ -1,0 +1,4705 @@
+/* Round-1 SECOND-PASS per-page UI fixes — concatenated from css/ui-fixes2/*.css. */
+
+/* ===== P001.css ===== */
+/* ============================================================
+   [P001] Homepage (medical skin / SilverCare) UI fixes
+   Page scope: body.route--lms-course-homepage (also layout-medical)
+   Global header components scoped under body.layout-medical navbar.
+   Loaded LAST. !important used only to beat inline styles.
+   ============================================================ */
+
+/* [P001] ISSUE 1-0041: Category card title block reserves consistent
+   height so the "N courses" count line aligns across the grid row,
+   regardless of 1- vs 2-line titles. */
+body.route--lms-course-homepage .medical-category-card {
+  justify-content: flex-start;
+}
+body.route--lms-course-homepage .medical-category-card__name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Reserve room for up to two lines (font-size 1rem, line-height ~1.3). */
+  min-height: 2.6em;
+  margin-bottom: 6px;
+}
+body.route--lms-course-homepage .medical-category-card__count {
+  margin-top: auto;
+}
+
+/* [P001] ISSUE 1-0042: Course card description uses CSS line-clamp for a
+   clean, consistent two-line truncation (no reliance on manual " …"). */
+body.route--lms-course-homepage .medical-course-card__summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.8em; /* keep footers aligned when text is shorter */
+}
+
+/* [P001] ISSUE 1-0043, 1-0052: Header "Workspace" / "Dashboard" outline
+   buttons read as low-contrast light blue on the white medical navbar.
+   Use the brand dark blue (#0f2c3d heading / #0077b6 brand) with a solid
+   border to meet WCAG AA (>= 4.5:1) on white. */
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline {
+  color: #0f2c3d !important;        /* ~12.9:1 on #fff */
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 119, 182, 0.45) !important;
+  font-weight: 600 !important;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline i {
+  color: #0077b6 !important;        /* 4.7:1 on #fff — AA for the icon */
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:hover,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:focus-visible {
+  color: #ffffff !important;
+  background: #0077b6 !important;
+  border-color: #0077b6 !important;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:hover i,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:focus-visible i {
+  color: #ffffff !important;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:focus-visible {
+  outline: 2px solid #0077b6 !important;
+  outline-offset: 2px;
+}
+
+/* [P001] ISSUE 1-0044, 1-0045: Hero subtitle (and copy) was clipped on the
+   left ("ur Professional Development…") because the carousel prev control
+   sits over the text column. Add left padding to the hero content so the
+   copy clears the 48px arrow, and pull the prev arrow toward the slide edge
+   so it no longer overlaps the text band. */
+body.route--lms-course-homepage .medical-carousel__item > .medical-shell.medical-hero__content {
+  padding-left: clamp(64px, 6vw, 96px);
+}
+body.route--lms-course-homepage .medical-carousel__control--prev {
+  left: 12px;
+}
+body.route--lms-course-homepage .medical-hero__subtitle,
+body.route--lms-course-homepage .medical-hero__title {
+  overflow-wrap: break-word;
+}
+
+/* [P001] ISSUE 1-0050, 1-0051: Header utility cluster (bell, wishlist,
+   avatar + name, Workspace/Dashboard, logout) must share one vertical
+   baseline; the user name must stay on a single line, truncated if long. */
+body.layout-medical:not(.is-workspace) .lms-navbar__actions > div {
+  align-items: center !important;
+}
+body.layout-medical:not(.is-workspace) .lms-user-profile-link {
+  align-items: center !important;
+  min-width: 0; /* allow the name to truncate instead of forcing a wrap */
+}
+body.layout-medical:not(.is-workspace) .lms-user-profile-link > span {
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 12ch;
+}
+
+/* [P001] ISSUE 1-0054: Progress bar track must be visible even at 0% so the
+   component reads consistently across "Continue Learning" cards. The track
+   keeps a light-gray/blue background independent of fill width. */
+body.route--lms-course-homepage .medical-progress {
+  background: #d8eef9;
+  height: 6px;
+}
+body.route--lms-course-homepage .medical-progress__fill {
+  min-width: 0; /* 0% shows the empty track, not a stray line */
+}
+
+/* ============================================================
+   MOBILE (<= 480px) — Featured Programs card overflow + hero CTA
+   ============================================================ */
+@media (max-width: 480px) {
+  /* [P001] ISSUE 1-0062: Card titles were splitting words ("Managem /
+     and / Emergenc"). Wrap on word boundaries, never split mid-word. */
+  body.route--lms-course-homepage .medical-course-card__title,
+  body.route--lms-course-homepage .medical-course-card__title a {
+    word-break: normal;
+    overflow-wrap: break-word;
+    hyphens: none;
+  }
+
+  /* [P001] ISSUE 1-0062, 1-0063, 1-0074: Keep all card content inside the
+     card padding so titles, meta badges, description and price/footer are
+     fully visible and never sliced at the right edge. */
+  body.route--lms-course-homepage .medical-course-card {
+    overflow: hidden;
+  }
+  body.route--lms-course-homepage .medical-course-card__body {
+    min-width: 0;
+    padding: 16px;
+  }
+  body.route--lms-course-homepage .medical-course-card__title,
+  body.route--lms-course-homepage .medical-course-card__instructor,
+  body.route--lms-course-homepage .medical-course-card__summary {
+    max-width: 100%;
+  }
+
+  /* [P001] ISSUE 1-0063: Skill-level pill ("Intermediate") was clipped
+     ("Intermed…"). Allow the meta row to wrap so each badge stays whole. */
+  body.route--lms-course-homepage .medical-course-card__meta {
+    flex-wrap: wrap;
+  }
+  body.route--lms-course-homepage .medical-course-card__meta span {
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  /* [P001] ISSUE 1-0074: Price/CTA footer needs breathing room above the
+     divider and the enroll/View button must stay fully inside the card. */
+  body.route--lms-course-homepage .medical-course-card__footer {
+    padding-top: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  body.route--lms-course-homepage .medical-course-card__footer .medical-btn {
+    flex-shrink: 0;
+  }
+
+  /* [P001] ISSUE 1-0064: Hero slide CTA "ghost" bleed-through — the inactive
+     slide's "BROWSE CATALOG" was peeking under the active CTA and over the
+     pagination dots. Clip each slide and fully hide inactive slides, then
+     add clearance so the dots sit cleanly below the buttons. */
+  body.route--lms-course-homepage .medical-carousel__item {
+    overflow: hidden;
+  }
+  body.route--lms-course-homepage .medical-carousel__item:not(.active) {
+    opacity: 0;
+    visibility: hidden;
+  }
+  body.route--lms-course-homepage .medical-carousel__item.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  body.route--lms-course-homepage .medical-hero__actions {
+    margin-bottom: 28px;
+  }
+  body.route--lms-course-homepage .medical-carousel__indicators {
+    bottom: 20px;
+  }
+
+  /* [P001] ISSUE 1-0076: Give the hero subtitle clear spacing from the
+     title/CTA band so the carousel arrows do not crowd the short subtitle. */
+  body.route--lms-course-homepage .medical-hero__subtitle {
+    margin-bottom: 26px;
+  }
+  body.route--lms-course-homepage .medical-carousel__control {
+    opacity: 0.7;
+  }
+}
+
+/* ===== P002.css ===== */
+/* ==========================================================================
+   P002 — Course Catalog (/courses) UI fixes
+   Active skin: medical (SilverCare). Cards render on a light/white surface,
+   so dark-theme default text colors (#6e7681) are too faint for WCAG AA.
+   This partial loads LAST. !important is used ONLY where an inline style
+   on the target element must be beaten.
+   ========================================================================== */
+
+
+/* [P002] ISSUE 1-0084, 1-0111: card description body text contrast (AA) */
+/* #6e7681 on white ≈ 4.0:1 (fails AA). #4b5563 on white ≈ 7.5:1 (passes). */
+.card-lms__desc,
+.card-lms__desc a {
+  color: #4b5563;
+}
+
+
+/* [P002] ISSUE 1-0111: card meta / Level label contrast (AA) */
+/* Meta row + level icon were #6e7681; bump to #4b5563 for AA on white. */
+.card-lms__meta,
+.card-lms__level {
+  color: #4b5563;
+}
+.card-lms__level i {
+  color: #4b5563;
+}
+
+
+/* [P002] ISSUE 1-0095, 1-0110: reserve a consistent 2-line title block so
+   single- and double-line titles occupy equal height; this keeps the
+   instructor / description / meta rows aligned across cards in a row.
+   title font-size 1.1rem * line-height 1.4 * 2 lines ≈ 3.08rem. */
+.card-lms__title {
+  min-height: 3.08em;
+}
+
+
+/* [P002] ISSUE 1-0095: bottom-anchor the price/CTA footer so the meta rows
+   line up on a shared baseline and the CTA row is flush across the row. */
+.card-lms__footer {
+  margin-top: auto;
+}
+
+
+/* [P002] ISSUE 1-0096, 1-0108: enforce a clean 2-line CSS line-clamp on the
+   description (the server-side excerpt still appends a hard '...'; the
+   character trim itself is data and cannot be fixed in CSS, but we guarantee
+   a tidy fixed-height clamp so cards stay uniform). */
+.card-lms__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+
+
+/* [P002] ISSUE 1-0086, 1-0106: 'Enroll Now' is a ghost/outline button with
+   near-invisible low-contrast text on the white card. Promote it to a solid
+   filled primary CTA (medical brand blue) with white text — strong AA
+   contrast and a clear primary affordance. Inline styles set background /
+   border-color, so !important is required to beat them. */
+.card-lms__footer .btn-lms-outline,
+.card-lms__footer a.btn-lms-outline {
+  background: #0077b6 !important;
+  border: 1px solid #0077b6 !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+.card-lms__footer .btn-lms-outline:hover,
+.card-lms__footer a.btn-lms-outline:hover {
+  background: #0096c7 !important;
+  border-color: #0096c7 !important;
+  color: #ffffff !important;
+}
+.card-lms__footer .btn-lms-outline:focus-visible {
+  outline: 2px solid #023e58;
+  outline-offset: 2px;
+}
+
+
+/* [P002] ISSUE 1-0107: the sort <select> (#sort-courses) reads as an
+   ambiguous pill with no dropdown indicator. Add an explicit chevron so it
+   clearly signals a dropdown. Native arrow suppressed to avoid doubling. */
+#sort-courses.lms-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  padding-right: 2.25rem;
+}
+
+
+/* [P002] ISSUE 1-0112: RATING filter empty stars use #6e7681 (.text-muted),
+   nearly the same dark tone as filled gold, so empty vs filled is hard to
+   tell apart. Make empty stars a light grey so the threshold is obvious. */
+.lms-rating-stars .fa-star.text-muted,
+.lms-catalog__filter-group .fa-star.text-muted {
+  color: #cbd5e1 !important;
+}
+.lms-rating-stars .fa-star.text-warning {
+  color: #f5b50a !important;
+}
+
+
+/* [P002] ISSUE 1-0099: on mobile both the hamburger toggle AND the inline
+   Login/Register links show, which is redundant and crowds the bar. The nav
+   already collapses into the toggle below 992px; collapse the auth actions
+   too so the hamburger is the single navigation affordance. */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    display: none;
+  }
+}
+
+
+/* [P002] ISSUE 1-0105: long category badge on mobile sits edge-to-edge with
+   minimal inset. Give it a comfortable inset from the image edge, generous
+   horizontal padding, and cap its width with ellipsis for very long labels. */
+@media (max-width: 480px) {
+  .card-lms__category {
+    padding: 0.3rem 0.85rem;
+    max-width: calc(100% - 1.5rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* the badge wrapper is inline-styled at 0.5rem from the edge; nudge it in */
+  .card-lms__image > div[style*="position: absolute"] {
+    left: 0.75rem !important;
+    right: 0.75rem !important;
+  }
+}
+
+
+/* [P002] ISSUE 1-0109: stacked mobile footer — columns hug the left edge with
+   uneven vertical spacing between groups. Apply consistent column padding and
+   an even top-margin rhythm between the stacked footer sections. */
+@media (max-width: 576px) {
+  .lms-footer__container {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  .lms-footer__grid {
+    gap: 1.75rem;
+  }
+  .lms-footer__col + .lms-footer__col {
+    margin-top: 0.25rem;
+  }
+  .lms-footer__col h4 {
+    margin-bottom: 0.75rem;
+  }
+  .lms-footer__col ul {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* ===== P003.css ===== */
+/* ==========================================================================
+   P003 — Course Detail (/courses/88) UI fixes — round 2
+   Loaded LAST. !important used only to beat inline styles on the target.
+   ========================================================================== */
+
+/* [P003] ISSUE 1-0126: Tab strip horizontally scrollable on mobile, no labels clipped.
+   PRIOR FIX targeted the <ul> but the inline gap:2rem + the .container padding
+   still pushed the 5th tab past the viewport edge with no scroll/fade. This time
+   the actual scroll region is the .container, the ul is forced nowrap, and a real
+   right-edge fade affordance is applied to the scroll container. */
+@media (max-width: 640px) {
+  /* outer sticky bar must not clip its scrolling child */
+  body.route--lms-course-detail .lms-course-tabs {
+    max-width: 100%;
+    overflow: visible;
+  }
+  /* the .container becomes the horizontal scroll viewport */
+  body.route--lms-course-detail .lms-course-tabs .container {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* right-edge fade so users see there is more to scroll */
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
+  }
+  body.route--lms-course-detail .lms-course-tabs .container::-webkit-scrollbar {
+    display: none;
+  }
+  /* the tab list itself: single non-wrapping row, wider than viewport so it scrolls */
+  body.route--lms-course-detail .lms-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    width: max-content !important;
+    min-width: 100%;
+    gap: 1.5rem !important;
+    overflow: visible !important;
+  }
+  body.route--lms-course-detail .lms-tabs > li {
+    flex: 0 0 auto;
+  }
+  body.route--lms-course-detail .lms-tabs__link {
+    white-space: nowrap !important;
+  }
+  /* trailing spacer-equivalent: extra padding so last label clears the fade */
+  body.route--lms-course-detail .lms-tabs > li:last-child {
+    padding-right: 1.25rem;
+  }
+}
+
+/* [P003] ISSUE 1-0128: Active tab indicator contained within the tab bar (no protruding pill).
+   The active state is rendered as a flush underline that cannot extend above the bar,
+   and any inherited rounded-pill background from skin layers is neutralized. */
+body.route--lms-course-detail .lms-course-tabs {
+  overflow-x: hidden;
+}
+@media (max-width: 640px) {
+  /* keep horizontal scroll working but clip vertical overflow of the pill */
+  body.route--lms-course-detail .lms-course-tabs {
+    overflow-x: visible;
+  }
+}
+body.route--lms-course-detail .lms-tabs__link {
+  position: relative;
+  background: transparent !important;   /* kill any inherited pill background */
+  border-radius: 0 !important;          /* no protruding rounded shape */
+  border-bottom-color: transparent !important;
+}
+body.route--lms-course-detail .lms-tabs__link--active {
+  background: transparent !important;
+}
+/* clean underline flush with the bottom edge of the bar, sized to the label */
+body.route--lms-course-detail .lms-tabs__link--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: #667eea;
+  border-radius: 3px 3px 0 0;
+}
+
+/* [P003] ISSUE 1-0129: Clear separation between hamburger toggle and the Login/Register cluster.
+   On mobile the toggle sat flush against "Login"; add a real gap plus a subtle divider
+   so the menu control reads as distinct from the auth actions. */
+@media (max-width: 640px) {
+  .lms-navbar__toggle {
+    margin-right: 0.875rem;
+  }
+  .lms-navbar__actions {
+    gap: 0.625rem !important;
+    padding-left: 0.875rem;
+    border-left: 1px solid hsla(0, 0%, 100%, 0.14);
+  }
+}
+
+/* ===== P004.css ===== */
+/* ============================================================
+   P004 — Categories page (/categories)
+   route_class: route--lms-course-category
+   This partial loads LAST. !important used only to beat inline
+   styles on the target.
+   ============================================================ */
+
+/* [P004] ISSUE 1-0138: Many category cards have an empty description while
+   others have text, making cards visually unequal. CSS can't populate the
+   missing taxonomy text, but it CAN normalise card geometry so every card is
+   the same height and the body region reserves consistent space whether or
+   not a description is present. Reserve 2 lines of desc height and keep the
+   badge pinned to the bottom (the .lms-category-card__meta already uses
+   margin-top:auto). */
+body.route--lms-course-category .lms-categories-grid .lms-category-card__desc {
+  min-height: 2.625rem; /* ~2 lines at .875rem / 1.5 line-height */
+  margin-bottom: 0;
+}
+/* Keep the content block from collapsing when desc is empty so titles/meta
+   line up across the row. */
+body.route--lms-course-category .lms-categories-grid .lms-category-card__content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* [P004] ISSUE 1-0141: With auto-fill minmax(320px,1fr) on a wide desktop the
+   16-card grid lands a single orphan card alone in the final row. Cap the grid
+   to a fixed 4 columns on wide viewports so 16 cards form 4 balanced rows
+   (4x4), and use a 3/2/1 step-down on smaller widths. This removes the lone
+   trailing card. */
+@media (min-width: 1100px) {
+  body.route--lms-course-category .lms-categories-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (min-width: 768px) and (max-width: 1099px) {
+  body.route--lms-course-category .lms-categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  body.route--lms-course-category .lms-categories-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* [P004] ISSUE 1-0144: Make the hero search input read clearly as actionable.
+   The magnifier <i.fa-search> exists but is faint; strengthen its colour and
+   give the input a visible focus-visible ring for keyboard affordance. The
+   input/icon carry inline styles, so override with !important on the target. */
+body.route--lms-course-category .lms-search-box .fa-search {
+  color: #818cf8 !important;
+  pointer-events: none;
+}
+body.route--lms-course-category #category-search-input:focus-visible {
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25) !important;
+  outline: none;
+}
+
+/* [P004] ISSUE 1-0147: On mobile the hamburger toggle and the inline
+   Login/Register actions are both visible, creating redundant nav and
+   contributing to right-edge overflow. Collapse the inline auth actions on
+   small breakpoints so only the hamburger remains; the drawer carries the
+   nav links. Global header component (no page scope). */
+@media (max-width: 768px) {
+  .lms-navbar__actions {
+    display: none !important;
+  }
+}
+
+/* [P004] ISSUE 1-0155: On mobile the fixed back-to-top FAB overlaps the
+   bottom-right of the last category card. Add bottom breathing room under the
+   page content so the FAB rests over empty space, and nudge the FAB into the
+   safe gutter. Higher specificity than the medical base rule. */
+@media (max-width: 480px) {
+  body.route--lms-course-category .lms-page__content {
+    padding-bottom: 6rem;
+  }
+  body.layout-medical.route--lms-course-category .lms-back-to-top,
+  body.layout-medical.route--lms-course-category #lms-back-to-top {
+    right: 16px !important;
+    bottom: 20px !important;
+  }
+}
+
+/* ===== P005.css ===== */
+/* [P005] ISSUE 1-0166: Mobile header shows hamburger AND inline Login/Register actions; hide inline actions below the mobile breakpoint so only the hamburger drawer is used (the nav links are already hidden at <=992px). */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    display: none;
+  }
+}
+
+/* [P005] ISSUE 1-0167: CATEGORY facet renders blank (empty .lms-category-list) leaving a stray heading and a large empty gap before LEVEL. Suppress the whole filter group when the category list has no option children. */
+body.route--lms-course-category-detail .lms-catalog__filter-group:has(> .lms-category-list:not(:has(*))) {
+  display: none;
+}
+
+/* [P005] ISSUE 1-0172: Category pill badge fits its long label too tightly; give comfortable horizontal padding and cap width with ellipsis so it sizes to text instead of spanning the card. */
+.card-lms__category {
+  padding: 4px 12px;
+  max-width: calc(100% - 24px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [P005] ISSUE 1-0174: Badge wrapper sits flush in the top-left corner (inline top/left:0.5rem) and clips the rounded image corner; inset it so the image radius stays visible. The badge wrapper is the absolutely-positioned div child of the card image. */
+.card-lms__image > div {
+  top: 12px !important;
+  left: 12px !important;
+}
+.card-lms__image > div .card-lms__category {
+  max-width: calc(100vw - 60px);
+}
+
+/* ===== P006.css ===== */
+/* ============================================================
+   P006 — Pricing page UI fixes
+   Route: body.route--lms-course-pricing
+   Loaded LAST. Page content scoped to the route class;
+   global components (navbar) scoped to component class.
+   ============================================================ */
+
+/* [P006] ISSUE 1-0178, 1-0195: equal-height cards + CTA pinned to a common bottom baseline */
+body.route--lms-course-pricing .lms-pricing-grid {
+  /* main.css sets align-items:center which staggers the cards; stretch them */
+  align-items: stretch;
+}
+
+body.route--lms-course-pricing .lms-pricing-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Push the CTA to the bottom of every card so all buttons share one baseline.
+   The CTA is the .lms-btn anchor that is a direct child of the card. */
+body.route--lms-course-pricing .lms-pricing-card > .lms-btn {
+  margin-top: auto;
+}
+
+/* The recommended card is scaled up (transform:scale(1.05)); reset that so the
+   stretched heights line up and the CTA baseline is truly common across cards. */
+body.route--lms-course-pricing .lms-pricing-card--recommended {
+  transform: none;
+}
+
+/* [P006] ISSUE 1-0184, 1-0197: uniform price band + consistent title->price rhythm,
+   reserve an equal-height suffix slot so the Free card matches the paid cards */
+body.route--lms-course-pricing .lms-pricing-card__name {
+  margin-bottom: 1rem;
+}
+
+body.route--lms-course-pricing .lms-pricing-card__price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  /* reserve a uniform vertical band for the price row across all three cards
+     (paid cards carry a /month suffix line; Free has none) */
+  min-height: 3.5rem;
+  margin-bottom: 2rem;
+}
+
+/* keep the large price and the suffix on a balanced baseline */
+body.route--lms-course-pricing .lms-pricing-card__amount {
+  line-height: 1.1;
+}
+
+/* [P006] ISSUE 1-0187, 1-0197: '/month' suffix contrast + baseline balance.
+   main.css uses #8b949e (fails WCAG AA on the light card). Darken + enlarge. */
+body.route--lms-course-pricing .lms-pricing-card__period {
+  color: #475467;            /* ~5.9:1 on #ffffff — passes WCAG AA */
+  font-size: 1rem;
+  font-weight: 500;
+  margin-left: 0.35rem;
+  line-height: 1.1;
+  align-self: baseline;
+}
+
+/* [P006] ISSUE 1-0186: trim the dead light-blue band between cards and footer */
+body.route--lms-course-pricing .lms-section {
+  padding-top: 2.5rem;
+  padding-bottom: 1.5rem;
+}
+
+/* [P006] ISSUE 1-0191: consistent mobile CTA hierarchy.
+   Non-recommended CTAs render as thin ghost pills; give every outline CTA a
+   solid 2px border and clear weight so siblings read as the same intentional
+   secondary variant (recommended stays the filled primary). */
+body.route--lms-course-pricing .lms-pricing-card .lms-btn--outline {
+  border-width: 2px;
+  border-style: solid;
+  font-weight: 600;
+}
+
+/* [P006] ISSUE 1-0189: mobile — avoid duplicate nav affordances.
+   When the hamburger toggle is shown (<=992px), collapse the inline auth
+   links into the drawer paradigm by hiding the standalone navbar action
+   buttons so only the hamburger remains as the single nav affordance. */
+@media (max-width: 992px) {
+  .lms-navbar__actions .lms-btn,
+  .lms-navbar__actions a[href="/user/login"],
+  .lms-navbar__actions a[href="/user/register"] {
+    display: none;
+  }
+}
+
+/* [P006] ISSUE 1-0195: tighten/equalize spacing rhythm on mobile so the gap
+   between the last feature row and the CTA is consistent across cards. */
+@media (max-width: 480px) {
+  body.route--lms-course-pricing .lms-pricing-card__features {
+    margin-bottom: 1.5rem;
+  }
+  body.route--lms-course-pricing .lms-pricing-card {
+    padding: 2rem 1.25rem;
+  }
+}
+
+/* ===== P007.css ===== */
+/* ==========================================================================
+   P007 - Instructor profile (/instructor/56)
+   body.route--lms-course-instructor-profile
+   Loads LAST. !important used only to beat inline styles on the target.
+   ========================================================================== */
+
+/* [P007] ISSUE 1-0201: Bio left-aligned with comfortable measure (~65ch) */
+/* Inline style sets max-width:800px; margin:0 auto and the hero centers text.
+   Keep the bio block centered but make the copy left-aligned at a readable measure. */
+body.route--lms-course-instructor-profile .lms-instructor-profile__bio {
+  text-align: left !important;
+  max-width: 65ch !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-wrap: pretty;
+}
+
+/* [P007] ISSUE 1-0216: Category badge must not crowd the favorite heart button (mobile) */
+/* Heart button is absolute at top:12px right:12px (32px wide). Reserve space and
+   truncate long category labels so they never run under the heart control. */
+@media (max-width: 480px) {
+  body.route--lms-course-instructor-profile .card-lms__category {
+    max-width: calc(100% - 60px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* [P007] ISSUE 1-0219: Equalize title-to-meta gap for 1- vs 2-line titles (mobile) */
+/* Title is line-clamped to 2 lines; 1-line titles collapse and shift the meta row up.
+   Reserve the height of two lines (1.4 line-height x 1.1rem font x 2). */
+@media (max-width: 480px) {
+  body.route--lms-course-instructor-profile .card-lms__title {
+    min-height: calc(1.1rem * 1.4 * 2);
+  }
+}
+
+/* [P007] ISSUE 1-0220: "Free" price styled with same weight/size/color as numeric prices */
+/* card-lms__price--free overrides color to green (#43e97b) and reads with different
+   emphasis than the bold numeric prices. Normalize to the sibling numeric style. */
+body.route--lms-course-instructor-profile .card-lms__price.card-lms__price--free {
+  color: #e6edf3;
+  font-weight: 700;
+}
+
+/* ===== P008.css ===== */
+/* [P008] ISSUE 1-0231: hide inline Login/Register auth links at mobile so they don't overflow next to the hamburger toggle */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    display: none;
+  }
+}
+
+/* [P008] ISSUE 1-0240: vertically center footer brand mark and wordmark on a single baseline */
+.lms-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lms-footer__brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1;
+}
+
+.lms-footer__brand-link .lms-brand-mark--footer {
+  display: block;
+  align-self: center;
+}
+
+/* ===== P009.css ===== */
+/* =====================================================================
+   P009 — Article detail (/news/166)  route--lms-blog-frontend-canonical
+   Loads LAST. !important used only to beat inline styles or the high-
+   specificity medical/light-mode rules that defeated the prior round.
+   ===================================================================== */
+
+/* [P009] ISSUE 1-0244, 1-0255: Paywall "Register" button is an un-themed
+   dark near-black fill (inline background:#21262d; color:#c9d1d9) that
+   matches no brand color and breaks against the green "Log In" sibling.
+   Re-skin to a brand-blue OUTLINE secondary; keep "Log In" green primary.
+   Inline styles -> !important required. Also force single-line labels so
+   "Log In" no longer wraps to two lines (1-0255). */
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button:not(.button--primary) {
+  background: #ffffff !important;
+  color: #1f6feb !important;
+  border: 1px solid #1f6feb !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button:not(.button--primary):hover {
+  background: #eaf2fe !important;
+  color: #1858c4 !important;
+  border-color: #1858c4 !important;
+}
+/* Keep the primary "Log In" as a clear brand-green action with matching weight. */
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button.button--primary {
+  background: #1f8f3c !important;
+  border: 1px solid #1f8f3c !important;
+  color: #ffffff !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button.button--primary:hover {
+  background: #18772f !important;
+  border-color: #18772f !important;
+}
+
+/* [P009] ISSUE 1-0245: Teaser fade reads as a half-faded sentence fragment.
+   Root cause is TWO-fold: (a) the inline overlay gradient fades to near-black
+   (rgba(13,17,23,1)) on a light page, and (b) the wrapper's inline
+   max-height:250px hard-cuts mid-sentence, leaving a faint orphan line.
+   Fix: clamp the teaser to whole lines via line-clamp on the paragraphs so
+   the cut lands on a full line, and re-point the overlay fade to the white
+   page background so the last full line stays legible before a clean fade. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] {
+  max-height: none !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+/* Show a defined number of full-opacity lines, then clamp cleanly. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > p {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+/* First paragraph: a few full lines; later paragraphs are hidden so the fade
+   never lands across a mid-sentence fragment. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > p:first-of-type {
+  -webkit-line-clamp: 5 !important;
+  line-clamp: 5 !important;
+}
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > p:not(:first-of-type) {
+  display: none !important;
+}
+/* Re-point the inline overlay gradient to the white page background and keep
+   it shallow so it sits below the last full line, reading as intentional. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > div[style*="linear-gradient"] {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.9) 70%,
+    rgba(255, 255, 255, 1) 100%
+  ) !important;
+  height: 64px !important;
+}
+
+/* [P009] ISSUE 1-0248, 1-0254: Dek / standfirst under the H1 fails AA (4.5:1).
+   The high-specificity medical rule
+   (body.layout-medical.layout-minimalist...:not()...  .lead { color:
+   var(--medical-text-soft) !important }) overrode the prior un-!important fix,
+   so the dek stayed light. Force a slate that clears 4.5:1 on the near-white
+   background, with matching specificity + !important. (desktop + mobile) */
+body.route--lms-blog-frontend-canonical .article-container .lead,
+body.route--lms-blog-frontend-canonical .article-container .lead.text-muted,
+body.route--lms-blog-frontend-canonical .article-container p.lead.text-muted {
+  color: #334155 !important;   /* ~8.4:1 on #ffffff */
+}
+
+/* [P009] ISSUE 1-0249, 1-0260: Header right-side utilities — cramped right
+   cluster + low-emphasis "Login". Add a consistent right gutter, balance the
+   gap between Login/Register, and darken the Login link to brand navy for AA.
+   Global header component -> no page scope. */
+.lms-navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-right: 0.75rem;
+}
+.lms-navbar__actions .lms-navbar__link {
+  color: #142943 !important;        /* dark navy, matches logo text, >7:1 */
+  font-weight: 600;
+}
+.lms-navbar__actions .lms-navbar__link:hover,
+.lms-navbar__actions .lms-navbar__link:focus-visible {
+  color: #1f6feb !important;
+}
+
+/* [P009] ISSUE 1-0261: On mobile, a large empty gap sits between the
+   share / Back-to-News row and the footer top border after the truncated
+   article. Tighten the article footer's bottom spacing on small screens so
+   the section does not look unintentionally empty. */
+@media (max-width: 480px) {
+  body.route--lms-blog-frontend-canonical .article-container {
+    padding-bottom: 1.25rem !important;
+  }
+  body.route--lms-blog-frontend-canonical .article-container .mt-5.pt-4.border-top {
+    margin-top: 1.5rem !important;
+    padding-top: 1.25rem !important;
+  }
+  /* Stack the back/share row a touch tighter so it reads as a closed block. */
+  body.route--lms-blog-frontend-canonical .article-container .social-share {
+    margin-top: 0.25rem !important;
+  }
+}
+
+/* ===== P010.css ===== */
+/* ==========================================================================
+   P010 — About page (route--lms-course-about) UI fixes
+   Loads LAST. Component-level fixes use the component class (no page scope);
+   page-specific content is scoped under body.route--lms-course-about.
+   ========================================================================== */
+
+/* [P010] ISSUE 1-0276: single mobile nav pattern — collapse inline actions into hamburger */
+/* On mobile the .lms-navbar__nav is already hidden and the hamburger shown, but the
+   inline Login/Register actions stayed visible (display:flex) competing for space and
+   overflowing. Hide the inline actions at the same breakpoint so the hamburger is the
+   single, authoritative collapsed-nav control. Global header component → no page scope. */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    display: none;
+  }
+}
+
+/* [P010] ISSUE 1-0277: hero H1 word-boundary wrapping (no mid-token / orphan breaks) */
+/* Prevent the large hero heading from splitting hyphenated/long tokens across lines and
+   balance the wrap so it never leaves a single-word orphan line on small screens. */
+body.route--lms-course-about .lms-about-hero__copy h1 {
+  text-wrap: balance;
+  -webkit-hyphens: manual;
+  hyphens: manual;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+@media (max-width: 480px) {
+  body.route--lms-course-about .lms-about-hero__copy h1 {
+    /* tighter size on phones so words keep clean boundaries instead of breaking */
+    font-size: clamp(1.9rem, 8vw, 2.4rem);
+    line-height: 1.15;
+  }
+}
+
+/* [P010] ISSUE 1-0282: stat-card labels off-palette (purple) → align to medical navy/teal */
+/* The stat labels read as a saturated purple, off the medical skin's navy/teal palette.
+   Pin them to the medical "soft text" navy token used elsewhere on the skin so they sit
+   in-palette and meet AA contrast on the light stat cards. Page-scoped content fix. */
+body.route--lms-course-about .lms-about-stat-card__label {
+  color: #476273; /* --medical-text-soft (navy), WCAG AA on white card */
+}
+body.route--lms-course-about .lms-about-stat-card__value {
+  color: #0f2c3d; /* --medical-heading (deep navy) for sibling consistency */
+}
+
+/* ===== P011.css ===== */
+/* ============================================================================
+   P011 — Contact page (route--lms-course-contact) UI fixes — ROUND 2
+   Skin: medical / light-mode (body.layout-medical .. .layout-minimalist)
+   Loads LAST. Page-specific rules scoped under body.route--lms-course-contact.
+   Global components (footer/header brand mark) scoped by component class.
+   ============================================================================ */
+
+/* [P011] ISSUE 1-0303: Footer "SilverCare" logo lockup is ~2x larger than the
+   header lockup on mobile. ROOT CAUSE (confirmed in cascade): at <=480px the
+   header brand mark is capped to max-height:28px (ui-fixes-r1-pages.css:1445)
+   "to stop it squeezing the actions off-screen", but the winning footer rule
+   stays at 56px (<=576px). So below 480px header=28px, footer=56px -> the
+   footer mark/wordmark reads clearly bigger. Earlier 56px/56px normalization
+   never accounted for the header's 28px mobile cap. Match the footer mark to
+   the header's actual rendered scale at each breakpoint.
+   (Global footer component — scoped by component class.) */
+.lms-footer .lms-brand-mark--footer {
+  height: 56px;
+}
+@media (max-width: 768px) {
+  .lms-footer .lms-brand-mark--footer {
+    height: 48px;
+  }
+}
+@media (max-width: 480px) {
+  /* Header mark is capped to 28px at this width; mirror it on the footer so the
+     two brand lockups stay visually consistent. */
+  .lms-footer .lms-brand-mark--footer {
+    height: 28px;
+    max-height: 28px;
+    width: auto;
+  }
+}
+
+/* [P011] ISSUE 1-0297: Hero "pills" ("Typical response: ..." / "Coverage: ...")
+   previously rendered near-white text on a near-white tint with the label/value
+   overlapping. Re-assert the readable, cleanly-separated treatment in this
+   last-loaded layer so it survives the cascade: visible tinted background +
+   border, dark slate text (>=4.5:1 AA), and flex gap separation between the
+   label and its <strong> value (no overlap; wraps cleanly on narrow screens). */
+body.route--lms-course-contact .lms-contact-hero__pills span {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .35rem;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155; /* slate-700 on #f1f5f9 ~ 8.6:1, passes WCAG AA */
+  font-weight: 500;
+}
+body.route--lms-course-contact .lms-contact-hero__pills span strong {
+  color: #1e293b; /* slate-800 — clearly distinct value */
+  font-weight: 700;
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  /* On mobile give each pill a touch more internal breathing room so the
+     label and value never visually collide. */
+  body.route--lms-course-contact .lms-contact-hero__pills span {
+    width: 100%;
+    line-height: 1.5;
+  }
+}
+
+/* ===== P012.css ===== */
+/* [P012] ISSUE 1-0317: Glossary alphabet jump-bar — disabled letters too faint (contrast WCAG AA) */
+/* Default disabled style is color:#1e293b at opacity:0.4 over a light hero — far below 4.5:1.
+   Replace with a solid medium-grey that clears AA for the 600-weight letters and stays
+   visibly distinct from the active dark/blue letters. Scoped to the component class. */
+body.route--lms-course-glossary .lms-glossary-page .lms-letter-btn.disabled {
+  opacity: 1;
+  color: #6b7280; /* ~5.0:1 on the light grey hero background */
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* [P012] ISSUE 1-0320: Glossary card titles — inconsistent title-to-body vertical rhythm */
+/* The title sits in a flex header row (.d-flex.justify-content-between.align-items-start.mb-3).
+   Single-word titles ('ADLs') keep that row short while wrapped titles ('Family
+   Communication') push it taller, so the gap above the definition differs card to card.
+   Reserve a 2-line min-height on the header row and align its contents to the top so the
+   definition always starts at the same vertical position across sibling cards. */
+body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card-body > .d-flex.justify-content-between.align-items-start {
+  min-height: 3.3rem; /* ~2 lines of the 1.375rem/1.2 h3 title */
+  align-items: flex-start;
+}
+
+/* Keep the title itself tidy: clamp to 2 lines and align its baseline within the reserved row. */
+body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.2;
+}
+
+/* On narrow mobile the prior fix did not normalise the gap; re-assert the reserved header
+   height there too so 1-line and wrapped titles share the same title-to-body spacing. */
+@media (max-width: 480px) {
+  body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card-body > .d-flex.justify-content-between.align-items-start {
+    min-height: 3.1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* ===== P013.css ===== */
+/* ============================================================
+   P013 — Forum index (route--lms-forum-index) UI fixes
+   Loads LAST. Page-scoped under body.route--lms-forum-index.
+   ============================================================ */
+
+/* [P013] ISSUE 1-0327: Thread meta (author + date) below WCAG AA on white card.
+   Card bg is #fff (light-mode/medical skin). Default meta color is #6e7681
+   (~4.4:1, borderline/fail) and the prior #5b6770 attempt was reported as
+   "still light grey". Darken decisively to #475569 (slate-600), ~7.0:1 on #fff,
+   and target the spans + icons directly with higher specificity so it wins the
+   cascade (light-mode sets .lms-forum-item__meta to #64748b). */
+body.route--lms-forum-index .lms-forum-item .lms-forum-item__meta,
+body.route--lms-forum-index .lms-forum-item .lms-forum-item__meta span,
+body.route--lms-forum-index .lms-forum-item .lms-forum-item__meta i,
+body.route--lms-forum-index .lms-forum-item .lms-forum-item__meta a {
+  color: #475569;
+}
+
+/* [P013] ISSUE 1-0338: Stat block (REPLIES/VIEWS) is vertically centered against
+   the content because the card row uses align-items:center. On multi-line title
+   cards the stats float to mid-card while short cards keep them near the top,
+   producing an uneven scan column. Top-align the row and the stat cluster so
+   every card anchors REPLIES/VIEWS at a consistent height beside the title. */
+body.route--lms-forum-index .lms-forum-item {
+  align-items: flex-start;
+}
+body.route--lms-forum-index .lms-forum-item__stats {
+  align-items: flex-start;
+  padding-top: 0.15rem;
+}
+
+/* [P013] ISSUE 1-0341: On mobile the horizontal card layout keeps a ~120px stat
+   column beside the text, squeezing the title/body into ~3-word lines that end
+   in single-word orphans. Allow the content column to actually shrink, then at
+   narrow widths stack the stats BELOW the content so the text gets the full
+   measure, and tighten the multi-line title line-height. */
+body.route--lms-forum-index .lms-forum-item__content {
+  min-width: 0; /* let flex child shrink so text wraps to full width */
+}
+body.route--lms-forum-index .lms-forum-item__content h3 {
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+body.route--lms-forum-index .lms-forum-item__content p {
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 480px) {
+  body.route--lms-forum-index .lms-forum-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  body.route--lms-forum-index .lms-forum-item__stats {
+    min-width: 0;
+    justify-content: flex-start;
+    gap: 2rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  body.route--lms-forum-index .lms-forum-item__content h3 {
+    line-height: 1.3;
+  }
+}
+
+/* [P013] ISSUE 1-0342: The two header auth actions read inconsistently — Login
+   renders as dark bold text while Register is the blue primary button. Register
+   already IS a proper .lms-btn--primary button (correct differentiation); make
+   Login a clearly legible, regular-weight text link that visually peers with the
+   button rather than competing as bold dark text. Component-scoped (global). */
+.lms-navbar__actions a.lms-navbar__link {
+  font-weight: 500;
+  color: #475569;
+}
+.lms-navbar__actions a.lms-navbar__link:hover,
+.lms-navbar__actions a.lms-navbar__link:focus-visible {
+  color: #1f6feb;
+}
+
+/* ===== P014.css ===== */
+/* ==========================================================================
+   P014 — Forum topic (route--entity-lms-forum-topic-canonical)
+   UI fixes round 2. Loads LAST. !important used only to beat inline styles
+   or prior-round partials that did not visually take effect.
+   ========================================================================== */
+
+/* [P014] ISSUE 1-0350: Secondary text (post date '09:49' inside .lms-text-muted
+   meta, and the 'You must hop in...' helper line) renders too light on the
+   near-white card, risking WCAG AA failure. Darken to slate-600 (#475569),
+   which gives >7:1 on white/#f6fcff. Helper paragraph carries an INLINE
+   color (#8b949e) so it needs !important to beat it. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-comment__meta .lms-text-muted,
+body.route--entity-lms-forum-topic-canonical .lms-text-muted {
+  color: #475569 !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta p {
+  color: #475569 !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta p strong {
+  color: #1f2937 !important; /* '5 replies' emphasis darker than body */
+}
+
+/* [P014] ISSUE 1-0351: 'Like' and 'Share' pills read as disabled — faint
+   border + gray text, plus an INLINE opacity:0.5;cursor:not-allowed. Restore
+   full opacity, strengthen border + text contrast and add a clear hover/focus
+   state so they read as interactive. Beats inline styles with !important. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge {
+  opacity: 1 !important;
+  cursor: pointer !important;
+  color: #1f6feb !important;                 /* clear interactive blue text */
+  border: 1px solid rgba(31, 111, 235, 0.45) !important;
+  background: rgba(31, 111, 235, 0.04) !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge i {
+  color: #1f6feb !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge:hover {
+  background: rgba(31, 111, 235, 0.12) !important;
+  border-color: #1f6feb !important;
+  color: #0d4fc4 !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge:focus-visible {
+  outline: 2px solid #1f6feb !important;
+  outline-offset: 2px !important;
+}
+
+/* [P014] ISSUE 1-0352: Tall empty band between the 'Join the Discussion' card
+   and the footer on desktop. Pull the footer closer by trimming the bottom
+   spacing of the section/content wrapper on this gated anonymous view. */
+body.route--entity-lms-forum-topic-canonical .lms-page__content {
+  padding-bottom: 1.5rem;
+}
+body.route--entity-lms-forum-topic-canonical .lms-section {
+  padding-bottom: 1.5rem;
+}
+
+/* [P014] ISSUE 1-0353: Floating back-to-top FAB still collides with the footer
+   corner on desktop. Increase the fixed offset beyond the prior round so it
+   keeps clear, consistent clearance from the viewport edge. Global component
+   override (no page scope needed). */
+@media (min-width: 769px) {
+  #lms-back-to-top.lms-back-to-top,
+  #lms-back-to-top {
+    right: 40px !important;
+    bottom: 40px !important;
+  }
+}
+
+/* [P014] ISSUE 1-0356: At mobile, both the hamburger toggle AND inline
+   Login/Register links show, duplicating nav and overflowing the header.
+   The toggle appears at max-width:992px, so hide the inline auth actions at
+   the same breakpoint; they belong in the drawer. Global header component. */
+@media (max-width: 992px) {
+  .lms-navbar .lms-navbar__actions {
+    display: none !important;
+  }
+}
+
+/* [P014] ISSUE 1-0358: On mobile the FAB sits on top of the post card's right
+   edge. Lift its offset and give the page content right-edge breathing room so
+   it floats over background, not over the card. */
+@media (max-width: 480px) {
+  #lms-back-to-top.lms-back-to-top,
+  #lms-back-to-top {
+    right: 14px !important;
+    bottom: 80px !important;
+  }
+}
+
+/* [P014] ISSUE 1-0360: Large empty vertical band between the CTA card and the
+   footer divider on mobile. Tighten the bottom spacing of the content
+   container so the footer follows the card with a modest, controlled gap. */
+@media (max-width: 480px) {
+  body.route--entity-lms-forum-topic-canonical .lms-page__content,
+  body.route--entity-lms-forum-topic-canonical .lms-section {
+    padding-bottom: 1rem;
+  }
+}
+
+/* ===== P015.css ===== */
+/* ==========================================================================
+   P015 — Certificate Verify (/certificate/verify)
+   Skin: medical (SilverCare) | layout-medical layout-minimalist
+   This partial loads LAST. Page scope: body.route--lms-certificate-verify
+   Button + placeholder are restyled by high-specificity skin rules
+   (light-mode.css / medical.css), so fixes here MATCH that specificity and
+   load later to win without leaning on !important except to beat skin
+   !important declarations on the same target.
+   ========================================================================== */
+
+/* [P015] ISSUE 1-0366: lone verify form stranded above a tall blank region.
+   .lms-page__content is flex:1 and grows to fill the viewport, leaving the
+   short form pinned to the top with a huge empty band before the footer.
+   Center the form block in the content area and bound its height so the form
+   and footer sit closer together. */
+body.route--lms-certificate-verify .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Keep the empty band modest instead of one full viewport tall. */
+  min-height: 0;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+body.route--lms-certificate-verify .lms-page__content > * {
+  width: 100%;
+  max-width: 32rem; /* ~512px: a focused, balanced single-field card */
+  margin-left: auto;
+  margin-right: auto;
+}
+body.route--lms-certificate-verify .lms-certificate-verification-form {
+  width: 100%;
+}
+/* Override the input's intrinsic size="60" width so it fits the container. */
+body.route--lms-certificate-verify #edit-certificate-code,
+body.route--lms-certificate-verify .form-item-certificate-code .form-control {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* [P015] ISSUE 1-0368, 1-0376: Verify button heavy, offset blue glow.
+   medical.css sets, on this layout:
+     ... input[type="submit"] { box-shadow: 0 10px 20px rgba(0,119,182,.24)!important }
+   That 10px-offset / 20px-blur colored shadow is the bleed seen bottom-left.
+   Match the skin's compound specificity + later load order and replace it
+   with a subtle, symmetric, neutral elevation (desktop + mobile). */
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form input[type="submit"],
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form .form-submit,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form button[type="submit"] {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+}
+/* Keep the focus state accessible but still subtle/symmetric. */
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form input[type="submit"]:focus,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form input[type="submit"]:focus-visible,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form .form-submit:focus,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form .form-submit:focus-visible {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
+              0 0 0 3px rgba(0, 119, 182, 0.30) !important;
+}
+
+/* [P015] ISSUE 1-0370: placeholder too light/low-contrast.
+   light-mode.css sets, with specificity (0,2,2):
+     body.layout-minimalist input[type="text"]::placeholder { color:#94a3b8 }
+   #94a3b8 on white is ~2.5:1 (below 3:1). Match that specificity, add the
+   route class for a clean win, and darken to #6b7280 (~4.8:1 on white) while
+   still reading as placeholder. */
+body.layout-minimalist.route--lms-certificate-verify input[type="text"]::placeholder,
+body.layout-minimalist.route--lms-certificate-verify .form-text::placeholder,
+body.layout-minimalist.route--lms-certificate-verify #edit-certificate-code::placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+
+/* ===== P016a.css ===== */
+/* ==========================================================================
+   P016a — Login page (/user/login) UI fixes
+   Skin: medical | Brand: SilverCare | brand color #0077b6
+   Scope: body.route--user-login for page-specific content;
+          component classes for shared (navbar) components.
+   This partial loads LAST.
+   ========================================================================== */
+
+/* [P016a] ISSUE 1-0388: Mobile header links overflow / inconsistent layout.
+   Keep the navbar actions on a single baseline, aligned, and inside the
+   viewport at mobile width; give the "Register" text-link and the
+   "Back to Home" button consistent vertical alignment and sizing. */
+@media (max-width: 480px) {
+  body.route--user-login .lms-navbar__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+  }
+  body.route--user-login .lms-navbar__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  body.route--user-login .lms-navbar__actions .lms-navbar__link {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.2;
+  }
+  body.route--user-login .lms-navbar__actions .lms-btn--sm {
+    white-space: nowrap;
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+  }
+}
+
+/* [P016a] ISSUE 1-0390: Large empty gap above the login card on tall mobile
+   viewports — vertically center the card within available height and trim
+   the top margin so the composition is balanced. */
+@media (max-width: 480px) {
+  body.route--user-login .lms-auth__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    min-height: calc(100vh - 120px);
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+  body.route--user-login .lms-auth__card {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* [P016a] ISSUE 1-0391: Social provider buttons — vertically center the icon
+   with the label and match the comfortable vertical padding of the inputs
+   so the buttons no longer feel cramped. */
+body.route--user-login .lms-auth__social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  line-height: 1.4;
+}
+body.route--user-login .lms-auth__social-btn i {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  font-size: 1.05rem;
+}
+
+/* [P016a] ISSUE 1-0393: "or" divider not symmetric / not vertically centered.
+   Replace the absolute-positioned overlay with a robust flex divider: two
+   equal-length rules either side of a vertically-centered "or" label. */
+body.route--user-login .lms-auth__form-wrapper > .position-relative,
+body.route--user-login .text-center.my-3.position-relative {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+body.route--user-login .lms-auth__divider-line {
+  position: static;
+  flex: 1 1 0;
+  width: auto;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--medical-border, #d7e7f2);
+  opacity: 1;
+}
+body.route--user-login .lms-auth__divider-label {
+  position: static;
+  top: auto;
+  left: auto;
+  transform: none;
+  flex: 0 0 auto;
+  padding: 0 0.25rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* [P016a] ISSUE 1-0394: Footer links read as plain bold text — make
+   "Sign up here" and "Forgot your password?" recognizable links with the
+   medical brand color and underline-on-hover, with consistent emphasis. */
+body.route--user-login .lms-auth__footer p {
+  font-weight: 400;
+}
+body.route--user-login .lms-auth__footer a {
+  color: var(--medical-violet, #0077b6) !important;
+  font-weight: 600;
+  text-decoration: none;
+}
+body.route--user-login .lms-auth__footer a:hover,
+body.route--user-login .lms-auth__footer a:focus-visible {
+  color: var(--medical-violet, #0077b6) !important;
+  text-decoration: underline;
+}
+
+/* ===== P016b.css ===== */
+/* ==========================================================================
+   P016b — User Register (/user/register)
+   route_class: route--user-register   |   active skin: medical (layout-medical)
+   body has: layout-medical route--user-register layout-minimalist
+   This partial loads LAST (after ui-fixes-r1-pages.css and light-mode.css).
+   Re-fixes issues the prior round did not resolve, using higher specificity
+   and !important ONLY to beat existing !important rules on the same targets.
+   ========================================================================== */
+
+/* [P016b] ISSUE 1-0401, 1-0409: Header "Login" (.lms-navbar__link) rendered as
+   plain dark text while the sibling "Back to Home" (.lms-btn--outline anchor)
+   is a styled blue action, so Login does not read as clickable. PRIOR FIX only
+   bumped Login's font-weight and left it dark. Unify both as clearly-clickable
+   nav actions in the same brand blue. ui-fixes-r1.css sets
+   .lms-navbar__actions a { color:#1f2a37 } (dark) — beat it with a higher-
+   specificity, route-scoped rule (no !important needed: more specific). */
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-navbar__link {
+  color: #0077b6;
+  font-weight: 600;
+  text-decoration: none;
+}
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-navbar__link:hover {
+  color: #023e7d;
+  background: rgba(0, 119, 182, 0.08);
+}
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-navbar__link:focus-visible {
+  outline: 2px solid #0077b6;
+  outline-offset: 2px;
+}
+
+/* [P016b] ISSUE 1-0405: Card sits low with a large empty band between the
+   fixed 64px header and the card top; min-height:100vh + align-items:center
+   centers a short card inside the FULL viewport (ignoring the 64px header),
+   pushing it visually low / leaving dead space up top. PRIOR FIX reduced
+   padding but kept full 100vh, so the band persisted. Subtract the header
+   height from the flex height and pull the top spacing in so the card is
+   balanced within the area BELOW the header. */
+body.route--user-register .lms-auth {
+  min-height: calc(100vh - 64px);
+  margin-top: 64px;             /* clear the fixed header */
+  padding-top: 1.5rem;
+  padding-bottom: 2.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* [P016b] ISSUE 1-0410: Google/Facebook social buttons use a near-white fill
+   on the white card with a too-light border, so the tappable boundary is hard
+   to see. PRIOR FIX used #cbd5e1 (~1.5:1 vs white — below the 3:1 non-text
+   threshold). Use a border dark enough to clear WCAG 3:1 plus a faint fill so
+   the control area is unmistakable. */
+body.route--user-register .lms-auth .lms-auth__social .lms-btn--outline,
+body.route--user-register .lms-auth .lms-auth__social .lms-auth__social-btn {
+  background: #f8fafc !important;
+  border: 1px solid #6b7280 !important;   /* ~3.1:1 vs #fff: meets non-text 3:1 */
+  color: #1f2937 !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08) !important;
+}
+body.route--user-register .lms-auth .lms-auth__social .lms-btn--outline:hover,
+body.route--user-register .lms-auth .lms-auth__social .lms-auth__social-btn:hover {
+  background: #eef2f6 !important;
+  border-color: #475467 !important;
+  color: #0f172a !important;
+}
+
+/* [P016b] ISSUE 1-0411: Email/Username placeholders render light grey
+   (#94a3b8). PRIOR FIX (#667085) was borderline and still reads light. The
+   blocking rule is light-mode.css:2516
+   `body.layout-minimalist .lms-auth input::placeholder { color:#94a3b8
+   !important }`. Beat it with an equally/more-specific, route-scoped
+   !important rule using a clearly darker grey (#475467 ~ 7:1 vs white). */
+body.route--user-register .lms-auth input[type="email"]::placeholder,
+body.route--user-register .lms-auth input[type="text"]::placeholder,
+body.route--user-register .lms-auth input[type="password"]::placeholder,
+body.route--user-register .lms-auth input.form-control::placeholder {
+  color: #475467 !important;
+  opacity: 1 !important;
+}
+
+/* [P016b] ISSUE 1-0412: The "or" divider lines look thin/faint and the two
+   segments flanking the centered label feel uneven. Markup is a full-width
+   <hr.lms-auth__divider-line> with an absolutely-centered
+   <span.lms-auth__divider-label> that carries a white backplate (which splits
+   the line into two visual segments). Bump the rule contrast and ensure the
+   label backplate is wide/symmetric so both segments read evenly, matching the
+   full field width. */
+body.route--user-register .lms-auth hr.lms-auth__divider-line,
+body.route--user-register .lms-auth .lms-auth__divider-line {
+  border: 0 !important;
+  border-top: 1px solid #94a3b8 !important;  /* darker than faint #cbd5e1 */
+  opacity: 1 !important;
+  width: 100%;
+  margin: 0 !important;
+}
+body.route--user-register .lms-auth .lms-auth__divider-label {
+  background: #ffffff !important;
+  color: #475467 !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+/* [P016b] ISSUE 1-0407, 1-0409 (mobile): The right-side header nav extends past
+   the right viewport edge ("Back to Home" bleeds off-screen) and the two links
+   still show mismatched colors on mobile. Keep both action links inside the
+   viewport with symmetric padding, prevent horizontal overflow, and keep the
+   unified blue treatment. */
+@media (max-width: 480px) {
+  body.route--user-register .lms-navbar,
+  body.route--user-register .lms-page {
+    overflow-x: hidden;
+  }
+  body.route--user-register .lms-navbar__container {
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;   /* symmetric with left logo padding */
+    gap: 0.5rem;
+    max-width: 100%;
+  }
+  body.route--user-register .lms-navbar__brand {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+  body.route--user-register .lms-navbar__brand img {
+    max-height: 32px;
+    width: auto;
+  }
+  body.route--user-register .lms-navbar__actions {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 0.4rem;
+    margin-left: auto;
+  }
+  body.route--user-register .lms-navbar__actions a.lms-navbar__link,
+  body.route--user-register .lms-navbar__actions .lms-btn--outline {
+    white-space: nowrap;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+  }
+  /* keep both header actions the same readable blue on mobile too */
+  body.route--user-register .lms-navbar__actions a.lms-navbar__link {
+    color: #0077b6;
+    font-weight: 600;
+  }
+
+  /* card vertical balance on mobile (header is fixed, ~56-64px) */
+  body.route--user-register .lms-auth {
+    min-height: auto;
+    margin-top: 64px;
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+}
+
+/* ===== P017.css ===== */
+/* ============================================================
+   P017 - Learning dashboard (/dashboard)
+   route_class: route--lms-progress-dashboard
+   Page section scope: .lms-dashboard-page
+   Loads LAST. !important used only to beat inline styles on target.
+   ============================================================ */
+
+/* [P017] ISSUE 1-0413: Hero panel has a huge right-side dead zone (card fills only ~45%).
+   The template forces a single-column hero and pins the spotlight card to the start with
+   max-width:34rem, leaving the right half empty. Center the card and constrain the hero
+   copy so the panel reads as an intentional centered layout instead of half-empty. */
+.lms-dashboard-page .lms-dashboard-page__hero {
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lms-dashboard-page .lms-dashboard-page__hero-copy {
+  max-width: 64rem !important;
+}
+.lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight {
+  max-width: min(100%, 64rem) !important;
+  justify-self: center !important;
+}
+/* Let the spotlight use a real two-column layout (media + body) to fill the width
+   and remove the empty band, instead of a tall narrow single column. */
+@media (min-width: 768px) {
+  .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) !important;
+    align-items: stretch;
+  }
+  .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight__media {
+    height: 100%;
+    aspect-ratio: auto !important;
+  }
+  .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .lms-dashboard-page .lms-dashboard-page__hero .lms-learning-spotlight__body {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* [P017] ISSUE 1-0419: Hero subtitle muted grey (#8b949e ~3.3:1 on white) fails WCAG AA.
+   Darken to #4f5862 (~7.1:1 on #fff) for comfortable AA on small body text. */
+.lms-dashboard-page .lms-dashboard-page__subtitle {
+  color: #4f5862 !important;
+}
+
+/* [P017] ISSUE 1-0422: Uneven vertical rhythm - gap above the stats row is larger than
+   the gap below it before "Continue learning". Normalize the KPI block spacing so the
+   top and bottom gaps match. */
+.lms-dashboard-page .lms-kpi-grid {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+.lms-dashboard-page .lms-dashboard-page__section {
+  margin-top: 0; /* spacing now owned by the KPI block's equal bottom margin */
+}
+
+/* [P017] ISSUE 1-0424: Header "Dashboard" control reads as an ambiguous blue link on the
+   dashboard page. Give the outline button a clear, intentional button affordance and an
+   active/current-page state when we are on the dashboard route. */
+.lms-navbar__actions .lms-btn--outline {
+  font-weight: 600;
+}
+body.route--lms-progress-dashboard .lms-navbar__actions .lms-btn--outline {
+  background: #0077b6;
+  border-color: #0077b6;
+  color: #ffffff;
+}
+body.route--lms-progress-dashboard .lms-navbar__actions .lms-btn--outline:hover,
+body.route--lms-progress-dashboard .lms-navbar__actions .lms-btn--outline:focus-visible {
+  background: #02639a;
+  border-color: #02639a;
+  color: #ffffff;
+}
+body.route--lms-progress-dashboard .lms-navbar__actions .lms-btn--outline:focus-visible {
+  outline: 2px solid #02639a;
+  outline-offset: 2px;
+}
+
+/* [P017] ISSUE 1-0427: Same "READY TO START" status renders in two color treatments -
+   purple on the hero spotlight (no is-idle class in markup) vs yellow/cream is-idle on the
+   list cards. Unify by making the idle badge use the same purple/lavender treatment as the
+   default status badge so the identical status looks identical everywhere. */
+.lms-learning-spotlight__status.is-idle,
+.lms-learning-card__badge.is-idle {
+  background: rgba(102, 126, 234, 0.16);
+  border-color: rgba(102, 126, 234, 0.24);
+  color: #4338ca;
+}
+
+/* [P017] ISSUE 1-0430: The category pill wraps onto two lines on the hero card but stays on
+   one line on the list card, giving the same label two different shapes. Force single-line
+   with truncation and a consistent max-width on both card variants. */
+.lms-learning-spotlight__category,
+.lms-learning-card__category {
+  max-width: 14rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* [P017] ISSUE 1-0432: At 0% the progress track is a near-invisible faint bar. Darken the
+   unfilled track so it is discernible against the white card, and add a subtle start dot at
+   the left edge so a 0% state still reads as "started from here". */
+.lms-dashboard-page .lms-learning-progress__track {
+  background: rgba(15, 44, 61, 0.14);
+  position: relative;
+}
+.lms-dashboard-page .lms-learning-progress__track::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.18rem;
+  width: 0.32rem;
+  height: 0.32rem;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: #0077b6;
+  opacity: 0.85;
+  z-index: 1;
+}
+
+/* ===== P018.css ===== */
+/* ============================================================
+   P018 — My Courses (route--lms-progress-my-courses)
+   UI defect fixes (round 1, batch 2)
+   This partial loads LAST. !important used only where needed
+   to beat earlier theme rules of equal/greater specificity.
+   ============================================================ */
+
+/* [P018] ISSUE 1-0444: "READY TO START" status badge off blue palette */
+/* The .is-idle badge was amber (rgba(254,225,64,*) / #fde68a). The brand
+   is blue (medical/SilverCare). Recolor the idle/not-started badge to a
+   palette-consistent blue so it harmonizes with the category badge and
+   the In-Progress badge. Component class fix, page-scoped for safety. */
+body.route--lms-progress-my-courses .lms-learning-card__badge.is-idle,
+body.route--lms-progress-my-courses .lms-learning-spotlight__status {
+  background: rgba(102, 126, 234, 0.16);
+  border-color: rgba(102, 126, 234, 0.30);
+  color: #4453b8;
+}
+
+/* [P018] ISSUE 1-0448: redundant zero-state indicators on the card */
+/* The card body repeats the status three ways: the meta row shows
+   "0% complete" AND the status text ("Ready to start"), then the progress
+   block repeats "Progress 0%". Hide the duplicated status word in the meta
+   row; keep the single "% complete" figure plus the progress track. */
+body.route--lms-progress-my-courses .lms-learning-card__meta > span:last-child {
+  display: none;
+}
+
+/* [P018] ISSUE 1-0457: meta text contrast below AA on white card (mobile) */
+/* "0% complete" was #8b949e (~3.1:1 on white). Darken to #51616e to clear
+   the 4.5:1 AA threshold for normal body text. Applies to the progress
+   meta label/value too for consistency. Page-scoped. */
+body.route--lms-progress-my-courses .lms-learning-card__meta,
+body.route--lms-progress-my-courses .lms-learning-card__meta span,
+body.route--lms-progress-my-courses .lms-learning-progress__meta span {
+  color: #51616e;
+}
+body.route--lms-progress-my-courses .lms-learning-progress__meta strong {
+  color: #2d3640;
+}
+
+/* ============================================================
+   Mobile-only fixes
+   ============================================================ */
+@media (max-width: 480px) {
+
+  /* [P018] ISSUE 1-0450: full-width category pill floats over the thumbnail
+     covering the artwork. Constrain it inside the image with margins, give
+     it a solid translucent backing surface + padding so both the pill text
+     and the image stay legible. The chips row is positioned absolute over
+     the media; tighten its inset and stack chips so they don't span the
+     whole image. */
+  body.route--lms-progress-my-courses .lms-learning-card__chips {
+    top: 0.6rem;
+    left: 0.6rem;
+    right: 0.6rem;
+    gap: 0.4rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  body.route--lms-progress-my-courses .lms-learning-card__category {
+    max-width: 100%;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.65rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: rgba(13, 17, 23, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    backdrop-filter: blur(2px);
+  }
+
+  /* [P018] ISSUE 1-0454: hero stat cards duplicate the counts already shown
+     on the queue filter chips, adding vertical bloat on mobile. Collapse the
+     redundant hero summary stat cards on small screens; the filter chips
+     remain the single source of the counts. */
+  body.route--lms-progress-my-courses .lms-my-courses-page__summary {
+    display: none;
+  }
+}
+
+/* ===== P019.css ===== */
+/* ==========================================================================
+   P019 — Lesson Player (route--lms-progress-lesson-view)
+   UI defect fixes. Loaded LAST. Page-specific rules carry the route class for
+   extra specificity to beat earlier light-mode !important declarations.
+   ========================================================================== */
+
+/* [P019] ISSUE 1-0464, 1-0475: Lesson body copy too light (muted blue-gray).
+   Prior #334155 still reads as low-contrast blue-gray; darken to near-#222
+   neutral gray (contrast vs #fff/#f8fafc ~12:1, comfortably WCAG AA/AAA). */
+body.route--lms-progress-lesson-view .lms-learn__text-content,
+body.route--lms-progress-lesson-view .lms-learn__text-content p,
+body.route--lms-progress-lesson-view .lms-learn__text-content li,
+body.route--lms-progress-lesson-view .lms-learn__text-content span,
+body.route--lms-progress-lesson-view .lms-learn__description,
+body.route--lms-progress-lesson-view .lms-learn__description p,
+body.route--lms-progress-lesson-view .lms-learn__description li,
+body.route--lms-progress-lesson-view .lms-learn__description span,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__text-content p,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__text-content li,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__text-content span,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__description,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__description * {
+  color: #222831 !important;
+}
+
+/* [P019] ISSUE 1-0467: Active sidebar lesson row sits "proud" of siblings —
+   solid full-width light-blue fill + no left accent. Soften the fill, add a
+   subtle left accent that lives inside the same inset as inactive rows, and
+   keep the same padding so it sits flush with siblings. */
+body.route--lms-progress-lesson-view .lms-learn__lesson-item--active a,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__lesson-item--active a {
+  background: #eef2ff !important;            /* softer than #e0e7ff */
+  border-left: 3px solid #4f46e5 !important; /* accent inside the inset row */
+  padding-left: calc(1rem - 3px) !important; /* keep text aligned w/ siblings */
+}
+
+/* [P019] ISSUE 1-0476: Active "Overview" pill clipped by the rounded
+   tab-container corner. Give the pill container more inner padding so the
+   first/active pill keeps a clean inset from the 999px border-radius. */
+body.route--lms-progress-lesson-view .lms-nav-tabs,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-nav-tabs {
+  padding: 0.5rem !important;
+}
+body.route--lms-progress-lesson-view .lms-nav-tabs .lms-tab-item.active,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-nav-tabs .lms-tab-item.active {
+  /* shadow no longer bleeds against the container edge */
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.22) !important;
+}
+
+/* [P019] ISSUE 1-0477: H1 lesson title sits with tight top/left padding inside
+   the white card, especially on mobile. Add generous, consistent padding to
+   the title block so the heading breathes within the card. */
+body.route--lms-progress-lesson-view .lms-learn__title-wrap,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__title-wrap {
+  padding: 1.75rem 1.5rem 0.5rem !important;
+}
+@media (max-width: 480px) {
+  body.route--lms-progress-lesson-view .lms-learn__title-wrap,
+  body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__title-wrap {
+    padding: 1.5rem 1.25rem 0.5rem !important;
+  }
+  /* keep the top control row aligned with the new title gutter */
+  body.route--lms-progress-lesson-view .lms-learn__top-bar,
+  body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__top-bar {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+}
+
+/* [P019] ISSUE 1-0478: Footer brand lockup and column headings have
+   inconsistent left alignment / uneven vertical rhythm. Normalize the gutter
+   so the brand and every column heading share the same left edge, with even
+   spacing below the brand. Global footer component (no page scope). */
+.lms-footer__col {
+  text-align: left;
+}
+.lms-footer__col .lms-footer__brand,
+.lms-footer__col .lms-footer__brand-link,
+.lms-footer__col .lms-footer__title,
+.lms-footer__col h4 {
+  margin-left: 0;
+  padding-left: 0;
+}
+.lms-footer__col .lms-footer__brand {
+  margin-bottom: 1rem;
+}
+
+/* ===== P020.css ===== */
+/* P020 quiz-take UI fixes. Loads last. Scoped to body.route--lms-quiz-take for page content. */
+
+/* [P020] ISSUE 1-0479: keep countdown timer visible at all scroll positions (floating chip) */
+/* The timer lives in .lms-quiz__meta inside the intro card which scrolls away on a long page.
+   Float the whole meta bar as a fixed chip in the top-right so time remaining stays in view. */
+body.route--lms-quiz-take .lms-quiz__meta {
+  position: fixed;
+  top: 84px;            /* clear the sticky SilverCare header */
+  right: 24px;
+  left: auto;
+  z-index: 1050;        /* above question cards */
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: calc(100vw - 48px);
+  background: #161b22;  /* solid so it reads over scrolling content */
+  border: 1px solid rgba(88, 166, 255, 0.45);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  margin: 0;
+}
+/* keep the header card from collapsing now that the meta is removed from its flow */
+body.route--lms-quiz-take .lms-quiz__header-card {
+  min-height: 1px;
+}
+
+/* [P020] ISSUE 1-0479 + 1-0488: mobile — dock the floating timer chip full-width and contain it */
+@media (max-width: 480px) {
+  body.route--lms-quiz-take .lms-quiz__meta {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    border-radius: 0;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  /* keep page content clear of the docked chip */
+  body.route--lms-quiz-take .lms-quiz__submit-wrap {
+    padding-bottom: 7rem;
+  }
+}
+
+/* [P020] ISSUE 1-0489: matching question selects clipped on mobile — stack label over full-width select */
+@media (max-width: 480px) {
+  body.route--lms-quiz-take .lms-quiz__match-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  body.route--lms-quiz-take .lms-quiz__match-left {
+    flex: none;
+    width: 100%;
+  }
+  body.route--lms-quiz-take .lms-quiz__match-select {
+    flex: none;
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 2.25rem;          /* breathing room for the native arrow */
+    text-overflow: ellipsis;
+  }
+}
+
+/* [P020] ISSUE 1-0492: radio/checkbox aligned to first line of multi-line labels */
+body.route--lms-quiz-take .lms-quiz__choice-box {
+  align-items: flex-start;
+}
+body.route--lms-quiz-take .lms-quiz__choice-box input {
+  margin-top: 0.2rem;   /* nudge control to sit on the first text line */
+  flex: 0 0 auto;
+}
+body.route--lms-quiz-take .lms-quiz__choice-box span {
+  line-height: 1.4;
+}
+
+/* ===== P021.css ===== */
+/* ==========================================================================
+   P021 — Quiz Result page UI fixes
+   Page route class: route--lms-quiz-result  (rendered under body.layout-minimalist)
+   Page-specific styles are scoped under body.route--lms-quiz-result so they win
+   over both the module's inline <style> and light-mode.css overrides.
+   ========================================================================== */
+
+/* [P021] ISSUE 1-0511: Hero top accent bar shows an abrupt blue->green seam.
+   Replace the 2-stop gradient with a smoother multi-stop blend and clip cleanly
+   to the card's rounded top so no dark line shows at the right corner. */
+body.route--lms-quiz-result .lms-result-hero::before {
+  background: linear-gradient(
+    90deg,
+    #58a6ff 0%,
+    #4db0e6 30%,
+    #45c08a 65%,
+    #3fb950 100%
+  ) !important;
+  border-top-left-radius: inherit !important;
+  border-top-right-radius: inherit !important;
+}
+
+/* [P021] ISSUE 1-0515: '98%' figure shows a faint offset ghost/shadow giving a
+   blurred double-rendered look. Remove the text-shadow on the score numeral. */
+body.route--lms-quiz-result .lms-score-circle,
+body.route--lms-quiz-result .lms-score-circle--pass,
+body.route--lms-quiz-result .lms-score-circle--fail {
+  text-shadow: none !important;
+}
+
+/* [P021] ISSUE 1-0514: 'PASSED' badge — medium-green text/trophy on a pale-green
+   pill fails WCAG AA. Darken the text/icon green and deepen the pill background
+   + border for >= 4.5:1 contrast. #15803d on #dcfce7 ~= 5.3:1. */
+body.route--lms-quiz-result .lms-result-badge--pass {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+  border-color: #15803d !important;
+}
+body.route--lms-quiz-result .lms-result-badge--pass i,
+body.route--lms-quiz-result .lms-result-badge--pass .fa-trophy {
+  color: #15803d !important;
+}
+/* Keep the FAILED badge readable on its pale-red pill for the same reason. */
+body.route--lms-quiz-result .lms-result-badge--fail {
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+  border-color: #b91c1c !important;
+}
+body.route--lms-quiz-result .lms-result-badge--fail i {
+  color: #b91c1c !important;
+}
+
+/* [P021] ISSUE 1-0510: On mobile the bold question text wraps to ~13 very short
+   2-3 word lines because the icon + large gap + answer left-indent steal width.
+   Shrink the icon footprint and the header gap, and drop the answer left indent
+   so the readable text column gets a much wider measure. */
+@media (max-width: 480px) {
+  body.route--lms-quiz-result .lms-response-card {
+    padding: 1rem !important;
+  }
+  body.route--lms-quiz-result .lms-response-header {
+    gap: 0.6rem !important;
+    flex-wrap: wrap !important;
+  }
+  body.route--lms-quiz-result .lms-response-icon {
+    font-size: 1.25rem !important;
+    flex: 0 0 auto !important;
+  }
+  body.route--lms-quiz-result .lms-response-question {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    font-size: 1.05rem !important;
+    line-height: 1.45 !important;
+  }
+  /* Points pill drops to its own full-width row instead of pinching the text. */
+  body.route--lms-quiz-result .lms-response-points {
+    order: 3 !important;
+    flex: 0 0 100% !important;
+    margin-top: 0.5rem !important;
+    text-align: left !important;
+  }
+  /* Remove the 3rem left indent so the submission/feedback use full width. */
+  body.route--lms-quiz-result .lms-response-answer {
+    padding-left: 0 !important;
+  }
+}
+
+/* [P021] ISSUE 1-0513 + 1-0512: A tall empty light-grey rectangle sits between
+   the last answer card and the footer (the wrapper's min-height:100vh + 4rem
+   padding overshoots once content is short), leaving an orphaned dead block; the
+   footer also reads tight at the bottom.
+   Drop the forced full-viewport min-height and trim the oversized bottom padding
+   so content flows naturally into the footer. */
+body.route--lms-quiz-result .lms-result-wrapper {
+  min-height: 0 !important;
+  padding-top: 2.5rem !important;
+  padding-bottom: 2.5rem !important;
+}
+/* The action area already adds 4rem padding-bottom; collapse it so it doesn't
+   stack with the wrapper padding into a large empty gap. */
+body.route--lms-quiz-result .lms-btn-actions {
+  margin-top: 2rem !important;
+  padding-bottom: 0 !important;
+}
+@media (max-width: 480px) {
+  body.route--lms-quiz-result .lms-result-wrapper {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+}
+
+/* [P021] ISSUE 1-0512: Footer 'SUPPORTS' column heading clipped at the bottom
+   edge with no breathing room. Add bottom padding to the footer container so all
+   columns are fully visible. Global footer component (no page scope). */
+.lms-footer {
+  padding-bottom: 2.5rem !important;
+}
+
+/* ===== P022.css ===== */
+/* ==========================================================================
+   P022 — My Quiz Results (/my-quiz-results)
+   route_class: route--lms-quiz-my-results  (body also has .layout-minimalist + .layout-medical)
+   Active skin: medical + minimalist, brand SilverCare. Loads LAST.
+
+   NOTE on specificity: the skin base rules use selectors like
+   `body.layout-minimalist .lms-quiz-results-page__summary-card { ... !important }`
+   (specificity 0,2,0). Prior fixes scoped only `body.route--lms-quiz-my-results .x`
+   (also 0,2,0) and tied / lost. Here we chain BOTH body classes
+   `body.route--lms-quiz-my-results.layout-minimalist .x` (0,3,0) so we reliably
+   beat the base !important rules.
+   ========================================================================== */
+
+/* [P022] ISSUE 1-0519: stat cards reserve a large empty block below the value+label.
+   Base forces min-height:5.75rem and justify-content:center, but the tall fixed
+   min-height + the grid leaves a void. Drop the fixed min-height, let content size
+   the card, and center the value+label block with proportional padding. */
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary-card,
+body.route--lms-quiz-my-results.layout-medical .lms-quiz-results-page__summary-card {
+  min-height: 0 !important;
+  height: auto !important;
+  align-self: start !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 0.25rem !important;
+  padding: 1.05rem 1.15rem !important;
+}
+
+/* Keep the summary grid items from stretching to the tallest sibling (which
+   re-introduces the empty band). align-items:start sizes each card to content. */
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary {
+  align-items: start !important;
+}
+
+/* [P022] ISSUE 1-0523: sibling stat values use 3 different colors (black / green /
+   blue) with no semantic logic. light-mode forces is-success -> #15803d and
+   is-accent -> #0369a1. Normalize ALL four primary values to one heading color.
+   Specificity here (0,3,1) beats the base is-success/is-accent rules (0,3,1) by
+   load order and matches their structure exactly. */
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary-card .lms-quiz-results-page__summary-value,
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary-card.is-success .lms-quiz-results-page__summary-value,
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary-card.is-accent .lms-quiz-results-page__summary-value {
+  color: #0f172a !important;
+}
+
+/* [P022] ISSUE 1-0520: with a single result a tall void sits between the result
+   card and the footer. Reduce the section's reserved height so the gap before the
+   footer reads as intentional padding, and trim the board's bottom margin. */
+body.route--lms-quiz-my-results .lms-quiz-results-page {
+  min-height: 0 !important;
+  padding-bottom: 2.5rem !important;
+}
+body.route--lms-quiz-my-results .lms-quiz-results-board {
+  margin-bottom: 0 !important;
+}
+
+/* [P022] ISSUE 1-0522: give each result row a delimited, structured look so
+   multiple rows read as a list and the meta line is grouped rather than floating.
+   A bottom divider on every row (except the last) + consistent inner padding. */
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-board .lms-quiz-result-row {
+  padding: 1.1rem 1.25rem !important;
+}
+body.route--lms-quiz-my-results .lms-quiz-results-board .lms-quiz-result-row + .lms-quiz-result-row {
+  border-top: 1px solid #e2e8f0;
+}
+/* Group title + meta visually: tighten the gap between the title row and the meta
+   line so the "Threshold 80% · Completed ..." reads as part of the row, not loose. */
+body.route--lms-quiz-my-results .lms-quiz-result-row__meta {
+  margin-top: 0.15rem;
+}
+
+/* [P022] ISSUE 1-0521: "Review Result" primary button shadow looks heavier/clipped
+   on the right because the button sits flush to the card's right edge. Use a fully
+   centered (0 offset-x) even shadow, give the row a small right inset so the glow
+   isn't cut by the card boundary, and ensure nothing clips it. */
+body.route--lms-quiz-my-results .lms-quiz-result-row {
+  overflow: visible !important;
+}
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-result-row__action,
+body.route--lms-quiz-my-results .lms-quiz-result-row__action {
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.30) !important;
+  margin-right: 0.15rem;
+}
+body.route--lms-quiz-my-results .lms-quiz-result-row__action:hover {
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.40) !important;
+}
+
+/* [P022] ISSUE 1-0526 (mobile): the stat-card stack and the result card must share
+   one gutter. Normalize horizontal padding so the board/rows line up with the
+   summary cards (the board's 1rem inner padding offsets the rows; zero the row's
+   extra margins and align the board edge to the stack). */
+@media (max-width: 480px) {
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-board {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background: transparent !important;
+  }
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-result-row,
+  body.route--lms-quiz-my-results .lms-quiz-result-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary,
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-board {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* [P022] ISSUE 1-0527 (mobile): the floating back-to-top button overlaps the
+   top-right corner of cards. Pull it firmly into a clear margin, raise its
+   stacking context above content, and give it a stronger shadow so it reads as a
+   distinct overlay. Global component (medical skin) — match base selector
+   structure to beat its !important right/bottom values. */
+@media (max-width: 480px) {
+  body.layout-medical:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical:not(.is-workspace) .lms-back-to-top {
+    right: 12px !important;
+    bottom: 18px !important;
+    z-index: 1300 !important;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.32) !important;
+  }
+}
+
+/* ===== P023.css ===== */
+/* ==========================================================================
+   P023 — My Certificates (/my-certificates)   ROUND 2
+   route_class: route--lms-progress-certificates
+   Active skin: medical (body.layout-medical.layout-minimalist)
+   Loads LAST. Page content scoped under body.route--lms-progress-certificates;
+   global FAB fixed via its component id/class.
+   ========================================================================== */
+
+/* [P023] ISSUE 1-0536: Hero subtitle + stat-card labels failed WCAG AA.
+   Root cause the prior fix missed: the MEDICAL skin sets every <p> to
+   --medical-text-soft (#476273) with a 4-class+2-pseudo selector AND !important,
+   and light-mode sets the summary <span> labels to #64748b (~4.4:1 on the white
+   cards — below AA). The earlier 3-class selector lost to both.
+   Fix: a max-specificity selector (layout-medical + layout-minimalist +
+   route class + element class = 5 classes) with !important, using #334155
+   (slate-700) ≈ 9.2:1 on #ffffff cards and ≈ 8.7:1 on the #f6fcff page bg. */
+body.layout-medical.layout-minimalist.route--lms-progress-certificates .lms-certificates-page__subtitle,
+body.layout-medical.layout-minimalist.route--lms-progress-certificates .lms-certificates-page__summary-label,
+body.layout-medical.layout-minimalist.route--lms-progress-certificates .lms-certificate-card__meta-label,
+body.layout-medical.layout-minimalist.route--lms-progress-certificates .lms-certificates-empty p {
+  color: #334155 !important;
+}
+
+/* [P023] ISSUE 1-0543: Floating scroll-to-top FAB still overlapped the right
+   edge of the cards on mobile. Root cause the prior fix missed: the MEDICAL
+   skin positions the FAB with `right/bottom: clamp(...) !important` at a
+   higher specificity (body.layout-medical:not(.is-workspace)) than the prior
+   2-class fix, so the prior offsets were ignored.
+   Fix: beat it with id + 3-class + pseudo selector and push the FAB clear of
+   the card edge; also add bottom padding so it rests over whitespace. */
+@media (max-width: 480px) {
+  body.layout-medical.route--lms-progress-certificates:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical.route--lms-progress-certificates:not(.is-workspace) .lms-back-to-top {
+    right: 12px !important;
+    bottom: 84px !important;
+  }
+  body.route--lms-progress-certificates .lms-page__content {
+    padding-bottom: 6rem;
+  }
+}
+
+/* ===== P024.css ===== */
+/* ==========================================================================
+   P024 — My Notes (route--lms-note-my-notes) UI fixes
+   Loaded LAST. Scope global components by component class; page content under
+   body.route--lms-note-my-notes / .lms-my-notes.
+   ========================================================================== */
+
+/* [P024] ISSUE 1-0556: Hero header uses flex justify-between, so on mobile the
+   intro paragraph floats top-right against a taller (2-line) title with no
+   vertical relationship. Stack the title + description into a clean column on
+   small screens so the description sits directly under the heading. */
+@media (max-width: 480px) {
+  body.route--lms-note-my-notes .lms-my-notes .lms-section__header {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 0.5rem;
+  }
+  body.route--lms-note-my-notes .lms-my-notes .lms-section__header > * {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+/* [P024] ISSUE 1-0557: Empty-state card uses a dashed border while the rest of
+   the page surfaces (note cards, back-to-top control) use solid rounded cards,
+   creating an inconsistent border vocabulary. Standardize the empty state to a
+   solid, subtle card border that matches the other surface cards on the medical
+   skin while keeping a calm empty-state look. */
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgba(0, 119, 182, 0.18);
+  border-radius: 0.75rem;
+  background: rgba(0, 119, 182, 0.025);
+}
+
+/* [P024] ISSUE 1-0559: Floating back-to-top control crowds the footer brand
+   block on mobile. It is already position:fixed bottom-right; give it extra
+   bottom clearance and a firm stacking context on small screens so it floats
+   clear of the footer "SilverCare" block and reads as an overlay, not part of
+   the footer. Global component (medical skin). */
+@media (max-width: 480px) {
+  body.layout-medical:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical:not(.is-workspace) .lms-back-to-top {
+    right: 14px !important;
+    bottom: 22px !important;
+    z-index: 1350 !important;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.32) !important;
+  }
+}
+
+/* ===== P025.css ===== */
+/* ==========================================================================
+   P025 — My Wishlist (route--lms-wishlist-my-wishlist)
+   UI defect fixes. Loads LAST.
+   ========================================================================== */
+
+/* [P025] ISSUE 1-0565: Normalize header "Dashboard" trigger to match nav links.
+   The header Dashboard control (.lms-btn--outline) renders blue at rest, while
+   primary nav links sit at the dark-gray heading color and only turn blue on
+   hover/active. Bring the Dashboard outline button to the same dark default and
+   reveal the brand blue only on hover/focus so the header reads consistently. */
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline {
+  color: #0f2c3d; /* --medical-heading, same as nav links at rest */
+  border-color: rgba(15, 44, 61, 0.25);
+  background: transparent;
+  font-weight: 600;
+  transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:hover,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:focus-visible,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline.active {
+  color: #0077b6; /* --medical-violet, matches nav-link hover */
+  border-color: #0077b6;
+  background: rgba(0, 119, 182, 0.08);
+}
+
+/* [P025] ISSUE 1-0572: Make the empty-state broken-heart icon an on-brand,
+   higher-contrast illustrative anchor instead of a muted disabled-gray glyph.
+   The template sets an inline color:#484f58, so !important is required to beat it.
+   Tint it the brand violet and bump the size/weight so it clearly anchors the
+   empty state. Applies on all viewports; emphasised on mobile per the report. */
+body.route--lms-wishlist-my-wishlist .lms-empty-state i.fa-heart-broken {
+  color: #0077b6 !important; /* --medical-violet brand color */
+  font-size: 3.5rem;
+  opacity: 1;
+}
+@media (max-width: 480px) {
+  body.route--lms-wishlist-my-wishlist .lms-empty-state i.fa-heart-broken {
+    font-size: 3rem;
+  }
+}
+
+/* [P025] ISSUE 1-0574: Remove the large empty light-blue band between the
+   empty-state card and the footer on tall mobile viewports by vertically
+   centering the short empty state within the available content height instead
+   of leaving it pinned to the top with the page padding trailing below it. */
+@media (max-width: 480px) {
+  body.route--lms-wishlist-my-wishlist .lms-page__content {
+    display: flex;
+    flex-direction: column;
+  }
+  body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  /* Tighten the oversized page padding (inline 2rem) on small screens. */
+  body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-container {
+    padding: 1.25rem !important;
+    width: 100%;
+  }
+  /* Trim the tall empty-state card padding so it sits closer to centered. */
+  body.route--lms-wishlist-my-wishlist .lms-empty-state {
+    padding: 2.5rem 1.25rem !important;
+  }
+}
+
+/* ===== P026.css ===== */
+/* P026 — My Membership (/my-membership) UI fixes. Loads LAST.
+   Root cause for the ghosted plan titles: light-mode.css
+   `body.layout-minimalist h3 { color:#0f172a }` (near-black) wins over the
+   in-template `.lms-membership-card__header h3 { color:#fff }`, so the plan
+   name renders dark-on-dark (#0f172a on the #1e293b card). We override with a
+   high-specificity, route-scoped rule + !important to force a light title. */
+
+/* [P026] ISSUE 1-0575, 1-0582, 1-0585: Plan-name title rendered near-black on the
+   dark navy card (fails WCAG AA). Force a near-white, high-contrast title across
+   all viewports so it reads as the card heading and no longer collides with the
+   avatar tile. #f8fafc on #1e293b ~= 14.8:1. */
+body.route--lms-membership-my-membership .lms-membership-card .lms-membership-card__header h3,
+body.route--lms-membership-my-membership .lms-membership-card .lms-membership-card__title h3,
+body.route--lms-membership-my-membership .lms-membership-card h3 {
+  color: #f8fafc !important;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* [P026] ISSUE 1-0579, 1-0585: Header row (avatar + title + ACTIVE badge) must
+   share one vertical center with a consistent gap; keep avatar from shrinking and
+   title from overlapping the avatar tile. */
+body.route--lms-membership-my-membership .lms-membership-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+body.route--lms-membership-my-membership .lms-membership-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+body.route--lms-membership-my-membership .lms-membership-icon {
+  flex: 0 0 40px;
+}
+
+/* [P026] ISSUE 1-0583: "Cancel Auto-Renewal" destructive button reads as a
+   disabled/ghost control (muted light text on a dark maroon translucent fill).
+   Make it a solid, legible destructive button: white label on solid red.
+   #ffffff on #c0392b ~= 4.9:1 (AA). */
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger,
+body.route--lms-membership-my-membership a.lms-btn--danger,
+body.route--lms-membership-my-membership a.lms-btn--danger:link,
+body.route--lms-membership-my-membership a.lms-btn--danger:visited {
+  background: #c0392b !important;
+  color: #ffffff !important;
+  border: 1px solid #c0392b !important;
+}
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger i,
+body.route--lms-membership-my-membership a.lms-btn--danger i {
+  color: #ffffff !important;
+}
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger:hover,
+body.route--lms-membership-my-membership a.lms-btn--danger:hover,
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger:focus,
+body.route--lms-membership-my-membership a.lms-btn--danger:focus {
+  background: #a93226 !important;
+  color: #ffffff !important;
+  border-color: #a93226 !important;
+}
+body.route--lms-membership-my-membership a.lms-btn--danger:focus-visible {
+  outline: 2px solid #fda4af;
+  outline-offset: 2px;
+}
+
+/* [P026] ISSUE 1-0586: ACTIVE status badge is tiny low-contrast green on a
+   translucent pill. Bump size and use a brighter green pill with darker text for
+   a legible at-a-glance status. #064e3b on #34d399 ~= 6.4:1 (AA). */
+body.route--lms-membership-my-membership .lms-badge {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+body.route--lms-membership-my-membership .lms-badge--active {
+  background: #34d399 !important;
+  color: #064e3b !important;
+  font-weight: 700;
+}
+
+/* [P026] ISSUE 1-0588: Excess empty white band between the last card and the
+   footer on mobile. Trim the page's large top/bottom margin so content sits
+   closer to the footer. */
+@media (max-width: 480px) {
+  body.route--lms-membership-my-membership .lms-my-membership {
+    margin: 1.5rem auto 1rem;
+  }
+}
+
+/* [P026] ISSUE 1-0590: Divider above the Cancel button should align to the same
+   inner gutter as the date rows (no stray inset / full inner-content width). */
+body.route--lms-membership-my-membership .lms-membership-card__actions {
+  margin-left: 0;
+  margin-right: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+body.route--lms-membership-my-membership .lms-membership-card__header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+body.route--lms-membership-my-membership .lms-membership-card__body p {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* ===== P027.css ===== */
+/* P027 — Notifications page UI fixes (loads LAST) */
+
+/* [P027] ISSUE 1-0598: Filter tab strip overflows mobile viewport with the 3rd tab cut off.
+   Make the tab row a single horizontally scrollable flex row on mobile with a right-edge
+   gradient-fade affordance so the truncated tab is discoverable and reachable. Scoped to page. */
+@media (max-width: 480px) {
+  body.route--lms-notification-list .lms-notification-filters {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    gap: 0.5rem;
+    /* Right-edge fade affordance signalling more tabs exist. */
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 85%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to right, #000 0, #000 85%, rgba(0, 0, 0, 0) 100%);
+    padding-right: 1.75rem;
+    /* Reserve space so last tab is not clipped by the fade. */
+    scroll-padding-right: 1.75rem;
+  }
+
+  body.route--lms-notification-list .lms-notification-filters .lms-filter-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+}
+
+/* [P027] ISSUE 1-0607: A large decorative bell sits beside the page title while the header
+   already carries a notification bell, creating competing bell icons. Reduce the hero bell to
+   a subtle, smaller decorative accent so the header bell remains the primary affordance.
+   (Adding an unread-count badge to the header bell is data-driven and handled outside CSS.) */
+body.route--lms-notification-list .lms-notifications-title i.fa-bell {
+  font-size: 0.85em;
+  opacity: 0.7;
+  vertical-align: baseline;
+}
+
+/* ===== P028.css ===== */
+/* ==========================================================================
+   P028 — Profile page (route--lms-course-profile / user--full)
+   UI fixes round 2. Loads LAST.
+   ========================================================================== */
+
+/* [P028] ISSUE 1-0612, 1-0615: Email value wraps mid-domain ("silvercare." /
+   "example.com") on desktop and splits the TLD mid-token ("exam" / "ple.com")
+   on mobile. Force wrapping only at sensible boundaries (never inside a token)
+   and slightly reduce the value font-size so the address fits on fewer lines. */
+body.route--lms-course-profile .lms-profile-info-value {
+  /* break only at natural opportunities (dots/@ via <wbr> opportunities and
+     normal word boundaries); never split inside a continuous token */
+  overflow-wrap: break-word;
+  word-break: normal;
+  -webkit-hyphens: none;
+  hyphens: none;
+  line-height: 1.45;
+}
+
+/* The email card specifically: shrink the long address so it fits on one line
+   (desktop) / two clean lines (mobile) instead of breaking a domain segment.
+   The email is the first info item in the grid. */
+body.route--lms-course-profile .lms-profile-info-grid .lms-profile-info-item:first-child .lms-profile-info-value {
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+}
+
+/* [P028] ISSUE 1-0621: When the email value wraps to two lines the Email card
+   grows taller than the single-line Location/Company cards and its centered
+   icon/label drift out of alignment with the siblings. Top-align icon + label
+   so a multi-line value no longer shifts the vertical balance, and let the
+   grid auto-rows keep card heights independent of content. */
+body.route--lms-course-profile .lms-profile__layout-redesign .lms-profile-info-item {
+  align-items: flex-start;
+}
+
+body.route--lms-course-profile .lms-profile__layout-redesign .lms-profile-info-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0; /* allow the value to wrap inside the flex child */
+}
+
+/* keep the circular icon visually centered against the label, not the whole
+   (possibly multi-line) value, by nudging it to align with the first line */
+body.route--lms-course-profile .lms-profile__layout-redesign .lms-profile-info-item__icon {
+  margin-top: 0.1rem;
+}
+
+/* [P028] ISSUE 1-0622: Footer "SilverCare" logo renders larger than the header
+   logo on mobile (footer 72px vs header 56px at <=576px), duplicating the brand
+   at an oversized scale within one short scroll. Bring the footer mark down to
+   match the header mark on small screens. */
+@media (max-width: 576px) {
+  .lms-brand-mark--footer {
+    height: 56px;
+  }
+}
+@media (max-width: 480px) {
+  .lms-brand-mark--footer {
+    height: 48px;
+  }
+}
+
+/* ===== P029.css ===== */
+/* ============================================================
+   P029 — checkout-course (route--lms-course-detail)
+   UI defect fixes. Loaded LAST.
+   ============================================================ */
+
+/* [P029] ISSUE 1-0628, 1-0638: style Drupal status/success message as a proper alert
+   (icon, light-green background, border, padding, AA-contrast text).
+   Global component — Drupal core status-messages markup, no page scope. */
+.lms-messages-wrapper .messages,
+.region-highlighted .messages,
+.messages.messages--status,
+.messages.messages--success {
+  position: relative;
+  margin: 1rem 0 1.5rem;
+  padding: 1rem 1.125rem 1rem 3rem;
+  border-radius: 12px;
+  border: 1px solid #b7e4c7;
+  background: #e9f9ef;
+  color: #14532d; /* dark green on light green: contrast ratio ~9:1, passes AA */
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  box-shadow: 0 4px 14px rgba(20, 83, 45, 0.08);
+  list-style: none;
+}
+
+/* success/status variant icon (check-circle) */
+.lms-messages-wrapper .messages.messages--status::before,
+.messages.messages--status::before,
+.messages.messages--success::before {
+  content: "\f058"; /* fa-check-circle */
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", FontAwesome;
+  font-weight: 900;
+  position: absolute;
+  left: 1.05rem;
+  top: 1rem;
+  font-size: 1.125rem;
+  color: #2e9e5b;
+  line-height: 1.2;
+}
+
+/* error variant — keep a distinct, accessible red */
+.lms-messages-wrapper .messages.messages--error,
+.messages.messages--error {
+  border-color: #f5c2c7;
+  background: #fdecee;
+  color: #842029; /* AA on light red */
+}
+.lms-messages-wrapper .messages.messages--error::before,
+.messages.messages--error::before {
+  content: "\f06a"; /* fa-exclamation-circle */
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", FontAwesome;
+  font-weight: 900;
+  position: absolute;
+  left: 1.05rem;
+  top: 1rem;
+  font-size: 1.125rem;
+  color: #c0392b;
+}
+
+/* warning variant */
+.lms-messages-wrapper .messages.messages--warning,
+.messages.messages--warning {
+  border-color: #ffe69c;
+  background: #fff8e6;
+  color: #664d03; /* AA on light amber */
+}
+.lms-messages-wrapper .messages.messages--warning::before,
+.messages.messages--warning::before {
+  content: "\f071"; /* fa-exclamation-triangle */
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", FontAwesome;
+  font-weight: 900;
+  position: absolute;
+  left: 1.05rem;
+  top: 1rem;
+  font-size: 1.125rem;
+  color: #b8860b;
+}
+
+/* hide the legacy plain heading if present, keep message text readable */
+.messages .messages__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.messages .messages__item {
+  list-style: none;
+}
+
+/* [P029] ISSUE 1-0630: header utility row — share a common vertical center.
+   The two-line user name pushes the row baseline; lock items to center and
+   prevent the name from increasing row height.
+   Global header component — no page scope. */
+.lms-navbar__actions > div {
+  align-items: center;
+}
+.lms-navbar__actions .lms-user-profile-link {
+  align-items: center;
+  line-height: 1.2;
+}
+/* keep the name on a single line so it cannot push the row height */
+.lms-navbar__actions .lms-user-profile-link span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 14ch;
+  line-height: 1.2;
+  align-self: center;
+}
+/* normalize the icon buttons (bell/heart) to the same vertical center */
+.lms-navbar__actions .lms-navbar__link {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* [P029] ISSUE 1-0640: "What You'll Learn" multicol balance on mobile.
+   Inline `columns:2` splits unevenly and breaks bold terms mid-phrase.
+   Prevent list items from breaking across columns; collapse to one column
+   on small viewports. Scoped to course-detail page. */
+body.route--lms-course-detail .lms-learn-list li,
+body.route--lms-course-detail .lms-learn-list p,
+body.route--lms-course-detail .lms-learn-list strong,
+body.route--lms-course-detail .lms-learn-list b {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+}
+body.route--lms-course-detail .lms-learn-list strong,
+body.route--lms-course-detail .lms-learn-list b {
+  white-space: nowrap; /* keep DSGVO/GDPR, Pflegebericht intact */
+}
+
+@media (max-width: 768px) {
+  body.route--lms-course-detail .lms-learn-list {
+    columns: 1 !important; /* beats inline columns:2 */
+    column-count: 1 !important;
+    column-gap: 0 !important;
+  }
+  body.route--lms-course-detail .lms-learn-list strong,
+  body.route--lms-course-detail .lms-learn-list b {
+    white-space: normal; /* single column has full width; allow natural wrap */
+  }
+}
+
+/* [P029] ISSUE 1-0643: floating back-to-top button overlaps footer contact
+   text on mobile. Lift it above the footer content on small screens.
+   Global component. */
+@media (max-width: 480px) {
+  #lms-back-to-top,
+  .lms-back-to-top {
+    right: 12px !important;
+    bottom: 84px !important; /* clears footer contact/phone line */
+    width: 44px;
+    height: 44px;
+    z-index: 1300 !important;
+  }
+}
+
+/* ===== P030.css ===== */
+/* ==========================================================================
+   P030 — Checkout / My Membership UI fixes
+   Loads LAST. Card markup uses dark card bg (#1e293b). The medical skin's
+   generic rule `body.layout-medical h3 { color: var(--medical-heading)=#0f2c3d }`
+   beats the template's `.lms-membership-card__header h3 { color:#fff }`, so the
+   plan title renders as a dark smudge on the dark card. We restore high
+   contrast and scope tightly to win the cascade.
+   ========================================================================== */
+
+/* [P030] ISSUE 1-0646, 1-0655: plan title dark-on-dark -> light high-contrast */
+/* Scoped under route + skin classes to out-specify `body.layout-medical h3`. */
+body.route--lms-membership-my-membership .lms-membership-card__header h3,
+body.layout-medical .lms-membership-card__header h3,
+body.layout-minimalist .lms-membership-card__header h3,
+.lms-membership-card__header h3 {
+  color: #f8fafc;            /* near-white, ~16.4:1 on #1e293b — passes WCAG AA */
+  font-weight: 700;
+}
+
+/* [P030] ISSUE 1-0654: keep sibling card headers structurally identical */
+.lms-membership-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;       /* vertically center title vs ACTIVE badge */
+  gap: 0.75rem;
+}
+.lms-membership-card__header .lms-badge {
+  flex: 0 0 auto;            /* badge never shrinks; identical size across cards */
+  white-space: nowrap;
+  align-self: center;
+}
+
+/* [P030] ISSUE 1-0661: clear horizontal gap between BA/EN avatar and title */
+.lms-membership-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;             /* allow long titles to wrap instead of overflow */
+}
+.lms-membership-icon {
+  flex: 0 0 40px;           /* fixed avatar; never compressed by long titles */
+}
+
+/* [P030] ISSUE 1-0662: long plan name wraps cleanly, stays centered vs badge */
+.lms-membership-card__header h3 {
+  margin: 0;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+/* [P030] ISSUE 1-0664: Cancel Auto-Renewal — stronger destructive contrast */
+/* Light-blue text was inherited link color; force high-contrast red scheme. */
+.lms-btn--danger {
+  background: rgba(244, 63, 94, 0.16);
+  color: #fda4af;          /* ~7.1:1 on the card; clearly readable */
+  border: 1px solid rgba(244, 63, 94, 0.55);
+  font-weight: 600;
+}
+.lms-btn--danger:hover,
+.lms-btn--danger:focus-visible {
+  background: rgba(244, 63, 94, 0.28);
+  color: #ffffff;
+  border-color: #fb7185;
+}
+.lms-btn--danger:focus-visible {
+  outline: 2px solid #fb7185;
+  outline-offset: 2px;
+}
+
+/* [P030] ISSUE 1-0660: notification bell badge crowds the wishlist heart */
+/* Pull the count badge in slightly and add clearance after the bell wrapper. */
+.lms-bell-counter {
+  top: -6px;
+  right: -8px;
+}
+.lms-bell-icon-wrapper {
+  margin-right: 0.5rem;     /* breathing room before the heart icon */
+}
+
+/* ----- Mobile (<=480px) ----- */
+@media (max-width: 480px) {
+  /* [P030] ISSUE 1-0655, 1-0661: ensure legibility + spacing on small cards */
+  .lms-membership-card__header h3 {
+    color: #f8fafc;
+    font-size: 1.125rem;
+  }
+  .lms-membership-card__title {
+    gap: 0.625rem;
+  }
+
+  /* [P030] ISSUE 1-0662: header row stacks gracefully; badge stays aligned */
+  .lms-membership-card__header {
+    align-items: flex-start;
+  }
+  .lms-membership-card__header .lms-badge {
+    margin-top: 0.15rem;    /* nudge badge to optical center of first title line */
+  }
+
+  /* [P030] ISSUE 1-0660: keep badge clear of the heart at mobile width */
+  .lms-bell-counter {
+    top: -5px;
+    right: -7px;
+  }
+}
+
+/* ===== P031.css ===== */
+/* ==========================================================================
+   P031 — /workspace 403 "Access denied" page
+   Live markup (curl) now renders the branded front-end theme:
+     body.route--system-403.layout-medical.layout-minimalist
+     header.lms-navbar  > main#main-content.lms-page__content > footer.lms-footer
+   The 403 body is a single bare line inside #block-lms-theme-content.
+   These fixes contain + vertically center that bare message so the page
+   reads as intentional and the footer no longer floats after a tall void.
+   Contrast/sidebar/admin-shell issues from the old screenshots no longer
+   apply to this markup (deferred — non-CSS / already re-themed).
+   ========================================================================== */
+
+/* [P031] ISSUE 1-0675, 1-0670: center the lone 403 message vertically so the
+   main region is not a tall empty white/dark block above the footer. */
+body.route--system-403 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* fill the viewport between header (~72px) and footer so the footer does
+     not sit after a vast void, but never collapse below readable height */
+  min-height: calc(100vh - 72px - 360px);
+  text-align: center;
+}
+
+/* [P031] ISSUE 1-0670, 1-0671: contain the message in the standard page
+   gutter and give balanced vertical breathing room (no abrupt seam / no
+   cramped top padding) so the body aligns to the page container. */
+body.route--system-403 .lms-page__content > div {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* [P031] ISSUE 1-0671: normalize spacing around the bare access-denied text
+   block and make it read as a deliberate, padded message panel. */
+body.route--system-403 #block-lms-theme-content {
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  max-width: 640px;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  /* WCAG AA body text on the light content background */
+  color: #1f2933;
+}
+
+/* ===== P032.css ===== */
+/* ==========================================================================
+   [P032] Manage Courses (/workspace/courses) UI fixes
+   Loads LAST. Scope: admin workspace lives under .lms-admin.
+   Most defaults come from an inline <style> in lms-admin-sidebar.html.twig
+   (class-level), plus inline style="" attributes on some elements that
+   require !important to override.
+   ========================================================================== */
+
+/* [P032] ISSUE 1-0696: ACTION header / action column clipped at table edge */
+/* The table can overflow the fixed-sidebar + padded main area. Tighten the
+   horizontal padding on the table cells so all columns (incl. the last
+   "Actions" column) fit, keep the header word intact, and guarantee the
+   responsive wrapper can scroll if content still exceeds the viewport. */
+.lms-admin .lms-table-responsive {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.lms-admin .lms-table {
+  width: 100%;
+}
+.lms-admin .lms-table th,
+.lms-admin .lms-table td {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+/* Keep the ACTION header from wrapping/clipping mid-word and pin it to the
+   right edge with a little breathing room from the viewport boundary. */
+.lms-admin .lms-table thead th:last-child {
+  white-space: nowrap;
+  text-align: right;
+  padding-right: 1.25rem;
+}
+.lms-admin .lms-table tbody td:last-child {
+  padding-right: 1.25rem;
+  white-space: nowrap;
+}
+
+/* [P032] ISSUE 1-0703: ACTION view/edit icons too dim (low contrast) */
+/* Default inline color is #64748b on a dark row -> below 3:1 for non-text UI.
+   Lift to a clearly legible light gray and add strong hover + focus states.
+   !important needed to beat the per-link inline style="color:#64748b". */
+.lms-admin .lms-table tbody td:last-child a {
+  color: #cbd5e1 !important;   /* ~7:1 on #1e293b row bg */
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.25rem;
+}
+.lms-admin .lms-table tbody td:last-child a:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08);
+}
+.lms-admin .lms-table tbody td:last-child a:focus-visible {
+  outline: 2px solid #1d70f5;
+  outline-offset: 2px;
+  color: #ffffff !important;
+}
+
+/* [P032] ISSUE 1-0704 / 1-0715: Sidebar 'SilverCare' brand wordmark too dim */
+/* Brand text rendered as a <span> beside the logo mark. Push toward white so
+   it clears WCAG AA against the near-black (#161b22) sidebar. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span {
+  color: #f1f5f9;          /* >= 4.5:1 on #161b22 */
+  font-weight: 800;
+}
+
+/* [P032] ISSUE 1-0706: Reset button reads as disabled/secondary, low contrast */
+/* Give it a clear outlined-secondary look with a legible label + hover.
+   Element carries inline styles, so override with !important. */
+.lms-admin #lms-course-reset-btn {
+  color: #e2e8f0 !important;
+  background: rgba(29, 112, 245, 0.12) !important;
+  border: 1px solid rgba(29, 112, 245, 0.55) !important;
+  font-weight: 600 !important;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.lms-admin #lms-course-reset-btn:hover {
+  color: #ffffff !important;
+  background: rgba(29, 112, 245, 0.25) !important;
+  border-color: #1d70f5 !important;
+}
+.lms-admin #lms-course-reset-btn:focus-visible {
+  outline: 2px solid #1d70f5;
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   MOBILE (<= 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  /* [P032] ISSUE 1-0711: Subtitle clipped by overlapping Add New Course btn */
+  /* Stack the header so the title + subtitle get a full-width row and the
+     button drops below on its own line. */
+  .lms-admin .lms-admin__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .lms-admin .lms-admin__subtitle {
+    white-space: normal;
+    overflow: visible;
+  }
+
+  /* [P032] ISSUE 1-0712: 'Add New Course' button label wraps to 3 lines */
+  /* Keep label + icon on one line and let the button size to its content. */
+  .lms-admin .lms-admin__header .btn-lms-primary {
+    white-space: nowrap;
+    width: auto;
+    align-self: flex-start;
+    justify-content: center;
+  }
+}
+
+/* ===== P033.css ===== */
+/* ==========================================================================
+   P033 - Course Editor  (/workspace/courses/88/edit)
+   route_class: route--lms-course-admin-course-edit
+   Skin: medical | Brand: SilverCare
+   This partial loads LAST (after ui-fixes/P033.css). The admin templates emit
+   inline <style> blocks in the body that win on equal specificity / source
+   order, so layout overrides use body scope and/or !important to beat them.
+
+   Addressed here: 1-0720, 1-0727, 1-0731, 1-0733
+   Deferred (need markup/content/data, not CSS): 1-0724, 1-0726, 1-0728, 1-0738
+     - 1-0724: label casing is a STRING change ("Alternative text" -> "Alternative
+       Text"); text-transform:capitalize would mangle "What You'll Learn".
+     - 1-0726: Rating is a free-text <input>; read-only / number step-min-max /
+       star widget are markup/form-API changes, not stylable.
+     - 1-0728 / 1-0738: the "S" badge + "SilverCare" wordmark is the rendered
+       site_logo_url IMAGE (an <img>/SVG asset). Its blue-grey is baked into the
+       artwork; CSS cannot recolor pixels of an <img> without washing out the
+       badge too. Needs a new logo asset with AA-contrast wordmark.
+   ========================================================================== */
+
+/* [P033] ISSUE 1-0720: Short Description / Description CKEditor bodies render
+   lighter than the list-based RTE fields (What You'll Learn / Prerequisites /
+   Who This Course Is For). Force every editor instance to one dark, AA-contrast
+   body color + weight so sibling fields match. Real empty-state placeholder
+   stays grey so the dark rule does not mask it. */
+.ck.ck-content,
+.ck-editor__editable,
+.ck-editor__main > .ck-editor__editable,
+#lms-admin-form-app .lms-form-content .ck-content,
+#lms-admin-form-app .lms-form-content .ck-editor__editable,
+#lms-admin-form-app .lms-form-content .ck.ck-editor__main > .ck-editor__editable {
+  color: #1f2937 !important;
+}
+.ck.ck-content p,
+.ck.ck-content li,
+.ck-editor__editable p,
+.ck-editor__editable li,
+#lms-admin-form-app .lms-form-content .ck-content p,
+#lms-admin-form-app .lms-form-content .ck-content li,
+#lms-admin-form-app .lms-form-content .ck-editor__editable p,
+#lms-admin-form-app .lms-form-content .ck-editor__editable li {
+  color: #1f2937 !important;
+  font-size: 0.95rem !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+}
+.ck.ck-content .ck-placeholder::before,
+.ck-editor__editable .ck-placeholder::before,
+#lms-admin-form-app .lms-form-content .ck-content .ck-placeholder::before {
+  color: #94a3b8 !important;
+}
+
+/* [P033] ISSUE 1-0727: Logout is a dark-red filled pill (inconsistent with the
+   plain-text nav items above it) and is clipped at the bottom edge of the
+   fixed, 100vh, overflow-y:auto sidebar. Fix: (a) restyle to a quiet, intentional
+   secondary "danger" nav action that echoes the nav-item affordance, and
+   (b) guarantee it is never clipped by giving the sidebar real bottom padding
+   and the logout wrapper its own bottom spacing. Inline styles on the anchor +
+   the template inline <style> require !important to beat. */
+.lms-admin__sidebar {
+  padding-bottom: 1.5rem !important;
+}
+/* The logout wrapper is the sidebar's last direct child <div>. */
+.lms-admin__sidebar > div:last-child {
+  padding: 0 1rem 1.5rem !important;
+  flex-shrink: 0 !important;
+}
+.lms-admin__sidebar > div:last-child a[href*="logout"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0.75rem !important;
+  padding: 0.75rem 1rem !important;
+  background: transparent !important;
+  color: #fca5a5 !important;              /* light red, >= 4.5:1 on #161b22 */
+  border: 1px solid rgba(248, 113, 113, 0.30) !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.9375rem !important;       /* match .lms-admin__nav-item */
+  font-weight: 600 !important;
+  text-align: left !important;
+}
+.lms-admin__sidebar > div:last-child a[href*="logout"] i {
+  margin-right: 0 !important;            /* gap handles spacing now */
+  width: 20px !important;
+  text-align: center !important;
+}
+.lms-admin__sidebar > div:last-child a[href*="logout"]:hover {
+  background: rgba(248, 113, 113, 0.12) !important;
+  color: #fecaca !important;
+  border-color: rgba(248, 113, 113, 0.45) !important;
+}
+.lms-admin__sidebar > div:last-child a[href*="logout"]:focus-visible {
+  outline: 2px solid #fca5a5 !important;
+  outline-offset: 2px !important;
+}
+
+/* ==========================================================================
+   MOBILE (<= 768px) — sidebar squeeze / form sliver / runaway page height.
+   The template hard-codes a 260px fixed sidebar + 260px left margin on the
+   main column; on small screens that crushes the white form card to a few
+   chars wide, wrapping every label one or two characters per line and
+   stretching the document to ~9000px. CSS-only remedy: take the sidebar out
+   of the fixed layout as an auto-height bar (still reachable) and let the
+   content column + form card use the full viewport width. A true off-canvas
+   hamburger toggle would additionally need markup/JS (out of scope here).
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* [P033] ISSUE 1-0731, 1-0733: stack the layout and release the fixed sidebar
+     so the main column is no longer offset by 260px. */
+  body .lms-admin {
+    display: block !important;
+  }
+  body .lms-admin__sidebar {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    max-height: 55vh !important;
+    overflow-y: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  /* Main column + form card span (nearly) the full viewport with sane padding. */
+  body .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 1.25rem !important;
+    box-sizing: border-box !important;
+  }
+  body .lms-admin-card,
+  body .lms-admin-entity-form-wrapper,
+  body #lms-admin-form-app,
+  body .lms-form-content,
+  body .lms-form-pane,
+  body .lms-form-content .form-item {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  body .lms-admin-card {
+    padding: 1.25rem !important;
+  }
+  body .lms-admin-entity-form-wrapper {
+    padding: 1.25rem !important;
+  }
+
+  /* Kill any fixed/forced widths and break-all wrapping that push the layout
+     wider than the viewport and force one-character lines. */
+  body .lms-admin__main,
+  body .lms-form-content,
+  body .lms-form-content .form-item label,
+  body .lms-form-content .description,
+  body .lms-form-content input,
+  body .lms-form-content textarea,
+  body .lms-form-content select,
+  body .ck-content,
+  body .ck-editor__editable {
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+  body .lms-form-content input:not([type="submit"]):not([type="button"]),
+  body .lms-form-content select,
+  body .lms-form-content textarea,
+  body .lms-form-content .ck-editor,
+  body .lms-form-content .ck-editor__main {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Long course-title H1 must wrap inside the column instead of stretching it. */
+  body .lms-admin__header {
+    padding-top: 1.5rem !important;
+  }
+  body .lms-admin__title {
+    font-size: 1.25rem !important;
+    line-height: 1.3 !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    max-width: 100% !important;
+  }
+
+  /* CKEditor toolbar wraps rather than forcing horizontal overflow. */
+  body .lms-form-content .ck.ck-toolbar {
+    flex-wrap: wrap !important;
+  }
+}
+
+/* ===== P034.css ===== */
+/* ==========================================================================
+   P034 — Quiz Management (/workspace/quizzes)
+   Admin layout markup: .lms-admin > .lms-admin__sidebar + .lms-admin__main
+   Table: .lms-admin-card > .lms-table-responsive > table.lms-table
+   Brand wordmark: .lms-admin__sidebar-brand a span ("SilverCare")
+   This partial loads LAST. !important used only to beat the inline <style>
+   block emitted by lms-admin-sidebar.html.twig and inline element styles.
+   ========================================================================== */
+
+/* [P034] ISSUE 1-0745, 1-0757: Brand wordmark 'SilverCare' contrast on the
+   dark sidebar (#161b22). Force a near-white wordmark + tile so it reads as
+   the primary brand identifier. #e5e7eb on #161b22 ~= 13:1 (passes WCAG AA).
+   Prior fix targeted the same selector but lost to the inline <style>; bump
+   specificity with the sidebar ancestor + !important to win reliably. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span,
+.lms-admin .lms-admin__sidebar-brand a i {
+  color: #e5e7eb !important;
+}
+
+/* [P034] ISSUE 1-0741: Edit/trash action controls clipped by the right edge
+   of the table panel. Give the last (Actions) cell breathing room on the
+   right and keep both icons on one line so neither is cut off. The
+   responsive wrapper scrolls-x, so reserve padding inside the cell. */
+.lms-admin .lms-table th:last-child,
+.lms-admin .lms-table td:last-child {
+  padding-right: 1.75rem !important;
+  white-space: nowrap;
+}
+.lms-admin .lms-table td:last-child a {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* [P034] ISSUE 1-0746: Single-line cell values (None, 3 Qs, 80%, Draft, etc.)
+   sit top-aligned next to 3-4 line wrapped titles. Force vertical centering
+   on every body cell so the eye tracks straight across the row. */
+.lms-admin .lms-table tbody td {
+  vertical-align: middle !important;
+}
+
+/* ==========================================================================
+   MOBILE (<=480px) — the admin layout is built for wide desktop with a fixed
+   260px sidebar and a fixed-width two-column main (flex 1 + 300px stats).
+   On mobile this overflows the viewport: heading clipped, table cells crushed,
+   preview/stat card rows run off the right edge. Reflow to single column,
+   contain horizontal overflow, and let long text wrap.
+   ========================================================================== */
+@media (max-width: 480px) {
+
+  /* [P034] ISSUE 1-0754: kill horizontal overflow at the root so nothing is
+     clipped past the right viewport edge. */
+  html,
+  body,
+  .lms-admin,
+  .lms-admin__main {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* [P034] ISSUE 1-0754: stack sidebar + main vertically; drop the 260px
+     left margin that pushed content off-screen. */
+  .lms-admin {
+    flex-direction: column !important;
+  }
+  .lms-admin__sidebar {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+  }
+  .lms-admin__main {
+    margin-left: 0 !important;
+    padding: 1.25rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* [P034] ISSUE 1-0754: the main area's inner two-column flex
+     (flex:1 child + 300px stats child) must stack on mobile. */
+  .lms-admin__main > div[style*="display: flex"] {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+  /* the fixed 300px Quick Stats column -> full width */
+  .lms-admin__main > div[style*="width: 300px"] {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* [P034] ISSUE 1-0753: H1 'Quiz Management' clipped at the right edge.
+     Shrink it for mobile and allow wrapping; let the header stack so the
+     'Create New Quiz' button does not force horizontal overflow. */
+  .lms-admin .lms-admin__title {
+    font-size: 1.375rem !important;
+    line-height: 1.25 !important;
+    overflow-wrap: break-word !important;
+  }
+  .lms-admin .lms-admin__header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+  }
+
+  /* [P034] ISSUE 1-0751: quiz rows clipped to a few characters because the
+     table is forced into a too-narrow column. Allow the table to scroll
+     horizontally as a contained region and let titles wrap instead of being
+     fragmented one-letter-per-line. */
+  .lms-admin .lms-table-responsive {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: auto !important;
+  }
+  .lms-admin .lms-table {
+    min-width: 640px !important; /* give columns real room; scroll, not crush */
+  }
+  .lms-admin .lms-table th,
+  .lms-admin .lms-table td {
+    padding: 0.75rem 1rem !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    white-space: normal !important;
+  }
+  .lms-admin .lms-table td:first-child {
+    min-width: 180px !important; /* title column gets enough width to read */
+  }
+
+  /* [P034] ISSUE 1-0755: Question Bank Preview cards (4-across grid) run off
+     the right edge. Reflow to a 2-column grid that fits mobile width. */
+  .lms-admin__main div[style*="grid-template-columns: repeat(4, 1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  /* [P034] ISSUE 1-0756: Quick Stats cards already stack (column flex) once
+     their 300px wrapper is full width above; ensure card content does not
+     overflow. */
+  .lms-admin__main div[style*="width: 300px"] .lms-admin-card {
+    width: 100% !important;
+  }
+}
+
+/* ===== P035.css ===== */
+/* P035 — Manage Users (/workspace/users). Page wrapper: .lms-admin.
+   Footer bar, filter row, table cells use INLINE flex styles -> override with !important. */
+
+/* [P035] ISSUE 1-0762, 1-0763: Bottom action bar — vertically center on a shared
+   baseline; keep the "0 selected" counter on one line so the label block no longer
+   sits higher than the buttons. Footer row is the flex parent inside .lms-table card. */
+.lms-admin #lms-bulk-users-form > div:last-child {
+  align-items: center !important;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+/* The bulk-action group (label + counter + buttons) */
+.lms-admin #lms-bulk-users-form > div:last-child > div:first-child {
+  align-items: center !important;
+  flex-wrap: wrap;
+}
+/* Counter must read on a single line */
+.lms-admin #bulk-selected-count {
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+/* "Total N users found on this page" should not wrap to two lines on desktop */
+.lms-admin #lms-bulk-users-form > div:last-child > div:last-child > span {
+  white-space: nowrap;
+}
+
+/* [P035] ISSUE 1-0767: ROLE badges — raise text contrast to meet WCAG AA (>=4.5:1)
+   on the dark #0b0f19/#1e293b rows. Inline color is set per-role, so override the
+   role <span> (the only rounded inline badge inside the Role cell, 5th td). */
+.lms-admin .lms-table td:nth-child(4) > span {
+  color: #cfe0ff !important;            /* light blue, AA on dark for the default/Student look */
+  background: rgba(59, 130, 246, 0.28) !important;
+  border-color: rgba(147, 197, 253, 0.45) !important;
+  font-weight: 600;
+}
+
+/* [P035] ISSUE 1-0768: USER column — enforce consistent row height and keep the
+   avatar + name on a single aligned line; truncate long names with ellipsis so
+   rows don't grow to 2-3 lines. (USER cell is the 2nd td, an inline flex.) */
+.lms-admin .lms-table tbody td {
+  vertical-align: middle !important;
+}
+.lms-admin .lms-table tbody tr {
+  height: 56px;
+}
+.lms-admin .lms-table td:nth-child(2) {
+  align-items: center !important;
+  min-height: 56px;
+}
+.lms-admin .lms-table td:nth-child(2) > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 220px;
+}
+.lms-admin .lms-table td:nth-child(2) > img {
+  flex: 0 0 auto;
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 480px) {
+
+  /* [P035] ISSUE 1-0782: Header — stack the H1 above the action buttons so the
+     wrapped title doesn't collide with the Add User control. */
+  .lms-admin .lms-admin__header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem;
+  }
+  .lms-admin .lms-admin__header > div {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  /* [P035] ISSUE 1-0781, 1-0780: Filter row — stack vertically full width and let
+     the search input fill the row so its placeholder is no longer truncated. The
+     filter card body and its inner groups are inline flex rows. */
+  .lms-admin .lms-admin-card > div[style*="space-between"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem;
+  }
+  .lms-admin .lms-admin-card > div[style*="space-between"] > div {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+    width: 100%;
+  }
+  .lms-admin .lms-admin-card > div[style*="space-between"] > div > div {
+    width: 100%;
+  }
+  .lms-admin .lms-admin-filter__input {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  .lms-admin .lms-admin-filter__input + i.fa-search,
+  .lms-admin .fa-search {
+    /* keep the search icon anchored inside the now full-width field */
+    right: 1rem;
+  }
+  .lms-admin .lms-admin-filter__select {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* [P035] ISSUE 1-0777: Bulk toolbar — stack the label/counter/buttons into a
+     single cohesive column instead of one-letter-per-line wrapping. */
+  .lms-admin #lms-bulk-users-form > div:last-child {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 1rem;
+  }
+  .lms-admin #lms-bulk-users-form > div:last-child > div:first-child {
+    flex-wrap: wrap;
+    align-items: center !important;
+    gap: 0.5rem 0.75rem !important;
+  }
+  .lms-admin #lms-bulk-users-form > div:last-child > div:first-child button {
+    flex: 1 1 auto;
+  }
+
+  /* [P035] ISSUE 1-0775: Pagination summary — give it room and allow normal wrap
+     instead of breaking one word per line. */
+  .lms-admin #lms-bulk-users-form > div:last-child > div:last-child {
+    flex-direction: column;
+    align-items: flex-start !important;
+    width: 100%;
+    gap: 0.75rem;
+  }
+  .lms-admin #lms-bulk-users-form > div:last-child > div:last-child > span {
+    white-space: normal !important;
+    width: 100%;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  /* [P035] ISSUE 1-0776: Pagination controls — wrap cleanly with even gaps, no
+     overlap of the numbered circles and Next/Last. */
+  .lms-admin .lms-pagination-container,
+  .lms-admin .lms-pagination-container .pager,
+  .lms-admin .lms-pagination-container ul.pager__items {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .lms-admin .lms-pagination-container li,
+  .lms-admin .lms-pagination-container .pager__item {
+    margin: 0;
+  }
+}
+
+/* ===== P036.css ===== */
+/* ==========================================================================
+   P036 — Manage Orders (/workspace/orders)  — ROUND 2
+   Layout: .lms-admin > .lms-admin__sidebar (fixed 260px) + .lms-admin__main
+   Table wrapped in .lms-card > .lms-table-responsive > table.lms-table
+   This partial loads LAST. !important used only to beat inline styles.
+   ========================================================================== */
+
+/* [P036] ISSUE 1-0787: sticky column headers while the body scrolls.
+   ROOT CAUSE of prior failure: thead was already position:sticky, but the
+   scroll container (.lms-table-responsive) had NO bounded height, so it grew
+   to the full table height and the *page/body* scrolled instead. With the
+   sticky context taller than the viewport, the header scrolled off-screen.
+   FIX: bound the inner container's height so IT scrolls internally; the
+   already-sticky thead then pins to the top of that container. Also make the
+   header cells fully opaque so rows never bleed through. */
+.lms-admin .lms-card {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 3rem);
+  overflow: hidden;
+}
+.lms-admin .lms-card .lms-table-responsive {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  overflow-x: auto;
+}
+.lms-admin .lms-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+}
+.lms-admin .lms-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  background-color: #1d70f5 !important; /* opaque so scrolling rows don't show through */
+  background-clip: padding-box;
+}
+
+/* [P036] ISSUE 1-0789: ACTIONS 'Edit' link — clear interactive affordance.
+   Render the plain text link as a real outlined button with hover/focus
+   feedback (background fill + underline + visible focus ring). */
+.lms-admin .lms-table td .lms-btn--outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 0.375rem;
+  color: #93c5fd;
+  text-decoration: none;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.lms-admin .lms-table td .lms-btn--outline:hover {
+  background: rgba(29, 112, 245, 0.18);
+  color: #ffffff;
+  border-color: #1d70f5;
+  text-decoration: underline;
+}
+.lms-admin .lms-table td .lms-btn--outline:focus-visible {
+  outline: 2px solid #1d70f5;
+  outline-offset: 2px;
+  color: #ffffff;
+  border-color: #1d70f5;
+}
+
+/* ==========================================================================
+   MOBILE — sidebar is fixed 260px and .lms-admin__main has margin-left:260px,
+   which pushes the table off-screen so only a clipped sliver of the first
+   column shows ('#96' cut at the viewport edge).
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* [P036] ISSUE 1-0795: collapse the fixed sidebar off-canvas so the main
+     content column can use the full viewport width. */
+  .lms-admin__sidebar {
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.5);
+  }
+  .lms-admin__sidebar:target,
+  .lms-admin__sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* [P036] ISSUE 1-0795: reclaim full width for the orders table so order
+     IDs are no longer clipped at the right viewport boundary. */
+  .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 1.25rem 1rem !important;
+  }
+
+  /* [P036] ISSUE 1-0795: keep the table horizontally scrollable from the
+     first column instead of overflowing past the viewport edge; preserve
+     column widths and let the user pan rather than crushing/clipping cells. */
+  .lms-admin .lms-card,
+  .lms-admin .lms-card .lms-table-responsive {
+    max-height: none;
+  }
+  .lms-admin .lms-card .lms-table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lms-admin .lms-table {
+    min-width: 640px;
+  }
+  .lms-admin .lms-table th,
+  .lms-admin .lms-table td {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  /* [P036] ISSUE 1-0795: tighten further on small phones while keeping IDs
+     fully readable via horizontal scroll. */
+  .lms-admin__main {
+    padding: 1rem 0.75rem !important;
+  }
+  .lms-admin .lms-table td:first-child,
+  .lms-admin .lms-table th:first-child {
+    white-space: nowrap;
+  }
+}
+
+/* ===== P037.css ===== */
+/* ==========================================================================
+   P037 - manage-content-faq (/workspace/content/faq)
+   Live route resolves to a system error page (403/404). Body class on the
+   running site is `route--system-403`; assignment route_class is
+   `route--system-404`. We scope to BOTH so the themed error state applies
+   regardless of which error Drupal returns for this path.
+   The brand "SilverCare" is rendered as an <img> SVG logo (only an aria-label
+   in markup, no text node), so brand-text contrast issues are not
+   CSS-addressable here (see deferred 1-0801 / 1-0808).
+   ========================================================================== */
+
+/* [P037] ISSUE 1-0814: error region needs min-height + vertical centering so
+   the lone message is not stranded above a cavernous gap with the footer
+   pulled up under sparse content. */
+body.route--system-403 .lms-page__content,
+body.route--system-404 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px - 360px); /* viewport minus header & footer */
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  body.route--system-403 .lms-page__content,
+  body.route--system-404 .lms-page__content {
+    min-height: 60vh;
+    padding: 2.5rem 1.25rem;
+  }
+}
+
+/* [P037] ISSUE 1-0807: turn the bare "You are not authorized..." /
+   "page could not be found" text into a styled, themed empty-state card with
+   an icon and clear container instead of an unstyled fallback paragraph.
+   (A real recovery <a>/<button> and an <h1> heading require a template change
+   and are deferred; everything achievable in CSS is applied here.) */
+body.route--system-403 #block-lms-theme-content,
+body.route--system-404 #block-lms-theme-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 2.75rem 2rem;
+  background: var(--medical-surface, #ffffff);
+  border: 1px solid var(--medical-border, rgba(0, 119, 182, 0.22));
+  border-radius: var(--medical-radius, 12px);
+  box-shadow: var(--medical-shadow, 0 12px 28px rgba(0, 119, 182, 0.1));
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--medical-text, #12354a); /* ~7:1 on white, WCAG AA */
+}
+
+/* Decorative status icon above the message (pseudo-element is presentational
+   only; not a control). */
+body.route--system-403 #block-lms-theme-content::before,
+body.route--system-404 #block-lms-theme-content::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f071"; /* exclamation-triangle */
+  display: block;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--medical-violet, #0077b6);
+  margin-bottom: 0.25rem;
+}
+
+/* ===== P038.css ===== */
+/* ==========================================================================
+   P038 — Manage Pricing (/workspace/pricing)
+   Theme: lms_theme | Skin: medical | Brand: SilverCare
+   Loads LAST. Scoped to the admin workspace shell (.lms-admin) which is the
+   most specific page container present (route_class is empty in the unit).
+   ========================================================================== */
+
+/* [P038] ISSUE 1-0815, 1-0828: Sidebar 'SilverCare' wordmark contrast (desktop+mobile) */
+/* Force the brand wordmark to a near-white, high-contrast value on the dark
+   sidebar (#161b22) so it clears WCAG AA 4.5:1 for small text. Beats the
+   global `a{color:#58a6ff}` link color that dims it to grey-blue. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span,
+.lms-admin .lms-admin__sidebar-brand a i {
+  color: #f0f4fa !important;        /* ~14.8:1 on #161b22 */
+  -webkit-text-fill-color: #f0f4fa; /* in case a gradient text-fill leaks in */
+  font-weight: 800;
+}
+
+/* [P038] ISSUE 1-0817, 1-0818: ACTIONS buttons — consistent pair + contrast */
+/* Build a deliberate primary/secondary pair of EQUAL height/padding/radius.
+   Edit = filled primary; Deactivate/Activate = outline secondary but with a
+   subtle tinted fill + brighter text so the amber clears AA. The Deactivate
+   button carries inline styles in markup, so these need !important. */
+.lms-admin .lms-table td .lms-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 16px !important;
+  font-size: 13px !important;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 0.5rem !important;
+  vertical-align: middle;
+}
+
+/* Edit (primary, solid blue) — keep filled, just normalize sizing above. */
+.lms-admin .lms-table td .lms-btn.btn-lms-primary {
+  background: #1d70f5 !important;
+  border: 1px solid #1d70f5 !important;
+  color: #ffffff !important;
+}
+
+/* Deactivate / Activate (secondary, outline). Brighten amber/green text and
+   add a low-opacity tinted fill so small text meets AA on the dark row bg. */
+.lms-admin .lms-table td .lms-btn:not(.btn-lms-primary) {
+  background: rgba(245, 158, 11, 0.14) !important;  /* subtle amber fill */
+  border: 1px solid #fbbf24 !important;             /* brighter amber border */
+  color: #fcd34d !important;                         /* ~9:1 on dark row bg */
+}
+.lms-admin .lms-table td .lms-btn:not(.btn-lms-primary):hover {
+  background: rgba(245, 158, 11, 0.24) !important;
+  border-color: #fcd34d !important;
+  color: #fde68a !important;
+}
+
+/* [P038] ISSUE 1-0819: Filter bar balance & alignment */
+/* Group the filter controls with even spacing and aligned bottom edges.
+   Constrain the search field so it no longer stretches and shoves Status +
+   Filter to the far right with a big empty gap. */
+.lms-admin .lms-admin-filter {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: flex-end !important;
+  gap: 1rem !important;
+  justify-content: flex-start;
+}
+.lms-admin .lms-admin-filter__group {
+  flex: 0 1 auto !important;
+}
+/* Search: a sensible, capped width instead of greedily filling the row. */
+.lms-admin .lms-admin-filter__group:first-child {
+  flex: 1 1 320px !important;
+  max-width: 420px;
+}
+/* Status select group: fixed, compact. */
+.lms-admin .lms-admin-filter__group:nth-child(2) {
+  flex: 0 0 200px !important;
+}
+/* Filter button group: hug content, sit right next to Status (no big gap). */
+.lms-admin .lms-admin-filter__group:last-child {
+  flex: 0 0 auto !important;
+}
+/* Equalize control heights so inputs, select and button share a bottom edge. */
+.lms-admin .lms-admin-filter__input,
+.lms-admin .lms-admin-filter__select {
+  height: 42px;
+  box-sizing: border-box;
+}
+.lms-admin .lms-admin-filter .lms-btn.btn-lms-primary {
+  height: 42px !important;
+  display: inline-flex !important;
+  align-items: center;
+  padding: 0 1.25rem !important;
+}
+
+/* [P038] ISSUE 1-0822: Mobile — reclaim viewport from the fixed 260px sidebar */
+/* CSS-only off-canvas: on small screens push the sidebar off the left edge
+   and remove the 260px content offset so the page content gets full width.
+   (A hamburger TOGGLE requires JS/markup and is deferred; this still resolves
+   the critical "content clipped to a narrow column" defect.) */
+@media (max-width: 768px) {
+  .lms-admin__sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.5);
+  }
+  /* Reveal when toggled open via :target or an .is-open hook if added later. */
+  .lms-admin__sidebar:target,
+  .lms-admin__sidebar.is-open {
+    transform: translateX(0);
+  }
+  .lms-admin__main {
+    margin-left: 0 !important;
+    padding: 1.25rem !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Stack the filter toolbar so each control spans the row cleanly. */
+  .lms-admin .lms-admin-filter__group,
+  .lms-admin .lms-admin-filter__group:first-child,
+  .lms-admin .lms-admin-filter__group:nth-child(2),
+  .lms-admin .lms-admin-filter__group:last-child {
+    flex: 1 1 100% !important;
+    max-width: none;
+  }
+  .lms-admin .lms-admin-filter .lms-btn.btn-lms-primary {
+    width: 100%;
+    justify-content: center;
+  }
+  /* Let action buttons wrap instead of overflowing the narrow row. */
+  .lms-admin .lms-table td .lms-btn {
+    margin-bottom: 4px;
+  }
+}
+
+/* ===== P039.css ===== */
+/* ===========================================================================
+   P039 — Manage Ratings (/workspace/ratings)
+   Scope: .lms-admin admin workspace (no route_class on this page).
+   This partial loads LAST. !important is used to beat the template's inline
+   element styles and its in-template <style> block (.lms-admin-sidebar).
+   =========================================================================== */
+
+/* [P039] ISSUE 1-0837: secondary date line "Apr 04, 2026" under each course
+   title is rendered with inline color:#64748b on the #1e293b card — fails AA
+   (~3.0:1). Raise to #b3c0d4 (~6.8:1 on #1e293b). The inline style is matched
+   by the attribute-substring selector AND a positional fallback so it cannot
+   be missed; !important beats the element's inline color. */
+.lms-admin .lms-table td span[style*="#64748b"],
+.lms-admin .lms-table td span[style*="64748b"],
+.lms-admin .lms-table tbody td:nth-child(2) span {
+  color: #b3c0d4 !important;
+}
+
+/* [P039] ISSUE 1-0838: lower sidebar nav labels (Orders, Membership, etc.)
+   render at #94a3b8 — faint on the #161b22 sidebar. Lift muted nav/subnav
+   foreground to AA. (The "SilverCare" wordmark itself is a baked-in logo IMAGE,
+   not text, so its contrast must be fixed in the asset — see deferred.) */
+.lms-admin__nav-item {
+  color: #c5d0de !important; /* ~7:1 on #161b22 */
+}
+.lms-admin__nav-item:hover,
+.lms-admin__nav-item--active {
+  color: #ffffff !important;
+}
+.lms-admin__subnav-item {
+  color: #bcc8d8 !important;
+}
+.lms-admin__subnav-item--active {
+  color: #ffffff !important;
+}
+.lms-admin__nav-label {
+  color: #8b97a8 !important; /* uppercase section label, lift from #64748b */
+}
+/* Sidebar text-logo fallback (when no image logo) — keep bright. */
+.lms-admin__sidebar-brand a,
+.lms-admin__sidebar-brand span {
+  color: #f1f5f9 !important;
+}
+
+/* [P039] ISSUE 1-0840: "15 Reviews Found" counter is small/dim in the top
+   right. Casing ("Reviews Found" -> "reviews found") is template content and
+   cannot be changed in CSS, but lift the contrast & size here. */
+.lms-admin__subtitle {
+  color: #b3c0d4 !important;
+  font-size: 0.9375rem;
+}
+
+/* ===========================================================================
+   MOBILE — the fixed 260px sidebar + margin-left:260px forces horizontal
+   overflow and squeezes the table into a side strip. Collapse the sidebar and
+   convert the data table to a stacked single-column card layout so EVERY
+   field (id, course, student, rating, review, status, actions) is visible
+   without horizontal scrolling.
+   Addresses: 1-0842, 1-0844, 1-0845, 1-0847, 1-0849.
+   =========================================================================== */
+@media (max-width: 767px) {
+  /* Kill root horizontal overflow. */
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* [P039] ISSUE 1-0847: off-canvas the fixed sidebar so it no longer occupies
+     viewport width and leaves a tall empty void. */
+  .lms-admin__sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    width: 84vw;
+    min-width: 0;
+    max-width: 300px;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+  }
+  .lms-admin__sidebar:target,
+  .lms-admin__sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* [P039] ISSUE 1-0842 / 1-0847: single-column flow, content fills full
+     width, no left margin reserved for the hidden sidebar. */
+  .lms-admin {
+    display: block;
+  }
+  .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100%;
+    max-width: 100vw;
+    padding: 1.25rem;
+    box-sizing: border-box;
+  }
+
+  /* [P039] ISSUE 1-0844: H1 must fully fit and wrap, never clip at the edge. */
+  .lms-admin__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .lms-admin__title {
+    font-size: 1.375rem;
+    line-height: 1.25;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  /* [P039] ISSUE 1-0842 / 1-0845 / 1-0849: STACKED CARD LAYOUT.
+     Each <tr> becomes a card; each <td> a full-width block. This removes the
+     thin-strip table and the need for horizontal scroll, so full IDs and all
+     columns (rating, review, course, status, actions) are visible. The sticky
+     blue header pill is hidden because it has no meaning in a stacked layout. */
+  .lms-admin-card {
+    max-width: 100%;
+    overflow: visible;
+    border-radius: 0.75rem;
+  }
+  .lms-table-responsive {
+    overflow-x: visible !important;
+    min-height: 0 !important;
+    max-width: 100%;
+  }
+  .lms-table,
+  .lms-table thead,
+  .lms-table tbody,
+  .lms-table tr,
+  .lms-table td {
+    display: block;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  /* [P039] ISSUE 1-0849: hide the floating blue "ID" header pill in stacked
+     view — column headers are not applicable when cells stack vertically. */
+  .lms-table thead {
+    position: static;
+    height: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    padding: 0;
+    margin: 0;
+  }
+  .lms-table thead th {
+    display: none;
+  }
+  /* Card separation. */
+  .lms-table tbody tr {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.25rem;
+    background: rgba(255, 255, 255, 0.02) !important;
+  }
+  .lms-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+    padding: 0.6rem 1rem;
+    white-space: normal !important;
+  }
+  .lms-table tbody tr td:last-child {
+    border-bottom: none !important;
+  }
+
+  /* [P039] ISSUE 1-0845: full ID value must be readable, not clipped. */
+  .lms-table tbody td:first-child {
+    font-weight: 700;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+  }
+
+  /* Review cell must wrap fully instead of single-line ellipsis truncation. */
+  .lms-table td > div[style*="text-overflow"] {
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  /* Actions stay on one row, left aligned within the stacked card. */
+  .lms-table td:last-child > div {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+
+  /* Pagination footer wraps cleanly full width. */
+  .lms-admin-footer {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    border-radius: 0 0 0.75rem 0.75rem;
+  }
+}
+
+/* ===== P040.css ===== */
+/* ==========================================================================
+   P040 — Certificate Templates (/workspace/certificate-templates)
+   Admin workspace layout (body.is-workspace). Selectors verified against:
+   - web/modules/custom/lms_certificate/templates/lms-admin-certificate-templates.html.twig
+   - web/modules/custom/lms_course/templates/lms-admin-sidebar.html.twig (inline <style>)
+   Loaded LAST. !important used only to beat the template's inline <style> /
+   inline attribute rules on the targets.
+   ========================================================================== */
+
+
+/* [P040] ISSUE 1-0853: STATUS header text vs 'Active' badge left-edge mismatch.
+   The th text starts at the cell's 1.5rem left padding. The td shares that same
+   1.5rem left padding, so the badge's BOX left edge already aligns with the
+   header text. A prior round used margin-left:-0.75rem which pulled the pill
+   0.75rem LEFT of the header (over-correction). Reset that pull and keep the
+   pill box flush with the header text's left edge. */
+body.is-workspace .lms-admin .lms-table td .lms-status {
+  margin-left: 0;
+}
+/* Make the STATUS th/td share identical left padding + alignment so the
+   header label and the badge box start on the same vertical line. */
+body.is-workspace .lms-admin .lms-table th:nth-child(3),
+body.is-workspace .lms-admin .lms-table td:nth-child(3) {
+  text-align: left;
+  padding-left: 1.5rem;
+}
+
+
+/* ==========================================================================
+   MOBILE (<=768px) — ISSUES 1-0859, 1-0862
+   Root cause: the admin table carries non-wrapping cells and a desktop min-width
+   that makes the .lms-admin-card wider than the phone viewport. Earlier rounds
+   collapsed the fixed sidebar but the table still pushed the CARD past the right
+   edge (STATUS badges clipped, ACTIONS column entirely off-screen) because the
+   horizontal scroll was never actually contained to the viewport width.
+   Fix: hard-cap every layout container to the viewport, kill page-level
+   horizontal overflow, and force the table's own wrapper to be the single
+   horizontal scroll surface so nothing is clipped off the right edge.
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Stop the whole document from scrolling sideways. */
+  body.is-workspace,
+  body.is-workspace .dialog-off-canvas-main-canvas,
+  body.is-workspace .lms-page {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Full-width single column; remove the desktop 260px sidebar offset. */
+  body.is-workspace .lms-admin {
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+  }
+  body.is-workspace .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 1.25rem !important;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  /* The card must never exceed the viewport; it becomes the visual clip box. */
+  body.is-workspace .lms-admin__main .lms-admin-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden; /* clip rounded corners; scrolling happens on the wrapper */
+  }
+
+  /* The scroll wrapper is the ONLY horizontal scroll surface, kept inside the
+     card (and thus inside the viewport). Table keeps a usable desktop width but
+     now scrolls internally instead of pushing the page wide / clipping columns. */
+  body.is-workspace .lms-admin__main .lms-table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.is-workspace .lms-admin__main .lms-table {
+    width: auto;
+    min-width: 560px; /* TEMPLATE NAME + CREATED + STATUS + ACTIONS legible */
+  }
+  body.is-workspace .lms-admin__main .lms-table th,
+  body.is-workspace .lms-admin__main .lms-table td {
+    white-space: nowrap;
+  }
+}
+
+/* Extra-small phones (<=480px): keep the same containment guarantees. */
+@media (max-width: 480px) {
+  body.is-workspace .lms-admin__main {
+    padding: 1rem !important;
+  }
+  body.is-workspace .lms-admin__main .lms-table-responsive {
+    overflow-x: auto;
+  }
+}
+
+/* ===== P041.css ===== */
+/* P041 — Issued Certificates (Certificate Management workspace) UI fixes */
+/* All prior fixes were inline styles in the twig templates; this partial loads
+   LAST, so specific overrides use !important only to beat those inline styles. */
+
+/* [P041] ISSUE 1-0868: Sidebar brand 'SilverCare' wordmark too low-contrast on dark sidebar */
+.lms-admin__sidebar-brand a,
+.lms-admin__sidebar-brand a span {
+  color: #f1f5f9 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* [P041] ISSUE 1-0870: CODE column monospace values dim grey (inline #94a3b8) */
+.lms-admin .lms-table td span[style*="monospace"] {
+  color: #cbd5e1 !important;
+  font-weight: 500 !important;
+}
+
+/* [P041] ISSUE 1-0877: Stat-card uppercase labels too dim vs the big numbers */
+/* The three stat cards each have a label div with inline color:#94a3b8, weight 600, uppercase. */
+.lms-admin__main > div[style*="grid-template-columns: repeat(3"] .lms-admin-card > div:first-child {
+  color: #cbd5e1 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* [P041] ISSUE 1-0873: Table footer 'Showing N entries' count almost invisible (inline #64748b) */
+.lms-admin-footer,
+.lms-admin-footer > div[style*="color: #64748b"] {
+  color: #cbd5e1 !important;
+}
+
+/* [P041] ISSUE 1-0876: Row dividers between table rows nearly invisible + add zebra striping */
+.lms-admin .lms-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.lms-admin .lms-table tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.025) !important;
+}
+.lms-admin .lms-table tbody tr:hover td {
+  background: rgba(29, 112, 245, 0.08) !important;
+}
+
+/* [P041] ISSUE 1-0871: Per-row action buttons ragged / uneven widths and edges.
+   The actions live in the last <td> (right-aligned). Lay them out as a single
+   right-aligned flex cluster with equal-width buttons and consistent gap so
+   View PDF / Regenerate / Revoke line up the same way on every row. */
+.lms-admin .lms-table td:last-child {
+  text-align: right !important;
+}
+.lms-admin .lms-table td:last-child {
+  white-space: nowrap;
+}
+.lms-admin .lms-table tbody td:last-child {
+  /* Build a flex cluster out of the anchors inside the cell. */
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: stretch;
+  gap: 0.5rem !important;
+}
+/* Normalise every action anchor: equal min width, centred content, shared height,
+   and remove the per-button left margins that created the ragged offsets. */
+.lms-admin .lms-table tbody td:last-child > a {
+  margin: 0 !important;
+  min-width: 116px;
+  box-sizing: border-box;
+  justify-content: center !important;
+  white-space: nowrap;
+}
+
+/* [P041] ISSUE 1-0875: Bottom sidebar 'Manager' account row clipped by viewport edge.
+   Sidebar is a fixed full-height flex column with overflow-y:auto; the nav has
+   flex:1. Let the nav scroll and keep the profile + logout pinned/visible so the
+   account row is never cut off. */
+.lms-admin__sidebar {
+  overflow-y: auto !important;
+}
+.lms-admin__nav {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+.lms-admin__sidebar-profile {
+  flex: 0 0 auto !important;
+  margin-top: auto !important;
+}
+.lms-admin__sidebar > div:last-child {
+  flex: 0 0 auto !important;
+}
+
+/* ===== P042.css ===== */
+/* ============================================================
+   P042 — /workspace/content-tools (system 403 / Access denied)
+   Scope: body.route--system-403  (real body class from live markup)
+   NOTE: header (.lms-navbar), footer (.lms-footer) and the brand
+   logo already render in the live page template, so 1-0888 / 1-0890
+   (missing-region) / 1-0892 are resolved at the markup level and
+   need no CSS. There is no breadcrumb element in the current markup
+   (1-0889 / 1-0893) and no recovery CTA markup (1-0894); those
+   require template/content changes and are deferred.
+   The fixable defects are the stranded, top-anchored error message
+   and its cramped spacing — addressed below.
+   ============================================================ */
+
+/* [P042] ISSUE 1-0895,1-0896,1-0890: vertically center the 403 message
+   so it isn't stranded at the top of the flex-grow content column,
+   and give it balanced breathing room instead of one cramped line. */
+body.route--system-403 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* fill the space between header and footer without forcing a full
+     extra viewport; .lms-page already provides min-height:100vh + flex */
+  min-height: 60vh;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  gap: 1.25rem;
+}
+
+/* [P042] ISSUE 1-0895,1-0896: present the error text as a readable,
+   self-contained block with comfortable max-width and even rhythm,
+   instead of a single sentence floating against blank white. */
+body.route--system-403 #block-lms-theme-content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #3d4451;            /* WCAG AA on the light medical background */
+}
+
+/* [P042] ISSUE 1-0896: balanced spacing for the page H1 / title band
+   region when present, so the heading and body do not crowd together. */
+body.route--system-403 .lms-page__content h1,
+body.route--system-403 #block-lms-theme-content h1 {
+  margin-bottom: 1rem;
+  color: #1f2430;
+}
+
+/* [P042] ISSUE 1-0895: keep the empty messages wrapper from adding
+   stray top whitespace above the centered block. */
+body.route--system-403 .lms-messages-wrapper:empty,
+body.route--system-403 .lms-messages-wrapper .hidden {
+  margin: 0;
+  padding: 0;
+}
+
+/* [P042] ISSUE 1-0895: mobile — tighten centering and spacing so the
+   message reads as intentional rather than a broken empty column. */
+@media (max-width: 480px) {
+  body.route--system-403 .lms-page__content {
+    min-height: 55vh;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+  body.route--system-403 #block-lms-theme-content {
+    padding: 1.5rem 1.25rem;
+    font-size: 1.0625rem;
+  }
+}
+
+/* ===== P043.css ===== */
+/* ============================================================
+   P043 - /manage/blog  (route--system-403  Access denied)
+   Active body classes: route--system-403 layout-minimalist
+   This partial loads LAST.
+   ============================================================ */
+
+/* [P043] ISSUE 1-0898 / 1-0905: bare unstyled access-denied sentence.
+   Turn #block-lms-theme-content into a centered card with a heading
+   (injected via ::before since markup cannot be edited) and readable copy.
+   NOTE: a real functional CTA button needs markup and is deferred. */
+body.route--system-403 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+body.route--system-403 #block-lms-theme-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 560px;
+  margin: 2.5rem auto;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  color: #334155;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Decorative lock icon (order:1) above the heading. */
+body.route--system-403 #block-lms-theme-content::before {
+  content: "\f023"; /* Font Awesome lock */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  order: -2;
+  display: block;
+  font-size: 2.75rem;
+  line-height: 1;
+  color: #0077b6;
+  margin-bottom: 1rem;
+}
+
+/* Injected "Access denied" heading (order:2) above the message text.
+   The raw message text node is the default flex child (order:0) and is
+   pulled below via order on the pseudo-elements. */
+body.route--system-403 #block-lms-theme-content::after {
+  content: "Access denied";
+  order: -1;
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.75rem;
+  line-height: 1.2;
+}
+
+/* [P043] ISSUE 1-0907: huge blank band before the footer on the sparse
+   error page. Give the content region a min-height so the card centers
+   vertically instead of collapsing to a thin strip. */
+body.route--system-403 .lms-page__content {
+  min-height: 60vh;
+  padding: 3rem 1rem 4rem;
+}
+
+/* [P043] ISSUE 1-0903: footer column headings not top-aligned -
+   QUICK LINKS sits well below COURSE/SUPPORTS/CONTACT INFO because the
+   brand + description block in column 1 pushes it down. Tighten that
+   block so the heading rises toward the other columns' heading row and
+   the offset reads as a deliberate, balanced lockup. */
+body.route--system-403 .lms-footer__grid {
+  align-items: start;
+}
+body.route--system-403 .lms-footer__brand {
+  margin-bottom: 0.5rem;
+}
+body.route--system-403 .lms-footer__description {
+  margin-bottom: 0.75rem;
+}
+body.route--system-403 .lms-footer__col:first-child h4 {
+  margin-top: 0;
+}
+
+/* [P043] ISSUE 1-0912: footer brand logo renders larger than the
+   identical header logo. Force the footer mark to the same rendered
+   height as the header mark for a consistent identity. Global component
+   fix (no page scope) so it stays cohesive site-wide. */
+.lms-footer__brand-link .lms-brand-mark--footer {
+  height: 48px !important;
+  width: auto !important;
+  max-height: 48px !important;
+}
+@media (max-width: 480px) {
+  .lms-footer__brand-link .lms-brand-mark--footer {
+    height: 40px !important;
+    max-height: 40px !important;
+  }
+}
+
+/* [P043] ISSUE 1-0913: scroll-to-top FAB pinned at the right edge inside
+   the footer content column with no clear margin. Reserve a gutter at the
+   page bottom and pull the FAB clearly into the corner with a higher
+   z-index so it never overlaps footer links. */
+@media (max-width: 480px) {
+  body.route--system-403 .lms-footer {
+    padding-bottom: 5.5rem;
+  }
+  body.layout-minimalist:not(.is-workspace) #lms-back-to-top,
+  body.layout-minimalist:not(.is-workspace) .lms-back-to-top,
+  body.route--system-403 #lms-back-to-top,
+  body.route--system-403 .lms-back-to-top {
+    right: 12px !important;
+    bottom: 16px !important;
+    z-index: 1300 !important;
+  }
+}
+
+/* ===== P044.css ===== */
+/* ==========================================================================
+   P044 — AI Course Builder (/manage/courses/ai-builder)
+   Page scope: body.route--lms-ai-course-builder-form
+   Default Drupal FormBase markup: .form-item / .js-form-item with > label,
+   .description helper; submit = input.button.button--primary.form-submit
+   inside .form-actions.
+   This partial loads LAST. !important used ONLY to beat lower-layer / default
+   (jQuery-UI / core) button styling on the live submit element.
+   ========================================================================== */
+
+/* [P044] ISSUE 1-0930: Form labels — raise contrast to >=4.5:1 on the pale tint.
+   #1f2933 on the ~#eef6fb page tint ≈ 13:1, well above WCAG AA; also bump
+   weight so the uppercase labels read clearly as field titles. */
+body.route--lms-ai-course-builder-form .form-item > label,
+body.route--lms-ai-course-builder-form .js-form-item > label,
+body.route--lms-ai-course-builder-form .form-item label.form-required,
+body.route--lms-ai-course-builder-form .form-item label {
+  color: #1f2933;
+  font-weight: 600;
+}
+
+/* [P044] ISSUE 1-0928: "Example:" helper lines — make visually subordinate
+   (smaller + muted) so they don't compete with body/label text. */
+body.route--lms-ai-course-builder-form .form-item .description,
+body.route--lms-ai-course-builder-form .js-form-item .description {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.45;
+  /* #6b7280 on the pale tint ≈ 4.8:1 — muted yet still AA for small text */
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* [P044] ISSUE 1-0926: Primary "Build My Course! 🚀" CTA — the live submit
+   carries a heavy, offset, lower-left tinted shadow (reads as a duplicated
+   layer). Replace with a clean, centered, low-spread elevation. !important
+   is required to override the default/jQuery-UI button shadow on the element. */
+body.route--lms-ai-course-builder-form .form-actions input.button,
+body.route--lms-ai-course-builder-form .form-actions .form-submit,
+body.route--lms-ai-course-builder-form .form-actions .button--primary,
+body.route--lms-ai-course-builder-form .form-actions input[type="submit"] {
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15) !important;
+}
+body.route--lms-ai-course-builder-form .form-actions input.button:hover,
+body.route--lms-ai-course-builder-form .form-actions .form-submit:hover,
+body.route--lms-ai-course-builder-form .form-actions .button--primary:hover,
+body.route--lms-ai-course-builder-form .form-actions input[type="submit"]:hover {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18) !important;
+}
+body.route--lms-ai-course-builder-form .form-actions input.button:focus-visible,
+body.route--lms-ai-course-builder-form .form-actions .form-submit:focus-visible,
+body.route--lms-ai-course-builder-form .form-actions input[type="submit"]:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* [P044] ISSUE 1-0919: Short single-column form leaves a large dead band of
+   tinted space above the footer (content area is flex:1 and the form is
+   top-anchored). Constrain the form to a readable column and center it within
+   the available height so it no longer looks stranded at the very top, which
+   visibly reduces the empty gap. Filling the band with real supporting
+   content (preview / recent builds) would require markup — out of CSS scope. */
+body.route--lms-ai-course-builder-form #main-content.lms-page__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 760px;
+  /* keep the form from sitting flush against the fixed navbar / footer */
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+body.route--lms-ai-course-builder-form #main-content.lms-page__content form {
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  /* On mobile, vertical centering can push the heading under the fixed 64px
+     navbar; revert to top-aligned with clearance for the bar. */
+  body.route--lms-ai-course-builder-form #main-content.lms-page__content {
+    justify-content: flex-start;
+    padding-top: 5rem;
+  }
+}
+
+/* ===== P045.css ===== */
+/* ==========================================================================
+   P045 — Workspace Reports & Analytics  (/workspace/reports)
+   Route controller: lms_course AdminController::reports
+   Theme hook: lms_admin_reports_v2  ->  lms-admin-reports.html.twig
+   Layout shell: lms-admin-sidebar.html.twig (.lms-admin / .lms-admin__main).
+
+   The admin layout ships its styles as an inline <style> block inside the
+   sidebar template, and most cells carry element-level style="" attributes.
+   This partial loads LAST, so equal-specificity rules win on source order;
+   !important is used only where we must beat an inline style="" on the target.
+   No page route_class exists for this controller route, so we scope under the
+   page-specific shell class .lms-admin (the most specific section class).
+   ========================================================================== */
+
+
+/* [P045] ISSUE 1-0935: Completion-rate cell — stop stacking % under the bar.
+   Markup: <td style="...width: 15%"> <div BAR> <div FILL/> </div> <small>%</small> </td>
+   The bar div is width:100% block + the <small> falls to its own centered line,
+   inflating row height and detaching the % from the bar. Make the cell a flex
+   row so the track and the percentage sit inline on one line, vertically
+   centred, with the % to the right of the track. */
+.lms-admin .lms-table td[style*="width: 15%"] {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+}
+/* The progress track: keep it from forcing its own line; let it flex-grow
+   but cap it so the % label always has room beside it. */
+.lms-admin .lms-table td[style*="width: 15%"] > div[style*="#334155"] {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 60px !important;
+  max-width: 120px !important;
+  margin-bottom: 0 !important;
+}
+/* The percentage label: inline, fixed width, right of the track. */
+.lms-admin .lms-table td[style*="width: 15%"] > small {
+  flex: 0 0 auto !important;
+  display: inline-block !important;
+  min-width: 44px;
+  text-align: left;
+  white-space: nowrap;
+  color: #cbd5e1;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* [P045] ISSUE 1-0947: KPI card icon vs label — guarantee a consistent gap and
+   vertical centring between the coloured icon and the label/value stack across
+   all four cards (person / check / certificate / percent). Component-level
+   (applies on every viewport; mobile reinforced in the media query below). */
+.lms-admin .lms-kpi-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.lms-admin .lms-kpi-card__icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.lms-admin .lms-kpi-card__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+
+/* ==========================================================================
+   MOBILE  — ISSUE 1-0943 (critical) + 1-0947
+   The sidebar is position:fixed; width:260px and .lms-admin__main has
+   margin-left:260px with NO mobile breakpoint, so on phones the data tables
+   were squeezed into a narrow strip, wrapping to 1-3 chars per line and
+   overlapping rows (title overlapping the next row's text).
+
+   Fix: (a) un-fix the sidebar so it stacks and frees full content width, and
+   (b) convert the wide data tables to a readable STACKED-CARD layout — each
+   <tr> becomes a card, each <td> a labelled row — which removes the horizontal
+   squeeze entirely and the vertical overlap. Breakpoint widened to 600px to
+   reliably cover phone widths the prior 480px rule missed.
+   ========================================================================== */
+@media (max-width: 600px) {
+
+  /* Stack the shell so the fixed sidebar no longer overlays the content. */
+  .lms-admin {
+    flex-direction: column !important;
+  }
+  .lms-admin .lms-admin__sidebar {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 1;
+  }
+  .lms-admin .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 1rem !important;
+    min-width: 0;
+  }
+
+  /* KPI cards: one per row, consistent icon gap and centring (1-0947). */
+  .lms-admin .lms-kpi-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+  .lms-admin .lms-kpi-card {
+    width: 100%;
+    min-width: 0;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.875rem !important;
+  }
+  .lms-admin .lms-kpi-card__label,
+  .lms-admin .lms-kpi-card__value {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  /* ----- 1-0943: tables -> stacked cards ----- */
+  /* Neutralise the table box model so every part flows as block. */
+  .lms-admin .lms-table-responsive {
+    overflow: visible !important;
+  }
+  .lms-admin .lms-table,
+  .lms-admin .lms-table thead,
+  .lms-admin .lms-table tbody,
+  .lms-admin .lms-table tr,
+  .lms-admin .lms-table th,
+  .lms-admin .lms-table td {
+    display: block !important;
+    width: auto !important;
+    white-space: normal !important;
+  }
+  /* Hide the original header row (labels are injected per-cell below). */
+  .lms-admin .lms-table thead {
+    position: absolute !important;
+    left: -9999px !important;
+    top: auto !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+  /* Each data row becomes a self-contained card. */
+  .lms-admin .lms-table tbody tr {
+    margin: 0 0 0.875rem 0 !important;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 0.5rem !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+  }
+  /* Each cell: full-width block, generous padding kills the vertical overlap. */
+  .lms-admin .lms-table tbody td {
+    padding: 0.5rem 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    text-align: left !important;
+    overflow-wrap: anywhere;
+  }
+  .lms-admin .lms-table tbody td:last-child {
+    border-bottom: 0 !important;
+  }
+  /* Inject the column label before each cell so the card is self-describing.
+     Order matches the Course Analytics table columns. */
+  .lms-admin #course-analytics .lms-table tbody td::before {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #94a3b8;
+  }
+  .lms-admin #course-analytics .lms-table tbody td:nth-child(1)::before { content: "Course"; }
+  .lms-admin #course-analytics .lms-table tbody td:nth-child(2)::before { content: "Enrollments"; }
+  .lms-admin #course-analytics .lms-table tbody td:nth-child(3)::before { content: "Completions"; }
+  .lms-admin #course-analytics .lms-table tbody td:nth-child(4)::before { content: "Completion Rate"; }
+  .lms-admin #course-analytics .lms-table tbody td:nth-child(5)::before { content: "Total Revenue"; }
+
+  /* The completion-rate cell in card mode: bar + % left-aligned on one line. */
+  .lms-admin #course-analytics .lms-table tbody td[style*="width: 15%"] {
+    display: flex !important;
+    justify-content: flex-start !important;
+  }
+  .lms-admin #course-analytics .lms-table tbody td[style*="width: 15%"] > div[style*="#334155"] {
+    max-width: none !important;
+  }
+
+  /* Section header (heading + Export button) stacks; button goes full width. */
+  .lms-admin .lms-report-tab-content > div[style*="justify-content: space-between"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+  .lms-admin .lms-report-tab-content a.btn-lms-primary {
+    width: 100%;
+    justify-content: center !important;
+  }
+}

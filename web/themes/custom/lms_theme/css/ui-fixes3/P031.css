@@ -1,0 +1,123 @@
+/* ==========================================================================
+   P031 — Workspace Home  (/workspace, admin dashboard rendered via
+   @lms_course/lms-admin-dashboard.html.twig -> lms-admin-sidebar.html.twig)
+   THIRD-PASS fixes. This partial loads LAST. The sidebar template emits an
+   inline <style> block in the body (260px fixed sidebar + 260px left margin
+   on .lms-admin__main, fixed-width table cells); those win on source order,
+   so every override here is body-scoped and/or !important to beat them.
+
+   Confirmed live state (curl of /workspace as anon = 403):
+     <title>Access denied | SilverCare</title> + branded .lms-navbar header,
+     .lms-footer footer, front-end "medical" theme. So the 403 is ALREADY
+     re-themed with brand chrome and ALREADY has a descriptive title.
+
+   Addressed here:  1-0688, 1-0695
+   Deferred (need markup / data / new asset — impossible in CSS):
+     - 1-0668: 403 "renders in admin theme" — live markup already renders the
+       branded front-end theme (header/footer/medical skin). Theme negotiation
+       is a routing/backend concern, not CSS. Stale screenshot.
+     - 1-0672: empty <title> — live page already emits
+       "Access denied | SilverCare". Backend/markup, already correct.
+     - 1-0673: "Workspace" header link returns 403 for instructor role — this
+       is a route-access / menu-link-visibility change in PHP, not CSS.
+     - 1-0683: "qa_editor" raw username shown in LEARNER column — the cell
+       prints {{ order.learner }} from the controller; rendering a display
+       name / excluding test accounts is a data/controller change, not CSS.
+     - 1-0679 / 1-0684 / 1-0693: muted "SilverCare" wordmark on the dark
+       header & sidebar. The lockup is a single <img src=".../logo LMS_0_5.svg">.
+       The wordmark colour (fill="#0e2a47", dark navy) is baked into the SVG
+       artwork. CSS cannot recolour one <text> node inside an <img>; the only
+       whole-image filters that lift the near-black wordmark (invert/
+       brightness(0) invert) also destroy the blue "S" badge. A genuine,
+       non-destructive fix requires shipping a new SVG with an AA-contrast
+       wordmark (asset change), so this is deferred — not stylable in CSS.
+   ========================================================================== */
+
+/* ==========================================================================
+   [P031] ISSUE 1-0688 + 1-0695: MOBILE (<= 768px)
+   The template hard-codes a 260px fixed sidebar (position:fixed) plus a 260px
+   left margin on .lms-admin__main. At phone width that leaves the main column
+   (KPI grid + Recent Orders table) crushed into a ~half-width right strip, the
+   sidebar covers half the screen, and the wide fixed-padding table cells
+   overlap (Order ID / learner / amount / date stack on top of each other) and
+   sprawl the document to thousands of px tall.
+
+   CSS-only remedy: take the sidebar out of the fixed layout as a normal-flow,
+   auto-height bar at the top (still fully reachable / scrollable), let the main
+   column + cards use the full viewport width, and make the orders table render
+   as readable full-width rows with tightened cell padding so it stops
+   overlapping and sprawling. A literal hamburger off-canvas drawer would also
+   need markup/JS; this stacked-bar approach restores a usable single-column
+   mobile layout entirely in CSS.
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* Release the flex row so the columns stack. */
+  body .lms-admin {
+    display: block !important;
+  }
+
+  /* Sidebar: out of fixed positioning, full width, capped height, scrollable. */
+  body .lms-admin__sidebar {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    max-height: 60vh !important;
+    overflow-y: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  /* Main column: no 260px offset, full viewport width, sane gutter. */
+  body .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 1.25rem !important;
+    box-sizing: border-box !important;
+  }
+
+  /* KPI cards stack one per row instead of being squeezed. */
+  body .lms-kpi-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* Orders card spans the full width. */
+  body .lms-admin-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Orders table: let it scroll horizontally as a single coherent table rather
+     than overlapping rows; tighten cell padding and stop nowrap headers from
+     forcing absurd width that caused the vertical sprawl + overlap. */
+  body .lms-table-responsive {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  body .lms-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: auto !important;
+  }
+  body .lms-table th,
+  body .lms-table td {
+    padding: 0.6rem 0.75rem !important;
+    font-size: 0.8125rem !important;
+    white-space: nowrap !important;     /* keep each cell on its own line so
+                                           values never overlap each other */
+    vertical-align: middle !important;
+  }
+  /* Status header/cell stay right-aligned and visible. */
+  body .lms-table th:last-child,
+  body .lms-table td:last-child {
+    text-align: right !important;
+  }
+}

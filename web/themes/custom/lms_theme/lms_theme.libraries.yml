@@ -6,6 +6,11 @@ global:
       css/site-branding.css: {}
       css/pricing.css: {}
       css/admin-fixes.css: {}
+      css/ui-fixes-r1.css: { weight: 1000 }
+      css/ui-fixes-r1-pages.css: { weight: 1001 }
+      css/ui-fixes-r1-pages2.css: { weight: 1002 }
+      css/ui-fixes-r1-pages3.css: { weight: 1003 }
+      css/ui-fixes-r2.css: { weight: 1004 }
   js:
     js/main.js: { attributes: { defer: true } }
   dependencies:

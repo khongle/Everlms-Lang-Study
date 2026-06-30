@@ -1,0 +1,122 @@
+/* ============================================================
+   P036 — Manage Orders (/workspace/orders)
+   Theme: lms_theme / SilverCare
+   THIRD-pass CSS overrides. Loads LAST.
+   Public workspace page rendered with the lms-admin layout
+   (lms-admin-orders.html.twig + lms-admin-sidebar.html.twig).
+   Route class is empty; the page is identified by the .lms-admin
+   shell, so rules are scoped to .lms-admin component classes.
+   ============================================================ */
+
+/* [P036] ISSUE 1-0784: Sidebar brand wordmark 'SilverCare' low contrast.
+   ROOT CAUSE (why prior text-color fixes failed): the brand is NOT rendered
+   as a <span>{{ site_name }}</span> — it is the uploaded SVG logo asset
+   (sites/default/files/logo LMS_0_5.svg) drawn via an <img>. Inside that SVG
+   the wordmark text is hard-coded fill="#0e2a47" (very dark navy) which is
+   nearly invisible on the #161b22 dark sidebar. CSS `color`/`fill` cannot
+   reach inside an <img>, and the prior `filter: brightness(1.6) saturate(1.4)`
+   was far too weak to lift navy (rgb 14,42,71) to a readable value.
+   FIX: apply a strong brightness multiplier so the dark-navy wordmark is
+   lifted to a bright, high-contrast tint (>=4.5:1) while the blue 'S' badge
+   stays light/visible. This overrides the weak prior img filter. */
+.lms-admin .lms-admin__sidebar-brand a img,
+.lms-admin__sidebar-brand a img {
+  filter: brightness(4) saturate(1.15) contrast(1.05) !important;
+}
+
+/* Keep the text-fallback branch (icon + site_name span) bright too, in case
+   the logo asset is ever removed and the {% else %} branch renders. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span,
+.lms-admin .lms-admin__sidebar-brand a i {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* [P036] ISSUE 1-0795: Mobile orders table garbled / overlapping cells.
+   ROOT CAUSE (why prior fix failed): the prior responsive attempt collapsed
+   the table cells (overlapping order IDs, learner names, dates and badges in a
+   stacked mess). The correct pattern for this 6-column data table on a narrow
+   viewport is NOT to stack — it is to keep a real <table> layout and let it
+   scroll horizontally inside its .lms-table-responsive wrapper.
+   FIX: hard-reset every table part back to native table display (undo any
+   block/flex/grid stacking from earlier passes), kill injected ::before data
+   labels, give the table a sensible min-width so columns keep their geometry,
+   and make the wrapper the single horizontal scroll container. The card must
+   NOT clip (overflow visible-x via the wrapper) so the scroll works. */
+@media (max-width: 768px) {
+
+  /* The card itself must allow the inner wrapper to manage horizontal scroll
+     rather than clipping the table content. */
+  .lms-admin .lms-card,
+  .lms-admin .lms-admin-card {
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* Single horizontal scroll container. */
+  .lms-admin .lms-table-responsive {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Restore genuine table layout — beats any prior block/flex/grid stacking. */
+  .lms-admin .lms-table {
+    display: table !important;
+    width: max-content !important;
+    min-width: 720px !important;        /* keep all 6 columns intact, scroll */
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    table-layout: auto !important;
+  }
+  .lms-admin .lms-table thead {
+    display: table-header-group !important;
+  }
+  .lms-admin .lms-table tbody {
+    display: table-row-group !important;
+  }
+  .lms-admin .lms-table tr {
+    display: table-row !important;
+  }
+  .lms-admin .lms-table th,
+  .lms-admin .lms-table td {
+    display: table-cell !important;
+    width: auto !important;
+    white-space: nowrap !important;     /* no wrapping clip; cells stay on one line */
+    text-align: left !important;
+    vertical-align: middle !important;
+    padding: 0.75rem 1rem !important;
+    position: static !important;        /* undo any absolute/relative stacking */
+    float: none !important;
+    overflow: visible !important;       /* order IDs no longer clipped */
+    text-overflow: clip !important;
+  }
+
+  /* Kill any ::before "data-label" pseudo-content a prior stacking attempt added. */
+  .lms-admin .lms-table td::before,
+  .lms-admin .lms-table th::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* First column (Order ID) — ensure the IDs are fully visible, never clipped. */
+  .lms-admin .lms-table td:first-child,
+  .lms-admin .lms-table th:first-child {
+    min-width: 64px !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+  }
+
+  /* Actions cell keeps its button on one line at the row's right edge. */
+  .lms-admin .lms-table td:last-child {
+    text-align: right !important;
+    white-space: nowrap !important;
+  }
+}

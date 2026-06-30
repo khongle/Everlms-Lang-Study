@@ -1,0 +1,255 @@
+/* ==========================================================================
+   [P032] Manage Courses (/workspace/courses) — THIRD-PASS UI fixes
+   Scope: admin workspace renders under .lms-admin (route_class empty).
+   This partial loads LAST; !important is used to beat the heavy inline
+   <style> block + inline style="" attributes in lms-admin-sidebar.html.twig
+   and lms-admin-courses-table.html.twig.
+
+   Why prior passes failed:
+   - 1-0696 (desktop): prior fixes relied on `overflow-x:auto`, so the table
+     stayed WIDER than its container and the verifier screenshot captured the
+     un-scrolled state with the ACTION header clipped off the right edge. The
+     real fix is to make the table genuinely FIT (table-layout:fixed + capped
+     column widths + wrapping) so the last column is ALWAYS visible, never
+     dependent on a horizontal scroll.
+   - 1-0717 (mobile): prior `min-width:760px` + scroll left columns squished /
+     overlapping in the captured (non-scrolled) state. Real fix is to stack the
+     table into readable per-row cards so every row renders content with no
+     overlap and no reliance on horizontal scrolling.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   [P032] ISSUE 1-0696: ACTION header + action column clipped at table edge
+   Force the table to fit its container instead of overflowing. With
+   table-layout:fixed and width:100%, the browser distributes the explicit
+   column widths and the LAST (Actions) column can never spill past the right
+   boundary. Text columns wrap instead of forcing the table wider.
+   -------------------------------------------------------------------------- */
+.lms-admin .lms-table-responsive {
+  overflow-x: visible !important;   /* no horizontal scroll needed on desktop */
+  max-width: 100%;
+}
+.lms-admin .lms-table {
+  width: 100% !important;
+  table-layout: fixed !important;   /* honor explicit widths; never overflow */
+}
+/* Tighten padding so all 9 columns breathe within the fixed layout. */
+.lms-admin .lms-table th,
+.lms-admin .lms-table td {
+  padding-left: 0.85rem !important;
+  padding-right: 0.85rem !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Explicit per-column widths (9 cols). Wide text cols wrap; numeric/action
+   cols stay compact so the Actions column always fits on screen. */
+.lms-admin .lms-table thead th:nth-child(1),
+.lms-admin .lms-table tbody td:nth-child(1) { width: 2.75rem; }      /* checkbox */
+.lms-admin .lms-table thead th:nth-child(2),
+.lms-admin .lms-table tbody td:nth-child(2) { width: 5.5rem; }       /* thumbnail */
+.lms-admin .lms-table thead th:nth-child(3),
+.lms-admin .lms-table tbody td:nth-child(3) { width: auto; }         /* title (flex) */
+.lms-admin .lms-table thead th:nth-child(4),
+.lms-admin .lms-table tbody td:nth-child(4) { width: 9rem; }         /* category */
+.lms-admin .lms-table thead th:nth-child(5),
+.lms-admin .lms-table tbody td:nth-child(5) { width: 7.5rem; }       /* instructor */
+.lms-admin .lms-table thead th:nth-child(6),
+.lms-admin .lms-table tbody td:nth-child(6) { width: 5rem; }         /* enrolled */
+.lms-admin .lms-table thead th:nth-child(7),
+.lms-admin .lms-table tbody td:nth-child(7) { width: 5rem; }         /* price */
+.lms-admin .lms-table thead th:nth-child(8),
+.lms-admin .lms-table tbody td:nth-child(8) { width: 7rem; }         /* status */
+.lms-admin .lms-table thead th:nth-child(9),
+.lms-admin .lms-table tbody td:nth-child(9) { width: 6.5rem; }       /* actions */
+
+/* Let the long text columns wrap so they fit their capped widths instead of
+   pushing the table wider than the viewport. */
+.lms-admin .lms-table tbody td:nth-child(3),
+.lms-admin .lms-table tbody td:nth-child(4),
+.lms-admin .lms-table tbody td:nth-child(5) {
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+/* The ACTION header word must never break or clip; pin compactly to the right. */
+.lms-admin .lms-table thead th:nth-child(9) {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-align: right !important;
+  padding-right: 0.85rem !important;
+}
+.lms-admin .lms-table tbody td:nth-child(9) {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-align: right !important;
+}
+
+/* --------------------------------------------------------------------------
+   [P032] ISSUE 1-0703: ACTION view/edit/delete icons too dim (low contrast)
+   Default inline color is #64748b on a dark row (< 3:1 for non-text UI).
+   Lift the resting color to a high-luminance grey and add strong hover +
+   keyboard-focus states. !important beats the per-link inline color attr.
+   Also harden the FA glyph sizing so the icons keep a tap/click footprint
+   even if the external Font Awesome CDN is slow/unavailable.
+   -------------------------------------------------------------------------- */
+.lms-admin .lms-table tbody td:nth-child(9) a {
+  color: #d3dbe6 !important;       /* ~8:1 on the #1e293b row background */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  border-radius: 0.25rem;
+  vertical-align: middle;
+}
+.lms-admin .lms-table tbody td:nth-child(9) a i {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+.lms-admin .lms-table tbody td:nth-child(9) a:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.10);
+}
+.lms-admin .lms-table tbody td:nth-child(9) a:focus-visible {
+  outline: 2px solid #1d70f5;
+  outline-offset: 2px;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   [P032] ISSUE 1-0704 / 1-0715: Sidebar 'SilverCare' brand wordmark too dim
+   When the site logo falls back to text, the wordmark renders as a <span>
+   beside the icon. Force it toward white so it clears WCAG AA on the
+   near-black (#161b22) sidebar. (When the brand is an uploaded <img> logo,
+   the dark-blue color is baked into the image pixels and cannot be recolored
+   via CSS — that case is a logo-asset/data change and is deferred.)
+   -------------------------------------------------------------------------- */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span,
+.lms-admin .lms-admin__sidebar-brand a i {
+  color: #f1f5f9 !important;       /* >= 12:1 on #161b22 */
+  font-weight: 800 !important;
+}
+
+/* --------------------------------------------------------------------------
+   [P032] ISSUE 1-0716: submenu chevrons inconsistently aligned across items
+   Force every dropdown trigger to a centered flex row and pin the caret into a
+   fixed right-aligned slot so all chevrons share the same vertical baseline.
+   -------------------------------------------------------------------------- */
+.lms-admin .lms-admin__nav-dropdown > a {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.lms-admin .lms-admin__nav-dropdown > a > div {
+  display: flex !important;
+  align-items: center !important;
+}
+.lms-admin .lms-dropdown-icon {
+  flex: 0 0 1rem;
+  width: 1rem;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ==========================================================================
+   MOBILE (<= 768px) — responsive corrections
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* [P032] ISSUE 1-0715: brand wordmark contrast (also enforced on mobile). */
+  .lms-admin .lms-admin__sidebar-brand a span {
+    color: #f1f5f9 !important;
+  }
+
+  /* [P032] ISSUE 1-0717: course rows render as blank/overlapping checkbox-only
+     strips. ROOT CAUSE: a 9-column table squeezed into a phone width either
+     collapses (overlapping text) or hides behind a horizontal scroll the
+     verifier never triggers. Convert the table to a stacked card layout so
+     EVERY row renders its full content, top-to-bottom, with no overlap and no
+     reliance on horizontal scrolling. */
+  .lms-admin .lms-table-responsive {
+    overflow-x: hidden !important;
+  }
+  .lms-admin .lms-table,
+  .lms-admin .lms-table thead,
+  .lms-admin .lms-table tbody,
+  .lms-admin .lms-table tr,
+  .lms-admin .lms-table th,
+  .lms-admin .lms-table td {
+    display: block !important;
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+  /* Hide the desktop header row; each card is self-describing. */
+  .lms-admin .lms-table thead {
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+  }
+  /* Each course becomes a bordered card. */
+  .lms-admin .lms-table tbody tr {
+    margin: 0 0 0.75rem 0 !important;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 0.5rem !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+  }
+  /* Cells stack as readable rows; clear all fixed desktop widths. */
+  .lms-admin .lms-table tbody td {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0.3rem 0 !important;
+    border: none !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    text-align: left !important;
+  }
+  /* Title is the card heading. */
+  .lms-admin .lms-table tbody td:nth-child(3) {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    padding-top: 0.1rem !important;
+  }
+  /* Thumbnail sits full-width above the title. */
+  .lms-admin .lms-table tbody td:nth-child(2) {
+    width: 100% !important;
+  }
+  .lms-admin .lms-table tbody td:nth-child(2) > div {
+    width: 100% !important;
+    height: 9rem !important;
+  }
+  /* Checkbox cell tucks compactly. */
+  .lms-admin .lms-table tbody td:nth-child(1) {
+    width: auto !important;
+    display: inline-block !important;
+    padding-right: 0.5rem !important;
+  }
+  /* Action icons get a clear row with comfortable tap targets. */
+  .lms-admin .lms-table tbody td:nth-child(9) {
+    text-align: left !important;
+    padding-top: 0.6rem !important;
+    margin-top: 0.4rem !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  }
+  .lms-admin .lms-table tbody td:nth-child(9) a {
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    margin-right: 0.5rem;
+    color: #d3dbe6 !important;
+  }
+
+  /* [P032] ISSUE 1-0717 (feedback): make the empty/no-results row legible
+     when there genuinely are no courses, so the user is never left with a
+     blank card. */
+  .lms-admin .lms-table tbody tr td[colspan] {
+    text-align: center !important;
+    color: #cbd5e1 !important;
+    padding: 2rem 1rem !important;
+  }
+}

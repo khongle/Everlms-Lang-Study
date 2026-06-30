@@ -1,0 +1,164 @@
+/* ==========================================================================
+   P022 — My Quiz Results (/my-quiz-results)   THIRD PASS
+   route_class: route--lms-quiz-my-results
+   Active skin: medical + minimalist (body.layout-medical.layout-minimalist)
+   This partial loads LAST. Page content scoped under
+   body.route--lms-quiz-my-results; the global FAB is fixed via its component
+   id/class. Several issues note PRIOR FIX FAILED — selectors below are built
+   to outrank light-mode (0,2,0) / medical (4-class+pseudo) base rules and the
+   template <style> block.
+   ========================================================================== */
+
+/* [P022] ISSUE 1-0520: tall empty band between the single result card and the
+   footer. ROOT CAUSE the prior fix (min-height:0 + section padding) missed:
+   `.lms-page` is `min-height:100vh; display:flex; flex-direction:column` and
+   `.lms-page__content` is `flex:1`, so the content area STRETCHES to fill the
+   viewport and the short, top-aligned content leaves a void above the footer.
+   Trimming section padding cannot remove a flex-grow void.
+   FIX: on this page stop the content wrapper from growing — size it to its
+   content so the footer rises directly beneath the results. The page still
+   fills the viewport via the content's own min-height fallback, but the gap is
+   now intentional padding, not a flex void. */
+body.route--lms-quiz-my-results .lms-page__content {
+  flex: 0 0 auto !important;
+}
+body.route--lms-quiz-my-results .lms-quiz-results-page {
+  min-height: 0 !important;
+  padding-bottom: clamp(2rem, 4vw, 3rem) !important;
+}
+body.route--lms-quiz-my-results .lms-quiz-results-board {
+  margin-bottom: 0 !important;
+}
+
+/* [P022] ISSUE 1-0522: the single result row sits in a large card with no
+   internal structure. PRIOR FIX FAILED because it only added `border-top` on
+   `.row + .row` (adjacent sibling) — with a single result there is no sibling,
+   so nothing rendered.
+   FIX: give EVERY row real list structure that is visible even with one row:
+   a delimiter rule under the title/meta block (so the meta line reads as part
+   of a grouped header) AND a separator between stacked rows. Consistent inner
+   padding throughout. */
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-board .lms-quiz-result-row,
+body.route--lms-quiz-my-results .lms-quiz-results-board .lms-quiz-result-row {
+  padding: 1.15rem 1.35rem !important;
+}
+/* Always-visible internal delimiter: a hairline under the title/meta content
+   column groups "title + Threshold/Completed" as one block within the card. */
+body.route--lms-quiz-my-results .lms-quiz-result-row__content {
+  position: relative;
+  padding-bottom: 0.85rem;
+}
+body.route--lms-quiz-my-results .lms-quiz-result-row__content::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: #e2e8f0;
+}
+body.route--lms-quiz-my-results .lms-quiz-result-row__meta {
+  margin-top: 0.2rem;
+}
+/* Separator between multiple stacked rows (keeps a list rhythm). */
+body.route--lms-quiz-my-results .lms-quiz-results-board .lms-quiz-result-row + .lms-quiz-result-row {
+  border-top: 1px solid #e2e8f0;
+}
+/* On desktop the content column shares the row baseline with the score/action
+   columns, so drop the divider there to avoid a stray line; keep it on the
+   stacked (mobile) layout where the meta truly needs grouping. */
+@media (min-width: 992px) {
+  body.route--lms-quiz-my-results .lms-quiz-result-row__content {
+    padding-bottom: 0;
+  }
+  body.route--lms-quiz-my-results .lms-quiz-result-row__content::after {
+    display: none;
+  }
+}
+
+/* [P022] ISSUE 1-0521: "Review Result" primary button drop shadow looked
+   heavier/clipped on the right/bottom-right edge. PRIOR FIX FAILED because it
+   set `overflow:visible` on the ROW only — the parent `.lms-quiz-results-board`
+   (padding:1rem, border, rounded) still clipped the right side of the glow, and
+   the button sat flush against that boundary.
+   FIX: make the whole card chain overflow-visible, give the action a centered
+   (0 offset-x) symmetric shadow, and inset it from the card's right edge so the
+   glow has room on all sides. */
+body.route--lms-quiz-my-results .lms-quiz-results-board,
+body.route--lms-quiz-my-results .lms-quiz-result-row,
+body.route--lms-quiz-my-results .lms-quiz-result-row__score,
+body.route--lms-quiz-my-results .lms-quiz-result-row__action {
+  overflow: visible !important;
+}
+body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-result-row__action,
+body.route--lms-quiz-my-results .lms-quiz-result-row__action {
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.28) !important;
+  margin-right: 0.35rem !important;
+  transform: none !important;
+}
+body.route--lms-quiz-my-results .lms-quiz-result-row__action:hover,
+body.route--lms-quiz-my-results .lms-quiz-result-row__action:focus-visible {
+  box-shadow: 0 9px 22px rgba(102, 126, 234, 0.38) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* [P022] ISSUE 1-0526 (mobile): stat cards and the Final Assessment card did
+   not share one gutter — the board's outer panel (border + bg + padding) was
+   inset/wider than the stat-card left edge. PRIOR FIX FAILED because it zeroed
+   only the board PADDING and background but left the board's 1px BORDER and
+   box-shadow drawing a wider panel around the row.
+   FIX: at mobile, fully dissolve the redundant outer panel — no border, no
+   background, no shadow, no padding — so the inner result row becomes the card
+   and its left/right edges line up exactly with the stat-card stack. The row
+   keeps its own white card styling. */
+@media (max-width: 767px) {
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-board,
+  body.route--lms-quiz-my-results.layout-medical .lms-quiz-results-board,
+  body.route--lms-quiz-my-results .lms-quiz-results-board {
+    padding: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-result-row,
+  body.route--lms-quiz-my-results .lms-quiz-result-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  body.route--lms-quiz-my-results.layout-minimalist .lms-quiz-results-page__summary {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* [P022] ISSUE 1-0527 (mobile): the floating back-to-top FAB overlapped the
+   top-right corner of the Final Assessment card. PRIOR FIX FAILED: the FAB is
+   `position:fixed` over a full-width card, so geometric collision with the
+   right edge is unavoidable in CSS — the only correct remedy is to make the FAB
+   unambiguously read as a floating OVERLAY (opaque surface, clear ring, strong
+   shadow, top stacking) rather than colliding flat with content, and to seat it
+   firmly in the corner margin. Beat the medical base rule's `right/bottom
+   clamp() !important` with an equally-specific selector. */
+@media (max-width: 767px) {
+  body.layout-medical.route--lms-quiz-my-results:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical.route--lms-quiz-my-results:not(.is-workspace) .lms-back-to-top,
+  body.route--lms-quiz-my-results #lms-back-to-top,
+  body.route--lms-quiz-my-results .lms-back-to-top {
+    right: 12px !important;
+    bottom: 84px !important;
+    z-index: 1400 !important;
+    width: 44px !important;
+    height: 44px !important;
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 119, 182, 0.28) !important;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9),
+                0 10px 26px rgba(15, 23, 42, 0.34) !important;
+  }
+  /* Reserve clear whitespace below the content so the lifted FAB rests over the
+     page margin, not over the card. */
+  body.route--lms-quiz-my-results .lms-page__content {
+    padding-bottom: 6rem !important;
+  }
+}

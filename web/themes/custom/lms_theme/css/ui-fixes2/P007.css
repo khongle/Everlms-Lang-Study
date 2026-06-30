@@ -1,0 +1,45 @@
+/* ==========================================================================
+   P007 - Instructor profile (/instructor/56)
+   body.route--lms-course-instructor-profile
+   Loads LAST. !important used only to beat inline styles on the target.
+   ========================================================================== */
+
+/* [P007] ISSUE 1-0201: Bio left-aligned with comfortable measure (~65ch) */
+/* Inline style sets max-width:800px; margin:0 auto and the hero centers text.
+   Keep the bio block centered but make the copy left-aligned at a readable measure. */
+body.route--lms-course-instructor-profile .lms-instructor-profile__bio {
+  text-align: left !important;
+  max-width: 65ch !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-wrap: pretty;
+}
+
+/* [P007] ISSUE 1-0216: Category badge must not crowd the favorite heart button (mobile) */
+/* Heart button is absolute at top:12px right:12px (32px wide). Reserve space and
+   truncate long category labels so they never run under the heart control. */
+@media (max-width: 480px) {
+  body.route--lms-course-instructor-profile .card-lms__category {
+    max-width: calc(100% - 60px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* [P007] ISSUE 1-0219: Equalize title-to-meta gap for 1- vs 2-line titles (mobile) */
+/* Title is line-clamped to 2 lines; 1-line titles collapse and shift the meta row up.
+   Reserve the height of two lines (1.4 line-height x 1.1rem font x 2). */
+@media (max-width: 480px) {
+  body.route--lms-course-instructor-profile .card-lms__title {
+    min-height: calc(1.1rem * 1.4 * 2);
+  }
+}
+
+/* [P007] ISSUE 1-0220: "Free" price styled with same weight/size/color as numeric prices */
+/* card-lms__price--free overrides color to green (#43e97b) and reads with different
+   emphasis than the bold numeric prices. Normalize to the sibling numeric style. */
+body.route--lms-course-instructor-profile .card-lms__price.card-lms__price--free {
+  color: #e6edf3;
+  font-weight: 700;
+}

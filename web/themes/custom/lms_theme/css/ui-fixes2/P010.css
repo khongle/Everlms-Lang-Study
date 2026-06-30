@@ -1,0 +1,45 @@
+/* ==========================================================================
+   P010 — About page (route--lms-course-about) UI fixes
+   Loads LAST. Component-level fixes use the component class (no page scope);
+   page-specific content is scoped under body.route--lms-course-about.
+   ========================================================================== */
+
+/* [P010] ISSUE 1-0276: single mobile nav pattern — collapse inline actions into hamburger */
+/* On mobile the .lms-navbar__nav is already hidden and the hamburger shown, but the
+   inline Login/Register actions stayed visible (display:flex) competing for space and
+   overflowing. Hide the inline actions at the same breakpoint so the hamburger is the
+   single, authoritative collapsed-nav control. Global header component → no page scope. */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    display: none;
+  }
+}
+
+/* [P010] ISSUE 1-0277: hero H1 word-boundary wrapping (no mid-token / orphan breaks) */
+/* Prevent the large hero heading from splitting hyphenated/long tokens across lines and
+   balance the wrap so it never leaves a single-word orphan line on small screens. */
+body.route--lms-course-about .lms-about-hero__copy h1 {
+  text-wrap: balance;
+  -webkit-hyphens: manual;
+  hyphens: manual;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+@media (max-width: 480px) {
+  body.route--lms-course-about .lms-about-hero__copy h1 {
+    /* tighter size on phones so words keep clean boundaries instead of breaking */
+    font-size: clamp(1.9rem, 8vw, 2.4rem);
+    line-height: 1.15;
+  }
+}
+
+/* [P010] ISSUE 1-0282: stat-card labels off-palette (purple) → align to medical navy/teal */
+/* The stat labels read as a saturated purple, off the medical skin's navy/teal palette.
+   Pin them to the medical "soft text" navy token used elsewhere on the skin so they sit
+   in-palette and meet AA contrast on the light stat cards. Page-scoped content fix. */
+body.route--lms-course-about .lms-about-stat-card__label {
+  color: #476273; /* --medical-text-soft (navy), WCAG AA on white card */
+}
+body.route--lms-course-about .lms-about-stat-card__value {
+  color: #0f2c3d; /* --medical-heading (deep navy) for sibling consistency */
+}

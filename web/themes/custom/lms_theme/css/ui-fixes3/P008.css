@@ -1,0 +1,16 @@
+/* [P008] Blog/News (route--lms-blog-frontend-collection) — third-pass UI fixes */
+
+/*
+ * [P008] ISSUE 1-0226: Footer 'COURSE' heading singular + lists News items.
+ * [P008] ISSUE 1-0227: Footer 'SUPPORTS' heading + inner 'Supports' link mislabeled.
+ *
+ * DEFERRED — NOT FIXABLE IN CSS.
+ * Both defects are pure text-CONTENT corrections of footer menu labels:
+ *   "Course"   -> "Courses"
+ *   "Supports" -> "Support"  (heading AND inner link)
+ * Markup confirmed: <h4>Course</h4> / <h4>Supports</h4> in the footer.
+ * CSS cannot rewrite element text content; the correct strings must be set in
+ * the footer menu / block configuration (Drupal menu link titles), not styling.
+ * No real corrective CSS (contrast/spacing/layout/etc.) applies here, so this
+ * partial intentionally contains no overrides for these issues.
+ */

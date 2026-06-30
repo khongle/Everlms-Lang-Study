@@ -1,0 +1,127 @@
+/* ==========================================================================
+   P016a — Login page (/user/login) UI fixes
+   Skin: medical | Brand: SilverCare | brand color #0077b6
+   Scope: body.route--user-login for page-specific content;
+          component classes for shared (navbar) components.
+   This partial loads LAST.
+   ========================================================================== */
+
+/* [P016a] ISSUE 1-0388: Mobile header links overflow / inconsistent layout.
+   Keep the navbar actions on a single baseline, aligned, and inside the
+   viewport at mobile width; give the "Register" text-link and the
+   "Back to Home" button consistent vertical alignment and sizing. */
+@media (max-width: 480px) {
+  body.route--user-login .lms-navbar__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+  }
+  body.route--user-login .lms-navbar__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  body.route--user-login .lms-navbar__actions .lms-navbar__link {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.2;
+  }
+  body.route--user-login .lms-navbar__actions .lms-btn--sm {
+    white-space: nowrap;
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+  }
+}
+
+/* [P016a] ISSUE 1-0390: Large empty gap above the login card on tall mobile
+   viewports — vertically center the card within available height and trim
+   the top margin so the composition is balanced. */
+@media (max-width: 480px) {
+  body.route--user-login .lms-auth__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    min-height: calc(100vh - 120px);
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+  body.route--user-login .lms-auth__card {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* [P016a] ISSUE 1-0391: Social provider buttons — vertically center the icon
+   with the label and match the comfortable vertical padding of the inputs
+   so the buttons no longer feel cramped. */
+body.route--user-login .lms-auth__social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  line-height: 1.4;
+}
+body.route--user-login .lms-auth__social-btn i {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  font-size: 1.05rem;
+}
+
+/* [P016a] ISSUE 1-0393: "or" divider not symmetric / not vertically centered.
+   Replace the absolute-positioned overlay with a robust flex divider: two
+   equal-length rules either side of a vertically-centered "or" label. */
+body.route--user-login .lms-auth__form-wrapper > .position-relative,
+body.route--user-login .text-center.my-3.position-relative {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+body.route--user-login .lms-auth__divider-line {
+  position: static;
+  flex: 1 1 0;
+  width: auto;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--medical-border, #d7e7f2);
+  opacity: 1;
+}
+body.route--user-login .lms-auth__divider-label {
+  position: static;
+  top: auto;
+  left: auto;
+  transform: none;
+  flex: 0 0 auto;
+  padding: 0 0.25rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* [P016a] ISSUE 1-0394: Footer links read as plain bold text — make
+   "Sign up here" and "Forgot your password?" recognizable links with the
+   medical brand color and underline-on-hover, with consistent emphasis. */
+body.route--user-login .lms-auth__footer p {
+  font-weight: 400;
+}
+body.route--user-login .lms-auth__footer a {
+  color: var(--medical-violet, #0077b6) !important;
+  font-weight: 600;
+  text-decoration: none;
+}
+body.route--user-login .lms-auth__footer a:hover,
+body.route--user-login .lms-auth__footer a:focus-visible {
+  color: var(--medical-violet, #0077b6) !important;
+  text-decoration: underline;
+}

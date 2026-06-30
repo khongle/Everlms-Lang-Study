@@ -1,0 +1,146 @@
+/* ==========================================================================
+   P030 — checkout-membership (My Memberships)
+   Route body class: body.route--lms-membership-my-membership
+   Loaded LAST. Fixes real UI defects found in round-1 screens.
+   ========================================================================== */
+
+/* [P030] ISSUE 1-0646, 1-0655, 1-0654: Card plan title is dark slate on the
+   near-black card bg (fails WCAG AA). Root cause: body.layout-medical h3 sets a
+   dark --medical-heading color that overrides the card's intended white title.
+   Force a near-white, high-contrast title on the dark card across all viewports. */
+body.route--lms-membership-my-membership .lms-membership-card .lms-membership-card__header h3,
+body.route--lms-membership-my-membership .lms-membership-card__title h3 {
+  color: #f8fafc !important;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/* [P030] ISSUE 1-0648, 1-0664: "Cancel Auto-Renewal" destructive button renders
+   with medium-blue link text on a dark maroon fill (low contrast). Root cause:
+   body.layout-medical a color overrides the button's intended red label.
+   Use legible light-red text + icon on a clearer red-tinted destructive fill. */
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger,
+body.route--lms-membership-my-membership a.lms-btn--danger {
+  color: #fecaca !important;
+  background: rgba(244, 63, 94, 0.16) !important;
+  border: 1px solid rgba(244, 63, 94, 0.5) !important;
+}
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger i,
+body.route--lms-membership-my-membership a.lms-btn--danger i {
+  color: #fecaca !important;
+}
+body.route--lms-membership-my-membership .lms-membership-card__actions .lms-btn--danger:hover,
+body.route--lms-membership-my-membership a.lms-btn--danger:hover {
+  color: #ffffff !important;
+  background: rgba(244, 63, 94, 0.3) !important;
+  border-color: rgba(244, 63, 94, 0.7) !important;
+}
+body.route--lms-membership-my-membership a.lms-btn--danger:focus-visible {
+  outline: 2px solid #fda4af;
+  outline-offset: 2px;
+}
+
+/* [P030] ISSUE 1-0651: Divider between the Auto Renew row and the Cancel button
+   looks inset/short. Ensure the actions top-border (the divider) spans the full
+   inner content width by neutralising any stray left inset/margin. */
+body.route--lms-membership-my-membership .lms-membership-card__actions {
+  margin-left: 0;
+  margin-right: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+body.route--lms-membership-my-membership .lms-membership-card__header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* [P030] ISSUE 1-0662: On the longer "Enterprise / Facility Plan" title the
+   header row should keep the badge vertically centred while the title wraps. */
+body.route--lms-membership-my-membership .lms-membership-card__header {
+  align-items: center;
+  gap: 0.75rem;
+}
+body.route--lms-membership-my-membership .lms-membership-card__title {
+  align-items: center;
+}
+/* [P030] ISSUE 1-0661: Guarantee clear horizontal gap between the BA/EN avatar
+   badge and the plan title so the title never reads as overlapping the badge. */
+body.route--lms-membership-my-membership .lms-membership-card__title {
+  gap: 0.75rem;
+}
+body.route--lms-membership-my-membership .lms-membership-icon {
+  flex: 0 0 40px;
+}
+
+/* [P030] ISSUE 1-0652: Drupal status message renders as bare body text with no
+   alert chrome. Style the highlighted/messages region as a success alert. */
+body.route--lms-membership-my-membership .lms-messages-wrapper .messages,
+body.route--lms-membership-my-membership .lms-messages-wrapper .messages--status,
+body.route--lms-membership-my-membership .lms-messages-wrapper [role="contentinfo"],
+body.route--lms-membership-my-membership .lms-messages-wrapper [aria-label="Status message"] {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  max-width: 1100px;
+  margin: 1.5rem auto 0;
+  padding: 0.875rem 1.125rem;
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  border-left: 4px solid #059669;
+  border-radius: 0.5rem;
+  color: #065f46;
+  font-weight: 500;
+}
+body.route--lms-membership-my-membership .lms-messages-wrapper .messages--status::before {
+  content: "\f058"; /* fa-check-circle */
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", FontAwesome;
+  font-weight: 900;
+  color: #059669;
+  flex: 0 0 auto;
+  line-height: 1.4;
+}
+
+/* [P030] ISSUE 1-0653: Logged-in user name ("Maria Santos") wraps to two lines
+   in the header. Keep it on one line and give the account control room. */
+.lms-navbar__actions .lms-user-profile-link {
+  flex: 0 0 auto;
+}
+.lms-navbar__actions .lms-user-profile-link span {
+  white-space: nowrap;
+  max-width: 14ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* [P030] ISSUE 1-0660: On mobile the bell count badge crowds the adjacent
+   wishlist heart. Add breathing room around the bell+badge cluster. */
+@media (max-width: 480px) {
+  .lms-navbar__actions .lms-bell-icon-wrapper {
+    margin-right: 0.5rem;
+  }
+  .lms-bell-icon-wrapper .lms-bell-counter {
+    transform: translate(2px, -2px);
+  }
+}
+
+/* [P030] ISSUE 1-0663: On mobile the back-to-top FAB overlaps the second card's
+   Auto Renew row / Cancel button. Add page bottom padding so floating cards are
+   never covered, and nudge/shrink the FAB into the corner gutter. */
+@media (max-width: 480px) {
+  body.route--lms-membership-my-membership .lms-my-membership {
+    padding-bottom: 5.5rem;
+  }
+  body.route--lms-membership-my-membership .lms-page__content {
+    padding-bottom: 4.5rem;
+  }
+  .lms-back-to-top {
+    width: 42px !important;
+    height: 42px !important;
+    right: 12px !important;
+    bottom: 16px !important;
+  }
+}
+
+/* [P030] ISSUE 1-0666: Footer copyright wraps with an orphaned "Rights
+   Reserved." line. Balance the wrap so the trailing words don't strand. */
+.lms-footer__bottom p {
+  text-wrap: balance;
+}

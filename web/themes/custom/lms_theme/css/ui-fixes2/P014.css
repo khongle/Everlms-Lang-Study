@@ -1,0 +1,98 @@
+/* ==========================================================================
+   P014 — Forum topic (route--entity-lms-forum-topic-canonical)
+   UI fixes round 2. Loads LAST. !important used only to beat inline styles
+   or prior-round partials that did not visually take effect.
+   ========================================================================== */
+
+/* [P014] ISSUE 1-0350: Secondary text (post date '09:49' inside .lms-text-muted
+   meta, and the 'You must hop in...' helper line) renders too light on the
+   near-white card, risking WCAG AA failure. Darken to slate-600 (#475569),
+   which gives >7:1 on white/#f6fcff. Helper paragraph carries an INLINE
+   color (#8b949e) so it needs !important to beat it. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-comment__meta .lms-text-muted,
+body.route--entity-lms-forum-topic-canonical .lms-text-muted {
+  color: #475569 !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta p {
+  color: #475569 !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta p strong {
+  color: #1f2937 !important; /* '5 replies' emphasis darker than body */
+}
+
+/* [P014] ISSUE 1-0351: 'Like' and 'Share' pills read as disabled — faint
+   border + gray text, plus an INLINE opacity:0.5;cursor:not-allowed. Restore
+   full opacity, strengthen border + text contrast and add a clear hover/focus
+   state so they read as interactive. Beats inline styles with !important. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge {
+  opacity: 1 !important;
+  cursor: pointer !important;
+  color: #1f6feb !important;                 /* clear interactive blue text */
+  border: 1px solid rgba(31, 111, 235, 0.45) !important;
+  background: rgba(31, 111, 235, 0.04) !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge i {
+  color: #1f6feb !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge:hover {
+  background: rgba(31, 111, 235, 0.12) !important;
+  border-color: #1f6feb !important;
+  color: #0d4fc4 !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge:focus-visible {
+  outline: 2px solid #1f6feb !important;
+  outline-offset: 2px !important;
+}
+
+/* [P014] ISSUE 1-0352: Tall empty band between the 'Join the Discussion' card
+   and the footer on desktop. Pull the footer closer by trimming the bottom
+   spacing of the section/content wrapper on this gated anonymous view. */
+body.route--entity-lms-forum-topic-canonical .lms-page__content {
+  padding-bottom: 1.5rem;
+}
+body.route--entity-lms-forum-topic-canonical .lms-section {
+  padding-bottom: 1.5rem;
+}
+
+/* [P014] ISSUE 1-0353: Floating back-to-top FAB still collides with the footer
+   corner on desktop. Increase the fixed offset beyond the prior round so it
+   keeps clear, consistent clearance from the viewport edge. Global component
+   override (no page scope needed). */
+@media (min-width: 769px) {
+  #lms-back-to-top.lms-back-to-top,
+  #lms-back-to-top {
+    right: 40px !important;
+    bottom: 40px !important;
+  }
+}
+
+/* [P014] ISSUE 1-0356: At mobile, both the hamburger toggle AND inline
+   Login/Register links show, duplicating nav and overflowing the header.
+   The toggle appears at max-width:992px, so hide the inline auth actions at
+   the same breakpoint; they belong in the drawer. Global header component. */
+@media (max-width: 992px) {
+  .lms-navbar .lms-navbar__actions {
+    display: none !important;
+  }
+}
+
+/* [P014] ISSUE 1-0358: On mobile the FAB sits on top of the post card's right
+   edge. Lift its offset and give the page content right-edge breathing room so
+   it floats over background, not over the card. */
+@media (max-width: 480px) {
+  #lms-back-to-top.lms-back-to-top,
+  #lms-back-to-top {
+    right: 14px !important;
+    bottom: 80px !important;
+  }
+}
+
+/* [P014] ISSUE 1-0360: Large empty vertical band between the CTA card and the
+   footer divider on mobile. Tighten the bottom spacing of the content
+   container so the footer follows the card with a modest, controlled gap. */
+@media (max-width: 480px) {
+  body.route--entity-lms-forum-topic-canonical .lms-page__content,
+  body.route--entity-lms-forum-topic-canonical .lms-section {
+    padding-bottom: 1rem;
+  }
+}

@@ -1,0 +1,78 @@
+/* ============================================================
+   P013 — Forum index (route--lms-forum-index) UI fixes
+   Loads LAST. Page-scoped under body.route--lms-forum-index.
+   ============================================================ */
+
+/* [P013] ISSUE 1-0327: Thread meta (author + date) below WCAG AA on white card.
+   Card bg is #fff (light-mode/medical skin). Default meta color is #6e7681
+   (~4.4:1, borderline/fail) and the prior #5b6770 attempt was reported as
+   "still light grey". Darken decisively to #475569 (slate-600), ~7.0:1 on #fff,
+   and target the spans + icons directly with higher specificity so it wins the
+   cascade (light-mode sets .lms-forum-item__meta to #64748b). */
+body.route--lms-forum-index .lms-forum-item .lms-forum-item__meta,
+body.route--lms-forum-index .lms-forum-item .lms-forum-item__meta span,
+body.route--lms-forum-index .lms-forum-item .lms-forum-item__meta i,
+body.route--lms-forum-index .lms-forum-item .lms-forum-item__meta a {
+  color: #475569;
+}
+
+/* [P013] ISSUE 1-0338: Stat block (REPLIES/VIEWS) is vertically centered against
+   the content because the card row uses align-items:center. On multi-line title
+   cards the stats float to mid-card while short cards keep them near the top,
+   producing an uneven scan column. Top-align the row and the stat cluster so
+   every card anchors REPLIES/VIEWS at a consistent height beside the title. */
+body.route--lms-forum-index .lms-forum-item {
+  align-items: flex-start;
+}
+body.route--lms-forum-index .lms-forum-item__stats {
+  align-items: flex-start;
+  padding-top: 0.15rem;
+}
+
+/* [P013] ISSUE 1-0341: On mobile the horizontal card layout keeps a ~120px stat
+   column beside the text, squeezing the title/body into ~3-word lines that end
+   in single-word orphans. Allow the content column to actually shrink, then at
+   narrow widths stack the stats BELOW the content so the text gets the full
+   measure, and tighten the multi-line title line-height. */
+body.route--lms-forum-index .lms-forum-item__content {
+  min-width: 0; /* let flex child shrink so text wraps to full width */
+}
+body.route--lms-forum-index .lms-forum-item__content h3 {
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+body.route--lms-forum-index .lms-forum-item__content p {
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 480px) {
+  body.route--lms-forum-index .lms-forum-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  body.route--lms-forum-index .lms-forum-item__stats {
+    min-width: 0;
+    justify-content: flex-start;
+    gap: 2rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  body.route--lms-forum-index .lms-forum-item__content h3 {
+    line-height: 1.3;
+  }
+}
+
+/* [P013] ISSUE 1-0342: The two header auth actions read inconsistently — Login
+   renders as dark bold text while Register is the blue primary button. Register
+   already IS a proper .lms-btn--primary button (correct differentiation); make
+   Login a clearly legible, regular-weight text link that visually peers with the
+   button rather than competing as bold dark text. Component-scoped (global). */
+.lms-navbar__actions a.lms-navbar__link {
+  font-weight: 500;
+  color: #475569;
+}
+.lms-navbar__actions a.lms-navbar__link:hover,
+.lms-navbar__actions a.lms-navbar__link:focus-visible {
+  color: #1f6feb;
+}

@@ -1,0 +1,73 @@
+/* P020 quiz-take UI fixes. Loads last. Scoped to body.route--lms-quiz-take for page content. */
+
+/* [P020] ISSUE 1-0479: keep countdown timer visible at all scroll positions (floating chip) */
+/* The timer lives in .lms-quiz__meta inside the intro card which scrolls away on a long page.
+   Float the whole meta bar as a fixed chip in the top-right so time remaining stays in view. */
+body.route--lms-quiz-take .lms-quiz__meta {
+  position: fixed;
+  top: 84px;            /* clear the sticky SilverCare header */
+  right: 24px;
+  left: auto;
+  z-index: 1050;        /* above question cards */
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: calc(100vw - 48px);
+  background: #161b22;  /* solid so it reads over scrolling content */
+  border: 1px solid rgba(88, 166, 255, 0.45);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  margin: 0;
+}
+/* keep the header card from collapsing now that the meta is removed from its flow */
+body.route--lms-quiz-take .lms-quiz__header-card {
+  min-height: 1px;
+}
+
+/* [P020] ISSUE 1-0479 + 1-0488: mobile — dock the floating timer chip full-width and contain it */
+@media (max-width: 480px) {
+  body.route--lms-quiz-take .lms-quiz__meta {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    border-radius: 0;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  /* keep page content clear of the docked chip */
+  body.route--lms-quiz-take .lms-quiz__submit-wrap {
+    padding-bottom: 7rem;
+  }
+}
+
+/* [P020] ISSUE 1-0489: matching question selects clipped on mobile — stack label over full-width select */
+@media (max-width: 480px) {
+  body.route--lms-quiz-take .lms-quiz__match-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  body.route--lms-quiz-take .lms-quiz__match-left {
+    flex: none;
+    width: 100%;
+  }
+  body.route--lms-quiz-take .lms-quiz__match-select {
+    flex: none;
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 2.25rem;          /* breathing room for the native arrow */
+    text-overflow: ellipsis;
+  }
+}
+
+/* [P020] ISSUE 1-0492: radio/checkbox aligned to first line of multi-line labels */
+body.route--lms-quiz-take .lms-quiz__choice-box {
+  align-items: flex-start;
+}
+body.route--lms-quiz-take .lms-quiz__choice-box input {
+  margin-top: 0.2rem;   /* nudge control to sit on the first text line */
+  flex: 0 0 auto;
+}
+body.route--lms-quiz-take .lms-quiz__choice-box span {
+  line-height: 1.4;
+}

@@ -1,0 +1,143 @@
+/* =========================================================================
+   P001 — Homepage (medical style)  THIRD-PASS UI FIXES
+   Loaded LAST. Scoped to body.layout-medical / body.route--lms-course-homepage.
+   ========================================================================= */
+
+/* [P001] ISSUE 1-0045 + 1-0076: Hero subtitle "Your..." clipped to "ur" and
+   mobile subtitle overlapped by carousel prev/next arrows.
+   ROOT CAUSE: .medical-carousel__control--prev sits at left:clamp(12px,2vw,28px)
+   (a 48px circle) directly on top of the hero text column, and the text column's
+   left padding (clamp 34-64px) is narrower than the arrow's reach (~28+48=76px),
+   so the leading word is painted behind the arrow. The content also has
+   overflow:hidden, hiding any text pushed under the control.
+   FIX: give the hero text column enough left padding to fully clear the prev
+   arrow, and pull the prev arrow back to the extreme left edge so it no longer
+   sits over the copy. */
+body.layout-medical .medical-carousel__item > .medical-shell.medical-hero__content {
+  padding-left: clamp(92px, 8vw, 120px) !important;
+  overflow: visible !important;
+}
+body.layout-medical .medical-carousel__control--prev {
+  left: 6px !important;
+}
+body.layout-medical .medical-carousel__control--next {
+  right: 6px !important;
+}
+/* Keep the decorative panel aligned with the new text padding so the copy
+   still reads inside the frosted card. */
+body.layout-medical .medical-hero__content::before {
+  inset: 20px 14px 20px 0 !important;
+}
+
+@media (max-width: 991px) {
+  /* Mobile: stack the prev/next arrows below the hero copy band and add
+     breathing room under the subtitle so "Development" is no longer clipped
+     by the right-hand '>' control. */
+  body.layout-medical .medical-carousel__item > .medical-shell.medical-hero__content {
+    padding-left: 22px !important;
+    padding-right: 22px !important;
+    padding-bottom: 64px !important;
+    overflow: visible !important;
+  }
+  body.layout-medical .medical-hero__subtitle {
+    margin-bottom: 30px !important;
+  }
+  body.layout-medical .medical-carousel__control {
+    top: auto !important;
+    bottom: 14px !important;
+    transform: none !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+  body.layout-medical .medical-carousel__control--prev {
+    left: 14px !important;
+  }
+  body.layout-medical .medical-carousel__control--next {
+    right: 14px !important;
+  }
+}
+
+/* [P001] ISSUE 1-0020: "Explore Categories" row-2 cards (no media) render with
+   a 68px fallback icon while row-1 cards use a 136px image block, leaving the
+   two rows visually inconsistent and much shorter.
+   FIX: force every category card to the same height and give the fallback-icon
+   cards an equally sized media block so all four columns line up regardless of
+   whether the category has an image. */
+body.layout-medical .medical-category-grid {
+  align-items: stretch !important;
+}
+body.layout-medical .medical-category-card {
+  height: 100% !important;
+  justify-content: flex-start !important;
+}
+/* Promote the plain (fallback-icon) card's media block to the same footprint
+   as the image cards so structure + height match. */
+body.layout-medical .medical-category-card:not(.medical-category-card--image) .medical-category-card__icon {
+  width: 136px !important;
+  height: 136px !important;
+  border-radius: 36px !important;
+  margin-bottom: 18px !important;
+  background: linear-gradient(135deg, rgba(0, 119, 182, 0.10), rgba(72, 202, 228, 0.12)) !important;
+  box-shadow: 0 20px 36px rgba(0, 119, 182, 0.12) !important;
+}
+body.layout-medical .medical-category-card:not(.medical-category-card--image) .medical-category-card__icon i {
+  font-size: 3rem !important;
+  color: var(--medical-violet) !important;
+}
+
+/* [P001] ISSUE 1-0052 + 1-0043: Header "Dashboard" (caret) link and "Workspace"
+   link render in a light/medium blue (#0077b6 ~ 4.6:1, marginal) on the white
+   medical navbar.  PRIOR FIX could not be verified on anon screenshots; this
+   pass forces every header action link to the dark heading colour (#0f2c3d,
+   ~13:1 on white) so it comfortably clears WCAG AA 4.5:1 in its resting state. */
+body.layout-medical:not(.is-workspace) .lms-navbar__actions a,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions a span,
+body.layout-medical:not(.is-workspace) .lms-user-profile-link,
+body.layout-medical:not(.is-workspace) .lms-user-profile-link span,
+body.layout-medical:not(.is-workspace) .lms-navbar__link {
+  color: #0f2c3d !important;
+}
+/* Caret next to the user name / dashboard link — give it enough contrast too. */
+body.layout-medical:not(.is-workspace) .lms-user-profile-link i.fa-chevron-down {
+  color: #476273 !important;
+}
+
+/* [P001] ISSUE 1-0050 + 1-0051: Header utility cluster (heart, bell,
+   avatar + "Maria Santos", Dashboard caret) is uneven because the user name
+   wraps onto two lines, raising the local header height and knocking the
+   icons off a shared baseline.
+   FIX: vertically centre the whole actions cluster, keep the name on one line
+   with an ellipsis fallback, and lock the profile link items to a single
+   centred row. */
+body.layout-medical:not(.is-workspace) .lms-navbar__actions,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions > div {
+  display: flex !important;
+  align-items: center !important;
+}
+body.layout-medical:not(.is-workspace) .lms-user-profile-link {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+}
+body.layout-medical:not(.is-workspace) .lms-user-profile-link span {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 14ch !important;
+  line-height: 1.2 !important;
+}
+
+/* [P001] ISSUE 1-0054: "Continue Learning" 0%-complete card shows an almost
+   invisible progress line, making it ambiguous whether a track exists.
+   FIX: give the progress track a clearly visible, higher-contrast background
+   and a touch more height so the empty (0%) state still reads as a real
+   component alongside the filled 61% / 24% cards. */
+body.layout-medical .medical-progress {
+  height: 6px !important;
+  background: #d4e6f0 !important;
+  box-shadow: inset 0 0 0 1px rgba(15, 44, 61, 0.06) !important;
+}
+body.layout-medical .medical-progress__fill {
+  min-width: 0;
+  border-radius: 8px;
+}

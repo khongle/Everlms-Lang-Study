@@ -1,0 +1,142 @@
+/* =========================================================================
+   P051 — Switch User admin page (/admin/switch-user)
+   Form id: #open-switcher-switch-user-form  (Drupal #type => table form)
+   Scope page-specific rules to that form; global components (button, pager)
+   styled by their component classes within this form context to avoid
+   leaking into the rest of the admin UI.
+   ========================================================================= */
+
+/* [P051] ISSUE 1-1017: 'Filter' submit button reads as disabled — give it
+   clear actionable fill + AA-contrast text. */
+#open-switcher-switch-user-form .form-actions .button,
+#open-switcher-switch-user-form .form-actions input[type="submit"],
+#open-switcher-switch-user-form .form-actions .form-submit {
+  background-color: #1d4ed8;
+  background-image: none;
+  border: 1px solid #1d4ed8;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  box-shadow: none;
+}
+#open-switcher-switch-user-form .form-actions .button:hover,
+#open-switcher-switch-user-form .form-actions input[type="submit"]:hover,
+#open-switcher-switch-user-form .form-actions .form-submit:hover {
+  background-color: #1e40af;
+  border-color: #1e40af;
+  color: #ffffff;
+}
+#open-switcher-switch-user-form .form-actions .button:focus-visible,
+#open-switcher-switch-user-form .form-actions input[type="submit"]:focus-visible,
+#open-switcher-switch-user-form .form-actions .form-submit:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
+}
+
+/* [P051] ISSUE 1-1018, 1-1028: Pager links look like plain text — give all
+   pager items a consistent link/button treatment with hover + focus, keep
+   the current page distinct. */
+#open-switcher-switch-user-form .pager__items,
+.pager .pager__items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  justify-content: center;
+  padding: 0;
+  margin: 1.25rem 0 0;
+  list-style: none;
+}
+#open-switcher-switch-user-form .pager__item a,
+.pager .pager__item a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.6rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #1d4ed8;
+  text-decoration: none;
+  background: #ffffff;
+  line-height: 1;
+}
+#open-switcher-switch-user-form .pager__item a:hover,
+.pager .pager__item a:hover {
+  background: #eff6ff;
+  border-color: #1d4ed8;
+  text-decoration: underline;
+}
+#open-switcher-switch-user-form .pager__item a:focus-visible,
+.pager .pager__item a:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
+}
+#open-switcher-switch-user-form .pager__item.is-active a,
+#open-switcher-switch-user-form .pager__item--current,
+.pager .pager__item.is-active a,
+.pager .pager__item--current {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.6rem;
+  border: 1px solid #1d4ed8;
+  border-radius: 6px;
+  background: #1d4ed8;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* [P051] ISSUE 1-1013, 1-1026: Status cell — keep the icon + label on a
+   single baseline-aligned line (instead of stacked / emoji floating off
+   baseline) with even spacing. (Replacing the emoji glyph with a real
+   badge needs markup — see deferred.) */
+#open-switcher-switch-user-form table td:nth-child(5) {
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: 1.4;
+  letter-spacing: 0.2px;
+}
+
+/* [P051] ISSUE 1-1024, 1-1025: Mobile table overflow + uneven row heights
+   from wrapping long emails. Allow horizontal scroll with a visible
+   affordance and truncate long emails consistently with ellipsis so rows
+   keep an even rhythm. */
+#open-switcher-switch-user-form .form-item--users,
+#open-switcher-switch-user-form > .table-responsive,
+#open-switcher-switch-user-form table {
+  max-width: 100%;
+}
+@media (max-width: 768px) {
+  /* Wrap the data table in a scroll container if the theme does not. */
+  #open-switcher-switch-user-form table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Email column (4th: UID, Username, Email, Roles, Status, Action). */
+  #open-switcher-switch-user-form table td:nth-child(3) {
+    max-width: 14rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* [P051] ISSUE 1-1027: Mobile — 'Switch' action buttons sit flush against
+   the table/viewport edge; add a right gutter. */
+@media (max-width: 768px) {
+  #open-switcher-switch-user-form table td:last-child,
+  #open-switcher-switch-user-form table th:last-child {
+    padding-right: 0.85rem;
+  }
+  #open-switcher-switch-user-form table td:last-child .button {
+    margin-right: 0.15rem;
+  }
+}

@@ -1,0 +1,104 @@
+/* ==========================================================================
+   P030 — Checkout / My Membership UI fixes
+   Loads LAST. Card markup uses dark card bg (#1e293b). The medical skin's
+   generic rule `body.layout-medical h3 { color: var(--medical-heading)=#0f2c3d }`
+   beats the template's `.lms-membership-card__header h3 { color:#fff }`, so the
+   plan title renders as a dark smudge on the dark card. We restore high
+   contrast and scope tightly to win the cascade.
+   ========================================================================== */
+
+/* [P030] ISSUE 1-0646, 1-0655: plan title dark-on-dark -> light high-contrast */
+/* Scoped under route + skin classes to out-specify `body.layout-medical h3`. */
+body.route--lms-membership-my-membership .lms-membership-card__header h3,
+body.layout-medical .lms-membership-card__header h3,
+body.layout-minimalist .lms-membership-card__header h3,
+.lms-membership-card__header h3 {
+  color: #f8fafc;            /* near-white, ~16.4:1 on #1e293b — passes WCAG AA */
+  font-weight: 700;
+}
+
+/* [P030] ISSUE 1-0654: keep sibling card headers structurally identical */
+.lms-membership-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;       /* vertically center title vs ACTIVE badge */
+  gap: 0.75rem;
+}
+.lms-membership-card__header .lms-badge {
+  flex: 0 0 auto;            /* badge never shrinks; identical size across cards */
+  white-space: nowrap;
+  align-self: center;
+}
+
+/* [P030] ISSUE 1-0661: clear horizontal gap between BA/EN avatar and title */
+.lms-membership-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;             /* allow long titles to wrap instead of overflow */
+}
+.lms-membership-icon {
+  flex: 0 0 40px;           /* fixed avatar; never compressed by long titles */
+}
+
+/* [P030] ISSUE 1-0662: long plan name wraps cleanly, stays centered vs badge */
+.lms-membership-card__header h3 {
+  margin: 0;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+/* [P030] ISSUE 1-0664: Cancel Auto-Renewal — stronger destructive contrast */
+/* Light-blue text was inherited link color; force high-contrast red scheme. */
+.lms-btn--danger {
+  background: rgba(244, 63, 94, 0.16);
+  color: #fda4af;          /* ~7.1:1 on the card; clearly readable */
+  border: 1px solid rgba(244, 63, 94, 0.55);
+  font-weight: 600;
+}
+.lms-btn--danger:hover,
+.lms-btn--danger:focus-visible {
+  background: rgba(244, 63, 94, 0.28);
+  color: #ffffff;
+  border-color: #fb7185;
+}
+.lms-btn--danger:focus-visible {
+  outline: 2px solid #fb7185;
+  outline-offset: 2px;
+}
+
+/* [P030] ISSUE 1-0660: notification bell badge crowds the wishlist heart */
+/* Pull the count badge in slightly and add clearance after the bell wrapper. */
+.lms-bell-counter {
+  top: -6px;
+  right: -8px;
+}
+.lms-bell-icon-wrapper {
+  margin-right: 0.5rem;     /* breathing room before the heart icon */
+}
+
+/* ----- Mobile (<=480px) ----- */
+@media (max-width: 480px) {
+  /* [P030] ISSUE 1-0655, 1-0661: ensure legibility + spacing on small cards */
+  .lms-membership-card__header h3 {
+    color: #f8fafc;
+    font-size: 1.125rem;
+  }
+  .lms-membership-card__title {
+    gap: 0.625rem;
+  }
+
+  /* [P030] ISSUE 1-0662: header row stacks gracefully; badge stays aligned */
+  .lms-membership-card__header {
+    align-items: flex-start;
+  }
+  .lms-membership-card__header .lms-badge {
+    margin-top: 0.15rem;    /* nudge badge to optical center of first title line */
+  }
+
+  /* [P030] ISSUE 1-0660: keep badge clear of the heart at mobile width */
+  .lms-bell-counter {
+    top: -5px;
+    right: -7px;
+  }
+}

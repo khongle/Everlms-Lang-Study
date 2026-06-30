@@ -1,0 +1,29 @@
+/* [P005] ISSUE 1-0166: Mobile header shows hamburger AND inline Login/Register actions; hide inline actions below the mobile breakpoint so only the hamburger drawer is used (the nav links are already hidden at <=992px). */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    display: none;
+  }
+}
+
+/* [P005] ISSUE 1-0167: CATEGORY facet renders blank (empty .lms-category-list) leaving a stray heading and a large empty gap before LEVEL. Suppress the whole filter group when the category list has no option children. */
+body.route--lms-course-category-detail .lms-catalog__filter-group:has(> .lms-category-list:not(:has(*))) {
+  display: none;
+}
+
+/* [P005] ISSUE 1-0172: Category pill badge fits its long label too tightly; give comfortable horizontal padding and cap width with ellipsis so it sizes to text instead of spanning the card. */
+.card-lms__category {
+  padding: 4px 12px;
+  max-width: calc(100% - 24px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [P005] ISSUE 1-0174: Badge wrapper sits flush in the top-left corner (inline top/left:0.5rem) and clips the rounded image corner; inset it so the image radius stays visible. The badge wrapper is the absolutely-positioned div child of the card image. */
+.card-lms__image > div {
+  top: 12px !important;
+  left: 12px !important;
+}
+.card-lms__image > div .card-lms__category {
+  max-width: calc(100vw - 60px);
+}

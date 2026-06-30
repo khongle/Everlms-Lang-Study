@@ -1,0 +1,40 @@
+/* ==========================================================================
+   P023 — My Certificates (/my-certificates)   ROUND 2
+   route_class: route--lms-progress-certificates
+   Active skin: medical (body.layout-medical.layout-minimalist)
+   Loads LAST. Page content scoped under body.route--lms-progress-certificates;
+   global FAB fixed via its component id/class.
+   ========================================================================== */
+
+/* [P023] ISSUE 1-0536: Hero subtitle + stat-card labels failed WCAG AA.
+   Root cause the prior fix missed: the MEDICAL skin sets every <p> to
+   --medical-text-soft (#476273) with a 4-class+2-pseudo selector AND !important,
+   and light-mode sets the summary <span> labels to #64748b (~4.4:1 on the white
+   cards — below AA). The earlier 3-class selector lost to both.
+   Fix: a max-specificity selector (layout-medical + layout-minimalist +
+   route class + element class = 5 classes) with !important, using #334155
+   (slate-700) ≈ 9.2:1 on #ffffff cards and ≈ 8.7:1 on the #f6fcff page bg. */
+body.layout-medical.layout-minimalist.route--lms-progress-certificates .lms-certificates-page__subtitle,
+body.layout-medical.layout-minimalist.route--lms-progress-certificates .lms-certificates-page__summary-label,
+body.layout-medical.layout-minimalist.route--lms-progress-certificates .lms-certificate-card__meta-label,
+body.layout-medical.layout-minimalist.route--lms-progress-certificates .lms-certificates-empty p {
+  color: #334155 !important;
+}
+
+/* [P023] ISSUE 1-0543: Floating scroll-to-top FAB still overlapped the right
+   edge of the cards on mobile. Root cause the prior fix missed: the MEDICAL
+   skin positions the FAB with `right/bottom: clamp(...) !important` at a
+   higher specificity (body.layout-medical:not(.is-workspace)) than the prior
+   2-class fix, so the prior offsets were ignored.
+   Fix: beat it with id + 3-class + pseudo selector and push the FAB clear of
+   the card edge; also add bottom padding so it rests over whitespace. */
+@media (max-width: 480px) {
+  body.layout-medical.route--lms-progress-certificates:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical.route--lms-progress-certificates:not(.is-workspace) .lms-back-to-top {
+    right: 12px !important;
+    bottom: 84px !important;
+  }
+  body.route--lms-progress-certificates .lms-page__content {
+    padding-bottom: 6rem;
+  }
+}

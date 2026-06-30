@@ -1,0 +1,91 @@
+/* ==========================================================================
+   P021 — Quiz Result (route--lms-quiz-result)
+   Round-2 UI fixes. Loaded LAST.
+   ========================================================================== */
+
+/* [P021] ISSUE 2-0214: normalize top spacing between nav and result card */
+body.route--lms-quiz-result .lms-result-wrapper {
+  padding-top: 2.5rem;
+}
+body.route--lms-quiz-result .lms-result-container {
+  margin-top: 0;
+}
+
+/* [P021] ISSUE 2-0213: give breathing room between score ring and PASSED badge
+   and keep the ring well inside the card padding */
+body.route--lms-quiz-result .lms-result-hero {
+  padding: 3rem 3rem 3.25rem;
+}
+body.route--lms-quiz-result .lms-score-circle {
+  margin: 0 auto 2.5rem;
+}
+body.route--lms-quiz-result .lms-result-badge--pass,
+body.route--lms-quiz-result .lms-result-badge--fail {
+  margin-top: 0.25rem;
+}
+
+/* [P021] ISSUE 2-0215: symmetric horizontal padding inside the PASSED/FAILED
+   badge pill + consistent gap between icon and label */
+body.route--lms-quiz-result .lms-result-badge {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  gap: 0.6rem;
+}
+body.route--lms-quiz-result .lms-result-badge > i {
+  flex: 0 0 auto;
+}
+
+/* [P021] ISSUE 2-0216: ensure the "10 pts" pill text meets WCAG AA (>=4.5:1).
+   Darken the neutral pts label and strengthen the pill background so the small
+   text is legible regardless of pass/fail tint. */
+body.route--lms-quiz-result .lms-response-points {
+  color: #1f2933;
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+body.route--lms-quiz-result .lms-response-correct .lms-response-points {
+  color: #14532d;
+  background: rgba(63, 185, 80, 0.18);
+  border-color: rgba(35, 134, 54, 0.45);
+}
+body.route--lms-quiz-result .lms-response-incorrect .lms-response-points {
+  color: #7f1d1d;
+  background: rgba(255, 123, 114, 0.18);
+  border-color: rgba(255, 123, 114, 0.45);
+}
+
+/* [P021] ISSUE 2-0217: submission answer text — raise contrast to AA and drop
+   the italic styling for better legibility of long answers */
+body.route--lms-quiz-result .lms-answer-text {
+  color: #1f2933;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  font-style: normal;
+}
+
+/* [P021] ISSUE 2-0221: consistent full-height left accent bar on every
+   question card (fixed-width border-left, identical across cards) */
+body.route--lms-quiz-result .lms-response-card {
+  border-left: 4px solid #3fb950;
+}
+body.route--lms-quiz-result .lms-response-card.lms-response-incorrect {
+  border-left-color: #ff7b72;
+}
+
+/* [P021] ISSUE 2-0218: keep the floating Back-to-top FAB clear of the result
+   card content on tablet (adequate inset from the right edge) */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-quiz-result #lms-back-to-top,
+  body.route--lms-quiz-result .lms-back-to-top {
+    right: 20px !important;
+    bottom: 24px !important;
+  }
+}
+
+/* [P021] ISSUE 2-0220: give the notification bell count badge a small,
+   consistent offset from the bell glyph so it is clearly separated */
+.lms-bell-icon-wrapper .lms-bell-counter {
+  top: -7px;
+  right: -10px;
+  border: 2px solid #161b22;
+}

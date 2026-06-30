@@ -1,0 +1,103 @@
+/* ==========================================================================
+   P040 — Certificate Templates (/workspace/certificate-templates)
+   Third-pass UI fixes. This partial loads LAST; uses !important to beat the
+   inline <style> block injected by lms-admin-sidebar.html.twig and inline
+   element styles. Selectors verified against:
+     - web/modules/custom/lms_certificate/templates/lms-admin-certificate-templates.html.twig
+     - web/modules/custom/lms_course/templates/lms-admin-sidebar.html.twig
+   ========================================================================== */
+
+/* [P040] ISSUE 1-0855, 1-0864: Sidebar 'SilverCare' brand wordmark renders in a
+   muted blue-grey (#e6edf3 at small size on #161b22 reads dim). Force a true
+   high-contrast white wordmark meeting WCAG AA on the dark sidebar.
+   Targets the fallback site_name <span> (and its <a> wrapper) in the brand. */
+.lms-admin__sidebar-brand a,
+.lms-admin__sidebar-brand a span {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #ffffff !important; /* beat any text-fill override */
+  text-shadow: none !important;
+  font-weight: 800 !important;
+}
+
+/* ==========================================================================
+   MOBILE LAYOUT / OVERFLOW  (1-0859 critical, 1-0862 major)
+   PRIOR FIX FAILED. Root cause: the sidebar is position:fixed; width:260px and
+   .lms-admin__main carries margin-left:260px with NO mobile breakpoint, so the
+   content (and its table) is shoved off the right edge. The table headers also
+   use white-space:nowrap. Fix: collapse to a single column, drop the desktop
+   offset, contain the page width, and let the table scroll inside its own box.
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* [P040] ISSUE 1-0859: stack admin shell to a single column at mobile and
+     stop any horizontal page overflow. */
+  html,
+  body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+
+  .lms-admin {
+    display: block !important;
+    min-height: auto !important;
+  }
+
+  /* Un-fix the sidebar so it no longer overlaps/pushes content; full-width row. */
+  .lms-admin__sidebar {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+    overflow-y: visible !important;
+  }
+
+  /* Remove the 260px desktop offset that pushed the table off-screen. */
+  .lms-admin__main {
+    margin-left: 0 !important;
+    padding: 1.25rem !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Header row (title + Add New Template button) wraps instead of overflowing. */
+  .lms-admin__main > div[style*="justify-content: space-between"] {
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+  }
+  .lms-admin__main .lms-btn,
+  .lms-admin__main .btn-lms-primary {
+    white-space: nowrap !important;
+  }
+
+  /* [P040] ISSUE 1-0862: the card / table must not exceed viewport; the table
+     scrolls horizontally INSIDE its responsive wrapper instead of clipping the
+     whole page. Header label 'TEMPLATE NAME' and ACTIONS become reachable. */
+  .lms-admin-card {
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+  .lms-table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+  }
+  .lms-table {
+    min-width: 640px !important; /* preserve column layout; scroll inside wrapper */
+  }
+  .lms-table th,
+  .lms-table td {
+    padding: 0.75rem 1rem !important;
+  }
+
+  /* Keep the Actions cell from stretching the row off-screen. */
+  .lms-table td[style*="flex-end"] {
+    justify-content: flex-end !important;
+  }
+}

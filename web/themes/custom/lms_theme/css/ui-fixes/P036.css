@@ -1,0 +1,137 @@
+/* ==========================================================================
+   P036 — Manage Orders (/workspace/orders)
+   Admin layout markup: .lms-admin > .lms-admin__sidebar + .lms-admin__main
+   Status cells use .lms-badge + .lms-badge--{success,warning,danger,secondary}
+   This partial loads LAST. !important used only to beat inline styles.
+   ========================================================================== */
+
+/* [P036] ISSUE 1-0783: status badge color-codes (modifiers were undefined -> all rendered identical indigo) */
+.lms-table .lms-badge--success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #4ade80;
+  border-color: rgba(16, 185, 129, 0.30);
+  box-shadow: none;
+}
+.lms-table .lms-badge--warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.30);
+  box-shadow: none;
+}
+.lms-table .lms-badge--danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.30);
+  box-shadow: none;
+}
+.lms-table .lms-badge--secondary {
+  background: rgba(100, 116, 139, 0.14);
+  color: #cbd5e1;
+  border-color: rgba(100, 116, 139, 0.30);
+  box-shadow: none;
+}
+
+/* [P036] ISSUE 1-0784: brand wordmark contrast on dark sidebar (#161b22). #f1f5f9 ~ 15:1, passes AA */
+.lms-admin__sidebar-brand a,
+.lms-admin__sidebar-brand a span {
+  color: #f1f5f9 !important;
+}
+
+/* [P036] ISSUE 1-0787: keep column headers stuck while body scrolls.
+   thead is already position:sticky; reinforce on the th cells so the blue
+   header bg paints over scrolling rows and never disappears mid-table. */
+.lms-table-responsive { overflow-y: auto; }
+.lms-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 11;
+}
+
+/* [P036] ISSUE 1-0789: Edit action link affordance (clear interactive feedback) */
+.lms-table td .lms-btn--outline {
+  text-decoration: none;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.lms-table td .lms-btn--outline:hover,
+.lms-table td .lms-btn--outline:focus-visible {
+  background: rgba(29, 112, 245, 0.12);
+  color: #ffffff;
+  border-color: #1d70f5;
+  text-decoration: underline;
+}
+.lms-table td .lms-btn--outline:focus-visible {
+  outline: 2px solid #1d70f5;
+  outline-offset: 2px;
+}
+
+/* [P036] ISSUE 1-0790: tighten/align filter card with the results table.
+   The inline title margin (2rem) + filter margin (2rem) leaves a loose gap;
+   both blocks already span the main column width, so normalise the rhythm. */
+.lms-admin__main > .lms-admin__title {
+  margin-bottom: 1.25rem !important;
+}
+.lms-admin-filter {
+  margin-bottom: 1.25rem;
+}
+
+/* ==========================================================================
+   MOBILE (<= 768px) — sidebar is fixed 260px & main has margin-left:260px,
+   which shoves the content off-screen. Reclaim the viewport for content.
+   The hamburger TOGGLE itself needs JS/markup (deferred: 1-0791); here we
+   make the page usable by collapsing the sidebar off-canvas and giving the
+   main column the full width so the table/heading/filters render correctly.
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* [P036] ISSUE 1-0791: collapse desktop sidebar off-canvas on mobile */
+  .lms-admin__sidebar {
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.5);
+  }
+  /* allow opening via :target / aria fallback if a toggle is later added */
+  .lms-admin__sidebar:target,
+  .lms-admin__sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* [P036] ISSUE 1-0792 / 1-0795 / 1-0796: give main full width so the
+     orders table is no longer clipped to a sliver at the right edge */
+  .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 1.25rem 1rem;
+  }
+
+  /* [P036] ISSUE 1-0793: H1 no longer squeezed -> stops char-by-char breaking */
+  .lms-admin__title {
+    font-size: 1.4rem;
+    overflow-wrap: normal;
+    word-break: keep-all;
+  }
+
+  /* [P036] ISSUE 1-0794: stack filter controls vertically, full width */
+  .lms-admin-filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    padding: 1rem;
+  }
+  .lms-admin-filter__group { flex: none; width: 100%; }
+  .lms-admin-filter .btn-lms-primary { width: 100%; }
+
+  /* [P036] ISSUE 1-0792 / 1-0795: keep the table horizontally scrollable
+     from the first column instead of clipping at the viewport edge */
+  .lms-table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lms-table {
+    min-width: 640px; /* preserve column widths; scroll rather than crush */
+  }
+  /* [P036] ISSUE 1-0796: restore compact row rhythm */
+  .lms-table th,
+  .lms-table td {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+}

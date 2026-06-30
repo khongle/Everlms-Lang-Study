@@ -214,7 +214,16 @@ final class CoursePublicController extends ControllerBase {
 
       if ($rating_ids) {
         $ratings = $rating_storage->loadMultiple($rating_ids);
+        $seen_content = [];
         foreach ($ratings as $rating) {
+          // Skip duplicate testimonial text (seed data can repeat reviews).
+          $review_text = (string) $rating->get('field_review')->value;
+          $content_key = mb_strtolower(trim($review_text));
+          if ($content_key === '' || isset($seen_content[$content_key])) {
+            continue;
+          }
+          $seen_content[$content_key] = TRUE;
+
           $owner = $rating->getOwner();
           $name = $owner ? $owner->getDisplayName() : 'Anonymous';
           $role = 'Student';

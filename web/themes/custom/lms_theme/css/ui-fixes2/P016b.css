@@ -1,0 +1,159 @@
+/* ==========================================================================
+   P016b — User Register (/user/register)
+   route_class: route--user-register   |   active skin: medical (layout-medical)
+   body has: layout-medical route--user-register layout-minimalist
+   This partial loads LAST (after ui-fixes-r1-pages.css and light-mode.css).
+   Re-fixes issues the prior round did not resolve, using higher specificity
+   and !important ONLY to beat existing !important rules on the same targets.
+   ========================================================================== */
+
+/* [P016b] ISSUE 1-0401, 1-0409: Header "Login" (.lms-navbar__link) rendered as
+   plain dark text while the sibling "Back to Home" (.lms-btn--outline anchor)
+   is a styled blue action, so Login does not read as clickable. PRIOR FIX only
+   bumped Login's font-weight and left it dark. Unify both as clearly-clickable
+   nav actions in the same brand blue. ui-fixes-r1.css sets
+   .lms-navbar__actions a { color:#1f2a37 } (dark) — beat it with a higher-
+   specificity, route-scoped rule (no !important needed: more specific). */
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-navbar__link {
+  color: #0077b6;
+  font-weight: 600;
+  text-decoration: none;
+}
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-navbar__link:hover {
+  color: #023e7d;
+  background: rgba(0, 119, 182, 0.08);
+}
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-navbar__link:focus-visible {
+  outline: 2px solid #0077b6;
+  outline-offset: 2px;
+}
+
+/* [P016b] ISSUE 1-0405: Card sits low with a large empty band between the
+   fixed 64px header and the card top; min-height:100vh + align-items:center
+   centers a short card inside the FULL viewport (ignoring the 64px header),
+   pushing it visually low / leaving dead space up top. PRIOR FIX reduced
+   padding but kept full 100vh, so the band persisted. Subtract the header
+   height from the flex height and pull the top spacing in so the card is
+   balanced within the area BELOW the header. */
+body.route--user-register .lms-auth {
+  min-height: calc(100vh - 64px);
+  margin-top: 64px;             /* clear the fixed header */
+  padding-top: 1.5rem;
+  padding-bottom: 2.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* [P016b] ISSUE 1-0410: Google/Facebook social buttons use a near-white fill
+   on the white card with a too-light border, so the tappable boundary is hard
+   to see. PRIOR FIX used #cbd5e1 (~1.5:1 vs white — below the 3:1 non-text
+   threshold). Use a border dark enough to clear WCAG 3:1 plus a faint fill so
+   the control area is unmistakable. */
+body.route--user-register .lms-auth .lms-auth__social .lms-btn--outline,
+body.route--user-register .lms-auth .lms-auth__social .lms-auth__social-btn {
+  background: #f8fafc !important;
+  border: 1px solid #6b7280 !important;   /* ~3.1:1 vs #fff: meets non-text 3:1 */
+  color: #1f2937 !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08) !important;
+}
+body.route--user-register .lms-auth .lms-auth__social .lms-btn--outline:hover,
+body.route--user-register .lms-auth .lms-auth__social .lms-auth__social-btn:hover {
+  background: #eef2f6 !important;
+  border-color: #475467 !important;
+  color: #0f172a !important;
+}
+
+/* [P016b] ISSUE 1-0411: Email/Username placeholders render light grey
+   (#94a3b8). PRIOR FIX (#667085) was borderline and still reads light. The
+   blocking rule is light-mode.css:2516
+   `body.layout-minimalist .lms-auth input::placeholder { color:#94a3b8
+   !important }`. Beat it with an equally/more-specific, route-scoped
+   !important rule using a clearly darker grey (#475467 ~ 7:1 vs white). */
+body.route--user-register .lms-auth input[type="email"]::placeholder,
+body.route--user-register .lms-auth input[type="text"]::placeholder,
+body.route--user-register .lms-auth input[type="password"]::placeholder,
+body.route--user-register .lms-auth input.form-control::placeholder {
+  color: #475467 !important;
+  opacity: 1 !important;
+}
+
+/* [P016b] ISSUE 1-0412: The "or" divider lines look thin/faint and the two
+   segments flanking the centered label feel uneven. Markup is a full-width
+   <hr.lms-auth__divider-line> with an absolutely-centered
+   <span.lms-auth__divider-label> that carries a white backplate (which splits
+   the line into two visual segments). Bump the rule contrast and ensure the
+   label backplate is wide/symmetric so both segments read evenly, matching the
+   full field width. */
+body.route--user-register .lms-auth hr.lms-auth__divider-line,
+body.route--user-register .lms-auth .lms-auth__divider-line {
+  border: 0 !important;
+  border-top: 1px solid #94a3b8 !important;  /* darker than faint #cbd5e1 */
+  opacity: 1 !important;
+  width: 100%;
+  margin: 0 !important;
+}
+body.route--user-register .lms-auth .lms-auth__divider-label {
+  background: #ffffff !important;
+  color: #475467 !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+/* [P016b] ISSUE 1-0407, 1-0409 (mobile): The right-side header nav extends past
+   the right viewport edge ("Back to Home" bleeds off-screen) and the two links
+   still show mismatched colors on mobile. Keep both action links inside the
+   viewport with symmetric padding, prevent horizontal overflow, and keep the
+   unified blue treatment. */
+@media (max-width: 480px) {
+  body.route--user-register .lms-navbar,
+  body.route--user-register .lms-page {
+    overflow-x: hidden;
+  }
+  body.route--user-register .lms-navbar__container {
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;   /* symmetric with left logo padding */
+    gap: 0.5rem;
+    max-width: 100%;
+  }
+  body.route--user-register .lms-navbar__brand {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+  body.route--user-register .lms-navbar__brand img {
+    max-height: 32px;
+    width: auto;
+  }
+  body.route--user-register .lms-navbar__actions {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 0.4rem;
+    margin-left: auto;
+  }
+  body.route--user-register .lms-navbar__actions a.lms-navbar__link,
+  body.route--user-register .lms-navbar__actions .lms-btn--outline {
+    white-space: nowrap;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+  }
+  /* keep both header actions the same readable blue on mobile too */
+  body.route--user-register .lms-navbar__actions a.lms-navbar__link {
+    color: #0077b6;
+    font-weight: 600;
+  }
+
+  /* card vertical balance on mobile (header is fixed, ~56-64px) */
+  body.route--user-register .lms-auth {
+    min-height: auto;
+    margin-top: 64px;
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,25 @@
+/* [P008] ISSUE 1-0231: hide inline Login/Register auth links at mobile so they don't overflow next to the hamburger toggle */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    display: none;
+  }
+}
+
+/* [P008] ISSUE 1-0240: vertically center footer brand mark and wordmark on a single baseline */
+.lms-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lms-footer__brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1;
+}
+
+.lms-footer__brand-link .lms-brand-mark--footer {
+  display: block;
+  align-self: center;
+}

@@ -1,0 +1,102 @@
+/* ==========================================================================
+   P033 — Course Editor (/workspace/courses/88/edit)
+   route_class: route--lms-course-admin-course-edit
+   Markup: module template lms-admin-entity-form.html.twig
+     wrapper #lms-admin-form-app > .lms-form-content > form
+     custom tabs .lms-form-tabs > button.lms-form-tab
+     CKEditor: .ck.ck-toolbar (.ck-toolbar__items + grouped dropdown),
+               .ck.ck-editor__main > .ck-editor__editable
+     footer: .lms-form-content .form-actions (Save submit + Delete)
+   This partial loads LAST. The template emits an inline <style> block and inline
+   element styles; !important is used only where needed to beat those.
+   ========================================================================== */
+
+/* [P033] ISSUE 2-0319, 2-0326: The CKEditor source-editing (</>) button + its
+   chevron escape the right edge of the white card into the dark gutter, and the
+   toolbar wraps to a sparse 2nd row holding only the lone vertical-kebab.
+   Constrain the toolbar to the card width and let the action items wrap inline
+   so nothing overflows the container and the 2nd band is not nearly empty. */
+#lms-admin-form-app .lms-form-content .ck.ck-toolbar {
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  flex-wrap: wrap !important;
+  overflow: hidden !important;
+}
+#lms-admin-form-app .lms-form-content .ck.ck-toolbar > .ck-toolbar__items {
+  flex-wrap: wrap !important;
+  row-gap: 0.25rem !important;
+  max-width: 100% !important;
+}
+/* Keep the grouped-items overflow dropdown (the vertical kebab) inline with the
+   toolbar items instead of dropping onto a separate near-empty row. */
+#lms-admin-form-app .lms-form-content .ck.ck-toolbar > .ck-toolbar__grouped-dropdown,
+#lms-admin-form-app .lms-form-content .ck.ck-toolbar > .ck.ck-dropdown {
+  margin-left: auto !important;
+  align-self: center !important;
+}
+/* The source-editing toggle (rendered after the editable area) must never sit
+   outside the card; pin it within the toolbar/card bounds. */
+#lms-admin-form-app .lms-form-content .ck.ck-source-editing-button,
+#lms-admin-form-app .lms-form-content .ck-source-editing-button {
+  max-width: 100% !important;
+  position: static !important;
+  right: auto !important;
+}
+
+/* [P033] ISSUE 2-0323: The Short Description editor reserves a tall fixed-height
+   box for one short sentence. Lower the editor min-height so short fields do not
+   reserve excessive empty space (still tall enough to be a comfortable target).
+   The editable continues to grow with longer content (Description etc.). */
+#lms-admin-form-app .lms-form-content .ck.ck-editor__main > .ck-editor__editable {
+  min-height: 96px !important;
+  height: auto !important;
+}
+
+/* [P033] ISSUE 2-0324: The field helper text ("Brief description for listing
+   cards.") renders in a faint muted brown/grey on white, below the AA 4.5:1
+   threshold and fainter than the labels. Darken it to a slate that meets AA on
+   white (#475569 on #fff ~ 7.5:1) and give it consistent helper spacing. */
+#lms-admin-form-app .lms-form-content .description,
+#lms-admin-form-app .lms-form-content .form-item__description,
+#lms-admin-form-app .lms-form-content .form-item .description {
+  color: #475569 !important;
+  font-size: 0.85rem !important;
+  line-height: 1.45 !important;
+  margin-top: 0.4rem !important;
+}
+
+/* [P033] ISSUE 2-0327: Save (filled blue) and Delete sit side by side with
+   near-equal prominence/width, inviting accidental deletion on touch. Push
+   Delete away from Save and de-emphasize it: smaller, muted ghost-danger that
+   only reads as red on hover/focus, so Save stays the clear primary action. */
+#lms-admin-form-app .lms-form-content .form-actions {
+  align-items: center !important;
+}
+#lms-admin-form-app .lms-form-content .form-actions input[value="Delete"],
+#lms-admin-form-app .lms-form-content .form-actions input[value="Xóa"],
+#lms-admin-form-app .lms-form-content .form-actions input[id*="delete"],
+#lms-admin-form-app .lms-form-content .form-actions a[href*="/delete"],
+#lms-admin-form-app .lms-form-content .form-actions a.button--danger {
+  margin-left: auto !important;        /* separate the destructive action from Save */
+  background: transparent !important;
+  color: #94a3b8 !important;            /* muted by default to reduce mis-click */
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+  padding: 0.5rem 1.25rem !important;   /* smaller than the primary Save */
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  transform: none !important;
+}
+#lms-admin-form-app .lms-form-content .form-actions input[value="Delete"]:hover,
+#lms-admin-form-app .lms-form-content .form-actions input[value="Xóa"]:hover,
+#lms-admin-form-app .lms-form-content .form-actions input[id*="delete"]:hover,
+#lms-admin-form-app .lms-form-content .form-actions a[href*="/delete"]:hover,
+#lms-admin-form-app .lms-form-content .form-actions a.button--danger:hover,
+#lms-admin-form-app .lms-form-content .form-actions input[value="Delete"]:focus-visible,
+#lms-admin-form-app .lms-form-content .form-actions a[href*="/delete"]:focus-visible {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  border-color: #f87171 !important;
+  transform: none !important;
+}

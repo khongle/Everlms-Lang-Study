@@ -1,0 +1,118 @@
+/* ============================================================
+   P007 — Instructor Profile (/instructor/56)
+   route: body.route--lms-course-instructor-profile
+   Loads LAST. Inline styles on template elements require !important.
+   ============================================================ */
+
+/* [P007] ISSUE 1-0199: Hero subtitle (job title) contrast — darken muted blue */
+body.route--lms-course-instructor-profile .lms-instructor-profile__role {
+  color: #005a8c !important; /* darker brand blue, ~5.9:1 on #fff */
+  font-weight: 800 !important;
+}
+
+/* [P007] ISSUE 1-0200,1-0201: Bio contrast + readable measure (left-aligned, constrained) */
+body.route--lms-course-instructor-profile .lms-instructor-profile__bio {
+  color: #374151 !important;       /* dark neutral, ~10:1 on #fff */
+  text-align: left !important;     /* stop centered ragged lines */
+  max-width: 68ch !important;      /* comfortable measure ~60-75ch */
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* [P007] ISSUE 1-0202: Stat labels — slightly larger + darker for legibility */
+body.route--lms-course-instructor-profile .lms-instructor-profile__stat-label {
+  color: #4b5563 !important;       /* darker grey, ~7:1 on #fff */
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* [P007] ISSUE 1-0205,1-0219: Equalize card title height (clamp 2 lines, reserve space)
+   so instructor/meta/price rows align across the row.
+   .card-lms__title already clamps to 2 lines; add a min-height to reserve. */
+body.route--lms-course-instructor-profile .card-lms__title {
+  min-height: 3.08em;              /* 2 lines * 1.4 line-height + buffer */
+}
+
+/* Make the card body a flex column and push the footer to the bottom for
+   horizontal alignment of price/CTA across cards of differing content. */
+body.route--lms-course-instructor-profile .card-lms__body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+body.route--lms-course-instructor-profile .card-lms__footer {
+  margin-top: auto !important;
+}
+
+/* [P007] ISSUE 1-0207: Uniform description block height (consistent clamp) */
+body.route--lms-course-instructor-profile .card-lms__desc {
+  min-height: 2.55em;              /* 2 lines * 0.85rem * ~1.5 */
+}
+
+/* [P007] ISSUE 1-0206,1-0220: "Free" token same prominence as numeric price.
+   Numeric prices use .card-lms__price (1.25rem inline). The free state shows a
+   green badge at bottom-left of the image; also normalize the in-footer free
+   price token to match the numeric price weight/size/color. */
+body.route--lms-course-instructor-profile .card-lms__price {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+}
+body.route--lms-course-instructor-profile .card-lms__price--free {
+  color: #059669 !important;       /* solid green, matches Free badge family */
+}
+
+/* [P007] ISSUE 1-0208,1-0216: Category badge legibility over photos + keep
+   clear of the heart control. Solid dark background + cap width.
+   .card-lms__category is a global component class. */
+.card-lms__category {
+  background: rgba(0, 0, 0, 0.66) !important; /* solid enough for AA on any photo */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  max-width: calc(100% - 56px);    /* reserve room for 32px heart + gap */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [P007] ISSUE 1-0211: Footer breathing room — more bottom padding + column gap.
+   Global footer component. */
+.lms-footer {
+  padding-bottom: 2.5rem !important;
+}
+.lms-footer__grid {
+  margin-bottom: 2.75rem !important;
+}
+.lms-footer__bottom {
+  padding-top: 2rem !important;
+}
+
+/* [P007] ISSUE 1-0212: Mobile header — Register link clipped at right edge.
+   Tighten navbar container padding and prevent actions overflow at mobile.
+   Global navbar component. */
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    gap: 0.5rem;
+  }
+  .lms-navbar__brand {
+    font-size: 1.15rem !important;
+    min-width: 0;
+  }
+  .lms-navbar__actions {
+    gap: 0.4rem !important;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    padding-left: 0.35rem !important;
+    padding-right: 0.35rem !important;
+    font-size: 0.85rem !important;
+  }
+  .lms-navbar__actions .lms-btn {
+    padding-left: 0.6rem !important;
+    padding-right: 0.6rem !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap;
+  }
+}

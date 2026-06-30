@@ -1,0 +1,103 @@
+/* ==========================================================================
+   P020 — Quiz Take page (route--lms-quiz-take)  ROUND-2 fixes
+   Active skin: layout-medical + layout-minimalist (SilverCare light theme).
+   URL: /quiz/43/take
+
+   This partial loads LAST. Background:
+   A round-1 fix (ui-fixes-r1-pages2.css) converted .lms-quiz__meta — the
+   "15 questions / 29:58 / Pass: 70%" summary bar — into a position:fixed chip
+   anchored top:84px right:24px so the countdown timer stays visible while
+   scrolling. On the TABLET viewport (481-1024px) that chip has no breakpoint
+   override, so it:
+     - overlaps the SilverCare header row (Dashboard / avatar / bell)  [2-0201]
+     - floats over the RIGHT side of question text + answer inputs     [2-0202..2-0205]
+   Round-1 already handled mobile (<=480px) by docking it; tablet was missed.
+
+   ROOT-CAUSE FIX for 2-0201..2-0205: on tablet, re-dock the fixed chip to a
+   centered floating pill at the BOTTOM of the viewport (clear of both the top
+   header band and the right-hand card gutter), so it never occludes question
+   prompts, points badges, option labels or inputs while keeping the timer in
+   view. Reserve bottom space so the submit button is not hidden behind it.
+   ========================================================================== */
+
+/* [P020] ISSUE 2-0201, 2-0202, 2-0203, 2-0204, 2-0205: floating quiz summary
+   bar overlaps the header band and the right edge of question cards on tablet.
+   Re-anchor the fixed chip to a bottom-center floating pill so it is fully
+   clear of the header (top) and the card content area (right gutter). */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-quiz-take .lms-quiz__meta {
+    top: auto !important;            /* leave the top header band entirely */
+    bottom: 20px !important;         /* float just above the viewport bottom */
+    right: 50% !important;
+    left: auto !important;
+    transform: translateX(50%) !important; /* horizontally centered pill */
+    z-index: 1050 !important;
+    max-width: calc(100vw - 32px) !important;
+    width: max-content !important;
+    flex-wrap: nowrap !important;    /* keep the three stats on one compact line */
+    gap: 1.25rem !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    padding: 0.7rem 1.25rem !important;
+    border-radius: 999px !important; /* pill shape so it reads as a floating widget */
+    /* solid light-theme surface so it stays legible over scrolling content */
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18) !important;
+    margin: 0 !important;
+  }
+  /* never let individual stats wrap/overflow inside the compact pill */
+  body.route--lms-quiz-take .lms-quiz__meta span {
+    min-width: 0 !important;
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+  /* the chip is removed from card flow entirely: cards now use the full content
+     width with no right gutter needed, and the header card cannot collide. */
+  body.route--lms-quiz-take .lms-quiz__card,
+  body.route--lms-quiz-take .lms-quiz__header-card {
+    padding-right: 2rem !important;  /* restore symmetric padding (no reserved gutter) */
+  }
+  /* keep the submit action clear of the bottom-docked pill */
+  body.route--lms-quiz-take .lms-quiz__submit-wrap {
+    padding-bottom: 6rem !important;
+  }
+}
+
+/* [P020] ISSUE 2-0208: 'Submit Final Answers' button floats in a large band of
+   empty page-background, visually detached from the final question card.
+   Tighten the top margin so the action sits closer to the last card, and keep
+   the bottom space only as large as needed to clear the floating pill (handled
+   above on tablet). Scoped to tablet to match the reported viewport. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-quiz-take .lms-quiz__submit-wrap {
+    margin-top: 1.5rem !important;   /* was 3rem — pull the button toward the last card */
+  }
+}
+
+/* [P020] ISSUE 2-0209: Question 5 'Select Match' dropdowns all show the same
+   "— Select Match —" placeholder with no distinct unanswered/required
+   affordance, so it is unclear each row must be answered. Give the still-empty
+   selects (value="" => :invalid is not available without `required`, so target
+   via a left accent + softer placeholder color) a clear unanswered state, and a
+   distinct answered state once a real option is chosen via :has(). */
+body.route--lms-quiz-take .lms-quiz__match-select {
+  border-left: 4px solid #f59e0b !important;   /* amber "needs attention" accent */
+  color: #94a3b8 !important;                    /* muted text reads as placeholder */
+  font-style: italic !important;
+  transition: border-color 0.2s ease, color 0.2s ease !important;
+}
+/* answered: a real option (non-empty value) is selected -> calm, confirmed look.
+   The placeholder <option> has value="" so this matches only when a real value
+   exists. */
+body.route--lms-quiz-take .lms-quiz__match-select:has(option:checked:not([value=""])) {
+  border-left: 4px solid #16a34a !important;   /* green = answered */
+  color: #0f172a !important;
+  font-style: normal !important;
+}
+/* clear focus affordance for keyboard users on the matching selects */
+body.route--lms-quiz-take .lms-quiz__match-select:focus-visible {
+  outline: 2px solid #4f46e5 !important;
+  outline-offset: 2px !important;
+}

@@ -1,0 +1,29 @@
+/* P042 — Access denied (system 403) page: /workspace/content-tools
+ * body class: route--system-403  (layout-medical / layout-minimalist)
+ * Header (.lms-navbar) + footer (.lms-footer) already render in the real
+ * themed layout; the only CSS-addressable defects are the lone error
+ * message being stranded at the top-left of a near-empty content column
+ * with cramped, inconsistent spacing.
+ */
+
+/* [P042] ISSUE 1-0895, 1-0892: center the lone 403 message so the content
+   column does not read as broken / mostly-empty white space. */
+body.route--system-403 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 60vh;
+}
+
+/* [P042] ISSUE 1-0891, 1-0896: give the error message comfortable, balanced
+   padding and readable typography instead of a tight one-liner at the edge. */
+body.route--system-403 #block-lms-theme-content {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: #475569;
+}

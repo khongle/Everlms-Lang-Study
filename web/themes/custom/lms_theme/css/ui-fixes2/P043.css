@@ -1,0 +1,120 @@
+/* ============================================================
+   P043 - /manage/blog  (route--system-403  Access denied)
+   Active body classes: route--system-403 layout-minimalist
+   This partial loads LAST.
+   ============================================================ */
+
+/* [P043] ISSUE 1-0898 / 1-0905: bare unstyled access-denied sentence.
+   Turn #block-lms-theme-content into a centered card with a heading
+   (injected via ::before since markup cannot be edited) and readable copy.
+   NOTE: a real functional CTA button needs markup and is deferred. */
+body.route--system-403 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+body.route--system-403 #block-lms-theme-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 560px;
+  margin: 2.5rem auto;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  color: #334155;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Decorative lock icon (order:1) above the heading. */
+body.route--system-403 #block-lms-theme-content::before {
+  content: "\f023"; /* Font Awesome lock */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  order: -2;
+  display: block;
+  font-size: 2.75rem;
+  line-height: 1;
+  color: #0077b6;
+  margin-bottom: 1rem;
+}
+
+/* Injected "Access denied" heading (order:2) above the message text.
+   The raw message text node is the default flex child (order:0) and is
+   pulled below via order on the pseudo-elements. */
+body.route--system-403 #block-lms-theme-content::after {
+  content: "Access denied";
+  order: -1;
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.75rem;
+  line-height: 1.2;
+}
+
+/* [P043] ISSUE 1-0907: huge blank band before the footer on the sparse
+   error page. Give the content region a min-height so the card centers
+   vertically instead of collapsing to a thin strip. */
+body.route--system-403 .lms-page__content {
+  min-height: 60vh;
+  padding: 3rem 1rem 4rem;
+}
+
+/* [P043] ISSUE 1-0903: footer column headings not top-aligned -
+   QUICK LINKS sits well below COURSE/SUPPORTS/CONTACT INFO because the
+   brand + description block in column 1 pushes it down. Tighten that
+   block so the heading rises toward the other columns' heading row and
+   the offset reads as a deliberate, balanced lockup. */
+body.route--system-403 .lms-footer__grid {
+  align-items: start;
+}
+body.route--system-403 .lms-footer__brand {
+  margin-bottom: 0.5rem;
+}
+body.route--system-403 .lms-footer__description {
+  margin-bottom: 0.75rem;
+}
+body.route--system-403 .lms-footer__col:first-child h4 {
+  margin-top: 0;
+}
+
+/* [P043] ISSUE 1-0912: footer brand logo renders larger than the
+   identical header logo. Force the footer mark to the same rendered
+   height as the header mark for a consistent identity. Global component
+   fix (no page scope) so it stays cohesive site-wide. */
+.lms-footer__brand-link .lms-brand-mark--footer {
+  height: 48px !important;
+  width: auto !important;
+  max-height: 48px !important;
+}
+@media (max-width: 480px) {
+  .lms-footer__brand-link .lms-brand-mark--footer {
+    height: 40px !important;
+    max-height: 40px !important;
+  }
+}
+
+/* [P043] ISSUE 1-0913: scroll-to-top FAB pinned at the right edge inside
+   the footer content column with no clear margin. Reserve a gutter at the
+   page bottom and pull the FAB clearly into the corner with a higher
+   z-index so it never overlaps footer links. */
+@media (max-width: 480px) {
+  body.route--system-403 .lms-footer {
+    padding-bottom: 5.5rem;
+  }
+  body.layout-minimalist:not(.is-workspace) #lms-back-to-top,
+  body.layout-minimalist:not(.is-workspace) .lms-back-to-top,
+  body.route--system-403 #lms-back-to-top,
+  body.route--system-403 .lms-back-to-top {
+    right: 12px !important;
+    bottom: 16px !important;
+    z-index: 1300 !important;
+  }
+}

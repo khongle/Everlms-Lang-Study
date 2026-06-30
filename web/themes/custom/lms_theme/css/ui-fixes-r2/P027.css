@@ -1,0 +1,113 @@
+/* ==========================================================================
+   P027 — Notifications (route--lms-notification-list)
+   Active skin: medical + minimalist. Loads LAST.
+   Scope page content under body.layout-medical.layout-minimalist:not(.is-workspace)
+   (matches the live body class combo confirmed in screenshots and existing fixes).
+   Global components (FAB) fixed via their component class.
+   ========================================================================== */
+
+/* [P027] ISSUE 2-0262: card-type icon floats high vs multi-line title/body.
+   The row uses align-items:flex-start so the 3rem circular icon top-aligns with
+   the title cap-line but optically sits high. Nudge the icon down a touch so its
+   center reads against the first title line for optical balance. */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item {
+  align-items: flex-start;
+}
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item__icon {
+  margin-top: 0.1rem;
+}
+
+/* [P027] ISSUE 2-0263: red NEW badge is vertically centered in the meta row at the
+   card bottom (level with timestamp) instead of the conventional top-right corner.
+   Pin it to the top-right of the card, aligned with the title row, and pull it out
+   of the meta flow so the timestamp can sit alone. */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item--unread {
+  position: relative;
+}
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item__new-badge {
+  position: absolute;
+  top: 1.25rem;          /* match card padding so it aligns with title row */
+  right: 1.25rem;
+  margin: 0;
+}
+/* Reserve right gutter on the meta/title so the absolute badge never overlaps text. */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item__body {
+  padding-right: 4rem;
+}
+
+/* [P027] ISSUE 2-0264 + 2-0267: unread cue (small low-contrast blue dot) is easy to
+   miss; reinforce with a bolder, higher-contrast left accent bar and a larger,
+   higher-contrast dot. The round-1 dot was 10px low-contrast #0077b6 — enlarge it,
+   raise the contrast, and add a stronger left accent so unread state reads clearly. */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item--unread {
+  border-left-width: 5px !important;
+  border-left-color: #0455a4 !important;   /* darker, higher-contrast accent vs the soft gradient */
+}
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item--unread .lms-notification-item__icon::after {
+  width: 13px;
+  height: 13px;
+  top: -3px;
+  right: -3px;
+  background: #d62828;                       /* high-contrast red marker against pale blue icon */
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(214, 40, 40, 0.35);
+}
+
+/* [P027] ISSUE 2-0265: timestamp + clock icon use #64748b on near-white / pale-blue
+   unread card backgrounds — below WCAG AA 4.5:1. Darken to a slate that clears AA
+   on both #ffffff and the pale-blue unread gradient. */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item__date,
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item__date i {
+  color: #475569 !important;                 /* ~7:1 on #fff, clears AA on tinted card too */
+}
+
+/* [P027] ISSUE 2-0266: read vs unread card borders look uneven — unread has a 4px
+   accent + gradient while read cards have a hairline grey border with no left accent,
+   so the stacked list weight jumps. Normalize: every card carries the same 5px-wide
+   left edge (transparent on read) and a consistent base border + radius. */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item {
+  border: 1px solid #d7e3ee !important;
+  border-left: 5px solid transparent !important;
+  border-radius: 14px !important;
+}
+
+/* [P027] ISSUE 2-0267: uneven internal vertical rhythm when body copy wraps to two
+   lines. Give all cards a consistent min-height and even line-height so single- and
+   multi-line bodies render with matching rhythm. */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item {
+  min-height: 7.5rem;
+}
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item__body p {
+  line-height: 1.55;
+}
+
+/* [P027] ISSUE 2-0268: bottom pagination controls are small/tightly packed — weak
+   tablet touch targets. Enlarge pager links to a 44px min tap target with clearer
+   spacing and a visible focus ring. (pager is a shared component pattern.) */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notifications-wrapper .pager__items {
+  gap: 0.6rem;
+}
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notifications-wrapper .pager__item a {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  width: auto;
+  padding: 0 0.5rem;
+  font-size: 1rem;
+}
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notifications-wrapper .pager__item a:focus-visible {
+  outline: 2px solid #0455a4;
+  outline-offset: 2px;
+}
+
+/* [P027] ISSUE 2-0269: floating back-to-top FAB sits close to the right edge of the
+   notification cards at tablet width and can overlap the NEW badge during scroll.
+   Push it further into the bottom-right corner and ensure it sits above the FAB.
+   Global component — fixed via its own class/id, no page scope. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  #lms-back-to-top,
+  .lms-back-to-top {
+    right: 1.5rem !important;
+    bottom: 2rem !important;
+    z-index: 1100 !important;
+  }
+}

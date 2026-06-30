@@ -1,0 +1,172 @@
+/* ==========================================================================
+   P009 — Article detail (route--lms-blog-frontend-canonical)
+   UI defect fixes. Loaded LAST. Inline styles on the paywall card / teaser
+   require !important to override; everything else uses normal specificity.
+   Brand tokens (from live theme):
+     brand navy text  : #1a2b4a
+     brand blue accent: #1f6feb  (hover #1858c4)
+     brand blue light : #58a6ff
+   ========================================================================== */
+
+/* [P009] ISSUE 1-0243, 1-0244, 1-0255: Paywall CTA buttons — unify on brand blue.
+   The card injects inline colors (#238636 green primary, #21262d near-black
+   secondary). Re-skin to a consistent brand-blue primary + outline secondary. */
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta .button--primary {
+  background: #1f6feb !important;
+  border: 1px solid #1f6feb !important;
+  color: #ffffff !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta .button--primary:hover {
+  background: #1858c4 !important;
+  border-color: #1858c4 !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta .button:not(.button--primary) {
+  background: transparent !important;
+  border: 1px solid #1f6feb !important;
+  color: #1f6feb !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta .button:not(.button--primary):hover {
+  background: rgba(31, 111, 235, 0.08) !important;
+  color: #1858c4 !important;
+  border-color: #1858c4 !important;
+}
+/* Keep both labels on one line (1-0255 desktop + mobile). */
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta .button {
+  white-space: nowrap;
+}
+
+/* [P009] ISSUE 1-0245: Teaser fade reads as a half-faded sentence fragment.
+   The inline gradient fades to near-black (rgba(13,17,23,1)) over a light page.
+   Re-point the fade to the white page background and start it lower so the last
+   visible line stays full-opacity before a clean fade. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > div[style*="linear-gradient"] {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.85) 60%,
+    rgba(255, 255, 255, 1) 100%
+  ) !important;
+  height: 96px !important;
+}
+
+/* [P009] ISSUE 1-0248, 1-0254: Dek / standfirst under H1 fails AA (4.5:1).
+   .lead.text-muted resolves to #6e7681 (~3:1 on white). Darken to slate. */
+body.route--lms-blog-frontend-canonical .article-container .lead.text-muted {
+  color: #475569 !important;
+}
+
+/* [P009] ISSUE 1-0249, 1-0260: Header right-side utilities — spacing + Login
+   contrast. Add a consistent right gutter and balance the two items; ensure
+   the Login link is dark enough for AA. (Global header component.) */
+.lms-navbar__actions {
+  gap: 1.25rem;
+  padding-right: 0.25rem;
+}
+.lms-navbar__actions .lms-navbar__link {
+  color: #1a2b4a;
+  font-weight: 600;
+}
+.lms-navbar__actions .lms-navbar__link:hover {
+  color: #1f6feb;
+}
+
+/* [P009] ISSUE 1-0251: Floating back-to-top control looks like a stray "+".
+   Give it a deliberate brand-blue circular style, fixed bottom-right, so it
+   never overlaps the article column or reads as orphaned. (Global component.) */
+#lms-back-to-top.lms-back-to-top {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  left: auto;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1f6feb;
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(31, 111, 235, 0.4);
+  cursor: pointer;
+  z-index: 1050;
+}
+#lms-back-to-top.lms-back-to-top:hover {
+  background: #1858c4;
+}
+#lms-back-to-top.lms-back-to-top i {
+  color: #ffffff;
+}
+
+/* [P009] ISSUE 1-0253: Mobile hamburger icon is near-invisible (low contrast).
+   Set it to brand navy for >=3:1 against the white header. (Global component.) */
+.lms-navbar__toggle {
+  color: #1a2b4a;
+}
+.lms-navbar__toggle i {
+  color: #1a2b4a;
+}
+
+/* [P009] ISSUE 1-0252: Mobile header overflow — Login/Register clipped at edge.
+   Constrain the actions cluster, tighten gap, and prevent horizontal overflow
+   so both utilities fit within the viewport. (Global component, mobile.) */
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    flex-wrap: nowrap;
+    overflow: hidden;
+    padding: 0 0.75rem;
+  }
+  .lms-navbar__actions {
+    gap: 0.5rem;
+    padding-right: 0;
+    flex-shrink: 0;
+  }
+  .lms-navbar__actions .lms-navbar__link,
+  .lms-navbar__actions .lms-btn {
+    white-space: nowrap;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* [P009] ISSUE 1-0256: "Back to News" pill wraps to two lines on mobile.
+   Keep the label on one line and let the pill grow. (Page-scoped.) */
+body.route--lms-blog-frontend-canonical .article-container .btn-outline-secondary {
+  white-space: nowrap;
+}
+
+/* [P009] ISSUE 1-0257: Mobile share cluster — LinkedIn icon drops to a 2nd row.
+   Force the share group onto one row beside the label. (Page-scoped, mobile.) */
+@media (max-width: 480px) {
+  body.route--lms-blog-frontend-canonical .article-container .social-share {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    white-space: nowrap;
+  }
+  body.route--lms-blog-frontend-canonical .article-container .social-share .me-3 {
+    margin-right: 0.5rem !important;
+  }
+  body.route--lms-blog-frontend-canonical .article-container .social-share .btn {
+    flex: 0 0 auto;
+    margin-right: 0.35rem !important;
+  }
+  /* Allow the footer row itself to stack so the share row has full width. */
+  body.route--lms-blog-frontend-canonical .article-container .mt-5.pt-4 .d-flex {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}
+
+/* [P009] ISSUE 1-0261: Large empty gap before footer on mobile after the gated
+   article. Tighten the article-footer bottom spacing at small widths. */
+@media (max-width: 480px) {
+  body.route--lms-blog-frontend-canonical .article-container.py-5 {
+    padding-bottom: 1.5rem !important;
+  }
+  body.route--lms-blog-frontend-canonical .article-container .mt-5.pt-4 {
+    margin-top: 1.5rem !important;
+    padding-top: 1.5rem !important;
+  }
+}

@@ -1,0 +1,152 @@
+/* =====================================================================
+   P009 — Article detail (/news/166)  route--lms-blog-frontend-canonical
+   THIRD-pass fixes. Loads LAST. The prior round's selectors lost the
+   specificity war against css/medical.css (body.layout-medical.layout-
+   minimalist:not(.is-front-page):not(.is-workspace) ...) which scores
+   (0,5,0). Several rules here intentionally replicate that exact chain
+   and add the route class so we win on specificity AND order.
+   Body on this page: body.layout-medical.route--lms-blog-frontend-canonical.layout-minimalist
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   [P009] ISSUE 1-0248, 1-0254: Dek / standfirst under the H1
+   ("Exploring how Validation Therapy is replacing Reality Orientation...")
+   PRIOR FIX FAILED because medical.css sets
+     body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lead
+   = specificity (0,5,0) !important, which beat the old (0,3,1) override.
+   Replicate the SAME chain + the route class so we land at (0,6,0) and
+   force a slate that clears 4.5:1 on the near-white page background.
+   --------------------------------------------------------------------- */
+body.layout-medical.layout-minimalist.route--lms-blog-frontend-canonical:not(.is-front-page):not(.is-workspace) .lead,
+body.layout-medical.layout-minimalist.route--lms-blog-frontend-canonical:not(.is-front-page):not(.is-workspace) p.lead,
+body.layout-medical.layout-minimalist.route--lms-blog-frontend-canonical:not(.is-front-page):not(.is-workspace) p.lead.text-muted,
+body.layout-medical.layout-minimalist.route--lms-blog-frontend-canonical:not(.is-front-page):not(.is-workspace) .article-container .lead {
+  color: #334155 !important;   /* slate-700, ~9.0:1 on #ffffff */
+  opacity: 1 !important;
+}
+
+/* ---------------------------------------------------------------------
+   [P009] ISSUE 1-0245: Teaser fade reads as a half-faded sentence
+   fragment. PRIOR FIX FAILED (the fix file was never loaded; defect
+   persisted). Two root causes in the inline markup:
+     (a) wrapper has inline  overflow:hidden; max-height:250px  -> hard
+         cut lands mid-sentence ("...developed by Naomi Feil." orphan);
+     (b) the overlay fades to near-BLACK rgba(13,17,23,1) (a dark-mode
+         token) on a WHITE page, so the last visible line goes muddy.
+   Fix: drop the pixel hard-cut, clamp the paragraphs to whole lines so
+   the cut always lands on a full line, hide trailing paragraphs, and
+   re-point the overlay to fade to the white page background.
+   --------------------------------------------------------------------- */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] {
+  max-height: none !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+/* Clamp the first paragraph to a defined number of FULL lines. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > p:first-of-type {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 5 !important;
+  line-clamp: 5 !important;
+  overflow: hidden !important;
+  margin-bottom: 0 !important;
+}
+/* Hide later paragraphs entirely so the fade never crosses a fragment. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > p:not(:first-of-type) {
+  display: none !important;
+}
+/* Re-point the inline dark overlay to the WHITE page background and keep
+   it shallow so it sits below the last full line, reading as intentional. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > div[style*="linear-gradient"] {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.85) 65%,
+    rgba(255, 255, 255, 1) 100%
+  ) !important;
+  height: 70px !important;
+}
+
+/* ---------------------------------------------------------------------
+   [P009] ISSUE 1-0255: On mobile the green "Log In" CTA wraps to two
+   lines ("Log" / "In") while the dark "Register" sibling stays on one,
+   making two equal buttons look uneven. PRIOR FIX FAILED (not loaded).
+   Force single-line labels on both paywall buttons and let them shrink
+   their horizontal padding before wrapping. Inline styles -> !important.
+   --------------------------------------------------------------------- */
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+@media (max-width: 480px) {
+  /* Allow the row to keep both buttons on one line each without overflow. */
+  body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+}
+/* Keep "Register" from reading as un-themed near-black: brand-blue outline,
+   while "Log In" stays a clear green primary action. */
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button:not(.button--primary) {
+  background: #ffffff !important;
+  color: #1f6feb !important;
+  border: 1px solid #1f6feb !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button:not(.button--primary):hover {
+  background: #eaf2fe !important;
+  color: #1858c4 !important;
+  border-color: #1858c4 !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button.button--primary {
+  background: #1f8f3c !important;
+  border: 1px solid #1f8f3c !important;
+  color: #ffffff !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button.button--primary:hover {
+  background: #18772f !important;
+  border-color: #18772f !important;
+}
+
+/* ---------------------------------------------------------------------
+   [P009] ISSUE 1-0249, 1-0260: Header right-side utilities.
+   "Login" renders in a medium gray (low emphasis, fails contrast on
+   mobile) and the Login/Register cluster is cramped against the right
+   edge with mismatched treatment. PRIOR FIX FAILED (not loaded).
+   Give a consistent right gutter, balanced gap, and a dark navy "Login"
+   that matches the logo wordmark (>7:1) so it reads as a primary action.
+   Global header component -> no page scope.
+   --------------------------------------------------------------------- */
+.lms-navbar__actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1.25rem !important;
+  padding-right: 0.5rem;
+}
+.lms-navbar__actions .lms-navbar__link {
+  color: #142943 !important;   /* dark navy, matches logo wordmark, >7:1 */
+  font-weight: 600 !important;
+}
+.lms-navbar__actions .lms-navbar__link:hover,
+.lms-navbar__actions .lms-navbar__link:focus-visible {
+  color: #1f6feb !important;
+}
+
+/* ---------------------------------------------------------------------
+   [P009] ISSUE 1-0251: A small unlabeled circular control floats at the
+   right viewport edge (faint, clipped) on this article for anonymous
+   users. It is the floating sidebar toggle injected on layout-minimalist
+   pages; it is meaningless outside a lesson/learn layout. Hide any such
+   stray floating affordance on the article route so anonymous visitors
+   never see an orphaned control. (Targets known floating toggles only;
+   if the control is JS-injected with a different class this is a no-op
+   and the issue is deferred to markup.)
+   --------------------------------------------------------------------- */
+body.route--lms-blog-frontend-canonical .lms-floating-sidebar-toggle,
+body.route--lms-blog-frontend-canonical .article-container ~ .lms-floating-sidebar-toggle,
+body.route--lms-blog-frontend-canonical .lms-floating-toggle {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

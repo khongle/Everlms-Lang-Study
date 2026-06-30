@@ -1,0 +1,149 @@
+/* ==========================================================================
+   P041 — Issued Certificates (Certificate Management) UI fixes
+   Loads LAST. Page container class: .lms-admin (route_class empty).
+   ========================================================================== */
+
+/* [P041] ISSUE 1-0868: Sidebar brand 'SilverCare' too pale on near-black sidebar */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span {
+  color: #f1f5f9 !important;
+}
+
+/* [P041] ISSUE 1-0869: Table header is a jarring saturated-blue band — harmonize
+   with the dark surface palette (elevated navy + muted uppercase labels). */
+.lms-admin .lms-table thead th {
+  background-color: #1e293b !important;
+  color: #cbd5e1 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid rgba(29, 112, 245, 0.55) !important;
+}
+
+/* [P041] ISSUE 1-0870: CODE column values too dim (inline #94a3b8) */
+.lms-admin .lms-table td span[style*="monospace"] {
+  color: #cbd5e1 !important;
+}
+
+/* [P041] ISSUE 1-0872 + 1-0886: DATE cells (3rd col) wrap short dates onto two
+   lines; keep dates on a single line. (Also helps the footer summary below.) */
+.lms-admin .lms-table tbody td:nth-child(3) {
+  white-space: nowrap;
+}
+
+/* [P041] ISSUE 1-0871: Per-row action buttons (View PDF / Regenerate / Revoke)
+   form a ragged, uneven cluster. Align them into a consistent right-aligned
+   flex row with equal-width buttons and predictable gap across all rows. */
+.lms-admin .lms-table tbody td:last-child {
+  white-space: nowrap;
+}
+.lms-admin .lms-table tbody td:last-child {
+  /* turn the actions cell into a flex container */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+}
+.lms-admin .lms-table tbody td:last-child > a {
+  margin-left: 0 !important;       /* drop the inline left-margins */
+  min-width: 7.25rem;              /* equal width for all action buttons */
+  justify-content: center;         /* center icon + label within button */
+  box-sizing: border-box;
+}
+
+/* [P041] ISSUE 1-0873: Footer 'Showing N entries' count nearly invisible
+   (inline #64748b) — raise to a legible muted tone. */
+.lms-admin .lms-admin-footer > div[style*="#64748b"] {
+  color: #cbd5e1 !important;
+}
+
+/* [P041] ISSUE 1-0876: Row dividers nearly invisible — strengthen separators. */
+.lms-admin .lms-table td {
+  border-bottom-color: rgba(255, 255, 255, 0.09) !important;
+}
+
+/* [P041] ISSUE 1-0877: Stat-card uppercase labels too dim relative to the value.
+   Lighten + add letter-spacing for readability. (inline #94a3b8 on labels) */
+.lms-admin .lms-admin-card > div[style*="uppercase"] {
+  color: #cbd5e1 !important;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   MOBILE (<= 768px) — collapse the desktop rail so it no longer steals a
+   third of the narrow viewport, give content full width, and stop the table /
+   filter / stat cards / heading from overflowing off-screen.
+   ISSUES: 1-0878, 1-0879, 1-0880, 1-0881, 1-0882, 1-0886
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* [P041] ISSUE 1-0878 + 1-0875: Sidebar collapses from a fixed 260px overlay
+     to a full-width, auto-height static bar at the top so it no longer clips
+     the profile row nor consumes a third of the screen. */
+  .lms-admin {
+    flex-direction: column;
+  }
+  .lms-admin .lms-admin__sidebar {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .lms-admin .lms-admin__sidebar-profile {
+    margin-top: 0; /* no longer needs to be pinned; flows naturally */
+  }
+
+  /* [P041] ISSUE 1-0879 + 1-0880: Main content takes the full viewport width
+     (no left offset) and uses comfortable mobile padding. */
+  .lms-admin .lms-admin__main {
+    margin-left: 0 !important;
+    padding: 1.25rem !important;
+    width: 100%;
+  }
+
+  /* [P041] ISSUE 1-0880: H1 no longer mid-word broken / clipped. */
+  .lms-admin .lms-admin__title {
+    word-break: normal;
+    overflow-wrap: anywhere;
+    font-size: clamp(1.25rem, 6vw, 1.75rem);
+  }
+
+  /* [P041] ISSUE 1-0881: KPI stat cards stack vertically instead of overflowing. */
+  .lms-admin .lms-admin__main > div[style*="repeat(3, 1fr)"] {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* [P041] ISSUE 1-0882: Filter toolbar stacks full-width on mobile. */
+  .lms-admin .lms-admin-filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .lms-admin .lms-admin-filter__group,
+  .lms-admin .lms-admin-filter__group[style] {
+    flex: 1 1 auto !important;
+    width: 100%;
+  }
+  .lms-admin .lms-admin-filter .lms-btn,
+  .lms-admin .lms-admin-filter .btn-lms-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* [P041] ISSUE 1-0879: Table scrolls horizontally inside its own card
+     container rather than being clipped by page overflow. */
+  .lms-admin .lms-table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lms-admin .lms-table {
+    min-width: 720px; /* preserve column layout; container scrolls */
+  }
+
+  /* [P041] ISSUE 1-0886: Footer summary stays on a single line. */
+  .lms-admin .lms-admin-footer > div {
+    white-space: nowrap;
+  }
+}

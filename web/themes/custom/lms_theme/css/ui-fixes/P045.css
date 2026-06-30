@@ -1,0 +1,163 @@
+/* ==========================================================================
+   P045 — Workspace Reports & Analytics (/workspace/reports)
+   Scope: admin layout (.lms-admin) injected by lms-admin-sidebar.html.twig.
+   This partial loads LAST; admin styles are inline <style> in the sidebar
+   template, so equal-specificity rules win by source order; !important is
+   used only to beat element-level inline style="" attributes.
+   ========================================================================== */
+
+/* [P045] ISSUE 1-0933, 1-0945: Sidebar brand wordmark contrast (desktop+mobile).
+   Brand text "SilverCare" rendered dim against dark sidebar (#161b22).
+   Force a near-white, higher-weight wordmark for >= 4.5:1 contrast. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span,
+.lms-admin .lms-admin__sidebar-brand a i {
+  color: #f1f5f9; /* slate-100 on #161b22 -> contrast ~16:1 */
+  font-weight: 800;
+}
+
+/* [P045] ISSUE 1-0935: Completion-rate cell — stop stacking the % below the bar.
+   Place the percent inline to the right of the progress track so rows are
+   shorter and the value aligns with the bar it represents.
+   Cell = .lms-table td containing the inline progress markup. */
+.lms-admin .lms-table td > div[style*="background: #334155"] {
+  display: inline-block !important;
+  width: calc(100% - 56px) !important;
+  vertical-align: middle !important;
+  margin-bottom: 0 !important;
+}
+.lms-admin .lms-table td > div[style*="background: #334155"] + small {
+  display: inline-block !important;
+  width: 48px;
+  margin-left: 8px;
+  text-align: right;
+  vertical-align: middle !important;
+  color: #cbd5e1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* [P045] ISSUE 1-0938: Numeric column alignment / column rhythm.
+   Keep enrollments/completions/rate centered (matches centered headers) and
+   tighten oversized cell padding so columns read across cleanly. */
+.lms-admin .lms-table th[style*="text-align: center"],
+.lms-admin .lms-table td[style*="text-align: center"] {
+  text-align: center !important;
+}
+.lms-admin .lms-table th,
+.lms-admin .lms-table td {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* [P045] ISSUE 1-0936: Excess empty band between chart block and table.
+   Tighten the chart card's bottom margin and cap the canvas wrapper so the
+   table starts closer to the chart. */
+.lms-admin #course-analytics .lms-card[style*="margin-bottom: 2rem"] {
+  margin-bottom: 1rem !important;
+  padding: 1rem 1.25rem !important;
+}
+.lms-admin #course-analytics canvas#courseAnalyticsChart {
+  display: block;
+}
+
+/* ==========================================================================
+   MOBILE (<= 480px) — root cause for 1-0939..1-0947.
+   The sidebar is position:fixed; width:260px and main has margin-left:260px,
+   with NO mobile breakpoint, so the fixed sidebar overlays content and squeezes
+   it into a ~120px strip. There is no hamburger button in the markup, so a true
+   JS off-canvas toggle cannot be added in CSS; instead we un-fix the sidebar so
+   it stacks on top and give the content full width — which resolves the
+   unreadable/overflowing content (the critical defects).
+   ========================================================================== */
+@media (max-width: 480px) {
+
+  /* [P045] ISSUE 1-0939: Stack sidebar instead of fixed overlay; free content. */
+  .lms-admin {
+    flex-direction: column !important;
+  }
+  .lms-admin .lms-admin__sidebar {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    z-index: 1;
+  }
+  /* [P045] ISSUE 1-0939, 1-0940, 1-0941, 1-0943: content takes full width. */
+  .lms-admin .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 1rem !important;
+    min-width: 0;
+  }
+
+  /* [P045] ISSUE 1-0940: H1 must not break mid-word in the formerly narrow column. */
+  .lms-admin .lms-admin__title {
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+    font-size: 1.4rem;
+  }
+
+  /* [P045] ISSUE 1-0941, 1-0947: KPI cards stack full width; consistent icon gap. */
+  .lms-admin .lms-kpi-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+  .lms-admin .lms-kpi-card {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .lms-admin .lms-kpi-card__label,
+  .lms-admin .lms-kpi-card__value {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  /* [P045] ISSUE 1-0942: Tab bar scrolls horizontally instead of clipping. */
+  .lms-admin .lms-report-tabs__list {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    gap: 1.25rem !important;
+  }
+  .lms-admin .lms-report-tabs__item {
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  /* [P045] ISSUE 1-0943: Data tables scroll inside a constrained container
+     instead of breaking 1-3 chars per line / inflating page height. */
+  .lms-admin .lms-table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lms-admin .lms-table {
+    min-width: 640px; /* keep cells readable; container scrolls */
+  }
+
+  /* [P045] ISSUE 1-0944: Section header (heading + Export button) stacks
+     with spacing; export button goes full width. */
+  .lms-admin #course-analytics > div[style*="justify-content: space-between"],
+  .lms-admin .lms-report-tab-content > div[style*="justify-content: space-between"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+  .lms-admin .lms-report-tab-content a.btn-lms-primary {
+    width: 100%;
+    justify-content: center !important;
+  }
+
+  /* [P045] ISSUE 1-0946: Remove oversized top band above H1 on mobile. */
+  .lms-admin .lms-admin__main > .lms-admin__title:first-child {
+    margin-top: 0;
+  }
+}

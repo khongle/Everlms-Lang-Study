@@ -1,0 +1,86 @@
+/* ==========================================================================
+   P019 — Lesson Player (route--lms-progress-lesson-view)
+   UI defect fixes. Loaded LAST. Page-specific rules carry the route class for
+   extra specificity to beat earlier light-mode !important declarations.
+   ========================================================================== */
+
+/* [P019] ISSUE 1-0464, 1-0475: Lesson body copy too light (muted blue-gray).
+   Prior #334155 still reads as low-contrast blue-gray; darken to near-#222
+   neutral gray (contrast vs #fff/#f8fafc ~12:1, comfortably WCAG AA/AAA). */
+body.route--lms-progress-lesson-view .lms-learn__text-content,
+body.route--lms-progress-lesson-view .lms-learn__text-content p,
+body.route--lms-progress-lesson-view .lms-learn__text-content li,
+body.route--lms-progress-lesson-view .lms-learn__text-content span,
+body.route--lms-progress-lesson-view .lms-learn__description,
+body.route--lms-progress-lesson-view .lms-learn__description p,
+body.route--lms-progress-lesson-view .lms-learn__description li,
+body.route--lms-progress-lesson-view .lms-learn__description span,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__text-content p,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__text-content li,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__text-content span,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__description,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__description * {
+  color: #222831 !important;
+}
+
+/* [P019] ISSUE 1-0467: Active sidebar lesson row sits "proud" of siblings —
+   solid full-width light-blue fill + no left accent. Soften the fill, add a
+   subtle left accent that lives inside the same inset as inactive rows, and
+   keep the same padding so it sits flush with siblings. */
+body.route--lms-progress-lesson-view .lms-learn__lesson-item--active a,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__lesson-item--active a {
+  background: #eef2ff !important;            /* softer than #e0e7ff */
+  border-left: 3px solid #4f46e5 !important; /* accent inside the inset row */
+  padding-left: calc(1rem - 3px) !important; /* keep text aligned w/ siblings */
+}
+
+/* [P019] ISSUE 1-0476: Active "Overview" pill clipped by the rounded
+   tab-container corner. Give the pill container more inner padding so the
+   first/active pill keeps a clean inset from the 999px border-radius. */
+body.route--lms-progress-lesson-view .lms-nav-tabs,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-nav-tabs {
+  padding: 0.5rem !important;
+}
+body.route--lms-progress-lesson-view .lms-nav-tabs .lms-tab-item.active,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-nav-tabs .lms-tab-item.active {
+  /* shadow no longer bleeds against the container edge */
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.22) !important;
+}
+
+/* [P019] ISSUE 1-0477: H1 lesson title sits with tight top/left padding inside
+   the white card, especially on mobile. Add generous, consistent padding to
+   the title block so the heading breathes within the card. */
+body.route--lms-progress-lesson-view .lms-learn__title-wrap,
+body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__title-wrap {
+  padding: 1.75rem 1.5rem 0.5rem !important;
+}
+@media (max-width: 480px) {
+  body.route--lms-progress-lesson-view .lms-learn__title-wrap,
+  body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__title-wrap {
+    padding: 1.5rem 1.25rem 0.5rem !important;
+  }
+  /* keep the top control row aligned with the new title gutter */
+  body.route--lms-progress-lesson-view .lms-learn__top-bar,
+  body.layout-minimalist.route--lms-progress-lesson-view .lms-learn__top-bar {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+}
+
+/* [P019] ISSUE 1-0478: Footer brand lockup and column headings have
+   inconsistent left alignment / uneven vertical rhythm. Normalize the gutter
+   so the brand and every column heading share the same left edge, with even
+   spacing below the brand. Global footer component (no page scope). */
+.lms-footer__col {
+  text-align: left;
+}
+.lms-footer__col .lms-footer__brand,
+.lms-footer__col .lms-footer__brand-link,
+.lms-footer__col .lms-footer__title,
+.lms-footer__col h4 {
+  margin-left: 0;
+  padding-left: 0;
+}
+.lms-footer__col .lms-footer__brand {
+  margin-bottom: 1rem;
+}

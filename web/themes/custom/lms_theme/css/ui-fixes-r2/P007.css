@@ -1,0 +1,71 @@
+/* ============================================================
+   P007 — Instructor Profile (route--lms-course-instructor-profile)
+   UI fixes round 2. Active skin: medical / brand SilverCare.
+   The course cards inherit a dark-theme palette but render on a
+   light medical page, producing several low-contrast / alignment
+   defects. Card components are global (used across pages) so the
+   contrast + sizing fixes target the .card-lms component directly;
+   the hero stats fix is page-scoped.
+   ============================================================ */
+
+/* [P007] ISSUE 2-0067: "Free" price label illegible (bright green on white) */
+/* Match the visual weight/contrast of paid price labels: dark + bold. */
+.card-lms__price--free {
+  color: #047857;          /* deep emerald, AA on white (contrast ~5.0:1) */
+  font-weight: 800;
+}
+
+/* [P007] ISSUE 2-0077: "Enroll Now" CTA too low contrast (light text + near-invisible white border on white) */
+/* Give the outline CTA a real, AA-contrast primary-accent treatment.
+   Inline border-color: rgba(255,255,255,0.2) must be beaten with !important. */
+.btn-lms-outline {
+  color: #0077b6;                /* medical accent, AA on white */
+  border-color: #0077b6 !important;
+  border-width: 1.5px;
+  font-weight: 700;
+}
+.btn-lms-outline:hover,
+.btn-lms-outline:focus-visible {
+  color: #ffffff;
+  background: #0077b6;
+  border-color: #0077b6 !important;
+}
+.btn-lms-outline:focus-visible {
+  outline: 2px solid #023e62;
+  outline-offset: 2px;
+}
+
+/* [P007] ISSUE 2-0073 + 2-0078: sibling cards misalign when titles wrap to 1 vs 2 lines */
+/* Reserve a fixed 2-line title block and a min description height so the
+   instructor / meta / price rows share baselines across a row.
+   Cards are flex columns with footer margin-top:auto, so equalising the
+   upper blocks keeps footers aligned too. */
+.card-lms__title {
+  min-height: 3.08em;   /* 2 lines at line-height 1.4, font-size 1.1rem */
+}
+.card-lms__desc {
+  min-height: 2.55em;   /* 2 lines at line-height ~1.5, font-size 0.85rem */
+}
+
+/* [P007] ISSUE 2-0074: category badges vary wildly in width, long ones dominate the thumbnail */
+/* Cap badge width and ellipsis-truncate overly long category names so badges stay balanced. */
+.card-lms__category {
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [P007] ISSUE 2-0069: hero stats pill — groups read as a loose cluster, uneven gaps, no dividers */
+/* Distribute groups evenly and add subtle vertical dividers between them. */
+body.route--lms-course-instructor-profile .lms-instructor-profile__stats {
+  gap: 0;
+  justify-content: space-evenly;
+}
+body.route--lms-course-instructor-profile .lms-instructor-profile__stat {
+  padding: 0 1.5rem;
+  flex: 1 1 0;
+}
+body.route--lms-course-instructor-profile .lms-instructor-profile__stat + .lms-instructor-profile__stat {
+  border-left: 1px solid rgba(0, 119, 182, 0.18);
+}

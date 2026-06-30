@@ -1,0 +1,115 @@
+/* ==========================================================================
+   P019 — Lesson Player (route--lms-progress-lesson-view)
+   UI fixes round 2. Loads LAST.
+   ========================================================================== */
+
+/* [P019] ISSUE 2-0193: Player container clips embedded content at its rounded
+   bottom border. Lock the media surface to a stable aspect ratio, clip cleanly
+   at the rounded edge and let the iframe fully fill it so no text is sliced. */
+body.route--lms-progress-lesson-view .lms-learn__player .lms-learn__video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+}
+body.route--lms-progress-lesson-view .lms-learn__player .lms-learn__iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
+  display: block;
+}
+/* SCORM/PPTX surfaces are taller and need internal scrolling, not clipping. */
+body.route--lms-progress-lesson-view .lms-learn__player .lms-learn__video-wrapper--scorm,
+body.route--lms-progress-lesson-view .lms-learn__player .lms-learn__video-wrapper--pptx {
+  aspect-ratio: auto;
+  min-height: 70vh;
+}
+body.route--lms-progress-lesson-view .lms-learn__player .lms-learn__video-wrapper--scorm .lms-learn__iframe,
+body.route--lms-progress-lesson-view .lms-learn__player .lms-learn__video-wrapper--pptx .lms-learn__iframe {
+  position: relative;
+  inset: auto;
+  height: 70vh;
+}
+
+/* [P019] ISSUE 2-0194: Back-to-top FAB overlaps the player frame on tablet.
+   Lift its z-index above the player and add clearance so it sits clear of the
+   media surface in the viewport corner. (Global component class.) */
+#lms-back-to-top,
+.lms-back-to-top {
+  z-index: 1300 !important;
+  right: clamp(16px, 3vw, 32px) !important;
+  bottom: clamp(20px, 4vw, 36px) !important;
+}
+
+/* [P019] ISSUE 2-0196: Active "Overview" tab pill breaks above the rounded
+   tab-bar top edge and gets clipped. Let the bar show its pill fully, center
+   items, and normalise the pill height so it stays inside the bar bounds. */
+body.route--lms-progress-lesson-view .lms-nav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  overflow: visible !important;
+  padding: 0.45rem !important;
+  line-height: normal !important;
+}
+body.route--lms-progress-lesson-view .lms-nav-tabs .lms-tab-item,
+body.route--lms-progress-lesson-view .lms-nav-tabs .lms-tab-item.active {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 !important;
+  padding: 0.5rem 0.95rem !important;
+  line-height: 1.1 !important;
+  vertical-align: middle;
+}
+
+/* [P019] ISSUE 2-0197: Lesson prose renders in a desaturated blue-grey that is
+   too light for long-form reading. Darken to a dark slate that clears WCAG AA
+   on the white / very-light prose background. (#1f2933 ≈ 13:1 on #ffffff.) */
+body.route--lms-progress-lesson-view .lms-learn__description,
+body.route--lms-progress-lesson-view .lms-learn__description p,
+body.route--lms-progress-lesson-view .lms-learn__description li,
+body.route--lms-progress-lesson-view .lms-learn__description span,
+body.route--lms-progress-lesson-view .lms-learn__text-content,
+body.route--lms-progress-lesson-view .lms-learn__text-content p,
+body.route--lms-progress-lesson-view .lms-learn__text-content li,
+body.route--lms-progress-lesson-view .lms-learn__text-content span {
+  color: #1f2933 !important;
+}
+
+/* [P019] ISSUE 2-0198: On tablet the curriculum/progress panel is pushed far
+   below the article, forcing long scrolling to reach lesson navigation. Switch
+   to a two-column layout at tablet width with a sticky, self-scrolling sidebar
+   so navigation stays reachable next to the content. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-progress-lesson-view .lms-learn {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: start;
+    gap: 1.5rem;
+  }
+  body.route--lms-progress-lesson-view .lms-learn__main {
+    min-width: 0;
+  }
+  body.route--lms-progress-lesson-view .lms-learn__sidebar {
+    position: sticky;
+    top: 84px;
+    max-height: calc(100vh - 104px);
+    overflow-y: auto;
+  }
+}
+
+/* [P019] ISSUE 2-0200: Notification bell badge sits tightly on the glyph with
+   no separation. Offset it cleanly to the top-right and add a white ring so it
+   reads as a distinct count chip. (Global header component.) */
+.lms-bell-icon-wrapper .lms-bell-counter {
+  top: -6px;
+  right: -8px;
+  transform: translate(25%, -25%);
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 119, 182, 0.24), 0 0 0 1px rgba(0, 119, 182, 0.15);
+}

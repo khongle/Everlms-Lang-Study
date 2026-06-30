@@ -1,0 +1,188 @@
+/* ============================================================
+   P043 — /manage/blog  (route--system-403  Access denied)
+   THIRD-pass fixes. Active body classes:
+     layout-medical route--system-403 is-workspace
+   IMPORTANT: this page carries .is-workspace, so every theme rule
+   scoped `:not(.is-workspace)` (medical.css etc.) is INERT here.
+   Prior passes failed because their selectors EXCLUDED .is-workspace
+   (e.g. body.layout-medical:not(.is-workspace) #lms-back-to-top) and
+   so never matched. This partial loads LAST; selectors below do NOT
+   exclude .is-workspace, and use !important to beat in-body <style>.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   [P043] ISSUE 1-0905: styled access-denied state.
+   Keep the centered card + lock icon + "Access denied" heading
+   robust on the is-workspace 403 page (re-asserted with high
+   specificity so it survives regardless of skin scoping).
+   ------------------------------------------------------------ */
+body.route--system-403 .lms-page__content {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+body.route--system-403 #block-lms-theme-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 560px;
+  width: 100%;
+  margin: 2.5rem auto;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  color: #334155;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+/* Decorative lock icon above the heading. */
+body.route--system-403 #block-lms-theme-content::before {
+  content: "\f023"; /* Font Awesome lock */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  order: -2;
+  display: block;
+  font-size: 2.75rem;
+  line-height: 1;
+  color: #0077b6;
+  margin-bottom: 1rem;
+}
+
+/* Injected "Access denied" heading above the message text. */
+body.route--system-403 #block-lms-theme-content::after {
+  content: "Access denied";
+  order: -1;
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.75rem;
+  line-height: 1.2;
+}
+
+/* ------------------------------------------------------------
+   [P043] ISSUE 1-0907: huge blank band before the footer on the
+   sparse 403 page (PRIOR FIX FAILED on mobile — content stuck to
+   the top of an over-tall region instead of centering).
+   Give the content region an explicit, viewport-driven min-height
+   and let the flex column center the card vertically. On mobile we
+   pin a tighter min-height so the card centers in the visible band
+   rather than leaving a tall empty strip below it.
+   ------------------------------------------------------------ */
+body.route--system-403 .lms-page__content {
+  min-height: calc(100vh - 220px) !important;
+  padding: 3rem 1rem 4rem !important;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  body.route--system-403 .lms-page__content {
+    /* header ~64px; keep the card centered in the remaining band so
+       no large gap forms above the footer. */
+    min-height: calc(100vh - 140px) !important;
+    padding: 2rem 1.25rem !important;
+  }
+  body.route--system-403 #block-lms-theme-content {
+    margin: 0 auto !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   [P043] ISSUE 1-0903: footer column headings not top-aligned —
+   QUICK LINKS sits a full logo+tagline block below COURSE /
+   SUPPORTS / CONTACT INFO (PRIOR FIX FAILED — tightening the brand
+   block margins was not enough; the logo+description still pushes
+   QUICK LINKS down). Deliberate fix: bring all four headings onto a
+   common row by reserving matching space ABOVE the headings in the
+   other three columns (where column 1 carries the logo/tagline).
+   This reads as an intentional shared heading grid.
+   ------------------------------------------------------------ */
+@media (min-width: 769px) {
+  body.route--system-403 .lms-footer__grid {
+    align-items: start;
+  }
+  /* Reserve the logo+tagline height above the headings of cols 2-4
+     so their headings line up with QUICK LINKS in col 1. */
+  body.route--system-403 .lms-footer__col:not(:first-child) {
+    padding-top: 4.75rem;
+  }
+  /* Tighten the brand block so QUICK LINKS sits at a predictable
+     offset that the reserved padding above matches. */
+  body.route--system-403 .lms-footer__col:first-child .lms-footer__brand {
+    margin-bottom: 0.5rem;
+  }
+  body.route--system-403 .lms-footer__col:first-child .lms-footer__description {
+    margin-bottom: 0.85rem;
+  }
+  body.route--system-403 .lms-footer__col:first-child h4 {
+    margin-top: 0;
+  }
+}
+
+/* ------------------------------------------------------------
+   [P043] ISSUE 1-0911: notification bell badge contrast (mobile).
+   The bell block ships an in-body <style> setting the counter to a
+   mid-tone teal gradient (#0077b6 → #0096c7) with small offset that
+   overlaps the glyph. That <style> sits later in document order than
+   this <head> partial, so we MUST use !important to win. Switch to a
+   high-contrast solid red, add a white ring, and nudge the offset so
+   it no longer overlaps the bell.
+   ------------------------------------------------------------ */
+.lms-bell-icon-wrapper .lms-bell-counter {
+  background: #dc2626 !important;        /* red-600: AA white-on-red */
+  background-image: none !important;     /* kill the teal gradient */
+  color: #ffffff !important;
+  top: -7px !important;
+  right: -7px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  padding: 0 0.3rem !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4) !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+/* ------------------------------------------------------------
+   [P043] ISSUE 1-0913: scroll-to-top FAB overlaps the footer
+   columns on mobile (PRIOR FIX FAILED — prior rules were scoped
+   `:not(.is-workspace)` / `.layout-minimalist` and never matched on
+   this is-workspace medical page; the active FAB rule is the
+   unscoped `#lms-back-to-top.lms-back-to-top`).
+   Re-pin the FAB with selectors that DO match here, raise its
+   z-index, and reserve a bottom gutter on the footer so the button
+   can never sit on top of footer text/links.
+   ------------------------------------------------------------ */
+#lms-back-to-top.lms-back-to-top,
+body.route--system-403 #lms-back-to-top {
+  position: fixed !important;
+  right: 1.25rem !important;
+  bottom: 1.5rem !important;
+  left: auto !important;
+  z-index: 1300 !important;
+}
+
+body.route--system-403 .lms-footer {
+  padding-bottom: 5rem !important;
+}
+
+@media (max-width: 768px) {
+  #lms-back-to-top.lms-back-to-top,
+  body.route--system-403 #lms-back-to-top {
+    right: 12px !important;
+    bottom: 16px !important;
+  }
+  body.route--system-403 .lms-footer {
+    /* taller gutter so the FAB clears the CONTACT INFO / copyright
+       block on the stacked mobile footer. */
+    padding-bottom: 6rem !important;
+  }
+}

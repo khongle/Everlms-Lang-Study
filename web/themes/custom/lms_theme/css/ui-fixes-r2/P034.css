@@ -1,0 +1,111 @@
+/* ============================================================
+   P034 — Manage Quizzes (/workspace/quizzes)
+   Theme: lms_theme | skin: medical | brand: SilverCare
+   Tablet (481–1024px) fixes for the Quiz Management table.
+   This partial loads LAST.
+   ============================================================ */
+
+/* [P034] ISSUE 2-0328, 2-0329, 2-0330, 2-0331, 2-0334:
+   Table cells collapse to one-char-per-line vertical stacks at tablet
+   because the .lms-table-responsive wrapper never actually scrolls and
+   the table has no min-width. Force real horizontal scroll, give the
+   table a content-sized min-width, keep every cell on one line, and
+   center cells vertically so the row reads as a coherent grid. */
+.lms-table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.lms-table {
+  /* Stop the table from squeezing columns into vertical character stacks;
+     8 columns need real horizontal room — let the wrapper scroll instead. */
+  min-width: 760px;
+  table-layout: auto;
+}
+.lms-table th,
+.lms-table td {
+  white-space: nowrap;        /* "280 min" / "50%" stay on one line */
+  vertical-align: middle;     /* title, None, Qs, time, % share a baseline */
+}
+
+/* [P034] ISSUE 2-0331:
+   Per-row right-border / column separator artifact is the result of the
+   collapsed grid; once columns no longer collapse, ensure no stray
+   vertical rule bisects content. Borders are bottom-only on .lms-table td;
+   neutralize any inherited left/right cell borders. */
+.lms-table th,
+.lms-table td {
+  border-left: 0;
+  border-right: 0;
+}
+
+/* [P034] ISSUE 2-0333:
+   Row highlight only covered the (white, bold) title cell, producing
+   partial zebra striping. Apply hover/stripe background to the whole row
+   and make individual cells transparent so the highlight spans full width. */
+.lms-table tbody tr:hover {
+  background: rgba(102, 126, 234, 0.06);
+}
+.lms-table tbody tr:hover > td {
+  background: transparent;
+}
+.lms-table tbody tr:nth-child(even) > td {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+/* [P034] ISSUE 2-0336:
+   Tall, sparsely filled rows leave large vertical voids. Tighten row
+   height once content no longer wraps so rows pack consistently. */
+.lms-table td {
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  line-height: 1.4;
+}
+
+/* [P034] ISSUE 2-0335:
+   "+ Create New Quiz" primary CTA stretched to full content width like a
+   banner. Constrain to content width with standard CTA padding and keep
+   it right-aligned within the header toolbar. The header actions wrapper
+   is otherwise unstyled, so define it. */
+.lms-admin-header__actions {
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  align-items: center;
+}
+.lms-admin-header__actions .btn-lms-primary {
+  display: inline-flex;
+  width: auto;
+  max-width: max-content;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 0.625rem 1.25rem;
+}
+
+/* Tablet-specific reinforcement (481–1024px): the workspace has BOTH a
+   left admin sidebar and a 300px Quick-Stats column, so the table area is
+   very narrow here — this is exactly where the column collapse appears. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  /* Keep header on one row with a content-sized button, not a banner. */
+  .lms-admin__header {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 1rem;
+  }
+  .lms-admin-header__actions .btn-lms-primary {
+    width: auto;
+    max-width: max-content;
+  }
+
+  /* Guarantee the table scrolls rather than collapsing its columns. */
+  .lms-table-responsive {
+    overflow-x: auto;
+  }
+  .lms-table {
+    min-width: 760px;
+  }
+  .lms-table th,
+  .lms-table td {
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+}

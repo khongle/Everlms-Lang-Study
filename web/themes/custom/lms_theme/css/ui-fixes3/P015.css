@@ -1,0 +1,44 @@
+/* ==========================================================================
+   [P015] Certificate Verify — third-pass UI fixes
+   Page route class: route--lms-certificate-verify
+   Loaded LAST; uses !important to beat stubborn existing rules / inline styles.
+   ========================================================================== */
+
+/* [P015] ISSUE 1-0370: Input placeholder too light/low-contrast on white field.
+   Raise placeholder color to >=3:1 (#6b7280 = ~4.83:1 on #fff) while still
+   reading as placeholder. Target the real input on this page. PRIOR FIX FAILED. */
+body.route--lms-certificate-verify .lms-certificate-verification-form .form-control::placeholder,
+body.route--lms-certificate-verify #edit-certificate-code::placeholder,
+body.route--lms-certificate-verify input[name="certificate_code"]::placeholder {
+  color: #6b7280 !important;
+  opacity: 1 !important; /* Firefox lowers placeholder opacity by default */
+}
+/* WebKit/legacy vendor-prefixed pseudo-elements for full coverage */
+body.route--lms-certificate-verify .lms-certificate-verification-form .form-control::-webkit-input-placeholder,
+body.route--lms-certificate-verify #edit-certificate-code::-webkit-input-placeholder {
+  color: #6b7280 !important;
+  opacity: 1 !important;
+}
+body.route--lms-certificate-verify .lms-certificate-verification-form .form-control::-moz-placeholder,
+body.route--lms-certificate-verify #edit-certificate-code::-moz-placeholder {
+  color: #6b7280 !important;
+  opacity: 1 !important;
+}
+body.route--lms-certificate-verify .lms-certificate-verification-form .form-control:-ms-input-placeholder,
+body.route--lms-certificate-verify #edit-certificate-code:-ms-input-placeholder {
+  color: #6b7280 !important;
+  opacity: 1 !important;
+}
+
+/* [P015] ISSUE 1-0376: Verify button has a heavy, offset drop shadow that looks
+   detached/inconsistent. Replace with a subtle, centered elevation. */
+body.route--lms-certificate-verify .lms-certificate-verification-form .button--primary,
+body.route--lms-certificate-verify .lms-certificate-verification-form #edit-submit,
+body.route--lms-certificate-verify .lms-certificate-verification-form input[type="submit"].btn {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12) !important;
+}
+body.route--lms-certificate-verify .lms-certificate-verification-form .button--primary:hover,
+body.route--lms-certificate-verify .lms-certificate-verification-form #edit-submit:hover,
+body.route--lms-certificate-verify .lms-certificate-verification-form input[type="submit"].btn:hover {
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.16) !important;
+}

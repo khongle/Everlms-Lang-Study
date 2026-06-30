@@ -1,0 +1,160 @@
+/* ==========================================================================
+   P002 — Course Catalog (/courses) UI fixes
+   Active skin: medical (SilverCare). Cards render on a light/white surface,
+   so dark-theme default text colors (#6e7681) are too faint for WCAG AA.
+   This partial loads LAST. !important is used ONLY where an inline style
+   on the target element must be beaten.
+   ========================================================================== */
+
+
+/* [P002] ISSUE 1-0084, 1-0111: card description body text contrast (AA) */
+/* #6e7681 on white ≈ 4.0:1 (fails AA). #4b5563 on white ≈ 7.5:1 (passes). */
+.card-lms__desc,
+.card-lms__desc a {
+  color: #4b5563;
+}
+
+
+/* [P002] ISSUE 1-0111: card meta / Level label contrast (AA) */
+/* Meta row + level icon were #6e7681; bump to #4b5563 for AA on white. */
+.card-lms__meta,
+.card-lms__level {
+  color: #4b5563;
+}
+.card-lms__level i {
+  color: #4b5563;
+}
+
+
+/* [P002] ISSUE 1-0095, 1-0110: reserve a consistent 2-line title block so
+   single- and double-line titles occupy equal height; this keeps the
+   instructor / description / meta rows aligned across cards in a row.
+   title font-size 1.1rem * line-height 1.4 * 2 lines ≈ 3.08rem. */
+.card-lms__title {
+  min-height: 3.08em;
+}
+
+
+/* [P002] ISSUE 1-0095: bottom-anchor the price/CTA footer so the meta rows
+   line up on a shared baseline and the CTA row is flush across the row. */
+.card-lms__footer {
+  margin-top: auto;
+}
+
+
+/* [P002] ISSUE 1-0096, 1-0108: enforce a clean 2-line CSS line-clamp on the
+   description (the server-side excerpt still appends a hard '...'; the
+   character trim itself is data and cannot be fixed in CSS, but we guarantee
+   a tidy fixed-height clamp so cards stay uniform). */
+.card-lms__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+
+
+/* [P002] ISSUE 1-0086, 1-0106: 'Enroll Now' is a ghost/outline button with
+   near-invisible low-contrast text on the white card. Promote it to a solid
+   filled primary CTA (medical brand blue) with white text — strong AA
+   contrast and a clear primary affordance. Inline styles set background /
+   border-color, so !important is required to beat them. */
+.card-lms__footer .btn-lms-outline,
+.card-lms__footer a.btn-lms-outline {
+  background: #0077b6 !important;
+  border: 1px solid #0077b6 !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+.card-lms__footer .btn-lms-outline:hover,
+.card-lms__footer a.btn-lms-outline:hover {
+  background: #0096c7 !important;
+  border-color: #0096c7 !important;
+  color: #ffffff !important;
+}
+.card-lms__footer .btn-lms-outline:focus-visible {
+  outline: 2px solid #023e58;
+  outline-offset: 2px;
+}
+
+
+/* [P002] ISSUE 1-0107: the sort <select> (#sort-courses) reads as an
+   ambiguous pill with no dropdown indicator. Add an explicit chevron so it
+   clearly signals a dropdown. Native arrow suppressed to avoid doubling. */
+#sort-courses.lms-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  padding-right: 2.25rem;
+}
+
+
+/* [P002] ISSUE 1-0112: RATING filter empty stars use #6e7681 (.text-muted),
+   nearly the same dark tone as filled gold, so empty vs filled is hard to
+   tell apart. Make empty stars a light grey so the threshold is obvious. */
+.lms-rating-stars .fa-star.text-muted,
+.lms-catalog__filter-group .fa-star.text-muted {
+  color: #cbd5e1 !important;
+}
+.lms-rating-stars .fa-star.text-warning {
+  color: #f5b50a !important;
+}
+
+
+/* [P002] ISSUE 1-0099: on mobile both the hamburger toggle AND the inline
+   Login/Register links show, which is redundant and crowds the bar. The nav
+   already collapses into the toggle below 992px; collapse the auth actions
+   too so the hamburger is the single navigation affordance. */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    display: none;
+  }
+}
+
+
+/* [P002] ISSUE 1-0105: long category badge on mobile sits edge-to-edge with
+   minimal inset. Give it a comfortable inset from the image edge, generous
+   horizontal padding, and cap its width with ellipsis for very long labels. */
+@media (max-width: 480px) {
+  .card-lms__category {
+    padding: 0.3rem 0.85rem;
+    max-width: calc(100% - 1.5rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* the badge wrapper is inline-styled at 0.5rem from the edge; nudge it in */
+  .card-lms__image > div[style*="position: absolute"] {
+    left: 0.75rem !important;
+    right: 0.75rem !important;
+  }
+}
+
+
+/* [P002] ISSUE 1-0109: stacked mobile footer — columns hug the left edge with
+   uneven vertical spacing between groups. Apply consistent column padding and
+   an even top-margin rhythm between the stacked footer sections. */
+@media (max-width: 576px) {
+  .lms-footer__container {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  .lms-footer__grid {
+    gap: 1.75rem;
+  }
+  .lms-footer__col + .lms-footer__col {
+    margin-top: 0.25rem;
+  }
+  .lms-footer__col h4 {
+    margin-bottom: 0.75rem;
+  }
+  .lms-footer__col ul {
+    margin: 0;
+    padding: 0;
+  }
+}

@@ -1,0 +1,112 @@
+/* ==========================================================================
+   P006 — Pricing page (THIRD-pass fixes)
+   Page scope: body.route--lms-course-pricing
+   Loads LAST. !important used to beat earlier skin + ui-fixes-r1 rules
+   that prior passes failed to override.
+   Markup reference (curl): each plan = .lms-pricing-card with
+     .lms-pricing-card__price > .lms-pricing-card__amount (+ .__period on paid)
+     CTA = a.lms-btn (--outline on Basic/Enterprise, --primary on recommended)
+   ========================================================================== */
+
+/* [P006] ISSUE 1-0184: Free card lacks a "/month" suffix, breaking the price
+   band rhythm vs the paid cards. PRIOR FIX FAILED because it only set a
+   min-height but never created the missing suffix slot. The Free card's
+   .__amount is the ONLY child of .__price (no sibling .__period), so we can
+   reliably synthesise a same-height placeholder suffix via ::after. */
+body.route--lms-course-pricing .lms-pricing-card__price {
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: center !important;
+  gap: 0.25rem;
+  margin-bottom: 2rem !important;
+  min-height: 3.25rem;
+}
+
+body.route--lms-course-pricing .lms-pricing-card__amount:only-child::after {
+  content: "/forever";
+  display: inline;
+  margin-left: 0.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #475569; /* same high-contrast gray as the real /month suffix */
+  align-self: baseline;
+  white-space: nowrap;
+}
+
+/* Uniform title-to-price spacing across all three cards. */
+body.route--lms-course-pricing .lms-pricing-card__name {
+  margin-bottom: 1rem !important;
+  min-height: 1.6em;
+}
+
+/* [P006] ISSUE 1-0187 + 1-0197: "/month" suffix legibility + baseline align.
+   PRIOR FIX FAILED to apply visibly (overridden by .__period base rule at
+   0.9375rem / #8b949e). Force a higher-contrast gray (>= 4.5:1 on white),
+   bump size, and pin to the price baseline so it no longer looks detached. */
+body.route--lms-course-pricing .lms-pricing-card__period {
+  color: #475569 !important;     /* #475569 on #fff ≈ 7.4:1, passes AA */
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  align-self: baseline !important;
+  margin-left: 0 !important;     /* gap handled by .__price gap */
+  position: relative;
+  top: 0;
+}
+
+/* [P006] ISSUE 1-0191 + 1-0195: CTA hierarchy consistency across siblings.
+   PRIOR FIX FAILED — it gave Enterprise a unique tinted fill, leaving THREE
+   different button styles (Basic ghost, Professional solid, Enterprise tint).
+   Correct hierarchy = ONE primary (recommended) + identical secondary style on
+   every non-recommended card. Force Basic AND Enterprise to the same solid
+   secondary so the only emphasised CTA is the recommended plan. Also pin every
+   CTA to the card bottom so the gap above it is uniform across cards. */
+body.route--lms-course-pricing .lms-pricing-card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100%;
+}
+
+body.route--lms-course-pricing .lms-pricing-card__features {
+  flex: 1 1 auto !important;
+  margin-bottom: 1.5rem !important;
+}
+
+body.route--lms-course-pricing .lms-pricing-card .lms-btn {
+  margin-top: auto !important; /* equalise last-feature-to-CTA gap (1-0195) */
+}
+
+/* Identical secondary style for both non-recommended CTAs (overrides the
+   earlier per-card tint and the base --outline ghost styling). */
+body.route--lms-course-pricing .lms-pricing-card:not(.lms-pricing-card--recommended) .lms-btn {
+  background: #eef2ff !important;
+  color: #4338ca !important;
+  border: 1.5px solid #6366f1 !important;
+  box-shadow: none !important;
+}
+
+body.route--lms-course-pricing .lms-pricing-card:not(.lms-pricing-card--recommended) .lms-btn:hover {
+  background: #e0e7ff !important;
+  border-color: #4f46e5 !important;
+  color: #3730a3 !important;
+}
+
+/* The single primary (recommended) CTA stays the solid brand gradient. */
+body.route--lms-course-pricing .lms-pricing-card--recommended .lms-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #ffffff !important;
+  border: 1.5px solid transparent !important;
+  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.22) !important;
+}
+
+/* [P006] ISSUE 1-0186: tall empty light-blue band between cards and footer.
+   PRIOR FIX FAILED — it targeted .lms-section, which does NOT exist on this
+   page. The real cause: .lms-page is `min-height:100vh; display:flex; column`
+   and .lms-page__content has `flex:1`, so the short pricing content stretches
+   and leaves dead space below the grid. Stop the content area from flex-growing
+   on this route so the footer rises directly under the cards, and cap bottom
+   padding. (Footer still sits at/after viewport bottom on tall content.) */
+body.route--lms-course-pricing .lms-page__content {
+  flex: 0 0 auto !important;
+  padding-bottom: 3rem !important;
+}

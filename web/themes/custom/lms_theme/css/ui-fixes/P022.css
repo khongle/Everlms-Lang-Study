@@ -1,0 +1,107 @@
+/* ==========================================================================
+   P022 — My Quiz Results (/my-quiz-results)  route--lms-quiz-my-results
+   Active skin: medical + minimalist, brand SilverCare.
+   Loaded LAST. !important used only to beat existing skin !important rules.
+   ========================================================================== */
+
+/* [P022] ISSUE 1-0518, 1-0523: normalize stat value colors across all four cards.
+   light-mode.css forces is-success value -> #15803d (green) and is-accent value
+   -> #0369a1 (blue) while the other two are #0f172a. Make all sibling stat
+   values share one consistent heading color. */
+body.route--lms-quiz-my-results .lms-quiz-results-page__summary-card.is-success .lms-quiz-results-page__summary-value,
+body.route--lms-quiz-my-results .lms-quiz-results-page__summary-card.is-accent .lms-quiz-results-page__summary-value,
+body.route--lms-quiz-my-results .lms-quiz-results-page__summary-value {
+  color: #0f172a !important;
+}
+
+/* [P022] ISSUE 1-0519: stat cards reserve too much empty vertical space.
+   Reduce min-height and tighten padding so number + label sit centered with
+   proportional whitespace. Overrides light-mode min-height:5.75rem. */
+body.route--lms-quiz-my-results .lms-quiz-results-page__summary-card {
+  min-height: 0 !important;
+  padding: 1rem 1.1rem !important;
+  justify-content: center !important;
+  gap: 0.2rem !important;
+}
+
+/* [P022] ISSUE 1-0529: stat sub-label grey (#64748b on #fff ~= 4.5:1 borderline)
+   darkened to #475569 (~7.0:1) to comfortably meet WCAG AA for small text. */
+body.route--lms-quiz-my-results .lms-quiz-results-page__summary-label,
+body.route--lms-quiz-my-results .lms-quiz-result-row__meta,
+body.route--lms-quiz-my-results .lms-quiz-result-row__score-label {
+  color: #475569 !important;
+}
+
+/* [P022] ISSUE 1-0530: prevent single-word orphan on the intro paragraph and
+   keep a comfortable measure. */
+body.route--lms-quiz-my-results .lms-quiz-results-page__subtitle {
+  max-width: 52ch;
+  text-wrap: pretty;
+}
+
+/* [P022] ISSUE 1-0520: with a single result the page leaves a tall void before
+   the footer. Give the section a sensible min-height and trim the board's
+   bottom margin so the gap reads as intentional padding, not emptiness. */
+body.route--lms-quiz-my-results .lms-quiz-results-page {
+  min-height: 62vh;
+}
+body.route--lms-quiz-my-results .lms-quiz-results-board {
+  margin-bottom: 0 !important;
+}
+
+/* [P022] ISSUE 1-0522: delimit result rows so multiple results read as a list.
+   The board is a flex column; add a divider between consecutive rows and even
+   internal padding (single row is unaffected by the divider). */
+body.route--lms-quiz-my-results .lms-quiz-results-board .lms-quiz-result-row + .lms-quiz-result-row {
+  border-top: 1px solid #e2e8f0;
+}
+
+/* [P022] ISSUE 1-0521: "Review Result" button shadow is clipped/asymmetric.
+   Use a centered (0 offset-x) even shadow and stop it being clipped by the row. */
+body.route--lms-quiz-my-results .lms-quiz-result-row__action {
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.28) !important;
+}
+body.route--lms-quiz-my-results .lms-quiz-result-row {
+  overflow: visible !important;
+}
+
+/* [P022] ISSUE 1-0526: at mobile width the stat-card stack and the result card
+   must share one gutter. Zero out any extra inset on the board/rows so their
+   left/right edges line up with the summary cards. */
+@media (max-width: 480px) {
+  body.route--lms-quiz-my-results .lms-quiz-results-board,
+  body.route--lms-quiz-my-results .lms-quiz-result-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  body.route--lms-quiz-my-results .lms-quiz-results-board {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* [P022] ISSUE 1-0527: floating back-to-top button overlaps card corners at
+   mobile width. Pull it into a clear margin and lift its stacking + shadow so
+   it reads as an overlay, not a collision. Global component (medical skin). */
+@media (max-width: 480px) {
+  body.layout-medical:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical:not(.is-workspace) .lms-back-to-top {
+    right: 12px !important;
+    bottom: 16px !important;
+    z-index: 1300 !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.28) !important;
+  }
+}
+
+/* [P022] ISSUE 1-0528: header action icons (hamburger, bell, heart) are cramped
+   and the bell badge sits too close. Global header component. */
+.lms-navbar__actions {
+  gap: 14px;
+}
+.lms-bell-icon-wrapper {
+  position: relative;
+}
+.lms-bell-icon-wrapper .lms-bell-counter {
+  top: -6px;
+  right: -6px;
+}

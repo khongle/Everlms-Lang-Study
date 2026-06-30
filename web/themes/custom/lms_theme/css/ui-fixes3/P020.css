@@ -1,0 +1,50 @@
+/* P020 quiz-take — THIRD-pass fixes. Loads LAST. Scoped to body.route--lms-quiz-take. */
+
+/* [P020] ISSUE 1-0488: mobile intro-card meta box overflows the card's right edge.
+   ROOT CAUSE: the prior (2nd-pass) fix forced .lms-quiz__meta to position:fixed and, on
+   mobile, docked it to the bottom edge full-width. That removed it from the card flow but
+   the verifier still sees a grey meta box breaking the card framing / horizontal overflow.
+   FIX: on mobile, put the meta box BACK IN FLOW inside the card, contained within the card
+   padding with box-sizing + width:auto so its left/right inset matches the heading and
+   description text and its right border stays inside the card's rounded corner.
+   We override the 2nd-pass @media(max-width:480px) AND the base fixed positioning. */
+
+@media (max-width: 480px) {
+  body.route--lms-quiz-take .lms-quiz__meta {
+    position: static !important;   /* defeat the fixed/docked chip on small screens */
+    top: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: auto !important;
+    width: auto !important;        /* let it size to the card content box, not 100vw */
+    max-width: 100% !important;    /* never exceed the card's content width */
+    margin: 0 0 0.25rem 0 !important;  /* sit flush inside card padding, no negative bleed */
+    box-sizing: border-box !important;
+    border-radius: 0.5rem !important;  /* restore contained rounded box (not edge-to-edge 0) */
+    box-shadow: none !important;
+    /* keep the light-mode look from light-mode.css; ensure dark-fix bg doesn't leak */
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+    /* wrap the meta items so nothing pushes past the right edge */
+    flex-wrap: wrap !important;
+    gap: 0.5rem 1rem !important;
+    justify-content: flex-start !important;
+    padding: 0.85rem 1rem !important;
+  }
+  body.route--lms-quiz-take .lms-quiz__meta span {
+    min-width: 0 !important;       /* allow flex items to shrink instead of overflowing */
+    flex: 0 1 auto !important;
+  }
+  /* the bottom-dock no longer exists, so reclaim the extra submit padding the 2nd pass added */
+  body.route--lms-quiz-take .lms-quiz__submit-wrap {
+    padding-bottom: 3rem !important;
+  }
+  /* header card padding may have been overridden to 2rem by light-mode; tighten on mobile so
+     the contained meta box has matching left/right inset with the title/description */
+  body.route--lms-quiz-take .lms-quiz__header-card {
+    padding: 1.5rem !important;
+    overflow: hidden !important;   /* hard-clip any residual child bleed at the rounded corner */
+  }
+}

@@ -1,0 +1,128 @@
+/**
+ * P027 — Notifications page UI fixes (medical / SilverCare).
+ * Additive override layer, loaded LAST. Real selectors from
+ * lms-notifications.html.twig + lms-notification.css + medical.css.
+ * Page body classes on this route: body.layout-medical.layout-minimalist
+ * (route--lms-notification-list). Global components fixed via component class.
+ */
+
+/* [P027] ISSUE 1-0591, 1-0598: filter tab strip truncates last tab mid-word with no scroll affordance.
+   Allow tabs to wrap onto multiple rows so every label ("System") is fully readable; keep a usable
+   scrollable fallback with a right-edge fade cue + smooth scroll-snap when content still overflows. */
+.lms-notification-filters {
+  flex-wrap: wrap;
+  overflow-x: visible;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  row-gap: 0.6rem;
+}
+.lms-notification-filters .lms-filter-btn {
+  scroll-snap-align: start;
+}
+@media (max-width: 480px) {
+  /* On narrow mobile keep a single scrollable row with a fade affordance instead of tall wrapping. */
+  .lms-notification-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 88%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to right, #000 0, #000 88%, rgba(0, 0, 0, 0) 100%);
+    padding-right: 1.5rem;
+  }
+}
+
+/* [P027] ISSUE 1-0595: large empty band below a short notification list at desktop width.
+   Give the wrapper a sensible min-height and vertically center sparse content so the footer
+   does not sit far below the card. Scoped to the notifications page. */
+body.layout-medical .lms-notifications-wrapper {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+@media (min-width: 769px) {
+  body.layout-medical .lms-notifications-wrapper {
+    margin-top: clamp(2rem, 6vh, 5rem);
+  }
+}
+
+/* [P027] ISSUE 1-0596: header account name "Maria Santos" wraps to two lines, misaligning the
+   account cluster. Keep the name on one line, vertically centered, ellipsis if it ever gets long.
+   Global header component — no page scope. */
+.lms-navbar__actions .lms-navbar__user-name,
+.lms-navbar__actions [class*="user-name"],
+.lms-navbar__actions [class*="username"] {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 12rem;
+  line-height: 1.2;
+}
+.lms-navbar__actions { align-items: center; }
+
+/* [P027] ISSUE 1-0599: on mobile the timestamp wraps and the red "NEW" badge crowds the date.
+   Keep date on one line, push the badge to the right with clear spacing, allow the meta row to
+   wrap gracefully with vertical gap. */
+.lms-notification-item__meta {
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+}
+.lms-notification-item__date {
+  white-space: nowrap;
+}
+.lms-notification-item__new-badge {
+  margin-left: auto;
+}
+@media (max-width: 480px) {
+  .lms-notification-item__date {
+    font-size: 0.8rem;
+  }
+}
+
+/* [P027] ISSUE 1-0600: floating back-to-top FAB overlaps the right edge of notification cards on
+   mobile. Increase its offsets so it clears card content. Global component, medical layout. */
+@media (max-width: 480px) {
+  body.layout-medical:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical:not(.is-workspace) .lms-back-to-top {
+    right: 16px !important;
+    bottom: 20px !important;
+  }
+  /* Keep the last card clear of the FAB resting area. */
+  body.layout-medical .lms-notifications {
+    padding-bottom: 4.5rem;
+  }
+}
+
+/* [P027] ISSUE 1-0601: notification body copy (#94a3b8) is below WCAG AA on the white card.
+   Darken to a slate that clears 4.5:1 on #ffffff. Page-scoped to the light medical layout. */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item__body p {
+  color: #334155 !important; /* ~9.3:1 on #fff */
+}
+
+/* [P027] ISSUE 1-0602: timestamp metadata (#64748b) + clock icon are too faint on white.
+   Darken to meet AA for small text on the card. */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item__date,
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item__date i {
+  color: #475569 !important; /* ~7.0:1 on #fff */
+}
+
+/* [P027] ISSUE 1-0603: unread vs read state distinction is ambiguous. Reinforce the existing
+   unread accent with a visible unread dot (CSS-generated) on the icon and a clearer neutral
+   border for read cards, so the system reads consistently without markup changes. */
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item--unread .lms-notification-item__icon {
+  position: relative;
+}
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item--unread .lms-notification-item__icon::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #0077b6;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(0, 119, 182, 0.25);
+}
+body.layout-medical.layout-minimalist:not(.is-workspace) .lms-notification-item:not(.lms-notification-item--unread) {
+  border-left: 4px solid transparent; /* keep horizontal alignment with unread accent */
+}

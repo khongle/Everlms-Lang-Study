@@ -1,0 +1,69 @@
+/* ==========================================================================
+   P037 - manage-content-faq (/workspace/content/faq)
+   Live route resolves to a system error page (403/404). Body class on the
+   running site is `route--system-403`; assignment route_class is
+   `route--system-404`. We scope to BOTH so the themed error state applies
+   regardless of which error Drupal returns for this path.
+   The brand "SilverCare" is rendered as an <img> SVG logo (only an aria-label
+   in markup, no text node), so brand-text contrast issues are not
+   CSS-addressable here (see deferred 1-0801 / 1-0808).
+   ========================================================================== */
+
+/* [P037] ISSUE 1-0814: error region needs min-height + vertical centering so
+   the lone message is not stranded above a cavernous gap with the footer
+   pulled up under sparse content. */
+body.route--system-403 .lms-page__content,
+body.route--system-404 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px - 360px); /* viewport minus header & footer */
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  body.route--system-403 .lms-page__content,
+  body.route--system-404 .lms-page__content {
+    min-height: 60vh;
+    padding: 2.5rem 1.25rem;
+  }
+}
+
+/* [P037] ISSUE 1-0807: turn the bare "You are not authorized..." /
+   "page could not be found" text into a styled, themed empty-state card with
+   an icon and clear container instead of an unstyled fallback paragraph.
+   (A real recovery <a>/<button> and an <h1> heading require a template change
+   and are deferred; everything achievable in CSS is applied here.) */
+body.route--system-403 #block-lms-theme-content,
+body.route--system-404 #block-lms-theme-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 2.75rem 2rem;
+  background: var(--medical-surface, #ffffff);
+  border: 1px solid var(--medical-border, rgba(0, 119, 182, 0.22));
+  border-radius: var(--medical-radius, 12px);
+  box-shadow: var(--medical-shadow, 0 12px 28px rgba(0, 119, 182, 0.1));
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--medical-text, #12354a); /* ~7:1 on white, WCAG AA */
+}
+
+/* Decorative status icon above the message (pseudo-element is presentational
+   only; not a control). */
+body.route--system-403 #block-lms-theme-content::before,
+body.route--system-404 #block-lms-theme-content::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f071"; /* exclamation-triangle */
+  display: block;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--medical-violet, #0077b6);
+  margin-bottom: 0.25rem;
+}

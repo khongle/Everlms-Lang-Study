@@ -1,0 +1,82 @@
+/* ==========================================================================
+   P017 - Learning dashboard (route--lms-progress-dashboard) UI fixes
+   This partial loads LAST. !important is used only to beat the active
+   light-mode skin rules (body.layout-minimalist ... !important) or inline
+   styles on the same target.
+   ========================================================================== */
+
+/* [P017] ISSUE 1-0415: "In Progress" KPI icon uses fa-spinner glyph which
+   reads as a perpetual loading state. Swap the rendered glyph to a clock
+   (fa-clock \f017) so it is a stable, semantic static icon consistent with
+   the book / check / certificate icons on the other stat tiles. */
+body.route--lms-progress-dashboard .lms-kpi-card__icon--warning .fa-spinner {
+  animation: none !important;
+}
+body.route--lms-progress-dashboard .lms-kpi-card__icon--warning .fa-spinner::before {
+  content: "\f017"; /* clock */
+}
+
+/* [P017] ISSUE 1-0419: Hero subtitle muted grey (#64748b / dark-theme #8b949e)
+   is borderline against the white panel. Darken to #475569 (~7:1 on #fff) to
+   comfortably clear WCAG AA for small body text. */
+body.route--lms-progress-dashboard .lms-dashboard-page__subtitle {
+  color: #475569 !important;
+}
+
+/* [P017] ISSUE 1-0418 + 1-0430: Category pill wraps to two lines on long
+   labels (e.g. "MEDICAL KNOWLEDGE & MEDICATIONS",
+   "BASIC GERIATRIC CARE & HYGIENE"), giving inconsistent badge height across
+   sibling cards / card variants. Force single line with ellipsis truncation
+   and a sane max-width so every category renders uniformly. */
+body.route--lms-progress-dashboard .lms-learning-card__category,
+body.route--lms-progress-dashboard .lms-learning-spotlight__category {
+  display: inline-block;
+  max-width: 14rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  line-height: 1.3rem;
+}
+
+/* [P017] ISSUE 1-0421: On the dark first-card thumbnail the stacked
+   status + category pills crowd the top-left and the contrast is borderline.
+   Give both chips a solid opaque background, a readable drop shadow and a
+   little breathing room so the labels stay legible over any image. */
+body.route--lms-progress-dashboard .lms-learning-card__chips {
+  gap: 0.4rem;
+}
+body.route--lms-progress-dashboard .lms-learning-card__category,
+body.route--lms-progress-dashboard .lms-learning-card__badge {
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.28) !important;
+}
+/* Category chip sits over the photo: ensure an opaque light pill, not the
+   translucent dark-theme default, so its dark text always meets AA. */
+body.route--lms-progress-dashboard .lms-learning-card__category {
+  background: #eef2ff !important;
+  border-color: #c7d2fe !important;
+  color: #3730a3 !important;
+}
+
+/* [P017] ISSUE 1-0431: List cards restate the same percentage twice -
+   the meta row "0% complete" duplicates the "Progress 0%" row directly
+   below it. Drop the redundant percentage from the meta row (keep the
+   status word) so progress is stated once. */
+body.route--lms-progress-dashboard .lms-learning-card__meta > span:first-child {
+  display: none;
+}
+
+/* [P017] ISSUE 1-0432: At 0% the progress track (#e2e8f0) is nearly
+   invisible on the white card. Darken the unfilled track to a stronger
+   neutral so the bar reads as a real element even with no fill. */
+body.route--lms-progress-dashboard .lms-learning-progress__track {
+  background: #cbd5e1 !important;
+}
+
+/* [P017] ISSUE 1-0422: Uneven vertical rhythm - the gap above the stats
+   (KPI) row is larger than the gap below it before "Continue learning".
+   Normalise the KPI block to equal top/bottom margins. */
+body.route--lms-progress-dashboard .lms-kpi-grid {
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}

@@ -1,0 +1,111 @@
+/* ==========================================================================
+   [P032] Manage Courses (/workspace/courses) UI fixes
+   Loads LAST. Scope: admin workspace lives under .lms-admin.
+   Most defaults come from an inline <style> in lms-admin-sidebar.html.twig
+   (class-level), plus inline style="" attributes on some elements that
+   require !important to override.
+   ========================================================================== */
+
+/* [P032] ISSUE 1-0696: ACTION header / action column clipped at table edge */
+/* The table can overflow the fixed-sidebar + padded main area. Tighten the
+   horizontal padding on the table cells so all columns (incl. the last
+   "Actions" column) fit, keep the header word intact, and guarantee the
+   responsive wrapper can scroll if content still exceeds the viewport. */
+.lms-admin .lms-table-responsive {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.lms-admin .lms-table {
+  width: 100%;
+}
+.lms-admin .lms-table th,
+.lms-admin .lms-table td {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+/* Keep the ACTION header from wrapping/clipping mid-word and pin it to the
+   right edge with a little breathing room from the viewport boundary. */
+.lms-admin .lms-table thead th:last-child {
+  white-space: nowrap;
+  text-align: right;
+  padding-right: 1.25rem;
+}
+.lms-admin .lms-table tbody td:last-child {
+  padding-right: 1.25rem;
+  white-space: nowrap;
+}
+
+/* [P032] ISSUE 1-0703: ACTION view/edit icons too dim (low contrast) */
+/* Default inline color is #64748b on a dark row -> below 3:1 for non-text UI.
+   Lift to a clearly legible light gray and add strong hover + focus states.
+   !important needed to beat the per-link inline style="color:#64748b". */
+.lms-admin .lms-table tbody td:last-child a {
+  color: #cbd5e1 !important;   /* ~7:1 on #1e293b row bg */
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.25rem;
+}
+.lms-admin .lms-table tbody td:last-child a:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08);
+}
+.lms-admin .lms-table tbody td:last-child a:focus-visible {
+  outline: 2px solid #1d70f5;
+  outline-offset: 2px;
+  color: #ffffff !important;
+}
+
+/* [P032] ISSUE 1-0704 / 1-0715: Sidebar 'SilverCare' brand wordmark too dim */
+/* Brand text rendered as a <span> beside the logo mark. Push toward white so
+   it clears WCAG AA against the near-black (#161b22) sidebar. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span {
+  color: #f1f5f9;          /* >= 4.5:1 on #161b22 */
+  font-weight: 800;
+}
+
+/* [P032] ISSUE 1-0706: Reset button reads as disabled/secondary, low contrast */
+/* Give it a clear outlined-secondary look with a legible label + hover.
+   Element carries inline styles, so override with !important. */
+.lms-admin #lms-course-reset-btn {
+  color: #e2e8f0 !important;
+  background: rgba(29, 112, 245, 0.12) !important;
+  border: 1px solid rgba(29, 112, 245, 0.55) !important;
+  font-weight: 600 !important;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.lms-admin #lms-course-reset-btn:hover {
+  color: #ffffff !important;
+  background: rgba(29, 112, 245, 0.25) !important;
+  border-color: #1d70f5 !important;
+}
+.lms-admin #lms-course-reset-btn:focus-visible {
+  outline: 2px solid #1d70f5;
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   MOBILE (<= 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  /* [P032] ISSUE 1-0711: Subtitle clipped by overlapping Add New Course btn */
+  /* Stack the header so the title + subtitle get a full-width row and the
+     button drops below on its own line. */
+  .lms-admin .lms-admin__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .lms-admin .lms-admin__subtitle {
+    white-space: normal;
+    overflow: visible;
+  }
+
+  /* [P032] ISSUE 1-0712: 'Add New Course' button label wraps to 3 lines */
+  /* Keep label + icon on one line and let the button size to its content. */
+  .lms-admin .lms-admin__header .btn-lms-primary {
+    white-space: nowrap;
+    width: auto;
+    align-self: flex-start;
+    justify-content: center;
+  }
+}

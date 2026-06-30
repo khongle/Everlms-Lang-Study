@@ -1,0 +1,84 @@
+/* ==========================================================================
+   P019 — Lesson Player (route--lms-progress-lesson-view)
+   Theme: lms_theme · Skin: medical · Brand: SilverCare
+   Loaded LAST. Only CSS-addressable defects are handled here.
+   NOTE: The nested 404 page / duplicate header+footer / duplicate Theater
+   Mode + back-to-top / truncated contact / 0% progress are caused by the
+   lesson body data containing a full saved HTML page (rendered via |raw)
+   and by progress data — those require markup/content/data/JS, not CSS.
+   ========================================================================== */
+
+/* [P019] ISSUE 1-0464, 1-0475: Lesson body / lead paragraph contrast (WCAG AA)
+   Base styles set body copy to #c9d1d9 / #8b949e (designed for dark mode),
+   which is far below 4.5:1 on the white card. Darken to #333 on white. */
+body.route--lms-progress-lesson-view .lms-learn__text-content,
+body.route--lms-progress-lesson-view .lms-learn__text-content p,
+body.route--lms-progress-lesson-view .lms-learn__text-content li,
+body.route--lms-progress-lesson-view .lms-learn__description,
+body.route--lms-progress-lesson-view .lms-learn__description p,
+body.route--lms-progress-lesson-view .lms-learn__description li {
+  color: #333333;
+}
+body.route--lms-progress-lesson-view .lms-learn__description .lead,
+body.route--lms-progress-lesson-view .lms-learn__text-content .lead {
+  color: #333333;
+}
+
+/* [P019] ISSUE 1-0467: Active sidebar lesson row sits "proud" of siblings.
+   Inactive rows have a transparent 3px left border; the active fill should
+   share the exact same inset so the block aligns with its neighbours.
+   Keep only the left accent + a subtle, balanced fill. */
+body.route--lms-progress-lesson-view .lms-learn__lesson-item {
+  border-left: 3px solid transparent;
+}
+body.route--lms-progress-lesson-view .lms-learn__lesson-item--active {
+  background: rgba(0, 119, 182, 0.06);
+  border-left-color: #0077b6;
+}
+body.route--lms-progress-lesson-view .lms-learn__lesson-item--active .lms-learn__lesson-link {
+  /* Match horizontal padding/inset of inactive rows: no extra fill that
+     pushes the row edge-to-edge wider than its siblings. */
+  background: transparent;
+}
+
+/* [P019] ISSUE 1-0476: Active tab pill clipped by rounded tab container.
+   Give the tab strip inner padding so the active pill is fully inset from
+   the container's rounded corners instead of being cut on the left edge. */
+body.route--lms-progress-lesson-view .lms-learn__tabs-container .lms-nav-tabs {
+  padding: 4px;
+  gap: 4px;
+}
+body.route--lms-progress-lesson-view .lms-learn__tabs-container .lms-tab-item.active {
+  border-radius: 8px;
+}
+
+/* [P019] ISSUE 1-0477 (mobile): H1 title sits too close to top/left card edge.
+   Increase top + horizontal padding around the title block on small screens. */
+@media (max-width: 480px) {
+  body.route--lms-progress-lesson-view .lms-learn__content {
+    padding: 1.25rem 1.25rem;
+  }
+  body.route--lms-progress-lesson-view .lms-learn__title-wrap {
+    padding-top: 0.75rem;
+  }
+  body.route--lms-progress-lesson-view .lms-learn__title {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* [P019] ISSUE 1-0474 (mobile): "Back to Course" / "Theater Mode" row cramped,
+   edge-to-edge with the card padding. Add a gutter and a gap between buttons,
+   and let them wrap gracefully on narrow widths. */
+@media (max-width: 480px) {
+  body.route--lms-progress-lesson-view .lms-learn__top-bar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-right: 0.25rem;
+  }
+  body.route--lms-progress-lesson-view .lms-learn__top-actions {
+    gap: 0.5rem;
+  }
+  body.route--lms-progress-lesson-view .lms-learn__top-btn {
+    white-space: nowrap;
+  }
+}

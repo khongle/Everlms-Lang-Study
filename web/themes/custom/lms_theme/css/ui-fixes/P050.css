@@ -1,0 +1,93 @@
+/* ==========================================================================
+   P050 — Notification Broadcast (/admin/lms/notifications/broadcast)
+   Form id: #lms-notification-broadcast-form
+   Active skin: medical / brand SilverCare
+   This partial loads LAST. Page-specific rules scoped to the form id;
+   the primary submit button is themed via its component class.
+   ========================================================================== */
+
+/* [P050] ISSUE 1-1000, 1-1002, 1-1003: Uniform field width + balanced layout.
+   Title/Link inputs were ~640px while the Message textarea stretched to the
+   full ~1340px content region, leaving the right half blank and the fields
+   misaligned. Constrain the whole form to one balanced column so every
+   control shares the same left/right edges. */
+#lms-notification-broadcast-form {
+  max-width: 760px;
+}
+
+#lms-notification-broadcast-form .form-item,
+#lms-notification-broadcast-form .form-actions {
+  max-width: 100%;
+}
+
+#lms-notification-broadcast-form input.form-text,
+#lms-notification-broadcast-form input.form-url,
+#lms-notification-broadcast-form textarea.form-textarea,
+#lms-notification-broadcast-form .form-element {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#lms-notification-broadcast-form textarea.form-textarea {
+  min-height: 160px;
+}
+
+/* [P050] ISSUE 1-1001: Brand the primary "Send Broadcast" button.
+   Replace the default Claro/bright-blue primary with the SilverCare medical
+   accent gradient so the admin action matches the product theme. Global
+   component scope (button--primary) but limited to the medical layout body. */
+body.layout-medical .button--primary,
+body.layout-medical .form-actions .button--primary,
+body.layout-medical input[type="submit"].button--primary {
+  background: linear-gradient(120deg, #0077b6 0%, #0096c7 52%, #48cae4 100%);
+  border: 0;
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 0.625rem 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(0, 119, 182, 0.18);
+  transition: filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+body.layout-medical .button--primary:hover,
+body.layout-medical .form-actions .button--primary:hover,
+body.layout-medical input[type="submit"].button--primary:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 10px 24px rgba(0, 119, 182, 0.26);
+}
+
+body.layout-medical .button--primary:focus-visible,
+body.layout-medical input[type="submit"].button--primary:focus-visible {
+  outline: 3px solid rgba(0, 119, 182, 0.45);
+  outline-offset: 2px;
+}
+
+/* [P050] ISSUE 1-1003: Gap between required label text and the red asterisk.
+   The marker hugged the word; add a small consistent inset. */
+#lms-notification-broadcast-form .form-required::after,
+#lms-notification-broadcast-form label.form-required::after {
+  margin-left: 0.25em;
+}
+
+/* [P050] ISSUE 1-1004: Help/description text contrast.
+   Light grey on white was below WCAG AA for small body text.
+   #595959 on #fff = ~7:1, comfortably above 4.5:1. */
+#lms-notification-broadcast-form .form-item .description,
+#lms-notification-broadcast-form .description {
+  color: #595959;
+}
+
+/* [P050] ISSUE 1-1011: Toolbar tray row gutters (mobile).
+   The blue expander chevrons crowded the right edge while the left text inset
+   was generous. Match right padding to the left text inset for balanced rows.
+   Pure-CSS, safe to apply; toolbar markup is core/stable. */
+@media (max-width: 480px) {
+  .toolbar .toolbar-tray .menu-item > a,
+  .toolbar .toolbar-menu li a.toolbar-icon {
+    padding-right: 1rem;
+  }
+  .toolbar .toolbar-tray .toolbar-menu .toolbar-handle {
+    right: 0.5rem;
+  }
+}

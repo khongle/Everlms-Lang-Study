@@ -1,0 +1,63 @@
+/* ==========================================================================
+   P028 — Profile page (route--lms-course-profile / user--full)
+   UI fixes round 2. Loads LAST.
+   ========================================================================== */
+
+/* [P028] ISSUE 1-0612, 1-0615: Email value wraps mid-domain ("silvercare." /
+   "example.com") on desktop and splits the TLD mid-token ("exam" / "ple.com")
+   on mobile. Force wrapping only at sensible boundaries (never inside a token)
+   and slightly reduce the value font-size so the address fits on fewer lines. */
+body.route--lms-course-profile .lms-profile-info-value {
+  /* break only at natural opportunities (dots/@ via <wbr> opportunities and
+     normal word boundaries); never split inside a continuous token */
+  overflow-wrap: break-word;
+  word-break: normal;
+  -webkit-hyphens: none;
+  hyphens: none;
+  line-height: 1.45;
+}
+
+/* The email card specifically: shrink the long address so it fits on one line
+   (desktop) / two clean lines (mobile) instead of breaking a domain segment.
+   The email is the first info item in the grid. */
+body.route--lms-course-profile .lms-profile-info-grid .lms-profile-info-item:first-child .lms-profile-info-value {
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+}
+
+/* [P028] ISSUE 1-0621: When the email value wraps to two lines the Email card
+   grows taller than the single-line Location/Company cards and its centered
+   icon/label drift out of alignment with the siblings. Top-align icon + label
+   so a multi-line value no longer shifts the vertical balance, and let the
+   grid auto-rows keep card heights independent of content. */
+body.route--lms-course-profile .lms-profile__layout-redesign .lms-profile-info-item {
+  align-items: flex-start;
+}
+
+body.route--lms-course-profile .lms-profile__layout-redesign .lms-profile-info-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0; /* allow the value to wrap inside the flex child */
+}
+
+/* keep the circular icon visually centered against the label, not the whole
+   (possibly multi-line) value, by nudging it to align with the first line */
+body.route--lms-course-profile .lms-profile__layout-redesign .lms-profile-info-item__icon {
+  margin-top: 0.1rem;
+}
+
+/* [P028] ISSUE 1-0622: Footer "SilverCare" logo renders larger than the header
+   logo on mobile (footer 72px vs header 56px at <=576px), duplicating the brand
+   at an oversized scale within one short scroll. Bring the footer mark down to
+   match the header mark on small screens. */
+@media (max-width: 576px) {
+  .lms-brand-mark--footer {
+    height: 56px;
+  }
+}
+@media (max-width: 480px) {
+  .lms-brand-mark--footer {
+    height: 48px;
+  }
+}

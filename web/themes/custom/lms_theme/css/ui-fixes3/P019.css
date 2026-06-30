@@ -1,0 +1,114 @@
+/* ==========================================================================
+   P019 — Lesson Player (route--lms-progress-lesson-view)
+   Theme: lms_theme · Skin: medical (.layout-medical.layout-minimalist) · SilverCare
+   THIRD PASS. This partial is concatenated into ui-fixes-r1-pages3.css
+   (weight 1003) and therefore loads AFTER main.css / light-mode.css /
+   medical.css. Selectors here carry the route class AND match-or-exceed the
+   layout-skin specificity (>= 0,3,0) so the prior !important base rules lose.
+
+   NOT CSS-FIXABLE (deferred): the lesson "player" panel embeds a full themed
+   Drupal page via an <iframe> whose src resolves to a 404. Everything visible
+   inside that panel (the second SilverCare header, the "page could not be
+   found" message, the duplicate footer with truncated contact info, the
+   in-panel back-to-top button, the second Theater Mode control) lives in a
+   SEPARATE iframe document. Parent-page CSS cannot reach into a cross-document
+   iframe, so 1-0461, 1-0463, 1-0465, 1-0468, 1-0469, 1-0473 and the in-panel
+   instance of 1-0472 require a route/template/data fix, not CSS.
+   ========================================================================== */
+
+/* [P019] ISSUE 1-0475 (+1-0464): Lead/body paragraph contrast (WCAG AA).
+   Base body copy uses dark-mode tokens (#8b949e / muted blue-gray) which fall
+   well below 4.5:1 on the white card. Force a near-black neutral on every
+   descendant of the rendered lesson body so the lead paragraph matches the
+   list/heading contrast. High-specificity + !important to beat .lead and the
+   layout-skin overrides. */
+body.route--lms-progress-lesson-view .lms-learn__text-content,
+body.route--lms-progress-lesson-view .lms-learn__text-content p,
+body.route--lms-progress-lesson-view .lms-learn__text-content li,
+body.route--lms-progress-lesson-view .lms-learn__text-content span,
+body.route--lms-progress-lesson-view .lms-learn__text-content .lead,
+body.route--lms-progress-lesson-view .lms-learn__description,
+body.route--lms-progress-lesson-view .lms-learn__description p,
+body.route--lms-progress-lesson-view .lms-learn__description li,
+body.route--lms-progress-lesson-view .lms-learn__description span,
+body.route--lms-progress-lesson-view .lms-learn__description .lead,
+body.route--lms-progress-lesson-view .lms-learn__description *:not(a):not(i):not(strong) {
+  color: #1f2733 !important;   /* ~13:1 on #fff, ~12:1 on #f6fcff card */
+}
+
+/* [P019] ISSUE 1-0467 (PRIOR FIX FAILED): Active sidebar lesson row sits
+   "proud" of its siblings — it gets a fill on the <li> AND a second, stronger
+   fill on the inner <a>, so it reads as a solid full-width lavender block with
+   a left accent that bulges past the plain-white rows.
+   Root cause the prior pass missed: medical.css applies
+     .lms-learn__lesson-item--active .lms-learn__lesson-link { background:.1 !important }
+   at specificity (0,3,0); the prior fix targeted `...--active a` (0,2,1) and
+   lost. We now exceed (0,3,0) with the route class and REMOVE the inner fill,
+   keeping a single subtle wash on the row + a flush left accent that shares the
+   exact 3px inset of the inactive rows' transparent border. */
+body.route--lms-progress-lesson-view .lms-learn__lesson-item {
+  border-left: 3px solid transparent !important;   /* same inset as siblings */
+}
+body.route--lms-progress-lesson-view .lms-learn__lesson-item--active {
+  background: rgba(0, 119, 182, 0.07) !important;   /* one subtle wash only */
+  border-left-color: #0077b6 !important;
+}
+/* Kill the second (doubled) fill on the inner link so the row no longer sits
+   proud; keep text color/weight for legibility. */
+body.route--lms-progress-lesson-view .lms-learn__lesson-item--active .lms-learn__lesson-link,
+body.route--lms-progress-lesson-view .lms-learn__lesson-item--active a {
+  background: transparent !important;
+  border-left: 0 !important;
+  color: #0a4f72 !important;
+  font-weight: 600 !important;
+}
+
+/* [P019] ISSUE 1-0476 (PRIOR FIX FAILED): Active "Overview" pill clipped by the
+   rounded tab-container corner. Root cause: the container is a FULL pill
+   (border-radius:999px, light-mode.css) with only 0.35rem padding, so its
+   curved corner cuts across the first/active pill's bottom-left. Just adding
+   padding (prior pass) wasn't enough because a 999px container corner still
+   intrudes. Fix: give the container a modest rounded-RECT radius (corner no
+   longer curves into the pill row) plus generous, even inner padding, and make
+   the active pill's own radius small so it can never collide with the corner.
+   overflow:visible guarantees the pill + its shadow are not clipped. */
+body.route--lms-progress-lesson-view .lms-learn__tabs-container .lms-nav-tabs,
+body.route--lms-progress-lesson-view .lms-nav-tabs {
+  border-radius: 14px !important;     /* rounded-rect, not full pill */
+  padding: 0.5rem !important;          /* even inset on all sides */
+  overflow: visible !important;        /* never clip the active pill/shadow */
+  align-items: center !important;
+}
+body.route--lms-progress-lesson-view .lms-learn__tabs-container .lms-nav-tabs .lms-tab-item,
+body.route--lms-progress-lesson-view .lms-nav-tabs .lms-tab-item {
+  border-radius: 8px !important;       /* matches the container's inner corner */
+}
+body.route--lms-progress-lesson-view .lms-learn__tabs-container .lms-nav-tabs .lms-tab-item.active,
+body.route--lms-progress-lesson-view .lms-nav-tabs .lms-tab-item.active {
+  border-radius: 8px !important;
+  /* shadow now sits clear of the container edge */
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.20) !important;
+}
+
+/* [P019] ISSUE 1-0466: Course-progress bar renders as a thin empty
+   line/ellipse with no visible track. Root cause: main.css sets
+     .lms-progress-bar       { border-radius:50% }
+     .lms-progress-bar__fill { border-radius:50% }
+   On a full-width 6px bar, 50% radius collapses it into an ellipse, so the
+   empty (0%) track is invisible/broken. Render a proper, visible pill track
+   with rounded ends, slightly taller for legibility; the fill keeps rounded
+   ends and a min-width so any started/non-zero progress is always visible. */
+body.route--lms-progress-lesson-view .lms-learn__progress-wrapper .lms-progress-bar {
+  height: 8px !important;
+  border-radius: 999px !important;     /* pill, not ellipse */
+  background: #d7ecf8 !important;      /* visible track on the white sidebar */
+  overflow: hidden !important;
+}
+body.route--lms-progress-lesson-view .lms-learn__progress-wrapper .lms-progress-bar__fill {
+  height: 100% !important;
+  border-radius: 999px !important;
+}
+/* When progress > 0 the fill must read as a real segment, never a dot. */
+body.route--lms-progress-lesson-view .lms-learn__progress-wrapper .lms-progress-bar__fill[data-progress]:not([data-progress="0.00"]):not([data-progress="0"]) {
+  min-width: 8px !important;
+}

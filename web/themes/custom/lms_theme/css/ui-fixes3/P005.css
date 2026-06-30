@@ -1,0 +1,22 @@
+/* [P005] ISSUE 1-0167: Suppress empty CATEGORY facet group (blank heading + gap before LEVEL) */
+/* On the category-detail page the CATEGORY facet (.lms-category-list) renders no
+   labels/options, leaving an orphan "CATEGORY" heading and a large empty gap above
+   "LEVEL". Hide the whole filter group when its category list has no selectable
+   options. :has() targets the group whose list contains no <label>; the second rule
+   is a fallback for browsers without :has() / when the list collapses to :empty. */
+
+/* Primary: hide the CATEGORY filter group when it contains no option labels. */
+body.route--lms-course-category-detail
+  .lms-catalog__sidebar
+  .lms-catalog__filter-group:has(.lms-category-list):not(:has(.lms-category-list label)) {
+  display: none !important;
+}
+
+/* Fallback: collapse a truly empty category list (no whitespace children). */
+body.route--lms-course-category-detail
+  .lms-catalog__sidebar
+  .lms-category-list:empty {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}

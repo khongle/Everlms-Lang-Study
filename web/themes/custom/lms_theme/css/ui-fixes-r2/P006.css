@@ -1,0 +1,89 @@
+/* ==========================================================================
+   P006 — Pricing page UI fixes (round 2)
+   Page scope: body.route--lms-course-pricing
+   Global components (.lms-back-to-top) fixed without page scope.
+   This partial loads LAST.
+   ========================================================================== */
+
+/* [P006] ISSUE 2-0058: Enforce centered title + price on every pricing card
+   (Enterprise card read left-aligned at tablet vs centered Basic/Pro). */
+body.route--lms-course-pricing .lms-pricing-card {
+  text-align: center;
+}
+body.route--lms-course-pricing .lms-pricing-card__name {
+  text-align: center;
+}
+body.route--lms-course-pricing .lms-pricing-card__price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  text-align: center;
+}
+
+/* [P006] ISSUE 2-0059: At tablet the grid renders 2 columns, orphaning the
+   3rd (Enterprise) card beside dead space. Switch to a single centered
+   column at tablet so no card is left alone next to a void. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-course-pricing .lms-pricing-grid {
+    grid-template-columns: minmax(0, 480px);
+    justify-content: center;
+  }
+  /* Neutralise the recommended card scale so the single column stays tidy. */
+  body.route--lms-course-pricing .lms-pricing-card--recommended {
+    transform: none;
+  }
+  body.route--lms-course-pricing .lms-pricing-card--recommended:hover {
+    transform: translateY(-5px);
+  }
+}
+
+/* [P006] ISSUE 2-0060: Basic Access card leaves a large hollow gap above the
+   CTA because it has fewer features. Make the card a flex column and tighten
+   the spacing so the button sits close under the (shorter) feature list
+   instead of floating with dead space. */
+body.route--lms-course-pricing .lms-pricing-card {
+  display: flex;
+  flex-direction: column;
+}
+body.route--lms-course-pricing .lms-pricing-card__features {
+  margin-bottom: 1.25rem;
+}
+body.route--lms-course-pricing .lms-pricing-card .lms-btn {
+  margin-top: 0.5rem;
+}
+
+/* [P006] ISSUE 2-0061: 'Most Popular' banner top corners are squared while the
+   card has a 1rem radius. Round the banner's top corners to match and ensure
+   the card clips them cleanly. */
+body.route--lms-course-pricing .lms-pricing-card {
+  overflow: hidden;
+}
+body.route--lms-course-pricing .lms-pricing-card__badge {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+/* [P006] ISSUE 2-0062: Floating scroll-to-top FAB overlaps the Professional
+   card's CTA at tablet. Push it further into the corner so it clears
+   interactive card content. (Global component — no page scope.) */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.layout-minimalist:not(.is-workspace) #lms-back-to-top,
+  body.layout-minimalist:not(.is-workspace) .lms-back-to-top {
+    right: 0.75rem !important;
+    bottom: 0.75rem !important;
+    z-index: 1100;
+  }
+}
+
+/* [P006] ISSUE 2-0066: Keep the green check top-aligned on wrapped multi-line
+   feature rows and give every row a consistent min-height so single- and
+   double-line items share an even vertical rhythm. */
+body.route--lms-course-pricing .lms-pricing-card__features li {
+  align-items: flex-start;
+  min-height: 2.5rem;
+  line-height: 1.4;
+}
+body.route--lms-course-pricing .lms-pricing-card__features li i {
+  flex: 0 0 auto;
+  margin-top: 0.35rem;
+}

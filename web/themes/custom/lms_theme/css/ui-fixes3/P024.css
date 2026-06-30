@@ -1,0 +1,89 @@
+/* ==========================================================================
+   P024 — My Notes (route--lms-note-my-notes) — THIRD-pass UI fixes
+   Loaded LAST. Page content scoped under body.route--lms-note-my-notes /
+   .lms-my-notes; global components targeted by component class.
+
+   NOTE on prior failures:
+   - 1-0557: pass 1/2 set border-style:solid WITHOUT !important. The dashed
+     border actually comes from light-mode.css:
+       body.layout-minimalist .lms-empty-state { border: 1px/2px dashed ... !important; }
+     The <body> carries BOTH layout-medical AND layout-minimalist, so that
+     !important dashed rule always beat the un-!important override. This pass
+     uses matching specificity + !important to truly win.
+   - 1-0559: the back-to-top is position:fixed and reads as part of the footer
+     (white card, sitting level with the "SilverCare" brand block). Pure CSS
+     cannot anchor a fixed element to the footer, so instead we make it
+     unmistakably a floating overlay: brand-filled pill (not a white card),
+     stronger shadow, pulled further inboard/up, top stacking context.
+   ========================================================================== */
+
+/* [P024] ISSUE 1-0557: Empty-state card must use a SOLID border to match the
+   note cards / surfaces, not the inherited minimalist dashed border. Override
+   the light-mode.css `body.layout-minimalist .lms-empty-state` !important rule
+   with equal-or-higher specificity AND !important so it actually applies. */
+body.layout-minimalist .lms-empty-state,
+body.layout-medical .lms-empty-state,
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state {
+  border-style: solid !important;
+  border-width: 1px !important;
+  border-color: rgba(0, 119, 182, 0.22) !important;
+  border-radius: 0.75rem !important;
+  background: rgba(0, 119, 182, 0.03) !important;
+}
+
+/* [P024] ISSUE 1-0559: Floating back-to-top control crowds / blends into the
+   footer "SilverCare" brand block on mobile. Make it read as an unambiguous
+   floating overlay (brand-filled circular pill, not a white card matching the
+   footer), give it real clearance from the right/bottom edges and a top
+   stacking context so it sits clearly above footer content. Global component
+   on the medical skin. */
+body.layout-medical:not(.is-workspace) #lms-back-to-top,
+body.layout-medical:not(.is-workspace) .lms-back-to-top {
+  background: var(--medical-violet, #0077b6) !important;
+  color: #ffffff !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.34) !important;
+  z-index: 1400 !important;
+}
+body.layout-medical:not(.is-workspace) #lms-back-to-top i,
+body.layout-medical:not(.is-workspace) .lms-back-to-top i {
+  color: #ffffff !important;
+}
+body.layout-medical:not(.is-workspace) #lms-back-to-top:hover,
+body.layout-medical:not(.is-workspace) .lms-back-to-top:hover {
+  background: var(--medical-pink, #d6336c) !important;
+  color: #ffffff !important;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.4) !important;
+}
+
+@media (max-width: 480px) {
+  body.layout-medical:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical:not(.is-workspace) .lms-back-to-top {
+    right: 16px !important;
+    bottom: 24px !important;
+    width: 46px !important;
+    height: 46px !important;
+  }
+}
+
+/* [P024] ISSUE 1-0552: Header bell / heart (wishlist) icon buttons lack an
+   accessible affordance on hover. The markup already exposes aria-label/title,
+   but the icon-only controls give no visual hover feedback to confirm they are
+   interactive. Add a clear focus/hover state. (The textual count badge itself
+   is data/markup-driven and cannot be created in CSS — see deferred.) */
+.lms-navbar__actions .lms-bell-icon-wrapper,
+.lms-navbar__actions [aria-label*="otification"],
+.lms-navbar__actions [aria-label*="ishlist"],
+.lms-navbar__actions [title*="otification"],
+.lms-navbar__actions [title*="ishlist"] {
+  cursor: pointer;
+}
+.lms-navbar__actions .lms-bell-icon-wrapper:hover,
+.lms-navbar__actions [aria-label*="otification"]:hover,
+.lms-navbar__actions [aria-label*="ishlist"]:hover,
+.lms-navbar__actions [aria-label*="otification"]:focus-visible,
+.lms-navbar__actions [aria-label*="ishlist"]:focus-visible {
+  color: var(--medical-violet, #0077b6) !important;
+  outline: 0;
+}

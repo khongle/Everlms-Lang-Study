@@ -1,0 +1,117 @@
+/* ==========================================================================
+   P021 — Quiz Result page UI fixes
+   Page route class: route--lms-quiz-result  (rendered under body.layout-minimalist)
+   Page-specific styles are scoped under body.route--lms-quiz-result so they win
+   over both the module's inline <style> and light-mode.css overrides.
+   ========================================================================== */
+
+/* [P021] ISSUE 1-0511: Hero top accent bar shows an abrupt blue->green seam.
+   Replace the 2-stop gradient with a smoother multi-stop blend and clip cleanly
+   to the card's rounded top so no dark line shows at the right corner. */
+body.route--lms-quiz-result .lms-result-hero::before {
+  background: linear-gradient(
+    90deg,
+    #58a6ff 0%,
+    #4db0e6 30%,
+    #45c08a 65%,
+    #3fb950 100%
+  ) !important;
+  border-top-left-radius: inherit !important;
+  border-top-right-radius: inherit !important;
+}
+
+/* [P021] ISSUE 1-0515: '98%' figure shows a faint offset ghost/shadow giving a
+   blurred double-rendered look. Remove the text-shadow on the score numeral. */
+body.route--lms-quiz-result .lms-score-circle,
+body.route--lms-quiz-result .lms-score-circle--pass,
+body.route--lms-quiz-result .lms-score-circle--fail {
+  text-shadow: none !important;
+}
+
+/* [P021] ISSUE 1-0514: 'PASSED' badge — medium-green text/trophy on a pale-green
+   pill fails WCAG AA. Darken the text/icon green and deepen the pill background
+   + border for >= 4.5:1 contrast. #15803d on #dcfce7 ~= 5.3:1. */
+body.route--lms-quiz-result .lms-result-badge--pass {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+  border-color: #15803d !important;
+}
+body.route--lms-quiz-result .lms-result-badge--pass i,
+body.route--lms-quiz-result .lms-result-badge--pass .fa-trophy {
+  color: #15803d !important;
+}
+/* Keep the FAILED badge readable on its pale-red pill for the same reason. */
+body.route--lms-quiz-result .lms-result-badge--fail {
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+  border-color: #b91c1c !important;
+}
+body.route--lms-quiz-result .lms-result-badge--fail i {
+  color: #b91c1c !important;
+}
+
+/* [P021] ISSUE 1-0510: On mobile the bold question text wraps to ~13 very short
+   2-3 word lines because the icon + large gap + answer left-indent steal width.
+   Shrink the icon footprint and the header gap, and drop the answer left indent
+   so the readable text column gets a much wider measure. */
+@media (max-width: 480px) {
+  body.route--lms-quiz-result .lms-response-card {
+    padding: 1rem !important;
+  }
+  body.route--lms-quiz-result .lms-response-header {
+    gap: 0.6rem !important;
+    flex-wrap: wrap !important;
+  }
+  body.route--lms-quiz-result .lms-response-icon {
+    font-size: 1.25rem !important;
+    flex: 0 0 auto !important;
+  }
+  body.route--lms-quiz-result .lms-response-question {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    font-size: 1.05rem !important;
+    line-height: 1.45 !important;
+  }
+  /* Points pill drops to its own full-width row instead of pinching the text. */
+  body.route--lms-quiz-result .lms-response-points {
+    order: 3 !important;
+    flex: 0 0 100% !important;
+    margin-top: 0.5rem !important;
+    text-align: left !important;
+  }
+  /* Remove the 3rem left indent so the submission/feedback use full width. */
+  body.route--lms-quiz-result .lms-response-answer {
+    padding-left: 0 !important;
+  }
+}
+
+/* [P021] ISSUE 1-0513 + 1-0512: A tall empty light-grey rectangle sits between
+   the last answer card and the footer (the wrapper's min-height:100vh + 4rem
+   padding overshoots once content is short), leaving an orphaned dead block; the
+   footer also reads tight at the bottom.
+   Drop the forced full-viewport min-height and trim the oversized bottom padding
+   so content flows naturally into the footer. */
+body.route--lms-quiz-result .lms-result-wrapper {
+  min-height: 0 !important;
+  padding-top: 2.5rem !important;
+  padding-bottom: 2.5rem !important;
+}
+/* The action area already adds 4rem padding-bottom; collapse it so it doesn't
+   stack with the wrapper padding into a large empty gap. */
+body.route--lms-quiz-result .lms-btn-actions {
+  margin-top: 2rem !important;
+  padding-bottom: 0 !important;
+}
+@media (max-width: 480px) {
+  body.route--lms-quiz-result .lms-result-wrapper {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+}
+
+/* [P021] ISSUE 1-0512: Footer 'SUPPORTS' column heading clipped at the bottom
+   edge with no breathing room. Add bottom padding to the footer container so all
+   columns are fully visible. Global footer component (no page scope). */
+.lms-footer {
+  padding-bottom: 2.5rem !important;
+}

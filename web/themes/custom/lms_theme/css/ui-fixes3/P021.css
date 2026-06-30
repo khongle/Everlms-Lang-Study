@@ -1,0 +1,73 @@
+/* ==========================================================================
+   P021 — Quiz Result page (route--lms-quiz-result)  THIRD-pass fixes
+   Active skin: layout-medical + layout-minimalist (SilverCare light theme).
+
+   This partial loads LAST. The owning Twig template ships an inline <style>
+   block in the page <body>, and light-mode.css re-skins the hero in light
+   mode. Prior r1 fixes for the accent seam (1-0511) and the PASSED badge
+   contrast (1-0514) did not win in the rendered light theme, so the rules
+   below are re-asserted with the FULL active body selector
+   (body.route--lms-quiz-result.layout-minimalist) for extra specificity and
+   use !important to beat both the inline template styles and light-mode.css.
+   ========================================================================== */
+
+/* [P021] ISSUE 1-0511: hero top accent bar showed an abrupt blue->green seam
+   with a darker pixel at the right corner. PRIOR FIX (a 3-stop gradient) still
+   read as a hard seam. Per the issue's allowed remedy, use a SINGLE consistent
+   accent color (no gradient => no seam) and clip it to the card's light-theme
+   radius (1rem) so no darker edge bleeds past the rounded corner. */
+body.route--lms-quiz-result .lms-result-hero,
+body.route--lms-quiz-result.layout-minimalist .lms-result-hero {
+  overflow: hidden !important;
+}
+body.route--lms-quiz-result .lms-result-hero::before,
+body.route--lms-quiz-result.layout-minimalist .lms-result-hero::before {
+  background: #4f46e5 !important;        /* solid SilverCare light-theme primary */
+  background-image: none !important;     /* kill any inherited linear-gradient */
+  height: 4px !important;
+  border-radius: 1rem 1rem 0 0 !important; /* match light-mode hero radius (1rem) */
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+}
+
+/* [P021] ISSUE 1-0514: PASSED badge text + trophy were medium-green (#3fb950 /
+   #059669) on a pale-green pill — borderline WCAG AA. PRIOR FIX (#15803d on a
+   12%-opacity pill) did not visibly land in the light theme. Re-assert with the
+   active body selector: deep green text (#166534 ~ 7:1 on the pill) on a more
+   saturated green pill with a defined border, so both label and icon clear AA. */
+body.route--lms-quiz-result .lms-result-badge--pass,
+body.route--lms-quiz-result.layout-minimalist .lms-result-badge--pass {
+  color: #166534 !important;
+  background: #dcfce7 !important;               /* deeper than the old pale pill */
+  border: 1px solid #166534 !important;
+}
+body.route--lms-quiz-result .lms-result-badge--pass i,
+body.route--lms-quiz-result .lms-result-badge--pass .fas,
+body.route--lms-quiz-result.layout-minimalist .lms-result-badge--pass i,
+body.route--lms-quiz-result.layout-minimalist .lms-result-badge--pass .fas {
+  color: #166534 !important;                    /* trophy icon clears AA too */
+}
+
+/* Mirror the same deep-green treatment for the FAILED badge so the two states
+   stay symmetric in contrast (kept defensive; same component, sibling state). */
+body.route--lms-quiz-result.layout-minimalist .lms-result-badge--fail {
+  color: #991b1b !important;
+  background: #fee2e2 !important;
+  border: 1px solid #991b1b !important;
+}
+body.route--lms-quiz-result.layout-minimalist .lms-result-badge--fail i,
+body.route--lms-quiz-result.layout-minimalist .lms-result-badge--fail .fas {
+  color: #991b1b !important;
+}
+
+/* NOTE — deferred (cannot be fixed in CSS):
+   - 1-0498 / 1-0508: status icons (green check vs red X) and per-question points
+     are bound in Twig to response.correct / response.score, which come from the
+     server-side grading result. Wrong answers showing a green check is a
+     grading-data/logic defect, not a styling one. Requires fixing the grader /
+     template bindings, not CSS.
+   - 1-0503: turning the closed score ring into a proportional arc needs the
+     numeric score exposed to CSS (e.g. an inline --score var feeding a
+     conic-gradient / stroke-dasharray). The template does not expose it, so a
+     real progress arc cannot be produced from this CSS-only partial. */

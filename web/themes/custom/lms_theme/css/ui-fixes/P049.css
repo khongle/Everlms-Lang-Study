@@ -1,0 +1,149 @@
+/* =====================================================================
+   P049 — Course Analytics & Report (/admin/lms/reports/courses)
+   Page container: .lms-report-container  (route_class empty in unit)
+   Component fixes (form controls) use their own classes.
+   This partial loads LAST.
+   ===================================================================== */
+
+/* [P049] ISSUE 1-0983: Price Type cells lowercase, inconsistent casing */
+/* Raw machine values ("free"/"paid") render lowercase despite .text-uppercase;
+   force consistent Title Case to match sibling columns / Status badges. */
+.lms-report-container .lms-analytics-table td .text-uppercase {
+  text-transform: capitalize !important;
+}
+
+/* [P049] ISSUE 1-0987 + 1-0988: Rate (%) bar colors inconsistent + tiny fill invisible */
+/* Standardize every completion-rate bar on a single brand accent color so the
+   green/orange/gray mix that carried no documented meaning is removed, raise the
+   track contrast, and guarantee any non-empty fill stays perceivable. */
+.lms-report-container .lms-analytics-table .progress-bar-bg {
+  width: 72px;
+  height: 8px;
+  background: #cfd6dd; /* darker track for clearer contrast vs fill */
+  border: 1px solid #b6bfc8;
+  border-radius: 4px;
+}
+.lms-report-container .lms-analytics-table .progress-bar-fill,
+.lms-report-container .lms-analytics-table .progress-bar-fill.bg-success,
+.lms-report-container .lms-analytics-table .progress-bar-fill.bg-warning {
+  background: #1565c0; /* single accent, ~5.7:1 on the track */
+  border-radius: 3px;
+}
+/* Any course with progress > 0 keeps at least a visible sliver. */
+.lms-report-container .lms-analytics-table .progress-bar-fill[style*="width"] {
+  min-width: 4px;
+}
+/* Truly-zero rate should read empty, not a min-width sliver. */
+.lms-report-container .lms-analytics-table .progress-bar-fill[style*="width: 0%"] {
+  min-width: 0;
+}
+/* Make the numeric value the primary indicator for low-vision users. */
+.lms-report-container .lms-analytics-table .progress-text {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #212529;
+  min-width: 3.5em;
+  text-align: right;
+}
+
+/* [P049] ISSUE 1-0989: Filter bar controls incohesive with action buttons */
+/* Give Search input, Status select and the Apply/Reset buttons a shared height,
+   border, radius and focus treatment so the exposed-filter row reads as one set. */
+.lms-report-container .report-filters .form-inline .form-text,
+.lms-report-container .report-filters .form-inline .form-select,
+.lms-report-container .report-filters .form-inline .button {
+  height: 40px;
+  box-sizing: border-box;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  padding: 0 12px;
+}
+.lms-report-container .report-filters .form-inline .form-text,
+.lms-report-container .report-filters .form-inline .form-select {
+  background: #fff;
+  color: #212529;
+}
+.lms-report-container .report-filters .form-inline .form-text:focus,
+.lms-report-container .report-filters .form-inline .form-select:focus {
+  outline: none;
+  border-color: #1565c0;
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.25);
+}
+.lms-report-container .report-filters .form-inline .button {
+  background: #e9ecef;
+  color: #212529;
+  font-weight: 600;
+  cursor: pointer;
+}
+.lms-report-container .report-filters .form-inline .button:hover {
+  background: #dde1e6;
+  border-color: #adb5bd;
+}
+.lms-report-container .report-filters .form-inline .button:focus-visible {
+  outline: 2px solid #1565c0;
+  outline-offset: 2px;
+}
+
+/* [P049] ISSUE 1-0990: Completed / Active counts inconsistent green vs black */
+/* Template hardcodes .text-success on every Completed cell while Active cells
+   are uncolored, so the green is decorative noise. Normalize both numeric count
+   columns to neutral ink for consistent, meaning-free scanning. */
+.lms-report-container .lms-analytics-table td.text-right.text-success {
+  color: #212529 !important;
+}
+
+/* [P049] ISSUE 1-0993: Numeric column headers not on same edge as values */
+/* Headers carry .text-right but ensure they hard-align to the value edge. */
+.lms-report-container .lms-analytics-table thead th.text-right {
+  text-align: right !important;
+}
+
+/* [P049] ISSUE 1-0996 + 1-0997: Wide table overflows mobile; badges clipped */
+/* The .table-responsive wrapper exists in markup; make it a real horizontal
+   scroll container so all columns (and the Published badges) are reachable
+   without being clipped by the viewport edge. */
+.lms-report-container .table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.lms-report-container .table-responsive .lms-analytics-table {
+  min-width: 760px; /* preserve column structure; scroll instead of squeeze */
+}
+.lms-report-container .lms-analytics-table .badge {
+  white-space: nowrap; /* keep 'Published' on one line, never mid-clipped */
+}
+
+/* [P049] ISSUE 1-0998 + 1-0999: Long Title/Category wrap raggedly; uneven rows */
+/* Give the text columns a sensible min-width and clamp them to a uniform two
+   lines so wrapping is consistent and row heights stay even down the table. */
+.lms-report-container .lms-analytics-table td:first-child {
+  min-width: 220px;
+}
+.lms-report-container .lms-analytics-table td:nth-child(2) {
+  min-width: 160px;
+}
+.lms-report-container .lms-analytics-table td:first-child strong,
+.lms-report-container .lms-analytics-table td:nth-child(2) {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 480px) {
+  .lms-report-container {
+    padding: 12px;
+  }
+  .lms-report-container .report-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .lms-report-container .report-filters .form-inline {
+    flex-wrap: wrap;
+  }
+}

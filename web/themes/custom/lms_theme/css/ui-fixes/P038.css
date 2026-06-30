@@ -1,0 +1,161 @@
+/* ==========================================================================
+   P038 - Manage Pricing (/workspace/pricing) UI fixes
+   Page is rendered inside .lms-admin (admin workspace shell). The page body
+   carries no route class, so page-specific rules are scoped under .lms-admin.
+   This partial loads LAST; !important is used only to beat inline styles or
+   the high-specificity inline <style> block in lms-admin-sidebar.html.twig.
+   ========================================================================== */
+
+/* [P038] ISSUE 1-0821: Mute the bright saturated-blue table header band.
+   Template sets .lms-table thead th { background-color:#1d70f5 !important }
+   inline; beat it with a muted elevated dark-slate surface + light labels. */
+.lms-admin .lms-table thead th {
+  background-color: #1c2330 !important;
+  color: #e6edf5 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* [P038] ISSUE 1-0816: STATUS cells render as plain text because the
+   .lms-badge--success / --danger modifiers have no definition in this
+   context. Give them real colored pills (WCAG-AA foreground on dark fill). */
+.lms-admin .lms-table td .lms-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+.lms-admin .lms-table td .lms-badge--success {
+  background: rgba(16, 185, 129, 0.18) !important;
+  color: #6ee7b7 !important;              /* ~7:1 on #1e293b card */
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  box-shadow: none !important;
+}
+.lms-admin .lms-table td .lms-badge--danger {
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #fca5a5 !important;              /* AA on dark card */
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  box-shadow: none !important;
+}
+
+/* [P038] ISSUE 1-0817 + 1-0818: ACTIONS column pair consistency + contrast.
+   Edit is a solid primary; Deactivate is an outline button whose orange
+   text/border is set INLINE (#f59e0b). Make the pair a deliberate
+   primary + danger-outline duo of equal height/padding/radius, and brighten
+   the amber to a lighter shade that meets AA on the dark surface. */
+.lms-admin .lms-table td .lms-btn {
+  height: 32px;
+  padding: 0 14px !important;
+  font-size: 13px !important;
+  font-weight: 600;
+  border-radius: 0.5rem !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+/* Deactivate / Activate outline buttons: override inline amber/green to a
+   brighter, AA-compliant tone and add a faint fill for legibility. */
+.lms-admin .lms-table td a.lms-btn[style*="#f59e0b"] {
+  color: #fcd34d !important;                 /* brighter amber, AA on dark */
+  border: 1px solid #fcd34d !important;
+  background: rgba(252, 211, 77, 0.08) !important;
+}
+.lms-admin .lms-table td a.lms-btn[style*="#10b981"] {
+  color: #6ee7b7 !important;                 /* brighter green, AA on dark */
+  border: 1px solid #6ee7b7 !important;
+  background: rgba(16, 185, 129, 0.10) !important;
+}
+
+/* [P038] ISSUE 1-0819: Balance the filter toolbar. Keep controls grouped
+   with even spacing and a shared bottom edge; cap the search group so it does
+   not push the Status/Filter group into a large empty gap. */
+.lms-admin .lms-admin-filter {
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.lms-admin .lms-admin-filter__group {
+  justify-content: flex-end;
+}
+
+/* [P038] ISSUE 1-0820: Plans table card stretches to full viewport height
+   leaving a large blank region below the rows. The sidebar inline CSS forces
+   the card to flex:1 inside a min-height:100vh column. Let the card size to
+   its content instead, and round/close the bottom edge cleanly. */
+.lms-admin .lms-admin__main {
+  min-height: 0;
+}
+.lms-admin .lms-admin-card {
+  flex: 0 0 auto !important;
+  min-height: 0 !important;
+  border-radius: 0.75rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+.lms-admin .lms-table-responsive {
+  flex: 0 0 auto !important;
+}
+
+/* ==========================================================================
+   MOBILE (<=768px): the fixed 260px sidebar stays inline and squeezes the
+   main content, causing horizontal overflow and clipped title/buttons.
+   A true hamburger/off-canvas toggle needs JS+markup (deferred: 1-0822),
+   but we can collapse the sidebar and reclaim full width to eliminate the
+   overflow/clipping (1-0823, 1-0824, 1-0827) here in CSS.
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* [P038] ISSUE 1-0823 + 1-0824: collapse sidebar, give content full width. */
+  .lms-admin .lms-admin__sidebar {
+    display: none !important;
+  }
+  .lms-admin .lms-admin__main {
+    margin-left: 0 !important;
+    padding: 1.25rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden;
+  }
+
+  /* [P038] ISSUE 1-0824: H1 title wraps cleanly within content width. */
+  .lms-admin .lms-admin__main > div:first-child {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .lms-admin .lms-admin__title {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    width: 100%;
+  }
+
+  /* [P038] ISSUE 1-0826: '+ Add Plan' label must stay on one line. */
+  .lms-admin .lms-admin__main .lms-btn,
+  .lms-admin .lms-admin__main .btn-lms-primary {
+    white-space: nowrap;
+  }
+
+  /* [P038] ISSUE 1-0827: filter controls wrap and go full width. */
+  .lms-admin .lms-admin-filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.875rem;
+  }
+  .lms-admin .lms-admin-filter__group {
+    flex: 1 1 100% !important;
+    width: 100%;
+  }
+  .lms-admin .lms-admin-filter__group .lms-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* [P038] ISSUE 1-0823: keep the plans table scrollable inside the card
+     instead of overflowing the page horizontally. */
+  .lms-admin .lms-table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}

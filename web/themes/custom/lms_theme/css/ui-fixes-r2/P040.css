@@ -1,0 +1,71 @@
+/* ==========================================================================
+   P040 — Certificate Templates (/workspace/certificate-templates)
+   Theme: lms_theme · skin: medical · brand: SilverCare
+   Template: web/modules/custom/lms_certificate/templates/
+             lms-admin-certificate-templates.html.twig
+   Scope: page is gated behind /workspace; route_class empty, so we scope to the
+   page's own component classes (.lms-admin-card / .lms-table) which are specific
+   to this admin list view.
+   ========================================================================== */
+
+/* [P040] ISSUE 2-0383, 2-0384, 2-0385, 2-0386, 2-0389: action cell + row alignment
+   ROOT CAUSE: the Actions <td> carries an inline `display:flex` which removes it
+   from the table-row layout. A flex <td> no longer stretches to the shared row
+   height, so its content (the edit + eye buttons) detaches vertically from the
+   sibling cells (title / N-A / Active badge). This produces the staggered
+   "staircase", the row-straddling button pairs, the apparent off-by-one orphan
+   button after the last row, and the first row looking like it is missing its
+   edit button. We restore the cell to a real table-cell, vertically center every
+   cell, and lay the two action buttons out inline INSIDE the cell. */
+.lms-admin-card .lms-table td,
+.lms-admin-card .lms-table th {
+  vertical-align: middle;
+}
+
+/* Force the Actions cell back into table-cell flow (beats inline display:flex). */
+.lms-admin-card .lms-table td:last-child {
+  display: table-cell !important;
+  white-space: nowrap;       /* keep eye + edit on one line within the row */
+  text-align: right;
+}
+
+/* The two action anchors line up inline, vertically centered, right aligned. */
+.lms-admin-card .lms-table td:last-child > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+/* [P040] ISSUE 2-0389: uniform row rhythm
+   Give every body row a consistent minimum height and even padding so the gaps
+   between consecutive templates are identical (the stagger above was the cause;
+   this locks the rhythm once cells are centered). */
+.lms-admin-card .lms-table tbody td {
+  height: 56px;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+/* [P040] ISSUE 2-0388: column header row visibility / a11y
+   A <thead> with Name/Status/Actions exists in markup but its text color
+   (#6e7681 on the dark card) is effectively invisible. Raise contrast to a
+   readable slate and add a clear separator so the columns are identifiable. */
+.lms-admin-card .lms-table thead th {
+  color: #c9d4e3;                                   /* AA on the dark card bg */
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Keep the Actions header aligned with its right-aligned cells. */
+.lms-admin-card .lms-table thead th:last-child {
+  text-align: right;
+}
+
+/* [P040] ISSUE 2-0391: gap between "Add New Template" button and the list card
+   The card has an inline `margin-top:2rem` stacked on top of the header block's
+   own 2rem bottom margin, producing an oversized empty band. Trim the card's top
+   margin to a single consistent step. */
+.lms-admin__main .lms-admin-card {
+  margin-top: 1rem !important;
+}

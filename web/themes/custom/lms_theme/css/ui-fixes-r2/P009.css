@@ -1,0 +1,122 @@
+/* =========================================================================
+   P009 — Article detail  (/news/166)
+   Body: body.layout-medical.route--lms-blog-frontend-canonical.layout-minimalist
+   Round-2 UI fixes. Loaded LAST. !important used only to beat inline styles
+   or pre-existing !important component rules.
+   ========================================================================= */
+
+/* [P009] ISSUE 2-0090: Floating back-to-top FAB renders as a stray, half-
+   clipped blue/white circle at the right edge before the user scrolls.
+   Root cause: in its resting (non-"--visible") state the button is only
+   translated/animated but never made non-interactive/transparent, so it
+   paints as a clipped circle at the viewport edge. Fix the GLOBAL component:
+   keep it fully off-screen-invisible until JS adds .lms-back-to-top--visible,
+   and guarantee it never sits partially outside the viewport (clamped right
+   inset + max-width safety). Component-scoped (no page scope). */
+#lms-back-to-top.lms-back-to-top:not(.lms-back-to-top--visible) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* Safety: never let the FAB overhang the right edge regardless of skin math. */
+#lms-back-to-top.lms-back-to-top {
+  right: max(16px, env(safe-area-inset-right, 0px)) !important;
+  left: auto !important;
+  max-width: calc(100vw - 24px);
+}
+
+/* [P009] ISSUE 2-0091: A thin blue/rounded band appears detached just above
+   the white "Read the Full Article" CTA card. Root cause: the inline teaser
+   fade overlay (absolute, dark-token gradient) bleeds out as a coloured band
+   sitting in the gap above the card. Fade it fully to the white page bg and
+   keep the teaser wrapper clipping its overlay, then close the gap so the CTA
+   reads as one clean-edged block instead of a floating bar + card. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] {
+  overflow: hidden !important;
+  border-radius: 0 0 8px 8px;
+}
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > div[style*="linear-gradient"] {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.9) 70%,
+    rgba(255, 255, 255, 1) 100%
+  ) !important;
+  height: 90px !important;
+}
+/* Pull the CTA card flush against the faded teaser so no stray band shows. */
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta {
+  margin-top: 1rem !important;
+  position: relative;
+}
+
+/* [P009] ISSUE 2-0092: Paywall gradient cuts the last visible line mid-
+   sentence, leaving a half-faded orphan above the CTA. Clamp the teaser to a
+   whole number of lines and hide trailing paragraphs so the fade always lands
+   on a complete line, with a taller overlay obscuring the cut. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] {
+  max-height: none !important;
+  position: relative !important;
+}
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > p:first-of-type {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 6 !important;
+  line-clamp: 6 !important;
+  overflow: hidden !important;
+  margin-bottom: 0 !important;
+}
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > p:not(:first-of-type) {
+  display: none !important;
+}
+
+/* [P009] ISSUE 2-0093: Subtitle/excerpt (p.lead.text-muted) is light grey on
+   near-white, below AA. Darken to slate-700 (#334155 -> ~9:1 on #fff). High
+   specificity to beat the global .text-muted{color:#6e7681!important}. */
+body.route--lms-blog-frontend-canonical .article-container p.lead,
+body.route--lms-blog-frontend-canonical .article-container p.lead.text-muted,
+body.route--lms-blog-frontend-canonical .article-container .mb-5 p.lead.text-muted {
+  color: #334155 !important;
+  opacity: 1 !important;
+}
+
+/* [P009] ISSUE 2-0094: Footer tagline (.lms-footer__description) renders in
+   light grey (#6e7681) on the dark footer (#161b22) — ~3.3:1, below AA.
+   Lighten to #c2cad4 (~8.5:1 on #161b22). GLOBAL footer component scope. */
+.lms-footer .lms-footer__description {
+  color: #c2cad4 !important;
+}
+
+/* [P009] ISSUE 2-0098: Social share buttons sit in very faint .btn-light
+   tints with low-contrast edges, so the circular targets are hard to read.
+   Give them a consistent, clearly-bordered circular affordance with AA icon
+   contrast. Scoped to this page's share cluster (Bootstrap .btn-light is
+   reused elsewhere). */
+body.route--lms-blog-frontend-canonical .social-share .btn.btn-light {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #94a3b8 !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18) !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+body.route--lms-blog-frontend-canonical .social-share .btn.btn-light:hover {
+  background-color: #e2e8f0 !important;
+  border-color: #475569 !important;
+  transform: translateY(-1px);
+}
+body.route--lms-blog-frontend-canonical .social-share .btn.btn-light:focus-visible {
+  outline: 2px solid #1f6feb !important;
+  outline-offset: 2px !important;
+}
+/* Ensure the brand-coloured glyphs keep AA contrast on the tinted disc. */
+body.route--lms-blog-frontend-canonical .social-share .btn.btn-light i.fa-facebook-f,
+body.route--lms-blog-frontend-canonical .social-share .btn.btn-light i.fa-linkedin-in {
+  color: #1858c4 !important;
+}
+body.route--lms-blog-frontend-canonical .social-share .btn.btn-light i.fa-twitter {
+  color: #1573a8 !important;
+}

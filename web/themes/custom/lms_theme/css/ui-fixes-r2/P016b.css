@@ -1,0 +1,99 @@
+/* ==========================================================================
+   P016b — User Register (/user/register)
+   route_class: route--user-register
+   Live body classes: "layout-medical route--user-register layout-minimalist"
+   Active skin: medical. This partial loads LAST. !important is used ONLY to
+   beat existing !important rules (medical.css / light-mode.css) on the same
+   target, or to inject pseudo-element content the base theme never rendered.
+   ========================================================================== */
+
+/* [P016b] ISSUE 2-0168: Required Email/Username labels show no required marker.
+   The base theme renders <label class="form-required"> but its CSS never adds
+   the conventional red asterisk, so users get no "mandatory" affordance.
+   Inject a visible asterisk after every required label inside the auth form. */
+body.route--user-register .lms-auth .lms-auth__form-wrapper label.form-required::after,
+body.route--user-register .lms-auth .lms-auth__form-wrapper label.js-form-required::after {
+  content: " *";
+  color: #d92d20;            /* WCAG AA: ~4.9:1 on white */
+  font-weight: 700;
+  margin-left: 0.15rem;
+}
+
+/* [P016b] ISSUE 2-0169: Email/Username placeholders render too light. The
+   blocking rule is medical.css:1558
+   `body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace)
+    input::placeholder { color: var(--medical-text-muted) /*#6f8796*/ }` which
+   is only ~4.0:1 on white. Darken to #475467 (~7:1) for comfortable legibility
+   while staying clearly distinct from typed text. Specificity is raised above
+   the blocker (adds route + .lms-auth) and !important matches the blocker. */
+body.layout-medical.route--user-register .lms-auth input::placeholder,
+body.layout-medical.route--user-register .lms-auth input[type="email"]::placeholder,
+body.layout-medical.route--user-register .lms-auth input[type="text"]::placeholder,
+body.layout-medical.route--user-register .lms-auth input[type="password"]::placeholder,
+body.layout-medical.route--user-register .lms-auth input.form-control::placeholder {
+  color: #475467 !important;
+  opacity: 1 !important;
+}
+body.layout-medical.route--user-register .lms-auth input::-webkit-input-placeholder {
+  color: #475467 !important;
+  opacity: 1 !important;
+}
+body.layout-medical.route--user-register .lms-auth input::-moz-placeholder {
+  color: #475467 !important;
+  opacity: 1 !important;
+}
+
+/* [P016b] ISSUE 2-0170: The two social buttons (.lms-btn--outline) and the
+   primary submit (.button--primary.btn) use different corner radii, making the
+   in-card button group look inconsistent. Unify the radius across all three so
+   they share one shape language (primary stays differentiated by its gradient
+   fill, not by a different radius). 10px = friendly rounded, not a pill. */
+body.route--user-register .lms-auth .lms-auth__social .lms-btn--outline,
+body.route--user-register .lms-auth .lms-auth__social .lms-auth__social-btn,
+body.route--user-register .lms-auth .lms-auth__form-wrapper input[type="submit"],
+body.route--user-register .lms-auth .lms-auth__form-wrapper .form-submit,
+body.route--user-register .lms-auth .lms-auth__form-wrapper .button--primary {
+  border-radius: 10px !important;
+}
+
+/* [P016b] ISSUE 2-0171: Facebook vs Google icon-to-label gap differs (the
+   inline <i> uses Bootstrap me-2, but the rendered gap drifts between the two
+   buttons). Make both social buttons flex-centered with one explicit gap and
+   neutralize the per-icon right margin so the icon-to-text spacing is
+   identical across both siblings. */
+body.route--user-register .lms-auth .lms-auth__social .lms-auth__social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+body.route--user-register .lms-auth .lms-auth__social .lms-auth__social-btn > i {
+  margin-right: 0 !important;   /* drop Bootstrap me-2 so flex gap is the only spacing */
+  flex: 0 0 auto;
+}
+
+/* [P016b] ISSUE 2-0172: Oversized blank band between the fixed 64px header and
+   the card. `.lms-auth` sets min-height:100vh + align-items:center, so a short
+   card is centered inside the FULL viewport (ignoring the fixed header),
+   pushing it well below the fold with a large dead-space on top. Anchor the
+   card to the top of the area below the header with a balanced, modest offset
+   so it sits much higher while staying comfortably padded. */
+body.route--user-register .lms-auth {
+  min-height: auto;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 6rem;            /* 64px header + ~32px breathing room */
+  padding-bottom: 3rem;
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  /* Tablet (the reported viewport): keep the card high and vertically balanced
+     instead of floating in the middle of a tall empty region. */
+  body.route--user-register .lms-auth {
+    min-height: auto;
+    align-items: flex-start;
+    padding-top: 5.5rem;
+    padding-bottom: 2.5rem;
+  }
+}

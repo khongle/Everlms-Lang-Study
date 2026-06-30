@@ -1,0 +1,87 @@
+/* ============================================================
+   P017 — Learning dashboard (route--lms-progress-dashboard)
+   THIRD-pass UI fixes. Loads LAST.
+   ============================================================ */
+
+/* [P017] ISSUE 1-0427: "READY TO START" status badge renders in two different
+   color treatments on one page.
+
+   PRIOR FIX FAILED because:
+   (a) it scoped to body.route--lms-progress-my-courses (wrong page — this is the
+       dashboard route), and
+   (b) the unscoped attempt used plain class selectors (.lms-learning-card__badge.is-idle)
+       which lose the cascade to the layout-prefixed rules in light-mode.css:2342
+       (body.layout-minimalist ... is-idle -> amber #fffbeb/#b45309) and
+       playful.css:1135 (body.layout-playful.layout-minimalist ... is-idle ->
+       orange #fff7ed/#c2410c), all carrying !important.
+   Also, the hero spotlight status span has NO .is-idle class in markup, so it
+   keeps the default indigo treatment (#eef2ff/#4338ca = "purple on lavender").
+
+   Fix: force ONE shared idle treatment for BOTH the list-card idle badge AND the
+   bare hero spotlight status (which on this page represents the ready-to-start
+   featured course). Selectors are built to out-specify and match the layout
+   prefixes so they win regardless of the active layout (minimalist / playful). */
+
+/* List cards: idle badge -> unified blue idle treatment */
+body.route--lms-progress-dashboard .lms-learning-card__badge.is-idle,
+body.layout-minimalist.route--lms-progress-dashboard .lms-learning-card__badge.is-idle,
+body.layout-playful.layout-minimalist.route--lms-progress-dashboard:not(.is-front-page):not(.is-workspace) .lms-learning-card__badge.is-idle,
+/* Hero spotlight status (no .is-idle in markup) -> SAME unified treatment */
+body.route--lms-progress-dashboard .lms-learning-spotlight__status,
+body.layout-minimalist.route--lms-progress-dashboard .lms-learning-spotlight__status,
+body.layout-playful.layout-minimalist.route--lms-progress-dashboard:not(.is-front-page):not(.is-workspace) .lms-learning-spotlight__status {
+  background: #e8f1fb !important;
+  border-color: #b6d4f0 !important;
+  color: #1d5a8a !important;
+}
+
+/* Keep the COMPLETED and IN-PROGRESS states distinct from idle so the unified
+   idle color above does not bleed into other statuses. Re-assert the existing
+   green completed treatment on the hero status when it carries is-completed,
+   and ensure the default (in-progress) hero status keeps a separate blue tone
+   only when NOT idle is impossible to detect in CSS — so we leave completed and
+   list in-progress to their existing rules and only override the idle/default
+   above. Completed re-assert for safety on this route: */
+body.route--lms-progress-dashboard .lms-learning-spotlight__status.is-completed,
+body.route--lms-progress-dashboard .lms-learning-card__badge.is-completed,
+body.layout-minimalist.route--lms-progress-dashboard .lms-learning-spotlight__status.is-completed,
+body.layout-minimalist.route--lms-progress-dashboard .lms-learning-card__badge.is-completed {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+/* [P017] ISSUE 1-0417: Course cards with no thumbnail render a pale, near-empty
+   placeholder graphic that breaks the photographic visual weight of the row.
+   When the markup has an <img> (thumbnail_url present) nothing changes; when the
+   placeholder span is shown instead, give it a branded gradient + centered icon
+   so it reads as an intentional cover rather than a wireframe. Mirrors the same
+   treatment for the hero spotlight placeholder for consistency. */
+body.route--lms-progress-dashboard .lms-learning-card__placeholder,
+body.route--lms-progress-dashboard .lms-learning-spotlight__placeholder {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(135deg, #0a4d7c 0%, #0077b6 55%, #1d8ecf 100%) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+body.route--lms-progress-dashboard .lms-learning-card__placeholder i,
+body.route--lms-progress-dashboard .lms-learning-spotlight__placeholder i {
+  font-size: 2.5rem !important;
+  opacity: 0.9 !important;
+}
+
+/* Ensure real <img> thumbnails fully cover the media box so a low-contrast or
+   off-aspect source image (the "pale graphic" reported on the German Geriatric
+   card) fills the frame with consistent visual weight rather than letterboxing
+   to a washed-out empty area. */
+body.route--lms-progress-dashboard .lms-learning-card__media img,
+body.route--lms-progress-dashboard .lms-learning-spotlight__media img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  background: #0a4d7c;
+}

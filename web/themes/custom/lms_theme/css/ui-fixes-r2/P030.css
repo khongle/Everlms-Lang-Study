@@ -1,0 +1,28 @@
+/* P030 — checkout/membership (My Memberships) UI fixes — loads LAST */
+
+/* [P030] ISSUE 2-0292: center 'Cancel Auto-Renewal' icon+label consistently across all cards */
+.lms-membership-card__actions .lms-btn--danger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+/* the icon uses an inline margin in markup; neutralize it so flex gap controls spacing */
+.lms-membership-card__actions .lms-btn--danger > i {
+  margin-right: 0 !important;
+}
+
+/* [P030] ISSUE 2-0294: raise contrast of muted Start/End/Auto Renew labels on dark card (#1e293b) */
+/* #b6c2d4 on #1e293b ~ 8:1, comfortably above WCAG AA 4.5:1 */
+.lms-membership-card__body strong {
+  color: #b6c2d4;
+}
+
+/* [P030] ISSUE 2-0295: tuck notification bell badge cleanly to the bell's top-right corner */
+.lms-bell-icon-wrapper .lms-bell-counter {
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  min-height: 16px;
+  padding: 0.1rem 0.3rem;
+}

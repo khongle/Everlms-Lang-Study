@@ -1,0 +1,126 @@
+/* =====================================================================
+   P009 — Article detail (/news/166)  route--lms-blog-frontend-canonical
+   Loads LAST. !important used only to beat inline styles or the high-
+   specificity medical/light-mode rules that defeated the prior round.
+   ===================================================================== */
+
+/* [P009] ISSUE 1-0244, 1-0255: Paywall "Register" button is an un-themed
+   dark near-black fill (inline background:#21262d; color:#c9d1d9) that
+   matches no brand color and breaks against the green "Log In" sibling.
+   Re-skin to a brand-blue OUTLINE secondary; keep "Log In" green primary.
+   Inline styles -> !important required. Also force single-line labels so
+   "Log In" no longer wraps to two lines (1-0255). */
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button:not(.button--primary) {
+  background: #ffffff !important;
+  color: #1f6feb !important;
+  border: 1px solid #1f6feb !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button:not(.button--primary):hover {
+  background: #eaf2fe !important;
+  color: #1858c4 !important;
+  border-color: #1858c4 !important;
+}
+/* Keep the primary "Log In" as a clear brand-green action with matching weight. */
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button.button--primary {
+  background: #1f8f3c !important;
+  border: 1px solid #1f8f3c !important;
+  color: #ffffff !important;
+}
+body.route--lms-blog-frontend-canonical .lms-forum-teaser-cta a.button.button--primary:hover {
+  background: #18772f !important;
+  border-color: #18772f !important;
+}
+
+/* [P009] ISSUE 1-0245: Teaser fade reads as a half-faded sentence fragment.
+   Root cause is TWO-fold: (a) the inline overlay gradient fades to near-black
+   (rgba(13,17,23,1)) on a light page, and (b) the wrapper's inline
+   max-height:250px hard-cuts mid-sentence, leaving a faint orphan line.
+   Fix: clamp the teaser to whole lines via line-clamp on the paragraphs so
+   the cut lands on a full line, and re-point the overlay fade to the white
+   page background so the last full line stays legible before a clean fade. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] {
+  max-height: none !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+/* Show a defined number of full-opacity lines, then clamp cleanly. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > p {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+/* First paragraph: a few full lines; later paragraphs are hidden so the fade
+   never lands across a mid-sentence fragment. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > p:first-of-type {
+  -webkit-line-clamp: 5 !important;
+  line-clamp: 5 !important;
+}
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > p:not(:first-of-type) {
+  display: none !important;
+}
+/* Re-point the inline overlay gradient to the white page background and keep
+   it shallow so it sits below the last full line, reading as intentional. */
+body.route--lms-blog-frontend-canonical .article-content > div[style*="max-height"] > div[style*="linear-gradient"] {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.9) 70%,
+    rgba(255, 255, 255, 1) 100%
+  ) !important;
+  height: 64px !important;
+}
+
+/* [P009] ISSUE 1-0248, 1-0254: Dek / standfirst under the H1 fails AA (4.5:1).
+   The high-specificity medical rule
+   (body.layout-medical.layout-minimalist...:not()...  .lead { color:
+   var(--medical-text-soft) !important }) overrode the prior un-!important fix,
+   so the dek stayed light. Force a slate that clears 4.5:1 on the near-white
+   background, with matching specificity + !important. (desktop + mobile) */
+body.route--lms-blog-frontend-canonical .article-container .lead,
+body.route--lms-blog-frontend-canonical .article-container .lead.text-muted,
+body.route--lms-blog-frontend-canonical .article-container p.lead.text-muted {
+  color: #334155 !important;   /* ~8.4:1 on #ffffff */
+}
+
+/* [P009] ISSUE 1-0249, 1-0260: Header right-side utilities — cramped right
+   cluster + low-emphasis "Login". Add a consistent right gutter, balance the
+   gap between Login/Register, and darken the Login link to brand navy for AA.
+   Global header component -> no page scope. */
+.lms-navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-right: 0.75rem;
+}
+.lms-navbar__actions .lms-navbar__link {
+  color: #142943 !important;        /* dark navy, matches logo text, >7:1 */
+  font-weight: 600;
+}
+.lms-navbar__actions .lms-navbar__link:hover,
+.lms-navbar__actions .lms-navbar__link:focus-visible {
+  color: #1f6feb !important;
+}
+
+/* [P009] ISSUE 1-0261: On mobile, a large empty gap sits between the
+   share / Back-to-News row and the footer top border after the truncated
+   article. Tighten the article footer's bottom spacing on small screens so
+   the section does not look unintentionally empty. */
+@media (max-width: 480px) {
+  body.route--lms-blog-frontend-canonical .article-container {
+    padding-bottom: 1.25rem !important;
+  }
+  body.route--lms-blog-frontend-canonical .article-container .mt-5.pt-4.border-top {
+    margin-top: 1.5rem !important;
+    padding-top: 1.25rem !important;
+  }
+  /* Stack the back/share row a touch tighter so it reads as a closed block. */
+  body.route--lms-blog-frontend-canonical .article-container .social-share {
+    margin-top: 0.25rem !important;
+  }
+}

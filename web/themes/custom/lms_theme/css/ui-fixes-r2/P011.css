@@ -1,0 +1,88 @@
+/* ==========================================================================
+   P011 — Contact page (route--lms-course-contact) UI fixes, round 2
+   Active skin: medical + light-mode (body.layout-medical.layout-minimalist)
+   This partial loads LAST. !important used only to beat the inline <style>
+   and the light-mode.css !important rules on the same targets.
+   ========================================================================== */
+
+/* [P011] ISSUE 2-0115: Office Location card hugs its content (no tall blank gap) */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-course-contact .lms-contact-map-card {
+    min-height: 0;
+  }
+  /* placeholder no longer needs to fill a 380px box; size to its own content */
+  body.route--lms-course-contact .lms-contact-map-card__placeholder {
+    min-height: 0;
+    height: auto;
+    justify-content: flex-start;
+    padding: 1.75rem 2rem;
+  }
+}
+
+/* [P011] ISSUE 2-0117: Secondary body copy meets WCAG AA (>=4.5:1 on white card).
+   Darken from #475569 to #334155 (ratio ~9.5:1 on #ffffff). */
+body.route--lms-course-contact .lms-contact-hero p,
+body.route--lms-course-contact .lms-contact-hero__panel-list li,
+body.route--lms-course-contact .lms-contact-info-card p,
+body.route--lms-course-contact .lms-contact-map-card p,
+body.route--lms-course-contact .lms-contact-map-card__meta span,
+body.route--lms-course-contact .lms-contact-action-card p,
+body.route--lms-course-contact .lms-contact-action-list__item span {
+  color: #334155 !important;
+}
+
+/* [P011] ISSUE 2-0118: Prevent typographic orphan ("point." alone) in NEXT STEPS heading.
+   Balance the wrap and cap width so the last word does not drop alone. */
+body.route--lms-course-contact .lms-contact-action-card h2 {
+  text-wrap: balance;
+  max-width: 22ch;
+}
+
+/* [P011] ISSUE 2-0119: Unify all uppercase eyebrow/label treatments.
+   One color (#4f46e5), weight (700), tracking (.16em) across every section
+   label and the info-card labels so they read as one consistent style. */
+body.route--lms-course-contact .lms-contact-hero__eyebrow,
+body.route--lms-course-contact .lms-contact-hero__panel-eyebrow,
+body.route--lms-course-contact .lms-contact-info-card__label,
+body.route--lms-course-contact .lms-contact-map-card__eyebrow,
+body.route--lms-course-contact .lms-contact-action-card__eyebrow {
+  color: #4f46e5 !important;
+  font-weight: 700;
+  letter-spacing: .16em;
+  font-size: .74rem;
+  text-transform: uppercase;
+}
+
+/* [P011] ISSUE 2-0120: Email value is a real mailto: link but has no affordance.
+   Give the EMAIL (and PHONE) card links clear link styling + hover/focus state. */
+body.route--lms-course-contact .lms-contact-info-card a {
+  color: #1d4ed8 !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color .15s ease;
+}
+body.route--lms-course-contact .lms-contact-info-card a:hover,
+body.route--lms-course-contact .lms-contact-info-card a:focus-visible {
+  color: #1e3a8a !important;
+  text-decoration-thickness: 2px;
+}
+body.route--lms-course-contact .lms-contact-info-card a:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* [P011] ISSUE 2-0122: Footer columns align cleanly with even gutters at tablet.
+   Default grid is 2fr 1fr 1fr 1fr (cramped on tablet) -> 2 even columns,
+   shared gap, and headings reset to a common top baseline. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .lms-footer__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 2.5rem;
+    align-items: start;
+  }
+  .lms-footer__col h4 {
+    margin-top: 0;
+  }
+}

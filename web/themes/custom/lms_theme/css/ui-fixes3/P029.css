@@ -1,0 +1,117 @@
+/* ==========================================================================
+   [P029] checkout-course (/checkout/88 -> /courses/88)
+   Third-pass fixes. This partial loads LAST.
+   ========================================================================== */
+
+/* [P029] ISSUE 1-0628, 1-0638: enrollment "successfully enrolled" status
+   message renders as plain, full-bleed, low-emphasis text (faint green that
+   disappears on the light page bg, no box, no icon, no padding). PRIOR FIX
+   FAILED because the dark-theme .messages--status colors (rgba green @0.1)
+   are invisible on the white page and the wrapper applied no layout.
+   Fix: constrain the wrapper width, and force a real success alert — solid
+   light-green container, defined border, padding, AA-contrast dark-green
+   text, plus an inline success check icon. */
+
+/* Layout / containment of the messages region so the alert isn't full-bleed */
+.lms-messages-wrapper {
+  max-width: 1200px !important;
+  margin: 1.25rem auto 0 !important;
+  padding: 0 1.25rem !important;
+  box-sizing: border-box !important;
+}
+
+/* Base alert box for every message in this region */
+.lms-messages-wrapper .messages,
+.lms-page__content .messages {
+  position: relative !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: .75rem !important;
+  padding: 1rem 1.125rem 1rem 1rem !important;
+  margin: 0 0 1rem !important;
+  border: 1px solid transparent !important;
+  border-radius: .625rem !important;
+  border-left-width: 4px !important;
+  background-clip: padding-box !important;
+  font-size: .9375rem !important;
+  line-height: 1.5 !important;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, .06) !important;
+}
+
+/* Success / status variant — readable on light AND dark backgrounds */
+.lms-messages-wrapper .messages.messages--status,
+.lms-messages-wrapper .messages--status,
+.lms-page__content .messages.messages--status,
+.lms-page__content .messages--status {
+  background-color: #e9f9ef !important;
+  border-color: #34c759 !important;
+  border-left-color: #1e8e4e !important;
+  color: #0f5132 !important;
+}
+.lms-messages-wrapper .messages.messages--status a,
+.lms-page__content .messages.messages--status a {
+  color: #0a6b3b !important;
+  text-decoration: underline !important;
+}
+
+/* Success check icon (inline, no markup change needed) */
+.lms-messages-wrapper .messages.messages--status::before,
+.lms-page__content .messages.messages--status::before {
+  content: "" !important;
+  flex: 0 0 auto !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  margin-top: .0625rem !important;
+  background-color: #1e8e4e !important;
+  -webkit-mask: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.1 14.3-4-4 1.4-1.4 2.6 2.6 5.4-5.4 1.4 1.4-6.8 6.8Z'/%3E%3C/svg%3E");
+          mask: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.1 14.3-4-4 1.4-1.4 2.6 2.6 5.4-5.4 1.4 1.4-6.8 6.8Z'/%3E%3C/svg%3E");
+}
+
+/* Error variant kept consistent (defined box on light bg) */
+.lms-messages-wrapper .messages.messages--error,
+.lms-page__content .messages.messages--error {
+  background-color: #fdecec !important;
+  border-color: #f04438 !important;
+  border-left-color: #b42318 !important;
+  color: #7a271a !important;
+}
+.lms-messages-wrapper .messages.messages--error::before,
+.lms-page__content .messages.messages--error::before {
+  content: "" !important;
+  flex: 0 0 auto !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  margin-top: .0625rem !important;
+  background-color: #b42318 !important;
+  -webkit-mask: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z'/%3E%3C/svg%3E");
+          mask: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z'/%3E%3C/svg%3E");
+}
+
+/* Warning variant for parity */
+.lms-messages-wrapper .messages.messages--warning,
+.lms-page__content .messages.messages--warning {
+  background-color: #fff7e6 !important;
+  border-color: #f5a623 !important;
+  border-left-color: #b54708 !important;
+  color: #7a4100 !important;
+}
+
+/* Hide any redundant core-supplied visually-hidden heading from breaking
+   the flex layout, and keep the message text aligned next to the icon */
+.lms-messages-wrapper .messages > *,
+.lms-page__content .messages > * {
+  margin: 0 !important;
+}
+
+/* Mobile: keep the alert padded inside the viewport */
+@media (max-width: 768px) {
+  .lms-messages-wrapper {
+    padding: 0 1rem !important;
+    margin-top: 1rem !important;
+  }
+  .lms-messages-wrapper .messages,
+  .lms-page__content .messages {
+    padding: .875rem 1rem !important;
+    font-size: .9rem !important;
+  }
+}

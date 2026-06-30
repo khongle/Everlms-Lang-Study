@@ -1,0 +1,106 @@
+/* ==========================================================================
+   P024 - My Notes (route--lms-note-my-notes)
+   Skin: medical / brand SilverCare. Loads LAST.
+   Brand blue tokens: --medical-violet #0077b6, --medical-pink #0096c7
+   ========================================================================== */
+
+/* [P024] ISSUE 1-0547: Balance two-column header (H1 left / subtitle right).
+   .lms-section__header is flex space-between align-items:center, but default
+   h1/p margins push the subtitle off the H1 optical center. Baseline-align
+   the columns and zero the stray margins so the row reads as one line. */
+body.route--lms-note-my-notes .lms-my-notes .lms-section__header {
+  align-items: baseline;
+  gap: 1.5rem;
+}
+body.route--lms-note-my-notes .lms-my-notes .lms-section__header .lms-manage__title {
+  margin-bottom: 0;
+}
+body.route--lms-note-my-notes .lms-my-notes .lms-section__header > p {
+  margin-bottom: 0;
+  text-align: right;
+}
+
+/* [P024] ISSUE 1-0548: Vertically centre the empty-state cluster.
+   Symmetric top/bottom padding + flex column centring so the
+   icon/headings/button group sits in the optical centre of the dashed box. */
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+}
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state > * {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* [P024] ISSUE 1-0549: Primary CTA must use brand blue, not indigo.
+   light-mode.css forces the empty-state .lms-btn to indigo #4f46e5; restore
+   the SilverCare brand-blue gradient (matches logo/nav/footer accents).
+   !important needed to beat the existing !important indigo rule. */
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state .lms-btn--primary,
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state a.lms-btn {
+  background: linear-gradient(135deg, #0077b6 0%, #0096c7 100%) !important;
+  border-color: #0077b6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 20px rgba(0, 119, 182, 0.18) !important;
+}
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state .lms-btn--primary:hover,
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state a.lms-btn:hover {
+  background: linear-gradient(135deg, #006aa3 0%, #0086b3 100%) !important;
+  box-shadow: 0 14px 26px rgba(0, 119, 182, 0.32) !important;
+}
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state .lms-btn--primary:focus-visible,
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state a.lms-btn:focus-visible {
+  outline: 2px solid #0077b6;
+  outline-offset: 2px;
+}
+
+/* [P024] ISSUE 1-0560: Notification bell badge clipped at header top.
+   The .lms-bell-counter inline style sits at top:-8px; pull it down so it
+   stays comfortably inside the header without touching the top border. */
+.lms-navbar .lms-bell-icon-wrapper .lms-bell-counter {
+  top: -3px !important;
+  right: -8px !important;
+}
+
+/* [P024] ISSUE 1-0559: Keep the floating back-to-top control anchored to the
+   viewport corner so it never crowds the footer brand block.
+   (Reinforces the medical skin's fixed positioning.) */
+body.route--lms-note-my-notes #lms-back-to-top,
+body.route--lms-note-my-notes .lms-back-to-top {
+  position: fixed !important;
+  right: clamp(14px, 2vw, 28px) !important;
+  bottom: clamp(14px, 2vw, 28px) !important;
+  left: auto !important;
+  z-index: 1250 !important;
+}
+
+/* ==========================================================================
+   MOBILE (<= 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  /* [P024] ISSUE 1-0555 / 1-0556: Stack hero header on mobile.
+     Title full-width above the intro paragraph for a clean single column
+     instead of an uneven two-column layout where the H1 wraps to 2 lines. */
+  body.route--lms-note-my-notes .lms-my-notes .lms-section__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  body.route--lms-note-my-notes .lms-my-notes .lms-section__header > p {
+    text-align: left;
+  }
+
+  /* [P024] ISSUE 1-0558: Trim dead space between empty-state card and footer
+     on the sparse mobile view so the footer follows the content closely. */
+  body.route--lms-note-my-notes .lms-my-notes {
+    padding-bottom: 1.5rem;
+  }
+  body.route--lms-note-my-notes .lms-my-notes .lms-empty-state {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+}

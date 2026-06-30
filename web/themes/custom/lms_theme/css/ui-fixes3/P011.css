@@ -1,0 +1,82 @@
+/* ==========================================================================
+   P011 — Contact page (route--lms-course-contact)
+   Third-pass UI fixes. This partial loads LAST; uses !important where needed
+   to beat heavier existing rules from site-branding.css / main.css and the
+   prior failed P023 footer-logo fix.
+   ========================================================================== */
+
+/* [P011] ISSUE 1-0303: Footer 'SilverCare' logo lockup renders LARGER than the
+   header lockup on mobile (PRIOR FIX FAILED).
+   Root cause of the failure:
+     - header brand-mark is 56px at (max-width:576px)  [site-branding.css]
+     - footer brand-mark is 72px at (max-width:576px) and only trimmed to 52px
+       at (max-width:480px) with no !important, so in the 481–576px band the
+       footer is 72px vs the 56px header -> still visibly larger.
+   Fix: clamp the footer brand-mark to the SAME height as the header brand-mark
+   across the whole mobile range, with !important so it can't be re-inflated by
+   the base `.lms-brand-mark--footer { height: 72px }` rule. The footer link
+   wrapper sometimes adds its own height/line-height inflation, so neutralize
+   that too. */
+@media (max-width: 576px) {
+  .lms-footer .lms-brand-mark--footer,
+  .lms-footer__brand-link .lms-brand-mark--footer {
+    height: 56px !important;
+    max-height: 56px !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+  .lms-footer__brand-link {
+    line-height: 1 !important;
+  }
+  .lms-footer__brand {
+    margin-top: 0 !important;
+    margin-bottom: 0.75rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .lms-footer .lms-brand-mark--footer,
+  .lms-footer__brand-link .lms-brand-mark--footer {
+    height: 52px !important;
+    max-height: 52px !important;
+  }
+}
+
+/* [P011] ISSUE 1-0302: 'Next Steps' CTA cards vs 'Fastest Routes' buttons are
+   styled inconsistently for comparable navigational intent.
+   These two groups legitimately have different roles (the Next-Steps items
+   carry a title + description, the Fastest-Routes items are bare action
+   buttons), so rather than collapse them into one style we make them share a
+   consistent visual language: same accent border colour, border-radius, hover
+   lift and accent-on-hover. This unifies them as a recognisable CTA family
+   while preserving the descriptive role of the cards. */
+body.route--lms-course-contact .lms-contact-action-list__item {
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  border-radius: 0.75rem; /* match the rounded pill/button family */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+body.route--lms-course-contact .lms-contact-action-list__item:hover,
+body.route--lms-course-contact .lms-contact-action-list__item:focus-visible {
+  border-color: #2563eb;
+  background-color: rgba(37, 99, 235, 0.06);
+  box-shadow: 0 6px 18px -10px rgba(37, 99, 235, 0.45);
+  transform: translateY(-2px); /* same lift the .btn-lms-* family uses */
+}
+
+/* Keep the card title in the same accent on hover as the buttons' label. */
+body.route--lms-course-contact .lms-contact-action-list__item:hover strong,
+body.route--lms-course-contact .lms-contact-action-list__item:focus-visible strong {
+  color: #2563eb;
+}
+
+/* Tighten the action list to a single, consistent stack on mobile so the two
+   CTA groups read as parallel families rather than divergent layouts. */
+@media (max-width: 576px) {
+  body.route--lms-course-contact .lms-contact-action-list {
+    gap: 0.75rem;
+  }
+  body.route--lms-course-contact .lms-contact-action-list__item {
+    padding: 1rem 1.125rem;
+  }
+}

@@ -1,0 +1,85 @@
+/* ============================================================
+   P004 — Categories page (/categories)
+   route_class: route--lms-course-category
+   This partial loads LAST. !important used only to beat inline
+   styles on the target.
+   ============================================================ */
+
+/* [P004] ISSUE 1-0138: Many category cards have an empty description while
+   others have text, making cards visually unequal. CSS can't populate the
+   missing taxonomy text, but it CAN normalise card geometry so every card is
+   the same height and the body region reserves consistent space whether or
+   not a description is present. Reserve 2 lines of desc height and keep the
+   badge pinned to the bottom (the .lms-category-card__meta already uses
+   margin-top:auto). */
+body.route--lms-course-category .lms-categories-grid .lms-category-card__desc {
+  min-height: 2.625rem; /* ~2 lines at .875rem / 1.5 line-height */
+  margin-bottom: 0;
+}
+/* Keep the content block from collapsing when desc is empty so titles/meta
+   line up across the row. */
+body.route--lms-course-category .lms-categories-grid .lms-category-card__content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* [P004] ISSUE 1-0141: With auto-fill minmax(320px,1fr) on a wide desktop the
+   16-card grid lands a single orphan card alone in the final row. Cap the grid
+   to a fixed 4 columns on wide viewports so 16 cards form 4 balanced rows
+   (4x4), and use a 3/2/1 step-down on smaller widths. This removes the lone
+   trailing card. */
+@media (min-width: 1100px) {
+  body.route--lms-course-category .lms-categories-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (min-width: 768px) and (max-width: 1099px) {
+  body.route--lms-course-category .lms-categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  body.route--lms-course-category .lms-categories-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* [P004] ISSUE 1-0144: Make the hero search input read clearly as actionable.
+   The magnifier <i.fa-search> exists but is faint; strengthen its colour and
+   give the input a visible focus-visible ring for keyboard affordance. The
+   input/icon carry inline styles, so override with !important on the target. */
+body.route--lms-course-category .lms-search-box .fa-search {
+  color: #818cf8 !important;
+  pointer-events: none;
+}
+body.route--lms-course-category #category-search-input:focus-visible {
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25) !important;
+  outline: none;
+}
+
+/* [P004] ISSUE 1-0147: On mobile the hamburger toggle and the inline
+   Login/Register actions are both visible, creating redundant nav and
+   contributing to right-edge overflow. Collapse the inline auth actions on
+   small breakpoints so only the hamburger remains; the drawer carries the
+   nav links. Global header component (no page scope). */
+@media (max-width: 768px) {
+  .lms-navbar__actions {
+    display: none !important;
+  }
+}
+
+/* [P004] ISSUE 1-0155: On mobile the fixed back-to-top FAB overlaps the
+   bottom-right of the last category card. Add bottom breathing room under the
+   page content so the FAB rests over empty space, and nudge the FAB into the
+   safe gutter. Higher specificity than the medical base rule. */
+@media (max-width: 480px) {
+  body.route--lms-course-category .lms-page__content {
+    padding-bottom: 6rem;
+  }
+  body.layout-medical.route--lms-course-category .lms-back-to-top,
+  body.layout-medical.route--lms-course-category #lms-back-to-top {
+    right: 16px !important;
+    bottom: 20px !important;
+  }
+}

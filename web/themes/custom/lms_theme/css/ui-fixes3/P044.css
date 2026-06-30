@@ -1,0 +1,26 @@
+/* ==========================================================================
+   P044 — AI Course Builder (/manage/courses/ai-builder)
+   route_class: route--lms-ai-course-builder-form
+   Third-pass UI fixes.
+
+   NOTE: All reported issues for this page require markup/data changes that
+   CSS cannot perform. They are documented here and DEFERRED — there is no
+   valid corrective CSS (contrast/spacing/alignment/overflow/etc.) for them.
+   ========================================================================== */
+
+/* [P044] ISSUE 1-0916, 1-0927: Course Topic field empty while Target Audience
+   ("Beginners") and Tone of Voice ("Professional & Academic") are prefilled.
+   DEFERRED — fix is a form definition change in
+   web/modules/custom/lms_ai/src/Form/CourseBuilderForm.php: add
+   '#placeholder' => 'e.g. Advanced Digital Marketing Strategies' to the
+   'topic' element (or drop '#default_value' from 'audience'/'tone').
+   CSS cannot inject placeholder attribute text into an empty <input>. */
+
+/* [P044] ISSUE 1-0925: Page <title> uses wand emoji while hero <h1> uses
+   sparkle. DEFERRED — both are text content; the emoji must be aligned in
+   the form/page title markup, not via CSS. */
+
+/* [P044] ISSUE 1-0921: Footer "COURSE" column heading mislabels its
+   news/guide links and duplicates "News". DEFERRED — requires renaming the
+   footer block heading and de-duplicating menu links (content/menu data),
+   not stylable via CSS. */

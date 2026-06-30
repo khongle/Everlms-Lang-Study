@@ -1,0 +1,86 @@
+/* ============================================================
+   P046 — AI Platform Settings (/admin/config/lms/ai)
+   Page scope: body.path-admin-config-lms-ai
+   Form id: lms-ai-settings-form  (fields: edit-default-provider,
+   edit-api-key, edit-model, edit-gemini-* )
+   ============================================================ */
+
+/* [P046] ISSUE 1-0949: Make all selects share width + chevron spacing */
+/* [P046] ISSUE 1-0958: Selects must be full-width within the form column on mobile */
+body.path-admin-config-lms-ai .form-select,
+body.path-admin-config-lms-ai select.form-element,
+body.path-admin-config-lms-ai select {
+  width: 100%;
+  max-width: 32em;
+  min-width: 16em;
+  /* keep the native chevron from sitting flush against the text */
+  padding-inline-end: 2.25em;
+  background-position: right 0.85em center;
+}
+
+/* [P046] ISSUE 1-0950: Constrain wide text/password inputs to match the select column */
+body.path-admin-config-lms-ai input[type="text"].form-element,
+body.path-admin-config-lms-ai input[type="text"].form-text,
+body.path-admin-config-lms-ai input[type="password"].form-element,
+body.path-admin-config-lms-ai input[type="password"].form-text,
+body.path-admin-config-lms-ai input.form-text,
+body.path-admin-config-lms-ai input.form-password {
+  width: 100%;
+  max-width: 32em;
+  box-sizing: border-box;
+}
+
+/* [P046] ISSUE 1-0951: Bookmark / "add to shortcuts" star icon — raise contrast
+   and add a clear interactive hover/focus affordance.
+   Gin/Claro shortcut toggle lives in the page title area. */
+.region-content .page-title .shortcut-action a,
+.shortcut-action.shortcut-action--add a,
+.shortcut-action.shortcut-action--remove a,
+a.use-ajax.shortcut-action,
+.shortcut-wrapper a {
+  color: #2c3e50;
+  opacity: 1;
+}
+.region-content .page-title .shortcut-action a svg,
+.shortcut-action a svg,
+.shortcut-wrapper a svg {
+  /* darken the outline stroke from light gray to meet >=3:1 non-text contrast */
+  stroke: #2c3e50;
+  fill: none;
+  color: #2c3e50;
+  opacity: 1;
+}
+.shortcut-action a:hover,
+.shortcut-action a:focus-visible,
+.shortcut-wrapper a:hover,
+.shortcut-wrapper a:focus-visible {
+  color: #0b5fff;
+}
+.shortcut-action a:hover svg,
+.shortcut-action a:focus-visible svg,
+.shortcut-wrapper a:hover svg,
+.shortcut-wrapper a:focus-visible svg {
+  stroke: #0b5fff;
+  color: #0b5fff;
+  fill: #0b5fff;
+}
+.shortcut-action a:focus-visible,
+.shortcut-wrapper a:focus-visible {
+  outline: 2px solid #0b5fff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* [P046] ISSUE 1-0958: On narrow viewports drop the max-width cap so controls
+   fill the content column rather than clipping. */
+@media (max-width: 480px) {
+  body.path-admin-config-lms-ai .form-select,
+  body.path-admin-config-lms-ai select,
+  body.path-admin-config-lms-ai input[type="text"].form-text,
+  body.path-admin-config-lms-ai input[type="password"].form-text,
+  body.path-admin-config-lms-ai input.form-text,
+  body.path-admin-config-lms-ai input.form-password {
+    max-width: 100%;
+    min-width: 0;
+  }
+}

@@ -1,0 +1,112 @@
+/* P038 — Manage Pricing (/workspace/pricing) UI fixes
+   Markup: web/modules/custom/lms_membership/templates/lms-admin-pricing.html.twig
+   route_class empty -> scope page-specific rules under .lms-admin (admin page wrapper). */
+
+/* [P038] ISSUE 2-0368, 2-0369, 2-0370, 2-0376: Filter form has NO CSS defined for
+   .lms-admin-filter* — the form renders as a stretched flex/block, inflating the
+   search input to ~470x360 and scattering fields with dead vertical gaps and a blank
+   left third. Give the form a compact, full-width, left-aligned column layout with
+   normal-height controls and consistent widths. */
+.lms-admin .lms-admin-filter {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;        /* fields fill card width, no centered/offset column */
+  gap: 16px;
+  margin-bottom: 1.5rem;
+}
+.lms-admin .lms-admin-filter__group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;     /* labels/fields hug the left content edge */
+  gap: 6px;
+  flex: 0 0 auto !important;   /* neutralise inline flex:2 / flex:0 0 auto stretch */
+  width: 100%;
+  min-width: 0;
+}
+.lms-admin .lms-admin-filter__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #8b949e;
+}
+.lms-admin .lms-admin-filter__input,
+.lms-admin .lms-admin-filter__select {
+  width: 100%;
+  height: 44px;                /* single-line control, matches Status select height */
+  min-height: 0;               /* kill any textarea-like inflation */
+  padding: 0 0.875rem;
+  font-size: 0.9375rem;
+  line-height: 44px;
+  color: #e6edf3;
+  background: #21262d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+}
+.lms-admin .lms-admin-filter__select {
+  line-height: normal;         /* selects manage their own vertical centering */
+}
+/* Filter submit button: full-width to match the fields above for a coherent form. */
+.lms-admin .lms-admin-filter .lms-btn[type="submit"],
+.lms-admin .lms-admin-filter button[type="submit"] {
+  width: 100%;
+  height: 44px !important;     /* beat inline height:42px */
+  justify-content: center;
+}
+
+/* [P038] ISSUE 2-0371: Status badge ('Active') wraps vertically (A/c/ti/v/e) inside a
+   too-narrow pill. Force single line and reserve adequate width. */
+.lms-admin .lms-table .lms-badge {
+  white-space: nowrap;
+  min-width: max-content;
+  width: auto;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+/* [P038] ISSUE 2-0372, 2-0373: Edit/Deactivate buttons clip past the card's right edge
+   and collide with the cramped badge. Keep each action cell on one line and let the
+   responsive wrapper scroll horizontally instead of clipping; give the row predictable
+   gutters. */
+.lms-admin .lms-table td:last-child,
+.lms-admin .lms-table th:last-child {
+  white-space: nowrap;
+  text-align: right;
+}
+.lms-admin .lms-table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+/* Tablet: stack the two action buttons so the full row fits without clipping. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .lms-admin .lms-table td:last-child {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .lms-admin .lms-table td:last-child .lms-btn {
+    margin-right: 0 !important;  /* beat inline margin-right:4px */
+    width: 100%;
+    max-width: 140px;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* [P038] ISSUE 2-0374: Plan name and its price sit on different baselines (name top,
+   price lower/indented). Vertically center all cells so name+price read as one row. */
+.lms-admin .lms-table td,
+.lms-admin .lms-table th {
+  vertical-align: middle;
+}
+
+/* [P038] ISSUE 2-0375: Inconsistent per-cell/zebra highlight blocks across sibling rows.
+   Normalise cell backgrounds so every plan row is uniform; keep one subtle, consistent
+   hover state on the whole row only. */
+.lms-admin .lms-table tbody tr,
+.lms-admin .lms-table tbody td {
+  background: transparent;
+}
+.lms-admin .lms-table tbody tr:hover,
+.lms-admin .lms-table tbody tr:hover td {
+  background: rgba(102, 126, 234, 0.04);
+}

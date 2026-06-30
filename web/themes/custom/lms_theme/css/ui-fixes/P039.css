@@ -1,0 +1,178 @@
+/* ===========================================================================
+   P039 — Manage Ratings (/workspace/ratings)
+   Scope: .lms-admin admin workspace (no route_class available on this page).
+   Loads LAST. !important used only to beat inline styles from the template.
+   =========================================================================== */
+
+/* [P039] ISSUE 1-0829: ACTIONS column clipped at right edge — give the
+   responsive wrapper real right padding and keep action buttons on one row. */
+.lms-admin .lms-table-responsive {
+  overflow-x: auto;
+  padding-right: 0.5rem;
+}
+.lms-admin .lms-table th:last-child,
+.lms-admin .lms-table td:last-child {
+  padding-right: 1.5rem;
+  white-space: nowrap;
+}
+/* The action button group must never wrap or shrink below its content. */
+.lms-admin .lms-table td:last-child > div {
+  flex-wrap: nowrap !important;
+  white-space: nowrap;
+}
+
+/* [P039] ISSUE 1-0831: RATING stars wrap onto two lines — keep all five
+   stars + score on a single horizontal row. */
+.lms-admin .lms-table td > div[style*="color: #fbbf24"],
+.lms-admin .lms-table td > div[style*="#fbbf24"] {
+  white-space: nowrap !important;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+/* [P039] ISSUE 1-0836: STATUS badges top-align inconsistently when a row has
+   one vs two badges — center the badge stack vertically with even spacing. */
+.lms-admin .lms-table td {
+  vertical-align: middle;
+}
+/* The STATUS cell is the 6th column; stack its badges in a centered column. */
+.lms-admin .lms-table tbody td:nth-child(6) {
+  text-align: left;
+}
+.lms-admin .lms-table tbody td:nth-child(6) .lms-status {
+  display: inline-flex;
+  margin-top: 0 !important;
+}
+.lms-admin .lms-table tbody td:nth-child(6) .lms-status + .lms-status {
+  margin-top: 4px !important;
+}
+
+/* [P039] ISSUE 1-0837: secondary date line "Apr 04, 2026" uses #64748b on the
+   dark cell — below WCAG AA. Raise to a higher-luminance gray (#94a3b8 ≈ 5.1:1
+   on #1e293b card). Override the inline color. */
+.lms-admin .lms-table td span[style*="#64748b"] {
+  color: #a3b2c7 !important;
+}
+
+/* [P039] ISSUE 1-0838 / 1-0848: sidebar brand wordmark + lower nav labels look
+   faint on the dark sidebar. Lift the muted nav/brand foreground for AA. */
+.lms-admin__sidebar-brand a,
+.lms-admin__sidebar-brand span {
+  color: #f1f5f9 !important;
+}
+.lms-admin__nav-item {
+  color: #c2cddb !important; /* was #94a3b8 → ~6.4:1 on #161b22 */
+}
+.lms-admin__nav-item--active,
+.lms-admin__nav-item:hover {
+  color: #ffffff !important;
+}
+.lms-admin__subnav-item {
+  color: #b6c2d2 !important;
+}
+
+/* [P039] ISSUE 1-0840: "15 Reviews Found" counter — normalize tone/contrast.
+   (Title-case wording itself is content; we lift its contrast & size.) */
+.lms-admin__subtitle {
+  color: #a3b2c7 !important;
+  font-size: 0.9375rem;
+}
+
+/* ===========================================================================
+   MOBILE — collapse the fixed 260px sidebar so the table gets full width.
+   Addresses: 1-0841 (sidebar full width), 1-0842 (table squeezed),
+   1-0843 / 1-0844 (H1 overflow/overlap), 1-0845 (ID clipped),
+   1-0846 (pagination cramped), 1-0847 (empty side void), 1-0849 (header pill).
+   =========================================================================== */
+@media (max-width: 767px) {
+  /* Kill horizontal overflow at the root. */
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* [P039] ISSUE 1-0841 / 1-0847: off-canvas the fixed sidebar. */
+  .lms-admin__sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    width: 82vw;
+    min-width: 0;
+    max-width: 300px;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+  }
+  .lms-admin__sidebar:target,
+  .lms-admin__sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* [P039] ISSUE 1-0842 / 1-0847: main content takes the full viewport,
+     no left margin reserved for the now-hidden sidebar. */
+  .lms-admin {
+    display: block;
+  }
+  .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100%;
+    max-width: 100vw;
+    padding: 1.25rem;
+    box-sizing: border-box;
+  }
+
+  /* [P039] ISSUE 1-0843 / 1-0844: H1 + counter must stack, no overlap, wrap. */
+  .lms-admin__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .lms-admin__title {
+    font-size: 1.25rem;
+    line-height: 1.25;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+  }
+  .lms-admin__header > div {
+    margin-top: 0.25rem;
+  }
+
+  /* [P039] ISSUE 1-0842 / 1-0845 / 1-0849: table is horizontally scrollable in
+     a full-width wrapper so every column (incl. full IDs) is reachable; the
+     sticky header spans the real table width instead of floating as a pill. */
+  .lms-admin-card {
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .lms-table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+  .lms-table {
+    min-width: 720px; /* preserve column legibility; wrapper scrolls */
+  }
+  .lms-table td:first-child,
+  .lms-table th:first-child {
+    white-space: nowrap;
+  }
+
+  /* [P039] ISSUE 1-0846: pagination as a clean wrapping flex row, full width. */
+  .lms-admin-footer {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+  }
+  .lms-admin-footer .lms-pagination,
+  .lms-admin-footer .pager,
+  .lms-admin-footer ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}

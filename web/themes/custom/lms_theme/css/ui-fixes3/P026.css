@@ -1,0 +1,97 @@
+/* ==========================================================================
+   P026 — My Memberships (route--lms-membership-my-membership)
+   THIRD-PASS UI FIXES
+   This partial loads LAST. !important is used deliberately to beat the
+   global light-mode.css rule `body.layout-minimalist h3 { color:#0f172a }`
+   which (higher specificity than the card's inline <style> h3 rule) was the
+   ROOT CAUSE of the dark-on-dark plan title that prior fixes failed to beat.
+   ========================================================================== */
+
+/* [P026] ISSUE 1-0575, 1-0582: Plan title (e.g. "Basic Access",
+   "Enterprise / Facility Plan") rendered dark-on-dark navy card, nearly
+   invisible. Force a light, high-contrast heading on the dark card surface.
+   Root cause: light-mode.css `body.layout-minimalist h3{color:#0f172a}`
+   wins over `.lms-membership-card__header h3{color:#fff}`. We raise both
+   specificity AND priority to guarantee the override. */
+body.route--lms-membership-my-membership .lms-membership-card .lms-membership-card__header h3,
+body.route--lms-membership-my-membership .lms-membership-card__title h3,
+body.layout-minimalist .lms-membership-card .lms-membership-card__header h3 {
+  color: #ffffff !important;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+  /* the card sits on dark navy regardless of light-mode body bg */
+  -webkit-text-fill-color: #ffffff; /* beat any inherited text-fill */
+}
+
+/* The plan avatar initials must also stay white on the gradient tile,
+   in case light-mode neutralizes it. */
+body.route--lms-membership-my-membership .lms-membership-icon,
+body.layout-minimalist .lms-membership-card .lms-membership-icon {
+  color: #ffffff !important;
+}
+
+/* Keep the supporting card text legible too: light-mode forces
+   `p{color:#64748b !important}` which is acceptable for the muted labels,
+   but the value cells must remain bright. */
+body.route--lms-membership-my-membership .lms-membership-card__value,
+body.layout-minimalist .lms-membership-card .lms-membership-card__value {
+  color: #ffffff !important;
+}
+body.route--lms-membership-my-membership .lms-membership-card__body strong,
+body.layout-minimalist .lms-membership-card .lms-membership-card__body strong {
+  color: #94a3b8 !important;
+}
+
+/* [P026] ISSUE 1-0585: Avatar "BA"/"EN" tile visually collided with the
+   dark-on-dark title, looking like an overlap artifact. Now that the title
+   is white this is mostly resolved; reinforce a tidy single baseline with a
+   consistent gap and centered alignment, and prevent the title from
+   wrapping under the avatar on narrow cards. */
+body.route--lms-membership-my-membership .lms-membership-card__title,
+body.layout-minimalist .lms-membership-card .lms-membership-card__title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  min-width: 0; /* allow title to truncate instead of pushing avatar */
+}
+body.route--lms-membership-my-membership .lms-membership-icon,
+body.layout-minimalist .lms-membership-card .lms-membership-icon {
+  flex: 0 0 40px; /* fixed avatar, never squashed by long titles */
+}
+body.route--lms-membership-my-membership .lms-membership-card__title h3,
+body.layout-minimalist .lms-membership-card .lms-membership-card__title h3 {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* [P026] ISSUE 1-0588: Large empty whitespace band between the last card
+   and the footer on mobile (prior fix failed). The container uses
+   `margin: 4rem auto`; the oversized bottom margin plus page min-height
+   created the gap. Trim the bottom margin on mobile so the footer sits
+   reasonably close to the content. */
+@media (max-width: 640px) {
+  body.route--lms-membership-my-membership .lms-my-membership {
+    margin-top: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 0 !important;
+  }
+  /* tighten the grid gap on mobile so the stack reads as one block */
+  body.route--lms-membership-my-membership .lms-membership-list {
+    gap: 1rem !important;
+  }
+}
+
+/* [P026] ISSUE 1-0589: Header notification "2" badge sits tight against /
+   over the bell glyph, looking clipped. Push it to a clean above-right
+   offset and add a subtle ring so it reads as a separate token rather than
+   covering the bell outline. Global component fix (badge appears in header
+   on all themed pages). */
+.lms-bell-icon-wrapper .lms-bell-counter {
+  top: -7px !important;
+  right: -8px !important;
+  padding: 0.1rem 0.35rem !important;
+  border: 2px solid #0f1f3a !important; /* separating ring vs dark header */
+  box-sizing: border-box;
+}

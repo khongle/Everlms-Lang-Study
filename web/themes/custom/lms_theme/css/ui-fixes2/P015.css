@@ -1,0 +1,73 @@
+/* ==========================================================================
+   P015 — Certificate Verify (/certificate/verify)
+   Skin: medical (SilverCare) | layout-medical layout-minimalist
+   This partial loads LAST. Page scope: body.route--lms-certificate-verify
+   Button + placeholder are restyled by high-specificity skin rules
+   (light-mode.css / medical.css), so fixes here MATCH that specificity and
+   load later to win without leaning on !important except to beat skin
+   !important declarations on the same target.
+   ========================================================================== */
+
+/* [P015] ISSUE 1-0366: lone verify form stranded above a tall blank region.
+   .lms-page__content is flex:1 and grows to fill the viewport, leaving the
+   short form pinned to the top with a huge empty band before the footer.
+   Center the form block in the content area and bound its height so the form
+   and footer sit closer together. */
+body.route--lms-certificate-verify .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Keep the empty band modest instead of one full viewport tall. */
+  min-height: 0;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+body.route--lms-certificate-verify .lms-page__content > * {
+  width: 100%;
+  max-width: 32rem; /* ~512px: a focused, balanced single-field card */
+  margin-left: auto;
+  margin-right: auto;
+}
+body.route--lms-certificate-verify .lms-certificate-verification-form {
+  width: 100%;
+}
+/* Override the input's intrinsic size="60" width so it fits the container. */
+body.route--lms-certificate-verify #edit-certificate-code,
+body.route--lms-certificate-verify .form-item-certificate-code .form-control {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* [P015] ISSUE 1-0368, 1-0376: Verify button heavy, offset blue glow.
+   medical.css sets, on this layout:
+     ... input[type="submit"] { box-shadow: 0 10px 20px rgba(0,119,182,.24)!important }
+   That 10px-offset / 20px-blur colored shadow is the bleed seen bottom-left.
+   Match the skin's compound specificity + later load order and replace it
+   with a subtle, symmetric, neutral elevation (desktop + mobile). */
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form input[type="submit"],
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form .form-submit,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form button[type="submit"] {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+}
+/* Keep the focus state accessible but still subtle/symmetric. */
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form input[type="submit"]:focus,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form input[type="submit"]:focus-visible,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form .form-submit:focus,
+body.layout-medical.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-certificate-verification-form .form-submit:focus-visible {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
+              0 0 0 3px rgba(0, 119, 182, 0.30) !important;
+}
+
+/* [P015] ISSUE 1-0370: placeholder too light/low-contrast.
+   light-mode.css sets, with specificity (0,2,2):
+     body.layout-minimalist input[type="text"]::placeholder { color:#94a3b8 }
+   #94a3b8 on white is ~2.5:1 (below 3:1). Match that specificity, add the
+   route class for a clean win, and darken to #6b7280 (~4.8:1 on white) while
+   still reading as placeholder. */
+body.layout-minimalist.route--lms-certificate-verify input[type="text"]::placeholder,
+body.layout-minimalist.route--lms-certificate-verify .form-text::placeholder,
+body.layout-minimalist.route--lms-certificate-verify #edit-certificate-code::placeholder {
+  color: #6b7280;
+  opacity: 1;
+}

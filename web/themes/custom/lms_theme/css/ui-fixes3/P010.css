@@ -1,0 +1,5 @@
+/* [P010] ISSUE 1-0279: Footer 'COURSE' column has near-duplicate 'News & Notices' + 'News'
+   links and a heading ('COURSE', singular) that does not match its contents.
+   DEFERRED — CSS cannot rename/merge menu link labels or change a menu/block heading.
+   These are content/data values (menu link entities + block title) and must be edited in
+   the Drupal admin (menu links + footer block label). No corrective CSS is possible. */

@@ -1,0 +1,89 @@
+/* ==========================================================================
+   P039 — Manage Ratings (/workspace/ratings)
+   Template: web/modules/custom/lms_course/templates/lms-admin-ratings.html.twig
+   Page wrapper: .lms-admin  /  Table: .lms-table inside .lms-table-responsive
+   route_class empty -> scope to the page's most specific container (.lms-admin
+   admin table). Changes are corrective for the ratings table layout.
+   ========================================================================== */
+
+/* [P039] ISSUE 2-0377, 2-0379, 2-0382: kill inflated/alternating row heights;
+   enforce a uniform, compact, content-driven row height with centered cells.
+   Root cause: table cells with default vertical-align:top + auto table layout
+   let some rows balloon while content floats centered/top. Lock table-layout
+   so column widths obey the <th> percentages and rows size to content. */
+.lms-admin .lms-table {
+  table-layout: fixed;
+  width: 100%;
+}
+.lms-admin .lms-table tbody tr {
+  height: auto;
+}
+.lms-admin .lms-table tbody td {
+  vertical-align: middle;       /* fixes 2-0379: ID/title/author share baseline */
+  height: auto;
+  min-height: 0;
+  padding-top: 0.75rem;          /* fixes 2-0382: uniform modest vertical padding */
+  padding-bottom: 0.75rem;
+  padding-right: 0.75rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;       /* long course names wrap instead of forcing width */
+  word-break: break-word;
+}
+/* Neutralize any stray full-height / centering that inflates the row box */
+.lms-admin .lms-table tbody tr,
+.lms-admin .lms-table tbody td > * {
+  align-items: center;
+}
+
+/* [P039] ISSUE 2-0378: star rating cluster clipped at card right edge.
+   Give the rating cell room, stop it being cut off, and pad the card's right
+   side so the full star value is visible. */
+.lms-admin .lms-table-responsive {
+  overflow-x: auto;             /* allow horizontal scroll instead of clipping */
+  overflow-y: visible;
+  padding-right: 0.5rem;
+}
+.lms-admin .lms-table tbody td:nth-child(4) {
+  white-space: nowrap;          /* keep stars + numeric value on one line */
+  overflow: visible;
+  min-width: 96px;
+}
+.lms-admin .lms-table tbody td:nth-child(4) > div {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: visible;
+}
+/* trim the oversized Review column so the Rating column is not pushed off-card */
+.lms-admin .lms-table tbody td:nth-child(5) > div {
+  max-width: 100% !important;   /* beats inline max-width:300px crowding the row */
+}
+
+/* [P039] ISSUE 2-0380: column headers were not visible — make the existing
+   <thead> sticky and clearly visible so managers can read each column
+   (ID / Course / Student / Rating / Review / Status / Actions). */
+.lms-admin .lms-table thead {
+  display: table-header-group;
+}
+.lms-admin .lms-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  white-space: nowrap;
+  text-align: left;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* [P039] ISSUE 2-0381: muted date text + "N Reviews Found" subtitle are
+   low-contrast on the dark navy background. Lighten toward >=4.5:1 on #161b22.
+   #94a3b8 ~ 7.3:1, comfortably above WCAG AA for small text. */
+.lms-admin__subtitle {
+  color: #94a3b8 !important;
+}
+/* per-row date is an inline span colored #64748b (~3.7:1, fails AA). Brighten. */
+.lms-admin .lms-table tbody td span[style*="0.8rem"],
+.lms-admin .lms-table tbody td span[style*="64748b"] {
+  color: #94a3b8 !important;
+}

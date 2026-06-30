@@ -1,0 +1,69 @@
+/* ==========================================================================
+   P013 — Forum index (route--lms-forum-index) UI fixes, round 2
+   Active skin: medical / minimalist. Loads LAST.
+   ========================================================================== */
+
+/* [P013] ISSUE 2-0131: Vertically center the REPLIES/VIEWS stats block in each card */
+/* The card is a flex row; ensure the stats column anchors to the card's vertical
+   centre regardless of how many lines the title/excerpt wrap to, so the numbers
+   read uniformly down the column and line up with the bottom meta row visually. */
+body.route--lms-forum-index .lms-forum-item {
+  display: flex;
+  align-items: center;
+}
+body.route--lms-forum-index .lms-forum-item__stats {
+  align-self: center;
+  align-items: center;
+}
+body.route--lms-forum-index .lms-forum-item__stat {
+  justify-content: center;
+}
+
+/* [P013] ISSUE 2-0135: Remove the large empty band between the global header and the H1 */
+/* The section + page wrapper stack ~3rem + 2rem of top padding above "Community"
+   with no hero/breadcrumb, leaving a tall empty band. Tighten the top spacing so
+   the title appears within a normal scroll-free range. */
+body.route--lms-forum-index .lms-page__content {
+  padding-top: 1rem;
+}
+body.route--lms-forum-index .lms-section {
+  padding-top: 1.25rem;
+}
+body.route--lms-forum-index .lms-forum-header {
+  margin-bottom: 1.5rem;
+}
+
+/* [P013] ISSUE 2-0139: Solid card background + darker excerpt text for WCAG AA */
+/* Force the topic cards fully opaque so excerpt text never sits over the page tint,
+   and darken the muted grey excerpt to meet >=4.5:1 on white (#475569 = 7.5:1). */
+body.route--lms-forum-index .lms-forum-item {
+  background-color: #ffffff;
+}
+body.route--lms-forum-index .lms-forum-item__content p {
+  color: #475569;
+}
+body.route--lms-forum-index .lms-forum-item__meta {
+  color: #475569;
+}
+
+/* [P013] ISSUE 2-0142: Avoid single-word orphan lines in topic excerpts */
+/* text-wrap:pretty pulls the last word up so excerpts don't leave a lone short
+   word ("dementia.", "stories.", "Care.") stranded on its own final line. */
+body.route--lms-forum-index .lms-forum-item__content p {
+  text-wrap: pretty;
+}
+
+/* [P013] ISSUE 2-0140: Keep the floating back-to-top FAB clear of topic cards */
+/* The FAB overlapped the right edge / VIEWS column of the cards. Push it further
+   into the gutter (bottom-right) so it never overlaps interactive card content.
+   Beats the inline transition/positioning set by the medical skin component. */
+body.route--lms-forum-index .lms-back-to-top {
+  right: clamp(20px, 3vw, 40px) !important;
+  bottom: clamp(20px, 3vw, 40px) !important;
+}
+/* Reserve a right-hand gutter on the list so cards never sit under the FAB. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-forum-index .lms-forum-list {
+    padding-right: 4rem;
+  }
+}

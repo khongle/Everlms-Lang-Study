@@ -1,0 +1,141 @@
+/* ============================================================================
+   P011 — Contact page (route--lms-course-contact) UI fixes
+   Skin: medical / light-mode (body.layout-medical .. .layout-minimalist)
+   Loads LAST. Page-specific rules scoped under body.route--lms-course-contact.
+   Global components (navbar, footer brand, primary button) scoped by class.
+   ============================================================================ */
+
+/* [P011] ISSUE 1-0290, 1-0297: Hero "pills" render as faint/empty borderless
+   boxes (desktop) and near-white, overlapping, unreadable text (mobile).
+   Root cause: light-mode sets the pill background to #f8fafc but leaves the
+   base text color rgba(230,237,243,.76) (near-white) untouched -> invisible on
+   the light page. Give the pills readable dark text, a visible border, and
+   clean label/value separation via flex gap (no overlap, wraps on mobile). */
+body.route--lms-course-contact .lms-contact-hero__pills span {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .35rem;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155; /* slate-700 on #f1f5f9 ~ 8.6:1, passes AA */
+  font-weight: 500;
+}
+body.route--lms-course-contact .lms-contact-hero__pills span strong {
+  color: #1e293b; /* slate-800, clearly distinct value */
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* [P011] ISSUE 1-0291: Light-blue uppercase eyebrows read pale on white.
+   Reinforce a deep brand indigo (#3730a3 on white ~ 9:1) and bump weight so
+   small uppercase text clears WCAG AA comfortably. Covers all eyebrow variants
+   and the info-card label. */
+body.route--lms-course-contact .lms-contact-hero__eyebrow,
+body.route--lms-course-contact .lms-contact-hero__panel-eyebrow,
+body.route--lms-course-contact .lms-contact-map-card__eyebrow,
+body.route--lms-course-contact .lms-contact-action-card__eyebrow,
+body.route--lms-course-contact .lms-contact-info-card__label {
+  color: #3730a3 !important;
+  font-weight: 700;
+}
+
+/* [P011] ISSUE 1-0304: Inconsistent uppercase tracking across card eyebrows /
+   labels (EMAIL / PHONE / OFFICE / HOURS). Apply one shared letter-spacing so
+   all uppercase labels match. */
+body.route--lms-course-contact .lms-contact-hero__eyebrow,
+body.route--lms-course-contact .lms-contact-hero__panel-eyebrow,
+body.route--lms-course-contact .lms-contact-map-card__eyebrow,
+body.route--lms-course-contact .lms-contact-action-card__eyebrow,
+body.route--lms-course-contact .lms-contact-info-card__label {
+  letter-spacing: .14em;
+}
+
+/* [P011] ISSUE 1-0292: Card supporting descriptions read faint grey on white.
+   Use a darker slate (#475569 on white ~ 7.4:1) for all card body copy. */
+body.route--lms-course-contact .lms-contact-info-card p,
+body.route--lms-course-contact .lms-contact-action-card p,
+body.route--lms-course-contact .lms-contact-action-list__item span,
+body.route--lms-course-contact .lms-contact-map-card p,
+body.route--lms-course-contact .lms-contact-map-card__meta span {
+  color: #475569 !important;
+}
+
+/* [P011] ISSUE 1-0294: Hero H1 wrapped mid brand name. Control wrapping at
+   natural word boundaries and stop hyphen break points so the brand name is
+   never split across lines. (Brand string itself is content/data — deferred.) */
+body.route--lms-course-contact .lms-contact-hero__copy h1 {
+  text-wrap: balance;
+  hyphens: none;
+  -webkit-hyphens: none;
+  overflow-wrap: break-word;
+}
+
+/* [P011] ISSUE 1-0293: SilverCare logo not vertically centered with nav links.
+   Enforce centering on the navbar flex container and the brand lockup, and make
+   the brand mark a centered block so its optical baseline sits on the nav axis.
+   (Global header component — scoped by component class, no page scope.) */
+.lms-navbar__container {
+  align-items: center;
+}
+.lms-navbar__brand {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+.lms-navbar__brand .lms-brand-mark--header {
+  display: block;
+}
+
+/* [P011] ISSUE 1-0303: Footer logo lockup noticeably larger than header.
+   Normalize footer brand-mark to the header brand-mark scale.
+   (Global footer component — scoped by component class.) */
+.lms-brand-mark--footer {
+  height: 56px;
+}
+@media (max-width: 768px) {
+  .lms-brand-mark--footer {
+    height: 48px;
+  }
+}
+
+/* [P011] ISSUE 1-0301: Hero primary "Email Support" button shows an oversized
+   soft shadow halo inconsistent with the flat outline sibling. Constrain it to
+   a restrained, consistent elevation token (scoped to the contact hero so other
+   primary CTAs are unaffected). */
+body.route--lms-course-contact .lms-contact-hero__actions .btn-lms-primary {
+  box-shadow: 0 2px 8px rgba(79, 70, 229, .25);
+}
+body.route--lms-course-contact .lms-contact-hero__actions .btn-lms-primary:hover {
+  box-shadow: 0 4px 12px rgba(79, 70, 229, .32);
+}
+
+/* [P011] ISSUE 1-0300: Mobile — header "Register" link/button overflows the
+   right edge next to "Login" (cut off as "Re…"). At mobile widths tighten
+   navbar padding and let the inline action group wrap/shrink so links stay
+   within the viewport; the hamburger toggle handles the main nav.
+   (Global header component — scoped by component class, mobile breakpoint.) */
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    padding-left: .75rem;
+    padding-right: .75rem;
+    gap: .5rem;
+  }
+  .lms-navbar__actions {
+    gap: .4rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    padding-left: .35rem;
+    padding-right: .35rem;
+    font-size: .8125rem;
+    white-space: nowrap;
+  }
+  .lms-navbar__actions .lms-btn--sm {
+    padding-left: .55rem;
+    padding-right: .55rem;
+    font-size: .8125rem;
+    white-space: nowrap;
+  }
+}

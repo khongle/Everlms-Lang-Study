@@ -1,0 +1,166 @@
+/* ==========================================================================
+   P016b — User Register (/user/register)
+   Active skin: medical (body.layout-medical.layout-minimalist)
+   This partial loads LAST. !important is used only to beat the existing
+   light-mode.css / medical.css rules that already use !important on the
+   same targets.
+   ========================================================================== */
+
+/* [P016b] ISSUE 1-0396, 1-0410: Social auth buttons have near-invisible
+   fill/border — give them a clearly visible border + subtle shadow so they
+   read as tappable controls (WCAG non-text contrast >= 3:1). Beats
+   light-mode.css line ~2543 which sets border-color:#e2e8f0. */
+body.layout-medical .lms-auth .lms-auth__social .lms-btn--outline,
+body.layout-medical .lms-auth .lms-auth__social .lms-auth__social-btn {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #1f2937 !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06) !important;
+}
+body.layout-medical .lms-auth .lms-auth__social .lms-btn--outline:hover,
+body.layout-medical .lms-auth .lms-auth__social .lms-auth__social-btn:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+/* [P016b] ISSUE 1-0397: Stacked Google/Facebook buttons have no visible gap
+   and merge into one block — enforce a consistent vertical gap. The base
+   .lms-auth__social already declares flex-direction:column, so row-gap +
+   per-button margin together guarantee separation across browsers. */
+body.layout-medical .lms-auth .lms-auth__social {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+body.layout-medical .lms-auth .lms-auth__social .lms-auth__social-btn + .lms-auth__social-btn {
+  margin-top: 0.125rem;
+}
+
+/* [P016b] ISSUE 1-0398: Social button icon+label is left-aligned leaving a
+   large empty area, while the primary submit is centered — center the
+   icon+label group so all CTAs share one alignment language. */
+body.layout-medical .lms-auth .lms-auth__social .lms-auth__social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  padding: 0.625rem 0.875rem;
+}
+
+/* [P016b] ISSUE 1-0399: Ensure all full-width controls share identical left/
+   right edges — normalize width and kill stray horizontal margins so social
+   buttons, inputs and submit are flush in the same padded column. */
+body.route--user-register .lms-auth__card .lms-auth__social .lms-auth__social-btn,
+body.route--user-register .lms-auth__card input[type="email"],
+body.route--user-register .lms-auth__card input[type="text"],
+body.route--user-register .lms-auth__card input[type="submit"],
+body.route--user-register .lms-auth__card .form-submit {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+}
+
+/* [P016b] ISSUE 1-0401, 1-0409: Header "Login" (.lms-navbar__link, dark) and
+   "Back to Home" (.lms-btn--outline anchor, inheriting blue link color) get
+   two different treatments. Make "Back to Home" a proper outlined secondary
+   button in the brand color so the link-vs-button distinction is intentional
+   and consistent on every viewport. */
+body.layout-medical .lms-navbar__actions .lms-btn--outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #0077b6 !important;
+  background: #ffffff !important;
+  border: 1px solid #0077b6 !important;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+}
+body.layout-medical .lms-navbar__actions .lms-btn--outline:hover {
+  color: #ffffff !important;
+  background: #0077b6 !important;
+  border-color: #0077b6 !important;
+}
+/* Keep "Login" a clearly readable, consistently-weighted link beside it. */
+body.layout-medical .lms-navbar__actions .lms-navbar__link {
+  font-weight: 600;
+}
+
+/* [P016b] ISSUE 1-0404, 1-0412: Strengthen the "or" divider so it reads as an
+   explicit two-segment rule rather than floating copy. The markup uses a full
+   <hr> with an absolutely-centered span; bump the rule contrast and give the
+   span a solid card-colored backplate so the line breaks cleanly around it. */
+body.layout-medical .lms-auth .lms-auth__divider-line,
+body.layout-medical .lms-auth hr.lms-auth__divider-line {
+  border: 0 !important;
+  border-top: 1px solid #cbd5e1 !important;
+  opacity: 1 !important;
+  margin: 0 !important;
+}
+body.layout-medical .lms-auth .lms-auth__divider-label {
+  background: #ffffff !important;
+  color: #64748b !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* [P016b] ISSUE 1-0411: Email/Username placeholders are too light (#94a3b8 in
+   light-mode) — darken to #667085 for comfortable readability while staying
+   distinct from typed text. */
+body.layout-medical .lms-auth input[type="email"]::placeholder,
+body.layout-medical .lms-auth input[type="text"]::placeholder,
+body.layout-medical .lms-auth input[type="password"]::placeholder {
+  color: #667085 !important;
+  opacity: 1;
+}
+
+/* [P016b] ISSUE 1-0405, 1-0408: Excess empty band between header and card.
+   The fixed header is 64px; reduce the auth region's vertical padding so the
+   card sits in a more balanced position instead of feeling top-heavy. */
+body.route--user-register .lms-auth {
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+  align-items: center;
+}
+
+/* [P016b] ISSUE 1-0406, 1-0407: Mobile header overflow — "Back to Home" wraps
+   to 3 lines and clips past the right edge; the right-side nav bleeds beyond
+   the viewport. Keep the action links on one line, tighten container padding
+   so both fit, and prevent any horizontal overflow. */
+@media (max-width: 480px) {
+  body.layout-medical .lms-navbar__container {
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+    gap: 0.5rem;
+    overflow: hidden;
+  }
+  body.layout-medical .lms-navbar__actions {
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+  body.layout-medical .lms-navbar__actions .lms-navbar__link,
+  body.layout-medical .lms-navbar__actions .lms-btn--outline {
+    white-space: nowrap;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8125rem;
+  }
+  body.layout-medical .lms-navbar__brand {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* [P016b] ISSUE 1-0408: tighten the large (~150px) top dead-space above the
+     card on mobile so the form is reachable without excess scroll. */
+  body.route--user-register .lms-auth {
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+}

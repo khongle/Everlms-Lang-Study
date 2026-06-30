@@ -1,0 +1,121 @@
+/* ==========================================================================
+   P002 — Course Catalog (/courses) — round 2 UI fixes
+   Active body class on this page:
+     body.layout-medical.route--lms-course-catalog.layout-minimalist
+   This partial loads LAST (weight 1004). !important is used only where needed
+   to beat the medical/minimalist skin or inline styles on the target.
+   ========================================================================== */
+
+/* [P002] ISSUE 2-0017: RATING filter star fill. The '1 Stars' row appeared to
+   show 5 gold stars. The Twig loop tags empty stars .text-muted and filled
+   stars .text-warning; the medical skin re-colors .text-muted to a dark slate
+   so empty stars read as filled. Force a clear light-grey for empty and solid
+   gold for filled within the filter rating widget so filled-count == row value. */
+body.route--lms-course-catalog .lms-catalog__filter-group .lms-rating-stars .fas.fa-star.text-muted,
+body.route--lms-course-catalog .lms-rating-stars i.fa-star.text-muted {
+  color: #cbd5e1 !important;   /* light grey — clearly empty */
+}
+body.route--lms-course-catalog .lms-catalog__filter-group .lms-rating-stars .fas.fa-star.text-warning,
+body.route--lms-course-catalog .lms-rating-stars i.fa-star.text-warning {
+  color: #f59e0b !important;   /* solid gold — clearly filled */
+}
+
+/* [P002] ISSUE 2-0018: Course card category overlay badge clipped mid-word with
+   an ellipsis ('END O...', '& HY...'). Allow the badge to wrap to two lines and
+   widen it instead of single-line truncation, and shrink the font slightly so
+   short category names fit. Overrides the round-1 white-space:nowrap/ellipsis. */
+body.route--lms-course-catalog .card-lms__image .card-lms__category {
+  max-width: calc(100% - 1rem) !important;
+  white-space: normal !important;     /* allow wrapping */
+  overflow: hidden !important;
+  text-overflow: clip !important;     /* no mid-word ellipsis */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;              /* cap at two lines */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 0.66rem !important;
+  line-height: 1.25 !important;
+  text-align: left;
+  word-break: break-word;
+}
+
+/* [P002] ISSUE 2-0019: On tablet the full filter panel fills the first scroll
+   region and courses begin far below it. Restore a two-column sidebar+grid
+   layout at tablet width so courses are visible alongside the filters. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-course-catalog .lms-catalog {
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  body.route--lms-course-catalog .lms-catalog__sidebar {
+    position: sticky;
+    top: 1rem;
+    align-self: start;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+  body.route--lms-course-catalog .lms-catalog__main {
+    min-width: 0;   /* allow grid track to shrink so cards reflow */
+  }
+  /* Two card columns fit comfortably in the narrower results track. */
+  body.route--lms-course-catalog .grid-courses {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* [P002] ISSUE 2-0020: Card price/Enroll-Now footer rows did not align across a
+   row because card bodies have unequal heights. .card-lms is already a flex
+   column with height:100%; push the footer to the bottom so the price + CTA sit
+   on a shared baseline regardless of title/description length. */
+body.route--lms-course-catalog .grid-courses .card-lms {
+  height: 100%;
+}
+body.route--lms-course-catalog .card-lms__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+body.route--lms-course-catalog .card-lms__footer {
+  margin-top: auto;   /* anchor footer to the bottom of every card */
+}
+
+/* [P002] ISSUE 2-0021: Card description truncation. Clamp to a fixed line count
+   so the ellipsis lands at a consistent line end across cards. Reserve the space
+   for two lines so short and long descriptions keep footers aligned with 2-0020. */
+body.route--lms-course-catalog .card-lms__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.4em;     /* 2 lines * ~1.2 line-height */
+  line-height: 1.2;
+}
+
+/* [P002] ISSUE 2-0023: TITLE filter placeholder ('Title') was very light grey
+   (#6f8796 ~3.6:1 on white) — below WCAG AA 4.5:1. Darken the placeholder for
+   the catalog Title input; the persistent 'SEARCH FILTERS'/label context names
+   the field. #566f7e on #fff ≈ 4.9:1. */
+body.route--lms-course-catalog #course-search::placeholder,
+body.route--lms-course-catalog .lms-catalog__filter-group .lms-input::placeholder {
+  color: #566f7e !important;
+  opacity: 1;
+}
+
+/* [P002] ISSUE 2-0024: Footer QUICK LINKS / SUPPORTS links are mid-grey
+   (--medical-text-soft #476273 ~5.9:1) on the near-white footer. Already passes
+   AA but reads weak at this size; darken the actual link items to --medical-text
+   (#12354a, ~9:1 on #f4fbff) for comfortable readability while keeping headings
+   and the hover violet intact. Global footer component — no page scope. */
+body.layout-medical .lms-footer ul li a,
+body.layout-medical .lms-footer__links a,
+body.layout-medical .lms-footer__col ul li a {
+  color: #12354a !important;
+}
+body.layout-medical .lms-footer ul li a:hover,
+body.layout-medical .lms-footer__links a:hover,
+body.layout-medical .lms-footer__col ul li a:hover {
+  color: #0077b6 !important;   /* keep brand-violet hover affordance */
+}

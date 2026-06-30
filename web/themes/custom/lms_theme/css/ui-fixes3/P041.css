@@ -1,0 +1,99 @@
+/* ============================================================
+   P041 — Issued Certificates (Certificate Management)
+   Theme: lms_theme / SilverCare
+   Third-pass CSS overrides. Loads LAST. Public workspace page
+   rendered with the lms-admin layout (lms-admin-certificates.html.twig
+   + lms-admin-sidebar.html.twig).
+   ============================================================ */
+
+/* [P041] ISSUE 1-0868: Sidebar 'SilverCare' wordmark low contrast on near-black.
+   The brand renders either as the site_name <span> (.lms-admin__sidebar-brand a span)
+   or as an SVG logo image. Prior text-color fixes failed, so we force a bright,
+   high-contrast near-white value on BOTH the link text AND any inner span, and
+   brighten an image wordmark via filter as a fallback. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span,
+.lms-admin__sidebar-brand a,
+.lms-admin__sidebar-brand a span {
+  color: #f8fafc !important;            /* WCAG AA on near-black sidebar */
+  -webkit-text-fill-color: #f8fafc !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* Fallback for the case where the wordmark is an inline SVG/IMG logo:
+   lift its luminance/saturation so a pale desaturated mark reads clearly. */
+.lms-admin .lms-admin__sidebar-brand a img,
+.lms-admin__sidebar-brand a img {
+  filter: brightness(1.6) saturate(1.4) contrast(1.05) !important;
+}
+.lms-admin .lms-admin__sidebar-brand a svg,
+.lms-admin .lms-admin__sidebar-brand a svg text,
+.lms-admin__sidebar-brand a svg,
+.lms-admin__sidebar-brand a svg text {
+  fill: #f8fafc !important;
+}
+
+/* [P041] ISSUE 1-0871: Per-row action buttons (View PDF / Regenerate / Revoke)
+   render as 3 inline <a> with inline styles, wrapping unevenly so 'Regenerate'
+   and 'Revoke' stack at a different width than the wide 'View PDF' — ragged,
+   unbalanced cluster across rows.
+   Fix: make the actions cell a fixed-width flex row, give all 3 buttons an
+   equal min-width, equal padding, a shared gap, and a common baseline so they
+   line up to a consistent grid and right edge on every row. */
+.lms-admin .lms-table td:last-child {
+  white-space: nowrap !important;
+}
+
+.lms-admin .lms-table td:last-child {
+  /* establish the actions cluster as a single right-aligned flex row */
+  text-align: right !important;
+}
+
+.lms-admin .lms-table td:last-child > a {
+  /* uniform button geometry — beats per-link inline styles */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.35rem !important;
+  box-sizing: border-box !important;
+  min-width: 120px !important;
+  height: 34px !important;
+  padding: 0 0.75rem !important;
+  margin: 0 0 0 0.5rem !important;   /* consistent gap, kill mixed inline margins */
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  border-radius: 0.5rem !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+}
+
+/* First action button (View PDF) needs no left margin so the cluster hugs
+   a clean shared right edge with even gaps between the three buttons. */
+.lms-admin .lms-table td:last-child > a:first-child {
+  margin-left: 0 !important;
+}
+
+/* Keep the whole cluster on one line and right-aligned within the cell so
+   every row's buttons share the same right edge and column grid. */
+.lms-admin .lms-table td:last-child {
+  min-width: 408px;  /* 3 x 120px + 2 x 0.5rem gaps + slack: prevents wrap */
+}
+
+/* Responsive: on narrow widths allow the cluster to wrap as a tidy right-aligned
+   group rather than mid-button, keeping equal widths. */
+@media (max-width: 1100px) {
+  .lms-admin .lms-table td:last-child {
+    white-space: normal !important;
+    min-width: 0;
+  }
+  .lms-admin .lms-table td:last-child > a {
+    margin: 0.25rem 0 0.25rem 0.5rem !important;
+  }
+}
+
+/* [P041] ISSUE 1-0874: No pagination/page-size controls — DEFERRED.
+   Adding a working pager (next/prev, page-size selector, server-side limiting)
+   requires markup + controller/query changes in lms_certificate; it cannot be
+   implemented in a CSS override. No CSS applied for this issue. */

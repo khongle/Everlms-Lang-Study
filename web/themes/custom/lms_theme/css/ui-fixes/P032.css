@@ -1,0 +1,241 @@
+/* ==========================================================================
+   P032 — Manage Courses (/workspace/courses)
+   Scope: admin workspace lives under .lms-admin (route_class empty).
+   Loads LAST. !important used only to beat inline styles on the target.
+   ========================================================================== */
+
+/* [P032] ISSUE 1-0698, 1-0696: desaturate header band + keep ACTION column visible */
+/* Override the bright inline blue thead with a muted dark surface that matches the skin. */
+.lms-admin .lms-table thead tr {
+  background: #273445 !important;
+}
+.lms-admin .lms-table thead th {
+  background-color: #273445 !important;
+  color: #e2e8f0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+/* Keep the checkbox accent on the brand blue so the header still reads as themed. */
+.lms-admin .lms-table thead th input[type="checkbox"] {
+  accent-color: #1d70f5;
+}
+
+/* [P032] ISSUE 1-0696: stop the right-most ACTION column from clipping */
+/* Trim padding on the last header/data cell and let the responsive wrapper
+   scroll instead of truncating the header text. */
+.lms-admin .lms-table-responsive {
+  overflow-x: auto;
+}
+.lms-admin .lms-table th:last-child,
+.lms-admin .lms-table td:last-child {
+  padding-right: 1rem;
+}
+.lms-admin .lms-table th:last-child {
+  white-space: nowrap;
+}
+
+/* [P032] ISSUE 1-0703: action (eye/edit/delete) icons low contrast on dark rows */
+/* Lighten the resting icon color to a high-luminance grey (>=3:1 on #1e293b)
+   and add a visible focus state. The template uses inline color + JS hover;
+   override the resting state and provide keyboard focus affordance. */
+.lms-admin .lms-table td:last-child a {
+  color: #cbd5e1 !important;
+}
+.lms-admin .lms-table td:last-child a:hover {
+  color: #ffffff !important;
+}
+.lms-admin .lms-table td:last-child a:focus-visible {
+  outline: 2px solid #1d70f5;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+  color: #ffffff !important;
+}
+
+/* [P032] ISSUE 1-0704, 1-0715: sidebar 'SilverCare' brand wordmark too dim */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span {
+  color: #f1f5f9 !important;
+}
+
+/* [P032] ISSUE 1-0705: long course titles wrap unevenly / orphan words */
+/* Clamp titles to 2 lines with ellipsis and vertically center cell content
+   so neighbouring data keeps row heights balanced. */
+.lms-admin .lms-table td {
+  vertical-align: middle;
+}
+.lms-admin .lms-table tbody tr td:nth-child(3) {
+  max-width: 18rem;
+}
+.lms-admin .lms-table tbody tr td:nth-child(3) {
+  display: table-cell;
+}
+.lms-admin .lms-table tbody tr td:nth-child(3) > * {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* [P032] ISSUE 1-0706: Reset button looks disabled / low-contrast label */
+/* The inline style sets a faint rgba background; promote to a clear secondary
+   outlined button with a legible label and hover state. */
+.lms-admin #lms-course-reset-btn {
+  background: transparent !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  font-weight: 600;
+}
+.lms-admin #lms-course-reset-btn:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+.lms-admin #lms-course-reset-btn:focus-visible {
+  outline: 2px solid #1d70f5;
+  outline-offset: 2px;
+}
+
+/* [P032] ISSUE 1-0716: align submenu chevrons consistently across nav items */
+.lms-admin .lms-admin__nav-dropdown > a {
+  align-items: center;
+}
+.lms-admin .lms-dropdown-icon {
+  flex: 0 0 auto;
+  margin-left: auto;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ==========================================================================
+   MOBILE (<=768px) — responsive corrections
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* [P032] ISSUE 1-0707 (partial): reclaim full width for content on mobile.
+     A proper off-canvas drawer needs a hamburger toggle (markup/JS) — deferred.
+     Here we at least make the sidebar non-blocking by docking it to the top as
+     a horizontally-scrollable bar so it no longer steals ~260px of width. */
+  .lms-admin {
+    flex-direction: column;
+  }
+  .lms-admin .lms-admin__sidebar {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    height: auto !important;
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .lms-admin .lms-admin__sidebar-brand {
+    padding: 0.75rem 1rem;
+    flex: 0 0 auto;
+  }
+  .lms-admin .lms-admin__nav {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 0 0.5rem;
+    gap: 0.25rem;
+  }
+  .lms-admin .lms-admin__nav-label,
+  .lms-admin .lms-admin__sidebar-profile,
+  .lms-admin .lms-admin__sidebar > div:last-child {
+    display: none;
+  }
+  .lms-admin .lms-admin__main {
+    margin-left: 0;
+    width: 100%;
+    padding: 1.25rem;
+  }
+
+  /* [P032] ISSUE 1-0710, 1-0711, 1-0712: stack header; stop H1/subtitle/button overlap */
+  .lms-admin .lms-admin__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .lms-admin .lms-admin__header > div:last-child {
+    width: 100%;
+  }
+  .lms-admin .lms-admin__title {
+    font-size: 1.375rem;
+  }
+  .lms-admin .lms-admin__subtitle {
+    width: 100%;
+  }
+  .lms-admin .btn-lms-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  /* [P032] ISSUE 1-0709: filter toolbar overflows — wrap + full-width fields */
+  .lms-admin .lms-admin-filter {
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .lms-admin .lms-admin-filter__group {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+  .lms-admin .lms-admin-filter > div:last-child {
+    flex: 1 1 100%;
+  }
+  .lms-admin #lms-course-reset-btn {
+    width: 100% !important;
+  }
+
+  /* [P032] ISSUE 1-0708, 1-0717: table collapses to a thin strip with blank
+     checkbox cells — force a horizontally scrollable, min-width table so every
+     column (title/status/category/instructor/actions) renders. (Explicit
+     loading-skeleton / empty-state component needs markup — deferred.) */
+  .lms-admin .lms-table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lms-admin .lms-table {
+    min-width: 760px;
+  }
+  .lms-admin .lms-table th,
+  .lms-admin .lms-table td {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+  .lms-admin .lms-table tbody tr td:nth-child(3) {
+    white-space: normal;
+    min-width: 12rem;
+  }
+
+  /* [P032] ISSUE 1-0713: pagination summary text squeezed / hyphen-broken */
+  .lms-admin .lms-admin-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .lms-admin .lms-admin-footer > div:first-child {
+    width: 100%;
+    overflow-wrap: normal;
+    word-break: normal;
+    white-space: normal;
+  }
+
+  /* [P032] ISSUE 1-0714: pagination becomes a clean single horizontal row */
+  .lms-admin .lms-pagination-container .pager__items,
+  .lms-admin .lms-pagination-container ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+}

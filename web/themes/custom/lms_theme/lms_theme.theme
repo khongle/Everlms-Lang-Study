@@ -157,7 +157,13 @@ function lms_theme_preprocess_lms_homepage(&$variables) {
 function lms_theme_preprocess_html(&$variables) {
   $style = theme_get_setting('homepage_style', 'lms_theme') ?? 'glassmorphism';
   $variables['attributes']['class'][] = 'layout-' . $style;
-  
+
+  // Route-based body class so per-page CSS can be scoped reliably (UI-test fixes).
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if ($route_name) {
+    $variables['attributes']['class'][] = 'route--' . preg_replace('/[^a-z0-9]+/', '-', strtolower($route_name));
+  }
+
   $current_uri = \Drupal::request()->getRequestUri();
   $is_workspace = strpos($current_uri, '/workspace') === 0;
   $is_learn = strpos($current_uri, '/learn') === 0;

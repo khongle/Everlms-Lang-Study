@@ -1,0 +1,87 @@
+/* ==========================================================================
+   P014 — Forum topic (route--entity-lms-forum-topic-canonical)
+   THIRD-PASS UI fixes. Loads LAST. !important used to beat inline styles and
+   earlier round-1 rules that did not resolve these defects.
+   ========================================================================== */
+
+/* [P014] ISSUE 1-0346: breadcrumb current crumb repeats the full long topic
+   title verbatim and never truncates. The markup carries inline
+   `white-space:nowrap; overflow:hidden; text-overflow:ellipsis` but NO
+   max-width, so the ellipsis never engages and the crumb runs the entire
+   length of the bar. Constrain the final crumb so it actually truncates with
+   an ellipsis and stays on one line, keeping it visually subordinate to the
+   H1 below. (Adding the intermediate forum-container crumb requires markup/
+   data changes in the controller — see deferred.) */
+body.route--entity-lms-forum-topic-canonical .lms-breadcrumb > span:last-child {
+  display: inline-block !important;
+  max-width: clamp(140px, 38vw, 420px) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  vertical-align: middle !important;
+}
+
+/* [P014] ISSUE 1-0350: low-contrast secondary text. PRIOR FIX FAILED because
+   the helper sentence carries an INLINE `color:#8b949e` (and the post date
+   uses .lms-text-muted) on the light card backgrounds these cards actually
+   render on. Inline styles + theme defaults must be beaten with !important.
+   Darken both toward #586069 (>= 4.5:1 on the light card / white bg). */
+
+/* Post meta date — span.lms-text-muted next to the author name. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-comment__meta .lms-text-muted,
+body.route--entity-lms-forum-topic-canonical .lms-forum-comment__meta span {
+  color: #586069 !important;
+  opacity: 1 !important;
+}
+
+/* "There are 5 replies ... You must hop in" helper line under the Join card.
+   Inline color:#8b949e on the teaser CTA paragraph — override it. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta p {
+  color: #586069 !important;
+  opacity: 1 !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta p strong {
+  color: #2c333a !important;
+}
+
+/* Catch any remaining muted secondary text on this page (body, generic). */
+body.route--entity-lms-forum-topic-canonical .lms-text-muted {
+  color: #586069 !important;
+}
+
+/* [P014] ISSUE 1-0358: floating back-to-top FAB overlaps the right edge of the
+   full-width post card on mobile. PRIOR FIX FAILED: it set right/bottom to
+   clamp(20px,3vw,32px) which on a ~390px viewport collapses to 20px, while the
+   Bootstrap .container card edge sits only ~12px from the viewport edge — so
+   the 48px button (right 20px..68px) still lands squarely on the card.
+   Geometrically a corner FAB cannot avoid a near-full-width card, so the
+   third-pass fix: (a) shrink the FAB on mobile, (b) tuck it to the extreme
+   corner aligned with the container gutter, and (c) wrap it in a solid white
+   halo ring + strong elevation so it reads as a distinct floating control
+   clearly lifted off the card rather than sitting on the border. Also add
+   scroll-bottom breathing room so it floats over the gutter/background. */
+@media (max-width: 992px) {
+  body.route--entity-lms-forum-topic-canonical #lms-back-to-top,
+  body.route--entity-lms-forum-topic-canonical .lms-back-to-top {
+    width: 42px !important;
+    height: 42px !important;
+    right: 10px !important;
+    bottom: 14px !important;
+    z-index: 1300 !important;
+    background: #ffffff !important;
+    /* white halo ring separates it from the card border/content underneath */
+    border: 1px solid rgba(0, 119, 182, 0.28) !important;
+    box-shadow:
+      0 0 0 4px rgba(255, 255, 255, 0.95),
+      0 10px 22px rgba(13, 17, 23, 0.28) !important;
+  }
+  body.route--entity-lms-forum-topic-canonical #lms-back-to-top i,
+  body.route--entity-lms-forum-topic-canonical .lms-back-to-top i {
+    font-size: 0.9rem !important;
+  }
+  /* Give the section/page a little bottom space so the FAB's resting position
+     clears the card body and floats over the background gutter beneath it. */
+  body.route--entity-lms-forum-topic-canonical .lms-page__content {
+    padding-bottom: 64px !important;
+  }
+}

@@ -1,0 +1,96 @@
+/* ==========================================================================
+   P003 — Course Detail (/courses/88) UI fixes — round 2
+   Loaded LAST. !important used only to beat inline styles on the target.
+   ========================================================================== */
+
+/* [P003] ISSUE 1-0126: Tab strip horizontally scrollable on mobile, no labels clipped.
+   PRIOR FIX targeted the <ul> but the inline gap:2rem + the .container padding
+   still pushed the 5th tab past the viewport edge with no scroll/fade. This time
+   the actual scroll region is the .container, the ul is forced nowrap, and a real
+   right-edge fade affordance is applied to the scroll container. */
+@media (max-width: 640px) {
+  /* outer sticky bar must not clip its scrolling child */
+  body.route--lms-course-detail .lms-course-tabs {
+    max-width: 100%;
+    overflow: visible;
+  }
+  /* the .container becomes the horizontal scroll viewport */
+  body.route--lms-course-detail .lms-course-tabs .container {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* right-edge fade so users see there is more to scroll */
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
+  }
+  body.route--lms-course-detail .lms-course-tabs .container::-webkit-scrollbar {
+    display: none;
+  }
+  /* the tab list itself: single non-wrapping row, wider than viewport so it scrolls */
+  body.route--lms-course-detail .lms-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    width: max-content !important;
+    min-width: 100%;
+    gap: 1.5rem !important;
+    overflow: visible !important;
+  }
+  body.route--lms-course-detail .lms-tabs > li {
+    flex: 0 0 auto;
+  }
+  body.route--lms-course-detail .lms-tabs__link {
+    white-space: nowrap !important;
+  }
+  /* trailing spacer-equivalent: extra padding so last label clears the fade */
+  body.route--lms-course-detail .lms-tabs > li:last-child {
+    padding-right: 1.25rem;
+  }
+}
+
+/* [P003] ISSUE 1-0128: Active tab indicator contained within the tab bar (no protruding pill).
+   The active state is rendered as a flush underline that cannot extend above the bar,
+   and any inherited rounded-pill background from skin layers is neutralized. */
+body.route--lms-course-detail .lms-course-tabs {
+  overflow-x: hidden;
+}
+@media (max-width: 640px) {
+  /* keep horizontal scroll working but clip vertical overflow of the pill */
+  body.route--lms-course-detail .lms-course-tabs {
+    overflow-x: visible;
+  }
+}
+body.route--lms-course-detail .lms-tabs__link {
+  position: relative;
+  background: transparent !important;   /* kill any inherited pill background */
+  border-radius: 0 !important;          /* no protruding rounded shape */
+  border-bottom-color: transparent !important;
+}
+body.route--lms-course-detail .lms-tabs__link--active {
+  background: transparent !important;
+}
+/* clean underline flush with the bottom edge of the bar, sized to the label */
+body.route--lms-course-detail .lms-tabs__link--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: #667eea;
+  border-radius: 3px 3px 0 0;
+}
+
+/* [P003] ISSUE 1-0129: Clear separation between hamburger toggle and the Login/Register cluster.
+   On mobile the toggle sat flush against "Login"; add a real gap plus a subtle divider
+   so the menu control reads as distinct from the auth actions. */
+@media (max-width: 640px) {
+  .lms-navbar__toggle {
+    margin-right: 0.875rem;
+  }
+  .lms-navbar__actions {
+    gap: 0.625rem !important;
+    padding-left: 0.875rem;
+    border-left: 1px solid hsla(0, 0%, 100%, 0.14);
+  }
+}

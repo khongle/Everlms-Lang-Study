@@ -1,0 +1,126 @@
+/* ==========================================================================
+   P036 — Manage Orders (/workspace/orders)  — ROUND 2
+   Layout: .lms-admin > .lms-admin__sidebar (fixed 260px) + .lms-admin__main
+   Table wrapped in .lms-card > .lms-table-responsive > table.lms-table
+   This partial loads LAST. !important used only to beat inline styles.
+   ========================================================================== */
+
+/* [P036] ISSUE 1-0787: sticky column headers while the body scrolls.
+   ROOT CAUSE of prior failure: thead was already position:sticky, but the
+   scroll container (.lms-table-responsive) had NO bounded height, so it grew
+   to the full table height and the *page/body* scrolled instead. With the
+   sticky context taller than the viewport, the header scrolled off-screen.
+   FIX: bound the inner container's height so IT scrolls internally; the
+   already-sticky thead then pins to the top of that container. Also make the
+   header cells fully opaque so rows never bleed through. */
+.lms-admin .lms-card {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 3rem);
+  overflow: hidden;
+}
+.lms-admin .lms-card .lms-table-responsive {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  overflow-x: auto;
+}
+.lms-admin .lms-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+}
+.lms-admin .lms-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  background-color: #1d70f5 !important; /* opaque so scrolling rows don't show through */
+  background-clip: padding-box;
+}
+
+/* [P036] ISSUE 1-0789: ACTIONS 'Edit' link — clear interactive affordance.
+   Render the plain text link as a real outlined button with hover/focus
+   feedback (background fill + underline + visible focus ring). */
+.lms-admin .lms-table td .lms-btn--outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 0.375rem;
+  color: #93c5fd;
+  text-decoration: none;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.lms-admin .lms-table td .lms-btn--outline:hover {
+  background: rgba(29, 112, 245, 0.18);
+  color: #ffffff;
+  border-color: #1d70f5;
+  text-decoration: underline;
+}
+.lms-admin .lms-table td .lms-btn--outline:focus-visible {
+  outline: 2px solid #1d70f5;
+  outline-offset: 2px;
+  color: #ffffff;
+  border-color: #1d70f5;
+}
+
+/* ==========================================================================
+   MOBILE — sidebar is fixed 260px and .lms-admin__main has margin-left:260px,
+   which pushes the table off-screen so only a clipped sliver of the first
+   column shows ('#96' cut at the viewport edge).
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* [P036] ISSUE 1-0795: collapse the fixed sidebar off-canvas so the main
+     content column can use the full viewport width. */
+  .lms-admin__sidebar {
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.5);
+  }
+  .lms-admin__sidebar:target,
+  .lms-admin__sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* [P036] ISSUE 1-0795: reclaim full width for the orders table so order
+     IDs are no longer clipped at the right viewport boundary. */
+  .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 1.25rem 1rem !important;
+  }
+
+  /* [P036] ISSUE 1-0795: keep the table horizontally scrollable from the
+     first column instead of overflowing past the viewport edge; preserve
+     column widths and let the user pan rather than crushing/clipping cells. */
+  .lms-admin .lms-card,
+  .lms-admin .lms-card .lms-table-responsive {
+    max-height: none;
+  }
+  .lms-admin .lms-card .lms-table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lms-admin .lms-table {
+    min-width: 640px;
+  }
+  .lms-admin .lms-table th,
+  .lms-admin .lms-table td {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  /* [P036] ISSUE 1-0795: tighten further on small phones while keeping IDs
+     fully readable via horizontal scroll. */
+  .lms-admin__main {
+    padding: 1rem 0.75rem !important;
+  }
+  .lms-admin .lms-table td:first-child,
+  .lms-admin .lms-table th:first-child {
+    white-space: nowrap;
+  }
+}

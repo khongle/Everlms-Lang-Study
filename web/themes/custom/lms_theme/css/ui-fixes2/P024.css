@@ -1,0 +1,50 @@
+/* ==========================================================================
+   P024 — My Notes (route--lms-note-my-notes) UI fixes
+   Loaded LAST. Scope global components by component class; page content under
+   body.route--lms-note-my-notes / .lms-my-notes.
+   ========================================================================== */
+
+/* [P024] ISSUE 1-0556: Hero header uses flex justify-between, so on mobile the
+   intro paragraph floats top-right against a taller (2-line) title with no
+   vertical relationship. Stack the title + description into a clean column on
+   small screens so the description sits directly under the heading. */
+@media (max-width: 480px) {
+  body.route--lms-note-my-notes .lms-my-notes .lms-section__header {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 0.5rem;
+  }
+  body.route--lms-note-my-notes .lms-my-notes .lms-section__header > * {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+/* [P024] ISSUE 1-0557: Empty-state card uses a dashed border while the rest of
+   the page surfaces (note cards, back-to-top control) use solid rounded cards,
+   creating an inconsistent border vocabulary. Standardize the empty state to a
+   solid, subtle card border that matches the other surface cards on the medical
+   skin while keeping a calm empty-state look. */
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgba(0, 119, 182, 0.18);
+  border-radius: 0.75rem;
+  background: rgba(0, 119, 182, 0.025);
+}
+
+/* [P024] ISSUE 1-0559: Floating back-to-top control crowds the footer brand
+   block on mobile. It is already position:fixed bottom-right; give it extra
+   bottom clearance and a firm stacking context on small screens so it floats
+   clear of the footer "SilverCare" block and reads as an overlay, not part of
+   the footer. Global component (medical skin). */
+@media (max-width: 480px) {
+  body.layout-medical:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical:not(.is-workspace) .lms-back-to-top {
+    right: 14px !important;
+    bottom: 22px !important;
+    z-index: 1350 !important;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.32) !important;
+  }
+}

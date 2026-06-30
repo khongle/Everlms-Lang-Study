@@ -1,0 +1,87 @@
+/* ==========================================================================
+   P025 — My Wishlist (route--lms-wishlist-my-wishlist)
+   UI fixes round 2. Loads LAST. Medical skin / SilverCare brand.
+   Brand-blue accent token in this skin = --medical-violet (#0077b6).
+   ========================================================================== */
+
+/* [P025] ISSUE 2-0245, 2-0246: empty-state primary CTA must use brand blue,
+   not the leaked green/indigo inline color. Header "Browse Courses" becomes a
+   matching brand-blue ghost so the two CTAs share one palette + hierarchy.
+   Both targets carry inline styles, so !important is required to beat them. */
+body.route--lms-wishlist-my-wishlist .lms-empty-state .lms-btn {
+  background: var(--medical-violet, #0077b6) !important;
+  border: 1px solid var(--medical-violet, #0077b6) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 0.6rem 1.6rem !important;
+  font-weight: 600;
+  line-height: 1.4;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+body.route--lms-wishlist-my-wishlist .lms-empty-state .lms-btn:hover,
+body.route--lms-wishlist-my-wishlist .lms-empty-state .lms-btn:focus-visible {
+  background: #005f92 !important;
+  border-color: #005f92 !important;
+  box-shadow: 0 8px 18px rgba(0, 119, 182, 0.28) !important;
+}
+
+/* Header "Browse Courses" = brand-blue ghost (secondary) for clear hierarchy.
+   Inline styles set transparent bg + white text + rgba border; override them. */
+body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-btn-outline {
+  background: transparent !important;
+  border: 1px solid var(--medical-violet, #0077b6) !important;
+  color: var(--medical-violet, #0077b6) !important;
+  border-radius: 8px !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-btn-outline:hover,
+body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-btn-outline:focus-visible {
+  background: var(--medical-violet, #0077b6) !important;
+  color: #ffffff !important;
+}
+
+/* [P025] ISSUE 2-0247: swap the broken-heart empty-state glyph for a whole
+   heart so it reads as a neutral "nothing saved yet" state, not an error.
+   Font Awesome renders the glyph via ::before content; remap the unicode
+   (fa-heart-broken \f7a9 -> fa-heart \f004) and neutralize the icon color. */
+body.route--lms-wishlist-my-wishlist .lms-empty-state .fa-heart-broken::before {
+  content: "\f004" !important; /* solid whole heart */
+}
+body.route--lms-wishlist-my-wishlist .lms-empty-state .fa-heart-broken {
+  color: var(--medical-text-muted, #6f8796) !important;
+}
+
+/* [P025] ISSUE 2-0249: keep every footer QUICK LINKS item the same muted
+   color; the "Community" link picks up an active/accent color on other
+   routes. Force uniform default color so only hover/active differs. */
+body.layout-medical:not(.is-workspace) .lms-footer a,
+body.layout-medical:not(.is-workspace) .lms-footer ul li a,
+body.layout-medical:not(.is-workspace) .lms-footer ul li a:visited,
+body.layout-medical:not(.is-workspace) .lms-footer ul li a.lms-navbar__link--active {
+  color: var(--medical-text-soft, #476273) !important;
+}
+body.layout-medical:not(.is-workspace) .lms-footer ul li a:hover,
+body.layout-medical:not(.is-workspace) .lms-footer ul li a:focus-visible {
+  color: var(--medical-violet, #0077b6) !important;
+}
+
+/* [P025] ISSUE 2-0250: at tall tablet heights the empty-state card is stranded
+   near the top with a large gap above the footer. Give the page wrapper a
+   min-height and vertically center the empty state in the available space so
+   vertical rhythm is balanced. */
+body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page {
+  display: flex;
+  flex-direction: column;
+}
+body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 60vh;
+}
+body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-empty-state {
+  margin-top: auto;
+  margin-bottom: auto;
+}

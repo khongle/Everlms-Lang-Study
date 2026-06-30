@@ -1,0 +1,46 @@
+/* ==========================================================================
+   P031 — /workspace 403 "Access denied" page
+   Live markup (curl) now renders the branded front-end theme:
+     body.route--system-403.layout-medical.layout-minimalist
+     header.lms-navbar  > main#main-content.lms-page__content > footer.lms-footer
+   The 403 body is a single bare line inside #block-lms-theme-content.
+   These fixes contain + vertically center that bare message so the page
+   reads as intentional and the footer no longer floats after a tall void.
+   Contrast/sidebar/admin-shell issues from the old screenshots no longer
+   apply to this markup (deferred — non-CSS / already re-themed).
+   ========================================================================== */
+
+/* [P031] ISSUE 1-0675, 1-0670: center the lone 403 message vertically so the
+   main region is not a tall empty white/dark block above the footer. */
+body.route--system-403 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* fill the viewport between header (~72px) and footer so the footer does
+     not sit after a vast void, but never collapse below readable height */
+  min-height: calc(100vh - 72px - 360px);
+  text-align: center;
+}
+
+/* [P031] ISSUE 1-0670, 1-0671: contain the message in the standard page
+   gutter and give balanced vertical breathing room (no abrupt seam / no
+   cramped top padding) so the body aligns to the page container. */
+body.route--system-403 .lms-page__content > div {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* [P031] ISSUE 1-0671: normalize spacing around the bare access-denied text
+   block and make it read as a deliberate, padded message panel. */
+body.route--system-403 #block-lms-theme-content {
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  max-width: 640px;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  /* WCAG AA body text on the light content background */
+  color: #1f2933;
+}

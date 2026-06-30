@@ -1,0 +1,77 @@
+/* ==========================================================================
+   P016b — /user/register (route--user-register, layout-minimalist)
+   THIRD-PASS UI fixes. This partial loads LAST; uses !important + high,
+   route-scoped specificity to beat stubborn earlier rules and prior failed
+   fixes. Actual body classes: "layout-medical route--user-register
+   layout-minimalist".
+   ========================================================================== */
+
+/* [P016b] ISSUE 1-0401, 1-0409: Header "Login" (.lms-navbar__link) still reads
+   as plain dark/near-black static text while the sibling "Back to Home"
+   (.lms-btn--outline anchor) is a clearly clickable bordered action. PRIOR
+   FIXES set color:#0077b6 with adequate specificity but WITHOUT !important and
+   the verifier still sees dark text, so harden it: force the same unified
+   secondary action styling on BOTH header links so they read as one consistent,
+   clickable nav group (matching the bordered "Back to Home" affordance). */
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-navbar__link {
+  color: #0077b6 !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  border: 1px solid #0077b6 !important;
+  border-radius: 0.5rem !important;
+  padding: 0.4rem 0.9rem !important;
+  background: transparent !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-navbar__link:hover {
+  color: #ffffff !important;
+  background: #0077b6 !important;
+  border-color: #0077b6 !important;
+}
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-navbar__link:focus-visible {
+  outline: 2px solid #0077b6 !important;
+  outline-offset: 2px !important;
+}
+/* Keep "Back to Home" visually aligned (same height/blue) so the pair matches. */
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-btn--outline {
+  color: #0077b6 !important;
+  border-color: #0077b6 !important;
+}
+body.route--user-register .lms-navbar .lms-navbar__actions a.lms-btn--outline:hover {
+  color: #ffffff !important;
+  background: #0077b6 !important;
+}
+
+/* [P016b] ISSUE 1-0411: Email/Username placeholders still render as light grey
+   on mobile (and desktop). The blocking rule is light-mode.css:2516
+   `body.layout-minimalist .lms-auth input::placeholder { color:#94a3b8
+   !important }` (specificity 0,2,2 + !important). PRIOR FIX at
+   route--user-register scope tied or slightly beat it but the verifier still
+   reads light grey — so push specificity well above the blocker AND scope to
+   the live body classes, with a clearly darker grey (#475467 ~ 7:1 on white).
+   Per-input-type selectors are added so vendor-prefixed pseudo-elements and
+   the email/text inputs are all covered. */
+body.layout-minimalist.route--user-register .lms-auth input::placeholder,
+body.layout-minimalist.route--user-register .lms-auth input[type="email"]::placeholder,
+body.layout-minimalist.route--user-register .lms-auth input[type="text"]::placeholder,
+body.layout-minimalist.route--user-register .lms-auth input[type="password"]::placeholder,
+body.layout-minimalist.route--user-register .lms-auth input.form-control::placeholder,
+body.layout-minimalist.route--user-register .lms-auth #edit-mail::placeholder,
+body.layout-minimalist.route--user-register .lms-auth #edit-name::placeholder {
+  color: #475467 !important;
+  opacity: 1 !important;
+}
+/* WebKit/legacy prefixed variants — some engines ignore the standard one when
+   a prefixed !important rule exists earlier; declare them explicitly. */
+body.layout-minimalist.route--user-register .lms-auth input::-webkit-input-placeholder {
+  color: #475467 !important;
+  opacity: 1 !important;
+}
+body.layout-minimalist.route--user-register .lms-auth input::-moz-placeholder {
+  color: #475467 !important;
+  opacity: 1 !important;
+}
+body.layout-minimalist.route--user-register .lms-auth input:-ms-input-placeholder {
+  color: #475467 !important;
+  opacity: 1 !important;
+}

@@ -1,0 +1,83 @@
+/* ============================================================
+   P018 — My Courses (route--lms-progress-my-courses)
+   UI defect fixes (round 1, batch 2)
+   This partial loads LAST. !important used only where needed
+   to beat earlier theme rules of equal/greater specificity.
+   ============================================================ */
+
+/* [P018] ISSUE 1-0444: "READY TO START" status badge off blue palette */
+/* The .is-idle badge was amber (rgba(254,225,64,*) / #fde68a). The brand
+   is blue (medical/SilverCare). Recolor the idle/not-started badge to a
+   palette-consistent blue so it harmonizes with the category badge and
+   the In-Progress badge. Component class fix, page-scoped for safety. */
+body.route--lms-progress-my-courses .lms-learning-card__badge.is-idle,
+body.route--lms-progress-my-courses .lms-learning-spotlight__status {
+  background: rgba(102, 126, 234, 0.16);
+  border-color: rgba(102, 126, 234, 0.30);
+  color: #4453b8;
+}
+
+/* [P018] ISSUE 1-0448: redundant zero-state indicators on the card */
+/* The card body repeats the status three ways: the meta row shows
+   "0% complete" AND the status text ("Ready to start"), then the progress
+   block repeats "Progress 0%". Hide the duplicated status word in the meta
+   row; keep the single "% complete" figure plus the progress track. */
+body.route--lms-progress-my-courses .lms-learning-card__meta > span:last-child {
+  display: none;
+}
+
+/* [P018] ISSUE 1-0457: meta text contrast below AA on white card (mobile) */
+/* "0% complete" was #8b949e (~3.1:1 on white). Darken to #51616e to clear
+   the 4.5:1 AA threshold for normal body text. Applies to the progress
+   meta label/value too for consistency. Page-scoped. */
+body.route--lms-progress-my-courses .lms-learning-card__meta,
+body.route--lms-progress-my-courses .lms-learning-card__meta span,
+body.route--lms-progress-my-courses .lms-learning-progress__meta span {
+  color: #51616e;
+}
+body.route--lms-progress-my-courses .lms-learning-progress__meta strong {
+  color: #2d3640;
+}
+
+/* ============================================================
+   Mobile-only fixes
+   ============================================================ */
+@media (max-width: 480px) {
+
+  /* [P018] ISSUE 1-0450: full-width category pill floats over the thumbnail
+     covering the artwork. Constrain it inside the image with margins, give
+     it a solid translucent backing surface + padding so both the pill text
+     and the image stay legible. The chips row is positioned absolute over
+     the media; tighten its inset and stack chips so they don't span the
+     whole image. */
+  body.route--lms-progress-my-courses .lms-learning-card__chips {
+    top: 0.6rem;
+    left: 0.6rem;
+    right: 0.6rem;
+    gap: 0.4rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  body.route--lms-progress-my-courses .lms-learning-card__category {
+    max-width: 100%;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.65rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: rgba(13, 17, 23, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    backdrop-filter: blur(2px);
+  }
+
+  /* [P018] ISSUE 1-0454: hero stat cards duplicate the counts already shown
+     on the queue filter chips, adding vertical bloat on mobile. Collapse the
+     redundant hero summary stat cards on small screens; the filter chips
+     remain the single source of the counts. */
+  body.route--lms-progress-my-courses .lms-my-courses-page__summary {
+    display: none;
+  }
+}

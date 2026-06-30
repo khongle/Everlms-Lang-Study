@@ -1,0 +1,204 @@
+/* ==========================================================================
+   P037 — manage-content-faq  (/workspace/content/faq)
+   THIRD PASS. Live route resolves to a Drupal system error page.
+   Assignment route_class = `route--system-404`; the running site may also
+   emit `route--system-403` for this manager path, so error-state rules are
+   scoped to BOTH classes for robustness.
+   Page structure (live curl):
+     .lms-page (flex column, 100vh)
+       header.lms-navbar
+       main.lms-page__content
+         .lms-messages-wrapper        (empty / hidden)
+         #block-lms-theme-content      (the lone error sentence)
+       footer.lms-footer
+   This partial loads LAST; !important is used where earlier passes lost the
+   specificity / scoping battle.
+
+   NOTE on brand contrast (1-0801 / 1-0808): the "SilverCare" wordmark is NOT
+   a DOM text node — it is baked into the logo SVG as
+   <text fill="#0e2a47">SilverCare</text> inside
+   /sites/default/files/logo LMS_0_5.svg, embedded via <img>. CSS cannot
+   recolor a single glyph group inside a flattened raster/vector image without
+   destroying the (correctly bright) blue "S" tile, so these two contrast
+   issues are NOT CSS-addressable and are DEFERRED to an SVG edit.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   [P037] ISSUE 1-0814 + 1-0805/1-0797 (state presentation): force the error
+   content column to truly GROW into the band between the rendered header and
+   footer and HARD-center the card on both axes, so the message is never
+   stranded above a cavernous empty gap with the footer pulled up under it.
+   PRIOR FIX FAILED because it used a fixed `min-height: calc(100vh - 80px -
+   360px)` that both under-sized the column AND did not win specificity over
+   the base `.lms-page__content` — the card sat at a fixed mid-point leaving a
+   tall blank strip. We now use flex:1 to consume the flex-column remainder
+   and a viewport-driven min-height with !important.
+   -------------------------------------------------------------------------- */
+body.route--system-404 .lms-page__content,
+body.route--system-403 .lms-page__content {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  min-height: calc(100vh - 80px - 120px) !important; /* header 80 + footer gutter */
+  padding: 3rem 1.25rem 4rem !important;
+  box-sizing: border-box !important;
+}
+
+/* --------------------------------------------------------------------------
+   [P037] ISSUE 1-0807: turn the bare "page could not be found" sentence into a
+   complete, themed empty-state CARD with an icon, a clear HEADING, the message
+   body, and a recovery affordance line.
+   PRIOR FIX FAILED: it added the icon + card but left NO clear heading and NO
+   recovery guidance. This pass keeps the card, repositions the icon, and
+   injects a real heading band + a recovery prompt using flex `order` so the
+   visual order is: icon -> "Page not found" heading -> message -> recovery.
+   (A truly focusable <a href="/"> "Back to home" button cannot be created
+   from CSS generated content; that single markup affordance is deferred to a
+   404 template. Everything else expected by the issue is delivered here.)
+   -------------------------------------------------------------------------- */
+body.route--system-404 #block-lms-theme-content,
+body.route--system-403 #block-lms-theme-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  max-width: 36rem !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 2.75rem 2rem !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 119, 182, 0.22) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.10) !important;
+  font-size: 1.0625rem !important;
+  line-height: 1.6 !important;
+  color: #334155 !important; /* ~7:1 on white, WCAG AA */
+}
+
+/* Decorative status icon — pinned to the top of the card. */
+body.route--system-404 #block-lms-theme-content::before,
+body.route--system-403 #block-lms-theme-content::before {
+  content: "\f071" !important; /* Font Awesome exclamation-triangle */
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900 !important;
+  order: -2 !important;
+  display: block !important;
+  font-size: 2.75rem !important;
+  line-height: 1 !important;
+  color: #0077b6 !important;
+  margin: 0 0 0.5rem !important;
+}
+
+/* Injected clear heading ABOVE the message text (the missing "Page not
+   found" title called out by the issue). */
+body.route--system-404 #block-lms-theme-content::after,
+body.route--system-403 #block-lms-theme-content::after {
+  content: "Page not found" !important;
+  order: -1 !important;
+  display: block !important;
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  color: #0f172a !important;
+  margin: 0 0 0.25rem !important;
+}
+
+/* If Drupal returns 403 for this manager path, relabel the injected heading
+   so it reads correctly for an access-denied state. */
+body.route--system-403 #block-lms-theme-content::after {
+  content: "Access denied" !important;
+}
+
+/* Collapse the empty/hidden messages wrapper so it adds no stray top
+   whitespace above the centered card. */
+body.route--system-404 .lms-messages-wrapper:empty,
+body.route--system-404 .lms-messages-wrapper > .hidden,
+body.route--system-404 [data-drupal-messages-fallback].hidden,
+body.route--system-403 .lms-messages-wrapper:empty,
+body.route--system-403 .lms-messages-wrapper > .hidden,
+body.route--system-403 [data-drupal-messages-fallback].hidden {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   [P037] ISSUE 1-0807 (recovery guidance line): append a friendly recovery
+   hint to the bottom of the card. Implemented as an extra generated line on
+   the content block via a trailing pseudo on the wrapper main, so it sits
+   below the message regardless of the message node count.
+   -------------------------------------------------------------------------- */
+body.route--system-404 main.lms-page__content::after,
+body.route--system-403 main.lms-page__content::after {
+  content: "Go to the SilverCare home page to continue." !important;
+  display: block !important;
+  order: 99 !important;
+  margin-top: 1rem !important;
+  font-size: 0.9375rem !important;
+  line-height: 1.6 !important;
+  color: #64748b !important;
+}
+
+/* --------------------------------------------------------------------------
+   [P037] ISSUE 1-0804: footer column headings not top-aligned — "Quick Links"
+   in column 1 starts a full logo+tagline block BELOW the Course / Supports /
+   Contact Info headings in columns 2-4.
+   PRIOR FIX (none for P037): bring all four headings onto a common top row by
+   reserving the logo+tagline height ABOVE the headings of columns 2-4 (column
+   1 carries the logo/tagline), reading as an intentional shared heading grid.
+   Desktop only (>=769px) — on narrower viewports the footer stacks.
+   -------------------------------------------------------------------------- */
+@media (min-width: 769px) {
+  body.route--system-404 .lms-footer__grid,
+  body.route--system-403 .lms-footer__grid {
+    align-items: start !important;
+  }
+  body.route--system-404 .lms-footer__col:not(:first-child),
+  body.route--system-403 .lms-footer__col:not(:first-child) {
+    padding-top: 4.75rem !important;
+  }
+  body.route--system-404 .lms-footer__col:first-child .lms-footer__brand,
+  body.route--system-403 .lms-footer__col:first-child .lms-footer__brand {
+    margin-bottom: 0.5rem !important;
+  }
+  body.route--system-404 .lms-footer__col:first-child .lms-footer__description,
+  body.route--system-403 .lms-footer__col:first-child .lms-footer__description {
+    margin-bottom: 0.85rem !important;
+  }
+  body.route--system-404 .lms-footer__col:first-child h4,
+  body.route--system-403 .lms-footer__col:first-child h4 {
+    margin-top: 0 !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   [P037] ISSUE 1-0813: bell notification badge clipped at the top edge of the
+   sticky dark header (the blue "2" sits flush against the bar's top boundary).
+   PRIOR FIX FAILED to verify (bell hidden in mobile hamburger), but the clip
+   is real wherever the bell renders. Defensive, global fix: give the bell
+   wrapper relative positioning + room and pull the counter's vertical offset
+   IN so it can never be cut off by the header's top edge or overflow:hidden.
+   Applied to the component class so it holds on every viewport the bell shows.
+   -------------------------------------------------------------------------- */
+.lms-navbar__actions,
+.lms-bell-icon-wrapper,
+.lms-navbar__icon-btn {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.lms-navbar__badge,
+.lms-bell-icon-wrapper .lms-bell-counter {
+  top: -4px !important;     /* pulled in from the bar's top edge */
+  right: -4px !important;
+  z-index: 2 !important;
+}
+
+/* Ensure the header bar itself does not clip overflowing badges. */
+.lms-navbar,
+.lms-navbar__container {
+  overflow: visible !important;
+}

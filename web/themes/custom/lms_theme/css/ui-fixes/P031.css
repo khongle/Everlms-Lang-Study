@@ -1,0 +1,223 @@
+/* =====================================================================
+   P031 — Workspace home (/workspace)
+   Covers two rendered states:
+   - Anonymous/unauthorized: branded 403 page  -> body.route--system-403
+   - Manager: admin workspace dashboard        -> body.is-workspace
+   This partial loads LAST. !important used only to beat inline styles.
+   ===================================================================== */
+
+
+/* [P031] ISSUE 1-0674, 1-0675, 1-0671, 1-0670: Center + contain the bare
+   403 "access denied" message so the empty viewport is balanced and the
+   message reads as an intentional panel rather than a flush top-left line.
+   (Heading/icon/CTA links need markup and are deferred.) */
+body.route--system-403 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 320px); /* keep header + footer visible, fill the void */
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+body.route--system-403 #block-lms-theme-content {
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: #1f2a37; /* >= 7:1 on white, WCAG AA/AAA */
+}
+
+body.route--system-403 .lms-messages-wrapper {
+  width: 100%;
+  max-width: 640px;
+}
+
+
+/* [P031] ISSUE 1-0678: Notification bell count badge sits too high/clips
+   into the bell. Anchor it cleanly to the top-right as an even circular
+   bubble with no clipping. (Beats the template inline-style <style> block.) */
+.lms-bell-icon-wrapper .lms-bell-counter {
+  top: -4px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  min-height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  border: 2px solid #ffffff; /* clean separation from the bell glyph */
+  box-sizing: border-box;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 119, 182, 0.35);
+}
+
+
+/* [P031] ISSUE 1-0679: Header brand wordmark (text fallback) is rendered in
+   a muted/translucent tone on the dark header. Use crisp near-white so it
+   meets WCAG AA against the dark navbar and matches the footer lockup. */
+.lms-navbar__brand span {
+  color: #f4f7fb !important;
+  opacity: 1 !important;
+  font-weight: 800;
+}
+
+
+/* [P031] ISSUE 1-0677: Icon-only logout control in the header lacks a clear
+   affordance/state cue. Add a visible hover + focus-visible style so the
+   destructive action is discoverable. (Accessible-name aria-label needs
+   markup and is deferred.) */
+.lms-navbar__actions a[href*="/logout"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.lms-navbar__actions a[href*="/logout"]:hover {
+  background: rgba(245, 87, 108, 0.12);
+  color: #f5576c;
+}
+.lms-navbar__actions a[href*="/logout"]:focus-visible {
+  outline: 2px solid #f5576c;
+  outline-offset: 2px;
+}
+
+
+/* [P031] ISSUE 1-0684, 1-0693: Sidebar brand wordmark text is a muted
+   blue-grey on the near-black sidebar (weak contrast). Force near-white so
+   it reads as clearly as the primary nav labels (WCAG AA on #161b22). */
+body.is-workspace .lms-admin__sidebar-brand a,
+body.is-workspace .lms-admin__sidebar-brand span {
+  color: #f4f7fb !important;
+}
+
+
+/* [P031] ISSUE 1-0685: Collapsible nav rows carry faint, inconsistently
+   aligned dropdown chevrons. Standardize size, colour and vertical
+   alignment so the expandable affordance is uniform and legible.
+   (Beats per-element inline font-size/transform.) */
+body.is-workspace .lms-admin__nav .lms-dropdown-icon {
+  font-size: 0.75rem !important;
+  color: #cbd5e1 !important;
+  width: 1rem;
+  text-align: center;
+  flex-shrink: 0;
+  align-self: center;
+  line-height: 1;
+}
+/* Ensure the chevron-bearing rows align label + chevron consistently. */
+body.is-workspace .lms-admin__nav-dropdown > .lms-admin__nav-item {
+  align-items: center;
+}
+
+
+/* [P031] ISSUE 1-0686: STATUS column header / "Completed" pill alignment —
+   give the status cells a consistent right gutter so the pills align with
+   the header and don't crowd the card's right padding.
+   (Beats the inline text-align:right on the th/td.) */
+body.is-workspace .lms-table th:last-child,
+body.is-workspace .lms-table td:last-child {
+  padding-right: 1.5rem;
+  text-align: right;
+}
+body.is-workspace .lms-table td:last-child > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* [P031] ISSUE 1-0687: Excessive vertical gap between the KPI stat row and
+   the Recent Orders panel. Tighten the rhythm to match spacing elsewhere. */
+body.is-workspace .lms-kpi-grid {
+  margin-bottom: 1.25rem;
+}
+/* The orders card uses flex:1 1 0% (grows to fill); cap that growth so it
+   doesn't get pushed into a tall void on short content. */
+body.is-workspace .lms-admin-card {
+  flex: 0 1 auto;
+}
+
+
+/* =====================================================================
+   MOBILE — ISSUES 1-0688, 1-0689, 1-0690, 1-0691, 1-0692, 1-0695
+   Root cause: the admin sidebar is position:fixed; width:260px with NO
+   responsive breakpoint, so on mobile it occupies ~half the screen, the
+   main content is squeezed into a sliver, headings break char-by-char and
+   the table is clipped. A true off-canvas drawer needs a JS toggle (the
+   hamburger button itself is deferred), but we can collapse the sidebar and
+   give the content the full viewport width, which resolves the squeeze and
+   the entire overflow/wrap chain.
+   ===================================================================== */
+@media (max-width: 768px) {
+  /* Collapse the fixed sidebar off-screen so it stops stealing width. */
+  body.is-workspace .lms-admin__sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  }
+  /* When toggled (drawer markup adds .is-open), slide it back in as overlay. */
+  body.is-workspace .lms-admin__sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* ISSUE 1-0691, 1-0688: main content takes the full viewport width. */
+  body.is-workspace .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100%;
+    padding: 1.25rem;
+  }
+
+  /* ISSUE 1-0692: KPI cards stack/relax so uppercase labels keep an even
+     baseline instead of breaking awkwardly across the sliver. */
+  body.is-workspace .lms-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  body.is-workspace .lms-kpi-card__label {
+    word-break: normal;
+    overflow-wrap: break-word;
+    hyphens: none;
+  }
+
+  /* ISSUE 1-0689: "Recent Orders" heading must stay horizontal, never
+     break into a vertical character stack. */
+  body.is-workspace .lms-admin-card h3 {
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    min-width: 0;
+  }
+
+  /* ISSUE 1-0690, 1-0695: table is horizontally scrollable so Order ID and
+     the remaining columns are reachable instead of being clipped to ~3 chars;
+     prevents the tall, sparse single-column sprawl. */
+  body.is-workspace .lms-table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.is-workspace .lms-table {
+    min-width: 560px; /* keep real columns; container scrolls */
+  }
+  body.is-workspace .lms-table th,
+  body.is-workspace .lms-table td {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  /* On the smallest screens give each KPI its own full-width row so labels
+     never break (ISSUE 1-0692). */
+  body.is-workspace .lms-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}

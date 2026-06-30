@@ -1,0 +1,187 @@
+/* ==========================================================================
+   P033 — Course Editor (/workspace/courses/88/edit)   [THIRD PASS]
+   route_class: route--lms-course-admin-course-edit
+   Skin: medical | Brand: SilverCare
+
+   This partial loads LAST (after ui-fixes/P033.css and ui-fixes2/P033.css).
+   The admin templates (lms-admin-entity-form.html.twig + lms-admin-sidebar
+   .html.twig) emit big inline <style> blocks in the body, and several elements
+   carry inline style="" attributes; both win on equal specificity / source
+   order, so every override here uses body scope and/or !important.
+
+   PRIOR FIXES FAILED on two issues — addressed properly this time:
+     1-0728 / 1-0738 (brand contrast): prior rounds colored the brand <span>,
+       but with a site logo configured the sidebar template renders ONLY an
+       <img> (lms-admin-sidebar.html.twig L416-417); the {{ site_name }} <span>
+       (L420) never renders. The "S" tile + "SilverCare" wordmark are baked into
+       the logo artwork as a dark blue-grey fill, so coloring text was a no-op.
+       FIX (same proven approach as P045): a CSS filter on the <img> recolors
+       the baked-in artwork to a near-white high-contrast lockup.
+     1-0733 (mobile runaway height / single-char wrapping): prior rounds released
+       the fixed sidebar and freed .lms-admin__main, but the real width blowout
+       is the IEF "Chapter & lesson" curriculum table — its cells hard-code
+       width:135px (status badge) and width:155px (operations column) with
+       flex-shrink:0 + white-space:nowrap inside a flex .ief-row-entity. On a
+       narrow viewport those fixed flex cells force the row (and the whole form)
+       to min-content width far wider than the screen; the leftover sliver then
+       wraps labels one character per line and stretches the doc to ~9000px.
+       We neutralize those fixed widths and allow wrapping below 768px.
+   ========================================================================== */
+
+/* [P033] ISSUE 1-0728, 1-0738: Sidebar brand wordmark "SilverCare" + "S" tile
+   low contrast on the near-black (#0b0f19 / #161b22) sidebar. The wordmark is a
+   dark-fill <img>, so recolor the artwork itself: brightness(0) flattens it to
+   solid black, invert(1) -> pure white, brightness(0.97) eases it to a soft
+   white (~#ededed). #ededed on #0b0f19 ≈ 16:1 — passes WCAG AA comfortably.
+   Both the badge and the wordmark become legible. Works on desktop + mobile. */
+.lms-admin .lms-admin__sidebar-brand a img {
+  filter: brightness(0) invert(1) brightness(0.97) !important;
+}
+/* Belt-and-suspenders for the no-logo fallback branch, where the wordmark IS a
+   real <span> + <i>: keep them near-white so the brand never regresses. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span,
+.lms-admin .lms-admin__sidebar-brand a i {
+  color: #f1f5f9 !important;   /* slate-100 on #0b0f19 -> ~16:1 */
+  font-weight: 800 !important;
+}
+
+/* ==========================================================================
+   [P033] ISSUE 1-0733 — MOBILE (<= 768px): collapse the runaway page height by
+   killing every fixed/intrinsic width that forces the form wider than the
+   viewport and triggers one-character-per-line wrapping.
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* Release the fixed 260px sidebar + its 260px main-column offset so the
+     content column uses the full viewport. (Re-asserted at P033 third-pass
+     scope in case earlier rules are out-ordered.) */
+  body .lms-admin {
+    display: block !important;
+  }
+  body .lms-admin__sidebar {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    max-height: 55vh !important;
+    overflow-y: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+  body .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 1.25rem !important;
+    box-sizing: border-box !important;
+  }
+  body .lms-admin-card,
+  body .lms-admin-entity-form-wrapper,
+  body #lms-admin-form-app,
+  body .lms-form-content,
+  body .lms-form-panes,
+  body .lms-form-pane,
+  body .lms-form-content .form-item {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  body .lms-admin-card,
+  body .lms-admin-entity-form-wrapper {
+    padding: 1.25rem !important;
+  }
+
+  /* THE ACTUAL ROOT CAUSE prior fixes missed: the IEF curriculum table cells
+     hard-code fixed pixel widths + nowrap inside a flex row, forcing the form
+     to min-content width wider than the screen. Let the row wrap and let every
+     cell shrink to the available width. */
+  body .lms-form-content .ief-entity-table,
+  body .lms-form-content .ief-row-entity,
+  body .lms-form-content .ief-row-form,
+  body .lms-form-content .ief-row-form .ief-entity-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  body .lms-form-content .ief-row-entity {
+    flex-wrap: wrap !important;          /* allow badge + buttons to drop below title */
+    row-gap: 0.5rem !important;
+  }
+  body .lms-form-content .ief-row-entity > td[class*="-status"],
+  body .lms-form-content .ief-row-entity > td[class*="-type"],
+  body .lms-form-content .ief-row-entity > td[class*="-bundle"] {
+    width: auto !important;             /* was 135px fixed */
+    margin-left: 0 !important;
+    white-space: normal !important;
+  }
+  body .lms-form-content .ief-row-entity > td:last-child,
+  body .lms-form-content .inline-entity-form-operations {
+    width: auto !important;             /* was 155px fixed */
+    min-width: 0 !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+  }
+  body .lms-form-content .ief-row-entity > td[class*="-label"],
+  body .lms-form-content .ief-row-entity > td.inline-entity-form-node-title {
+    min-width: 0 !important;
+    flex: 1 1 100% !important;          /* title takes its own line, never crushed */
+    margin-left: 0 !important;
+  }
+
+  /* Form inputs / editors / selects must fit the column, never exceed it. */
+  body .lms-form-content input:not([type="submit"]):not([type="button"]),
+  body .lms-form-content select,
+  body .lms-form-content textarea,
+  body .lms-form-content .form-element,
+  body .lms-form-content .ck-editor,
+  body .lms-form-content .ck-editor__main,
+  body .lms-form-content .ck-editor__editable {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Kill forced break-all so words/labels wrap at word boundaries, not chars. */
+  body .lms-admin__main,
+  body .lms-form-content,
+  body .lms-form-content .form-item label,
+  body .lms-form-content .description,
+  body .lms-form-content input,
+  body .lms-form-content textarea,
+  body .lms-form-content select,
+  body .ck-content,
+  body .ck-editor__editable {
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* CKEditor + custom tab bars wrap instead of forcing horizontal overflow. */
+  body .lms-form-content .ck.ck-toolbar,
+  body .lms-form-tabs {
+    flex-wrap: wrap !important;
+  }
+
+  /* Long course-title H1 must wrap inside the column. */
+  body .lms-admin__header {
+    padding-top: 1.5rem !important;
+  }
+  body .lms-admin__title {
+    font-size: 1.25rem !important;
+    line-height: 1.3 !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    max-width: 100% !important;
+  }
+
+  /* Final guard: nothing in the editor scroll-blows the viewport horizontally,
+     which is what drove the intrinsic min-content width and the tall document. */
+  body .lms-admin-card,
+  body .lms-admin__main {
+    overflow-x: hidden !important;
+  }
+}

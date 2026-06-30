@@ -1,0 +1,97 @@
+/* =====================================================================
+   P004 — Categories page (/categories)  body.route--lms-course-category
+   Third-pass UI fixes. Loads LAST; uses !important to beat the inline
+   styles in lms-categories.html.twig and the heavy main.css card rules.
+   ===================================================================== */
+
+/* [P004] ISSUE 1-0138: category cards look unequal because some taxonomy
+   terms have a description and others have none (a data gap CSS cannot
+   populate). Corrective layout fix per fix_hint ("rely on a fixed card
+   layout"): reserve a consistent vertical block for the description on
+   EVERY card so cards with/without a description share the same rhythm,
+   and keep the badge pinned to the bottom so the grid stays aligned.
+   This makes all cards visually equal regardless of description presence. */
+body.route--lms-course-category .lms-categories-grid .lms-category-card {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Content region keeps a fixed minimum height = title (1 line) + a
+   reserved 2-line description slot, so an empty/short description does not
+   collapse the card relative to its neighbours. */
+body.route--lms-course-category .lms-categories-grid .lms-category-card__content {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 5.25rem !important; /* ~title line + 2 desc lines */
+}
+
+/* Force a uniform 2-line description box on every card. When the term has
+   no description the element is absent in markup, so the reserved space in
+   __content (above) holds the layout; when present, clamp to 2 lines so a
+   long description never makes one card taller than the rest. */
+body.route--lms-course-category .lms-categories-grid .lms-category-card__desc {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  min-height: 2.625rem !important; /* 2 lines at 0.875rem / 1.5 line-height */
+  margin: 0 !important;
+}
+
+/* Title gets consistent bottom spacing so the gap above the description
+   slot is identical whether or not a description follows. */
+body.route--lms-course-category .lms-categories-grid .lms-category-card__title {
+  margin: 0 0 0.5rem 0 !important;
+}
+
+/* Badge stays bottom-aligned on every card -> bottoms line up across the row. */
+body.route--lms-course-category .lms-categories-grid .lms-category-card__meta {
+  margin-top: auto !important;
+  padding-top: 1.5rem !important;
+}
+
+
+/* [P004] ISSUE 1-0144: search field gave no affordance — the inline-styled
+   magnifier (color #818cf8, faint indigo) was washed out and read as a
+   bare rounded input. PRIOR FIX FAILED. Force a clearly visible magnifier
+   icon with strong contrast and make the input padding/affordance obvious.
+   Also enlarge the hit area and add a hover/focus cue on the icon. */
+body.route--lms-course-category .lms-search-box {
+  position: relative !important;
+}
+
+body.route--lms-course-category .lms-search-box .fa-search,
+body.route--lms-course-category .lms-search-box i.fas.fa-search {
+  position: absolute !important;
+  left: 1.25rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: #6366f1 !important;        /* solid, high-contrast indigo */
+  font-size: 1.15rem !important;
+  opacity: 1 !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  text-shadow: 0 0 1px rgba(99, 102, 241, 0.4) !important;
+}
+
+/* Ensure the input clearly leaves room for the icon and reads as actionable
+   (visible border + adequate left padding so the magnifier never overlaps text). */
+body.route--lms-course-category .lms-search-box #category-search-input {
+  padding-left: 3.5rem !important;
+  border: 1px solid rgba(99, 102, 241, 0.45) !important;
+  cursor: text !important;
+}
+
+/* Stronger, visible focus state so keyboard users get a clear cue. */
+body.route--lms-course-category .lms-search-box #category-search-input:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.22) !important;
+  outline: none !important;
+}
+
+/* ISSUE 1-0151 (mobile lead card uses a flat illustration while the rest
+   use photos) is a per-term image ASSET inconsistency — the differing
+   image content cannot be normalised in CSS. Deferred to data/markup. */

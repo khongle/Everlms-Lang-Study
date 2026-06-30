@@ -1,0 +1,125 @@
+/* ==========================================================================
+   P014 — Forum topic page (route--entity-lms-forum-topic-canonical)
+   Active skin: medical (light). Many elements carry inline dark-theme hex
+   colors that render light-gray on the medical white cards, so several
+   fixes need !important to beat inline styles.
+   This partial loads LAST.
+   ========================================================================== */
+
+/* [P014] ISSUE 1-0350: secondary/muted text contrast — meet WCAG AA on white.
+   On the medical light skin the forum cards render on #ffffff but the markup
+   carries inline/dark hex (#8b949e ~2.5:1, #c9d1d9, #e6edf3 invisible).
+   Darken to medical tokens that clear 4.5:1 on white. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-comment__meta .lms-text-muted,
+body.route--entity-lms-forum-topic-canonical .lms-forum-comment__meta strong {
+  color: #476273 !important; /* ~5.6:1 on #fff for the date */
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-comment__meta strong {
+  color: #12354a !important; /* author name, stronger */
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-comment h1 {
+  color: #0f2c3d !important; /* H1 was inline #e6edf3 — invisible on white */
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-comment__body {
+  color: #12354a !important; /* body copy was #c9d1d9 — low contrast */
+}
+/* "Join the Discussion" gated card sits on a near-white tinted gradient. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta h3 {
+  color: #0f2c3d !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta p {
+  color: #476273 !important; /* "You must hop in..." helper line, ~5.6:1 */
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta p strong {
+  color: #12354a !important;
+}
+
+/* [P014] ISSUE 1-0348: stacked card edge/width consistency.
+   The topic card body and the Join card live inside the same .lms-forum-thread
+   padded container; normalize the gated card so it shares identical left/right
+   edges (full width, no horizontal margin) with the post block above it. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* [P014] ISSUE 1-0351: Like/Share action pills read as disabled.
+   They are inline-styled opacity:0.5 + not-allowed for anonymous users.
+   Lift opacity and strengthen border/text so they read as real controls,
+   and add a clear hover/focus affordance. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge {
+  opacity: 1 !important;
+  cursor: pointer !important;
+  color: #12354a !important;
+  border-color: rgba(0, 119, 182, 0.35) !important;
+  background: #ffffff !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge:hover {
+  color: #0077b6 !important;
+  border-color: #0077b6 !important;
+  background: rgba(0, 119, 182, 0.06) !important;
+}
+body.route--entity-lms-forum-topic-canonical .lms-forum-thread-actions .lms-action-badge:focus-visible {
+  outline: 2px solid #0077b6 !important;
+  outline-offset: 2px;
+}
+
+/* [P014] ISSUE 1-0352 / 1-0360: empty band between gated card and footer.
+   Tighten the trailing spacing of the section so the footer follows with a
+   controlled rhythm instead of a tall sparse band (desktop + mobile). */
+body.route--entity-lms-forum-topic-canonical main.lms-page__content .lms-section {
+  padding-bottom: 1.5rem;
+}
+body.route--entity-lms-forum-topic-canonical main.lms-page__content {
+  padding-bottom: 0;
+}
+
+/* [P014] ISSUE 1-0353 / 1-0358: floating back-to-top button collides with the
+   footer / post card at the bottom-right. Increase the fixed offset so it
+   keeps a consistent clearance from the viewport edge and clears card content.
+   Scoped to the component (global) but only nudged on this route's needs. */
+body.route--entity-lms-forum-topic-canonical #lms-back-to-top,
+body.route--entity-lms-forum-topic-canonical .lms-back-to-top {
+  right: clamp(20px, 3vw, 32px) !important;
+  bottom: clamp(20px, 3vw, 32px) !important;
+}
+
+/* [P014] ISSUE 1-0359: 'Log In' CTA wraps to two lines while 'Register' stays
+   on one, making sibling buttons uneven. Keep labels on a single line and
+   align the two pills consistently. */
+body.route--entity-lms-forum-topic-canonical .lms-forum-teaser-cta .button {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* [P014] ISSUE 1-0355 / 1-0356: mobile header overflow + duplicated nav.
+   The inline Login/Register links live in .lms-navbar__actions and overflow
+   past the right edge at mobile while a hamburger toggle is also shown.
+   Hide the inline auth actions at mobile; they belong in the drawer. Global
+   header component fix (no page scope). */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    display: none !important;
+  }
+}
+
+/* [P014] ISSUE 1-0357: mobile breadcrumb current crumb truncates mid-word
+   ('General Discussio...'). Allow the current crumb to wrap to a second line
+   on small screens instead of clipping, and let the breadcrumb bar grow. */
+@media (max-width: 480px) {
+  body.route--entity-lms-forum-topic-canonical .lms-breadcrumb {
+    flex-wrap: wrap !important;
+    white-space: normal !important;
+  }
+  body.route--entity-lms-forum-topic-canonical .lms-breadcrumb > span:last-child {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    display: inline !important;
+    line-height: 1.4;
+  }
+}

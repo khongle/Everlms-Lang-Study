@@ -1,0 +1,102 @@
+/* =====================================================================
+   P008 — Blog / News list (/news)  route--lms-blog-frontend-collection
+   Loads LAST. !important used only to beat higher-specificity skin rules
+   (medical/creative) that target the same .lms-news-list elements.
+   ===================================================================== */
+
+/* [P008] ISSUE 2-0079, 2-0080: long German terms (e.g. 'Berufsanerkennung',
+   'Heimgesetz') split mid-word / wrap awkwardly. Wrap at word boundaries
+   with auto hyphenation + balanced lines instead of break-all. */
+body.route--lms-blog-frontend-collection .lms-news-list .card-title,
+body.route--lms-blog-frontend-collection .lms-news-list__title-link {
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  text-wrap: balance;
+  line-height: 1.3;
+}
+
+/* [P008] ISSUE 2-0083: titles vary 1-3 lines so summaries / footers start at
+   different heights within a row. Make the card a flex column (markup already
+   uses d-flex flex-column) and reserve equal title height; footer pinned via
+   margin-top:auto (markup uses .mt-auto). */
+body.route--lms-blog-frontend-collection .lms-news-list__card {
+  display: flex;
+  flex-direction: column;
+}
+
+body.route--lms-blog-frontend-collection .lms-news-list .card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-blog-frontend-collection .lms-news-list .card-title {
+    /* ~3 lines at line-height 1.3; clamps short/tall titles to a shared band */
+    min-height: calc(1.3em * 3);
+  }
+}
+
+/* [P008] ISSUE 2-0082, 2-0085: card footer row — keep date on one line and the
+   'Read more' link + arrow inline; align both on a single centered baseline
+   with a uniform row min-height across cards. */
+body.route--lms-blog-frontend-collection .lms-news-list .card-body > .mt-auto {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 1.75rem;
+}
+
+body.route--lms-blog-frontend-collection .lms-news-list .card-body > .mt-auto small {
+  white-space: nowrap;
+}
+
+body.route--lms-blog-frontend-collection .lms-news-list__read-more {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* [P008] ISSUE 2-0085: 'Read more' link affordance + AA contrast on white card.
+   #1d4ed8 on #fff = ~6.3:1 (passes AA), arrow stays inline, underline on
+   hover/focus. */
+body.route--lms-blog-frontend-collection .lms-news-list__read-more {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+body.route--lms-blog-frontend-collection .lms-news-list__read-more:hover,
+body.route--lms-blog-frontend-collection .lms-news-list__read-more:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+body.route--lms-blog-frontend-collection .lms-news-list__read-more:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* [P008] ISSUE 2-0086: hero subtitle .lead.text-muted is too light on the
+   near-white hero. #4b5563 on #fff = ~7:1 (passes AA for body copy). */
+body.route--lms-blog-frontend-collection .lms-news-list > .row .lead.text-muted {
+  color: #4b5563 !important;
+}
+
+/* [P008] ISSUE 2-0089: footer 'S' badge + 'SilverCare' wordmark not vertically
+   centered on a shared midline. Global footer component (no page scope). */
+.lms-footer__brand,
+.lms-footer__brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1;
+}
+
+.lms-footer__brand-link > * {
+  align-self: center;
+  margin-top: 0;
+}

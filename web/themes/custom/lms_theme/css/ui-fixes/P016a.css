@@ -1,0 +1,180 @@
+/* =====================================================================
+ * [P016a] Login page (/user/login) — UI test Round 1 fixes
+ * Active context: body.layout-medical.route--user-login.layout-minimalist
+ * Brand: SilverCare (medical skin, light surface). Brand blue #0077b6.
+ * This partial loads LAST. !important used only to beat existing
+ * !important overrides from light-mode.css / medical.css / ui-fixes-r1.css.
+ * ===================================================================== */
+
+/* [P016a] ISSUE 1-0380: unify header 'Register' + 'Back to Home' treatment.
+   'Back to Home' is an intentional outline button; make 'Register' a clearly
+   styled brand-blue text link so the two siblings read as a consistent pair
+   (one link, one button) instead of near-black bold vs blue. */
+.lms-navbar__actions .lms-navbar__link {
+  color: #0077b6 !important;
+  font-weight: 600;
+}
+.lms-navbar__actions .lms-navbar__link:hover {
+  color: #005f92 !important;
+  background: rgba(0, 119, 182, 0.08);
+}
+/* Keep the outline button's brand-blue identity consistent with the link. */
+.lms-navbar__actions .lms-btn--outline {
+  color: #0077b6;
+  border-color: rgba(0, 119, 182, 0.45);
+}
+.lms-navbar__actions .lms-btn--outline:hover {
+  color: #005f92;
+  border-color: #0077b6;
+  background: rgba(0, 119, 182, 0.08);
+}
+
+/* [P016a] ISSUE 1-0387, 1-0388: header overflow / clipped links on mobile.
+   Prevent the action links from overflowing the viewport: keep them on one
+   row, allow shrinking, tighten padding so 'Register' + 'Back to Home' fit
+   inside the header without characters being cut off at the screen edge. */
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+    gap: 0.5rem;
+  }
+  .lms-navbar__actions {
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    padding: 0.375rem 0.25rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  .lms-navbar__actions .lms-btn--outline {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  /* Shrink the brand so the actions always have room and nothing clips. */
+  .lms-navbar__brand img { height: 28px; }
+}
+
+/* [P016a] ISSUE 1-0381, 1-0391: OAuth rows must read as real buttons.
+   Give the social-login anchors a visible border, button height/padding,
+   centered icon+label, and a clear hover state. */
+body.route--user-login .lms-auth__social-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0.625rem 0.875rem !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px;
+  background: #ffffff !important;
+  color: #334155 !important;
+  font-weight: 600;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+body.route--user-login .lms-auth__social-btn:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+body.route--user-login .lms-auth__social-btn i {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* [P016a] ISSUE 1-0382, 1-0393: symmetric 'or' divider.
+   Markup is a position-relative wrapper with a single full-width <hr> and an
+   absolutely-centered label, which renders as an off-balance rule. Rebuild it
+   as a flex divider: the <hr> becomes one equal segment on each side of a
+   vertically-centered, statically-positioned label. */
+body.route--user-login .lms-auth .text-center.my-3.position-relative {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+body.route--user-login .lms-auth__divider-line {
+  flex: 1 1 0;
+  width: auto;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid #d7dee6;
+  opacity: 1;
+  color: #d7dee6;
+}
+/* Duplicate the rule on the trailing side so both segments are equal length. */
+body.route--user-login .lms-auth .text-center.my-3.position-relative::after {
+  content: "";
+  flex: 1 1 0;
+  height: 0;
+  border-top: 1px solid #d7dee6;
+}
+body.route--user-login .lms-auth__divider-label {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  flex: 0 0 auto;
+  padding: 0 0.25rem !important;
+  background: transparent !important;
+  color: #64748b !important;
+  font-size: 0.8125rem;
+  line-height: 1;
+  /* place the label between the leading <hr> and the ::after segment */
+  order: 1;
+}
+body.route--user-login .lms-auth .text-center.my-3.position-relative::after { order: 2; }
+
+/* [P016a] ISSUE 1-0386, 1-0394: footer links must look clickable; helper text
+   must meet WCAG AA. Make 'Sign up here' and 'Forgot your password?' brand-blue
+   anchors with underline-on-hover, and darken the muted helper text. */
+body.route--user-login .lms-auth__footer,
+body.route--user-login .lms-auth__footer p {
+  color: #475569 !important; /* 7.0:1 on #fff — passes AA */
+}
+body.route--user-login .lms-auth__footer a,
+body.route--user-login .lms-auth p a {
+  color: #0077b6 !important; /* 4.6:1 on #fff — passes AA */
+  font-weight: 600;
+  text-decoration: none;
+}
+body.route--user-login .lms-auth__footer a:hover,
+body.route--user-login .lms-auth p a:hover {
+  color: #005f92 !important;
+  text-decoration: underline !important;
+}
+
+/* [P016a] ISSUE 1-0395: darken input placeholder text for contrast. */
+body.route--user-login .lms-auth input::placeholder {
+  color: #6b7280 !important; /* 4.8:1 on #fff/#f8fafc — passes AA */
+  opacity: 1;
+}
+
+/* [P016a] ISSUE 1-0385: balance card whitespace. The card has equal 2rem
+   top/bottom padding, but the footer's stacked margins add a large empty band
+   below the last link. Tighten the footer's top margin and paragraph spacing
+   so the bottom framing matches the top. */
+body.route--user-login .lms-auth__footer {
+  margin-top: 1rem !important;
+}
+body.route--user-login .lms-auth__footer p { margin-bottom: 0.5rem; }
+body.route--user-login .lms-auth__footer p:last-child { margin-bottom: 0; }
+
+/* [P016a] ISSUE 1-0392, 1-0390: mobile card grouping + vertical balance.
+   Strengthen the card boundary so it separates from the white page, and
+   reduce excess top space so the card is better centered on tall viewports. */
+@media (max-width: 480px) {
+  body.route--user-login .lms-auth {
+    padding: 1.25rem;
+    align-items: center; /* keep the card vertically centered, not top-heavy */
+  }
+  body.route--user-login .lms-auth__card {
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+    padding: 1.75rem 1.5rem !important;
+  }
+}

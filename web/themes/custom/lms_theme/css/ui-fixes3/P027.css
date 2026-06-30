@@ -1,0 +1,49 @@
+/* P027 — Notifications page UI fixes (THIRD pass, loads LAST) */
+
+/* [P027] ISSUE 1-0598: Filter tab strip overflows the mobile viewport with the 3rd tab
+   ('Community Replies') clipped to 'Co...'. PRIOR FIX FAILED — a horizontal-scroll +
+   mask-fade approach left the tab clipped with no discoverable affordance. Third-pass fix:
+   on narrow viewports force the tab row to WRAP onto multiple lines so EVERY tab is fully
+   visible and reachable, eliminating any horizontal overflow/clipping entirely. We also
+   neutralise the base module rule's `overflow-x:auto` + `flex-nowrap` and the mask-image
+   from the prior pass so nothing re-clips the row. Scoped to the page route. */
+@media (max-width: 640px) {
+  body.route--lms-notification-list .lms-notification-filters {
+    display: flex !important;
+    flex-wrap: wrap !important;        /* allow tabs to flow onto new rows */
+    overflow-x: visible !important;    /* defeat base overflow-x:auto clipping */
+    overflow-y: visible !important;
+    gap: 0.5rem !important;
+    padding-right: 0 !important;
+    /* Remove the prior pass's edge fade that visually clipped the last tab. */
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
+
+  body.route--lms-notification-list .lms-notification-filters .lms-filter-btn {
+    flex: 0 1 auto !important;         /* shrink slightly but keep label intact */
+    white-space: nowrap !important;    /* never break a tab label mid-word */
+    padding-left: 0.9rem !important;
+    padding-right: 0.9rem !important;
+    font-size: 0.85rem !important;
+    max-width: 100%;
+  }
+}
+
+/* [P027] ISSUE 1-0604: The SilverCare logo 'S' badge appears a brighter blue in the header
+   (on a white surface) but a deeper navy in the footer (on the dark #161b22 surface). Both
+   spots reference the IDENTICAL logo SVG, so the perceived shift is caused purely by the
+   contrasting backdrop behind the same mark. Fix: seat the footer brand mark on the same
+   light, neutral surface the header logo uses, so the badge is read against a consistent
+   background and presents one consistent brand blue across header and footer. */
+.lms-footer .lms-footer__brand-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.lms-footer .lms-footer__brand-link .lms-brand-mark--footer {
+  background-color: #ffffff !important;   /* same neutral surface as the header */
+  border-radius: 10px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+}

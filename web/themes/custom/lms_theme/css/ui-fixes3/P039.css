@@ -1,0 +1,259 @@
+/* ===========================================================================
+   P039 — Manage Ratings (/workspace/ratings)  [THIRD PASS]
+   Scope: .lms-admin admin workspace (no route_class on this page).
+   This partial loads LAST (weight 1003) — AFTER the in-template <style> block?
+   NO: the template's <style> block is inline in the body and therefore wins on
+   equal specificity. Several prior-pass rules failed precisely because they had
+   the same specificity as the in-body <style> and lost the cascade. This pass
+   raises specificity AND uses !important everywhere to guarantee the override.
+   =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   [P039] ISSUE 1-0837: secondary date line "Apr 04, 2026" under each course
+   title still renders dim (#64748b ~3.0:1 on the #1e293b card). PRIOR FIX
+   FAILED. Make the override unmissable: match the inline color via attribute
+   substring AND target the span structurally (2nd column, the span sibling
+   that follows the <strong> + <br>). Use a body-rooted, high-specificity
+   selector + !important so it always beats the element's inline color.
+   #c2cede on #1e293b ~= 8.1:1 (passes AA + AAA for small text).
+   --------------------------------------------------------------------------- */
+body .lms-admin .lms-table tbody td span[style*="64748b"],
+body .lms-admin .lms-table tbody td:nth-child(2) span,
+body .lms-admin .lms-table tbody td:nth-child(2) strong + br + span {
+  color: #c2cede !important;
+}
+
+/* ---------------------------------------------------------------------------
+   [P039] ISSUE 1-0838 + 1-0848: sidebar brand wordmark + nav labels render
+   faint on the dark #161b22 sidebar. PRIOR FIX FAILED because the lower nav
+   items (Manage Content / Certificate / Membership dropdown toggles) carry an
+   INLINE color:#94a3b8 on the <a> element, which beat the class rule. We now
+   override with body-rooted specificity + !important so inline loses.
+   #c9d4e2 on #161b22 ~= 8.6:1.
+   --------------------------------------------------------------------------- */
+body .lms-admin__sidebar .lms-admin__nav-item,
+body .lms-admin__sidebar .lms-admin__nav-dropdown > a,
+body .lms-admin__sidebar .lms-admin__nav-dropdown > a span {
+  color: #c9d4e2 !important;
+}
+body .lms-admin__sidebar .lms-admin__nav-item:hover,
+body .lms-admin__sidebar .lms-admin__nav-item--active,
+body .lms-admin__sidebar .lms-admin__nav-item--active span {
+  color: #ffffff !important;
+}
+body .lms-admin__sidebar .lms-admin__subnav-item {
+  color: #c2cede !important; /* ~8:1, lift the dropdown children */
+}
+body .lms-admin__sidebar .lms-admin__subnav-item--active {
+  color: #ffffff !important;
+}
+/* Uppercase section label "Admin Navigation" — lift from #64748b. */
+body .lms-admin__sidebar .lms-admin__nav-label {
+  color: #9aa7ba !important; /* ~5:1 for bold uppercase small text */
+}
+/* Profile role label ("Manager") was also #64748b. */
+body .lms-admin__sidebar .lms-admin__profile-role {
+  color: #9aa7ba !important;
+}
+/* Sidebar text-logo wordmark (fallback span when site_logo is text). The
+   "SilverCare" wordmark next to the icon must stay near-white for AA. If the
+   brand is rendered as an <img> logo asset its contrast cannot be changed via
+   CSS (see deferred note in summary). */
+body .lms-admin__sidebar-brand a,
+body .lms-admin__sidebar-brand a span,
+body .lms-admin__sidebar-brand a i {
+  color: #f4f7fb !important;
+}
+
+/* ---------------------------------------------------------------------------
+   [P039] ISSUE 1-0840: "15 Reviews Found" counter is small/dim top-right.
+   The Title-Case wording is template content (cannot change in CSS — deferred),
+   but its contrast and size are fixable here. Lift to AA and bump size.
+   #c2cede on #0b0f19 ~= 11:1.
+   --------------------------------------------------------------------------- */
+body .lms-admin__header .lms-admin__subtitle {
+  color: #c2cede !important;
+  font-size: 0.9375rem !important;
+  font-weight: 500 !important;
+}
+
+/* ===========================================================================
+   MOBILE — STACKED CARD LAYOUT (rebuilt).
+   PRIOR FIX FAILED: cells overlapped (IDs sat on top of course titles). Root
+   cause: the in-body <style> rule `.lms-table thead { position: sticky; top:0 }`
+   has equal specificity to the prior fix and, being inline in the body, won the
+   cascade — the header pill stayed sticky and floated over the stacked rows;
+   and tr/td were not given block context strongly enough. We now force every
+   override with !important and fully neutralise the sticky header.
+   Addresses: 1-0842 (+ table overflow / squeezed strip).
+   =========================================================================== */
+@media (max-width: 767px) {
+  /* Kill root horizontal overflow so nothing is pushed off-screen. */
+  html,
+  body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Off-canvas the fixed 260px sidebar so the table gets full width. */
+  body .lms-admin__sidebar {
+    transform: translateX(-100%) !important;
+    transition: transform 0.25s ease !important;
+    width: 84vw !important;
+    min-width: 0 !important;
+    max-width: 300px !important;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.5) !important;
+  }
+  body .lms-admin__sidebar:target,
+  body .lms-admin__sidebar.is-open {
+    transform: translateX(0) !important;
+  }
+
+  /* Single-column flow; main fills full width, no reserved left margin. */
+  body .lms-admin {
+    display: block !important;
+  }
+  body .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding: 1.25rem !important;
+    box-sizing: border-box !important;
+  }
+
+  /* H1 + counter stack and wrap, never clip at the edge. */
+  body .lms-admin__header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+    margin-bottom: 1.25rem !important;
+  }
+  body .lms-admin__title {
+    font-size: 1.375rem !important;
+    line-height: 1.25 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    max-width: 100% !important;
+  }
+
+  /* Card container fills width, no clipping. */
+  body .lms-admin-card {
+    max-width: 100% !important;
+    overflow: visible !important;
+    border-radius: 0.75rem !important;
+    flex: none !important;
+  }
+  body .lms-table-responsive {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    flex: none !important;
+  }
+
+  /* Convert table -> stacked blocks. Force block context with !important so
+     the in-body <style> table rules cannot reassert table-cell layout. */
+  body .lms-table,
+  body .lms-table tbody,
+  body .lms-table tr,
+  body .lms-table td {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  body .lms-table {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+  }
+
+  /* CRITICAL FIX (overlap): fully kill the sticky/floating header. The prior
+     `position: static` lost to the in-body sticky rule, so the blue "ID" pill
+     floated over the first rows. Remove it from flow entirely with !important. */
+  body .lms-table thead {
+    display: none !important;
+    position: static !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    z-index: -1 !important;
+  }
+  body .lms-table thead th {
+    display: none !important;
+  }
+
+  /* Each row is a separated card; relative positioning gives a clean stacking
+     context so children never overlap. */
+  body .lms-table tbody tr {
+    position: relative !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    border-radius: 0.5rem !important;
+    margin: 0 0 0.85rem 0 !important;
+    padding: 0.4rem 0.35rem !important;
+    background: rgba(255, 255, 255, 0.025) !important;
+    overflow: hidden !important;
+  }
+
+  /* Each cell is a full-width stacked block, normal flow, wraps text. */
+  body .lms-table tbody td {
+    position: static !important;
+    float: none !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    padding: 0.55rem 0.85rem !important;
+    white-space: normal !important;
+    vertical-align: top !important;
+    min-height: 0 !important;
+    line-height: 1.4 !important;
+  }
+  body .lms-table tbody td:last-child {
+    border-bottom: none !important;
+  }
+
+  /* ID cell: full value, on its own line, prominent, never overlapping. */
+  body .lms-table tbody td:first-child {
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+    padding-bottom: 0.35rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+
+  /* Course title block: ensure the title + date wrap and don't collide. */
+  body .lms-table tbody td:nth-child(2) strong {
+    display: block !important;
+    line-height: 1.3 !important;
+    margin-bottom: 0.15rem !important;
+  }
+  body .lms-table tbody td:nth-child(2) span {
+    display: inline-block !important;
+  }
+
+  /* Review cell: wrap fully instead of single-line ellipsis truncation. */
+  body .lms-table tbody td div[style*="text-overflow"] {
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  /* Actions stay left-aligned within the stacked card. */
+  body .lms-table tbody td:last-child > div {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+  }
+
+  /* Pagination footer wraps cleanly full width. */
+  body .lms-admin-footer {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    justify-content: flex-start !important;
+    border-radius: 0 0 0.75rem 0.75rem !important;
+  }
+
+  /* Mobile sidebar brand wordmark contrast (1-0848) — keep near-white. */
+  body .lms-admin__sidebar-brand a,
+  body .lms-admin__sidebar-brand a span {
+    color: #f4f7fb !important;
+  }
+}

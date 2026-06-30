@@ -1,0 +1,90 @@
+/* ============================================================
+   P008 — Blog / News (route--lms-blog-frontend-collection)
+   UI defect fixes. Loads LAST.
+   ============================================================ */
+
+/* [P008] ISSUE 1-0230, 1-0231: Mobile header CTA (Login/Register) bleeds off
+   right edge. The nav collapses into the hamburger at <=992px but the inline
+   auth actions stay visible and overflow. Hide inline auth actions at the
+   mobile breakpoint (they remain reachable; nav drawer is the mobile entry
+   point), and harden the container against horizontal overflow. Global
+   component fix — no page scope. */
+@media (max-width: 992px) {
+  .lms-navbar__actions {
+    display: none;
+  }
+
+  .lms-navbar__container {
+    max-width: 100%;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    column-gap: 0.5rem;
+  }
+
+  /* Keep the brand from being pushed; let the toggle sit flush right. */
+  .lms-navbar__brand {
+    min-width: 0;
+    flex: 0 1 auto;
+    overflow: hidden;
+  }
+  .lms-navbar__toggle {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+}
+
+/* [P008] ISSUE 1-0240: Footer logo mark / "SilverCare" wordmark not optically
+   centered. Force the brand row and its link to center their children on the
+   cross axis so the mark and wordmark share a centered baseline.
+   Global component fix — no page scope. */
+.lms-footer__brand {
+  display: flex;
+  align-items: center;
+  line-height: 1.2;
+}
+.lms-footer__brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1;
+}
+.lms-footer__brand-link .lms-brand-mark--footer {
+  display: block;
+  vertical-align: middle;
+}
+
+/* [P008] ISSUE 1-0228: Footer has a tall empty band below the short CONTACT
+   INFO column. Drive footer height from content: trim the oversized bottom
+   padding, tighten the grid->bottom gap, and give the link/contact columns a
+   small consistent min-height so the columns read as balanced rather than one
+   column dangling. Global component fix — no page scope. */
+.lms-footer {
+  padding-bottom: 1.25rem;
+}
+.lms-footer__grid {
+  margin-bottom: 1.5rem;
+  align-items: start;
+}
+.lms-footer__col {
+  min-height: 0;
+}
+.lms-footer__bottom {
+  padding-top: 1rem;
+  margin-top: 0;
+}
+
+/* [P008] ISSUE 1-0241: Uneven vertical rhythm between the card body paragraph
+   and the meta row (date + Read more) across cards. Cards use `mt-auto` to
+   pin the meta row to the bottom, so cards with shorter summaries show a
+   larger gap. Normalize by giving the summary a consistent min-height (clamps
+   1-3 lines to a stable block) and a fixed bottom margin, and zero out the
+   meta row's residual top spacing so the rhythm matches across cards.
+   Page-scoped to the blog collection. */
+body.route--lms-blog-frontend-collection .lms-news-list__card .lms-news-list__summary {
+  min-height: 3em;          /* ~2 lines at line-height 1.5 -> stable block */
+  margin-bottom: 1rem;
+}
+body.route--lms-blog-frontend-collection .lms-news-list__card .card-body > .mt-auto {
+  margin-top: auto;
+  padding-top: 0;
+}

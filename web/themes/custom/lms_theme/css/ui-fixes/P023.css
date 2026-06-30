@@ -1,0 +1,121 @@
+/* ==========================================================================
+   P023 — My Certificates (/my-certificates)
+   route_class: route--lms-progress-certificates   (body also has .layout-minimalist / .layout-medical)
+   Loads LAST. Page content scoped under body.route--lms-progress-certificates;
+   global components (navbar, FAB, footer brand) fixed via their component class.
+   ========================================================================== */
+
+/* [P023] ISSUE 1-0533: Vertically center the "No certificates yet" empty-state and
+   reduce dead whitespace so content hugs the card with even padding. */
+body.route--lms-progress-certificates .lms-certificates-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.75rem;
+  min-height: auto;
+  padding: clamp(2rem, 5vw, 3.25rem) 1.25rem;
+}
+body.route--lms-progress-certificates .lms-certificates-empty h3,
+body.route--lms-progress-certificates .lms-certificates-empty p {
+  margin: 0;
+  max-width: 42ch;
+}
+
+/* [P023] ISSUE 1-0540 + 1-0540(icon): Make the award/ribbon icon a real focal
+   illustration — larger and in the brand accent color instead of weak gray. */
+body.route--lms-progress-certificates .lms-certificates-empty .fa-award {
+  font-size: 2.75rem;        /* ~44px, up from ~16px */
+  line-height: 1;
+  color: #0077b6;            /* SilverCare medical brand accent */
+  margin-bottom: 0.25rem;
+}
+
+/* [P023] ISSUE 1-0536: Lift secondary text (hero subtitle + stat-card labels)
+   to meet WCAG AA on the light/tinted gradient background.
+   #475569 (slate-600) ≈ 7:1 on white, comfortably AA at body size.
+   Higher specificity (extra body class) beats the existing #64748b !important rule. */
+body.layout-minimalist.route--lms-progress-certificates .lms-certificates-page__subtitle,
+body.layout-minimalist.route--lms-progress-certificates .lms-certificates-page__summary-label,
+body.layout-minimalist.route--lms-progress-certificates .lms-certificate-card__meta-label,
+body.layout-minimalist.route--lms-progress-certificates .lms-certificates-empty p {
+  color: #475569 !important;
+}
+
+/* [P023] ISSUE 1-0541: Make the stat value read as a KPI — clearly larger and
+   bolder than its caption (value ~30px bold, label ~14px regular muted). */
+body.route--lms-progress-certificates .lms-certificates-page__summary-value {
+  font-size: clamp(1.75rem, 4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+body.route--lms-progress-certificates .lms-certificates-page__summary-label {
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+/* [P023] ISSUE 1-0535: Keep the header account name on a single line; if it is
+   ever too long, truncate cleanly with an ellipsis instead of wrapping to two
+   lines and throwing the header out of vertical alignment.
+   Target the inline-styled username span inside the profile link (global header). */
+.lms-navbar .lms-user-profile-link {
+  align-items: center;
+}
+.lms-navbar .lms-user-profile-link > span {
+  white-space: nowrap !important;   /* beats inline white-space */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 12rem;
+  display: inline-block;
+  line-height: 1.2;
+}
+
+/* [P023] ISSUE 1-0537: "Dashboard" nav button is rendered in blue, inconsistent
+   with the neutral sibling nav links. Neutralize the outline Dashboard button in
+   the header so it matches the other top-nav items (no special accent unless active). */
+.lms-navbar__actions .lms-btn--outline {
+  color: #1f2a37;
+  border-color: #cbd5e1;
+  background: transparent;
+}
+.lms-navbar__actions .lms-btn--outline:hover {
+  color: #0f172a;
+  border-color: #94a3b8;
+  background: rgba(15, 23, 42, 0.04);
+}
+
+/* [P023] ISSUE 1-0545: Hamburger (menu) icon renders much lighter than the
+   adjacent bell/heart icons, appearing disabled. Align it to the same icon tone. */
+.lms-navbar__toggle,
+.lms-navbar__toggle i {
+  color: #1f2a37;
+}
+
+/* [P023] ISSUE 1-0543: Floating scroll-to-top FAB collides with the lower-right
+   corner of the empty-state card on mobile. Give it more clearance so it floats
+   over background whitespace. Higher specificity beats the medical offset rule. */
+@media (max-width: 480px) {
+  body.layout-medical .lms-back-to-top,
+  body.route--lms-progress-certificates .lms-back-to-top {
+    right: 16px !important;
+    bottom: 24px !important;
+  }
+  /* Add room below content so the FAB rests over empty space, not the card edge. */
+  body.route--lms-progress-certificates .lms-page__content {
+    padding-bottom: 5rem;
+  }
+}
+
+/* [P023] ISSUE 1-0546: On mobile, the footer SilverCare logo is large enough to
+   visually duplicate the sticky-header brand when scrolled. Trim its size and top
+   spacing so the duplication is less jarring (global footer component). */
+@media (max-width: 480px) {
+  .lms-footer .lms-brand-mark--footer {
+    height: 52px;
+  }
+  .lms-footer__brand {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+}

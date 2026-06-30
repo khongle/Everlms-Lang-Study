@@ -1,0 +1,89 @@
+/* P041 — Issued Certificates (Certificate Management workspace) UI fixes */
+/* All prior fixes were inline styles in the twig templates; this partial loads
+   LAST, so specific overrides use !important only to beat those inline styles. */
+
+/* [P041] ISSUE 1-0868: Sidebar brand 'SilverCare' wordmark too low-contrast on dark sidebar */
+.lms-admin__sidebar-brand a,
+.lms-admin__sidebar-brand a span {
+  color: #f1f5f9 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* [P041] ISSUE 1-0870: CODE column monospace values dim grey (inline #94a3b8) */
+.lms-admin .lms-table td span[style*="monospace"] {
+  color: #cbd5e1 !important;
+  font-weight: 500 !important;
+}
+
+/* [P041] ISSUE 1-0877: Stat-card uppercase labels too dim vs the big numbers */
+/* The three stat cards each have a label div with inline color:#94a3b8, weight 600, uppercase. */
+.lms-admin__main > div[style*="grid-template-columns: repeat(3"] .lms-admin-card > div:first-child {
+  color: #cbd5e1 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* [P041] ISSUE 1-0873: Table footer 'Showing N entries' count almost invisible (inline #64748b) */
+.lms-admin-footer,
+.lms-admin-footer > div[style*="color: #64748b"] {
+  color: #cbd5e1 !important;
+}
+
+/* [P041] ISSUE 1-0876: Row dividers between table rows nearly invisible + add zebra striping */
+.lms-admin .lms-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.lms-admin .lms-table tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.025) !important;
+}
+.lms-admin .lms-table tbody tr:hover td {
+  background: rgba(29, 112, 245, 0.08) !important;
+}
+
+/* [P041] ISSUE 1-0871: Per-row action buttons ragged / uneven widths and edges.
+   The actions live in the last <td> (right-aligned). Lay them out as a single
+   right-aligned flex cluster with equal-width buttons and consistent gap so
+   View PDF / Regenerate / Revoke line up the same way on every row. */
+.lms-admin .lms-table td:last-child {
+  text-align: right !important;
+}
+.lms-admin .lms-table td:last-child {
+  white-space: nowrap;
+}
+.lms-admin .lms-table tbody td:last-child {
+  /* Build a flex cluster out of the anchors inside the cell. */
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: stretch;
+  gap: 0.5rem !important;
+}
+/* Normalise every action anchor: equal min width, centred content, shared height,
+   and remove the per-button left margins that created the ragged offsets. */
+.lms-admin .lms-table tbody td:last-child > a {
+  margin: 0 !important;
+  min-width: 116px;
+  box-sizing: border-box;
+  justify-content: center !important;
+  white-space: nowrap;
+}
+
+/* [P041] ISSUE 1-0875: Bottom sidebar 'Manager' account row clipped by viewport edge.
+   Sidebar is a fixed full-height flex column with overflow-y:auto; the nav has
+   flex:1. Let the nav scroll and keep the profile + logout pinned/visible so the
+   account row is never cut off. */
+.lms-admin__sidebar {
+  overflow-y: auto !important;
+}
+.lms-admin__nav {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+.lms-admin__sidebar-profile {
+  flex: 0 0 auto !important;
+  margin-top: auto !important;
+}
+.lms-admin__sidebar > div:last-child {
+  flex: 0 0 auto !important;
+}

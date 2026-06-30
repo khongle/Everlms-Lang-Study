@@ -1,0 +1,156 @@
+/* ==========================================================================
+   P024 - My Notes (route--lms-note-my-notes) — Round 2 refinements
+   Skin: medical / brand SilverCare. Loads LAST.
+   Brand tokens: --medical-violet #0077b6, --medical-text #12354a,
+                 --medical-text-soft #476273, --medical-heading #0f2c3d
+   Header markup: section.lms-my-notes .lms-section__header
+                  > h1.lms-manage__title + p.text-muted (inline color #8b949e)
+   Empty state:   .lms-empty-state > i.fas.fa-edit + h3 + p + a.lms-btn--primary
+   ========================================================================== */
+
+/* [P024] ISSUE 2-0234: Vertically align H1 and subtitle in the header band.
+   The two-column header (h1 left / subtitle right) is baseline-flexed but the
+   large H1 and small subtitle do not share an optical centre. Centre them so
+   the row reads as one balanced band on wide viewports. */
+body.route--lms-note-my-notes .lms-my-notes .lms-section__header {
+  align-items: center;
+}
+body.route--lms-note-my-notes .lms-my-notes .lms-section__header > p {
+  align-self: center;
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+/* [P024] ISSUE 2-0243 / 2-0234: On tablet (481-1024px) the split header leaves
+   a wide gap between the H1 and the right-floated subtitle, so the two read as
+   unrelated. Stack the subtitle directly under the H1 for clear title/intro
+   association at narrow widths. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-note-my-notes .lms-my-notes .lms-section__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+  body.route--lms-note-my-notes .lms-my-notes .lms-section__header > p {
+    text-align: left;
+    align-self: flex-start;
+    max-width: 52ch;
+  }
+}
+
+/* [P024] ISSUE 2-0235: Empty-state icon reads as an accidental glyph.
+   The template renders a bare <i class="fas fa-edit"> at text size. Enlarge it,
+   add breathing room below it and give it a muted brand tone so it anchors the
+   empty state as a deliberate illustrative icon. */
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state > i.fas {
+  display: block;
+  font-size: 2.375rem; /* ~38px */
+  line-height: 1;
+  margin-bottom: 0.9rem;
+  color: var(--medical-violet);
+  opacity: 0.55;
+}
+
+/* [P024] ISSUE 2-0236: Centre the empty-state content cluster within the card.
+   Reinforce symmetric vertical padding and add a min-height so the
+   icon/heading/subtext/CTA group sits in the optical centre with equal gaps
+   above the icon and below the button. */
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+/* [P024] ISSUE 2-0237: Soften the primary CTA shadow.
+   Round-1 applied a deep, offset brand-blue shadow that floats bottom-heavy
+   against the flat card. Replace with a subtle, near-symmetric shadow that
+   matches the flat aesthetic. !important to beat the round-1 !important rule. */
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state .lms-btn--primary,
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state a.lms-btn {
+  box-shadow: 0 2px 6px rgba(0, 119, 182, 0.16) !important;
+}
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state .lms-btn--primary:hover,
+body.route--lms-note-my-notes .lms-my-notes .lms-empty-state a.lms-btn:hover {
+  box-shadow: 0 4px 10px rgba(0, 119, 182, 0.22) !important;
+}
+
+/* [P024] ISSUE 2-0238: Align footer section headings across columns.
+   The first column carries an extra brand mark + tagline, pushing its heading
+   far below the other columns' headings and breaking the cross-column baseline.
+   Reserve a consistent top band in every column so all <h4> headings start on
+   the same horizontal line. Global footer component (no page scope). */
+body.layout-medical:not(.is-workspace) .lms-footer__grid {
+  align-items: start;
+}
+body.layout-medical:not(.is-workspace) .lms-footer__col {
+  display: flex;
+  flex-direction: column;
+}
+/* Columns 2-4 (no brand/tagline) get a spacer matching the brand block height
+   so their first heading lines up with the brand column's "Quick Links". */
+@media (min-width: 768px) {
+  body.layout-medical:not(.is-workspace) .lms-footer__col:not(:first-child) > h4:first-child {
+    margin-top: 4.6rem;
+  }
+}
+
+/* [P024] ISSUE 2-0241: Footer body + link text must meet WCAG AA (>=4.5:1).
+   The medical skin colours footer text with --medical-text-soft (#476273),
+   which reads faint on the near-white footer gradient. Darken body/link text
+   and the tagline to a contrast-safe slate. Global footer component. */
+body.layout-medical:not(.is-workspace) .lms-footer,
+body.layout-medical:not(.is-workspace) .lms-footer p,
+body.layout-medical:not(.is-workspace) .lms-footer li,
+body.layout-medical:not(.is-workspace) .lms-footer a,
+body.layout-medical:not(.is-workspace) .lms-footer__description {
+  color: #2e4a5a !important; /* ~7.0:1 on #f4fbff */
+}
+
+/* [P024] ISSUE 2-0242: Copyright line is too faint.
+   Darken and slightly weight the bottom copyright text so the small print
+   clears AA against the pale footer background. Global footer component. */
+body.layout-medical:not(.is-workspace) .lms-footer__bottom p,
+body.layout-medical:not(.is-workspace) .lms-footer__bottom {
+  color: #2e4a5a !important;
+  font-weight: 500;
+}
+
+/* [P024] ISSUE 2-0240: Keep the floating back-to-top FAB clear of the footer.
+   Raise its bottom offset on tablet so it never visually sits on the footer
+   band edge / overlaps footer text at shorter heights. Global FAB component. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.layout-medical:not(.is-workspace) #lms-back-to-top,
+  body.layout-medical:not(.is-workspace) .lms-back-to-top {
+    bottom: 32px !important;
+    right: 24px !important;
+    z-index: 1300 !important;
+  }
+}
+
+/* [P024] ISSUE 2-0244: Vertically centre the sub-header utility row items
+   (bell, heart/wishlist, avatar+name, Dashboard button, logout) on a shared
+   axis. The logged-in row is an inline-styled flex wrapper inside
+   .lms-navbar__actions; the bell + heart icons drift above the avatar/name.
+   Enforce centred alignment on the wrapper and normalise each item's box so
+   icons sit on the same axis as the avatar/name. Global navbar component. */
+body.layout-medical:not(.is-workspace) .lms-navbar__actions {
+  display: flex;
+  align-items: center;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions > div {
+  align-items: center !important;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions > div > * {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-navbar__link,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-user-profile-link {
+  align-self: center;
+}

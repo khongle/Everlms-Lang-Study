@@ -1,0 +1,94 @@
+/* ==========================================================================
+   P021 — Quiz Result page (route--lms-quiz-result) UI fixes
+   This partial loads LAST. !important is used only to beat inline <style>
+   rules shipped inside the quiz-result Twig template, or earlier skin rules.
+   ========================================================================== */
+
+/* [P021] ISSUE 1-0501: keep logged-in user name on one line next to avatar */
+.lms-user-profile-link {
+  flex-shrink: 0;
+}
+.lms-user-profile-link > span {
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* [P021] ISSUE 1-0502, 1-0515: remove blurred ghost/halo behind the % score
+   (kills the text-shadow set on the score circle in the template <style>) */
+body.route--lms-quiz-result .lms-score-circle,
+body.route--lms-quiz-result .lms-score-circle--pass,
+body.route--lms-quiz-result .lms-score-circle--fail {
+  text-shadow: none !important;
+}
+
+/* [P021] ISSUE 1-0504: standardise section-label casing to sentence case so
+   "Your Submission" matches the title-case headings and sentence-case body */
+body.route--lms-quiz-result .lms-answer-label {
+  text-transform: none !important;
+  letter-spacing: 0.2px;
+}
+
+/* [P021] ISSUE 1-0505: tighten the oversized blank band between the score
+   card and the "Your Answers Breakdown" header */
+body.route--lms-quiz-result .lms-result-hero {
+  margin-bottom: 1.25rem;
+}
+body.route--lms-quiz-result .lms-responses-title {
+  margin-top: 0.25rem;
+}
+
+/* [P021] ISSUE 1-0511: smooth the hero top accent bar so there is no abrupt
+   blue-to-green seam, and ensure it is clipped by the card radius */
+body.route--lms-quiz-result .lms-result-hero {
+  overflow: hidden;
+}
+body.route--lms-quiz-result .lms-result-hero::before {
+  background: linear-gradient(90deg, #58a6ff 0%, #4bb1d8 45%, #3fb950 100%) !important;
+  border-radius: 12px 12px 0 0;
+}
+
+/* [P021] ISSUE 1-0514: raise contrast of the green PASSED badge text/icon on
+   its pale-green pill (medium #3fb950 -> deeper #15803d, ~AA on the light pill) */
+body.route--lms-quiz-result .lms-result-badge--pass {
+  color: #15803d !important;
+  background: rgba(21, 128, 61, 0.12) !important;
+  border-color: rgba(21, 128, 61, 0.35) !important;
+}
+body.route--lms-quiz-result .lms-result-badge--pass i {
+  color: #15803d !important;
+}
+
+/* [P021] ISSUE 1-0512: footer SUPPORTS column clipped at the bottom edge —
+   guarantee bottom breathing room on the footer (global component) */
+.lms-footer {
+  padding-bottom: 2.5rem;
+}
+
+/* [P021] ISSUE 1-0510, 1-0513: mobile fixes */
+@media (max-width: 480px) {
+  /* 1-0510: widen the readable measure for long question/answer text by
+     shrinking the icon gutter so the text column is not pushed far right */
+  body.route--lms-quiz-result .lms-response-header {
+    gap: 0.6rem;
+  }
+  body.route--lms-quiz-result .lms-response-answer {
+    padding-left: 0 !important;
+  }
+  body.route--lms-quiz-result .lms-response-icon {
+    font-size: 1.4rem;
+  }
+
+  /* 1-0513: collapse the tall empty grey region between the last answer card
+     and the footer caused by the wrapper's full-viewport min-height/padding */
+  body.route--lms-quiz-result .lms-result-wrapper {
+    min-height: 0 !important;
+    padding: 1.5rem 1rem 2rem !important;
+  }
+  body.route--lms-quiz-result .lms-btn-actions {
+    margin-top: 1.75rem;
+    padding-bottom: 1.5rem;
+  }
+}

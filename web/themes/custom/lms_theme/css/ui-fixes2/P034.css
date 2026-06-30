@@ -1,0 +1,140 @@
+/* ==========================================================================
+   P034 — Quiz Management (/workspace/quizzes)
+   Admin layout markup: .lms-admin > .lms-admin__sidebar + .lms-admin__main
+   Table: .lms-admin-card > .lms-table-responsive > table.lms-table
+   Brand wordmark: .lms-admin__sidebar-brand a span ("SilverCare")
+   This partial loads LAST. !important used only to beat the inline <style>
+   block emitted by lms-admin-sidebar.html.twig and inline element styles.
+   ========================================================================== */
+
+/* [P034] ISSUE 1-0745, 1-0757: Brand wordmark 'SilverCare' contrast on the
+   dark sidebar (#161b22). Force a near-white wordmark + tile so it reads as
+   the primary brand identifier. #e5e7eb on #161b22 ~= 13:1 (passes WCAG AA).
+   Prior fix targeted the same selector but lost to the inline <style>; bump
+   specificity with the sidebar ancestor + !important to win reliably. */
+.lms-admin .lms-admin__sidebar-brand a,
+.lms-admin .lms-admin__sidebar-brand a span,
+.lms-admin .lms-admin__sidebar-brand a i {
+  color: #e5e7eb !important;
+}
+
+/* [P034] ISSUE 1-0741: Edit/trash action controls clipped by the right edge
+   of the table panel. Give the last (Actions) cell breathing room on the
+   right and keep both icons on one line so neither is cut off. The
+   responsive wrapper scrolls-x, so reserve padding inside the cell. */
+.lms-admin .lms-table th:last-child,
+.lms-admin .lms-table td:last-child {
+  padding-right: 1.75rem !important;
+  white-space: nowrap;
+}
+.lms-admin .lms-table td:last-child a {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* [P034] ISSUE 1-0746: Single-line cell values (None, 3 Qs, 80%, Draft, etc.)
+   sit top-aligned next to 3-4 line wrapped titles. Force vertical centering
+   on every body cell so the eye tracks straight across the row. */
+.lms-admin .lms-table tbody td {
+  vertical-align: middle !important;
+}
+
+/* ==========================================================================
+   MOBILE (<=480px) — the admin layout is built for wide desktop with a fixed
+   260px sidebar and a fixed-width two-column main (flex 1 + 300px stats).
+   On mobile this overflows the viewport: heading clipped, table cells crushed,
+   preview/stat card rows run off the right edge. Reflow to single column,
+   contain horizontal overflow, and let long text wrap.
+   ========================================================================== */
+@media (max-width: 480px) {
+
+  /* [P034] ISSUE 1-0754: kill horizontal overflow at the root so nothing is
+     clipped past the right viewport edge. */
+  html,
+  body,
+  .lms-admin,
+  .lms-admin__main {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* [P034] ISSUE 1-0754: stack sidebar + main vertically; drop the 260px
+     left margin that pushed content off-screen. */
+  .lms-admin {
+    flex-direction: column !important;
+  }
+  .lms-admin__sidebar {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+  }
+  .lms-admin__main {
+    margin-left: 0 !important;
+    padding: 1.25rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* [P034] ISSUE 1-0754: the main area's inner two-column flex
+     (flex:1 child + 300px stats child) must stack on mobile. */
+  .lms-admin__main > div[style*="display: flex"] {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+  /* the fixed 300px Quick Stats column -> full width */
+  .lms-admin__main > div[style*="width: 300px"] {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* [P034] ISSUE 1-0753: H1 'Quiz Management' clipped at the right edge.
+     Shrink it for mobile and allow wrapping; let the header stack so the
+     'Create New Quiz' button does not force horizontal overflow. */
+  .lms-admin .lms-admin__title {
+    font-size: 1.375rem !important;
+    line-height: 1.25 !important;
+    overflow-wrap: break-word !important;
+  }
+  .lms-admin .lms-admin__header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+  }
+
+  /* [P034] ISSUE 1-0751: quiz rows clipped to a few characters because the
+     table is forced into a too-narrow column. Allow the table to scroll
+     horizontally as a contained region and let titles wrap instead of being
+     fragmented one-letter-per-line. */
+  .lms-admin .lms-table-responsive {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: auto !important;
+  }
+  .lms-admin .lms-table {
+    min-width: 640px !important; /* give columns real room; scroll, not crush */
+  }
+  .lms-admin .lms-table th,
+  .lms-admin .lms-table td {
+    padding: 0.75rem 1rem !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    white-space: normal !important;
+  }
+  .lms-admin .lms-table td:first-child {
+    min-width: 180px !important; /* title column gets enough width to read */
+  }
+
+  /* [P034] ISSUE 1-0755: Question Bank Preview cards (4-across grid) run off
+     the right edge. Reflow to a 2-column grid that fits mobile width. */
+  .lms-admin__main div[style*="grid-template-columns: repeat(4, 1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  /* [P034] ISSUE 1-0756: Quick Stats cards already stack (column flex) once
+     their 300px wrapper is full width above; ensure card content does not
+     overflow. */
+  .lms-admin__main div[style*="width: 300px"] .lms-admin-card {
+    width: 100% !important;
+  }
+}

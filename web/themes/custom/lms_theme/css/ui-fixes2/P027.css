@@ -1,0 +1,38 @@
+/* P027 — Notifications page UI fixes (loads LAST) */
+
+/* [P027] ISSUE 1-0598: Filter tab strip overflows mobile viewport with the 3rd tab cut off.
+   Make the tab row a single horizontally scrollable flex row on mobile with a right-edge
+   gradient-fade affordance so the truncated tab is discoverable and reachable. Scoped to page. */
+@media (max-width: 480px) {
+  body.route--lms-notification-list .lms-notification-filters {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    gap: 0.5rem;
+    /* Right-edge fade affordance signalling more tabs exist. */
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 85%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to right, #000 0, #000 85%, rgba(0, 0, 0, 0) 100%);
+    padding-right: 1.75rem;
+    /* Reserve space so last tab is not clipped by the fade. */
+    scroll-padding-right: 1.75rem;
+  }
+
+  body.route--lms-notification-list .lms-notification-filters .lms-filter-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+}
+
+/* [P027] ISSUE 1-0607: A large decorative bell sits beside the page title while the header
+   already carries a notification bell, creating competing bell icons. Reduce the hero bell to
+   a subtle, smaller decorative accent so the header bell remains the primary affordance.
+   (Adding an unread-count badge to the header bell is data-driven and handled outside CSS.) */
+body.route--lms-notification-list .lms-notifications-title i.fa-bell {
+  font-size: 0.85em;
+  opacity: 0.7;
+  vertical-align: baseline;
+}

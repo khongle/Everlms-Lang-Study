@@ -1,0 +1,79 @@
+/* ==========================================================================
+   P047 — Payment Gateway Settings (/admin/config/everlms/payment)
+   Rendered inside the Drupal Claro admin theme.
+   Page-scoped fixes target body.path-admin (admin config form region).
+   Global form-control fixes use Claro component classes (form-text, details,
+   summary, form-item__description) without page scope.
+   ========================================================================== */
+
+/* [P047] ISSUE 1-0961, 1-0962: API key inputs clip long values with no scroll
+   affordance. Use a slightly tighter monospace face so more of the value fits,
+   keep native horizontal scrolling, and reveal the full string on focus by
+   making the caret/scroll obvious. text-overflow:clip ensures the browser keeps
+   the value horizontally scrollable rather than ambiguously fading it. */
+body.path-admin .form-item input.form-text {
+  text-overflow: clip;
+  overflow-x: auto;
+}
+body.path-admin .form-item input.form-text:focus {
+  /* Clear focus ring so the user knows the field is editable/scrollable. */
+  outline: 2px solid #1b6ec2;
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 1px #1b6ec2;
+}
+
+/* [P047] ISSUE 1-0963: Open Stripe details panel has heavier vertical
+   whitespace than the thin collapsed sibling rows, creating uneven rhythm.
+   Harmonize the expanded panel's inner bottom padding and normalize the gap
+   between every details widget so the page reads as an even stack. */
+body.path-admin details {
+  margin-bottom: 12px;
+}
+body.path-admin details[open] > .details-wrapper,
+body.path-admin details[open] > .claro-details__wrapper {
+  padding-top: 12px;
+  padding-bottom: 16px;
+}
+body.path-admin details[open] > .details-wrapper > .form-item:last-child,
+body.path-admin details[open] > .claro-details__wrapper > .form-item:last-child {
+  margin-bottom: 0;
+}
+
+/* [P047] ISSUE 1-0964: Collapsed gateway summary rows give no hover/focus cue
+   that they are clickable to expand. Add a pointer cursor, hover background and
+   a clearly visible keyboard focus outline on the <summary> elements. */
+body.path-admin details > summary {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+body.path-admin details > summary:hover {
+  background-color: #eef4fb;
+}
+body.path-admin details > summary:focus-visible {
+  outline: 2px solid #1b6ec2;
+  outline-offset: -2px;
+  background-color: #eef4fb;
+}
+
+/* [P047] ISSUE 1-0965: Field description / help text ("Starts with pk_test_…")
+   is light grey on white and falls near/below WCAG AA 4.5:1 for small text.
+   Darken the token to #595959 (>= 7:1 on #fff) so help text is legible. */
+body.path-admin .form-item__description,
+body.path-admin .description,
+body.path-admin .form-item .description {
+  color: #595959;
+}
+
+/* [P047] ISSUE 1-0967: H1 page title wraps awkwardly / fragments on narrow
+   viewports. Keep the heading on the content layer with sane wrapping so the
+   full "Payment Gateway Settings" reads cleanly (the toolbar-overlap root cause
+   is core toolbar behaviour and is deferred). */
+@media (max-width: 480px) {
+  body.path-admin .page-title,
+  body.path-admin h1.page-title {
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
+    line-height: 1.2;
+  }
+}

@@ -1,0 +1,97 @@
+/* P031 — Workspace Home (admin dashboard). Body scope: body.is-workspace
+   Targets: .lms-kpi-grid / .lms-kpi-card, .lms-table (Recent Orders).
+   This partial loads LAST. Inline styles on the date <td> and status <span>
+   are overridden with !important where required. */
+
+/* ==========================================================================
+   [P031] ISSUE 2-0297, 2-0298, 2-0299, 2-0300: Recent Orders table cells
+   wrapping one character per line (date "Jun 22, 2026" and "Completed" badge),
+   producing extremely tall rows with misaligned columns.
+   Keep all cell content on one line, vertically centered, and let the
+   responsive wrapper scroll horizontally instead of crushing columns.
+   ========================================================================== */
+body.is-workspace .lms-admin-card .lms-table {
+  width: 100%;
+  table-layout: auto;
+}
+
+/* Allow the responsive wrapper to scroll rather than squash columns */
+body.is-workspace .lms-admin-card .lms-table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Vertically center every cell on a single line height (2-0299, 2-0300) */
+body.is-workspace .lms-admin-card .lms-table th,
+body.is-workspace .lms-admin-card .lms-table td {
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* The Learner name column can stay flexible / wrap if very long */
+body.is-workspace .lms-admin-card .lms-table td:nth-child(2),
+body.is-workspace .lms-admin-card .lms-table th:nth-child(2) {
+  white-space: normal;
+  min-width: 8rem;
+}
+
+/* Date column: never break the date string (2-0297). Inline style sets no
+   white-space, but give an adequate min-width so it reads "Jun 22, 2026". */
+body.is-workspace .lms-admin-card .lms-table td:nth-child(4),
+body.is-workspace .lms-admin-card .lms-table th:nth-child(4) {
+  white-space: nowrap !important;
+  min-width: 7rem;
+}
+
+/* ==========================================================================
+   [P031] ISSUE 2-0298, 2-0307: "Completed" status pill — force a compact,
+   single-line pill and raise text/background contrast to >= 4.5:1.
+   The badge is an inline <span> with inline color/background; override both.
+   ========================================================================== */
+body.is-workspace .lms-admin-card .lms-table td:nth-child(5),
+body.is-workspace .lms-admin-card .lms-table th:nth-child(5) {
+  white-space: nowrap !important;
+  min-width: 7rem;
+}
+
+body.is-workspace .lms-admin-card .lms-table td span {
+  display: inline-block;
+  white-space: nowrap !important;
+  line-height: 1.4;
+  /* Brighter green text on a deeper opaque pill for WCAG AA contrast.
+     #6ee7b7 on #14322a ≈ 8.9:1 (well above 4.5:1). */
+  color: #6ee7b7 !important;
+  background: #14322a !important;
+  border-color: rgba(110, 231, 183, 0.35) !important;
+}
+
+/* ==========================================================================
+   [P031] ISSUE 2-0303, 2-0304, 2-0305: KPI metrics render as bare icon+text
+   rows in a single column with large empty gaps. Present them as consistent
+   dashboard cards in a 2x2 grid at tablet width with tighter spacing.
+   ========================================================================== */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.is-workspace .lms-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  /* Card styling matching the Recent Orders panel (2-0303) */
+  body.is-workspace .lms-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #161e2e;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    margin: 0;
+  }
+
+  body.is-workspace .lms-kpi-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+}

@@ -1,0 +1,71 @@
+/* ============================================================
+   P042 — /workspace/content-tools (system 403 / Access denied)
+   Scope: body.route--system-403  (real body class from live markup)
+   NOTE: header (.lms-navbar), footer (.lms-footer) and the brand
+   logo already render in the live page template, so 1-0888 / 1-0890
+   (missing-region) / 1-0892 are resolved at the markup level and
+   need no CSS. There is no breadcrumb element in the current markup
+   (1-0889 / 1-0893) and no recovery CTA markup (1-0894); those
+   require template/content changes and are deferred.
+   The fixable defects are the stranded, top-anchored error message
+   and its cramped spacing — addressed below.
+   ============================================================ */
+
+/* [P042] ISSUE 1-0895,1-0896,1-0890: vertically center the 403 message
+   so it isn't stranded at the top of the flex-grow content column,
+   and give it balanced breathing room instead of one cramped line. */
+body.route--system-403 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* fill the space between header and footer without forcing a full
+     extra viewport; .lms-page already provides min-height:100vh + flex */
+  min-height: 60vh;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  gap: 1.25rem;
+}
+
+/* [P042] ISSUE 1-0895,1-0896: present the error text as a readable,
+   self-contained block with comfortable max-width and even rhythm,
+   instead of a single sentence floating against blank white. */
+body.route--system-403 #block-lms-theme-content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #3d4451;            /* WCAG AA on the light medical background */
+}
+
+/* [P042] ISSUE 1-0896: balanced spacing for the page H1 / title band
+   region when present, so the heading and body do not crowd together. */
+body.route--system-403 .lms-page__content h1,
+body.route--system-403 #block-lms-theme-content h1 {
+  margin-bottom: 1rem;
+  color: #1f2430;
+}
+
+/* [P042] ISSUE 1-0895: keep the empty messages wrapper from adding
+   stray top whitespace above the centered block. */
+body.route--system-403 .lms-messages-wrapper:empty,
+body.route--system-403 .lms-messages-wrapper .hidden {
+  margin: 0;
+  padding: 0;
+}
+
+/* [P042] ISSUE 1-0895: mobile — tighten centering and spacing so the
+   message reads as intentional rather than a broken empty column. */
+@media (max-width: 480px) {
+  body.route--system-403 .lms-page__content {
+    min-height: 55vh;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+  body.route--system-403 #block-lms-theme-content {
+    padding: 1.5rem 1.25rem;
+    font-size: 1.0625rem;
+  }
+}

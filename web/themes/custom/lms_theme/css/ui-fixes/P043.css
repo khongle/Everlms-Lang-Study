@@ -1,0 +1,127 @@
+/* ==========================================================================
+   P043 — /manage/blog (403 Access denied)  UI fixes
+   Active skin: medical | brand: SilverCare
+   Page scope: body.route--system-403
+   ========================================================================== */
+
+/* [P043] ISSUE 1-0899, 1-0907: vertically center the sparse 403 message
+   within the available content height so the page is not a thin strip above
+   a huge blank band before the footer. .lms-page__content is already flex:1
+   in the flex column .lms-page, so we make it center its child. */
+body.route--system-403 .lms-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 320px); /* fill space between header and footer */
+  text-align: center;
+}
+
+/* Give the bare access-denied text some presence: readable size, max width,
+   centered. (A full themed 403 card with heading + CTA needs markup — see
+   deferred 1-0898 / 1-0905.) */
+body.route--system-403 #block-lms-theme-content {
+  max-width: 560px;
+  margin: 0 auto;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: #334155; /* slate-700 on light bg — WCAG AA on #f6fcff */
+}
+
+@media (max-width: 480px) {
+  body.route--system-403 .lms-page__content {
+    min-height: 60vh;
+    padding: 2rem 1.25rem;
+  }
+}
+
+/* [P043] ISSUE 1-0901, 1-0911: notification bell badge — anchor cleanly to the
+   top-right corner (smaller offset so it no longer overlaps the glyph strokes)
+   and use a high-contrast red fill for AA-legible white numeral.
+   Overrides the template's inline <style> (same specificity, but this partial
+   loads after the in-body <style>; class chain raises specificity to be safe). */
+.lms-bell-icon-wrapper .lms-bell-counter {
+  top: -6px;
+  right: -6px;
+  background: #dc2626; /* red-600: white text contrast 4.5:1+ */
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
+  border: 2px solid #ffffff;
+  min-width: 18px;
+  min-height: 18px;
+  padding: 0 0.3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* [P043] ISSUE 1-0902: keep the logged-in user name on a single line.
+   The label span already declares white-space:nowrap inline, but the flex
+   item can still shrink/wrap on tight headers — pin it and cap with ellipsis. */
+.lms-mega-menu-wrapper .lms-user-profile-link {
+  flex-shrink: 0;
+}
+.lms-mega-menu-wrapper .lms-user-profile-link > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 14ch;
+}
+
+/* [P043] ISSUE 1-0904: align the Workspace control (icon + label button) with
+   the inline primary nav items on a common centered baseline. */
+.lms-navbar__actions {
+  align-items: center;
+}
+.lms-navbar__actions .lms-btn--outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  line-height: 1;
+}
+
+/* [P043] ISSUE 1-0912: footer brand logo renders larger than the identical
+   header logo (96px vs 72px). Size the footer mark to match the header for a
+   cohesive identity. */
+.lms-brand-mark--footer {
+  height: 72px;
+}
+@media (max-width: 576px) {
+  .lms-brand-mark--footer {
+    height: 56px; /* matches header at this breakpoint */
+  }
+}
+
+/* [P043] ISSUE 1-0903: footer column headings should share a top alignment.
+   The brand column carries logo + description before its "Quick Links" h4,
+   pushing it well below the other columns' headings. Reduce that block's
+   bottom spacing so the headings sit closer to a common row. */
+.lms-footer__brand {
+  margin-bottom: 0.25rem;
+}
+.lms-footer__description {
+  margin-bottom: 0.75rem;
+}
+.lms-footer__col > h4 {
+  margin-top: 0;
+}
+
+/* [P043] ISSUE 1-0909: balance the footer copyright wrap so phrases like
+   "All rights reserved." don't leave an orphan word on the next line. */
+.lms-footer__bottom p {
+  text-wrap: balance;
+}
+
+/* [P043] ISSUE 1-0913: keep the scroll-to-top FAB clear of the footer columns.
+   Add page bottom breathing room and ensure it floats above content. The
+   medical skin sets position/offsets with !important, so we match for z-index. */
+body.route--system-403 .lms-footer {
+  padding-bottom: 5rem; /* reserve a gutter so the FAB never overlaps links */
+}
+body.layout-medical:not(.is-workspace) #lms-back-to-top,
+body.layout-medical:not(.is-workspace) .lms-back-to-top {
+  z-index: 1300 !important;
+}
+@media (max-width: 480px) {
+  body.route--system-403 .lms-footer {
+    padding-bottom: 6rem;
+  }
+}

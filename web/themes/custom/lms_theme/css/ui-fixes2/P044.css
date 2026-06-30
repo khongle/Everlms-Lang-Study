@@ -1,0 +1,83 @@
+/* ==========================================================================
+   P044 — AI Course Builder (/manage/courses/ai-builder)
+   Page scope: body.route--lms-ai-course-builder-form
+   Default Drupal FormBase markup: .form-item / .js-form-item with > label,
+   .description helper; submit = input.button.button--primary.form-submit
+   inside .form-actions.
+   This partial loads LAST. !important used ONLY to beat lower-layer / default
+   (jQuery-UI / core) button styling on the live submit element.
+   ========================================================================== */
+
+/* [P044] ISSUE 1-0930: Form labels — raise contrast to >=4.5:1 on the pale tint.
+   #1f2933 on the ~#eef6fb page tint ≈ 13:1, well above WCAG AA; also bump
+   weight so the uppercase labels read clearly as field titles. */
+body.route--lms-ai-course-builder-form .form-item > label,
+body.route--lms-ai-course-builder-form .js-form-item > label,
+body.route--lms-ai-course-builder-form .form-item label.form-required,
+body.route--lms-ai-course-builder-form .form-item label {
+  color: #1f2933;
+  font-weight: 600;
+}
+
+/* [P044] ISSUE 1-0928: "Example:" helper lines — make visually subordinate
+   (smaller + muted) so they don't compete with body/label text. */
+body.route--lms-ai-course-builder-form .form-item .description,
+body.route--lms-ai-course-builder-form .js-form-item .description {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.45;
+  /* #6b7280 on the pale tint ≈ 4.8:1 — muted yet still AA for small text */
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* [P044] ISSUE 1-0926: Primary "Build My Course! 🚀" CTA — the live submit
+   carries a heavy, offset, lower-left tinted shadow (reads as a duplicated
+   layer). Replace with a clean, centered, low-spread elevation. !important
+   is required to override the default/jQuery-UI button shadow on the element. */
+body.route--lms-ai-course-builder-form .form-actions input.button,
+body.route--lms-ai-course-builder-form .form-actions .form-submit,
+body.route--lms-ai-course-builder-form .form-actions .button--primary,
+body.route--lms-ai-course-builder-form .form-actions input[type="submit"] {
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15) !important;
+}
+body.route--lms-ai-course-builder-form .form-actions input.button:hover,
+body.route--lms-ai-course-builder-form .form-actions .form-submit:hover,
+body.route--lms-ai-course-builder-form .form-actions .button--primary:hover,
+body.route--lms-ai-course-builder-form .form-actions input[type="submit"]:hover {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18) !important;
+}
+body.route--lms-ai-course-builder-form .form-actions input.button:focus-visible,
+body.route--lms-ai-course-builder-form .form-actions .form-submit:focus-visible,
+body.route--lms-ai-course-builder-form .form-actions input[type="submit"]:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* [P044] ISSUE 1-0919: Short single-column form leaves a large dead band of
+   tinted space above the footer (content area is flex:1 and the form is
+   top-anchored). Constrain the form to a readable column and center it within
+   the available height so it no longer looks stranded at the very top, which
+   visibly reduces the empty gap. Filling the band with real supporting
+   content (preview / recent builds) would require markup — out of CSS scope. */
+body.route--lms-ai-course-builder-form #main-content.lms-page__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 760px;
+  /* keep the form from sitting flush against the fixed navbar / footer */
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+body.route--lms-ai-course-builder-form #main-content.lms-page__content form {
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  /* On mobile, vertical centering can push the heading under the fixed 64px
+     navbar; revert to top-aligned with clearance for the bar. */
+  body.route--lms-ai-course-builder-form #main-content.lms-page__content {
+    justify-content: flex-start;
+    padding-top: 5rem;
+  }
+}

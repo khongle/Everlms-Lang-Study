@@ -1,0 +1,194 @@
+/* ===========================================================================
+   P039 — Manage Ratings (/workspace/ratings)
+   Scope: .lms-admin admin workspace (no route_class on this page).
+   This partial loads LAST. !important is used to beat the template's inline
+   element styles and its in-template <style> block (.lms-admin-sidebar).
+   =========================================================================== */
+
+/* [P039] ISSUE 1-0837: secondary date line "Apr 04, 2026" under each course
+   title is rendered with inline color:#64748b on the #1e293b card — fails AA
+   (~3.0:1). Raise to #b3c0d4 (~6.8:1 on #1e293b). The inline style is matched
+   by the attribute-substring selector AND a positional fallback so it cannot
+   be missed; !important beats the element's inline color. */
+.lms-admin .lms-table td span[style*="#64748b"],
+.lms-admin .lms-table td span[style*="64748b"],
+.lms-admin .lms-table tbody td:nth-child(2) span {
+  color: #b3c0d4 !important;
+}
+
+/* [P039] ISSUE 1-0838: lower sidebar nav labels (Orders, Membership, etc.)
+   render at #94a3b8 — faint on the #161b22 sidebar. Lift muted nav/subnav
+   foreground to AA. (The "SilverCare" wordmark itself is a baked-in logo IMAGE,
+   not text, so its contrast must be fixed in the asset — see deferred.) */
+.lms-admin__nav-item {
+  color: #c5d0de !important; /* ~7:1 on #161b22 */
+}
+.lms-admin__nav-item:hover,
+.lms-admin__nav-item--active {
+  color: #ffffff !important;
+}
+.lms-admin__subnav-item {
+  color: #bcc8d8 !important;
+}
+.lms-admin__subnav-item--active {
+  color: #ffffff !important;
+}
+.lms-admin__nav-label {
+  color: #8b97a8 !important; /* uppercase section label, lift from #64748b */
+}
+/* Sidebar text-logo fallback (when no image logo) — keep bright. */
+.lms-admin__sidebar-brand a,
+.lms-admin__sidebar-brand span {
+  color: #f1f5f9 !important;
+}
+
+/* [P039] ISSUE 1-0840: "15 Reviews Found" counter is small/dim in the top
+   right. Casing ("Reviews Found" -> "reviews found") is template content and
+   cannot be changed in CSS, but lift the contrast & size here. */
+.lms-admin__subtitle {
+  color: #b3c0d4 !important;
+  font-size: 0.9375rem;
+}
+
+/* ===========================================================================
+   MOBILE — the fixed 260px sidebar + margin-left:260px forces horizontal
+   overflow and squeezes the table into a side strip. Collapse the sidebar and
+   convert the data table to a stacked single-column card layout so EVERY
+   field (id, course, student, rating, review, status, actions) is visible
+   without horizontal scrolling.
+   Addresses: 1-0842, 1-0844, 1-0845, 1-0847, 1-0849.
+   =========================================================================== */
+@media (max-width: 767px) {
+  /* Kill root horizontal overflow. */
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* [P039] ISSUE 1-0847: off-canvas the fixed sidebar so it no longer occupies
+     viewport width and leaves a tall empty void. */
+  .lms-admin__sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    width: 84vw;
+    min-width: 0;
+    max-width: 300px;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+  }
+  .lms-admin__sidebar:target,
+  .lms-admin__sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* [P039] ISSUE 1-0842 / 1-0847: single-column flow, content fills full
+     width, no left margin reserved for the hidden sidebar. */
+  .lms-admin {
+    display: block;
+  }
+  .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100%;
+    max-width: 100vw;
+    padding: 1.25rem;
+    box-sizing: border-box;
+  }
+
+  /* [P039] ISSUE 1-0844: H1 must fully fit and wrap, never clip at the edge. */
+  .lms-admin__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .lms-admin__title {
+    font-size: 1.375rem;
+    line-height: 1.25;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  /* [P039] ISSUE 1-0842 / 1-0845 / 1-0849: STACKED CARD LAYOUT.
+     Each <tr> becomes a card; each <td> a full-width block. This removes the
+     thin-strip table and the need for horizontal scroll, so full IDs and all
+     columns (rating, review, course, status, actions) are visible. The sticky
+     blue header pill is hidden because it has no meaning in a stacked layout. */
+  .lms-admin-card {
+    max-width: 100%;
+    overflow: visible;
+    border-radius: 0.75rem;
+  }
+  .lms-table-responsive {
+    overflow-x: visible !important;
+    min-height: 0 !important;
+    max-width: 100%;
+  }
+  .lms-table,
+  .lms-table thead,
+  .lms-table tbody,
+  .lms-table tr,
+  .lms-table td {
+    display: block;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  /* [P039] ISSUE 1-0849: hide the floating blue "ID" header pill in stacked
+     view — column headers are not applicable when cells stack vertically. */
+  .lms-table thead {
+    position: static;
+    height: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    padding: 0;
+    margin: 0;
+  }
+  .lms-table thead th {
+    display: none;
+  }
+  /* Card separation. */
+  .lms-table tbody tr {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.25rem;
+    background: rgba(255, 255, 255, 0.02) !important;
+  }
+  .lms-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+    padding: 0.6rem 1rem;
+    white-space: normal !important;
+  }
+  .lms-table tbody tr td:last-child {
+    border-bottom: none !important;
+  }
+
+  /* [P039] ISSUE 1-0845: full ID value must be readable, not clipped. */
+  .lms-table tbody td:first-child {
+    font-weight: 700;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+  }
+
+  /* Review cell must wrap fully instead of single-line ellipsis truncation. */
+  .lms-table td > div[style*="text-overflow"] {
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  /* Actions stay on one row, left aligned within the stacked card. */
+  .lms-table td:last-child > div {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+
+  /* Pagination footer wraps cleanly full width. */
+  .lms-admin-footer {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    border-radius: 0 0 0.75rem 0.75rem;
+  }
+}

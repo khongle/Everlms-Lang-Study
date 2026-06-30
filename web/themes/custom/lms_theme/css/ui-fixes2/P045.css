@@ -1,0 +1,208 @@
+/* ==========================================================================
+   P045 — Workspace Reports & Analytics  (/workspace/reports)
+   Route controller: lms_course AdminController::reports
+   Theme hook: lms_admin_reports_v2  ->  lms-admin-reports.html.twig
+   Layout shell: lms-admin-sidebar.html.twig (.lms-admin / .lms-admin__main).
+
+   The admin layout ships its styles as an inline <style> block inside the
+   sidebar template, and most cells carry element-level style="" attributes.
+   This partial loads LAST, so equal-specificity rules win on source order;
+   !important is used only where we must beat an inline style="" on the target.
+   No page route_class exists for this controller route, so we scope under the
+   page-specific shell class .lms-admin (the most specific section class).
+   ========================================================================== */
+
+
+/* [P045] ISSUE 1-0935: Completion-rate cell — stop stacking % under the bar.
+   Markup: <td style="...width: 15%"> <div BAR> <div FILL/> </div> <small>%</small> </td>
+   The bar div is width:100% block + the <small> falls to its own centered line,
+   inflating row height and detaching the % from the bar. Make the cell a flex
+   row so the track and the percentage sit inline on one line, vertically
+   centred, with the % to the right of the track. */
+.lms-admin .lms-table td[style*="width: 15%"] {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+}
+/* The progress track: keep it from forcing its own line; let it flex-grow
+   but cap it so the % label always has room beside it. */
+.lms-admin .lms-table td[style*="width: 15%"] > div[style*="#334155"] {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 60px !important;
+  max-width: 120px !important;
+  margin-bottom: 0 !important;
+}
+/* The percentage label: inline, fixed width, right of the track. */
+.lms-admin .lms-table td[style*="width: 15%"] > small {
+  flex: 0 0 auto !important;
+  display: inline-block !important;
+  min-width: 44px;
+  text-align: left;
+  white-space: nowrap;
+  color: #cbd5e1;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* [P045] ISSUE 1-0947: KPI card icon vs label — guarantee a consistent gap and
+   vertical centring between the coloured icon and the label/value stack across
+   all four cards (person / check / certificate / percent). Component-level
+   (applies on every viewport; mobile reinforced in the media query below). */
+.lms-admin .lms-kpi-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.lms-admin .lms-kpi-card__icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.lms-admin .lms-kpi-card__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+
+/* ==========================================================================
+   MOBILE  — ISSUE 1-0943 (critical) + 1-0947
+   The sidebar is position:fixed; width:260px and .lms-admin__main has
+   margin-left:260px with NO mobile breakpoint, so on phones the data tables
+   were squeezed into a narrow strip, wrapping to 1-3 chars per line and
+   overlapping rows (title overlapping the next row's text).
+
+   Fix: (a) un-fix the sidebar so it stacks and frees full content width, and
+   (b) convert the wide data tables to a readable STACKED-CARD layout — each
+   <tr> becomes a card, each <td> a labelled row — which removes the horizontal
+   squeeze entirely and the vertical overlap. Breakpoint widened to 600px to
+   reliably cover phone widths the prior 480px rule missed.
+   ========================================================================== */
+@media (max-width: 600px) {
+
+  /* Stack the shell so the fixed sidebar no longer overlays the content. */
+  .lms-admin {
+    flex-direction: column !important;
+  }
+  .lms-admin .lms-admin__sidebar {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 1;
+  }
+  .lms-admin .lms-admin__main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 1rem !important;
+    min-width: 0;
+  }
+
+  /* KPI cards: one per row, consistent icon gap and centring (1-0947). */
+  .lms-admin .lms-kpi-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+  .lms-admin .lms-kpi-card {
+    width: 100%;
+    min-width: 0;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.875rem !important;
+  }
+  .lms-admin .lms-kpi-card__label,
+  .lms-admin .lms-kpi-card__value {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  /* ----- 1-0943: tables -> stacked cards ----- */
+  /* Neutralise the table box model so every part flows as block. */
+  .lms-admin .lms-table-responsive {
+    overflow: visible !important;
+  }
+  .lms-admin .lms-table,
+  .lms-admin .lms-table thead,
+  .lms-admin .lms-table tbody,
+  .lms-admin .lms-table tr,
+  .lms-admin .lms-table th,
+  .lms-admin .lms-table td {
+    display: block !important;
+    width: auto !important;
+    white-space: normal !important;
+  }
+  /* Hide the original header row (labels are injected per-cell below). */
+  .lms-admin .lms-table thead {
+    position: absolute !important;
+    left: -9999px !important;
+    top: auto !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+  /* Each data row becomes a self-contained card. */
+  .lms-admin .lms-table tbody tr {
+    margin: 0 0 0.875rem 0 !important;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 0.5rem !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+  }
+  /* Each cell: full-width block, generous padding kills the vertical overlap. */
+  .lms-admin .lms-table tbody td {
+    padding: 0.5rem 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    text-align: left !important;
+    overflow-wrap: anywhere;
+  }
+  .lms-admin .lms-table tbody td:last-child {
+    border-bottom: 0 !important;
+  }
+  /* Inject the column label before each cell so the card is self-describing.
+     Order matches the Course Analytics table columns. */
+  .lms-admin #course-analytics .lms-table tbody td::before {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #94a3b8;
+  }
+  .lms-admin #course-analytics .lms-table tbody td:nth-child(1)::before { content: "Course"; }
+  .lms-admin #course-analytics .lms-table tbody td:nth-child(2)::before { content: "Enrollments"; }
+  .lms-admin #course-analytics .lms-table tbody td:nth-child(3)::before { content: "Completions"; }
+  .lms-admin #course-analytics .lms-table tbody td:nth-child(4)::before { content: "Completion Rate"; }
+  .lms-admin #course-analytics .lms-table tbody td:nth-child(5)::before { content: "Total Revenue"; }
+
+  /* The completion-rate cell in card mode: bar + % left-aligned on one line. */
+  .lms-admin #course-analytics .lms-table tbody td[style*="width: 15%"] {
+    display: flex !important;
+    justify-content: flex-start !important;
+  }
+  .lms-admin #course-analytics .lms-table tbody td[style*="width: 15%"] > div[style*="#334155"] {
+    max-width: none !important;
+  }
+
+  /* Section header (heading + Export button) stacks; button goes full width. */
+  .lms-admin .lms-report-tab-content > div[style*="justify-content: space-between"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+  .lms-admin .lms-report-tab-content a.btn-lms-primary {
+    width: 100%;
+    justify-content: center !important;
+  }
+}

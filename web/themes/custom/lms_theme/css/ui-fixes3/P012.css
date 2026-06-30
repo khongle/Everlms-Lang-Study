@@ -1,0 +1,25 @@
+/* [P012] ISSUE 1-0320: Consistent vertical rhythm between glossary card title and body regardless of title length (mobile).
+   ROOT CAUSE OF PRIOR FAILURE: the title h3 carried only `mb-0` and no reserved height, so a single-line
+   title ("Fall Prevention") and a wrapped two-line title ("Family Communication") produced different header
+   heights and different title-to-body gaps. Reserving a min-height for the title equal to two text lines makes
+   every card's body start at the same vertical offset, and a fixed margin-bottom guarantees an identical gap.
+   h3 base = font-size:1.375rem; line-height:1.2 => single line ≈ 1.65rem, two lines ≈ 3.3rem. */
+@media (max-width: 991.98px) {
+  body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card .card-body .card-title,
+  body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card-title.lms-text-gradient {
+    /* Reserve space for up to two title lines so single- and double-line headers align. */
+    min-height: calc(1.375rem * 1.2 * 2) !important; /* ≈ 3.3rem */
+    line-height: 1.2 !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    /* Fixed, consistent gap to the definition body for every card (overrides mb-0). */
+    margin-top: 0 !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* Neutralise the body's leading margin variability: rely on the title block's reserved height + its
+     own margin-bottom for the gap, and keep the bottom spacing (mb-4) consistent below the definition. */
+  body.route--lms-course-glossary .lms-glossary-page .glossary-item-card .card .card-body .lms-glossary-definition {
+    margin-top: 0 !important;
+  }
+}

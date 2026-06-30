@@ -1,0 +1,84 @@
+/* ============================================================
+   P025 — My Wishlist (/my-wishlist)
+   route_class: route--lms-wishlist-my-wishlist
+   Template uses heavy inline styles, so !important is required
+   to beat the inline color/shadow declarations on the targets.
+   ============================================================ */
+
+/* [P025] ISSUE 1-0561, 1-0567: "Browse Courses" heading-row link is white on a light background (invisible ghost on desktop, faint leaked text on mobile). Give it real brand contrast. */
+body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-btn-outline {
+  color: #0077b6 !important;            /* --medical-violet, AA on white */
+  border: 1px solid rgba(0, 119, 182, 0.45) !important;
+  background: #ffffff !important;
+  font-weight: 600;
+}
+body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-btn-outline:hover,
+body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-btn-outline:focus-visible {
+  color: #ffffff !important;
+  background: #0077b6 !important;
+  border-color: #0077b6 !important;
+}
+body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-btn-outline:focus-visible {
+  outline: 2px solid #0077b6;
+  outline-offset: 2px;
+}
+
+/* [P025] ISSUE 1-0567: On mobile the heading row + action link crowd the right edge and the link text leaks/clips. Stack the row so the link sits on its own line, fully contained. */
+@media (max-width: 480px) {
+  body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-container > div:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem;
+  }
+  body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-btn-outline {
+    align-self: flex-start;
+    max-width: 100%;
+    white-space: nowrap;
+  }
+}
+
+/* [P025] ISSUE 1-0563: Empty-state paragraph is #8b949e (light gray) on the light page bg — fails AA. Darken to a neutral that passes AA. */
+body.route--lms-wishlist-my-wishlist .lms-empty-state p {
+  color: #476273 !important;            /* --medical-text-soft, AA on white */
+}
+
+/* [P025] ISSUE 1-0564, 1-0572: Broken-heart empty-state icon is a flat dark gray (#484f58) that reads as a generic placeholder. Tint it with the brand color so the empty state feels on-brand and reads as an intentional illustration. */
+body.route--lms-wishlist-my-wishlist .lms-empty-state .fa-heart-broken {
+  color: #0077b6 !important;            /* --medical-violet */
+  opacity: 0.85;
+}
+
+/* [P025] ISSUE 1-0571: "Explore Courses" primary button shows a lopsided directional shadow. Replace with a balanced, centered soft shadow consistent with the flat card. */
+body.route--lms-wishlist-my-wishlist .lms-empty-state .lms-btn {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+}
+body.route--lms-wishlist-my-wishlist .lms-empty-state .lms-btn:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* [P025] ISSUE 1-0573: Empty-state paragraph wraps with the final word "yet." orphaned on its own line. Balance the wrapping and cap width so the last line carries more than one word. */
+body.route--lms-wishlist-my-wishlist .lms-empty-state p {
+  text-wrap: balance;
+  max-width: 34ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* [P025] ISSUE 1-0574: Large band of empty space below the short empty-state card before the footer on tall mobile viewports. Tighten the page padding so the empty state sits higher / closer to balance. */
+@media (max-width: 480px) {
+  body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-container {
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.25rem !important;
+  }
+  body.route--lms-wishlist-my-wishlist .lms-empty-state {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+}
+
+/* [P025] ISSUE 1-0569: Floating back-to-top button overlaps the footer copyright text on mobile. Add bottom padding to the footer equal to the button footprint so the copyright line is never covered. Global footer component (no page scope). */
+@media (max-width: 480px) {
+  .lms-footer .lms-footer__bottom {
+    padding-bottom: 64px;             /* 48px button + 14px offset clearance */
+  }
+}

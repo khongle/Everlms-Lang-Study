@@ -1,0 +1,151 @@
+/* ============================================================
+   P036 — Manage Orders (/workspace/orders)
+   Template: lms_course/lms-admin-orders.html.twig
+   Scope: .lms-admin / .lms-admin__main (route_class empty)
+   This partial loads LAST.
+   ============================================================ */
+
+/* [P036] ISSUE 2-0350: Search input renders as a ~350px tall box.
+   The input has no explicit height; inside the flex-column filter group it
+   gets vertically stretched on narrow viewports. Pin it to a real
+   single-line search-field height and stop any flex stretch. */
+.lms-admin .lms-admin-filter__input,
+.lms-admin .lms-admin-filter__select {
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  line-height: 1.4 !important;
+  align-self: stretch;       /* fill group width, not height */
+  flex: 0 0 auto !important;  /* never grow vertically */
+}
+.lms-admin .lms-admin-filter__group {
+  align-items: stretch;      /* fields fill the column width, fixed height */
+}
+
+/* [P036] ISSUE 2-0351 / 2-0352: Filter card grid alignment on tablet.
+   Stack the controls into a single left-aligned column so the Search input,
+   Status select and Filter button share the same left/right edges and width
+   (no stranded empty left half, no right-shifted fields). */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .lms-admin .lms-admin-filter,
+  .lms-admin__main .lms-admin-filter {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 1rem !important;
+  }
+  .lms-admin .lms-admin-filter__group,
+  .lms-admin__main .lms-admin-filter__group,
+  .lms-admin__main .lms-admin-filter__group:first-child,
+  .lms-admin__main .lms-admin-filter__group:nth-child(2),
+  .lms-admin__main .lms-admin-filter__group:last-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 auto !important;
+  }
+  .lms-admin .lms-admin-filter__input,
+  .lms-admin .lms-admin-filter__select {
+    width: 100% !important;
+  }
+  /* Filter button: full width so its edges align with the fields above */
+  .lms-admin .lms-admin-filter .btn-lms-primary,
+  .lms-admin__main .lms-admin-filter .btn-lms-primary {
+    width: 100% !important;
+    height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* [P036] ISSUE 2-0347: Date column cell wraps one character per line.
+   Keep the date on a single line and guarantee the column is wide enough so
+   it is never squeezed into a vertical character stack. */
+.lms-admin .lms-table th:nth-child(4),
+.lms-admin .lms-table td:nth-child(4) {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  min-width: 120px;
+}
+
+/* [P036] ISSUE 2-0348: Status badge ("Completed") wraps one letter per line.
+   Force the pill onto a single line, auto width with real padding, and give
+   the status column enough room so it is not crushed by the date column. */
+.lms-admin .lms-table th:nth-child(5),
+.lms-admin .lms-table td:nth-child(5) {
+  min-width: 120px;
+}
+.lms-admin .lms-table td .lms-badge,
+.lms-admin .lms-badge {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto;
+}
+
+/* [P036] ISSUE 2-0347 / 2-0348 (tablet): preserve table columns instead of
+   letting cells collapse. Allow the responsive wrapper to scroll horizontally
+   and stop the table from shrinking below a usable width on tablet so no cell
+   is ever compressed to a single-character column. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .lms-admin .lms-table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lms-admin .lms-table {
+    min-width: 720px !important;
+    table-layout: auto !important;
+  }
+}
+
+/* [P036] ISSUE 2-0349 / 2-0355 / 2-0357: Row height and vertical alignment.
+   Once cells stop wrapping, rows collapse to natural height. Center all cell
+   content vertically (incl. the Edit action) and add a clear divider so each
+   order reads as one compact band. */
+.lms-admin .lms-table tbody tr {
+  border-bottom: 1px solid #30363d !important;
+}
+.lms-admin .lms-table tbody td {
+  vertical-align: middle !important;
+  height: auto;
+}
+.lms-admin .lms-table tbody td .lms-btn {
+  vertical-align: middle;
+  align-self: center;
+}
+
+/* [P036] ISSUE 2-0356: Zebra striping should fill the full row width.
+   Apply the alternate background to the whole row (and every cell so it
+   reads edge-to-edge, not a partial inner strip). */
+.lms-admin .lms-table tbody tr:nth-child(even),
+.lms-admin .lms-table tbody tr:nth-child(even) td {
+  background-color: rgba(255, 255, 255, 0.025) !important;
+}
+.lms-admin .lms-table tbody tr:nth-child(odd),
+.lms-admin .lms-table tbody tr:nth-child(odd) td {
+  background-color: transparent !important;
+}
+
+/* [P036] ISSUE 2-0358: Edit action button is a weak near-transparent outline
+   with borderline orange-on-dark contrast. Give it a clearly filled, solid
+   AA-contrast appearance (white text on a saturated accent fill). */
+.lms-admin .lms-table td .lms-btn.lms-btn--outline,
+.lms-admin .lms-table td a.lms-btn {
+  background: #1d70f5 !important;
+  border: 1px solid #1d70f5 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+.lms-admin .lms-table td .lms-btn.lms-btn--outline:hover,
+.lms-admin .lms-table td a.lms-btn:hover {
+  background: #1860d8 !important;
+  border-color: #1860d8 !important;
+  color: #ffffff !important;
+}
+.lms-admin .lms-table td a.lms-btn:focus-visible {
+  outline: 2px solid #9ec5ff !important;
+  outline-offset: 2px !important;
+}

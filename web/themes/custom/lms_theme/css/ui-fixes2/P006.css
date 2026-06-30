@@ -1,0 +1,101 @@
+/* ============================================================
+   P006 — Pricing page UI fixes
+   Route: body.route--lms-course-pricing
+   Loaded LAST. Page content scoped to the route class;
+   global components (navbar) scoped to component class.
+   ============================================================ */
+
+/* [P006] ISSUE 1-0178, 1-0195: equal-height cards + CTA pinned to a common bottom baseline */
+body.route--lms-course-pricing .lms-pricing-grid {
+  /* main.css sets align-items:center which staggers the cards; stretch them */
+  align-items: stretch;
+}
+
+body.route--lms-course-pricing .lms-pricing-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Push the CTA to the bottom of every card so all buttons share one baseline.
+   The CTA is the .lms-btn anchor that is a direct child of the card. */
+body.route--lms-course-pricing .lms-pricing-card > .lms-btn {
+  margin-top: auto;
+}
+
+/* The recommended card is scaled up (transform:scale(1.05)); reset that so the
+   stretched heights line up and the CTA baseline is truly common across cards. */
+body.route--lms-course-pricing .lms-pricing-card--recommended {
+  transform: none;
+}
+
+/* [P006] ISSUE 1-0184, 1-0197: uniform price band + consistent title->price rhythm,
+   reserve an equal-height suffix slot so the Free card matches the paid cards */
+body.route--lms-course-pricing .lms-pricing-card__name {
+  margin-bottom: 1rem;
+}
+
+body.route--lms-course-pricing .lms-pricing-card__price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  /* reserve a uniform vertical band for the price row across all three cards
+     (paid cards carry a /month suffix line; Free has none) */
+  min-height: 3.5rem;
+  margin-bottom: 2rem;
+}
+
+/* keep the large price and the suffix on a balanced baseline */
+body.route--lms-course-pricing .lms-pricing-card__amount {
+  line-height: 1.1;
+}
+
+/* [P006] ISSUE 1-0187, 1-0197: '/month' suffix contrast + baseline balance.
+   main.css uses #8b949e (fails WCAG AA on the light card). Darken + enlarge. */
+body.route--lms-course-pricing .lms-pricing-card__period {
+  color: #475467;            /* ~5.9:1 on #ffffff — passes WCAG AA */
+  font-size: 1rem;
+  font-weight: 500;
+  margin-left: 0.35rem;
+  line-height: 1.1;
+  align-self: baseline;
+}
+
+/* [P006] ISSUE 1-0186: trim the dead light-blue band between cards and footer */
+body.route--lms-course-pricing .lms-section {
+  padding-top: 2.5rem;
+  padding-bottom: 1.5rem;
+}
+
+/* [P006] ISSUE 1-0191: consistent mobile CTA hierarchy.
+   Non-recommended CTAs render as thin ghost pills; give every outline CTA a
+   solid 2px border and clear weight so siblings read as the same intentional
+   secondary variant (recommended stays the filled primary). */
+body.route--lms-course-pricing .lms-pricing-card .lms-btn--outline {
+  border-width: 2px;
+  border-style: solid;
+  font-weight: 600;
+}
+
+/* [P006] ISSUE 1-0189: mobile — avoid duplicate nav affordances.
+   When the hamburger toggle is shown (<=992px), collapse the inline auth
+   links into the drawer paradigm by hiding the standalone navbar action
+   buttons so only the hamburger remains as the single nav affordance. */
+@media (max-width: 992px) {
+  .lms-navbar__actions .lms-btn,
+  .lms-navbar__actions a[href="/user/login"],
+  .lms-navbar__actions a[href="/user/register"] {
+    display: none;
+  }
+}
+
+/* [P006] ISSUE 1-0195: tighten/equalize spacing rhythm on mobile so the gap
+   between the last feature row and the CTA is consistent across cards. */
+@media (max-width: 480px) {
+  body.route--lms-course-pricing .lms-pricing-card__features {
+    margin-bottom: 1.5rem;
+  }
+  body.route--lms-course-pricing .lms-pricing-card {
+    padding: 2rem 1.25rem;
+  }
+}

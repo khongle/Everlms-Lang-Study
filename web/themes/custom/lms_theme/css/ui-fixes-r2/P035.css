@@ -1,0 +1,89 @@
+/* ==========================================================================
+   P035 — Manage Users (/workspace/users)
+   Page-specific fixes scoped under .lms-admin__main (route_class empty).
+   This partial loads LAST. !important is used only to beat inline styles
+   that live directly on the target elements in the Twig templates.
+   ========================================================================== */
+
+/* [P035] ISSUE 2-0337, 2-0338: Filter "Role:" / "Status:" labels stack one
+   glyph per line because the squeezed flex track collapses the span to a
+   1-char width. Force the labels onto a single horizontal line and let them
+   size to their content so they no longer inflate the filter card height. */
+.lms-admin__main .lms-admin-card span {
+  white-space: nowrap;
+}
+.lms-admin__main .lms-admin-card label {
+  white-space: nowrap;
+  width: auto;
+  min-width: max-content;
+}
+
+/* [P035] ISSUE 2-0346: Filter row leaves a big empty gap, the controls don't
+   align, and Reset gets pushed to its own line. Allow the row to wrap neatly,
+   give it consistent spacing, and align all controls on their baseline. The
+   inline rule on this card header is display:flex;justify-content:space-between
+   so we extend it with wrapping + a row gap instead of overriding the model. */
+.lms-admin__main .lms-admin-card > div[style*="space-between"] {
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: flex-end !important;
+}
+/* keep the search/role/status group fluid and the Reset group inline */
+.lms-admin__main .lms-admin-card > div[style*="space-between"] > div {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* [P035] ISSUE 2-0345: Search input renders as a sliver showing only "S".
+   Guarantee a usable minimum width so the full placeholder is visible once
+   the wrapped labels stop hogging the row width. */
+.lms-admin__main .lms-admin-filter__input {
+  min-width: 240px;
+}
+
+/* [P035] ISSUE 2-0339, 2-0340, 2-0341: User rows render ~150-200px tall with
+   content floating in the middle because the "User" <td> carries an inline
+   display:flex, which ejects that cell from the table layout and breaks the
+   whole row. Restore proper table-cell behaviour and vertically centre every
+   cell so the checkbox, avatar and name share one line and the per-user
+   metadata (email/role/status/actions) lays out across the row at a compact,
+   consistent height. */
+.lms-admin__main .lms-table td {
+  display: table-cell !important;
+  vertical-align: middle !important;
+}
+.lms-admin__main .lms-table th {
+  vertical-align: middle;
+}
+/* keep the avatar + name on one line inside the (now table-cell) User cell */
+.lms-admin__main .lms-table td img {
+  vertical-align: middle;
+  margin-right: 0.75rem;
+}
+.lms-admin__main .lms-table td span {
+  vertical-align: middle;
+}
+
+/* [P035] ISSUE 2-0341: Zebra striping must wrap exactly one full row. With the
+   row height fixed above, apply the band to the <tr> itself so each user gets
+   one clean alternating background. */
+.lms-admin__main .lms-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+.lms-admin__main .lms-table tbody tr:hover {
+  background: rgba(102, 126, 234, 0.06);
+}
+
+/* [P035] ISSUE 2-0343: Bulk "Deactivate" button uses #ef4444 text on a faint
+   30%-alpha red border over a near-black bar — text contrast is well below
+   WCAG AA and it reads as disabled. Brighten the label and solidify the
+   border so it is clearly an actionable secondary destructive control.
+   (!important beats the inline color/border on the button element.) */
+.lms-admin__main button[value="deactivate"] {
+  color: #fca5a5 !important;
+  border: 1px solid rgba(239, 68, 68, 0.7) !important;
+}
+.lms-admin__main button[value="deactivate"]:hover {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #fecaca !important;
+}

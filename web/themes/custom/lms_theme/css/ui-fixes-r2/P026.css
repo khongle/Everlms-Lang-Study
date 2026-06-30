@@ -1,0 +1,59 @@
+/* ==========================================================================
+   P026 — My Memberships (/my-membership)
+   Round-2 UI fixes. This partial loads LAST.
+   ========================================================================== */
+
+/* [P026] ISSUE 2-0251: responsive grid — use full tablet width (2 columns) */
+/* Card grid uses minmax(340px,1fr) auto-fill which collapses to a single
+   ~470px column on tablet, leaving ~250px empty. Force a clean 2-column
+   grid across the tablet range so the viewport is fully used. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-membership-my-membership .lms-membership-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* [P026] ISSUE 2-0255: contrast — darken ACTIVE badge to meet WCAG AA */
+/* #34d399 text on a faint mint pill fails AA for small uppercase text.
+   Use a solid darker-green pill with near-black-green text (#0b3d2e on
+   #34d399 ≈ 7.6:1). Applies to the global badge component. */
+.lms-badge--active {
+  background: #34d399;
+  color: #0b3d2e;
+}
+
+/* [P026] ISSUE 2-0256: alignment — center value icon with its text */
+/* The value span renders icon + bold text inline; the icon baseline sits
+   low. Make the span an inline-flex row centered on a shared baseline. */
+body.route--lms-membership-my-membership .lms-membership-card__value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  line-height: 1;
+}
+body.route--lms-membership-my-membership .lms-membership-card__value i {
+  font-size: 0.875rem;
+  line-height: 1;
+  margin-right: 0 !important;
+}
+
+/* [P026] ISSUE 2-0257: spacing — balance top rhythm of page title / cards */
+/* Reduce the oversized top margin above the H1 and tighten the H1→first-card
+   gap so it matches the inter-card spacing (1.5rem). */
+body.route--lms-membership-my-membership .lms-my-membership {
+  margin-top: 2.5rem;
+}
+body.route--lms-membership-my-membership .lms-my-membership h2 {
+  margin-bottom: 1.5rem;
+}
+
+/* [P026] ISSUE 2-0258: spacing — even gaps in header utility icon group */
+/* The bell/heart cluster sits tighter than the gap to the avatar/name.
+   Normalize the actions group to a uniform 1rem gap and neutralize the
+   inline right-margin on the wishlist link so spacing is consistent. */
+.lms-navbar__actions > div {
+  gap: 1rem;
+}
+.lms-navbar__actions a[title] {
+  margin-right: 0 !important;
+}

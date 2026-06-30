@@ -1,0 +1,69 @@
+/* ==========================================================================
+   P017 — Learning dashboard (route--lms-progress-dashboard)
+   Round-2 UI fixes. Loads LAST, after ui-fixes-r1*.
+   ========================================================================== */
+
+/* [P017] ISSUE 2-0175: The category pill is truncated mid-word with an
+   ellipsis ("BASIC GERIATRIC CARE & HY..."), so the full category (e.g.
+   "...& Hygiene") is unreadable. A round-1 rule forced a single line +
+   ellipsis at max-width 14rem. Allow the badge to wrap to (up to) two lines
+   and widen it so the whole label reads without a mid-word cut. */
+body.route--lms-progress-dashboard .lms-learning-card__category,
+body.route--lms-progress-dashboard .lms-learning-spotlight__category {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal !important;
+  max-width: min(100%, 18rem) !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  line-height: 1.25;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+/* [P017] ISSUE 2-0178: Inactive filter chip labels (#8b949e) and their small
+   count badges (light grey on near-white) fail WCAG AA on the light card.
+   Darken the chip label text and give the count badges a darker pill so both
+   meet >=4.5:1. The active chip keeps its white-on-accent template styling. */
+body.route--lms-progress-dashboard .lms-learning-filters__button {
+  color: #334155 !important; /* slate-700 on white ~ 9.5:1 */
+}
+body.route--lms-progress-dashboard .lms-learning-filters__button span {
+  background: #e2e8f0 !important;
+  color: #1e293b !important; /* slate-800 on #e2e8f0 ~ 12:1 */
+}
+/* Keep the active chip's count legible on its accent background. */
+body.route--lms-progress-dashboard .lms-learning-filters__button.is-active,
+body.route--lms-progress-dashboard .lms-learning-filters__button.is-active span {
+  color: #ffffff !important;
+}
+
+/* [P017] ISSUE 2-0179: The vertical gap above the stacked stat/section cards
+   (KPI block, then "Continue learning") is larger than the gap between the
+   cards themselves, breaking the rhythm. Normalise the top spacing of the
+   KPI grid and the following section so all stacked sections share one gap. */
+body.route--lms-progress-dashboard .lms-kpi-grid {
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+body.route--lms-progress-dashboard .lms-dashboard-page__section {
+  margin-top: 2rem !important;
+}
+
+/* [P017] ISSUE 2-0181: Each course card shows the same status twice -
+   as an uppercase pill badge over the image ("READY TO START") and again as
+   sentence-case body text below the title. Round-1 already hid the duplicate
+   "% complete" span; hide the remaining duplicated status word in the meta
+   row so the status is communicated once (via the badge). */
+body.route--lms-progress-dashboard .lms-learning-card__meta > span:last-child {
+  display: none;
+}
+/* If the meta row now has no visible children, collapse its spacing so the
+   layout stays tight (the progress bar sits directly under the title). */
+body.route--lms-progress-dashboard .lms-learning-card__meta {
+  margin: 0 !important;
+  min-height: 0;
+}

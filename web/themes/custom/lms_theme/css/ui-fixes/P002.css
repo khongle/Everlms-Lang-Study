@@ -1,0 +1,163 @@
+/* ============================================================
+   P002 — Course Catalog (/courses) UI fixes
+   Skin: medical / brand SilverCare
+   Page scope: body.route--lms-course-catalog
+   Global components (navbar, footer, card-lms, lms-select) fixed
+   with their own component class (no page scope).
+   This partial loads LAST.
+   ============================================================ */
+
+/* [P002] ISSUE 1-0077, 1-0105: Category badge legibility over images.
+   Replace the faint translucent pill with a solid dark scrim + text-shadow
+   so all-caps white text stays >=4.5:1 over any underlying photo.
+   Also adds comfortable inset/padding and caps very long labels (mobile). */
+.card-lms__category {
+  background: rgba(0, 0, 0, 0.72);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 0.3rem 0.7rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  max-width: calc(100% - 1.5rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [P002] ISSUE 1-0078, 1-0095, 1-0110: Equal-height title block.
+   Title already clamps to 2 lines but reserves no space when it is 1 line,
+   so instructor/desc/meta/footer of single-line cards sit higher than
+   two-line siblings. Reserve a fixed 2-line min-height so internal rows
+   align across a grid row. */
+.card-lms__title {
+  min-height: 3.08em; /* ~2 lines at line-height:1.4, font 1.1rem */
+}
+
+/* [P002] ISSUE 1-0094: Keep price/CTA baselines aligned across siblings
+   even when one card has the enrolled/unlocked variant (extra badge line +
+   struck price). Footer already uses margin-top:auto; reserve a consistent
+   minimum height for the price slot so the CTA row anchors evenly. */
+.card-lms__footer {
+  min-height: 2.75rem;
+}
+.card-lms__price {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+/* [P002] ISSUE 1-0084, 1-0111: Card description & meta contrast.
+   Existing #6e7681 (~3.9:1 on white) is borderline for small body text.
+   Darken to #4b5563 (>=7:1 on white, >=4.5:1 on dark) for WCAG AA. */
+.card-lms__desc {
+  color: #4b5563;
+}
+.card-lms__desc a {
+  color: inherit;
+}
+.card-lms__meta,
+.card-lms__level {
+  color: #4b5563;
+}
+/* Instructor name carries an inline color (#a1a1aa); beat it on the target. */
+.card-lms__instructor-name {
+  color: #4b5563 !important;
+}
+
+/* [P002] ISSUE 1-0082: Sidebar empty-panel dead space.
+   The catalog is a flex row; the sidebar stretches to match the (tall) grid
+   column. Let it size to its own content instead and stick while scrolling. */
+.lms-catalog__sidebar {
+  align-self: flex-start;
+  position: sticky;
+  top: 1.5rem;
+}
+
+/* [P002] ISSUE 1-0087, 1-0107: Sort <select> must read as an interactive
+   dropdown. Add a clear border, a chevron caret and a hover/focus affordance.
+   (Native arrow is removed by appearance:none in the theme.) */
+.lms-select#sort-courses,
+.lms-catalog__toolbar .lms-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 12px 12px;
+}
+.lms-catalog__toolbar .lms-select:hover,
+.lms-catalog__toolbar .lms-select:focus {
+  border-color: rgba(99, 102, 241, 0.7);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  outline: none;
+}
+
+/* [P002] ISSUE 1-0112: Rating-filter empty stars.
+   Unselected stars use .text-muted (#6e7681 dark grey) and read as filled.
+   Render them as a light grey so filled (gold .text-warning) vs empty is
+   obvious at a glance. */
+.lms-rating-stars .fa-star.text-muted,
+.lms-rating-stars .text-muted {
+  color: #cbd5e1 !important;
+}
+
+/* [P002] ISSUE 1-0098: Mobile header overflow — the Register button is
+   clipped by the viewport edge next to Login. Let the actions shrink and
+   tighten spacing/padding so both fit within the bar on narrow screens. */
+@media (max-width: 480px) {
+  .lms-navbar__container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    gap: 0.5rem;
+  }
+  .lms-navbar__actions {
+    gap: 0.5rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .lms-navbar__actions .lms-navbar__link {
+    font-size: 0.85rem;
+    padding-left: 0;
+    padding-right: 0;
+    white-space: nowrap;
+  }
+  .lms-navbar__actions .lms-btn--sm {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+}
+
+/* [P002] ISSUE 1-0106: Mobile primary CTA affordance.
+   The outlined ghost "Enroll Now" is a weak primary action with low-contrast
+   blue-on-white text. Give it a solid filled brand gradient on mobile. */
+@media (max-width: 480px) {
+  .card-lms__footer .btn-lms-outline {
+    background: linear-gradient(to right, #6366f1, #a855f7) !important;
+    border-color: transparent !important;
+    color: #ffffff !important;
+    font-weight: 600;
+  }
+}
+
+/* [P002] ISSUE 1-0109: Mobile footer rhythm.
+   Give the stacked footer uniform container padding and consistent vertical
+   spacing between link groups. */
+@media (max-width: 480px) {
+  .lms-footer__container {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  .lms-footer__col {
+    margin-bottom: 1.75rem;
+  }
+  .lms-footer__col h4 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+}

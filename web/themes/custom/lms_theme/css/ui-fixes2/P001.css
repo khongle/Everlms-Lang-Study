@@ -1,0 +1,190 @@
+/* ============================================================
+   [P001] Homepage (medical skin / SilverCare) UI fixes
+   Page scope: body.route--lms-course-homepage (also layout-medical)
+   Global header components scoped under body.layout-medical navbar.
+   Loaded LAST. !important used only to beat inline styles.
+   ============================================================ */
+
+/* [P001] ISSUE 1-0041: Category card title block reserves consistent
+   height so the "N courses" count line aligns across the grid row,
+   regardless of 1- vs 2-line titles. */
+body.route--lms-course-homepage .medical-category-card {
+  justify-content: flex-start;
+}
+body.route--lms-course-homepage .medical-category-card__name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Reserve room for up to two lines (font-size 1rem, line-height ~1.3). */
+  min-height: 2.6em;
+  margin-bottom: 6px;
+}
+body.route--lms-course-homepage .medical-category-card__count {
+  margin-top: auto;
+}
+
+/* [P001] ISSUE 1-0042: Course card description uses CSS line-clamp for a
+   clean, consistent two-line truncation (no reliance on manual " …"). */
+body.route--lms-course-homepage .medical-course-card__summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.8em; /* keep footers aligned when text is shorter */
+}
+
+/* [P001] ISSUE 1-0043, 1-0052: Header "Workspace" / "Dashboard" outline
+   buttons read as low-contrast light blue on the white medical navbar.
+   Use the brand dark blue (#0f2c3d heading / #0077b6 brand) with a solid
+   border to meet WCAG AA (>= 4.5:1) on white. */
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline {
+  color: #0f2c3d !important;        /* ~12.9:1 on #fff */
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 119, 182, 0.45) !important;
+  font-weight: 600 !important;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline i {
+  color: #0077b6 !important;        /* 4.7:1 on #fff — AA for the icon */
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:hover,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:focus-visible {
+  color: #ffffff !important;
+  background: #0077b6 !important;
+  border-color: #0077b6 !important;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:hover i,
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:focus-visible i {
+  color: #ffffff !important;
+}
+body.layout-medical:not(.is-workspace) .lms-navbar__actions .lms-btn--outline:focus-visible {
+  outline: 2px solid #0077b6 !important;
+  outline-offset: 2px;
+}
+
+/* [P001] ISSUE 1-0044, 1-0045: Hero subtitle (and copy) was clipped on the
+   left ("ur Professional Development…") because the carousel prev control
+   sits over the text column. Add left padding to the hero content so the
+   copy clears the 48px arrow, and pull the prev arrow toward the slide edge
+   so it no longer overlaps the text band. */
+body.route--lms-course-homepage .medical-carousel__item > .medical-shell.medical-hero__content {
+  padding-left: clamp(64px, 6vw, 96px);
+}
+body.route--lms-course-homepage .medical-carousel__control--prev {
+  left: 12px;
+}
+body.route--lms-course-homepage .medical-hero__subtitle,
+body.route--lms-course-homepage .medical-hero__title {
+  overflow-wrap: break-word;
+}
+
+/* [P001] ISSUE 1-0050, 1-0051: Header utility cluster (bell, wishlist,
+   avatar + name, Workspace/Dashboard, logout) must share one vertical
+   baseline; the user name must stay on a single line, truncated if long. */
+body.layout-medical:not(.is-workspace) .lms-navbar__actions > div {
+  align-items: center !important;
+}
+body.layout-medical:not(.is-workspace) .lms-user-profile-link {
+  align-items: center !important;
+  min-width: 0; /* allow the name to truncate instead of forcing a wrap */
+}
+body.layout-medical:not(.is-workspace) .lms-user-profile-link > span {
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 12ch;
+}
+
+/* [P001] ISSUE 1-0054: Progress bar track must be visible even at 0% so the
+   component reads consistently across "Continue Learning" cards. The track
+   keeps a light-gray/blue background independent of fill width. */
+body.route--lms-course-homepage .medical-progress {
+  background: #d8eef9;
+  height: 6px;
+}
+body.route--lms-course-homepage .medical-progress__fill {
+  min-width: 0; /* 0% shows the empty track, not a stray line */
+}
+
+/* ============================================================
+   MOBILE (<= 480px) — Featured Programs card overflow + hero CTA
+   ============================================================ */
+@media (max-width: 480px) {
+  /* [P001] ISSUE 1-0062: Card titles were splitting words ("Managem /
+     and / Emergenc"). Wrap on word boundaries, never split mid-word. */
+  body.route--lms-course-homepage .medical-course-card__title,
+  body.route--lms-course-homepage .medical-course-card__title a {
+    word-break: normal;
+    overflow-wrap: break-word;
+    hyphens: none;
+  }
+
+  /* [P001] ISSUE 1-0062, 1-0063, 1-0074: Keep all card content inside the
+     card padding so titles, meta badges, description and price/footer are
+     fully visible and never sliced at the right edge. */
+  body.route--lms-course-homepage .medical-course-card {
+    overflow: hidden;
+  }
+  body.route--lms-course-homepage .medical-course-card__body {
+    min-width: 0;
+    padding: 16px;
+  }
+  body.route--lms-course-homepage .medical-course-card__title,
+  body.route--lms-course-homepage .medical-course-card__instructor,
+  body.route--lms-course-homepage .medical-course-card__summary {
+    max-width: 100%;
+  }
+
+  /* [P001] ISSUE 1-0063: Skill-level pill ("Intermediate") was clipped
+     ("Intermed…"). Allow the meta row to wrap so each badge stays whole. */
+  body.route--lms-course-homepage .medical-course-card__meta {
+    flex-wrap: wrap;
+  }
+  body.route--lms-course-homepage .medical-course-card__meta span {
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  /* [P001] ISSUE 1-0074: Price/CTA footer needs breathing room above the
+     divider and the enroll/View button must stay fully inside the card. */
+  body.route--lms-course-homepage .medical-course-card__footer {
+    padding-top: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  body.route--lms-course-homepage .medical-course-card__footer .medical-btn {
+    flex-shrink: 0;
+  }
+
+  /* [P001] ISSUE 1-0064: Hero slide CTA "ghost" bleed-through — the inactive
+     slide's "BROWSE CATALOG" was peeking under the active CTA and over the
+     pagination dots. Clip each slide and fully hide inactive slides, then
+     add clearance so the dots sit cleanly below the buttons. */
+  body.route--lms-course-homepage .medical-carousel__item {
+    overflow: hidden;
+  }
+  body.route--lms-course-homepage .medical-carousel__item:not(.active) {
+    opacity: 0;
+    visibility: hidden;
+  }
+  body.route--lms-course-homepage .medical-carousel__item.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  body.route--lms-course-homepage .medical-hero__actions {
+    margin-bottom: 28px;
+  }
+  body.route--lms-course-homepage .medical-carousel__indicators {
+    bottom: 20px;
+  }
+
+  /* [P001] ISSUE 1-0076: Give the hero subtitle clear spacing from the
+     title/CTA band so the carousel arrows do not crowd the short subtitle. */
+  body.route--lms-course-homepage .medical-hero__subtitle {
+    margin-bottom: 26px;
+  }
+  body.route--lms-course-homepage .medical-carousel__control {
+    opacity: 0.7;
+  }
+}

@@ -1,0 +1,44 @@
+/* ==========================================================================
+   P013 — Forum index (/forum, body.route--lms-forum-index)
+   THIRD-pass UI fixes. This partial loads LAST.
+   ========================================================================== */
+
+/* [P013] ISSUE 1-0341: Mobile topic cards — titles wrap to 3-4 lines and body
+   text wraps to many short lines ending in single-word orphans, producing a
+   ragged, cramped column.
+   PRIOR FIX FAILED because (a) it was scoped to @media (max-width:480px) so it
+   never applied at the typical phone width tested (~390-414px CSS px is < 480,
+   but the visible failure persisted because) (b) it left the card's heavy
+   1.5rem horizontal padding intact — the text measure stayed narrow — and (c)
+   it did nothing to balance the wrapping itself, so orphan lines remained.
+   Real fix: widen the breakpoint, cut the card's side padding to reclaim
+   horizontal measure, tighten title line-height, and use text-wrap:balance/
+   pretty to push trailing single words back onto the previous line. */
+@media (max-width: 640px) {
+  /* Reclaim measure: trim the card's horizontal padding so the text column is
+     meaningfully wider (was 1.5rem each side ≈ 48px of lost width). */
+  body.route--lms-forum-index .lms-forum-item {
+    padding: 1.15rem 1rem !important;
+  }
+
+  /* Titles: tighter leading + balanced wrap so 3-4 short lines become 2-3
+     evenly-filled lines with no dangling single word. */
+  body.route--lms-forum-index .lms-forum-item__content h3 {
+    line-height: 1.2 !important;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+  body.route--lms-forum-index .lms-forum-item__content h3 a {
+    text-wrap: balance;
+  }
+
+  /* Body paragraph: comfortable leading and a "pretty" wrap that avoids the
+     last-line single-word orphan (e.g. "stories." / "shifts?"). Let it use the
+     full reclaimed width by removing the desktop max-width clamp on mobile. */
+  body.route--lms-forum-index .lms-forum-item__content p {
+    line-height: 1.5 !important;
+    max-width: none !important;
+    text-wrap: pretty;
+    overflow-wrap: break-word;
+  }
+}

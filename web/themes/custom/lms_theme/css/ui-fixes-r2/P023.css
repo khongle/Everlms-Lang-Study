@@ -1,0 +1,30 @@
+/* [P023] ISSUE 2-0229: Tablet stat-card grid keeps 3 even columns (no lopsided lone card) */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.route--lms-progress-certificates .lms-certificates-page__summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  body.route--lms-progress-certificates .lms-certificates-page__summary-card {
+    min-height: 0 !important;
+  }
+}
+
+/* [P023] ISSUE 2-0231: Darken eyebrow/kicker for WCAG AA on light page bg */
+body.route--lms-progress-certificates .lms-certificates-page__eyebrow {
+  color: #92400e !important;
+  font-weight: 700 !important;
+}
+
+/* [P023] ISSUE 2-0232: Vertically center content inside the empty-state card */
+body.route--lms-progress-certificates .lms-certificates-empty {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* [P023] ISSUE 2-0233: Balance the intro lede paragraph line wrapping */
+body.route--lms-progress-certificates .lms-certificates-page__subtitle {
+  text-wrap: balance;
+  max-width: 46ch;
+}

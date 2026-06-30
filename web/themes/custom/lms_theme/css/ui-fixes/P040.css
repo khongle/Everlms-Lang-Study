@@ -1,0 +1,147 @@
+/* ==========================================================================
+   P040 — Certificate Templates (/workspace/certificate-templates)
+   Admin workspace layout. Selectors verified against:
+   - web/modules/custom/lms_certificate/templates/lms-admin-certificate-templates.html.twig
+   - web/modules/custom/lms_course/templates/lms-admin-sidebar.html.twig
+   Loaded LAST. !important used only to beat inline styles on the targets.
+   ========================================================================== */
+
+/* [P040] ISSUE 1-0855, 1-0864: Sidebar brand wordmark too muted on dark sidebar.
+   Source color #e6edf3 reads dim next to bright nav; lift to pure white for AA. */
+.lms-admin__sidebar-brand a,
+.lms-admin__sidebar-brand span {
+  color: #ffffff;
+}
+
+/* [P040] ISSUE 1-0865: 'ADMIN NAVIGATION' section label faint (#64748b ~3:1 on #161b22).
+   Raise lightness to #94a3b8 (>=4.5:1 small text) and keep weight for legibility. */
+.lms-admin__nav-label {
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+/* [P040] ISSUE 1-0854: ACTIONS view (eye) / edit (pencil) icon buttons low contrast.
+   Inline styles set dim icon colors on dark button backgrounds; override for
+   WCAG AA non-text contrast (>=3:1) and add visible hover/focus affordance. */
+.lms-table td a[title="Preview"] {
+  background: rgba(59, 130, 246, 0.22) !important;
+  color: #93c5fd !important;
+}
+.lms-table td a[title="Edit"] {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #e2e8f0 !important;
+}
+.lms-table td a[title="Preview"]:hover,
+.lms-table td a[title="Preview"]:focus-visible {
+  background: rgba(59, 130, 246, 0.32) !important;
+  color: #bfdbfe !important;
+}
+.lms-table td a[title="Edit"]:hover,
+.lms-table td a[title="Edit"]:focus-visible {
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+}
+.lms-table td a[title="Preview"]:focus-visible,
+.lms-table td a[title="Edit"]:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* [P040] ISSUE 1-0853: STATUS header / 'Active' badge left-edge mismatch.
+   The badge has its own 0.75rem inner padding, so its text sits indented from
+   the header text. Pull the inline-flex badge left to align glyph edges. */
+.lms-table td .lms-status {
+  margin-left: -0.75rem;
+}
+
+/* [P040] ISSUE 1-0856: Blue header bar top corners don't match the card radius,
+   leaving a dark sliver. Clip the scroll wrapper's top corners to the card. */
+.lms-admin-card {
+  overflow: hidden;
+}
+.lms-admin-card .lms-table-responsive {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}
+
+/* ==========================================================================
+   MOBILE (<=768px) — issues 1-0857..1-0863
+   Root cause: sidebar is position:fixed 260px and .lms-admin__main has
+   margin-left:260px, so on phones the sidebar eats ~45% width, the table is
+   crushed and the hero button is clipped. Pure CSS cannot add a JS hamburger
+   toggle, but it CAN restore a usable single-column flow: un-fix the sidebar,
+   stack it above the content, and give the main column the full viewport width.
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Single-column flow */
+  .lms-admin {
+    flex-direction: column;
+  }
+
+  /* [P040] ISSUE 1-0857: sidebar no longer overlays / pins; flows as a top bar. */
+  .lms-admin__sidebar {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    height: auto !important;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* [P040] ISSUE 1-0858, 1-0859, 1-0862: main column uses full width, no margin
+     offset, and clips no content off the right edge. */
+  .lms-admin__main {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 1.25rem;
+    box-sizing: border-box;
+  }
+
+  /* [P040] ISSUE 1-0859, 1-0862: keep the table scrollable inside the viewport
+     instead of forcing the whole page wider than the screen. */
+  .lms-admin__main .lms-table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lms-admin__main .lms-table {
+    min-width: 520px;
+  }
+  .lms-admin__main .lms-table th,
+  .lms-admin__main .lms-table td {
+    white-space: nowrap;
+  }
+
+  /* [P040] ISSUE 1-0860, 1-0861: stack the hero (title + description + action)
+     vertically; make the primary button full width so it is never clipped. */
+  .lms-admin__main > div:first-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem;
+  }
+  .lms-admin__main > div:first-child > div:last-child {
+    width: 100%;
+  }
+  .lms-admin__main .lms-btn.btn-lms-primary {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* [P040] ISSUE 1-0861: avoid forced hyphenation on the narrow description. */
+  .lms-admin__title,
+  .lms-admin__subtitle {
+    hyphens: none;
+    -webkit-hyphens: none;
+    overflow-wrap: anywhere;
+  }
+
+  /* [P040] ISSUE 1-0863: keep the footer entry-count summary on one line. */
+  .lms-admin-footer {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .lms-admin-footer > div {
+    white-space: nowrap;
+  }
+}

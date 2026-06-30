@@ -1,0 +1,78 @@
+/* ==========================================================================
+   P025 — My Wishlist (route--lms-wishlist-my-wishlist)  — THIRD PASS
+   UI defect fixes. Loads LAST.
+   ========================================================================== */
+
+/* [P025] ISSUE 1-0574: Large band of empty light-blue space below the short
+   empty-state card before the footer on tall mobile viewports.
+
+   ROOT CAUSE (why prior fixes failed): .lms-page is a 100vh flex column and
+   .lms-page__content (the <main>) has flex:1, so the <main> grows to fill all
+   leftover height above the footer — that extra height IS the light-blue band,
+   with content pinned to the top. Pass 2 set justify-content:center on
+   .lms-my-wishlist-page and gave it flex:1, but the real DOM is:
+     main.lms-page__content
+       > div (region wrapper)
+         > div#block-lms-theme-content
+           > div.lms-my-wishlist-page
+   The grandchild's flex:1 did nothing because the intermediate wrapper +
+   #block-lms-theme-content only shrink to their content. So the page never
+   stretched and centering had no free space to act on -> band remained.
+
+   FIX: flex the ENTIRE chain from <main> down to .lms-my-wishlist-page so the
+   growth/centering actually propagates, then vertically center the empty state
+   inside the available height. Pull the footer up by letting the centered card
+   sit in the middle instead of trailing page padding below it. */
+@media (max-width: 480px) {
+  body.route--lms-wishlist-my-wishlist .lms-page__content {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Region wrapper + content block: let them grow & pass height down. The
+     messages wrapper (empty, hidden) must NOT grow, so only the block region
+     containing the wishlist is allowed to flex. */
+  body.route--lms-wishlist-my-wishlist .lms-page__content > div:has(#block-lms-theme-content),
+  body.route--lms-wishlist-my-wishlist #block-lms-theme-content {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0;
+  }
+
+  /* The page itself now receives real height and centers the empty state. */
+  body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+
+  /* Container holds the centered card; drop the heavy inline 2rem padding so
+     the card sits closer to true vertical center. */
+  body.route--lms-wishlist-my-wishlist .lms-my-wishlist-page .lms-container {
+    padding: 1rem !important;
+    width: 100%;
+  }
+
+  /* Trim the tall empty-state card padding so a balanced, moderate amount of
+     space sits above and below it rather than one large band at the bottom. */
+  body.route--lms-wishlist-my-wishlist .lms-empty-state {
+    padding: 2.25rem 1.25rem !important;
+  }
+}
+
+/* Fallback for browsers without :has() — the block region is the LAST direct
+   div child of <main> (the messages wrapper is first), so flex the last child
+   so the chain still propagates and the band still collapses there too. */
+@media (max-width: 480px) {
+  body.route--lms-wishlist-my-wishlist .lms-page__content > div:last-child {
+    flex: 1 1 auto !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  body.route--lms-wishlist-my-wishlist .lms-messages-wrapper {
+    flex: 0 0 auto !important;
+  }
+}
