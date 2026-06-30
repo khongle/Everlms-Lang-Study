@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\lms_forum\Form;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\lms_forum\Entity\ForumTopic;
@@ -108,6 +109,11 @@ class ForumReplyForm extends ContentEntityForm {
         $topic->set('field_replies_count', $count);
         $topic->set('field_last_reply_date', time());
         $topic->save();
+        Cache::invalidateTags([
+          'lms_forum_topic_list',
+          'lms_forum_reply_list',
+          'lms_forum_topic:' . $topic->id(),
+        ]);
 
         // Integrate logic for notification.
         if (\Drupal::moduleHandler()->moduleExists('lms_notification')) {

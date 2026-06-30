@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\lms_forum\Form;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -68,6 +69,7 @@ class ForumTopicForm extends ContentEntityForm {
     }
 
     $status = parent::save($form, $form_state);
+    Cache::invalidateTags(['lms_forum_topic_list']);
 
     if ($status === SAVED_NEW) {
       $this->messenger()->addMessage($this->t('Tạo bài viết %label thành công.', [

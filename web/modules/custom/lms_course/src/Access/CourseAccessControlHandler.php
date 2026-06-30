@@ -24,8 +24,8 @@ final class CourseAccessControlHandler extends EntityAccessControlHandler {
       'update' => AccessResult::allowedIfHasPermission($account, 'edit lms_course')
         ->orIf(AccessResult::allowedIf(
           $account->hasPermission('edit own lms_course') &&
-          $entity->getOwnerId() === (int) $account->id()
-        )),
+          (int) $entity->getOwnerId() === (int) $account->id()
+        )->cachePerPermissions()->cachePerUser()->addCacheableDependency($entity)),
       'delete' => AccessResult::allowedIfHasPermission($account, 'delete lms_course'),
       default => AccessResult::neutral(),
     };

@@ -68,11 +68,38 @@
             width: 1000px !important;
             max-width: 95vw !important;
             max-height: 90vh !important;
+            z-index: 1600 !important;
             border-radius: 12px !important;
             box-shadow: 0 10px 50px rgba(0,0,0,0.3) !important;
             border: 1px solid #e2e8f0 !important;
             padding: 0 !important;
             background: #ffffff !important;
+        }
+        body.is-workspace .ui-widget-overlay,
+        body.path-workspace .ui-widget-overlay,
+        body.is-workspace .ief-popup-overlay,
+        body.path-workspace .ief-popup-overlay {
+            z-index: 900 !important;
+        }
+        body.is-workspace .ui-dialog,
+        body.is-workspace .ui-dialog.ief-popup-dialog,
+        body.path-workspace .ui-dialog,
+        body.path-workspace .ui-dialog.ief-popup-dialog {
+            width: min(1000px, calc(100vw - 360px)) !important;
+            max-width: calc(100vw - 360px) !important;
+            left: 0 !important;
+            margin-left: 80px !important;
+        }
+        @media (max-width: 899px) {
+          body.is-workspace .ui-dialog,
+          body.is-workspace .ui-dialog.ief-popup-dialog,
+          body.path-workspace .ui-dialog,
+          body.path-workspace .ui-dialog.ief-popup-dialog {
+              width: calc(100vw - 2rem) !important;
+              max-width: calc(100vw - 2rem) !important;
+              left: 1rem !important;
+              margin-left: 0 !important;
+          }
         }
         .ui-dialog .ui-dialog-titlebar {
             display: flex !important;

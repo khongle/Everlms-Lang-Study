@@ -6,7 +6,6 @@ dependencies:
     - field.field.lms_lesson.lms_lesson.field_h5p_upload
   module:
     - file
-    - h5peditor
     - lms_lesson
     - text
 id: lms_lesson.lms_lesson.default
@@ -57,12 +56,6 @@ content:
     settings:
       rows: 5
       placeholder: ''
-    third_party_settings: {  }
-  field_h5p_upload:
-    type: h5p_editor
-    weight: 6
-    region: content
-    settings: {  }
     third_party_settings: {  }
   field_pptx_attachment:
     type: file_generic
@@ -145,4 +138,5 @@ content:
     settings:
       placeholder: ''
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  field_h5p_upload: true

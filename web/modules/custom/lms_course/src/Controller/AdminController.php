@@ -670,6 +670,11 @@ final class AdminController extends ControllerBase {
       '#form' => $form,
       '#title' => $this->t('Create New Course'),
       '#active_menu' => 'courses',
+      '#attached' => [
+        'library' => [
+          'lms_lesson/lesson_form_states',
+        ],
+      ],
     ];
   }
 
@@ -686,6 +691,11 @@ final class AdminController extends ControllerBase {
       '#form' => $form,
       '#title' => $this->t('Edit Course: @title', ['@title' => $lms_course->label()]),
       '#active_menu' => 'courses',
+      '#attached' => [
+        'library' => [
+          'lms_lesson/lesson_form_states',
+        ],
+      ],
       '#cache' => [
         'contexts' => ['user.roles'],
       ],

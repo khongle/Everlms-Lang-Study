@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the lms_lesson module.
+ */
+
+/**
+ * Hide the H5P upload widget until the contrib editor is Drupal 11 compatible.
+ */
+function lms_lesson_update_10001(&$sandbox) {
+  $display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('lms_lesson.lms_lesson.default');
+
+  if (!$display) {
+    return 'Lesson default form display was not found.';
+  }
+
+  $display->removeComponent('field_h5p_upload');
+  $hidden = $display->get('hidden') ?: [];
+  $hidden['field_h5p_upload'] = TRUE;
+  $display->set('hidden', $hidden);
+  $display->save();
+
+  return 'Hidden the H5P upload widget on the lesson form; H5P embed code remains available.';
+}

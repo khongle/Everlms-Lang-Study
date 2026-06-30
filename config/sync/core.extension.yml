@@ -48,6 +48,7 @@ module:
   lms_forum: 0
   lms_lesson: 0
   lms_membership: 0
+  lms_mobile_api: 0
   lms_note: 0
   lms_notification: 0
   lms_order: 0

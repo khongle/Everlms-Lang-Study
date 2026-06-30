@@ -17,8 +17,9 @@ final class LessonForm extends ContentEntityForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
+    $form['#attached']['library'][] = 'lms_lesson/lesson_form_states';
 
-    $type_selector = 'select[name="field_type"]';
+    $type_selector = ':input[name="field_type"], :input[name$="[field_type]"]';
 
     // Set correct weights & states for Video
     if (isset($form['field_video_url'])) {

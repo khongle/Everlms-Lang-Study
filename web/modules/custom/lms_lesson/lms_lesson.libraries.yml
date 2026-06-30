@@ -1,0 +1,6 @@
+lesson_form_states:
+  js:
+    js/lesson-form-states.js: {}
+  dependencies:
+    - core/drupal
+    - core/once

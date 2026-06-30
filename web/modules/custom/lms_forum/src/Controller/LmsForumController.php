@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\lms_forum\Controller;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
@@ -126,6 +127,10 @@ final class LmsForumController extends ControllerBase {
       '#theme' => 'lms_forum_index',
       '#topics' => $items,
       '#new_topic_form' => $new_topic_form,
+      '#cache' => [
+        'tags' => ['lms_forum_topic_list'],
+        'contexts' => ['user.permissions', 'url.query_args'],
+      ],
     ];
   }
 
@@ -170,7 +175,9 @@ final class LmsForumController extends ControllerBase {
         ? $this->entityTypeManager->getStorage('lms_forum_reply')->loadMultiple($reply_ids)
         : [];
 
+      $reply_cache_tags = ['lms_forum_reply_list'];
       foreach ($replies_entities as $reply) {
+        $reply_cache_tags = Cache::mergeTags($reply_cache_tags, $reply->getCacheTags());
         $reply_author = $reply->getOwner();
         $reply_author_info = $this->getUserInfo($reply_author);
         $replies[] = [
@@ -197,8 +204,6 @@ final class LmsForumController extends ControllerBase {
       $reply_form = \Drupal::service('entity.form_builder')->getForm($new_reply, 'default');
     }
 
-    \Drupal::messenger()->addMessage("FRESH CONTROLLER LOADED! Found Title: " . $lms_forum_topic->label());
-
     return [
       '#theme' => 'lms_forum_topic',
       '#topic' => [
@@ -215,6 +220,13 @@ final class LmsForumController extends ControllerBase {
       '#reply_form' => $reply_form,
       '#is_teaser_mode' => $is_anonymous,
       '#total_replies' => $total_replies,
+      '#cache' => [
+        'tags' => Cache::mergeTags(
+          $lms_forum_topic->getCacheTags(),
+          $reply_cache_tags ?? ['lms_forum_reply_list'],
+        ),
+        'contexts' => ['user'],
+      ],
     ];
   }
 
@@ -238,6 +250,7 @@ final class LmsForumController extends ControllerBase {
 
       $lms_forum_topic->set('field_resolved', TRUE);
       $lms_forum_topic->save();
+      Cache::invalidateTags(['lms_forum_topic_list']);
 
       $this->messenger()->addMessage($this->t('Marked as best answer.'));
     }

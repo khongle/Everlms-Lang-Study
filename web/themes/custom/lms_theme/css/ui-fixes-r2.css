@@ -19,3 +19,29 @@
   margin: .75rem auto 0 !important;
   border-radius: 8px !important;
 }
+
+/* WF-007: Drupal can render registration status messages as
+   [role="contentinfo"] without the usual .messages--status class. */
+.lms-messages-wrapper [role="contentinfo"] {
+  position: relative !important;
+  padding: 1rem 1.125rem 1rem 3rem !important;
+  border: 1px solid #b7e4c7 !important;
+  background: #e9f9ef !important;
+  color: #14532d !important;
+  font-size: .9375rem !important;
+  font-weight: 600 !important;
+  line-height: 1.55 !important;
+  box-shadow: 0 4px 14px rgba(20, 83, 45, .08) !important;
+}
+
+.lms-messages-wrapper [role="contentinfo"]::before {
+  content: "\f058";
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", FontAwesome;
+  font-weight: 900;
+  position: absolute;
+  left: 1.05rem;
+  top: 1rem;
+  font-size: 1.125rem;
+  line-height: 1.2;
+  color: #2e9e5b;
+}
