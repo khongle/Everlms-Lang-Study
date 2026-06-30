@@ -10,9 +10,9 @@ lms_ai.course_builder_form:
   path: '/manage/courses/ai-builder'
   defaults:
     _form: '\Drupal\lms_ai\Form\CourseBuilderForm'
-    _title: '🪄 Build Course with AI'
+    _title: 'Build Course with AI'
   requirements:
-    _permission: 'administer lms_course'
+    _permission: 'create lms_course'
 
 lms_ai.engine_users_form:
   path: '/admin/everlms-ai-engine'

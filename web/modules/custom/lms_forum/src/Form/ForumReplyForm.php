@@ -30,7 +30,18 @@ class ForumReplyForm extends ContentEntityForm {
     $form['field_parent']['#access'] = FALSE;
 
     $form['actions']['submit']['#value'] = $this->t('Post Reply');
+    $form['#after_build'][] = '::hideTextFormat';
 
+    return $form;
+  }
+
+  /**
+   * Hide text format controls from learner-facing reply forms.
+   */
+  public function hideTextFormat(array $form, FormStateInterface $form_state) {
+    if (isset($form['field_body']['widget'][0]['format'])) {
+      $form['field_body']['widget'][0]['format']['#access'] = FALSE;
+    }
     return $form;
   }
 

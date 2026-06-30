@@ -44,10 +44,12 @@
                   {% if course.status == 'Draft' %}{% set status_class = 'lms-status--draft' %}{% endif %}
                   <span class="lms-status {{ status_class }}">{{ course.status }}</span>
                 </td>
-                <td style="text-align: right; white-space: nowrap;">
-                  <a href="{{ path('lms_course.detail', {'lms_course': course.id}) }}" style="color: #64748b; margin-right: 0.75rem; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'"><i class="fas fa-eye"></i></a>
-                  <a href="{{ course.edit_url }}" style="color: #64748b; margin-right: 0.75rem; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'"><i class="fas fa-edit"></i></a>
-                  <a href="#" style="color: #64748b; transition: color 0.15s;" onmouseover="this.style.color='#f5576c'" onmouseout="this.style.color='#64748b'"><i class="fas fa-trash"></i></a>
+                <td class="lms-admin-table__actions">
+                  <div class="lms-admin-actions" aria-label="{{ 'Course actions'|t }}">
+                    <a href="{{ course.view_url }}" class="lms-admin-action-link" title="{{ 'View course'|t }}" aria-label="{{ 'View course'|t }}"><i class="fas fa-eye" aria-hidden="true"></i></a>
+                    <a href="{{ course.edit_url }}" class="lms-admin-action-link" title="{{ 'Edit course'|t }}" aria-label="{{ 'Edit course'|t }}"><i class="fas fa-edit" aria-hidden="true"></i></a>
+                    <a href="{{ course.delete_url }}" class="lms-admin-action-link lms-admin-action-link--danger" title="{{ 'Delete course'|t }}" aria-label="{{ 'Delete course'|t }}"><i class="fas fa-trash" aria-hidden="true"></i></a>
+                  </div>
                 </td>
               </tr>
             {% else %}

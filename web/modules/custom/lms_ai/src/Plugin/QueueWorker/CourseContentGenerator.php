@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\lms_ai\Plugin\QueueWorker;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
@@ -28,6 +29,7 @@ class CourseContentGenerator extends QueueWorkerBase implements ContainerFactory
     $plugin_definition,
     private readonly AiProviderManager $aiProviderManager,
     private readonly EntityTypeManagerInterface $entityTypeManager,
+    private readonly ConfigFactoryInterface $configFactory,
     private readonly LoggerInterface $logger
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -40,6 +42,7 @@ class CourseContentGenerator extends QueueWorkerBase implements ContainerFactory
       $plugin_definition,
       $container->get('plugin.manager.lms_ai_provider'),
       $container->get('entity_type.manager'),
+      $container->get('config.factory'),
       $container->get('logger.channel.lms_ai')
     );
   }
@@ -60,8 +63,16 @@ class CourseContentGenerator extends QueueWorkerBase implements ContainerFactory
     }
 
     try {
+      $provider_id = $data['provider_id']
+        ?? $this->configFactory->get('lms_ai.settings')->get('default_provider')
+        ?? 'openai';
+
+      if (!isset($this->aiProviderManager->getDefinitions()[$provider_id])) {
+        $provider_id = 'openai';
+      }
+
       /** @var \Drupal\lms_ai\Plugin\AiProviderInterface $ai */
-      $ai = $this->aiProviderManager->createInstance('openai');
+      $ai = $this->aiProviderManager->createInstance($provider_id);
       
       $fullPrompt = sprintf(
         "Write a complete, educational, and engaging textbook-style lesson about the following instruction:\n\n%s\n\nEnsure the tone is '%s'. Format the output using accessible HTML (<h1>, <h2>, <p>, <ul>, <strong>). Do NOT output Markdown code blocks.",

@@ -9,7 +9,7 @@ services:
 
   lms_ai.course_builder:
     class: Drupal\lms_ai\Service\CourseBuilderService
-    arguments: ['@plugin.manager.lms_ai_provider', '@entity_type.manager', '@queue', '@logger.channel.lms_ai']
+    arguments: ['@plugin.manager.lms_ai_provider', '@entity_type.manager', '@queue', '@config.factory', '@current_user', '@logger.channel.lms_ai']
 
   lms_ai.scorm_builder:
     class: Drupal\lms_ai\Service\ScormBuilderService

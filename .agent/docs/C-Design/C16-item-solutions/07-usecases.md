@@ -11,6 +11,6 @@ C13 usecase → implementation work. Source: [C13](../C13-usecases/README.md).
 | Subscribe | UC-WF-005-001 | membership + order | lms_membership/lms_order | plan→current active membership→course access | C13 WF-005 | entitlement/renewal/no duplicates |
 | Author | UC-WF-006-001 | entity forms + Inline Entity Form + public detail tabs | lms_course/lms_chapter/lms_lesson | login form -> create draft -> chapter -> lesson -> publish -> catalog/detail Curriculum tab | C13 WF-006 | role login/hierarchy/catalog |
 | Register | UC-WF-007-001 | core user form + OTP API endpoints | user/lms_base/lms_mobile_api | /user/register active student + email instructions; /api/v1 user register/resend/verify -> token and /me role | C13 WF-007 | screenshots/API responses/DB roles |
-| Forum | UC-WF-008-001 | forum forms | lms_forum | topic/reply | C13 WF-008 | CRUD |
+| Forum | UC-WF-008-001 | forum entity forms + owner action + public teaser | lms_forum/lms_notification | /forum list, /forum/new topic, second-user reply, owner best answer, notification, anonymous fresh index | C13 WF-008 | screenshots/DB/cache |
 | Coupon | UC-WF-009-001 | coupon service + discount fields | lms_order | validate/apply/persist | C13 WF-009 | valid/invalid/persist |
-| AI | UC-WF-010-001 | AI service + review | lms_ai | prompt→save | C13 WF-010 | failure-path |
+| AI | UC-WF-010-001 | AI service + private review draft | lms_ai | prompt/provider -> preview -> save draft course hierarchy -> edit/list verify | C13 WF-010 | screenshots/DB/failure |

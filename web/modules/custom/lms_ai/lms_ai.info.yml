@@ -5,5 +5,10 @@ core_version_requirement: ^11
 package: EverLMS
 dependencies:
   - lms_base:lms_base
+  - lms_course:lms_course
+  - lms_chapter:lms_chapter
+  - lms_lesson:lms_lesson
+  - lms_quiz:lms_quiz
+  - lms_question:lms_question
   - key:key
 lifecycle: stable

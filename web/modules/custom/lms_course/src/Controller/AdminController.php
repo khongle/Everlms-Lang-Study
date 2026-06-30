@@ -214,7 +214,9 @@ final class AdminController extends ControllerBase {
         'price' => (float) ($course->get('field_price')->value ?? 0),
         'status' => $course->get('status')->value ? 'Published' : 'Draft',
         'created' => $course->get('created')->value,
+        'view_url' => \Drupal\Core\Url::fromRoute('lms_course.detail', ['lms_course' => $course->id()])->toString(),
         'edit_url' => \Drupal\Core\Url::fromRoute('lms_course.admin.course.edit', ['lms_course' => $course->id()], ['query' => ['destination' => '/workspace/courses']])->toString(),
+        'delete_url' => $course->toUrl('delete-form', ['query' => ['destination' => '/workspace/courses']])->toString(),
       ];
     }
 

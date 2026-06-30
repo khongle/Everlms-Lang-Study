@@ -11,8 +11,8 @@ Workflow/state-machine solutions. Source: [C12](../C12-workflows/README.md).
 | Membership | WF-005 | status field + start/end dates | lms_membership/lms_order | active-current→extend/reactivate→expired | C12 WF-005 | entitlement/idempotency |
 | Authoring | WF-006 | entity form + Inline Entity Form + publish status | lms_course/lms_chapter/lms_lesson | form-login authoring; draft course -> nested chapter/lesson -> publish -> catalog visibility; author list is own-scoped | C12 WF-006 | hierarchy/own-edit/catalog |
 | Onboarding | WF-007 | core register + OTP service + expirable key-value token store | user/lms_base/lms_mobile_api | web verify-mail registration assigns student; mobile register creates blocked student -> resend OTP -> verify activates -> bearer token -> /me | C12 WF-007 | web role/mobile token/duplicate email |
-| Forum | WF-008 | status flags | lms_forum | open→resolved/locked | C12 WF-008 | moderation |
+| Forum | WF-008 | topic/reply entities + notification + cache tags | lms_forum/lms_notification | form-login users; topic -> reply -> owner notification -> best answer -> resolved; anonymous detail teaser and fresh public index | C12 WF-008 | CRUD/notification/cache |
 | Coupon | WF-009 | config-driven coupon service + discount fields on order | lms_order | validate→apply→persist | C12 WF-009 | valid/invalid/persist |
-| AI gen | WF-010 | service + human review | lms_ai | prompt→draft→save | C12 WF-010 | failure-path |
+| AI gen | WF-010 | provider plugin + private draft + entity hierarchy save | lms_ai | form-login prompt/provider -> draft preview -> save unpublished course/chapter/lesson/quiz -> queue lessons; unsupported provider fails with no save | C12 WF-010 | provider/hierarchy/failure-path |
 
 > No Drupal core Workflow/Content Moderation module is used; states are status fields on entities.

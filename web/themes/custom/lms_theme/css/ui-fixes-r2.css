@@ -45,3 +45,116 @@
   line-height: 1.2;
   color: #2e9e5b;
 }
+
+.lms-messages-wrapper .messages--error,
+.lms-messages-wrapper [role="contentinfo"][aria-label*="Error"] {
+  border-color: #fecaca !important;
+  background: #fef2f2 !important;
+  color: #7f1d1d !important;
+  box-shadow: 0 4px 14px rgba(127, 29, 29, .08) !important;
+}
+
+.lms-messages-wrapper .messages--error::before,
+.lms-messages-wrapper [role="contentinfo"][aria-label*="Error"]::before {
+  content: "\f06a";
+  color: #dc2626;
+}
+
+.lms-messages-wrapper .messages--warning,
+.lms-messages-wrapper [role="contentinfo"][aria-label*="Warning"] {
+  border-color: #fde68a !important;
+  background: #fffbeb !important;
+  color: #78350f !important;
+  box-shadow: 0 4px 14px rgba(120, 53, 15, .08) !important;
+}
+
+.lms-messages-wrapper .messages--warning::before,
+.lms-messages-wrapper [role="contentinfo"][aria-label*="Warning"]::before {
+  content: "\f071";
+  color: #d97706;
+}
+
+/* Bootstrap styles .placeholder as a loading skeleton. Drupal status messages
+   use <em class="placeholder"> for substituted labels, so restore readable text. */
+.lms-messages-wrapper .placeholder {
+  display: inline !important;
+  min-height: 0 !important;
+  vertical-align: baseline !important;
+  cursor: inherit !important;
+  background: transparent !important;
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+/* WF-008: learner reply forms should not expose text-format/editor help chrome. */
+.lms-forum-reply-form .filter-wrapper,
+.lms-forum-reply-form .js-filter-wrapper,
+.lms-forum-reply-form .filter-help,
+.lms-forum-reply-form .form-item-field-body-0-format,
+.lms-forum-reply-form .ck-editor__label,
+.lms-forum-reply-form .ckeditor5-toolbar-label,
+.lms-forum-reply-form .ck .ck-toolbar__label {
+  display: none !important;
+}
+
+.lms-forum-form-page .lms-card--dark .lms-card__header .lms-card__title,
+.lms-forum-form-page .lms-card--dark .lms-card__header h2 {
+  color: #e6edf3 !important;
+  -webkit-text-fill-color: #e6edf3 !important;
+  background: none !important;
+}
+
+.lms-forum-form-page .lms-card--dark .lms-card__header p {
+  color: #c9d1d9 !important;
+  -webkit-text-fill-color: #c9d1d9 !important;
+}
+
+/* WF-010 QA: keep generated draft row actions visible and actionable. */
+.lms-admin .lms-table th:last-child,
+.lms-admin .lms-table td.lms-admin-table__actions {
+  min-width: 132px;
+  width: 132px;
+  max-width: 132px;
+  padding-left: 0.75rem !important;
+  padding-right: 1rem !important;
+  text-align: left;
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.lms-admin .lms-admin-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.25rem;
+  transform: translateX(-0.75rem);
+}
+
+.lms-admin .lms-admin-action-link {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0 !important;
+  color: #e2e8f0 !important;
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 0.375rem;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.lms-admin .lms-admin-action-link:hover,
+.lms-admin .lms-admin-action-link:focus-visible {
+  color: #ffffff !important;
+  background: rgba(29, 112, 245, 0.28);
+  border-color: rgba(96, 165, 250, 0.78);
+  transform: translateY(-1px);
+}
+
+.lms-admin .lms-admin-action-link--danger:hover,
+.lms-admin .lms-admin-action-link--danger:focus-visible {
+  color: #fecaca !important;
+  background: rgba(245, 87, 108, 0.18);
+  border-color: rgba(245, 87, 108, 0.62);
+}

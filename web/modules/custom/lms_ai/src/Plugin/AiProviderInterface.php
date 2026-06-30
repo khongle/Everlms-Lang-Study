@@ -37,6 +37,8 @@ interface AiProviderInterface extends PluginInspectionInterface {
    * @return string|null
    *   The text/HTML response, or NULL on failure.
    */
+  public function generateText(string $prompt, array $options = []): ?string;
+
   /**
    * Generates a base64 encoded image string based on a prompt.
    *
