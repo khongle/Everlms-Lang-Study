@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz · React Fundamentals · EverLMS</title>
+<meta name="description" content="Test your knowledge of React Fundamentals with this timed quiz on EverLMS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/everlms.css">
+<link rel="stylesheet" href="assets/css/skins.css">
+<style>
+/* quiz page — focused screen (no public header/footer) */
+.quiz-screen{min-height:100vh;background:var(--paper-2);display:flex;flex-direction:column}
+.player__topbar{flex:0 0 auto}
+.quiz-screen main{flex:1;display:flex;flex-direction:column}
+.quiz__bar-label{font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:.5rem;letter-spacing:.04em;text-transform:uppercase}
+.quiz__nav-flag{display:block;text-align:center;color:var(--muted);font-size:.88rem;font-weight:600;margin-top:.9rem;text-underline-offset:3px}
+.quiz__nav-flag:hover{color:var(--brand)}
+@media(max-width:639.98px){
+  .quiz__nav{flex-direction:column-reverse;gap:.6rem}
+  .quiz__nav .btn{width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<div class="quiz-screen">
+
+  <!-- Focused topbar — no site header -->
+  <div class="player__topbar" role="banner">
+    <a href="course-detail.html" aria-label="Exit quiz and return to course">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Exit quiz
+    </a>
+
+    <div style="flex:1;text-align:center;">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:.97rem;color:#fff;">React Fundamentals &nbsp;&middot;&nbsp; Quiz</span>
+    </div>
+
+    <span style="font-size:.88rem;font-weight:600;color:rgba(255,255,255,.65);white-space:nowrap;">Question 3 of 10</span>
+  </div>
+
+  <!-- Main quiz content -->
+  <main id="main">
+    <section class="section section--tight">
+      <div class="container container--narrow">
+        <div class="quizwrap" data-quiz>
+
+          <!-- (1) Progress bar + timer -->
+          <div class="quiz__bar">
+            <div>
+              <p class="quiz__bar-label">Question 3 of 10</p>
+              <div class="progress" style="width:220px;" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" aria-label="Quiz progress: 30%">
+                <span style="width:30%"></span>
+              </div>
+            </div>
+
+            <div class="quiz__timer" aria-label="Time remaining: 8 minutes 45 seconds">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+              </svg>
+              08:45
+            </div>
+          </div>
+
+          <!-- (2) Question card -->
+          <div class="quiz__q" role="group" aria-labelledby="qnum qtext">
+            <p class="quiz__qnum" id="qnum">Question 3</p>
+            <h2 class="quiz__qtext" id="qtext">Which hook lets a function component hold local state between re-renders?</h2>
+
+            <div class="opts" role="radiogroup" aria-labelledby="qtext">
+
+              <label class="opt" aria-checked="false" tabindex="0" role="radio">
+                <span class="opt__key" aria-hidden="true">A</span>
+                <span>useEffect</span>
+              </label>
+
+              <label class="opt is-selected" aria-checked="true" tabindex="0" role="radio">
+                <span class="opt__key" aria-hidden="true">B</span>
+                <span>useState</span>
+              </label>
+
+              <label class="opt" aria-checked="false" tabindex="0" role="radio">
+                <span class="opt__key" aria-hidden="true">C</span>
+                <span>useRef</span>
+              </label>
+
+              <label class="opt" aria-checked="false" tabindex="0" role="radio">
+                <span class="opt__key" aria-hidden="true">D</span>
+                <span>useContext</span>
+              </label>
+
+            </div>
+          </div>
+
+          <!-- (3) Navigation -->
+          <nav class="quiz__nav" aria-label="Question navigation">
+            <button class="btn btn--ghost" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              Previous
+            </button>
+
+            <button class="btn btn--primary" type="button">
+              Next question
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </button>
+          </nav>
+
+          <a href="#" class="quiz__nav-flag" aria-label="Flag question 3 for review">Flag for review</a>
+
+          <!-- (4) Question dots -->
+          <div class="quiz__dots" role="list" aria-label="Question progress overview">
+
+            <button class="quiz__dot is-done" role="listitem" aria-label="Question 1 — answered" type="button">1</button>
+            <button class="quiz__dot is-done" role="listitem" aria-label="Question 2 — answered" type="button">2</button>
+            <button class="quiz__dot is-current" role="listitem" aria-label="Question 3 — current" aria-current="true" type="button">3</button>
+            <button class="quiz__dot" role="listitem" aria-label="Question 4 — unanswered" type="button">4</button>
+            <button class="quiz__dot" role="listitem" aria-label="Question 5 — unanswered" type="button">5</button>
+            <button class="quiz__dot" role="listitem" aria-label="Question 6 — unanswered" type="button">6</button>
+            <button class="quiz__dot" role="listitem" aria-label="Question 7 — unanswered" type="button">7</button>
+            <button class="quiz__dot" role="listitem" aria-label="Question 8 — unanswered" type="button">8</button>
+            <button class="quiz__dot" role="listitem" aria-label="Question 9 — unanswered" type="button">9</button>
+            <button class="quiz__dot" role="listitem" aria-label="Question 10 — unanswered" type="button">10</button>
+
+          </div>
+
+        </div><!-- /.quizwrap -->
+      </div><!-- /.container -->
+    </section>
+  </main>
+
+</div><!-- /.quiz-screen -->
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>

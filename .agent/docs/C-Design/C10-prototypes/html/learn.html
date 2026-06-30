@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>State with useState · React &amp; Next.js Bootcamp · EverLMS</title>
+<meta name="description" content="Learn State with useState in the Complete Modern React & Next.js Bootcamp — Lesson 12 of 36. Hands-on video lesson with notes, Q&amp;A and downloadable resources.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/everlms.css">
+<link rel="stylesheet" href="assets/css/skins.css">
+<style>
+/* player page-specific */
+html,body{height:100%;margin:0;overflow:hidden}
+body{display:flex;flex-direction:column;background:#0e0b1c}
+.player-page{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.player{flex:1;overflow:hidden}
+.player__main{overflow-y:auto;max-height:calc(100vh - 54px)}
+.player__rail{overflow-y:auto;max-height:calc(100vh - 54px)}
+.player__bar-btn{background:none;border:0;color:rgba(255,255,255,.75);cursor:pointer;width:36px;height:36px;display:grid;place-items:center;border-radius:var(--radius-sm);transition:.15s;flex:0 0 auto}
+.player__bar-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.player__bar-btn svg{width:20px;height:20px}
+.time-label{font-size:.84rem;color:rgba(255,255,255,.65);white-space:nowrap;font-variant-numeric:tabular-nums}
+.topbar-center{flex:1;text-align:center;font-size:.9rem;font-weight:600;color:rgba(255,255,255,.8)}
+.topbar-right{display:flex;align-items:center;gap:.9rem;margin-left:auto}
+.lesson-count{font-size:.84rem;color:rgba(255,255,255,.6);white-space:nowrap}
+.qa-row{display:flex;gap:.8rem;padding:.9rem 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.qa-row:last-child{border-bottom:0}
+.qa-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:0 0 auto}
+.qa-body{}
+.qa-meta{font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:.25rem}
+.qa-meta b{color:rgba(255,255,255,.8)}
+.qa-text{font-size:.9rem;color:rgba(255,255,255,.75);margin:0}
+.qa-reply{font-size:.8rem;color:var(--accent);font-weight:700;margin-top:.3rem;background:none;border:0;cursor:pointer;padding:0}
+.player__body textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius);color:#fff;font:inherit;font-size:.9rem;padding:.8rem 1rem;resize:vertical;min-height:90px;margin-bottom:1rem}
+.player__body textarea::placeholder{color:rgba(255,255,255,.35)}
+.player__body textarea:focus{outline:2px solid var(--accent);border-color:transparent}
+.noteitem{border-left-color:var(--accent);background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
+.noteitem__meta{color:rgba(255,255,255,.45)}
+.noteitem p{color:rgba(255,255,255,.72);font-size:.9rem;margin:0}
+.dl-row{display:flex;align-items:center;gap:.8rem;padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.dl-row:last-child{border-bottom:0}
+.dl-icon{width:38px;height:38px;border-radius:var(--radius-sm);background:rgba(255,255,255,.08);display:grid;place-items:center;flex:0 0 auto}
+.dl-icon svg{width:18px;height:18px;stroke:rgba(255,255,255,.7)}
+.dl-info{flex:1}
+.dl-info b{display:block;font-size:.9rem;color:rgba(255,255,255,.85)}
+.dl-info small{color:rgba(255,255,255,.45);font-size:.78rem}
+.dl-btn{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.75);border-radius:var(--radius-sm);padding:.35rem .7rem;font-size:.78rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;transition:.15s}
+.dl-btn:hover{border-color:var(--accent);color:var(--accent)}
+.dl-btn svg{width:14px;height:14px;stroke:currentColor}
+.curri__item.is-active{color:#fff}
+.curri__item.is-active .dur{color:rgba(255,255,255,.55)}
+/* scrollbar dark */
+.player__main::-webkit-scrollbar,.player__rail::-webkit-scrollbar{width:6px}
+.player__main::-webkit-scrollbar-track,.player__rail::-webkit-scrollbar-track{background:rgba(255,255,255,.04)}
+.player__main::-webkit-scrollbar-thumb,.player__rail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+@media(max-width:1100px){
+  html,body{overflow:auto}
+  .player__main,.player__rail{overflow:visible;max-height:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- TOP BAR (player chrome — no public header) -->
+<div class="player__topbar">
+  <a href="course-detail.html" aria-label="Back to course">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+    Back to course
+  </a>
+  <span class="topbar-center">React &amp; Next.js Bootcamp &nbsp;&middot;&nbsp; Lesson 12</span>
+  <div class="topbar-right">
+    <a class="btn btn--brand btn--sm" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      Mark complete
+    </a>
+    <span class="lesson-count">12 / 36 lessons</span>
+  </div>
+</div>
+
+<!-- PLAYER LAYOUT -->
+<main id="main" class="player-page">
+  <div class="player">
+
+    <!-- LEFT: video + controls + tabs -->
+    <div class="player__main">
+
+      <!-- STAGE -->
+      <div class="player__stage">
+        <img src="assets/img/scene-room-02.jpg" alt="Lesson video: State with useState in React">
+        <button class="player__playbtn" aria-label="Play lesson">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M7 4v16l13-8z"/></svg>
+        </button>
+      </div>
+
+      <!-- CONTROL BAR -->
+      <div class="player__bar" role="group" aria-label="Video controls">
+        <!-- prev -->
+        <button class="player__bar-btn" aria-label="Previous lesson" title="Previous lesson">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4v16M19 4 9 12l10 8V4z"/></svg>
+        </button>
+        <!-- play/pause -->
+        <button class="player__bar-btn" aria-label="Play" title="Play / Pause" style="width:44px;height:44px">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M7 4v16l13-8z"/></svg>
+        </button>
+        <!-- next -->
+        <button class="player__bar-btn" aria-label="Next lesson" title="Next lesson">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4v16M5 4l10 8-10 8V4z"/></svg>
+        </button>
+        <!-- seek bar -->
+        <div class="progress" style="flex:1;cursor:pointer" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" aria-label="Lesson progress">
+          <span style="width:35%"></span>
+        </div>
+        <!-- time -->
+        <span class="time-label">12:30 / 36:00</span>
+        <!-- volume -->
+        <button class="player__bar-btn" aria-label="Volume" title="Volume">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </button>
+        <!-- settings -->
+        <button class="player__bar-btn" aria-label="Settings" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+        <!-- fullscreen -->
+        <button class="player__bar-btn" aria-label="Fullscreen" title="Toggle fullscreen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </button>
+      </div>
+
+      <!-- BODY: tabs -->
+      <div class="player__body">
+        <div class="tabs" data-tabs role="tablist" aria-label="Lesson content tabs">
+          <button class="is-active" data-tab="overview" role="tab" aria-selected="true" aria-controls="pane-overview">Overview</button>
+          <button data-tab="notes" role="tab" aria-selected="false" aria-controls="pane-notes">Notes</button>
+          <button data-tab="qa" role="tab" aria-selected="false" aria-controls="pane-qa">Q&amp;A</button>
+          <button data-tab="downloads" role="tab" aria-selected="false" aria-controls="pane-downloads">Downloads</button>
+        </div>
+
+        <!-- OVERVIEW PANE -->
+        <div id="pane-overview" class="tabpane is-active" data-pane="overview" role="tabpanel">
+          <h2 style="font-size:var(--text-xl);margin-bottom:.8rem">State with useState</h2>
+          <div class="prose">
+            <p>React's <code style="background:rgba(255,255,255,.1);padding:.1em .35em;border-radius:5px;font-size:.9em">useState</code> hook is the foundation of interactive UIs. In this lesson you'll learn exactly how state works under the hood — why React re-renders only the components that need to update, and how to write state updates that are predictable and bug-free. We walk through a live coding session building a dynamic counter, a toggle switch, and a multi-field form, showing the pitfalls developers run into when starting out with state.</p>
+            <p>By the end you'll understand when to reach for <code style="background:rgba(255,255,255,.1);padding:.1em .35em;border-radius:5px;font-size:.9em">useState</code> versus other hooks, how to manage arrays and objects inside state correctly, and how to avoid the common stale-closure trap that trips up even experienced engineers. This knowledge unlocks everything that follows in the course.</p>
+          </div>
+          <h3 style="font-size:1.05rem;margin:1.4rem 0 .7rem;font-family:var(--font-display)">In this lesson</h3>
+          <ul style="list-style:none;padding:0;margin:0;display:grid;gap:.55rem">
+            <li style="display:flex;gap:.7rem;align-items:flex-start;color:rgba(255,255,255,.75);font-size:.92rem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;stroke:var(--accent);flex:0 0 auto;margin-top:.15rem"><path d="M20 6 9 17l-5-5"/></svg>
+              How React detects state changes and schedules re-renders
+            </li>
+            <li style="display:flex;gap:.7rem;align-items:flex-start;color:rgba(255,255,255,.75);font-size:.92rem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;stroke:var(--accent);flex:0 0 auto;margin-top:.15rem"><path d="M20 6 9 17l-5-5"/></svg>
+              Updating objects and arrays in state without mutation
+            </li>
+            <li style="display:flex;gap:.7rem;align-items:flex-start;color:rgba(255,255,255,.75);font-size:.92rem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;stroke:var(--accent);flex:0 0 auto;margin-top:.15rem"><path d="M20 6 9 17l-5-5"/></svg>
+              The functional updater form: <code style="background:rgba(255,255,255,.1);padding:.1em .35em;border-radius:5px">setState(prev =&gt; ...)</code>
+            </li>
+            <li style="display:flex;gap:.7rem;align-items:flex-start;color:rgba(255,255,255,.75);font-size:.92rem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;stroke:var(--accent);flex:0 0 auto;margin-top:.15rem"><path d="M20 6 9 17l-5-5"/></svg>
+              Derived state vs. redundant state: keeping your component clean
+            </li>
+            <li style="display:flex;gap:.7rem;align-items:flex-start;color:rgba(255,255,255,.75);font-size:.92rem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;stroke:var(--accent);flex:0 0 auto;margin-top:.15rem"><path d="M20 6 9 17l-5-5"/></svg>
+              Live project: building a multi-step form with controlled inputs
+            </li>
+          </ul>
+        </div>
+
+        <!-- NOTES PANE -->
+        <div id="pane-notes" class="tabpane" data-pane="notes" role="tabpanel">
+          <label for="new-note" style="display:block;font-weight:700;font-size:.9rem;color:rgba(255,255,255,.7);margin-bottom:.5rem">Add a note at 12:30</label>
+          <textarea id="new-note" placeholder="Type your note here — it will be saved with the current timestamp…" aria-label="New note"></textarea>
+          <div style="display:flex;gap:.7rem;margin-bottom:1.4rem">
+            <button class="btn btn--brand btn--sm">Save note</button>
+            <button class="btn btn--ghost btn--sm" style="color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.2)">Cancel</button>
+          </div>
+          <div style="display:grid;gap:.8rem">
+            <div class="noteitem">
+              <div class="noteitem__meta">
+                <span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline;vertical-align:middle;margin-right:.2rem"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                  04:18
+                </span>
+                <span>Lesson 12 — State with useState</span>
+              </div>
+              <p>Remember: never mutate state directly. Always pass a new object or array — use spread syntax to copy: <code style="font-size:.85em;background:rgba(0,0,0,.2);padding:.1em .3em;border-radius:4px">setUser({...user, name: 'Alex'})</code></p>
+            </div>
+            <div class="noteitem">
+              <div class="noteitem__meta">
+                <span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline;vertical-align:middle;margin-right:.2rem"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                  09:45
+                </span>
+                <span>Lesson 12 — State with useState</span>
+              </div>
+              <p>Functional updater form is safer when new state depends on old state — avoids stale closure bugs in async handlers or batched updates.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q&A PANE -->
+        <div id="pane-qa" class="tabpane" data-pane="qa" role="tabpanel">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;flex-wrap:wrap;gap:.6rem">
+            <span style="font-weight:700;color:rgba(255,255,255,.7);font-size:.9rem">14 questions in this lesson</span>
+            <button class="btn btn--brand btn--sm">Ask a question</button>
+          </div>
+          <div>
+            <!-- Q1 -->
+            <div class="qa-row">
+              <img class="qa-avatar" src="assets/img/avatar-01.jpg" alt="">
+              <div class="qa-body">
+                <div class="qa-meta"><b>Linh Tran</b> &nbsp;&middot;&nbsp; 2 days ago</div>
+                <p class="qa-text">Why does React not re-render immediately when I call setState inside a loop? I'm updating an array but the UI only reflects the last value.</p>
+                <button class="qa-reply">Sarah Chen replied &rarr;</button>
+              </div>
+            </div>
+            <!-- Q2 -->
+            <div class="qa-row">
+              <img class="qa-avatar" src="assets/img/avatar-04.jpg" alt="">
+              <div class="qa-body">
+                <div class="qa-meta"><b>Daniel W.</b> &nbsp;&middot;&nbsp; 4 days ago</div>
+                <p class="qa-text">What's the difference between initializing state with a value vs. a function? When would I use the lazy initializer form <code style="font-size:.85em;background:rgba(255,255,255,.1);padding:.1em .3em;border-radius:4px">useState(() =&gt; expensiveCalc())</code>?</p>
+                <button class="qa-reply">2 replies &rarr;</button>
+              </div>
+            </div>
+            <!-- Q3 -->
+            <div class="qa-row">
+              <img class="qa-avatar" src="assets/img/avatar-06.jpg" alt="">
+              <div class="qa-body">
+                <div class="qa-meta"><b>Kenji Watanabe</b> &nbsp;&middot;&nbsp; 1 week ago</div>
+                <p class="qa-text">At 09:32 you mention that React 18 batches setState calls automatically outside of event handlers too. Does this mean I should avoid multiple setStates in async functions?</p>
+                <button class="qa-reply">Sarah Chen replied &rarr;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOWNLOADS PANE -->
+        <div id="pane-downloads" class="tabpane" data-pane="downloads" role="tabpanel">
+          <p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.1rem">Resources for this lesson — download them to follow along offline.</p>
+          <div>
+            <div class="dl-row">
+              <div class="dl-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+              </div>
+              <div class="dl-info">
+                <b>Lesson 12 Slides — State with useState</b>
+                <small>PDF &middot; 1.4 MB</small>
+              </div>
+              <button class="dl-btn" aria-label="Download slides PDF">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                Download
+              </button>
+            </div>
+            <div class="dl-row">
+              <div class="dl-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="dl-info">
+                <b>Source Code — useState exercises (starter + finished)</b>
+                <small>ZIP &middot; 38 KB</small>
+              </div>
+              <button class="dl-btn" aria-label="Download source code ZIP">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                Download
+              </button>
+            </div>
+            <div class="dl-row">
+              <div class="dl-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/></svg>
+              </div>
+              <div class="dl-info">
+                <b>useState Cheatsheet (quick reference card)</b>
+                <small>PDF &middot; 220 KB</small>
+              </div>
+              <button class="dl-btn" aria-label="Download cheatsheet PDF">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.player__body -->
+
+    </div><!-- /.player__main -->
+
+    <!-- RIGHT RAIL: course outline -->
+    <aside class="player__rail" aria-label="Course curriculum">
+
+      <div class="player__rail-head">
+        <h3>React &amp; Next.js Bootcamp</h3>
+        <div class="progress-label">
+          <span style="color:rgba(255,255,255,.55);font-size:.8rem">35% complete</span>
+          <span style="color:rgba(255,255,255,.55);font-size:.8rem">12 / 36 lessons</span>
+        </div>
+        <div class="progress" style="margin-top:.4rem" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" aria-label="Course completion">
+          <span style="width:35%"></span>
+        </div>
+      </div>
+
+      <div class="curri" style="padding:.6rem">
+
+        <!-- SECTION 1: Getting Started (collapsed, all done) -->
+        <div class="curri__sec">
+          <div class="curri__head" tabindex="0" role="button" aria-expanded="false">
+            Section 1 — Getting Started
+            <small>4 lessons · 38m</small>
+          </div>
+          <ul class="curri__list" aria-label="Section 1 lessons">
+            <li class="curri__item is-done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <a href="#">Welcome &amp; setup</a>
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                5:20
+              </span>
+            </li>
+            <li class="curri__item is-done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <a href="#">How the course works</a>
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                8:45
+              </span>
+            </li>
+            <li class="curri__item is-done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <a href="#">Dev environment</a>
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                12:10
+              </span>
+            </li>
+            <li class="curri__item is-done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <a href="#">Your first component</a>
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                11:55
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- SECTION 2: React Fundamentals (OPEN, current) -->
+        <div class="curri__sec is-open">
+          <div class="curri__head" tabindex="0" role="button" aria-expanded="true">
+            Section 2 — React Fundamentals
+            <small>8 lessons · 2h 15m</small>
+          </div>
+          <ul class="curri__list" aria-label="Section 2 lessons">
+            <li class="curri__item is-done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <a href="#">JSX deep dive</a>
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                14:20
+              </span>
+            </li>
+            <li class="curri__item is-done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <a href="#">Props &amp; components</a>
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                18:05
+              </span>
+            </li>
+            <!-- CURRENT LESSON -->
+            <li class="curri__item is-active" aria-current="page">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:18px;height:18px;fill:var(--accent);flex:0 0 auto"><path d="M7 4v16l13-8z"/></svg>
+              <span style="font-weight:700">State with useState</span>
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                36:00
+              </span>
+            </li>
+            <!-- Locked -->
+            <li class="curri__item is-locked" aria-label="Locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Handling events
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                22:40
+              </span>
+            </li>
+            <li class="curri__item is-locked" aria-label="Locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Conditional rendering
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                16:30
+              </span>
+            </li>
+            <li class="curri__item is-locked" aria-label="Locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Lists &amp; keys
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                14:15
+              </span>
+            </li>
+            <li class="curri__item is-locked" aria-label="Locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Forms
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                20:50
+              </span>
+            </li>
+            <li class="curri__item is-locked" aria-label="Locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Project: Todo app
+              <span class="dur">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                48:00
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- SECTION 3: Hooks in Depth (collapsed, locked) -->
+        <div class="curri__sec">
+          <div class="curri__head" tabindex="0" role="button" aria-expanded="false">
+            Section 3 — Hooks in Depth
+            <small>7 lessons · 3h 10m</small>
+          </div>
+          <ul class="curri__list" aria-label="Section 3 lessons">
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              useEffect
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>32:00</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              useRef
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>24:10</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              useMemo &amp; useCallback
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>28:45</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Custom hooks
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>26:20</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              useContext
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>22:00</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              useReducer
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>30:15</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Project: Weather dashboard
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>56:30</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- SECTION 4: Next.js & Full-Stack (collapsed, locked) -->
+        <div class="curri__sec">
+          <div class="curri__head" tabindex="0" role="button" aria-expanded="false">
+            Section 4 — Next.js &amp; Full-Stack
+            <small>9 lessons · 4h 05m</small>
+          </div>
+          <ul class="curri__list" aria-label="Section 4 lessons">
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              App Router
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>28:00</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Server components
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>34:20</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Data fetching
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>26:15</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Route handlers
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>22:00</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Auth
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>38:40</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Database with Prisma
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>44:10</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Deployment
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>18:30</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Performance
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>24:45</span>
+            </li>
+            <li class="curri__item is-locked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Capstone project
+              <span class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>1:28:00</span>
+            </li>
+          </ul>
+        </div>
+
+      </div><!-- /.curri -->
+    </aside><!-- /.player__rail -->
+
+  </div><!-- /.player -->
+</main>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>

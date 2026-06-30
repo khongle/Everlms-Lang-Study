@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="ocean">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EverLMS · Ocean Scholar skin</title>
+<meta name="description" content="EverLMS is the modern learning platform for teams and creators — discover 1,200+ expert-led courses, earn certificates, and learn without limits.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/everlms.css">
+<link rel="stylesheet" href="assets/css/skins.css">
+<style>
+/* homepage-only flourishes (tokens only) */
+.homehero{position:relative;background:var(--grad-soft);overflow:hidden}
+.homehero::before{content:"";position:absolute;top:-30%;right:-10%;width:50vw;height:50vw;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--brand) 22%,transparent),transparent 65%);pointer-events:none}
+.homehero .container{position:relative;z-index:1}
+.hero__trust{display:flex;align-items:center;gap:1rem;margin-top:1.8rem;flex-wrap:wrap}
+.hero__media-stack{position:relative}
+.hero__media-stack>img{border-radius:var(--radius-xl);box-shadow:var(--shadow-3);aspect-ratio:4/5;object-fit:cover;width:100%}
+.float-card{position:absolute;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow-3);padding:.9rem 1.1rem;display:flex;align-items:center;gap:.7rem}
+.float-card svg{width:24px;height:24px}
+.float-card b{font-family:var(--font-display);display:block;font-size:1.1rem;line-height:1}
+.float-card small{color:var(--muted);font-size:.78rem}
+.float-1{top:1.5rem;left:-1.5rem}
+.float-2{bottom:5rem;right:-1.5rem}
+.float-3{bottom:-1rem;left:2rem}
+@media(max-width:1100px){.float-1,.float-2{left:auto;right:auto;position:static;margin:.6rem 0;display:inline-flex}}
+@media(max-width:1100px){.hero__media-stack{display:flex;flex-direction:column;align-items:center}.float-3{display:none}}
+.catcard{display:flex;flex-direction:column;gap:.5rem;padding:1.4rem;border:1px solid var(--line);border-radius:var(--radius-lg);
+  background:var(--paper);transition:.18s;text-decoration:none;color:var(--ink)}
+.catcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-2);border-color:transparent;text-decoration:none}
+.catcard__ic{width:54px;height:54px;border-radius:15px;background:var(--brand-soft);display:grid;place-items:center}
+.catcard__ic svg{width:26px;height:26px;stroke:var(--brand)}
+.catcard b{font-family:var(--font-display);font-size:1.05rem}
+.catcard small{color:var(--muted);font-size:.84rem}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="topbar">
+  <div class="container">
+    <span class="topbar__promo"><b>New</b>&nbsp;— AI Course Builder is live. Create a course in minutes.</span>
+    <nav class="topbar__links" aria-label="Utility">
+      <a href="instructor.html">Become an instructor</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Help</a>
+      <a href="dashboard.html">EN ▾</a>
+    </nav>
+  </div>
+</div>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html" aria-label="EverLMS home">
+      <span class="brand__mark">E</span>
+      <span class="brand__name">Ever<span>LMS</span><small>Learn without limits</small></span>
+    </a>
+    <button class="nav__toggle" data-nav-toggle aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+    </button>
+    <ul class="nav__links" id="nav-links">
+      <li class="has-mega">
+        <a href="courses.html" aria-current="page">Courses
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <div class="mega">
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Web Development</b><small>HTML, JS, React, full-stack</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1 .8 7.9A4 4 0 1 1 8 18a4 4 0 0 1-.8-7.9A4 4 0 0 1 8 2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>AI &amp; Machine Learning</b><small>LLMs, deep learning, MLOps</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 3 3 5-6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Data &amp; Analytics</b><small>SQL, Python, visualization</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 19l7-7-4-4-7 7v4zM15 6l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Design &amp; UX</b><small>Figma, product, branding</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v6l9 6 9-6V9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Business</b><small>Marketing, finance, leadership</small></span></a>
+          <a href="categories.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></span><span><b>Browse all categories</b><small>40+ topics, 1,200+ courses</small></span></a>
+        </div>
+      </li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav__spacer"></div>
+    <label class="nav__search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4" stroke-linecap="round"/></svg>
+      <input type="search" placeholder="Search courses…" aria-label="Search courses">
+    </label>
+    <div class="nav__actions">
+      <a class="btn btn--ghost btn--sm" href="login.html">Log in</a>
+      <a class="btn btn--primary btn--sm" href="login.html">Sign up</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="homehero section">
+    <div class="container hero__grid">
+      <div>
+        <span class="eyebrow">The modern learning platform</span>
+        <h1>Learn the skills that <span class="grad-text">move you forward</span>.</h1>
+        <p class="lede">Master in-demand skills with 1,200+ expert-led courses in tech, design and business. Hands-on projects, real certificates, and learning that fits your life.</p>
+        <div class="btn-row" style="margin-top:1.6rem">
+          <a class="btn btn--primary btn--lg" href="courses.html">Explore courses
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn--ghost btn--lg" href="pricing.html">View pricing</a>
+        </div>
+        <div class="hero__trust">
+          <div class="avstack">
+            <img src="assets/img/avatar-01.jpg" alt=""><img src="assets/img/avatar-02.jpg" alt="">
+            <img src="assets/img/avatar-04.jpg" alt=""><img src="assets/img/avatar-05.jpg" alt="">
+            <span class="avstack__more">9k+</span>
+          </div>
+          <div>
+            <span class="stars" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            </span>
+            <div class="text-sm"><b>4.8/5</b> from <b>480,000+</b> learners worldwide</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero__media-stack">
+        <img src="assets/img/scene-life-01.jpg" alt="A learner studying on EverLMS">
+        <div class="float-card float-1">
+          <span class="card__icon card__icon--accent" style="margin:0;width:42px;height:42px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.2 13 7 22l5-3 5 3-1.2-9"/></svg></span>
+          <span><b>24,800</b><small>certificates earned</small></span>
+        </div>
+        <div class="float-card float-2">
+          <span class="card__icon" style="margin:0;width:42px;height:42px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/></svg></span>
+          <span><b>350+</b><small>expert instructors</small></span>
+        </div>
+        <div class="float-card float-3">
+          <span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span>
+          <span><b>4.9</b><small>React Bootcamp</small></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGО CLOUD -->
+  <section class="section section--tight">
+    <div class="container center">
+      <p class="text-sm text-muted" style="letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:1.4rem">Trusted by teams at world-class companies</p>
+      <div class="logos">
+        <span class="logoslot">◆ Northwind</span>
+        <span class="logoslot">✦ Lumen</span>
+        <span class="logoslot">▲ Vertex</span>
+        <span class="logoslot">⬡ Hexa</span>
+        <span class="logoslot">● Orbit</span>
+        <span class="logoslot">✶ Polaris</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="section section--soft">
+    <div class="container">
+      <div class="flex justify-between items-center flex-wrap gap-2 sec-head" style="margin-bottom:2rem">
+        <div>
+          <span class="eyebrow">Browse by goal</span>
+          <h2>Explore top categories</h2>
+        </div>
+        <a class="btn btn--ghost" href="categories.html">All categories</a>
+      </div>
+      <div class="grid grid--4">
+        <a class="catcard" href="category-detail.html"><span class="catcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16"/></svg></span><b>Web Development</b><small>240 courses</small></a>
+        <a class="catcard" href="category-detail.html"><span class="catcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1 .8 7.9A4 4 0 1 1 8 18a4 4 0 0 1-.8-7.9A4 4 0 0 1 8 2"/></svg></span><b>AI &amp; Machine Learning</b><small>180 courses</small></a>
+        <a class="catcard" href="category-detail.html"><span class="catcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"/></svg></span><b>Data &amp; Analytics</b><small>156 courses</small></a>
+        <a class="catcard" href="category-detail.html"><span class="catcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7-4-4-7 7v4zM15 6l3 3"/></svg></span><b>Design &amp; UX</b><small>198 courses</small></a>
+        <a class="catcard" href="category-detail.html"><span class="catcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v6l9 6 9-6V9"/></svg></span><b>Business</b><small>210 courses</small></a>
+        <a class="catcard" href="category-detail.html"><span class="catcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></span><b>Marketing</b><small>132 courses</small></a>
+        <a class="catcard" href="category-detail.html"><span class="catcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m22 8-6 4 6 4z"/></svg></span><b>Photography &amp; Video</b><small>96 courses</small></a>
+        <a class="catcard" href="category-detail.html"><span class="catcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></span><b>Personal Development</b><small>88 courses</small></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- POPULAR COURSES -->
+  <section class="section">
+    <div class="container">
+      <div class="flex justify-between items-center flex-wrap gap-2 sec-head" style="margin-bottom:2rem">
+        <div>
+          <span class="eyebrow">Most popular</span>
+          <h2>Top-rated courses this month</h2>
+        </div>
+        <a class="btn btn--ghost" href="courses.html">Browse all courses</a>
+      </div>
+      <div class="grid grid--4">
+        <article class="ccard">
+          <div class="ccard__media"><img src="assets/img/course-web-01.jpg" alt="Complete Modern React & Next.js Bootcamp"><span class="ccard__cat badge badge--ink">Web Development</span><span class="ccard__price"><small>$199.99</small>$89.99</span></div>
+          <div class="ccard__body">
+            <div class="ccard__meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>52h</span><span>420 lessons</span></div>
+            <h3 class="ccard__title"><a href="course-detail.html">Complete Modern React &amp; Next.js Bootcamp</a></h3>
+            <div class="ccard__author"><img src="assets/img/instructor-01.jpg" alt=""> Sarah Chen</div>
+            <div class="ccard__foot"><span class="ccard__rating"><span class="rating-num">4.9</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(12,480)</small></span><span class="badge badge--accent">Bestseller</span></div>
+          </div>
+        </article>
+        <article class="ccard">
+          <div class="ccard__media"><img src="assets/img/course-ai-01.jpg" alt="Machine Learning A–Z"><span class="ccard__cat badge badge--ink">AI &amp; ML</span><span class="ccard__price"><small>$189.99</small>$94.99</span></div>
+          <div class="ccard__body">
+            <div class="ccard__meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>44h</span><span>380 lessons</span></div>
+            <h3 class="ccard__title"><a href="course-detail.html">Machine Learning A–Z: Hands-On Python &amp; AI</a></h3>
+            <div class="ccard__author"><img src="assets/img/instructor-m-01.jpg" alt=""> Dr. Marcus Reed</div>
+            <div class="ccard__foot"><span class="ccard__rating"><span class="rating-num">4.8</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(9,210)</small></span><span class="badge badge--info">Hot</span></div>
+          </div>
+        </article>
+        <article class="ccard">
+          <div class="ccard__media"><img src="assets/img/course-design-01.jpg" alt="UI/UX Design Masterclass"><span class="ccard__cat badge badge--ink">Design &amp; UX</span><span class="ccard__price"><small>$169.99</small>$84.99</span></div>
+          <div class="ccard__body">
+            <div class="ccard__meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>30h</span><span>260 lessons</span></div>
+            <h3 class="ccard__title"><a href="course-detail.html">UI/UX Design Masterclass: Figma to Product</a></h3>
+            <div class="ccard__author"><img src="assets/img/instructor-03.jpg" alt=""> Elena Rossi</div>
+            <div class="ccard__foot"><span class="ccard__rating"><span class="rating-num">4.9</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(8,300)</small></span><span class="badge badge--accent">Bestseller</span></div>
+          </div>
+        </article>
+        <article class="ccard">
+          <div class="ccard__media"><img src="assets/img/course-edu-01.jpg" alt="Python for Everybody"><span class="ccard__cat badge badge--ink">Web Development</span><span class="ccard__price ccard__price--free">Free</span></div>
+          <div class="ccard__body">
+            <div class="ccard__meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>28h</span><span>210 lessons</span></div>
+            <h3 class="ccard__title"><a href="course-detail.html">Python for Everybody: Zero to Hero</a></h3>
+            <div class="ccard__author"><img src="assets/img/instructor-m-03.jpg" alt=""> David Kim</div>
+            <div class="ccard__foot"><span class="ccard__rating"><span class="rating-num">4.8</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(22,050)</small></span><span class="badge badge--success">Free</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY EVERLMS -->
+  <section class="section section--mist">
+    <div class="container">
+      <div class="split">
+        <div class="split__media">
+          <img src="assets/img/scene-life-03.jpg" alt="A learner celebrating their progress on EverLMS">
+        </div>
+        <div>
+          <span class="eyebrow">Why EverLMS</span>
+          <h2>Everything you need to actually finish what you start</h2>
+          <p class="lede" style="margin-bottom:1.6rem">We obsess over the learning experience — from the first lesson to the certificate that proves your skills.</p>
+          <ul class="icon-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg><span><b>Learn by doing</b> — hands-on projects and coding playgrounds in every course.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.2 13 7 22l5-3 5 3-1.2-9"/></svg><span><b>Verified certificates</b> — share achievements employers recognise.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a4 4 0 1 0 0 8c3 0 4-4 6-4s3 4 6 4a4 4 0 1 0 0-8c-3 0-4 4-6 4S9 8 6 8z"/></svg><span><b>Learn at your pace</b> — lifetime access, offline downloads, on any device.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span><b>Mentor support</b> — ask questions and get answers from instructors.</span></li>
+          </ul>
+          <div class="btn-row" style="margin-top:1.6rem"><a class="btn btn--brand" href="about.html">Why learners choose us</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section">
+    <div class="container">
+      <div class="center sec-head" style="margin-inline:auto">
+        <span class="eyebrow eyebrow--plain" style="justify-content:center">Simple by design</span>
+        <h2>Start learning in three steps</h2>
+        <p class="lede">No friction. Pick a goal, learn with experts, earn your certificate.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step__n">1</div><h3>Find your course</h3><p>Browse 1,200+ courses by topic, level and goal — or let AI recommend a path.</p></div>
+        <div class="step"><div class="step__n">2</div><h3>Learn by doing</h3><p>Watch HD lessons, build real projects, and check your knowledge with quizzes.</p></div>
+        <div class="step"><div class="step__n">3</div><h3>Earn a certificate</h3><p>Complete the course and get a verifiable certificate to share anywhere.</p></div>
+        <div class="step"><div class="step__n">4</div><h3>Keep growing</h3><p>Track streaks, unlock new paths, and never stop levelling up your skills.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAND -->
+  <section class="section section--brand">
+    <div class="container">
+      <div class="stats">
+        <div><div class="stat__n">1,200+</div><div class="stat__l">Expert-led courses</div></div>
+        <div><div class="stat__n">480K+</div><div class="stat__l">Active learners</div></div>
+        <div><div class="stat__n">350+</div><div class="stat__l">Instructors</div></div>
+        <div><div class="stat__n">92%</div><div class="stat__l">Completion rate</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BECOME INSTRUCTOR -->
+  <section class="section section--soft">
+    <div class="container">
+      <div class="split">
+        <div>
+          <span class="eyebrow">Teach on EverLMS</span>
+          <h2>Turn your expertise into income</h2>
+          <p class="lede" style="margin-bottom:1.4rem">Join 350+ instructors reaching learners worldwide. Build your course with our studio tools — or generate a full outline with the AI Course Builder — and we handle hosting, payments and certificates.</p>
+          <div class="grid grid--2" style="gap:1rem;margin-bottom:1.6rem">
+            <div class="card card--soft"><b style="font-family:var(--font-display);font-size:1.4rem">70%</b><div class="text-sm text-muted">revenue share</div></div>
+            <div class="card card--soft"><b style="font-family:var(--font-display);font-size:1.4rem">$3.2M+</b><div class="text-sm text-muted">paid to instructors</div></div>
+          </div>
+          <a class="btn btn--primary" href="instructor.html">Start teaching today</a>
+        </div>
+        <div class="split__media"><img src="assets/img/instructor-01.jpg" alt="An EverLMS instructor"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section">
+    <div class="container">
+      <div class="center sec-head" style="margin-inline:auto">
+        <span class="eyebrow eyebrow--plain" style="justify-content:center">Loved by learners</span>
+        <h2>Real results, real stories</h2>
+      </div>
+      <div class="grid grid--3">
+        <div class="card"><div class="tcard"><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><p class="tcard__q">"I went from spreadsheets to a data analyst role in five months. The projects were exactly what interviewers asked about."</p><div class="tcard__who"><img class="tcard__avatar" src="assets/img/avatar-06.jpg" alt=""><span><span class="tcard__name">Linh Tran</span><span class="tcard__role">Data Analyst, Singapore</span></span></div></div></div>
+        <div class="card"><div class="tcard"><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><p class="tcard__q">"The React Bootcamp is the best money I've spent on my career. Clear, modern, and genuinely fun to follow."</p><div class="tcard__who"><img class="tcard__avatar" src="assets/img/avatar-07.jpg" alt=""><span><span class="tcard__name">Michael O.</span><span class="tcard__role">Frontend Engineer, Berlin</span></span></div></div></div>
+        <div class="card"><div class="tcard"><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><p class="tcard__q">"As an instructor, EverLMS handled everything technical so I could focus on teaching. My first course paid off in weeks."</p><div class="tcard__who"><img class="tcard__avatar" src="assets/img/avatar-05.jpg" alt=""><span><span class="tcard__name">Sofia Garcia</span><span class="tcard__role">Instructor, Madrid</span></span></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="section">
+    <div class="container">
+      <div class="ctaband">
+        <span class="eyebrow eyebrow--plain" style="justify-content:center;color:#fff">Start free today</span>
+        <h2>Your next skill is one click away</h2>
+        <p class="lede">Join 480,000+ learners. Get started free — no credit card required.</p>
+        <div class="btn-row" style="justify-content:center;margin-top:1.4rem">
+          <a class="btn btn--white btn--lg" href="login.html">Create free account</a>
+          <a class="btn btn--ghost btn--lg" href="courses.html">Browse courses</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a class="brand" href="index.html" style="color:#fff">
+          <span class="brand__mark">E</span>
+          <span class="brand__name" style="color:#fff">Ever<span style="color:#fff">LMS</span><small>Learn without limits</small></span>
+        </a>
+        <p>The modern learning platform for teams and creators — build, sell and teach beautiful online courses.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/><path d="M10 9v12M10 14a4 4 0 0 1 8 0v7" stroke-linecap="round"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3V9z" fill="#fff" stroke="none"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg></a>
+        </div>
+      </div>
+      <div class="footer__col"><h4>Explore</h4><ul><li><a href="courses.html">All courses</a></li><li><a href="categories.html">Categories</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="instructor.html">Instructors</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div class="footer__col"><h4>Company</h4><ul><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li><li><a href="about.html">Careers</a></li><li><a href="about.html">Partners</a></li><li><a href="blog.html">Press</a></li></ul></div>
+      <div class="footer__col"><h4>Support</h4><ul><li><a href="contact.html">Help center</a></li><li><a href="dashboard.html">My account</a></li><li><a href="contact.html">Become an instructor</a></li><li><a href="contact.html">Terms</a></li><li><a href="contact.html">Privacy</a></li></ul></div>
+      <div class="footer__col footer__news"><h4>Stay in the loop</h4><p style="color:rgba(255,255,255,.62);font-size:.9rem;margin-bottom:.8rem">Get new courses &amp; learning tips, monthly.</p><form onsubmit="return false"><input type="email" placeholder="you@email.com" aria-label="Email"><button class="btn btn--primary btn--block btn--sm" type="submit">Subscribe</button></form></div>
+    </div>
+    <div class="footer__legal"><span>© 2026 EverLMS. All rights reserved.</span><span>Built on Drupal 11 · WCAG 2.1 AA</span></div>
+  </div>
+</footer>
+
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>

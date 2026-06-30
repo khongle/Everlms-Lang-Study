@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog · EverLMS</title>
+<meta name="description" content="Practical advice on learning, career growth, ed-tech trends and product updates from the EverLMS team.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/everlms.css">
+<link rel="stylesheet" href="assets/css/skins.css">
+<style>
+/* blog-specific styles — tokens only */
+.blog-featured{background:var(--paper-2);border:1px solid var(--line);border-radius:var(--radius-xl);overflow:hidden}
+.blog-featured .split{gap:0;align-items:stretch}
+.blog-featured__img{aspect-ratio:16/10;object-fit:cover;width:100%;height:100%;border-radius:0}
+.blog-featured__body{padding:clamp(1.8rem,4vw,2.8rem)}
+.blog-featured__body h2{font-size:clamp(1.4rem,2.5vw,2rem);margin:0 0 .8rem;line-height:1.22}
+.blog-featured__body .lede{font-size:1rem;margin:0 0 1.2rem}
+
+.bcard{display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;transition:.18s}
+.bcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-3)}
+.bcard__img{aspect-ratio:16/9;object-fit:cover;width:100%;display:block;transition:transform .4s}
+.bcard:hover .bcard__img{transform:scale(1.04)}
+.bcard__body{padding:1.2rem 1.3rem 1.4rem;display:flex;flex-direction:column;gap:.55rem;flex:1}
+.bcard__title{font-family:var(--font-display);font-size:1.05rem;font-weight:700;line-height:1.3;margin:0;letter-spacing:-.01em}
+.bcard__title a{color:var(--ink);text-decoration:none}
+.bcard__title a:hover{color:var(--brand)}
+.bcard__excerpt{font-size:.9rem;color:var(--ink-soft);line-height:1.55;margin:0}
+.bcard__author{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);margin-top:auto;padding-top:.9rem;border-top:1px solid var(--line)}
+.bcard__author img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+</style>
+</head>
+<body>
+<!-- ===== PUBLIC HEADER (copy verbatim; set aria-current="page" on the active link) ===== -->
+<a class="skip" href="#main">Skip to content</a>
+<div class="topbar">
+  <div class="container">
+    <span class="topbar__promo"><b>New</b>&nbsp;— AI Course Builder is live. Create a course in minutes.</span>
+    <nav class="topbar__links" aria-label="Utility">
+      <a href="instructor.html">Become an instructor</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Help</a>
+      <a href="dashboard.html">EN ▾</a>
+    </nav>
+  </div>
+</div>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html" aria-label="EverLMS home">
+      <span class="brand__mark">E</span>
+      <span class="brand__name">Ever<span>LMS</span><small>Learn without limits</small></span>
+    </a>
+    <button class="nav__toggle" data-nav-toggle aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+    </button>
+    <ul class="nav__links" id="nav-links">
+      <li class="has-mega">
+        <a href="courses.html">Courses
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <div class="mega">
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Web Development</b><small>HTML, JS, React, full-stack</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1 .8 7.9A4 4 0 1 1 8 18a4 4 0 0 1-.8-7.9A4 4 0 0 1 8 2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>AI &amp; Machine Learning</b><small>LLMs, deep learning, MLOps</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 3 3 5-6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Data &amp; Analytics</b><small>SQL, Python, visualization</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 19l7-7-4-4-7 7v4zM15 6l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Design &amp; UX</b><small>Figma, product, branding</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v6l9 6 9-6V9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Business</b><small>Marketing, finance, leadership</small></span></a>
+          <a href="categories.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></span><span><b>Browse all categories</b><small>40+ topics, 1,200+ courses</small></span></a>
+        </div>
+      </li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="blog.html" aria-current="page">Blog</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav__spacer"></div>
+    <label class="nav__search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4" stroke-linecap="round"/></svg>
+      <input type="search" placeholder="Search courses…" aria-label="Search courses">
+    </label>
+    <div class="nav__actions">
+      <a class="btn btn--ghost btn--sm" href="login.html">Log in</a>
+      <a class="btn btn--primary btn--sm" href="login.html">Sign up</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ① PAGE HERO -->
+  <div class="pagehero">
+    <div class="container">
+      <nav class="crumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page">Blog</span>
+      </nav>
+      <h1>The EverLMS <span class="grad-text">Blog</span></h1>
+      <p class="lede">Practical advice on study habits, career growth, ed-tech trends, and product updates — straight from the EverLMS team and community.</p>
+      <div class="chip-row" style="margin-top:1.4rem" role="list" aria-label="Filter by topic">
+        <a class="chip is-active" href="blog.html" role="listitem">All</a>
+        <a class="chip" href="#" role="listitem">Learning Tips</a>
+        <a class="chip" href="#" role="listitem">Career</a>
+        <a class="chip" href="#" role="listitem">Product</a>
+        <a class="chip" href="#" role="listitem">Engineering</a>
+        <a class="chip" href="#" role="listitem">Design</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② FEATURED POST -->
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Editor's pick</span>
+      <div class="blog-featured" style="margin-top:1.2rem">
+        <div class="split" style="grid-template-columns:1fr 1fr">
+          <div class="split__media" style="overflow:hidden;min-height:380px">
+            <img class="blog-featured__img" src="assets/img/scene-life-02.jpg" alt="A learner studying at a bright desk with a coffee and notebook">
+          </div>
+          <div class="blog-featured__body">
+            <div class="post-meta">
+              <span class="badge badge--info">Learning Tips</span>
+              <span class="dot"></span>
+              <span>Jun 24, 2026</span>
+              <span class="dot"></span>
+              <span>7 min read</span>
+            </div>
+            <h2>The Science-Backed Study Schedule That Gets Results in Half the Time</h2>
+            <p class="lede">Spaced repetition, interleaving, and retrieval practice aren't buzzwords — they are the study techniques that neuroscientists have consistently proven to accelerate long-term retention. Here's how to turn the research into a daily routine you'll actually stick to.</p>
+            <div class="tcard__who" style="display:flex;align-items:center;gap:.6rem;margin:.8rem 0 1rem">
+              <img src="assets/img/avatar-07.jpg" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover">
+              <span style="font-size:.88rem;color:var(--ink-soft)">by <b>Michael O.</b></span>
+            </div>
+            <a class="post-link" href="article-detail.html">Read article
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ ARTICLE GRID (9 cards) -->
+  <section class="section section--soft">
+    <div class="container">
+      <div class="flex justify-between items-center flex-wrap gap-2" style="margin-bottom:2rem">
+        <div>
+          <span class="eyebrow">Latest articles</span>
+          <h2 style="margin:0">Fresh from the team</h2>
+        </div>
+      </div>
+      <div class="grid grid--3">
+
+        <!-- Card 1 -->
+        <article class="bcard">
+          <img class="bcard__img" src="assets/img/scene-life-01.jpg" alt="A learner watching a video course on a laptop">
+          <div class="bcard__body">
+            <div class="post-meta">
+              <span>Career</span>
+              <span class="dot"></span>
+              <span>Jun 20, 2026</span>
+              <span class="dot"></span>
+              <span>5 min</span>
+            </div>
+            <h3 class="bcard__title"><a href="article-detail.html">How to Switch Careers into Tech Without a Computer Science Degree</a></h3>
+            <p class="bcard__excerpt">Thousands of successful developers never went near a university CS programme. Here's the practical roadmap — from first commit to job offer — used by EverLMS graduates.</p>
+            <div class="bcard__author">
+              <img src="assets/img/avatar-01.jpg" alt="">
+              <span>Linh Tran</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="bcard">
+          <img class="bcard__img" src="assets/img/course-ai-01.jpg" alt="Abstract AI visualization representing machine learning concepts">
+          <div class="bcard__body">
+            <div class="post-meta">
+              <span>Product</span>
+              <span class="dot"></span>
+              <span>Jun 17, 2026</span>
+              <span class="dot"></span>
+              <span>4 min</span>
+            </div>
+            <h3 class="bcard__title"><a href="article-detail.html">Introducing AI Course Builder: Create a Full Course Outline in Minutes</a></h3>
+            <p class="bcard__excerpt">Our new AI Course Builder lets instructors go from topic idea to fully structured outline in under three minutes. Here's a look at what's under the hood and how to make the most of it.</p>
+            <div class="bcard__author">
+              <img src="assets/img/avatar-05.jpg" alt="">
+              <span>Sofia Garcia</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="bcard">
+          <img class="bcard__img" src="assets/img/course-web-01.jpg" alt="Code editor showing React component code">
+          <div class="bcard__body">
+            <div class="post-meta">
+              <span>Engineering</span>
+              <span class="dot"></span>
+              <span>Jun 14, 2026</span>
+              <span class="dot"></span>
+              <span>8 min</span>
+            </div>
+            <h3 class="bcard__title"><a href="article-detail.html">React 19 Compiler: What Every Frontend Developer Needs to Know Right Now</a></h3>
+            <p class="bcard__excerpt">The new React compiler automatically memoises your components so you don't have to. We break down the key changes, migration gotchas, and how to take full advantage from day one.</p>
+            <div class="bcard__author">
+              <img src="assets/img/avatar-02.jpg" alt="">
+              <span>Daniel W.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="bcard">
+          <img class="bcard__img" src="assets/img/course-design-01.jpg" alt="Design mockups spread out on a desk">
+          <div class="bcard__body">
+            <div class="post-meta">
+              <span>Design</span>
+              <span class="dot"></span>
+              <span>Jun 11, 2026</span>
+              <span class="dot"></span>
+              <span>6 min</span>
+            </div>
+            <h3 class="bcard__title"><a href="article-detail.html">Is a Design Career Still Worth Pursuing in 2026? An Honest Look at the Market</a></h3>
+            <p class="bcard__excerpt">Layoffs made headlines, but demand for strong product designers is quietly climbing again. We analysed 12,000 job listings to separate the noise from the opportunity.</p>
+            <div class="bcard__author">
+              <img src="assets/img/avatar-04.jpg" alt="">
+              <span>Aisha N.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="bcard">
+          <img class="bcard__img" src="assets/img/scene-room-01.jpg" alt="A bright classroom with learners at laptops">
+          <div class="bcard__body">
+            <div class="post-meta">
+              <span>Learning Tips</span>
+              <span class="dot"></span>
+              <span>Jun 8, 2026</span>
+              <span class="dot"></span>
+              <span>5 min</span>
+            </div>
+            <h3 class="bcard__title"><a href="article-detail.html">7 Habits of Highly Effective Online Learners (Backed by Data)</a></h3>
+            <p class="bcard__excerpt">We analysed completion patterns across 480,000 EverLMS learners to uncover the small daily habits that separate those who finish from those who don't. The results might surprise you.</p>
+            <div class="bcard__author">
+              <img src="assets/img/avatar-06.jpg" alt="">
+              <span>Linh Tran</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 6 -->
+        <article class="bcard">
+          <img class="bcard__img" src="assets/img/course-data-01.jpg" alt="Data charts and analytics on a screen">
+          <div class="bcard__body">
+            <div class="post-meta">
+              <span>Career</span>
+              <span class="dot"></span>
+              <span>Jun 5, 2026</span>
+              <span class="dot"></span>
+              <span>7 min</span>
+            </div>
+            <h3 class="bcard__title"><a href="article-detail.html">From Excel Spreadsheets to Data Analyst: One Learner's 5-Month Journey</a></h3>
+            <p class="bcard__excerpt">Linh Tran had no programming background when she enrolled in the Data Analytics bootcamp. Today she leads a BI team in Singapore. This is her story — and the exact path she took.</p>
+            <div class="bcard__author">
+              <img src="assets/img/avatar-07.jpg" alt="">
+              <span>Michael O.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 7 -->
+        <article class="bcard">
+          <img class="bcard__img" src="assets/img/course-ai-02.jpg" alt="A neural network diagram on a screen">
+          <div class="bcard__body">
+            <div class="post-meta">
+              <span>Learning Tips</span>
+              <span class="dot"></span>
+              <span>Jun 2, 2026</span>
+              <span class="dot"></span>
+              <span>6 min</span>
+            </div>
+            <h3 class="bcard__title"><a href="article-detail.html">How AI Is Personalising the Way We Learn — and What That Means for You</a></h3>
+            <p class="bcard__excerpt">Adaptive learning algorithms can now predict which concept you'll struggle with next and adjust your course path before you even hit the wall. Here's how it works on EverLMS.</p>
+            <div class="bcard__author">
+              <img src="assets/img/avatar-05.jpg" alt="">
+              <span>Sofia Garcia</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 8 -->
+        <article class="bcard">
+          <img class="bcard__img" src="assets/img/course-biz-01.jpg" alt="A business strategy session in a modern office">
+          <div class="bcard__body">
+            <div class="post-meta">
+              <span>Career</span>
+              <span class="dot"></span>
+              <span>May 28, 2026</span>
+              <span class="dot"></span>
+              <span>4 min</span>
+            </div>
+            <h3 class="bcard__title"><a href="article-detail.html">The 10 Skills Employers Are Hiring for Most in the Second Half of 2026</a></h3>
+            <p class="bcard__excerpt">We combed through 50,000 recent job postings to surface the skills that appear most often in 2026 hiring briefs. Python, prompt engineering, and data storytelling top the list.</p>
+            <div class="bcard__author">
+              <img src="assets/img/avatar-02.jpg" alt="">
+              <span>Daniel W.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 9 -->
+        <article class="bcard">
+          <img class="bcard__img" src="assets/img/scene-life-03.jpg" alt="An instructor recording a course lesson">
+          <div class="bcard__body">
+            <div class="post-meta">
+              <span>Product</span>
+              <span class="dot"></span>
+              <span>May 24, 2026</span>
+              <span class="dot"></span>
+              <span>3 min</span>
+            </div>
+            <h3 class="bcard__title"><a href="article-detail.html">EverLMS Q2 Update: Offline Mode, Co-Instructor Tools, and a Brand-New Quiz Engine</a></h3>
+            <p class="bcard__excerpt">This quarter we shipped 23 improvements based on your feedback. The biggest additions — offline downloads on iOS and Android, shared course editing, and an adaptive quiz engine — are live today.</p>
+            <div class="bcard__author">
+              <img src="assets/img/avatar-04.jpg" alt="">
+              <span>Aisha N.</span>
+            </div>
+          </div>
+        </article>
+
+      </div><!-- /grid -->
+
+      <!-- ④ PAGER -->
+      <nav class="pager" aria-label="Pagination">
+        <a class="is-disabled" href="#" aria-label="Previous page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <a class="is-active" href="blog.html" aria-current="page" aria-label="Page 1">1</a>
+        <a href="#" aria-label="Page 2">2</a>
+        <a href="#" aria-label="Page 3">3</a>
+        <span aria-hidden="true">…</span>
+        <a href="#" aria-label="Page 8">8</a>
+        <a href="#" aria-label="Next page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ⑤ NEWSLETTER CTA BAND -->
+  <section class="section">
+    <div class="container">
+      <div class="ctaband">
+        <span class="eyebrow eyebrow--plain" style="justify-content:center;color:#fff">Stay sharp</span>
+        <h2>Get the best learning content, weekly</h2>
+        <p class="lede">Join 42,000+ readers who get our best articles on study strategies, career moves, and new courses — every Tuesday, straight to their inbox. No spam, ever.</p>
+        <form onsubmit="return false" style="display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-top:1.6rem;position:relative;z-index:1">
+          <label style="display:flex;align-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-sm);padding:.1rem .1rem .1rem 1rem;width:min(100%,340px)">
+            <span class="sr-only">Email address</span>
+            <input type="email" placeholder="you@email.com" aria-label="Your email address" style="background:none;border:0;color:#fff;font:inherit;font-size:.95rem;outline:none;flex:1;min-width:0">
+            <button class="btn btn--primary btn--sm" type="submit" style="white-space:nowrap">Subscribe free</button>
+          </label>
+        </form>
+        <p style="color:rgba(255,255,255,.62);font-size:.8rem;margin-top:.8rem;position:relative;z-index:1">No spam. Unsubscribe any time. Read by learners in 90+ countries.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== SITE FOOTER (copy verbatim on every public/app page) ===== -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a class="brand" href="index.html" style="color:#fff">
+          <span class="brand__mark">E</span>
+          <span class="brand__name" style="color:#fff">Ever<span style="color:#fff">LMS</span><small>Learn without limits</small></span>
+        </a>
+        <p>The modern learning platform for teams and creators — build, sell and teach beautiful online courses.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/><path d="M10 9v12M10 14a4 4 0 0 1 8 0v7" stroke-linecap="round"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3V9z" fill="#fff" stroke="none"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg></a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="courses.html">All courses</a></li>
+          <li><a href="categories.html">Categories</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="instructor.html">Instructors</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="about.html">Careers</a></li>
+          <li><a href="about.html">Partners</a></li>
+          <li><a href="blog.html">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="contact.html">Help center</a></li>
+          <li><a href="dashboard.html">My account</a></li>
+          <li><a href="contact.html">Become an instructor</a></li>
+          <li><a href="contact.html">Terms</a></li>
+          <li><a href="contact.html">Privacy</a></li>
+        </ul>
+      </div>
+      <div class="footer__col footer__news">
+        <h4>Stay in the loop</h4>
+        <p style="color:rgba(255,255,255,.62);font-size:.9rem;margin-bottom:.8rem">Get new courses &amp; learning tips, monthly.</p>
+        <form onsubmit="return false">
+          <input type="email" placeholder="you@email.com" aria-label="Email">
+          <button class="btn btn--primary btn--block btn--sm" type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span>© 2026 EverLMS. All rights reserved.</span>
+      <span>Built on Drupal 11 · WCAG 2.1 AA</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>

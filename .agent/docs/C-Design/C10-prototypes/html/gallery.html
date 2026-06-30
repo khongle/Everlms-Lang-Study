@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EverLMS · Prototype Gallery</title>
+<meta name="description" content="Interactive prototype gallery for EverLMS — every page and color skin in one place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/everlms.css">
+<link rel="stylesheet" href="assets/css/skins.css">
+<style>
+.galhero{background:var(--grad);color:#fff;padding-block:clamp(2.4rem,5vw,4rem);position:relative;overflow:hidden}
+.galhero::before{content:"";position:absolute;top:-40%;right:-10%;width:40vw;height:40vw;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 65%)}
+.galhero .container{position:relative}
+.galhero h1,.galhero p{color:#fff}
+.gal-meta{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.2rem}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.5rem}
+.shot{display:block;color:inherit;text-decoration:none;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--line);
+  box-shadow:var(--shadow-1);background:var(--paper);transition:transform .18s,box-shadow .18s}
+.shot:hover{transform:translateY(-5px);box-shadow:var(--shadow-3);text-decoration:none}
+.shot:hover .shot__frame img{transform:translateY(calc(-100% + 248px))}
+.shot__frame{position:relative;height:248px;overflow:hidden;background:var(--paper-2);border-bottom:1px solid var(--line)}
+.shot__frame img{width:100%;height:auto;display:block;transition:transform 2.6s ease}
+.shot__num{position:absolute;top:.7rem;left:.7rem;z-index:2;background:rgba(20,16,40,.85);color:#fff;font-weight:800;font-family:var(--font-display);
+  font-size:.74rem;padding:.25rem .6rem;border-radius:var(--radius-pill);backdrop-filter:blur(4px)}
+.shot__cap{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.95rem 1.1rem}
+.shot__cap b{font-family:var(--font-display);font-size:1rem}
+.shot__cap small{color:var(--muted);display:block;font-size:.8rem;font-weight:500}
+.shot__cap .go{width:34px;height:34px;border-radius:50%;background:var(--brand-soft);display:grid;place-items:center;flex:0 0 auto;transition:.18s}
+.shot:hover .shot__cap .go{background:var(--brand)}
+.shot:hover .shot__cap .go svg{stroke:#fff}
+.shot__cap .go svg{width:18px;height:18px;stroke:var(--brand)}
+.skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.3rem}
+.swatch{border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--line);text-decoration:none;color:inherit;box-shadow:var(--shadow-1);transition:.18s;display:block}
+.swatch:hover{transform:translateY(-4px);box-shadow:var(--shadow-3);text-decoration:none}
+.swatch__shot{height:170px;overflow:hidden;border-bottom:1px solid var(--line);position:relative}
+.swatch__shot img{width:100%;height:auto;display:block}
+.swatch__bar{height:8px;display:flex}.swatch__bar span{flex:1}
+.swatch__cap{padding:.9rem 1.1rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.swatch__cap b{font-family:var(--font-display);font-size:1rem;display:block}
+.swatch__cap small{color:var(--muted);font-size:.8rem}
+.tok-row{display:flex;gap:.6rem;flex-wrap:wrap}
+.tok{display:flex;align-items:center;gap:.5rem;border:1px solid var(--line);border-radius:var(--radius-pill);padding:.4rem .8rem;font-size:.82rem;font-weight:600;background:var(--paper)}
+.tok i{width:16px;height:16px;border-radius:50%;display:inline-block}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand__mark">E</span><span class="brand__name">Ever<span>LMS</span><small>Prototype gallery</small></span></a>
+    <div class="nav__spacer"></div>
+    <div class="nav__actions">
+      <a class="btn btn--ghost btn--sm" href="#design">Design system</a>
+      <a class="btn btn--primary btn--sm" href="index.html">Open homepage</a>
+    </div>
+  </div>
+</header>
+
+<section class="galhero">
+  <div class="container">
+    <span class="badge badge--ink">Prototype · v3</span>
+    <h1 style="margin-top:.8rem">EverLMS — Interactive Prototype</h1>
+    <p class="lede">A complete, responsive, multi-page design for the EverLMS learning platform — built on one token-driven design system. Hover a card to scroll the page; click to open it.</p>
+    <div class="gal-meta">
+      <span class="badge badge--ink badge--dot">17 pages</span>
+      <span class="badge badge--ink badge--dot">6 color skins</span>
+      <span class="badge badge--ink badge--dot">1 design system</span>
+      <span class="badge badge--ink badge--dot">Real photography</span>
+      <span class="badge badge--ink badge--dot">WCAG-minded</span>
+    </div>
+  </div>
+</section>
+
+<main id="main">
+  <!-- PUBLIC -->
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Marketing &amp; public</span>
+      <h2 style="margin-bottom:1.6rem">Public site</h2>
+      <div class="gal-grid">
+        <a class="shot" href="index.html"><div class="shot__frame"><span class="shot__num">01</span><img src="_screens/index.png" alt="Homepage preview" loading="lazy"></div><div class="shot__cap"><span><b>Homepage</b><small>Hero, courses, skin switcher</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="courses.html"><div class="shot__frame"><span class="shot__num">02</span><img src="_screens/courses.png" alt="Course catalog preview" loading="lazy"></div><div class="shot__cap"><span><b>Course catalog</b><small>Filters + course grid</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="course-detail.html"><div class="shot__frame"><span class="shot__num">03</span><img src="_screens/course-detail.png" alt="Course detail preview" loading="lazy"></div><div class="shot__cap"><span><b>Course detail</b><small>Curriculum + enroll</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="categories.html"><div class="shot__frame"><span class="shot__num">04</span><img src="_screens/categories.png" alt="Categories preview" loading="lazy"></div><div class="shot__cap"><span><b>Categories</b><small>Browse by topic</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="category-detail.html"><div class="shot__frame"><span class="shot__num">05</span><img src="_screens/category-detail.png" alt="Category landing preview" loading="lazy"></div><div class="shot__cap"><span><b>Category landing</b><small>Filtered listing</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="pricing.html"><div class="shot__frame"><span class="shot__num">06</span><img src="_screens/pricing.png" alt="Pricing preview" loading="lazy"></div><div class="shot__cap"><span><b>Pricing</b><small>Plans + compare</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="instructor.html"><div class="shot__frame"><span class="shot__num">07</span><img src="_screens/instructor.png" alt="Instructor profile preview" loading="lazy"></div><div class="shot__cap"><span><b>Instructor profile</b><small>Bio + courses</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="blog.html"><div class="shot__frame"><span class="shot__num">08</span><img src="_screens/blog.png" alt="Blog preview" loading="lazy"></div><div class="shot__cap"><span><b>Blog / News</b><small>Articles grid</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="article-detail.html"><div class="shot__frame"><span class="shot__num">09</span><img src="_screens/article-detail.png" alt="Article preview" loading="lazy"></div><div class="shot__cap"><span><b>Article detail</b><small>Reading view</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="about.html"><div class="shot__frame"><span class="shot__num">10</span><img src="_screens/about.png" alt="About preview" loading="lazy"></div><div class="shot__cap"><span><b>About</b><small>Mission + team</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="contact.html"><div class="shot__frame"><span class="shot__num">11</span><img src="_screens/contact.png" alt="Contact preview" loading="lazy"></div><div class="shot__cap"><span><b>Contact</b><small>Form + details</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="login.html"><div class="shot__frame"><span class="shot__num">12</span><img src="_screens/login.png" alt="Login preview" loading="lazy"></div><div class="shot__cap"><span><b>Login / Register</b><small>Auth screen</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section class="section section--soft">
+    <div class="container">
+      <span class="eyebrow">Signed-in experience</span>
+      <h2 style="margin-bottom:1.6rem">Learner app</h2>
+      <div class="gal-grid">
+        <a class="shot" href="dashboard.html"><div class="shot__frame"><span class="shot__num">13</span><img src="_screens/dashboard.png" alt="Dashboard preview" loading="lazy"></div><div class="shot__cap"><span><b>Dashboard</b><small>KPIs + continue learning</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="my-courses.html"><div class="shot__frame"><span class="shot__num">14</span><img src="_screens/my-courses.png" alt="My courses preview" loading="lazy"></div><div class="shot__cap"><span><b>My courses</b><small>Progress + tabs</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="learn.html"><div class="shot__frame"><span class="shot__num">15</span><img src="_screens/learn.png" alt="Lesson player preview" loading="lazy"></div><div class="shot__cap"><span><b>Lesson player</b><small>Video + curriculum rail</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="quiz.html"><div class="shot__frame"><span class="shot__num">16</span><img src="_screens/quiz.png" alt="Quiz preview" loading="lazy"></div><div class="shot__cap"><span><b>Quiz</b><small>Question player</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+        <a class="shot" href="my-certificates.html"><div class="shot__frame"><span class="shot__num">17</span><img src="_screens/my-certificates.png" alt="Certificates preview" loading="lazy"></div><div class="shot__cap"><span><b>My certificates</b><small>Earned + verify</small></span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKINS -->
+  <section class="section" id="skins">
+    <div class="container">
+      <span class="eyebrow">Same markup, six palettes</span>
+      <h2>Color skins</h2>
+      <p class="lede" style="margin-bottom:1.8rem">The homepage rendered in every skin. On the live homepage you can switch them instantly with the floating skin picker.</p>
+      <div class="skin-grid">
+        <a class="swatch" href="index.html"><div class="swatch__shot"><img src="_screens/index.png" alt="Indigo skin" loading="lazy"></div><div class="swatch__bar"><span style="background:#4f46e5"></span><span style="background:#7c6cff"></span><span style="background:#f5b100"></span></div><div class="swatch__cap"><span><b>Indigo Premium</b><small>Default · live switcher</small></span></div></a>
+        <a class="swatch" href="home-ocean.html"><div class="swatch__shot"><img src="_screens/home-ocean.png" alt="Ocean skin" loading="lazy"></div><div class="swatch__bar"><span style="background:#0e7fc1"></span><span style="background:#36a6e2"></span><span style="background:#ff7a45"></span></div><div class="swatch__cap"><span><b>Ocean Scholar</b><small>Heritage blue + coral</small></span></div></a>
+        <a class="swatch" href="home-midnight.html"><div class="swatch__shot"><img src="_screens/home-midnight.png" alt="Midnight skin" loading="lazy"></div><div class="swatch__bar"><span style="background:#4338ca"></span><span style="background:#6366f1"></span><span style="background:#22d3ee"></span></div><div class="swatch__cap"><span><b>Midnight Electric</b><small>Violet + electric cyan</small></span></div></a>
+        <a class="swatch" href="home-emerald.html"><div class="swatch__shot"><img src="_screens/home-emerald.png" alt="Emerald skin" loading="lazy"></div><div class="swatch__bar"><span style="background:#0f766e"></span><span style="background:#14b8a6"></span><span style="background:#f59e0b"></span></div><div class="swatch__cap"><span><b>Emerald Focus</b><small>Teal + amber</small></span></div></a>
+        <a class="swatch" href="home-sunset.html"><div class="swatch__shot"><img src="_screens/home-sunset.png" alt="Sunset skin" loading="lazy"></div><div class="swatch__bar"><span style="background:#ef5d4c"></span><span style="background:#ff8366"></span><span style="background:#ffb020"></span></div><div class="swatch__cap"><span><b>Sunset Coral</b><small>Warm coral + gold</small></span></div></a>
+        <a class="swatch" href="home-rose.html"><div class="swatch__shot"><img src="_screens/home-rose.png" alt="Rose skin" loading="lazy"></div><div class="swatch__bar"><span style="background:#db2777"></span><span style="background:#f0588c"></span><span style="background:#7c3aed"></span></div><div class="swatch__cap"><span><b>Rose Quartz</b><small>Magenta + violet</small></span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESIGN SYSTEM -->
+  <section class="section section--soft" id="design">
+    <div class="container">
+      <span class="eyebrow">Foundations</span>
+      <h2>One design system</h2>
+      <p class="lede" style="margin-bottom:1.8rem">Every page is built from the same token-driven CSS (<code>assets/css/everlms.css</code>) — color, type, spacing, and a full LMS component library. Skins re-map only the color tokens.</p>
+      <div class="grid grid--3">
+        <div class="card">
+          <h3>Palette (Indigo)</h3>
+          <div class="tok-row" style="margin-top:.8rem">
+            <span class="tok"><i style="background:#4f46e5"></i>brand</span>
+            <span class="tok"><i style="background:#f5b100"></i>accent</span>
+            <span class="tok"><i style="background:#1b1830"></i>ink</span>
+            <span class="tok"><i style="background:#15a06b"></i>success</span>
+            <span class="tok"><i style="background:#dc4b46"></i>error</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Typography</h3>
+          <p style="margin:.6rem 0 0"><span style="font-family:var(--font-display);font-weight:800;font-size:1.4rem">Plus Jakarta Sans</span><br><small class="text-muted">Display · headings</small></p>
+          <p style="margin:.4rem 0 0"><span style="font-size:1.1rem">Inter</span><br><small class="text-muted">Body · UI</small></p>
+        </div>
+        <div class="card">
+          <h3>Components</h3>
+          <p class="text-muted" style="margin:.6rem 0 0;font-size:.92rem">Course cards, curriculum accordion, enroll panel, lesson player, dashboard KPIs, progress rings, quiz player, pricing tiers, reviews, certificates, and the full marketing kit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="ctaband">
+        <h2>Start with the homepage</h2>
+        <p class="lede">Open the live homepage and try the skin switcher in the bottom-right corner.</p>
+        <div class="btn-row" style="justify-content:center;margin-top:1.2rem"><a class="btn btn--white btn--lg" href="index.html">Open homepage</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__legal" style="border:0;margin:0;padding:0">
+      <span>EverLMS prototype · C10-prototypes/html</span>
+      <span>© 2026 EverLMS</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

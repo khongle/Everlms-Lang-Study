@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>All Courses · EverLMS</title>
+<meta name="description" content="Browse 1,200+ expert-led courses in web development, AI, data analytics, design, business and more. Filter by level, price and rating to find your perfect course.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/everlms.css">
+<link rel="stylesheet" href="assets/css/skins.css">
+<style>
+/* catalog page extras — tokens only */
+.pagehero__search{display:flex;gap:.6rem;margin-top:1.6rem;max-width:580px}
+.pagehero__search input{flex:1;font:inherit;font-size:1rem;padding:.85rem 1.1rem;border:1.5px solid var(--line);
+  border-radius:var(--radius-pill);background:var(--paper);color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+.pagehero__search input:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.pagehero__search input::placeholder{color:var(--muted)}
+.pagehero__search .btn{flex:0 0 auto;border-radius:var(--radius-pill)}
+.catalog__aside{/* visible label for mobile toggle */}
+.chip--remove{background:var(--brand-soft);border-color:var(--brand);color:var(--brand)}
+.chip--remove:hover{background:var(--error-soft);border-color:var(--error);color:var(--error)}
+.filter__clear{margin-top:1rem;width:100%;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ===== PUBLIC HEADER ===== -->
+<a class="skip" href="#main">Skip to content</a>
+<div class="topbar">
+  <div class="container">
+    <span class="topbar__promo"><b>New</b>&nbsp;— AI Course Builder is live. Create a course in minutes.</span>
+    <nav class="topbar__links" aria-label="Utility">
+      <a href="instructor.html">Become an instructor</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Help</a>
+      <a href="dashboard.html">EN ▾</a>
+    </nav>
+  </div>
+</div>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html" aria-label="EverLMS home">
+      <span class="brand__mark">E</span>
+      <span class="brand__name">Ever<span>LMS</span><small>Learn without limits</small></span>
+    </a>
+    <button class="nav__toggle" data-nav-toggle aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+    </button>
+    <ul class="nav__links" id="nav-links">
+      <li class="has-mega">
+        <a href="courses.html" aria-current="page">Courses
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <div class="mega">
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Web Development</b><small>HTML, JS, React, full-stack</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1 .8 7.9A4 4 0 1 1 8 18a4 4 0 0 1-.8-7.9A4 4 0 0 1 8 2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>AI &amp; Machine Learning</b><small>LLMs, deep learning, MLOps</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 3 3 5-6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Data &amp; Analytics</b><small>SQL, Python, visualization</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 19l7-7-4-4-7 7v4zM15 6l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Design &amp; UX</b><small>Figma, product, branding</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v6l9 6 9-6V9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Business</b><small>Marketing, finance, leadership</small></span></a>
+          <a href="categories.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></span><span><b>Browse all categories</b><small>40+ topics, 1,200+ courses</small></span></a>
+        </div>
+      </li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav__spacer"></div>
+    <label class="nav__search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4" stroke-linecap="round"/></svg>
+      <input type="search" placeholder="Search courses…" aria-label="Search courses">
+    </label>
+    <div class="nav__actions">
+      <a class="btn btn--ghost btn--sm" href="login.html">Log in</a>
+      <a class="btn btn--primary btn--sm" href="login.html">Sign up</a>
+    </div>
+  </div>
+</header>
+<!-- ===== END HEADER ===== -->
+
+<main id="main">
+
+  <!-- PAGE HERO -->
+  <section class="pagehero">
+    <div class="container">
+      <nav class="crumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page">Courses</span>
+      </nav>
+      <h1>All <span class="grad-text">Courses</span></h1>
+      <p class="lede">Discover 1,200+ expert-led courses across tech, design and business. Learn at your pace, earn a verified certificate, and advance your career.</p>
+      <div class="pagehero__search" role="search">
+        <label for="catalog-search" class="hidden">Search all courses</label>
+        <input type="search" id="catalog-search" placeholder="Search for any topic, skill or instructor…" aria-label="Search all courses">
+        <button class="btn btn--brand" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+          Search
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOG: FILTERS + GRID -->
+  <section class="section section--soft">
+    <div class="container">
+      <div class="catalog">
+
+        <!-- LEFT FILTER ASIDE -->
+        <aside class="filter catalog__aside" aria-label="Course filters">
+
+          <!-- Category -->
+          <div class="filter__group">
+            <h4>Category</h4>
+            <label class="check"><input type="checkbox" checked> Web Development <span class="count">240</span></label>
+            <label class="check"><input type="checkbox"> AI &amp; Machine Learning <span class="count">180</span></label>
+            <label class="check"><input type="checkbox"> Data &amp; Analytics <span class="count">156</span></label>
+            <label class="check"><input type="checkbox"> Design &amp; UX <span class="count">198</span></label>
+            <label class="check"><input type="checkbox"> Business <span class="count">210</span></label>
+            <label class="check"><input type="checkbox"> Marketing <span class="count">132</span></label>
+            <label class="check"><input type="checkbox"> Photography &amp; Video <span class="count">96</span></label>
+            <label class="check"><input type="checkbox"> Personal Development <span class="count">88</span></label>
+          </div>
+
+          <!-- Level -->
+          <div class="filter__group">
+            <h4>Level</h4>
+            <label class="check"><input type="radio" name="level" value="all" checked> All levels</label>
+            <label class="check"><input type="radio" name="level" value="beginner"> Beginner</label>
+            <label class="check"><input type="radio" name="level" value="intermediate"> Intermediate</label>
+            <label class="check"><input type="radio" name="level" value="advanced"> Advanced</label>
+          </div>
+
+          <!-- Price -->
+          <div class="filter__group">
+            <h4>Price</h4>
+            <label class="check"><input type="radio" name="price" value="all" checked> All prices</label>
+            <label class="check"><input type="radio" name="price" value="free"> Free</label>
+            <label class="check"><input type="radio" name="price" value="paid"> Paid</label>
+          </div>
+
+          <!-- Rating -->
+          <div class="filter__group">
+            <h4>Rating</h4>
+            <label class="check">
+              <input type="radio" name="rating" value="4.5" checked>
+              <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span>
+              4.5 &amp; up
+            </label>
+            <label class="check">
+              <input type="radio" name="rating" value="4.0">
+              <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span>
+              4.0 &amp; up
+            </label>
+            <label class="check">
+              <input type="radio" name="rating" value="3.5">
+              <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span>
+              3.5 &amp; up
+            </label>
+          </div>
+
+          <!-- Duration -->
+          <div class="filter__group">
+            <h4>Duration</h4>
+            <label class="check"><input type="radio" name="duration" value="all" checked> Any duration</label>
+            <label class="check"><input type="radio" name="duration" value="short"> 0 – 10 hours</label>
+            <label class="check"><input type="radio" name="duration" value="medium"> 10 – 25 hours</label>
+            <label class="check"><input type="radio" name="duration" value="long"> 25+ hours</label>
+          </div>
+
+          <!-- Clear all -->
+          <div class="filter__clear">
+            <button class="btn btn--ghost btn--sm btn--block" type="button" onclick="return false">Clear all filters</button>
+          </div>
+
+        </aside>
+
+        <!-- RIGHT MAIN CONTENT -->
+        <div>
+
+          <!-- Toolbar -->
+          <div class="toolbar">
+            <p class="toolbar__count">Showing <b>1,248</b> courses</p>
+            <label for="sort-select" class="hidden">Sort by</label>
+            <select class="select" id="sort-select" aria-label="Sort courses">
+              <option>Most popular</option>
+              <option>Highest rated</option>
+              <option>Newest</option>
+              <option>Price: low to high</option>
+              <option>Price: high to low</option>
+            </select>
+          </div>
+
+          <!-- Active filter chips -->
+          <div class="chip-row" style="margin-bottom:1.4rem" aria-label="Active filters">
+            <span class="chip chip--remove is-active">
+              Web Development
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:14px;height:14px"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </span>
+            <span class="chip chip--remove is-active">
+              Rating: 4.5+
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:14px;height:14px"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </span>
+            <span class="chip chip--remove is-active">
+              Paid
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:14px;height:14px"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </span>
+          </div>
+
+          <!-- Course grid — 9 cards (8 canonical + 1 extra) -->
+          <div class="grid grid--3">
+
+            <!-- 1: React & Next.js -->
+            <article class="ccard">
+              <div class="ccard__media">
+                <img src="assets/img/course-web-01.jpg" alt="Complete Modern React &amp; Next.js Bootcamp">
+                <span class="ccard__cat badge badge--ink">Web Development</span>
+                <button class="ccard__bookmark" aria-label="Save course">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg>
+                </button>
+                <span class="ccard__price"><small>$199.99</small>$89.99</span>
+              </div>
+              <div class="ccard__body">
+                <div class="ccard__meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>52h</span>
+                  <span>420 lessons</span>
+                  <span>All levels</span>
+                </div>
+                <h3 class="ccard__title"><a href="course-detail.html">Complete Modern React &amp; Next.js Bootcamp</a></h3>
+                <div class="ccard__author"><img src="assets/img/instructor-01.jpg" alt=""> Sarah Chen</div>
+                <div class="ccard__foot">
+                  <span class="ccard__rating"><span class="rating-num">4.9</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(12,480)</small></span>
+                  <span class="badge badge--accent">Bestseller</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2: Machine Learning A–Z -->
+            <article class="ccard">
+              <div class="ccard__media">
+                <img src="assets/img/course-ai-01.jpg" alt="Machine Learning A–Z: Hands-On Python &amp; AI">
+                <span class="ccard__cat badge badge--ink">AI &amp; ML</span>
+                <button class="ccard__bookmark" aria-label="Save course">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg>
+                </button>
+                <span class="ccard__price"><small>$189.99</small>$94.99</span>
+              </div>
+              <div class="ccard__body">
+                <div class="ccard__meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>44h</span>
+                  <span>380 lessons</span>
+                  <span>Intermediate</span>
+                </div>
+                <h3 class="ccard__title"><a href="course-detail.html">Machine Learning A–Z: Hands-On Python &amp; AI</a></h3>
+                <div class="ccard__author"><img src="assets/img/instructor-m-01.jpg" alt=""> Dr. Marcus Reed</div>
+                <div class="ccard__foot">
+                  <span class="ccard__rating"><span class="rating-num">4.8</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(9,210)</small></span>
+                  <span class="badge badge--info">Hot</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3: Data Analytics -->
+            <article class="ccard">
+              <div class="ccard__media">
+                <img src="assets/img/course-data-01.jpg" alt="Data Analytics with SQL, Python &amp; Power BI">
+                <span class="ccard__cat badge badge--ink">Data &amp; Analytics</span>
+                <button class="ccard__bookmark" aria-label="Save course">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg>
+                </button>
+                <span class="ccard__price"><small>$159.99</small>$79.99</span>
+              </div>
+              <div class="ccard__body">
+                <div class="ccard__meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>38h</span>
+                  <span>300 lessons</span>
+                  <span>Beginner</span>
+                </div>
+                <h3 class="ccard__title"><a href="course-detail.html">Data Analytics with SQL, Python &amp; Power BI</a></h3>
+                <div class="ccard__author"><img src="assets/img/instructor-02.jpg" alt=""> Priya Sharma</div>
+                <div class="ccard__foot">
+                  <span class="ccard__rating"><span class="rating-num">4.7</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(6,540)</small></span>
+                  <span class="badge badge--success">New</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4: UI/UX Design Masterclass -->
+            <article class="ccard">
+              <div class="ccard__media">
+                <img src="assets/img/course-design-01.jpg" alt="UI/UX Design Masterclass: Figma to Product">
+                <span class="ccard__cat badge badge--ink">Design &amp; UX</span>
+                <button class="ccard__bookmark" aria-label="Save course">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg>
+                </button>
+                <span class="ccard__price"><small>$169.99</small>$84.99</span>
+              </div>
+              <div class="ccard__body">
+                <div class="ccard__meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>30h</span>
+                  <span>260 lessons</span>
+                  <span>All levels</span>
+                </div>
+                <h3 class="ccard__title"><a href="course-detail.html">UI/UX Design Masterclass: Figma to Product</a></h3>
+                <div class="ccard__author"><img src="assets/img/instructor-03.jpg" alt=""> Elena Rossi</div>
+                <div class="ccard__foot">
+                  <span class="ccard__rating"><span class="rating-num">4.9</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(8,300)</small></span>
+                  <span class="badge badge--accent">Bestseller</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5: Digital Marketing -->
+            <article class="ccard">
+              <div class="ccard__media">
+                <img src="assets/img/course-biz-01.jpg" alt="The Complete Digital Marketing Course">
+                <span class="ccard__cat badge badge--ink">Marketing</span>
+                <button class="ccard__bookmark" aria-label="Save course">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg>
+                </button>
+                <span class="ccard__price"><small>$149.99</small>$69.99</span>
+              </div>
+              <div class="ccard__body">
+                <div class="ccard__meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>41h</span>
+                  <span>350 lessons</span>
+                  <span>Beginner</span>
+                </div>
+                <h3 class="ccard__title"><a href="course-detail.html">The Complete Digital Marketing Course</a></h3>
+                <div class="ccard__author"><img src="assets/img/instructor-m-02.jpg" alt=""> James Carter</div>
+                <div class="ccard__foot">
+                  <span class="ccard__rating"><span class="rating-num">4.6</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(15,120)</small></span>
+                  <span class="badge badge--accent">Bestseller</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6: Python for Everybody (Free) -->
+            <article class="ccard">
+              <div class="ccard__media">
+                <img src="assets/img/course-edu-01.jpg" alt="Python for Everybody: Zero to Hero">
+                <span class="ccard__cat badge badge--ink">Web Development</span>
+                <button class="ccard__bookmark" aria-label="Save course">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg>
+                </button>
+                <span class="ccard__price ccard__price--free">Free</span>
+              </div>
+              <div class="ccard__body">
+                <div class="ccard__meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>28h</span>
+                  <span>210 lessons</span>
+                  <span>Beginner</span>
+                </div>
+                <h3 class="ccard__title"><a href="course-detail.html">Python for Everybody: Zero to Hero</a></h3>
+                <div class="ccard__author"><img src="assets/img/instructor-m-03.jpg" alt=""> David Kim</div>
+                <div class="ccard__foot">
+                  <span class="ccard__rating"><span class="rating-num">4.8</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(22,050)</small></span>
+                  <span class="badge badge--success">Free</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 7: IELTS & Business English -->
+            <article class="ccard">
+              <div class="ccard__media">
+                <img src="assets/img/course-lang-01.jpg" alt="IELTS &amp; Business English Mastery">
+                <span class="ccard__cat badge badge--ink">Personal Dev</span>
+                <button class="ccard__bookmark" aria-label="Save course">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg>
+                </button>
+                <span class="ccard__price"><small>$119.99</small>$59.99</span>
+              </div>
+              <div class="ccard__body">
+                <div class="ccard__meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>22h</span>
+                  <span>180 lessons</span>
+                  <span>All levels</span>
+                </div>
+                <h3 class="ccard__title"><a href="course-detail.html">IELTS &amp; Business English Mastery</a></h3>
+                <div class="ccard__author"><img src="assets/img/instructor-d-01.jpg" alt=""> Amara Okafor</div>
+                <div class="ccard__foot">
+                  <span class="ccard__rating"><span class="rating-num">4.7</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(4,210)</small></span>
+                  <span class="badge badge--info">Top Rated</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 8: Cybersecurity & Ethical Hacking -->
+            <article class="ccard">
+              <div class="ccard__media">
+                <img src="assets/img/course-web-02.jpg" alt="Cybersecurity &amp; Ethical Hacking Fundamentals">
+                <span class="ccard__cat badge badge--ink">Data &amp; Analytics</span>
+                <button class="ccard__bookmark" aria-label="Save course">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg>
+                </button>
+                <span class="ccard__price"><small>$199.99</small>$99.99</span>
+              </div>
+              <div class="ccard__body">
+                <div class="ccard__meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>35h</span>
+                  <span>290 lessons</span>
+                  <span>Intermediate</span>
+                </div>
+                <h3 class="ccard__title"><a href="course-detail.html">Cybersecurity &amp; Ethical Hacking Fundamentals</a></h3>
+                <div class="ccard__author"><img src="assets/img/instructor-m-04.jpg" alt=""> Tom&aacute;s Alvarez</div>
+                <div class="ccard__foot">
+                  <span class="ccard__rating"><span class="rating-num">4.8</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(5,870)</small></span>
+                  <span class="badge badge--accent">Hot</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 9: Extra — Advanced AI & Deep Learning (course-ai-02) -->
+            <article class="ccard">
+              <div class="ccard__media">
+                <img src="assets/img/course-ai-02.jpg" alt="Advanced Deep Learning with PyTorch &amp; TensorFlow">
+                <span class="ccard__cat badge badge--ink">AI &amp; ML</span>
+                <button class="ccard__bookmark" aria-label="Save course">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg>
+                </button>
+                <span class="ccard__price"><small>$209.99</small>$109.99</span>
+              </div>
+              <div class="ccard__body">
+                <div class="ccard__meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>48h</span>
+                  <span>410 lessons</span>
+                  <span>Advanced</span>
+                </div>
+                <h3 class="ccard__title"><a href="course-detail.html">Advanced Deep Learning with PyTorch &amp; TensorFlow</a></h3>
+                <div class="ccard__author"><img src="assets/img/instructor-m-01.jpg" alt=""> Dr. Marcus Reed</div>
+                <div class="ccard__foot">
+                  <span class="ccard__rating"><span class="rating-num">4.8</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(3,680)</small></span>
+                  <span class="badge badge--info">New</span>
+                </div>
+              </div>
+            </article>
+
+          </div><!-- /.grid -->
+
+          <!-- Pagination -->
+          <nav class="pager" aria-label="Course pages">
+            <a href="#" class="is-disabled" aria-label="Previous page">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M15 18l-6-6 6-6"/></svg>
+              Prev
+            </a>
+            <a href="#" class="is-active" aria-current="page" aria-label="Page 1">1</a>
+            <a href="#" aria-label="Page 2">2</a>
+            <a href="#" aria-label="Page 3">3</a>
+            <a href="#" aria-label="Page 4">4</a>
+            <a href="#" aria-label="Page 5">5</a>
+            <a href="#" aria-label="Page 6">6</a>
+            <a href="#" aria-label="Next page">
+              Next
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+          </nav>
+
+        </div><!-- /.catalog main -->
+      </div><!-- /.catalog -->
+    </div><!-- /.container -->
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="section">
+    <div class="container">
+      <div class="ctaband">
+        <span class="eyebrow eyebrow--plain" style="justify-content:center;color:#fff">Not sure where to start?</span>
+        <h2>Let our AI build your learning path</h2>
+        <p class="lede">Tell us your goal and we'll recommend the right courses, in the right order, at the right pace.</p>
+        <div class="btn-row" style="justify-content:center;margin-top:1.4rem">
+          <a class="btn btn--white btn--lg" href="login.html">Get my free path</a>
+          <a class="btn btn--ghost btn--lg" href="pricing.html">View pricing</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== SITE FOOTER ===== -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a class="brand" href="index.html" style="color:#fff">
+          <span class="brand__mark">E</span>
+          <span class="brand__name" style="color:#fff">Ever<span style="color:#fff">LMS</span><small>Learn without limits</small></span>
+        </a>
+        <p>The modern learning platform for teams and creators — build, sell and teach beautiful online courses.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/><path d="M10 9v12M10 14a4 4 0 0 1 8 0v7" stroke-linecap="round"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3V9z" fill="#fff" stroke="none"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg></a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="courses.html">All courses</a></li>
+          <li><a href="categories.html">Categories</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="instructor.html">Instructors</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="about.html">Careers</a></li>
+          <li><a href="about.html">Partners</a></li>
+          <li><a href="blog.html">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="contact.html">Help center</a></li>
+          <li><a href="dashboard.html">My account</a></li>
+          <li><a href="contact.html">Become an instructor</a></li>
+          <li><a href="contact.html">Terms</a></li>
+          <li><a href="contact.html">Privacy</a></li>
+        </ul>
+      </div>
+      <div class="footer__col footer__news">
+        <h4>Stay in the loop</h4>
+        <p style="color:rgba(255,255,255,.62);font-size:.9rem;margin-bottom:.8rem">Get new courses &amp; learning tips, monthly.</p>
+        <form onsubmit="return false">
+          <input type="email" placeholder="you@email.com" aria-label="Email">
+          <button class="btn btn--primary btn--block btn--sm" type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span>© 2026 EverLMS. All rights reserved.</span>
+      <span>Built on Drupal 11 · WCAG 2.1 AA</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>

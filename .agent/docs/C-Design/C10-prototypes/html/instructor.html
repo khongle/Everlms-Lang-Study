@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sarah Chen — Instructor Profile · EverLMS</title>
+<meta name="description" content="Sarah Chen is a former Google senior engineer and top-rated EverLMS instructor. 84,000 students, 4.9 rating, 8 expert courses in React, Next.js, and modern JavaScript.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/everlms.css">
+<link rel="stylesheet" href="assets/css/skins.css">
+<style>
+/* instructor-page extras (tokens only) */
+.instpage-hero{background:var(--grad-soft);padding-block:clamp(2.8rem,5vw,4.5rem);border-bottom:1px solid var(--line)}
+.insthead__actions{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin-top:1.2rem}
+.insthead__role{color:var(--brand);font-weight:700;font-size:1.05rem;margin:.25rem 0 .5rem}
+.insthead__tagline{color:var(--ink-soft);font-size:1.05rem;max-width:58ch;line-height:1.55;margin-bottom:.2rem}
+.share-btn{display:inline-flex;align-items:center;gap:.45rem;font-weight:600;font-size:.9rem;color:var(--ink-soft);
+  border:1px solid var(--line);border-radius:var(--radius-pill);padding:.5rem 1rem;background:var(--paper);cursor:pointer;transition:.15s}
+.share-btn:hover{border-color:var(--brand);color:var(--brand)}
+.share-btn svg{width:18px;height:18px;stroke:currentColor}
+.inststat-sep{width:1px;height:36px;background:var(--line)}
+@media(max-width:639.98px){.inststat-sep{display:none}.insthead__stats{gap:1rem}}
+</style>
+</head>
+<body>
+
+<!-- ===== PUBLIC HEADER (copy verbatim; set aria-current="page" on the active link) ===== -->
+<a class="skip" href="#main">Skip to content</a>
+<div class="topbar">
+  <div class="container">
+    <span class="topbar__promo"><b>New</b>&nbsp;— AI Course Builder is live. Create a course in minutes.</span>
+    <nav class="topbar__links" aria-label="Utility">
+      <a href="instructor.html" aria-current="page">Become an instructor</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Help</a>
+      <a href="dashboard.html">EN ▾</a>
+    </nav>
+  </div>
+</div>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html" aria-label="EverLMS home">
+      <span class="brand__mark">E</span>
+      <span class="brand__name">Ever<span>LMS</span><small>Learn without limits</small></span>
+    </a>
+    <button class="nav__toggle" data-nav-toggle aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+    </button>
+    <ul class="nav__links" id="nav-links">
+      <li class="has-mega">
+        <a href="courses.html">Courses
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <div class="mega">
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Web Development</b><small>HTML, JS, React, full-stack</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1 .8 7.9A4 4 0 1 1 8 18a4 4 0 0 1-.8-7.9A4 4 0 0 1 8 2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>AI &amp; Machine Learning</b><small>LLMs, deep learning, MLOps</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 3 3 5-6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Data &amp; Analytics</b><small>SQL, Python, visualization</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 19l7-7-4-4-7 7v4zM15 6l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Design &amp; UX</b><small>Figma, product, branding</small></span></a>
+          <a href="category-detail.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v6l9 6 9-6V9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Business</b><small>Marketing, finance, leadership</small></span></a>
+          <a href="categories.html"><span class="mega__ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></span><span><b>Browse all categories</b><small>40+ topics, 1,200+ courses</small></span></a>
+        </div>
+      </li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav__spacer"></div>
+    <label class="nav__search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4" stroke-linecap="round"/></svg>
+      <input type="search" placeholder="Search courses…" aria-label="Search courses">
+    </label>
+    <div class="nav__actions">
+      <a class="btn btn--ghost btn--sm" href="login.html">Log in</a>
+      <a class="btn btn--primary btn--sm" href="login.html">Sign up</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ===== (1) PAGE HERO — INSTRUCTOR HEADER ===== -->
+  <section class="instpage-hero">
+    <div class="container">
+      <nav class="crumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="courses.html">Instructors</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page">Sarah Chen</span>
+      </nav>
+
+      <div class="insthead">
+        <img src="assets/img/instructor-01.jpg" alt="Sarah Chen, Senior Software Engineer and Educator">
+        <div>
+          <div class="tag-row" style="margin-bottom:.6rem">
+            <span class="badge badge--solid">Top Instructor</span>
+            <span class="badge badge--accent">Bestselling Author</span>
+          </div>
+          <h1 style="margin-bottom:0">Sarah Chen</h1>
+          <p class="insthead__role">Senior Software Engineer &amp; Educator</p>
+          <p class="insthead__tagline">Helping engineers write cleaner, faster, more modern code — one lesson at a time. Former Googler, now full-time teacher and open-source contributor.</p>
+
+          <div class="insthead__stats" role="list">
+            <div class="insthead__stat" role="listitem">
+              <b>
+                <span class="stars stars--lg" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+                </span>
+                4.9
+              </b>
+              <span>Instructor rating</span>
+            </div>
+            <div class="inststat-sep" aria-hidden="true"></div>
+            <div class="insthead__stat" role="listitem">
+              <b>31,200</b>
+              <span>Reviews</span>
+            </div>
+            <div class="inststat-sep" aria-hidden="true"></div>
+            <div class="insthead__stat" role="listitem">
+              <b>84,000</b>
+              <span>Students</span>
+            </div>
+            <div class="inststat-sep" aria-hidden="true"></div>
+            <div class="insthead__stat" role="listitem">
+              <b>8</b>
+              <span>Courses</span>
+            </div>
+          </div>
+
+          <div class="insthead__actions">
+            <a class="btn btn--primary" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+              Follow
+            </a>
+            <button class="share-btn" type="button" aria-label="Share profile">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 3.9M15.4 6.5l-6.8 3.9"/></svg>
+              Share
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== (2) ABOUT + SPLIT MEDIA ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="split">
+        <div>
+          <span class="eyebrow">About Sarah</span>
+          <h2>Turning real-world engineering into clear, actionable lessons</h2>
+          <div class="prose">
+            <p>Sarah Chen spent 12 years building web products at Google and a string of high-growth startups before trading her IDE for a screen recorder. She shipped features used by hundreds of millions of people, contributed to open-source tooling adopted across the industry, and mentored dozens of engineers from junior to senior.</p>
+            <p>That depth of real-world experience flows directly into her teaching. Sarah specialises in React, Next.js, TypeScript, and the broader modern JavaScript ecosystem — covering not just the "how" but the "why" behind every pattern and trade-off. Her students consistently describe her explanations as the clearest they have encountered anywhere.</p>
+            <p>When she is not recording, Sarah writes about software architecture on her blog, speaks at conferences, and reviews open-source pull requests. She is passionate about making professional-grade engineering education accessible to everyone, regardless of background.</p>
+          </div>
+          <ul class="icon-list" style="margin-top:1.6rem">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16"/></svg>
+              <span><b>React &amp; Next.js</b> — App Router, server components, RSC patterns, and performance optimisation.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>
+              <span><b>Modern JavaScript &amp; TypeScript</b> — ES2024 features, type safety, and scalable architecture.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"/></svg>
+              <span><b>Full-stack development</b> — API design, databases, authentication, and cloud deployment.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a4 4 0 1 0 0 8c3 0 4-4 6-4s3 4 6 4a4 4 0 1 0 0-8c-3 0-4 4-6 4S9 8 6 8z"/></svg>
+              <span><b>AI-assisted engineering</b> — integrating LLMs, prompt engineering, and AI tooling into real products.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z"/></svg>
+              <span><b>Engineering best practices</b> — code review, testing, CI/CD, and professional developer workflows.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="split__media">
+          <img src="assets/img/scene-team-02.jpg" alt="Sarah collaborating with her team in a modern studio">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== (3) COURSES BY SARAH ===== -->
+  <section class="section section--soft">
+    <div class="container">
+      <div class="flex justify-between items-center flex-wrap gap-2 sec-head" style="margin-bottom:2rem">
+        <div>
+          <span class="eyebrow">Her curriculum</span>
+          <h2>Courses by <span class="grad-text">Sarah Chen</span></h2>
+          <p class="lede">Eight expert-crafted courses spanning modern web development, AI engineering, and career growth — each one built from real production experience.</p>
+        </div>
+        <a class="btn btn--ghost" href="courses.html">All courses</a>
+      </div>
+
+      <div class="grid grid--3">
+
+        <!-- Course 1 — canonical -->
+        <article class="ccard">
+          <div class="ccard__media">
+            <img src="assets/img/course-web-01.jpg" alt="Complete Modern React & Next.js Bootcamp">
+            <span class="ccard__cat badge badge--ink">Web Development</span>
+            <button class="ccard__bookmark" aria-label="Save course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg></button>
+            <span class="ccard__price"><small>$199.99</small>$89.99</span>
+          </div>
+          <div class="ccard__body">
+            <div class="ccard__meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>52h</span>
+              <span>420 lessons</span>
+              <span>All levels</span>
+            </div>
+            <h3 class="ccard__title"><a href="course-detail.html">Complete Modern React &amp; Next.js Bootcamp</a></h3>
+            <div class="ccard__author"><img src="assets/img/instructor-01.jpg" alt=""> Sarah Chen</div>
+            <div class="ccard__foot">
+              <span class="ccard__rating"><span class="rating-num">4.9</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(12,480)</small></span>
+              <span class="badge badge--accent">Bestseller</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Course 2 — TypeScript -->
+        <article class="ccard">
+          <div class="ccard__media">
+            <img src="assets/img/course-web-02.jpg" alt="TypeScript Mastery: From Zero to Expert">
+            <span class="ccard__cat badge badge--ink">Web Development</span>
+            <button class="ccard__bookmark" aria-label="Save course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg></button>
+            <span class="ccard__price"><small>$179.99</small>$79.99</span>
+          </div>
+          <div class="ccard__body">
+            <div class="ccard__meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>36h</span>
+              <span>290 lessons</span>
+              <span>Intermediate</span>
+            </div>
+            <h3 class="ccard__title"><a href="course-detail.html">TypeScript Mastery: From Zero to Production-Ready</a></h3>
+            <div class="ccard__author"><img src="assets/img/instructor-01.jpg" alt=""> Sarah Chen</div>
+            <div class="ccard__foot">
+              <span class="ccard__rating"><span class="rating-num">4.9</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(7,840)</small></span>
+              <span class="badge badge--accent">Bestseller</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Course 3 — Node.js / API -->
+        <article class="ccard">
+          <div class="ccard__media">
+            <img src="assets/img/course-web-03.jpg" alt="Node.js & REST APIs: Build Production-Grade Backends">
+            <span class="ccard__cat badge badge--ink">Web Development</span>
+            <button class="ccard__bookmark" aria-label="Save course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg></button>
+            <span class="ccard__price"><small>$169.99</small>$74.99</span>
+          </div>
+          <div class="ccard__body">
+            <div class="ccard__meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>30h</span>
+              <span>240 lessons</span>
+              <span>Intermediate</span>
+            </div>
+            <h3 class="ccard__title"><a href="course-detail.html">Node.js &amp; REST APIs: Build Production-Grade Backends</a></h3>
+            <div class="ccard__author"><img src="assets/img/instructor-01.jpg" alt=""> Sarah Chen</div>
+            <div class="ccard__foot">
+              <span class="ccard__rating"><span class="rating-num">4.8</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(5,310)</small></span>
+              <span class="badge badge--info">Hot</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Course 4 — AI for developers -->
+        <article class="ccard">
+          <div class="ccard__media">
+            <img src="assets/img/course-ai-02.jpg" alt="AI for Web Developers: Build LLM-Powered Products">
+            <span class="ccard__cat badge badge--ink">AI &amp; ML</span>
+            <button class="ccard__bookmark" aria-label="Save course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg></button>
+            <span class="ccard__price"><small>$189.99</small>$84.99</span>
+          </div>
+          <div class="ccard__body">
+            <div class="ccard__meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>24h</span>
+              <span>195 lessons</span>
+              <span>All levels</span>
+            </div>
+            <h3 class="ccard__title"><a href="course-detail.html">AI for Web Developers: Build LLM-Powered Products</a></h3>
+            <div class="ccard__author"><img src="assets/img/instructor-01.jpg" alt=""> Sarah Chen</div>
+            <div class="ccard__foot">
+              <span class="ccard__rating"><span class="rating-num">4.9</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(3,920)</small></span>
+              <span class="badge badge--accent">New</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Course 5 — React performance -->
+        <article class="ccard">
+          <div class="ccard__media">
+            <img src="assets/img/course-web-04.jpg" alt="Advanced React Patterns & Performance">
+            <span class="ccard__cat badge badge--ink">Web Development</span>
+            <button class="ccard__bookmark" aria-label="Save course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg></button>
+            <span class="ccard__price"><small>$179.99</small>$84.99</span>
+          </div>
+          <div class="ccard__body">
+            <div class="ccard__meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>28h</span>
+              <span>220 lessons</span>
+              <span>Advanced</span>
+            </div>
+            <h3 class="ccard__title"><a href="course-detail.html">Advanced React Patterns &amp; Performance Optimisation</a></h3>
+            <div class="ccard__author"><img src="assets/img/instructor-01.jpg" alt=""> Sarah Chen</div>
+            <div class="ccard__foot">
+              <span class="ccard__rating"><span class="rating-num">4.9</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(4,670)</small></span>
+              <span class="badge badge--accent">Bestseller</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Course 6 — Design for devs -->
+        <article class="ccard">
+          <div class="ccard__media">
+            <img src="assets/img/course-design-02.jpg" alt="Design Systems for Engineers: Tokens to Components">
+            <span class="ccard__cat badge badge--ink">Design &amp; UX</span>
+            <button class="ccard__bookmark" aria-label="Save course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" stroke-linejoin="round"/></svg></button>
+            <span class="ccard__price"><small>$149.99</small>$64.99</span>
+          </div>
+          <div class="ccard__body">
+            <div class="ccard__meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>18h</span>
+              <span>145 lessons</span>
+              <span>All levels</span>
+            </div>
+            <h3 class="ccard__title"><a href="course-detail.html">Design Systems for Engineers: Tokens to Components</a></h3>
+            <div class="ccard__author"><img src="assets/img/instructor-01.jpg" alt=""> Sarah Chen</div>
+            <div class="ccard__foot">
+              <span class="ccard__rating"><span class="rating-num">4.8</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><small>(2,190)</small></span>
+              <span class="badge badge--info">Hot</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== (4) STUDENT REVIEWS ===== -->
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Student feedback</span>
+      <h2>What students say about Sarah</h2>
+
+      <!-- Rating summary -->
+      <div class="review-summary" style="margin:2rem 0 2.8rem">
+        <div class="review-summary__score">
+          <div class="review-summary__big">4.9</div>
+          <span class="stars stars--lg" aria-label="4.9 out of 5 stars">
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+          </span>
+          <div class="text-sm text-muted" style="margin-top:.4rem">Instructor rating</div>
+        </div>
+        <div class="review-bars">
+          <div class="review-bar"><span style="min-width:2rem;text-align:right">5</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><div class="track"><span style="width:86%"></span></div><span style="min-width:2.5rem">86%</span></div>
+          <div class="review-bar"><span style="min-width:2rem;text-align:right">4</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><div class="track"><span style="width:11%"></span></div><span style="min-width:2.5rem">11%</span></div>
+          <div class="review-bar"><span style="min-width:2rem;text-align:right">3</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><div class="track"><span style="width:2%"></span></div><span style="min-width:2.5rem">2%</span></div>
+          <div class="review-bar"><span style="min-width:2rem;text-align:right">2</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><div class="track"><span style="width:1%"></span></div><span style="min-width:2.5rem">1%</span></div>
+          <div class="review-bar"><span style="min-width:2rem;text-align:right">1</span><span class="stars"><svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></span><div class="track"><span style="width:0%"></span></div><span style="min-width:2.5rem">0%</span></div>
+        </div>
+      </div>
+
+      <!-- Individual reviews -->
+      <div class="rev">
+        <div class="rev__head">
+          <img src="assets/img/avatar-07.jpg" alt="">
+          <div>
+            <div class="rev__name">Michael O.</div>
+            <div class="rev__date">Frontend Engineer, Berlin · React Bootcamp</div>
+          </div>
+          <span class="stars" aria-label="5 stars" style="margin-left:auto">
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+          </span>
+        </div>
+        <p>The React Bootcamp is genuinely the best money I have spent on my career. Sarah explains concepts the way a senior engineer talks to a peer — no hand-waving, just clear reasoning and real examples. I went from struggling with useEffect to shipping a full-stack Next.js app in six weeks.</p>
+      </div>
+
+      <div class="rev">
+        <div class="rev__head">
+          <img src="assets/img/avatar-01.jpg" alt="">
+          <div>
+            <div class="rev__name">Linh Tran</div>
+            <div class="rev__date">Software Developer, Singapore · TypeScript Mastery</div>
+          </div>
+          <span class="stars" aria-label="5 stars" style="margin-left:auto">
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+          </span>
+        </div>
+        <p>I have tried three other TypeScript courses and none came close. Sarah's course finally made generics and utility types click for me. The pacing is perfect — thorough enough to be complete, but tight enough that you never feel like you are watching someone type slowly. Already recommended it to my whole team.</p>
+      </div>
+
+      <div class="rev">
+        <div class="rev__head">
+          <img src="assets/img/avatar-04.jpg" alt="">
+          <div>
+            <div class="rev__name">Aisha N.</div>
+            <div class="rev__date">Fullstack Engineer, London · AI for Web Developers</div>
+          </div>
+          <span class="stars" aria-label="5 stars" style="margin-left:auto">
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg>
+          </span>
+        </div>
+        <p>Sarah's ability to bridge her Google engineering background with practical, learner-friendly teaching is remarkable. The AI for Web Developers course gave me a production-ready toolkit in three weeks. I shipped a feature using streaming LLM responses on my first try because the course covered exactly the right edge cases. Outstanding instructor.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== CTA BAND ===== -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="ctaband">
+        <span class="eyebrow eyebrow--plain" style="justify-content:center;color:#fff">Ready to learn from Sarah?</span>
+        <h2>Join 84,000 students already building with Sarah</h2>
+        <p class="lede">Enrol in any of Sarah's courses and get lifetime access, hands-on projects, and a verified certificate when you complete.</p>
+        <div class="btn-row" style="justify-content:center;margin-top:1.4rem">
+          <a class="btn btn--white btn--lg" href="course-detail.html">Start with the React Bootcamp</a>
+          <a class="btn btn--ghost btn--lg" href="courses.html">Browse all courses</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== SITE FOOTER (copy verbatim on every public/app page) ===== -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a class="brand" href="index.html" style="color:#fff">
+          <span class="brand__mark">E</span>
+          <span class="brand__name" style="color:#fff">Ever<span style="color:#fff">LMS</span><small>Learn without limits</small></span>
+        </a>
+        <p>The modern learning platform for teams and creators — build, sell and teach beautiful online courses.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/><path d="M10 9v12M10 14a4 4 0 0 1 8 0v7" stroke-linecap="round"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3V9z" fill="#fff" stroke="none"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg></a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="courses.html">All courses</a></li>
+          <li><a href="categories.html">Categories</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="instructor.html">Instructors</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="about.html">Careers</a></li>
+          <li><a href="about.html">Partners</a></li>
+          <li><a href="blog.html">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="contact.html">Help center</a></li>
+          <li><a href="dashboard.html">My account</a></li>
+          <li><a href="contact.html">Become an instructor</a></li>
+          <li><a href="contact.html">Terms</a></li>
+          <li><a href="contact.html">Privacy</a></li>
+        </ul>
+      </div>
+      <div class="footer__col footer__news">
+        <h4>Stay in the loop</h4>
+        <p style="color:rgba(255,255,255,.62);font-size:.9rem;margin-bottom:.8rem">Get new courses &amp; learning tips, monthly.</p>
+        <form onsubmit="return false">
+          <input type="email" placeholder="you@email.com" aria-label="Email">
+          <button class="btn btn--primary btn--block btn--sm" type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span>© 2026 EverLMS. All rights reserved.</span>
+      <span>Built on Drupal 11 · WCAG 2.1 AA</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>
