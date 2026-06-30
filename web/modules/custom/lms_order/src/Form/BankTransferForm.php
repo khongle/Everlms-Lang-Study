@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\lms_order\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -10,7 +12,7 @@ use Drupal\lms_order\Entity\Order;
 /**
  * Provides a receipt upload form for pending Bank Transfer orders.
  */
-class BankTransferForm extends FormBase {
+final class BankTransferForm extends FormBase {
 
   /**
    * The order object.
@@ -22,14 +24,14 @@ class BankTransferForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
+  public function getFormId(): string {
     return 'lms_order_bank_transfer_form';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, Order $lms_order = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, Order $lms_order = NULL): array {
     if (!$lms_order) {
       return [];
     }
@@ -206,7 +208,7 @@ class BankTransferForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     if (!$this->order->hasField('field_payment_receipt')) {
       $this->messenger()->addError($this->t('System error: Receipt field not configured on Order entity. Pls contact admin.'));
       return;
@@ -224,6 +226,7 @@ class BankTransferForm extends FormBase {
 
         // Attach to order.
         $this->order->set('field_payment_receipt', $file_id);
+        $this->order->set('field_status', 'processing');
         $this->order->save();
 
         $this->messenger()->addStatus($this->t('Payment receipt uploaded successfully! We will verify your payment shortly.'));

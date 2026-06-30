@@ -23,3 +23,54 @@ function lms_quiz_update_10001(&$sandbox) {
   \Drupal::entityDefinitionUpdateManager()
     ->installFieldStorageDefinition('field_prerequisite_quizzes', 'lms_quiz', 'lms_quiz', $field_storage_definition);
 }
+
+/**
+ * Add field_course to lms_quiz entity.
+ */
+function lms_quiz_update_10002(&$sandbox) {
+  $field_storage_definition = BaseFieldDefinition::create('entity_reference')
+    ->setLabel(new TranslatableMarkup('Course'))
+    ->setDescription(new TranslatableMarkup('Course this quiz belongs to. Used for final assessment certificate issuance.'))
+    ->setSetting('target_type', 'lms_course')
+    ->setDisplayOptions('form', ['type' => 'entity_reference_autocomplete', 'weight' => -8])
+    ->setDisplayConfigurable('form', TRUE)
+    ->setDisplayConfigurable('view', TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_course', 'lms_quiz', 'lms_quiz', $field_storage_definition);
+}
+
+/**
+ * Backfill generated final assessment quizzes to generated courses.
+ */
+function lms_quiz_update_10003(&$sandbox) {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $quiz_storage = $entity_type_manager->getStorage('lms_quiz');
+  $course_storage = $entity_type_manager->getStorage('lms_course');
+
+  $quiz_ids = $quiz_storage->getQuery()
+    ->condition('name', 'Final Assessment:%', 'LIKE')
+    ->sort('id')
+    ->accessCheck(FALSE)
+    ->execute();
+  $course_ids = $course_storage->getQuery()
+    ->sort('id')
+    ->accessCheck(FALSE)
+    ->execute();
+
+  if (empty($quiz_ids) || count($quiz_ids) !== count($course_ids)) {
+    return;
+  }
+
+  $quiz_ids = array_values($quiz_ids);
+  $course_ids = array_values($course_ids);
+  foreach ($quiz_ids as $index => $quiz_id) {
+    $quiz = $quiz_storage->load($quiz_id);
+    if (!$quiz || !$quiz->hasField('field_course') || !$quiz->get('field_course')->isEmpty()) {
+      continue;
+    }
+
+    $quiz->set('field_course', $course_ids[$index]);
+    $quiz->save();
+  }
+}

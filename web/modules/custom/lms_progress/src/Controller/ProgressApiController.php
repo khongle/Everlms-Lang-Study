@@ -135,15 +135,21 @@ final class ProgressApiController extends ControllerBase {
     $course_completed = FALSE;
 
     if ($e_ids) {
-      $enrollment = $enrollment_storage->load(reset($e_ids));
-      $enrollment->set('field_progress', $progress_percentage);
-      
-      if ($progress_percentage >= 100 && $enrollment->get('field_status')->value !== 'completed') {
-        $enrollment->set('field_status', 'completed');
-        $enrollment->set('field_completed_at', $now);
-        $course_completed = TRUE;
+      $enrollments = $enrollment_storage->loadMultiple($e_ids);
+      foreach ($enrollments as $enrollment) {
+        $enrollment->set('field_progress', $progress_percentage);
+
+        if ($progress_percentage >= 100 && $enrollment->get('field_status')->value !== 'completed') {
+          $enrollment->set('field_status', 'completed');
+          $enrollment->set('field_completed_at', $now);
+          $course_completed = TRUE;
+        }
+        elseif ($progress_percentage > 0 && $enrollment->get('field_status')->value === 'enrolled') {
+          $enrollment->set('field_status', 'in_progress');
+        }
+
+        $enrollment->save();
       }
-      $enrollment->save();
     }
 
     return new JsonResponse([

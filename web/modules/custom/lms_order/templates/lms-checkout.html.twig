@@ -1,6 +1,11 @@
 {# lms-checkout.html.twig #}
 {{ attach_library('lms_theme/global') }}
 
+{% set checkout_subtotal = subtotal|default(price) %}
+{% set checkout_discount = discount|default(0) %}
+{% set checkout_total = total|default(price) %}
+{% set item_label = course.label() %}
+
 <style>
   .lms-checkout {
     max-width: 1100px;
@@ -36,7 +41,7 @@
     align-items: center;
     background: #1e293b;
     padding: 1.25rem;
-    border-radius: 0.75rem;
+    border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.05);
     margin-bottom: 1rem;
     cursor: pointer;
@@ -65,7 +70,7 @@
     background: #1e293b;
     border: 1px solid rgba(255,255,255,0.05);
     padding: 2rem;
-    border-radius: 1rem;
+    border-radius: 8px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     align-self: start;
     position: sticky;
@@ -81,9 +86,20 @@
   .lms-checkout__thumb {
     width: 120px;
     height: 80px;
-    border-radius: 0.5rem;
+    border-radius: 8px;
     object-fit: cover;
     background: #0b0f19;
+    flex: 0 0 auto;
+  }
+  .lms-checkout__thumb--placeholder {
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 800;
+    background:
+      linear-gradient(135deg, rgba(29,112,245,0.9), rgba(16,185,129,0.85)),
+      #0b0f19;
   }
   .lms-checkout__course-title {
     font-weight: 700;
@@ -94,12 +110,30 @@
   .lms-checkout__row {
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
     margin-bottom: 1rem;
     font-size: 1rem;
+  }
+  .lms-checkout__row--discount span:last-child,
+  .lms-checkout__coupon-badge {
+    color: #86efac;
+  }
+  .lms-checkout__coupon-badge {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(134,239,172,0.35);
+    border-radius: 999px;
+    background: rgba(34,197,94,0.1);
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    margin-top: 0.5rem;
   }
   .lms-checkout__total {
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid rgba(255,255,255,0.05);
@@ -107,9 +141,63 @@
     font-weight: 800;
     color: #fff;
   }
+  .lms-checkout-coupon {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: end;
+    background: #ffffff;
+    border: 1px solid #dbe5f1;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  }
+  .lms-checkout-coupon .form-item {
+    margin: 0;
+  }
+  .lms-checkout-coupon label {
+    color: #0f172a;
+    font-weight: 700;
+  }
+  .lms-checkout-coupon .description {
+    color: #475569;
+    font-size: 0.875rem;
+    margin-top: 0.35rem;
+  }
+  .lms-checkout-coupon input[type="text"] {
+    width: 100%;
+    min-height: 44px;
+    color: #0f172a;
+    background: #ffffff;
+    border: 1px solid #b8c7d9;
+    border-radius: 8px;
+    padding: 0.65rem 0.8rem;
+    text-transform: uppercase;
+  }
+  .lms-checkout-coupon input[type="text"]:focus {
+    border-color: #1d70f5;
+    box-shadow: 0 0 0 3px rgba(29, 112, 245, 0.16);
+    outline: none;
+  }
+  .lms-checkout-coupon input[type="submit"] {
+    min-height: 44px;
+    white-space: nowrap;
+  }
+  .lms-checkout-coupon__summary {
+    grid-column: 1 / -1;
+    color: #14532d;
+    background: #ecfdf5;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-weight: 700;
+  }
   
   @media(max-width: 768px) {
     .lms-checkout__grid { grid-template-columns: 1fr; }
+    .lms-checkout__summary { position: static; }
+    .lms-checkout-coupon { grid-template-columns: 1fr; }
   }
 </style>
 
@@ -129,21 +217,35 @@
       <h2 style="font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 1.5rem;">{{ 'Order Summary'|t }}</h2>
       
       <div class="lms-checkout__course">
-        <img src="{{ thumbnail|default('https://ui-avatars.com/api/?name=C&background=1d70f5&color=fff') }}" class="lms-checkout__thumb" alt="">
+        {% if thumbnail %}
+          <img src="{{ thumbnail }}" class="lms-checkout__thumb" alt="">
+        {% else %}
+          <div class="lms-checkout__thumb lms-checkout__thumb--placeholder" aria-hidden="true">{{ item_label|first|upper }}</div>
+        {% endif %}
         <div>
-          <div class="lms-checkout__course-title">{{ course.label() }}</div>
+          <div class="lms-checkout__course-title">{{ item_label }}</div>
           <div style="color: #94a3b8; font-size: 0.875rem;">{{ 'Lifetime access'|t }}</div>
+          {% if coupon_valid and coupon_code %}
+            <div class="lms-checkout__coupon-badge">{{ coupon_code }}</div>
+          {% endif %}
         </div>
       </div>
       
       <div class="lms-checkout__row">
-        <span style="color: #94a3b8;">{{ 'Original Price'|t }}</span>
-        <span style="color: #fff; font-weight: 600;">${{ price|number_format(2) }}</span>
+        <span style="color: #94a3b8;">{{ 'Subtotal'|t }}</span>
+        <span style="color: #fff; font-weight: 600;">${{ checkout_subtotal|number_format(2) }}</span>
       </div>
+
+      {% if checkout_discount > 0 %}
+        <div class="lms-checkout__row lms-checkout__row--discount">
+          <span style="color: #94a3b8;">{{ 'Discount'|t }}</span>
+          <span style="font-weight: 700;">-${{ checkout_discount|number_format(2) }}</span>
+        </div>
+      {% endif %}
       
       <div class="lms-checkout__total">
         <span>{{ 'Total'|t }}</span>
-        <span style="color: #10b981;">${{ price|number_format(2) }}</span>
+        <span style="color: #10b981;">${{ checkout_total|number_format(2) }}</span>
       </div>
     </div>
   </div>
@@ -175,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
       createOrder: function(data, actions) {
         return actions.order.create({
           purchase_units: [{
-            amount: { value: '{{ price|number_format(2, ".", "") }}' }
+            amount: { value: '{{ checkout_total|number_format(2, ".", "") }}' }
           }]
         });
       },

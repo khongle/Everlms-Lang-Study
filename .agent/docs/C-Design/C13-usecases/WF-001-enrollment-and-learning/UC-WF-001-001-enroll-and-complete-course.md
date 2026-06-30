@@ -33,7 +33,7 @@ Learner clicks Enroll / Start learning.
 ## Main success scenario
 1. Open course detail (P003).
 2. Enroll (free) or complete checkout (WF-004).
-3. `lms_user_course` created.
+3. `lms_user_course` created if the learner is not already enrolled in that course.
 4. Open lesson player (P019); view content.
 5. Mark lesson complete → `lms_user_lesson`; progress rolls up.
 6. Repeat until all required lessons + final quiz (WF-002) done.
@@ -41,6 +41,7 @@ Learner clicks Enroll / Start learning.
 
 ## Alternate and exception flows
 - Not entitled → gated, CTA to buy.
+- Already enrolled → reuse existing enrollment; do not create duplicate learner/course rows.
 - Drip-locked lesson → shown locked until `field_drip_days`.
 
 ## Entry pages
@@ -51,4 +52,4 @@ Learner clicks Enroll / Start learning.
 | Dashboard | App | /dashboard |
 
 ## Acceptance and test contract
-- Enroll creates `lms_user_course`; complete updates progress; gating matrix passes (B05 F-004/F-005).
+- Enroll creates or reuses one active learner/course enrollment; complete updates lesson progress and course progress; learner dashboards render one course card per course; gating matrix passes (B05 F-004/F-005).

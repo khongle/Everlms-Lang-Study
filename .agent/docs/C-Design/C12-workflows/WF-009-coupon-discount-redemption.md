@@ -19,7 +19,7 @@ coupon application on `lms_order` (sub-step of WF-004):
 
 ## Permission model
 - Initiator: buyer at checkout.
-- Admin: manager defines/limits coupons.
+- Admin: coupon definitions are currently managed through Drupal configuration (`lms_order.settings`). A manager-facing coupon administration UI is a product gap, not an as-built page.
 
 ## Notifications
-Inline validation message at checkout; discount recorded on order for reporting.
+Inline validation message at checkout; discount recorded on `lms_order.field_coupon_code`, `field_discount`, and adjusted `field_total` for reporting.

@@ -44,6 +44,7 @@ final class UserPortalController extends ControllerBase {
     $enrollment_ids = $this->entityTypeManager->getStorage('lms_user_course')
       ->getQuery()
       ->condition('uid', $uid)
+      ->sort('field_enrolled_at', 'DESC')
       ->accessCheck(FALSE)
       ->execute();
     $enrollments = $enrollment_ids
@@ -52,6 +53,7 @@ final class UserPortalController extends ControllerBase {
 
     // Build enrollment data.
     $enrolled_courses = [];
+    $seen_course_ids = [];
     $in_progress = 0;
     $completed = 0;
     $not_started = 0;
@@ -60,6 +62,12 @@ final class UserPortalController extends ControllerBase {
       if (!$course) {
         continue;
       }
+      $course_id = (int) $course->id();
+      if (isset($seen_course_ids[$course_id])) {
+        continue;
+      }
+      $seen_course_ids[$course_id] = TRUE;
+
       $status = $enrollment->get('field_status')->value;
       $course_lesson_ids = [];
 
@@ -214,7 +222,7 @@ final class UserPortalController extends ControllerBase {
     return [
       '#theme' => 'lms_dashboard',
       '#stats' => [
-        'enrolled' => count($enrollments),
+        'enrolled' => count($enrolled_courses),
         'in_progress' => $in_progress,
         'completed' => $completed,
         'certificates' => $cert_count,
@@ -246,6 +254,7 @@ final class UserPortalController extends ControllerBase {
       : [];
 
     $courses = [];
+    $seen_course_ids = [];
     $in_progress = 0;
     $completed = 0;
     $not_started = 0;
@@ -257,6 +266,12 @@ final class UserPortalController extends ControllerBase {
       if (!$course) {
         continue;
       }
+      $course_id = (int) $course->id();
+      if (isset($seen_course_ids[$course_id])) {
+        continue;
+      }
+      $seen_course_ids[$course_id] = TRUE;
+
       $course_lesson_ids = [];
 
       // Determine continue URL

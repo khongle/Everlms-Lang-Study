@@ -66,13 +66,13 @@
           <span class="lms-quiz-results-page__summary-value">{{ summary.passed }}</span>
           <span class="lms-quiz-results-page__summary-label">{{ 'Passed'|t }}</span>
         </div>
-        <div class="lms-quiz-results-page__summary-card">
-          <span class="lms-quiz-results-page__summary-value">{{ summary.average_score|number_format(0) }}%</span>
-          <span class="lms-quiz-results-page__summary-label">{{ 'Average score'|t }}</span>
+        <div class="lms-quiz-results-page__summary-card is-review">
+          <span class="lms-quiz-results-page__summary-value">{{ summary.review }}</span>
+          <span class="lms-quiz-results-page__summary-label">{{ 'In review'|t }}</span>
         </div>
-        <div class="lms-quiz-results-page__summary-card is-accent">
-          <span class="lms-quiz-results-page__summary-value">{{ summary.best_score|number_format(0) }}%</span>
-          <span class="lms-quiz-results-page__summary-label">{{ 'Best score'|t }}</span>
+        <div class="lms-quiz-results-page__summary-card">
+          <span class="lms-quiz-results-page__summary-value">{{ summary.retry }}</span>
+          <span class="lms-quiz-results-page__summary-label">{{ 'Retry'|t }}</span>
         </div>
       </div>
     </div>
@@ -80,8 +80,8 @@
     {% if results|length > 0 %}
       <div class="lms-quiz-results-board">
         {% for item in results %}
-          {% set status_text = item.state == 'passed' ? 'Passed'|t : (item.state == 'review' ? 'Review'|t : 'Retry'|t) %}
-          {% set icon_class = item.state == 'passed' ? 'fa-check-circle' : (item.state == 'review' ? 'fa-eye' : 'fa-redo') %}
+          {% set status_text = item.state == 'passed' ? 'Passed'|t : (item.state == 'review' ? 'Pending Review'|t : 'Retry'|t) %}
+          {% set icon_class = item.state == 'passed' ? 'fa-check-circle' : (item.state == 'review' ? 'fa-hourglass-half' : 'fa-redo') %}
 
           <article class="lms-quiz-result-row is-{{ item.state }}">
             <div class="lms-quiz-result-row__icon">

@@ -86,6 +86,14 @@ class Quiz extends ContentEntityBase implements EntityOwnerInterface {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['field_course'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(new TranslatableMarkup('Course'))
+      ->setDescription(new TranslatableMarkup('Course this quiz belongs to. Used for final assessment certificate issuance.'))
+      ->setSetting('target_type', 'lms_course')
+      ->setDisplayOptions('form', ['type' => 'entity_reference_autocomplete', 'weight' => -8])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['field_questions'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(new TranslatableMarkup('Questions'))
       ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)

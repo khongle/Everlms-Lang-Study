@@ -1,0 +1,29 @@
+lms_order.settings:
+  type: config_object
+  label: 'LMS Order settings'
+  mapping:
+    coupons:
+      type: sequence
+      label: 'Coupons'
+      sequence:
+        type: mapping
+        label: 'Coupon'
+        mapping:
+          code:
+            type: string
+            label: 'Code'
+          label:
+            type: label
+            label: 'Label'
+          type:
+            type: string
+            label: 'Discount type'
+          amount:
+            type: float
+            label: 'Discount amount'
+          enabled:
+            type: boolean
+            label: 'Enabled'
+          minimum_order:
+            type: float
+            label: 'Minimum order'

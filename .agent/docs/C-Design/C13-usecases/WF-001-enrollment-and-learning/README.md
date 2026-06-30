@@ -11,4 +11,4 @@
 | [UC-WF-001-001](UC-WF-001-001-enroll-and-complete-course.md) | Enroll and complete a course | Student | Enrollment & learning | P003, P017, P019 |
 
 ## Completion rule
-Closed when a learner can enroll, progress through lessons, and reach course completion with progress persisted.
+Closed when a learner can enroll once per course, progress through lessons, and reach course completion with progress persisted and dashboards rendering a single course card per course.

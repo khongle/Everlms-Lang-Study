@@ -57,14 +57,30 @@ function _lms_order_process_completed_order(EntityInterface $entity) {
 
       // Formal enrollment!
       $storage = \Drupal::entityTypeManager()->getStorage('lms_user_course');
-      $user_course = $storage->create([
-        'uid' => $user_id,
-        'field_course' => $course_id,
-        'field_status' => 'enrolled',
-        'field_progress' => 0.0,
-        'field_enrolled_at' => time(),
-      ]);
-      $user_course->save();
+      $existing_enrollments = $storage->getQuery()
+        ->condition('uid', $user_id)
+        ->condition('field_course', $course_id)
+        ->accessCheck(FALSE)
+        ->range(0, 1)
+        ->execute();
+
+      if ($existing_enrollments) {
+        \Drupal::logger('lms_order')->notice('Skipped duplicate enrollment for user @user in course @course following order @order payment.', [
+          '@user' => $user_id,
+          '@course' => $course_id,
+          '@order' => $entity->id(),
+        ]);
+      }
+      else {
+        $user_course = $storage->create([
+          'uid' => $user_id,
+          'field_course' => $course_id,
+          'field_status' => 'enrolled',
+          'field_progress' => 0.0,
+          'field_enrolled_at' => time(),
+        ]);
+        $user_course->save();
+      }
     }
 
     if ($plan_id && $user_id) {
@@ -155,6 +171,11 @@ function lms_order_theme() {
         'form' => NULL,
         'course' => NULL,
         'price' => 0.00,
+        'subtotal' => 0.00,
+        'discount' => 0.00,
+        'total' => 0.00,
+        'coupon_code' => '',
+        'coupon_valid' => FALSE,
         'thumbnail' => '',
       ],
       'template' => 'lms-checkout',

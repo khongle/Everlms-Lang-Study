@@ -1,35 +1,44 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\lms_order\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Routing\TrustedRedirectResponse;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\lms_course\Entity\Course;
+use Drupal\lms_membership\Entity\MembershipPlan;
 use Drupal\lms_order\Entity\Order;
 use Drupal\lms_order\Entity\OrderItem;
+use Drupal\lms_order\Form\CheckoutForm;
+use Drupal\lms_order\Form\MembershipCheckoutForm;
+use Drupal\lms_order\Service\CouponRedemption;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Handles checkout operations.
  */
-class CheckoutController extends ControllerBase {
+final class CheckoutController extends ControllerBase {
 
-  /**
-   * The payment gateway plugin manager.
-   *
-   * @var \Drupal\lms_payment\Plugin\PaymentGatewayManager
-   */
-  protected $paymentGatewayManager;
+  public function __construct(
+    protected FileUrlGeneratorInterface $fileUrlGenerator,
+    protected CouponRedemption $couponRedemption,
+    protected EntityTypeManagerInterface $lmsEntityTypeManager,
+  ) {}
 
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
-    $instance = parent::create($container);
-    $instance->paymentGatewayManager = $container->get('plugin.manager.payment_gateway');
-    return $instance;
+  public static function create(ContainerInterface $container): static {
+    return new static(
+      $container->get('file_url_generator'),
+      $container->get('lms_order.coupon_redemption'),
+      $container->get('entity_type.manager'),
+    );
   }
 
   /**
@@ -43,7 +52,7 @@ class CheckoutController extends ControllerBase {
    * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
    *   Markup or redirect.
    */
-  public function checkout(int $course_id, Request $request) {
+  public function checkout(int $course_id, Request $request): array|RedirectResponse {
     // 1. Load the course.
     $course = Course::load($course_id);
     if (!$course) {
@@ -62,19 +71,26 @@ class CheckoutController extends ControllerBase {
     $price = $course->hasField('field_price') ? (float) $course->get('field_price')->value : 0.00;
 
     if ($price <= 0) {
+      if ($this->isUserEnrolled($course_id, (int) $user->id())) {
+        $this->messenger()->addWarning($this->t('You are already enrolled in @course.', ['@course' => $course->label()]));
+        return $this->redirect('lms_course.detail', ['lms_course' => $course_id]);
+      }
+
       // Free course. Create a fully paid order and enroll immediately.
-      $this->createAndFulfillFreeOrder($course_id, $user->id());
+      $this->createAndFulfillFreeOrder($course_id, (int) $user->id());
       $this->messenger()->addStatus($this->t('You have successfully enrolled in @course.', ['@course' => $course->label()]));
       return $this->redirect('lms_course.detail', ['lms_course' => $course_id]);
     }
 
-    $form = \Drupal::formBuilder()->getForm('\Drupal\lms_order\Form\CheckoutForm', $course);
+    $coupon_code = $this->couponRedemption->normalizeCode((string) $request->query->get('coupon', ''));
+    $pricing = $this->buildPricingSummary($price, $coupon_code);
+    $form = $this->formBuilder()->getForm(CheckoutForm::class, $course, $coupon_code);
 
     $thumbnail_url = '';
     if ($course->hasField('field_thumbnail') && !$course->get('field_thumbnail')->isEmpty()) {
       $file = $course->get('field_thumbnail')->entity;
       if ($file) {
-        $thumbnail_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+        $thumbnail_url = $this->fileUrlGenerator->generateAbsoluteString($file->getFileUri());
       }
     }
 
@@ -83,6 +99,11 @@ class CheckoutController extends ControllerBase {
       '#form' => $form,
       '#course' => $course,
       '#price' => $price,
+      '#subtotal' => $pricing['subtotal'],
+      '#discount' => $pricing['discount'],
+      '#total' => $pricing['total'],
+      '#coupon_code' => $pricing['coupon_code'],
+      '#coupon_valid' => $pricing['coupon_valid'],
       '#thumbnail' => $thumbnail_url,
     ];
   }
@@ -90,12 +111,16 @@ class CheckoutController extends ControllerBase {
   /**
    * Handles free course enrollment directly.
    */
-  protected function createAndFulfillFreeOrder(int $course_id, int $user_id) {
+  protected function createAndFulfillFreeOrder(int $course_id, int $user_id): void {
     $order = Order::create([
       'uid' => $user_id,
-      'field_order_number' => 'FREE-' . time() . '-' . rand(100, 999),
+      'field_order_number' => 'FREE-' . time() . '-' . random_int(100, 999),
       'field_status' => 'completed',
+      'field_subtotal' => 0.00,
+      'field_discount' => 0.00,
       'field_total' => 0.00,
+      'field_currency' => 'USD',
+      'field_payment_method' => 'free',
     ]);
     $order_item = OrderItem::create([
       'field_course' => $course_id,
@@ -110,8 +135,8 @@ class CheckoutController extends ControllerBase {
   /**
    * Builds the checkout page logic for memberships.
    */
-  public function checkoutMembership(int $plan_id, Request $request) {
-    $plan = \Drupal\lms_membership\Entity\MembershipPlan::load($plan_id);
+  public function checkoutMembership(int $plan_id, Request $request): array|RedirectResponse {
+    $plan = MembershipPlan::load($plan_id);
     if (!$plan) {
       throw new NotFoundHttpException();
     }
@@ -130,23 +155,37 @@ class CheckoutController extends ControllerBase {
       return $this->redirect('lms_membership.my_membership');
     }
 
-    $form = \Drupal::formBuilder()->getForm('\Drupal\lms_order\Form\MembershipCheckoutForm', $plan);
+    $coupon_code = $this->couponRedemption->normalizeCode((string) $request->query->get('coupon', ''));
+    $pricing = $this->buildPricingSummary($price, $coupon_code);
+    $form = $this->formBuilder()->getForm(MembershipCheckoutForm::class, $plan, $coupon_code);
 
     return [
       '#theme' => 'lms_checkout',
       '#form' => $form,
       '#course' => $plan, // Reuse course variable for template generic display
       '#price' => $price,
-      '#thumbnail' => 'https://ui-avatars.com/api/?name=' . urlencode($plan->label()) . '&background=8B5CF6&color=fff&size=512&font-size=0.4',
+      '#subtotal' => $pricing['subtotal'],
+      '#discount' => $pricing['discount'],
+      '#total' => $pricing['total'],
+      '#coupon_code' => $pricing['coupon_code'],
+      '#coupon_valid' => $pricing['coupon_valid'],
+      '#thumbnail' => '',
     ];
   }
 
-  protected function createAndFulfillFreeMembershipOrder(int $plan_id, int $user_id) {
+  /**
+   * Handles free membership enrollment directly.
+   */
+  protected function createAndFulfillFreeMembershipOrder(int $plan_id, int $user_id): void {
     $order = Order::create([
       'uid' => $user_id,
-      'field_order_number' => 'FREE-MEM-' . time() . '-' . rand(100, 999),
+      'field_order_number' => 'FREE-MEM-' . time() . '-' . random_int(100, 999),
       'field_status' => 'completed',
+      'field_subtotal' => 0.00,
+      'field_discount' => 0.00,
       'field_total' => 0.00,
+      'field_currency' => 'USD',
+      'field_payment_method' => 'free',
     ]);
     $order_item = OrderItem::create([
       'field_membership_plan' => $plan_id,
@@ -155,20 +194,62 @@ class CheckoutController extends ControllerBase {
     ]);
     $order_item->save();
     $order->set('field_items', [$order_item->id()]);
-    $order->set('field_items', [$order_item->id()]);
     $order->save();
   }
 
   /**
    * Displays Bank Transfer instructions and VietQR.
    */
-  public function bankTransferInstruction(\Drupal\lms_order\Entity\Order $lms_order) {
+  public function bankTransferInstruction(Order $lms_order): array|RedirectResponse {
     if ($lms_order->get('field_status')->value !== 'pending') {
       $this->messenger()->addWarning($this->t('This order is not pending payment.'));
       return $this->redirect('<front>');
     }
 
     return $this->formBuilder()->getForm('\Drupal\lms_order\Form\BankTransferForm', $lms_order);
+  }
+
+  /**
+   * Builds the checkout summary totals from an optional coupon query value.
+   *
+   * @return array{
+   *   subtotal: float,
+   *   discount: float,
+   *   total: float,
+   *   coupon_code: string,
+   *   coupon_valid: bool
+   * }
+   */
+  private function buildPricingSummary(float $subtotal, string $coupon_code): array {
+    $subtotal = round(max(0.00, $subtotal), 2);
+    $coupon_result = $coupon_code !== ''
+      ? $this->couponRedemption->apply($coupon_code, $subtotal)
+      : NULL;
+
+    $coupon_valid = is_array($coupon_result) && !empty($coupon_result['valid']);
+
+    return [
+      'subtotal' => $subtotal,
+      'discount' => $coupon_valid ? (float) $coupon_result['discount'] : 0.00,
+      'total' => $coupon_valid ? (float) $coupon_result['total'] : $subtotal,
+      'coupon_code' => $coupon_valid ? (string) $coupon_result['code'] : '',
+      'coupon_valid' => $coupon_valid,
+    ];
+  }
+
+  /**
+   * Checks whether a learner already has an enrollment for a course.
+   */
+  private function isUserEnrolled(int $course_id, int $user_id): bool {
+    $ids = $this->lmsEntityTypeManager->getStorage('lms_user_course')
+      ->getQuery()
+      ->condition('uid', $user_id)
+      ->condition('field_course', $course_id)
+      ->accessCheck(FALSE)
+      ->range(0, 1)
+      ->execute();
+
+    return !empty($ids);
   }
 
 }

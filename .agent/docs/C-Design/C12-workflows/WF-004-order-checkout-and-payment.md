@@ -15,6 +15,7 @@
 | ----- | ------- |
 | draft (cart) | items added |
 | submitted (pending) | checkout submitted, awaiting payment |
+| in_review (processing) | bank transfer receipt uploaded; waiting manager verification |
 | approved_or_completed (paid/completed) | payment captured → entitlement granted |
 | rejected_or_returned (cancelled/failed) | payment failed/cancelled |
 | archived (refunded) | refunded (manual) |
@@ -25,4 +26,4 @@
 - Admin: manager edits/refunds orders.
 
 ## Notifications
-Order confirmation + receipt to buyer. ⚠️ No webhook reconciliation (R-002) — status from synchronous return.
+Order confirmation + receipt instructions to buyer. Bank transfer buyers upload a receipt; manager verification moves the order to completed and grants entitlement. ⚠️ No webhook reconciliation (R-002) — online gateways rely on synchronous return, while bank transfer remains manual.

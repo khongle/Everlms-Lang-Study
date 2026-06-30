@@ -7,6 +7,6 @@ services:
     arguments: ['@lms_certificate.generator', '@entity_type.manager']
   lms_certificate.event_listener:
     class: Drupal\lms_certificate\EventSubscriber\CertificateEventListener
-    arguments: ['@lms_certificate.manager']
+    arguments: ['@lms_certificate.manager', '@entity_type.manager']
     tags:
       - { name: event_subscriber }

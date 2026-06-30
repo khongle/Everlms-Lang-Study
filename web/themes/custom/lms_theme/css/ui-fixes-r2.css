@@ -1,1 +1,21 @@
-/* placeholder */
+/* Collapse Drupal's hidden messages fallback; otherwise it can render as an
+   empty alert strip on pages with no real status message. */
+.lms-messages-wrapper [data-drupal-messages-fallback].hidden {
+  display: none !important;
+}
+
+.lms-messages-wrapper:has([data-drupal-messages-fallback].hidden):not(:has(.messages)):not(:has([role="contentinfo"])) {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.lms-messages-wrapper [role="contentinfo"],
+.lms-messages-wrapper .messages {
+  max-width: 1200px !important;
+  margin: .75rem auto 0 !important;
+  border-radius: 8px !important;
+}

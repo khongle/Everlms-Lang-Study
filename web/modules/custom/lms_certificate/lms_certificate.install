@@ -75,3 +75,49 @@ function lms_certificate_update_10002(&$sandbox) {
     
   $entity_update_manager->installFieldStorageDefinition('field_seal', 'lms_certificate_template', 'lms_certificate', $seal_storage);
 }
+
+/**
+ * Adjust default certificate PDF footer so dividers do not overlap text.
+ */
+function lms_certificate_update_10003(&$sandbox) {
+  $storage = \Drupal::entityTypeManager()->getStorage('lms_certificate_template');
+  $templates = $storage->loadByProperties(['name' => 'SilverCare DE — Compliance Certificate']);
+
+  if (empty($templates)) {
+    return;
+  }
+
+  $template = reset($templates);
+  if (!$template->hasField('field_layout') || $template->get('field_layout')->isEmpty()) {
+    return;
+  }
+
+  $layout = (string) $template->get('field_layout')->value;
+  $old = <<<'HTML'
+                <div style="border-top: 2px solid #475569; width: 220px; margin: 0 auto; padding-top: 5px; font-family: 'Times New Roman', Georgia, serif;">
+                    <div style="font-size: 16pt; color: #0f172a; margin-bottom: 2px;">
+                        [issue_date]
+                    </div>
+                    <div style="font-size: 10pt; color: #64748b; font-weight: bold; text-transform: uppercase;">
+                        Date of Issue
+                    </div>
+                </div>
+HTML;
+  $new = <<<'HTML'
+                <div style="width: 220px; margin: 0 auto; font-family: 'Times New Roman', Georgia, serif;">
+                    <div style="font-size: 16pt; color: #0f172a; margin-bottom: 6px;">
+                        [issue_date]
+                    </div>
+                    <div style="height: 2px; background: #475569; width: 220px; margin: 0 auto 5px auto;"></div>
+                    <div style="font-size: 10pt; color: #64748b; font-weight: bold; text-transform: uppercase;">
+                        Date of Issue
+                    </div>
+                </div>
+HTML;
+
+  $updated = str_replace($old, $new, $layout);
+  if ($updated !== $layout) {
+    $template->set('field_layout', $updated);
+    $template->save();
+  }
+}

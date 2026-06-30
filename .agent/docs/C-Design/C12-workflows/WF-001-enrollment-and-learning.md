@@ -18,6 +18,8 @@
 | approved_or_completed | all required lessons + final quiz passed |
 | archived | course archived/unenrolled (rare) |
 
+Enrollment invariant: a learner should have one active `lms_user_course` record per course. Progress rollup must update the learner/course enrollment consistently and learner-facing pages must not render duplicate course cards if legacy duplicate rows exist.
+
 ## Permission model
 - Initiator: learner (self-enroll free / via order / membership).
 - Responsible: learner (progress).

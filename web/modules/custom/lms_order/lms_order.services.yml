@@ -1,0 +1,4 @@
+services:
+  lms_order.coupon_redemption:
+    class: Drupal\lms_order\Service\CouponRedemption
+    arguments: ['@config.factory']

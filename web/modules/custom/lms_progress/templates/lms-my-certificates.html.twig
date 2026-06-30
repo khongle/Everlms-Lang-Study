@@ -1,6 +1,82 @@
 {# My Certificates page #}
 {{ attach_library('lms_theme/global') }}
 
+<style>
+  .lms-certificates-page .lms-certificates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+    gap: 1rem;
+  }
+
+  .lms-certificates-page .lms-certificate-card {
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.95fr) minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: stretch;
+    padding: 1rem;
+  }
+
+  .lms-certificates-page .lms-certificate-card__preview {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .lms-certificates-page .lms-certificate-card__frame {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    min-height: 16rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(217, 119, 6, 0.22);
+    border-radius: 8px;
+  }
+
+  .lms-certificates-page .lms-certificate-card__brand,
+  .lms-certificates-page .lms-certificate-card__serial,
+  .lms-certificates-page .lms-certificate-card__track {
+    display: block;
+  }
+
+  .lms-certificates-page .lms-certificate-card__heading {
+    display: block;
+    max-width: 13rem;
+    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+    line-height: 1.08;
+  }
+
+  .lms-certificates-page .lms-certificate-card__course {
+    display: block;
+    margin-top: auto;
+    overflow-wrap: anywhere;
+  }
+
+  .lms-certificates-page .lms-certificate-card__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.1rem;
+    min-width: 0;
+  }
+
+  .lms-certificates-page .lms-certificate-card__meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .lms-certificates-page .lms-certificate-card__meta-label,
+  .lms-certificates-page .lms-certificate-card__meta-value {
+    display: block;
+  }
+
+  @media (max-width: 900px) {
+    .lms-certificates-page .lms-certificate-card,
+    .lms-certificates-page .lms-certificate-card__meta {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
 <section class="lms-section lms-certificates-page">
   <div class="container">
     <div class="lms-certificates-page__hero">
@@ -32,7 +108,7 @@
           <article class="lms-certificate-card">
             <div class="lms-certificate-card__preview">
               <div class="lms-certificate-card__frame">
-                <span class="lms-certificate-card__brand">{{ 'EverLMS'|t }}</span>
+                <span class="lms-certificate-card__brand">{{ 'SilverCare'|t }}</span>
                 <strong class="lms-certificate-card__heading">{{ 'Certificate of Completion'|t }}</strong>
                 <span class="lms-certificate-card__course">{{ cert.course_name }}</span>
                 <span class="lms-certificate-card__track">{{ cert.template_name }}</span>

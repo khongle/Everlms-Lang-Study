@@ -60,9 +60,17 @@
             {{ lesson.field_content.value|raw }}
           </div>
         {% elseif type == 'scorm' %}
-          <div class="lms-learn__video-wrapper lms-learn__video-wrapper--scorm">
-            <iframe class="lms-learn__iframe" src="{{ file_url('public://scorm_extracted/' ~ lesson.id() ~ '/index.html') }}?v={{ random() }}" allowfullscreen></iframe>
-          </div>
+          {% if scorm_url %}
+            <div class="lms-learn__video-wrapper lms-learn__video-wrapper--scorm">
+              <iframe class="lms-learn__iframe" src="{{ scorm_url }}?v={{ random() }}" allowfullscreen></iframe>
+            </div>
+          {% else %}
+            <div class="lms-learn__placeholder lms-learn__placeholder--compact">
+              <i class="fas fa-box-open lms-learn__placeholder-icon"></i>
+              <h3 class="lms-learn__placeholder-title">{{ 'Interactive package unavailable'|t }}</h3>
+              <p class="lms-learn__placeholder-copy">{{ 'This SCORM package has not been published to the learning player yet. The lesson overview remains available below.'|t }}</p>
+            </div>
+          {% endif %}
         {% elseif type == 'h5p' %}
           <div class="lms-learn__h5p-wrapper">
             {% if rendered_attachments %}

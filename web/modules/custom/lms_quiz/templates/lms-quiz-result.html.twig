@@ -34,7 +34,7 @@
   color: #fff;
   margin-bottom: 2rem;
   font-weight: 800;
-  letter-spacing: -0.5px;
+  letter-spacing: 0;
 }
 .lms-score-circle {
   width: 160px;
@@ -53,13 +53,21 @@
 }
 .lms-score-circle--pass {
   border-color: #238636;
+  color: #238636;
   text-shadow: 0 0 10px rgba(35,134,54,0.5);
   box-shadow: 0 0 30px rgba(35,134,54,0.2) inset, 0 0 20px rgba(35,134,54,0.3);
 }
 .lms-score-circle--fail {
   border-color: #ff7b72;
+  color: #b42318;
   text-shadow: 0 0 10px rgba(255,123,114,0.6);
   box-shadow: 0 0 30px rgba(255,123,114,0.2) inset, 0 0 20px rgba(255,123,114,0.3);
+}
+.lms-score-circle--pending {
+  border-color: #d29922;
+  color: #9a6700;
+  text-shadow: 0 0 10px rgba(210,153,34,0.45);
+  box-shadow: 0 0 30px rgba(210,153,34,0.18) inset, 0 0 20px rgba(210,153,34,0.24);
 }
 .lms-result-badge {
   display: inline-flex;
@@ -81,6 +89,17 @@
   background: rgba(255, 123, 114, 0.1);
   color: #ff7b72;
   border: 1px solid rgba(255, 123, 114, 0.3);
+}
+.lms-result-badge--pending {
+  background: rgba(210, 153, 34, 0.14);
+  color: #d29922;
+  border: 1px solid rgba(210, 153, 34, 0.38);
+}
+.lms-result-note {
+  margin: 1rem auto 0;
+  max-width: 34rem;
+  color: #8b949e;
+  line-height: 1.5;
 }
 .lms-responses-title {
   font-size: 1.6rem;
@@ -146,6 +165,14 @@
   border-color: rgba(255, 123, 114, 0.3);
   color: #ff7b72;
 }
+.lms-response-pending {
+  border-color: rgba(210, 153, 34, 0.55);
+}
+.lms-response-pending .lms-response-points {
+  background: rgba(210, 153, 34, 0.12);
+  border-color: rgba(210, 153, 34, 0.38);
+  color: #d29922;
+}
 
 .lms-response-answer {
   margin-top: 1.25rem;
@@ -207,25 +234,35 @@
     <div class="lms-result-hero">
       <h1 class="lms-result-title">{{ quiz ? quiz.label : 'Quiz Result'|t }}</h1>
       
-      {% set is_pass = (result_label|lower == 'passed' or score >= 70) %}
-      <div class="lms-score-circle {{ is_pass ? 'lms-score-circle--pass' : 'lms-score-circle--fail' }}">
+      {% set result_state = result_label|lower %}
+      {% set is_pending = result_state == 'pending' %}
+      {% set is_pass = result_state == 'passed' %}
+      {% set state_class = is_pending ? 'pending' : (is_pass ? 'pass' : 'fail') %}
+      <div class="lms-score-circle lms-score-circle--{{ state_class }}">
         {{ score|number_format(0) }}%
       </div>
       
-      <div class="lms-result-badge {{ is_pass ? 'lms-result-badge--pass' : 'lms-result-badge--fail' }}">
-        {% if is_pass %}
+      <div class="lms-result-badge lms-result-badge--{{ state_class }}">
+        {% if is_pending %}
+          <i class="fas fa-hourglass-half"></i> {{ 'Pending Review'|t }}
+        {% elseif is_pass %}
           <i class="fas fa-trophy"></i> {{ 'Passed'|t }}
         {% else %}
-          <i class="fas fa-skull-crossbones"></i> {{ 'Failed'|t }}
+          <i class="fas fa-times-circle"></i> {{ 'Failed'|t }}
         {% endif %}
       </div>
+
+      {% if is_pending %}
+        <p class="lms-result-note">{{ 'This score is provisional until manual review is complete.'|t }}</p>
+      {% endif %}
     </div>
 
     {% if responses|length > 0 %}
       <h2 class="lms-responses-title"><i class="fas fa-clipboard-list" style="color: #58a6ff;"></i> {{ 'Your Answers Breakdown'|t }}</h2>
       
       {% for response in responses %}
-        <div class="lms-response-card {{ response.correct ? 'lms-response-correct' : 'lms-response-incorrect' }}">
+        {% set response_state = response.pending ? 'pending' : (response.correct ? 'correct' : 'incorrect') %}
+        <div class="lms-response-card lms-response-{{ response_state }}">
           <div class="lms-response-header">
             {% if response.pending %}
               <div class="lms-response-icon lms-icon-pending"><i class="fas fa-clock"></i></div>

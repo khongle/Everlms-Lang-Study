@@ -62,6 +62,15 @@
       toggleStripeContainer();
 
       $formElement.on('submit', async function(e) {
+        const submitter = e.originalEvent && e.originalEvent.submitter;
+        const isCheckoutSubmit = submitter
+          ? submitter.id === 'submit-button'
+          : document.activeElement && document.activeElement.id === 'submit-button';
+
+        if (!isCheckoutSubmit) {
+          return;
+        }
+
         const selectedMethod = $('input[name="payment_method"]:checked').val();
         
         // Intercept form submit ONLY if Stripe is selected AND hasn't been confirmed yet

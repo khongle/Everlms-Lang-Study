@@ -350,20 +350,37 @@ final class QuizController extends ControllerBase {
     foreach ($results as $result) {
       $quiz = $result->get('field_quiz')->entity;
       $score = (float) $result->get('field_score')->value;
+      $result_term = $result->get('field_result')->entity;
+      $result_label = strtolower((string) ($result_term?->label() ?? ''));
       $threshold = $quiz && $quiz->hasField('field_threshold') && !$quiz->get('field_threshold')->isEmpty()
         ? (float) $quiz->get('field_threshold')->value
         : 80.0;
-      $state = 'retry';
-      if ($score >= $threshold) {
+
+      if ($result_label === 'passed') {
         $state = 'passed';
         $passed_count++;
       }
-      elseif ($score >= max($threshold - 15, 50)) {
+      elseif ($result_label === 'pending') {
         $state = 'review';
         $review_count++;
       }
-      else {
+      elseif ($result_label === 'failed') {
+        $state = 'retry';
         $retry_count++;
+      }
+      else {
+        $state = 'retry';
+        if ($score >= $threshold) {
+          $state = 'passed';
+          $passed_count++;
+        }
+        elseif ($score >= max($threshold - 15, 50)) {
+          $state = 'review';
+          $review_count++;
+        }
+        else {
+          $retry_count++;
+        }
       }
 
       $total_score += $score;

@@ -10,13 +10,13 @@ processes: [quiz-attempt-and-grading]
 # UC-WF-002-001 - Take and grade a quiz
 
 ## Intent
-A learner attempts a quiz and gets an automatically graded result.
+A learner attempts a quiz and receives a trustworthy result state: auto-graded pass/fail when all items are objective, or pending review when any item requires instructor grading.
 
 ## Workflow context
 | Item | Value |
 | ---- | ----- |
 | Workflow | WF-002 |
-| Business flow | attempt → grade → result → (pass) event |
+| Business flow | attempt → grade → result/review → finalized result → (pass) event |
 | Modules | lms_quiz, lms_question, lms_progress |
 | Related features | F-006 |
 | B04 source | WF-002 |
@@ -33,9 +33,10 @@ Learner submits the quiz.
 ## Main success scenario
 1. Open quiz (P020); answer questions (8 types).
 2. Submit → `GradingStrategyFactory` grades objective items.
-3. `lms_quiz_result` + `lms_question_response` stored; score vs `field_threshold`.
-4. Result shown (P021); essays flagged pending.
-5. On pass of final quiz → `QuizPassedEvent` (WF-003).
+3. `lms_quiz_result` + `lms_question_response` stored; pending-review flags are persisted per response.
+4. If no manual review is required, the result is finalized as Passed/Failed against `field_threshold`.
+5. If manual review is required, the result remains Pending/In review and the score is displayed as provisional.
+6. On finalized pass of a final quiz → `QuizPassedEvent` (WF-003).
 
 ## Alternate and exception flows
 - Time limit reached → auto-submit.
@@ -49,4 +50,4 @@ Learner submits the quiz.
 | Quiz result | App | /quiz-result/{r} |
 
 ## Acceptance and test contract
-- Per-strategy grading correct; threshold pass/fail; event fired on pass (B05 F-006).
+- Per-strategy grading correct; threshold pass/fail only after the result is finalized; pending attempts are not counted as passed; event fired only on finalized pass (B05 F-006).

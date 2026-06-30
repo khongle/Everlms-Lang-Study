@@ -18,6 +18,12 @@
 | approved_or_completed | graded; pass/fail set vs `field_threshold` |
 | rejected_or_returned | failed attempt (may retry within `field_take_quiz_number`) |
 
+## Result invariant
+- `lms_quiz_result.field_result` is the source of truth for learner-facing state.
+- If any `lms_question_response.field_pending_review` is true, the quiz result must remain `Pending`/`in_review` even when the provisional objective score is above threshold.
+- Only a finalized `Passed` result may fire `QuizPassedEvent` for WF-003 certificate issuance.
+- Result/history UI must display pending attempts separately from passed/failed attempts and label the score as provisional until review is complete.
+
 ## Permission model
 - Initiator: enrolled learner.
 - Responsible (manual grade): instructor for pending essays.
