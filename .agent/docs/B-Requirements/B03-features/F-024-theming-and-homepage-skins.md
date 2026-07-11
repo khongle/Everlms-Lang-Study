@@ -8,15 +8,15 @@
 **Source:** `web/themes/custom/lms_theme/`, `web/themes/custom/lms_classic/`
 
 ## Requirement
-The platform ships a branded front-end theme (`lms_theme`, Bootstrap 5.x, Twig/SCSS) with **15 selectable homepage skins** and a secondary `lms_classic` theme. Admins choose a skin and branding via theme settings (`theme-settings.php`); homepage content is editor-managed (no hardcoded copy).
+Platform đi kèm một front-end theme có branding (`lms_theme`, Bootstrap 5.x, Twig/SCSS) với **15 skin homepage** có thể chọn và một theme phụ `lms_classic`. Admin chọn skin và branding qua theme settings (`theme-settings.php`); nội dung homepage do editor quản lý (không có copy hardcode).
 
 ## Business value
-Strong, switchable branding lets each deployment look bespoke without code changes — important for reselling/white-labelling the LMS.
+Branding mạnh, có thể đổi được giúp mỗi deployment trông như được may đo riêng (bespoke) mà không cần đổi code — quan trọng cho việc bán lại/white-label LMS.
 
 ## Scope notes
-- `lms_theme` templates organised by area (home, user, navigation, block, page, content…).
-- 15 homepage skins selectable; homepage regions/blocks editable.
-- Admin theme is Claro; `lms_theme` is default front-end.
+- Template của `lms_theme` được tổ chức theo khu vực (home, user, navigation, block, page, content…).
+- Có 15 skin homepage có thể chọn; region/block của homepage chỉnh sửa được.
+- Admin theme là Claro; `lms_theme` là front-end mặc định.
 
 ## Cross references
 - Design: [C09 themes](../../C-Design/C09-themes/_index.md), [C11 pages/blocks](../../C-Design/C11-pages-components/_index.md)

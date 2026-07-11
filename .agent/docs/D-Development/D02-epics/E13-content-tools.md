@@ -3,7 +3,7 @@
 **Status:** done
 
 ## Goal
-Reproducible demo/seed content (the Content Tools standard module).
+Nội dung demo/seed có thể tái tạo (reproducible) (module chuẩn Content Tools).
 
 ## Scope
 - Module: [lms_content_tools](../../C-Design/C05-modules/lms_content_tools.md)
@@ -14,7 +14,7 @@ Reproducible demo/seed content (the Content Tools standard module).
 - [E13S01](../D03-stories/E13S01-lms_content_tools.md)
 
 ## Dependencies
-All domain epics (creates their entities).
+Tất cả domain epic (tạo ra entity của chúng).
 
 ## Open work
-None core (produces the documented 40-course dataset).
+Không có việc cốt lõi (tạo ra dataset 40-course đã tài liệu hóa).

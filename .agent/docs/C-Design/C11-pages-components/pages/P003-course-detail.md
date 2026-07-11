@@ -3,16 +3,16 @@ page: Course detail
 drupal_concept: entity view controller
 mode: as-built
 owner_module: lms_course
-route_group: Public
+route_group: public
 route_name: lms_course.course_detail
-prototype_type: live-site
+prototype_type: detail
 adequacy: PASS
 ---
 
 # C11 Page - Course detail
 
 ## Purpose
-The course landing/detail page at `/courses/{lms_course}`: overview, curriculum, instructor, reviews, and an enroll/buy CTA. The conversion page.
+Trang landing/detail của course tại `/courses/{lms_course}`: overview, curriculum, instructor, reviews, và CTA enroll/buy. Trang chuyển đổi (conversion page).
 
 ## Source Evidence
 - **Canonical URL:** `/courses/{lms_course}` · **Owner module:** lms_course
@@ -66,6 +66,24 @@ The course landing/detail page at `/courses/{lms_course}`: overview, curriculum,
 | Access denied | unpublished → 403/404 for non-staff |
 | Validation error | n/a |
 | Loading | media lazy-loads |
+
+## Message copy inventory
+| State/Action | Copy (verbatim) | Editable source |
+| --- | --- | --- |
+| Primary CTA (not enrolled) | "Enroll now" | enroll block config |
+| Secondary CTA | "Add to wishlist" | course entity form |
+| Price/promo (enroll card) | "$89.99" (list price "$199.99" struck through) · "Save 55%" | course price fields |
+| Purchase reassurance | "30-day money-back guarantee" | enroll block config |
+| Membership upsell (alt to buy) | "Or included free with EverLMS Pro" | enroll block config, links to Pricing (P006) |
+| Curriculum free-preview tag | "Free preview" (shown on the first unlocked lesson) | curriculum block config |
+
+## Responsive behavior
+| Breakpoint | Behavior |
+| --- | --- |
+| mobile (≤575.98px) | `.container` chạy full width; `.detail` đã là 1 cột (kế thừa từ tablet); `.learn-grid` (What you'll learn) và `.insthead` (Instructor) rút về 1 cột, `.insthead` căn giữa; `.review-summary` (score + review-bars) rút về 1 cột |
+| tablet (768–991.98px) | `.detail{grid-template-columns:1fr}` — nội dung (overview/curriculum/instructor/reviews) và thẻ `.enroll` xếp thành 1 cột dọc; `.enroll{position:static}` (mất sticky), thẻ enroll/buy hiện sau cùng, bên dưới toàn bộ nội dung vì là item thứ 2 trong grid |
+| desktop (992–1199.98px) | `.detail{grid-template-columns:minmax(0,1fr) 380px}` — nội dung bên trái co giãn, `.enroll` bên phải rộng cố định 380px và `position:sticky;top:90px` theo khi cuộn |
+| wide (≥1200px) | `.container` mở tới `--container-xl` (1140px)/`--container-xxl` (1280px) tuỳ viewport; layout 2 cột giữ nguyên, `gap` giữa nội dung và `.enroll` giãn theo `clamp(1.8rem,4vw,3rem)` |
 
 ## Implementation status
 | Item | Status | Notes |

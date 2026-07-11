@@ -1,6 +1,6 @@
 # B04-business-workflows - Workflow Index
 
-10 business workflows (`WF-NNN`), one file each, mirrored by [C12-workflows/](../../C-Design/C12-workflows/README.md), the [C13-usecases/](../../C-Design/C13-usecases/README.md) per-WF folder, and [S04-data-flow/](../../S-System/S04-data-flow/) — same number, same slug.
+10 business workflow (`WF-NNN`), mỗi workflow một file, được mirror bởi [C12-workflows/](../../C-Design/C12-workflows/README.md), folder per-WF [C13-usecases/](../../C-Design/C13-usecases/README.md), và [S04-data-flow/](../../S-System/S04-data-flow/) — cùng số lượng, cùng slug.
 
 | ID | Workflow | Modules | Related features |
 | -- | -------- | ------- | ---------------- |
@@ -15,4 +15,4 @@
 | [WF-009](WF-009-coupon-discount-redemption.md) | Coupon / discount redemption | lms_order, lms_payment | F-010 |
 | [WF-010](WF-010-ai-assisted-content-generation.md) | AI-assisted content generation | lms_ai, lms_course, lms_quiz | F-018, F-002, F-006 |
 
-> Count (10) is data-derived. Each WF has a C12 design mirror, a C13 usecase folder, and an S04 data-flow file with the identical `WF-NNN-<slug>`.
+> Con số (10) là data-derived. Mỗi WF có một C12 design mirror, một C13 usecase folder, và một S04 data-flow file với cùng `WF-NNN-<slug>`.

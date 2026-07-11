@@ -1,5 +1,7 @@
 # C12 Workflow - WF-006 Course authoring & publishing
 
+**Object:** course
+
 ## Business source
 [B04 WF-006](../../B-Requirements/B04-business-workflows/WF-006-course-authoring-and-publishing.md)
 
@@ -10,9 +12,9 @@
 [F-002](../../B-Requirements/B03-features/F-002-course-authoring-and-structure.md), [F-018](../../B-Requirements/B03-features/F-018-ai-authoring-assistant.md)
 
 ## State model
-`lms_course.status` is the source of truth for catalog visibility. Chapters and
-lessons use their own entity `status` values and must be saved with the course
-curriculum hierarchy.
+`lms_course.status` là nguồn sự thật duy nhất (source of truth) cho việc hiển thị trong catalog. Chapter và
+lesson dùng giá trị `status` riêng của entity mình và phải được lưu cùng
+hệ thống phân cấp curriculum của course.
 
 | State | Meaning |
 | ----- | ------- |
@@ -21,60 +23,65 @@ curriculum hierarchy.
 | review/approval | Optional project policy layer; no core Workflow/Content Moderation state is currently used. |
 | archived/retired | Course is unpublished or removed from discovery by manager/admin action. |
 
+## Transitions
+| From | To | Trigger |
+| ---- | -- | ------- |
+| draft | published | instructor tick Published và lưu |
+| published | archived | manager unpublish/retire course |
+
 ## Permission model
-- Initiator: `instructor` or `content_editor`.
-- Instructor/content editor permissions must be least privilege:
+- Initiator: `instructor` hoặc `content_editor`.
+- Quyền của instructor/content editor phải theo least privilege:
   `create lms_course`, `edit own lms_course`, `view lms_course`, `view the administration theme`,
-  and H5P editor access where H5P authoring is enabled.
-- Managers/admins can manage all courses through broader course administration
-  permissions.
-- `/workspace/courses` is role-scoped: managers/admins see all courses; authors
-  see and edit their own courses.
-- `/workspace/courses/create` must use entity create access, not a blanket
-  `administer lms_course` requirement.
+  và quyền H5P editor ở nơi H5P authoring được bật.
+- Manager/admin có thể quản lý toàn bộ course qua các quyền quản trị course
+  rộng hơn.
+- `/workspace/courses` có phạm vi theo role: manager/admin thấy toàn bộ course; author
+  chỉ thấy và sửa course của chính mình.
+- `/workspace/courses/create` phải dùng entity create access, không dùng yêu cầu
+  `administer lms_course` áp dụng chung cho tất cả.
 
 ## Concrete flow
-1. Author logs in through the real `/user/login` form.
-2. Author opens `/workspace/courses`.
-3. Author starts `/workspace/courses/create`.
-4. The workspace shell renders the real `lms_course` entity form, not a static
-   prototype. For instructor users, the form pre-populates owner/instructor
-   fields to the current account.
-5. Author fills course metadata and saves as draft by leaving `status` unchecked.
-6. Author builds curriculum through nested Inline Entity Form:
+1. Author đăng nhập qua form `/user/login` thật.
+2. Author mở `/workspace/courses`.
+3. Author bắt đầu `/workspace/courses/create`.
+4. Workspace shell render entity form `lms_course` thật, không phải
+   prototype tĩnh. Với user instructor, form tự điền sẵn các field owner/instructor
+   bằng tài khoản hiện tại.
+5. Author điền metadata course và lưu ở dạng draft bằng cách để `status` chưa được tick.
+6. Author dựng curriculum qua Inline Entity Form lồng nhau:
    course `field_chapters` -> chapter `field_lessons`.
-7. Lesson authoring uses type-aware fields. Text lessons hide incompatible
-   media-only widgets. The incompatible H5P upload widget is hidden until the
-   Drupal 11/contrib widget path is verified; H5P embed remains available.
-8. Author saves the draft course and returns to `/workspace/courses`.
-9. Author reopens `/workspace/courses/{id}/edit`, reviews content, checks
-   published status, and saves.
-10. Anonymous learner verifies the course in `/courses?search=...` and opens the
-    course detail page. The Curriculum tab must show the saved chapter and
-    lesson.
+7. Việc soạn lesson dùng field tùy theo loại (type-aware). Lesson dạng text ẩn các
+   widget chỉ dành cho media không tương thích. Widget upload H5P không tương thích bị ẩn cho tới khi
+   đường widget Drupal 11/contrib được xác minh; H5P embed vẫn khả dụng.
+8. Author lưu course draft và quay về `/workspace/courses`.
+9. Author mở lại `/workspace/courses/{id}/edit`, review nội dung, kiểm tra
+   trạng thái published, và lưu.
+10. Learner anonymous xác minh course tại `/courses?search=...` và mở trang
+    course detail. Tab Curriculum phải hiển thị chapter và lesson đã lưu.
 
 ## Authoring UI requirements
-- Workspace forms must use Drupal Form API and entity forms so validation,
-  access checks, cacheability, translations, and submit handlers remain standard.
-- Inline chapter/lesson dialogs must stay fully visible above the fixed workspace
-  sidebar on desktop and mobile.
-- Type-specific lesson fields must react both in standalone lesson forms and in
-  nested Inline Entity Form field names.
-- The list page must keep actions reachable and show enough row context for
-  authors to identify draft vs published courses.
+- Form trong workspace phải dùng Drupal Form API và entity form để việc validation,
+  access check, cacheability, translation, và submit handler vẫn theo chuẩn.
+- Dialog inline chapter/lesson phải hiển thị đầy đủ, nổi lên trên workspace
+  sidebar cố định trên cả desktop và mobile.
+- Các field lesson theo type phải phản ứng đúng cả ở form lesson độc lập lẫn trong
+  tên field của Inline Entity Form lồng nhau.
+- Trang danh sách phải giữ các action dễ thao tác và hiển thị đủ ngữ cảnh mỗi dòng để
+  author phân biệt được course draft và published.
 
 ## Acceptance and evidence contract
-- Screenshots are captured under
+- Screenshot được lưu tại
   `.agent/docs/E-Quality/E00-workflows/round-1/_screens/006-course-authoring-and-publishing/`.
-- Form steps capture before and after fill states.
-- Test data must be real Drupal data created by the UI with a real user session.
-- Verification must prove `lms_course -> lms_chapter -> lms_lesson` persistence
-  and public catalog visibility after publish.
+- Các bước form ghi lại trạng thái trước và sau khi điền.
+- Dữ liệu test phải là dữ liệu Drupal thật được tạo qua UI với session user thật.
+- Việc verify phải chứng minh được `lms_course -> lms_chapter -> lms_lesson` được lưu (persistence)
+  và catalog công khai hiển thị đúng sau khi publish.
 
 ## Round-2 QA verification
-- `/workspace/courses/create` renders the real `lms_course` entity form (tabs: Info / Course Collection / Chapter & lesson / Quiz; CKEditor bodies; thumbnail/banner uploads), not a static prototype (round-1 WF-006-001 holds).
-- **Draft-first fixed (`WF-006-002`):** `Course` `status` now defaults to `FALSE`. A course created by an instructor persists as `status = 0` (owner = author), is hidden from `/courses`, and only appears after the author ticks **Published** (Course Collection tab). Verified with course 140 (`sabine.mueller`).
-- **Role label fixed (`WF-006-001`):** the workspace sidebar shows the real role (Instructor / Manager / Administrator) via `current_user_role`, not a hard-coded "Manager".
+- `/workspace/courses/create` render entity form `lms_course` thật (các tab: Info / Course Collection / Chapter & lesson / Quiz; body dùng CKEditor; upload thumbnail/banner), không phải prototype tĩnh (fix round-1 `WF-006-001` vẫn giữ nguyên hiệu lực).
+- **Đã fix draft-first (`WF-006-002`):** `status` của `Course` giờ mặc định là `FALSE`. Một course do instructor tạo được lưu với `status = 0` (owner = author), bị ẩn khỏi `/courses`, và chỉ xuất hiện sau khi author tick **Published** (tab Course Collection). Đã verify với course 140 (`sabine.mueller`).
+- **Đã fix nhãn role (`WF-006-001`):** sidebar workspace hiển thị đúng role thật (Instructor / Manager / Administrator) qua `current_user_role`, không còn hard-code "Manager".
 
 ## Notifications
-Optional editor notifications on submit/publish. Content edited via entity forms (editorial-usability).
+Notification tùy chọn cho editor khi submit/publish. Nội dung được sửa qua entity form (editorial-usability).

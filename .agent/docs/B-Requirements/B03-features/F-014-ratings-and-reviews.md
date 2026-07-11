@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_rating/`
 
 ## Requirement
-Enrolled learners rate a course (1–5 stars) and optionally leave a written review (`lms_rating`). Aggregate rating is shown on the catalog (F-001) and course detail to inform buyers.
+Learner đã enroll rate một course (1–5 sao) và có thể để lại review dạng viết (`lms_rating`). Rating tổng hợp (aggregate) được hiển thị trên catalog (F-001) và course detail để giúp buyer đưa ra quyết định.
 
 ## Business value
-Social proof drives conversion; aggregate ratings help learners choose and give instructors feedback.
+Social proof thúc đẩy conversion; rating tổng hợp giúp learner lựa chọn và cho instructor feedback.
 
 ## Scope notes
-- One rating entity per user-per-course (typically); aggregate computed for display.
-- Eligibility usually requires enrollment/some progress.
-- Surfaced in catalog cards and course detail; available via mobile API.
+- Thông thường một rating entity cho mỗi cặp user-course; giá trị aggregate được tính để hiển thị.
+- Điều kiện thường yêu cầu đã enrollment/có một mức progress nhất định.
+- Được hiển thị trên catalog card và course detail; có sẵn qua mobile API.
 
 ## Cross references
 - Design: [C04 lms_rating](../../C-Design/C04-entities/lms_rating.md), [C05 lms_rating](../../C-Design/C05-modules/lms_rating.md)

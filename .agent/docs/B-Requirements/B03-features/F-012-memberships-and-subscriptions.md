@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_membership/`
 
 ## Requirement
-Admins define membership plans (`lms_membership_plan`, with `field_features`) that grant broad access (e.g. all courses or a tier) for a period. Users subscribe (via an order), creating a `lms_user_membership` with start/end dates; active membership entitles content access (F-004) without per-course purchase.
+Admin định nghĩa membership plan (`lms_membership_plan`, kèm `field_features`) cấp quyền truy cập diện rộng (ví dụ toàn bộ course hoặc một tier) trong một khoảng thời gian. User subscribe (qua một order), tạo ra một `lms_user_membership` với ngày start/end; membership đang active sẽ entitle quyền truy cập nội dung (F-004) mà không cần mua từng course.
 
 ## Business value
-Recurring/tiered memberships create predictable revenue and a simpler "all-access" path for organisations training many staff.
+Membership dạng recurring/theo tier tạo ra doanh thu dự đoán được và một lối đi "all-access" đơn giản hơn cho tổ chức đào tạo nhiều nhân sự.
 
 ## Scope notes
-- `lms_membership_plan` (catalog) + `lms_user_membership` (subscription instance).
-- Entitlement check in F-004 considers active membership as an access source.
-- Renewal/expiry handling; no external subscription-billing integration (membership purchased as an order).
+- `lms_membership_plan` (catalog) + `lms_user_membership` (instance subscription).
+- Kiểm tra entitlement trong F-004 coi membership đang active là một nguồn access.
+- Có xử lý renewal/expiry; không tích hợp subscription-billing bên ngoài (membership được mua như một order).
 
 ## Cross references
 - Design: [C04 lms_membership_plan](../../C-Design/C04-entities/lms_membership_plan.md), [C04 lms_user_membership](../../C-Design/C04-entities/lms_user_membership.md), [C12 WF-005](../../C-Design/C12-workflows/WF-005-membership-subscription.md)

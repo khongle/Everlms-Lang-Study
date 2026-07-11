@@ -4,17 +4,17 @@
 **Participating modules:** [lms_payment](../C05-modules/lms_payment.md), [lms_paypal](../C05-modules/lms_paypal.md)
 
 ## Purpose
-PayPal checkout via the `paypal` `@PaymentGateway`. ⚠️ Two code copies exist (lms_payment + lms_paypal) — consolidate (R-004).
+Checkout qua PayPal bằng `@PaymentGateway` là `paypal`. ⚠️ Hiện có hai bản code trùng nhau (lms_payment + lms_paypal) — cần hợp nhất (R-004).
 
 ## Proposed contract
-- **REST namespace:** outbound to PayPal API; inbound return `/payment/paypal/return`. Recommended webhook `POST /api/v1/payment/paypal/webhook`.
-- **Auth:** PayPal client id/secret in config (R-001) → move to Key/env. Server-side.
-- **Authorization:** order owner only; server-side capture.
+- **REST namespace:** gọi ra ngoài tới PayPal API; nhận return inbound `/payment/paypal/return`. Khuyến nghị dùng webhook `POST /api/v1/payment/paypal/webhook`.
+- **Auth:** PayPal client id/secret nằm trong config (R-001) → cần chuyển sang Key/env. Chỉ gọi server-side.
+- **Authorization:** chỉ order owner; capture ở phía server-side.
 - **Response envelope:** `{ data: {payment_id, status}, error|null, meta: {gateway: "paypal"} }`.
-- **Audit:** log attempt/result + transaction id; redact secrets.
+- **Audit:** ghi log attempt/result + transaction id; redact các thông tin bí mật.
 
 ## Test requirements
-- CI: mocked PayPal client; sandbox creds for integration env.
-- Auth+authz: order-owner gate.
-- Failure/fallback: cancelled/failed → order pending, retry/switch.
-- Contract test: success + cancel; verify only ONE PayPal gateway is active after R-004 cleanup.
+- CI: mock PayPal client; dùng sandbox creds cho integration env.
+- Auth+authz: chỉ order owner mới qua được gate.
+- Failure/fallback: bị cancelled/failed → order giữ pending, cho retry/đổi gateway.
+- Contract test: success + cancel; xác minh chỉ CÒN MỘT PayPal gateway hoạt động sau khi dọn dẹp theo R-004.

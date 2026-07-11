@@ -3,7 +3,7 @@
 **Name:** Badges · **Phase:** 5 · **Epic:** [E05](../../D-Development/D02-epics/E05-certification.md) · **Status:** blocked (award logic absent — BLK-003)
 
 ## Responsibility
-Owns badge definitions (`lms_badge`) and awarded instances (`lms_user_badge`). Intended to grant badges on milestones.
+Sở hữu định nghĩa badge (`lms_badge`) và các instance đã trao (`lms_user_badge`). Dự kiến trao badge khi đạt milestone.
 
 ## Owned / related entities
 - [lms_badge](../C04-entities/lms_badge.md) · [lms_user_badge](../C04-entities/lms_user_badge.md)
@@ -33,4 +33,4 @@ Owns badge definitions (`lms_badge`) and awarded instances (`lms_user_badge`). I
 - lms_base.
 
 ## Implementation notes
-- ⚠️ **Gap:** entities + `field_criteria` exist but **no award trigger/evaluator is implemented** — badges are never granted automatically. Needs an event subscriber (e.g. on course completion / quiz pass) to evaluate criteria and write `lms_user_badge`.
+- ⚠️ **Gap:** entity + `field_criteria` đã có nhưng **chưa implement award trigger/evaluator nào** — badge không bao giờ được trao tự động. Cần một event subscriber (ví dụ khi course completion / quiz pass) để evaluate criteria và ghi `lms_user_badge`.

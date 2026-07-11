@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_ai/`
 
 ## Requirement
-Instructors/editors use AI to draft course content, lessons, and quiz questions. A pluggable `@AiProvider` host (`AiProviderManager`) supports **OpenAI**, **Google Gemini**, and **Pollinations**; `CourseContentGenerator` turns a prompt/topic into structured course/lesson/quiz drafts the editor can review and save.
+Instructor/editor dùng AI để soạn nháp (draft) nội dung course, lesson và quiz question. Một plugin host dạng pluggable `@AiProvider` (`AiProviderManager`) hỗ trợ **OpenAI**, **Google Gemini** và **Pollinations**; `CourseContentGenerator` biến một prompt/topic thành bản draft course/lesson/quiz có cấu trúc để editor review và save.
 
 ## Business value
-AI authoring slashes course-production time and lowers the barrier for subject-matter experts to publish, directly increasing catalog growth.
+AI authoring cắt giảm mạnh thời gian sản xuất course và hạ thấp rào cản để chuyên gia lĩnh vực (subject-matter expert) có thể publish, trực tiếp thúc đẩy tăng trưởng catalog.
 
 ## Scope notes
-- Provider abstraction lets admins choose/swap LLM backends; keys configured per provider (⚠️ in config YAML, R-001).
-- Output is a **draft** — human review/edit before publish (editorial-usability preserved).
-- Generation is a server-side call; failures must degrade gracefully (INT contract).
+- Lớp abstraction cho provider cho phép admin chọn/đổi LLM backend; key được cấu hình theo từng provider (⚠️ nằm trong config YAML, R-001).
+- Output là một **draft** — cần con người review/edit trước khi publish (giữ nguyên editorial-usability).
+- Việc generation là một server-side call; khi lỗi phải degrade gracefully (theo INT contract).
 
 ## Cross references
 - Design: [C05 lms_ai](../../C-Design/C05-modules/lms_ai.md), [C06 INT-005 OpenAI](../../C-Design/C06-apis/INT-005-openai.md), [C06 INT-006 Gemini](../../C-Design/C06-apis/INT-006-google-gemini.md), [C06 INT-007 Pollinations](../../C-Design/C06-apis/INT-007-pollinations.md), [C12 WF-010](../../C-Design/C12-workflows/WF-010-ai-assisted-content-generation.md)

@@ -1,6 +1,6 @@
 # C15-object-steps - Object Operation Steps
 
-Lifecycle flows per business object — exactly 3 `.txt` flows each: `01-create-register`, `02-review-transition`, `03-monitor-export-archive`. Only this README is markdown. `02-review-transition` references the workflow's canonical states.
+Flow lifecycle cho từng business object — mỗi object có đúng 3 flow `.txt`: `01-create-register`, `02-review-transition`, `03-monitor-export-archive`. Chỉ README này ở dạng markdown. `02-review-transition` reference tới canonical state của workflow tương ứng.
 
 | Object | Folder | Module | Process evidence | Flow files |
 | ------ | ------ | ------ | ---------------- | ---------- |
@@ -9,5 +9,7 @@ Lifecycle flows per business object — exactly 3 `.txt` flows each: `01-create-
 | Certificate | [certificate/](certificate/) | lms_certificate | certificate-issuance (WF-003) | 3 |
 | Membership | [membership/](membership/) | lms_membership | membership-subscription (WF-005) | 3 |
 | Quiz result | [quiz-result/](quiz-result/) | lms_quiz | quiz-attempt-and-grading (WF-002) | 3 |
+| Account | [account/](account/) | user | user-registration-and-onboarding (WF-007) | 3 |
+| Forum topic | [forum-topic/](forum-topic/) | lms_forum | forum-discussion (WF-008) | 3 |
 
-> Objects map to C04 entities with a lifecycle. Other entities (chapter/lesson/question/etc.) are sub-objects of these.
+> Object map tới các C04 entity có lifecycle. Các entity khác (chapter/lesson/question/v.v.) là sub-object của các object này. `course` cũng là **Object** của WF-001 (enrollment, học qua course) và WF-010 (AI sinh course draft); `order` cũng là **Object** của WF-009 (coupon áp lên order lúc checkout).

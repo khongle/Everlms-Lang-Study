@@ -5,7 +5,9 @@ paypal_secret: EOQXQg9fYWOl2LNd1iP9O0uXcRvCMgzfCCDXuWFY_tvsjP7JqKC2LCMfQEXjWS7KY
 zalopay_app_id: ''
 zalopay_key1: ''
 zalopay_key2: ''
-bank_instructions: "Scan the QR code above or transfer manually using the exact amount and transfer content shown here.\nAfter payment, upload your receipt below. Our team will verify the payment and activate your course access."
+bank_instructions: |-
+  Scan the QR code above or transfer manually using the exact amount and transfer content shown here.
+  After payment, upload your receipt below. Our team will verify the payment and activate your course access.
 bank_bin: BIDV
 bank_account_no: '1170181109'
 bank_account_name: 'LE HUU PHAT'

@@ -1,10 +1,10 @@
 # F-014 Acceptance Criteria - Ratings & reviews
 
 ## Core criteria
-1. **Given** an enrolled learner, **when** they submit a 1–5 star rating (optionally with text), **then** a `lms_rating` is stored.
-2. **Given** existing ratings, **when** a course is viewed, **then** the aggregate rating is displayed on the card and detail page.
-3. **Given** a non-enrolled user, **when** they attempt to rate, **then** rating is not permitted (or limited per policy).
-4. **Given** a user who already rated, **when** they rate again, **then** their rating is updated, not duplicated.
+1. **Given** một learner đã enroll, **when** họ submit một rating 1–5 sao (kèm text tùy chọn), **then** một `lms_rating` được lưu lại.
+2. **Given** đã có rating, **when** một course được xem, **then** aggregate rating được hiển thị trên card và trang detail.
+3. **Given** một user chưa enroll, **when** họ cố rating, **then** rating không được phép (hoặc bị giới hạn theo policy).
+4. **Given** một user đã rating rồi, **when** họ rating lại, **then** rating của họ được cập nhật, không bị nhân đôi.
 
 ## Evidence expected
 - Module: [lms_rating](../../C-Design/C05-modules/lms_rating.md).

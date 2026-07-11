@@ -1,11 +1,11 @@
 # F-011 Acceptance Criteria - Payments & gateways
 
 ## Core criteria
-1. **Given** checkout, **when** the buyer selects a gateway, **then** `PaymentGatewayManager` loads the matching `@PaymentGateway` plugin (`bank_transfer`/`stripe`/`paypal`/`zalopay`).
-2. **Given** the Stripe gateway, **when** a valid card is charged, **then** payment captures and the order is marked paid.
-3. **Given** the bank_transfer gateway, **when** chosen, **then** the order awaits manual confirmation and is marked paid on confirm.
-4. **(partial)** **Given** the paypal/zalopay gateways, **when** invoked, **then** they are recognised but may be stubbed — documented in E06, not silently failing.
+1. **Given** checkout, **when** buyer chọn một gateway, **then** `PaymentGatewayManager` load plugin `@PaymentGateway` tương ứng (`bank_transfer`/`stripe`/`paypal`/`zalopay`).
+2. **Given** gateway Stripe, **when** một thẻ hợp lệ được charge, **then** payment được capture và order được đánh dấu paid.
+3. **Given** gateway `bank_transfer`, **when** được chọn, **then** order chờ xác nhận thủ công và được đánh dấu paid khi confirm.
+4. **(partial)** **Given** gateway paypal/zalopay, **when** được gọi, **then** chúng được nhận diện nhưng có thể chỉ là stub — đã được ghi nhận trong E06, không fail âm thầm.
 
 ## Evidence expected
 - Modules: [lms_payment](../../C-Design/C05-modules/lms_payment.md), [lms_stripe](../../C-Design/C05-modules/lms_stripe.md).
-- Test: gateway-plugin resolution test; Stripe capture test with a test-mode fixture; ⚠️ secrets via config (R-001), no webhooks (R-002).
+- Test: gateway-plugin resolution test; Stripe capture test với fixture ở test-mode; ⚠️ secret nằm trong config (R-001), chưa có webhook (R-002).

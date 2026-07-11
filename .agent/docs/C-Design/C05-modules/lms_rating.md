@@ -3,7 +3,7 @@
 **Name:** Ratings & reviews · **Phase:** 8 · **Epic:** [E08](../../D-Development/D02-epics/E08-community.md) · **Status:** done
 
 ## Responsibility
-Owns course ratings/reviews and aggregate display; moderation (approve/feature). ~2 routes.
+Sở hữu rating/review của course và hiển thị aggregate; có moderation (approve/feature). ~2 route.
 
 ## Owned / related entities
 - [lms_rating](../C04-entities/lms_rating.md)
@@ -27,10 +27,10 @@ Owns course ratings/reviews and aggregate display; moderation (approve/feature).
 | Submit/list reviews (on course detail) | `/course/{course}` (reviews tab) |
 
 ## Cross references
-- Entity [C04](../C04-entities/lms_rating.md); aggregate cached on [lms_course](lms_course.md) `field_rating`.
+- Entity [C04](../C04-entities/lms_rating.md); aggregate được cache trên [lms_course](lms_course.md) tại `field_rating`.
 
 ## Dependencies
 - lms_base, lms_course.
 
 ## Implementation notes
-- Eligibility: enrolled learners. Aggregate recomputed on rating save/approve. ~79 ratings live.
+- Điều kiện: learner đã enroll. Aggregate được tính lại khi rating được save/approve. ~79 rating đang live.

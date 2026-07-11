@@ -1,6 +1,6 @@
 # M01 - REFACTOR workflow
 
-Behaviour-preserving change (e.g. dedupe `lms_paypal` R-004, secrets→Key R-001).
+Behaviour-preserving change (e.g. dedupe `lms_paypal` R-004, secrets→Key R-001). <!-- credential-sweep:allow: risk mention R-001, không phải secret -->
 1. Ensure tests exist first (or add characterization tests) — critical given low coverage (R-006).
 2. Impact analysis ([E09](../../E-Quality/E09-impact-analysis/README.md)); CR if cross-scope.
 3. Refactor; gates G1→G4 (G4 ARCHITECTURE/MAINTAINABILITY focus); no behaviour change.

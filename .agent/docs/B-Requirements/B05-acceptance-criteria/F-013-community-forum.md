@@ -1,11 +1,11 @@
 # F-013 Acceptance Criteria - Community forum
 
 ## Core criteria
-1. **Given** an authenticated user, **when** they create a topic (`lms_forum_topic`) in a `forum_category`, **then** it persists and is listed.
-2. **Given** a topic, **when** a user posts a reply (`lms_forum_reply`), **then** it appears under the topic.
-3. **Given** a new reply, **when** posted, **then** relevant subscribers/instructor can be notified (F-017).
-4. **Given** a moderator role, **when** they edit/delete/lock a topic, **then** the action is permitted; ordinary users cannot.
+1. **Given** một user đã authenticated, **when** họ tạo một topic (`lms_forum_topic`) trong một `forum_category`, **then** topic được lưu lại và được liệt kê.
+2. **Given** một topic, **when** user đăng một reply (`lms_forum_reply`), **then** reply xuất hiện dưới topic đó.
+3. **Given** một reply mới, **when** được đăng, **then** subscriber/instructor liên quan có thể được thông báo (F-017).
+4. **Given** một moderator role, **when** họ edit/delete/lock một topic, **then** hành động được cho phép; user thường thì không.
 
 ## Evidence expected
 - Module: [lms_forum](../../C-Design/C05-modules/lms_forum.md).
-- Test: topic/reply CRUD + permission test by role (E03).
+- Test: topic/reply CRUD + permission test theo role (E03).

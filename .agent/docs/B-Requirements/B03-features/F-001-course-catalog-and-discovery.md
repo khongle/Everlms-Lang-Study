@@ -8,16 +8,16 @@
 **Source:** `web/modules/custom/lms_course/`
 
 ## Requirement
-Anonymous and authenticated users can browse a public catalog of courses, filter/search by category, level, language, and tag (taxonomy vocabularies `course_category`, `course_level`, `course_language`, `course_tags`), and open a course detail/landing page showing title, summary, instructor, price, rating, and curriculum outline.
+Người dùng ẩn danh và đã đăng nhập có thể duyệt catalog course công khai, filter/search theo category, level, language và tag (taxonomy vocabulary `course_category`, `course_level`, `course_language`, `course_tags`), và mở trang course detail/landing hiển thị title, summary, instructor, price, rating và curriculum outline.
 
 ## Business value
-The catalog is the top of the funnel — discovery and marketing of paid/free courses drives enrollments and revenue. It must be editor-managed and SEO-friendly.
+Catalog là điểm đầu phễu (top of the funnel) — discovery và marketing cho course trả phí/miễn phí thúc đẩy enrollment và doanh thu. Catalog phải do editor quản lý và thân thiện với SEO.
 
 ## Scope notes
-- Course is a custom content entity (`lms_course`) with bundle-less structure; curriculum is `field_chapters` → chapters → lessons.
-- Listing/filtering backed by Views and/or entity queries; detail page is a course route/controller.
-- Pricing and "free vs paid" gating is read here but enforced in F-004/F-010.
-- Out of scope: authoring (F-002), enrollment mechanics (F-004).
+- Course là một custom content entity (`lms_course`) không có bundle; curriculum được tổ chức qua `field_chapters` → chapters → lessons.
+- Listing/filtering dựa trên Views và/hoặc entity query; trang detail là một course route/controller.
+- Pricing và việc gating "free vs paid" được đọc ở đây nhưng được enforce tại F-004/F-010.
+- Ngoài phạm vi: authoring (F-002), cơ chế enrollment (F-004).
 
 ## Cross references
 - Design: [C05 lms_course](../../C-Design/C05-modules/lms_course.md), [C04 lms_course entity](../../C-Design/C04-entities/lms_course.md), [C07 sitemap](../../C-Design/C07-sitemap/_index.md)

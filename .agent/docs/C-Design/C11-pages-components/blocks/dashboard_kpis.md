@@ -10,7 +10,7 @@ adequacy: NOT_RUN
 # C11 Block - Dashboard KPIs
 
 ## Purpose
-Headline metric tiles (enrollments, completions, revenue) for workspace/admin dashboards; learner variant shows personal stats.
+Các tile chỉ số chính (enrollments, completions, revenue) cho dashboard workspace/admin; biến thể dành cho learner hiển thị số liệu cá nhân.
 
 ## Drupal 11 Contract
 | Concern | Contract |
@@ -40,4 +40,4 @@ Headline metric tiles (enrollments, completions, revenue) for workspace/admin da
 | Live | workspace/dashboard |
 
 ## Tests / Checks
-- Metrics match DB; role scoping enforced; ⚠️ some KPIs partial (F-020).
+- Số liệu khớp với DB; role scoping được áp dụng đúng; ⚠️ một số KPI mới triển khai một phần (partial) (F-020).

@@ -1,6 +1,6 @@
 # C16 Sheet - 04 forms-actions
 
-Form API + action handling. Source: C11 form pages, C05.
+Form API + xử lý action. Nguồn: C11 form pages, C05.
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |

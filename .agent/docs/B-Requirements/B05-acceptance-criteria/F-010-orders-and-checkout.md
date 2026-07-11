@@ -1,11 +1,11 @@
 # F-010 Acceptance Criteria - Orders & checkout
 
 ## Core criteria
-1. **Given** a buyer, **when** they add a course/bundle/membership, **then** an `lms_order` + `lms_order_item` (`field_items`) is created in `pending`.
-2. **Given** a pending order, **when** payment succeeds (F-011), **then** the order transitions to paid/completed and entitlement is granted.
-3. **Given** a pending order, **when** payment fails/cancels, **then** the order stays pending/cancelled and no entitlement is granted.
-4. **Given** an order, **when** a coupon is applied (WF-009), **then** the total reflects the discount.
+1. **Given** một buyer, **when** họ thêm một course/bundle/membership, **then** một `lms_order` + `lms_order_item` (`field_items`) được tạo ở trạng thái `pending`.
+2. **Given** một order đang `pending`, **when** payment thành công (F-011), **then** order chuyển sang paid/completed và entitlement được cấp.
+3. **Given** một order đang `pending`, **when** payment thất bại/bị hủy, **then** order vẫn ở trạng thái pending/cancelled và không entitlement nào được cấp.
+4. **Given** một order, **when** một coupon được áp dụng (WF-009), **then** tổng tiền phản ánh discount.
 
 ## Evidence expected
 - Module: [lms_order](../../C-Design/C05-modules/lms_order.md).
-- Test: order state-machine test; entitlement-on-paid test; ⚠️ note no webhook reconciliation (R-002) (E03).
+- Test: order state-machine test; entitlement-on-paid test; ⚠️ lưu ý chưa có webhook reconciliation (R-002) (E03).

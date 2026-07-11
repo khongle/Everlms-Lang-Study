@@ -1,8 +1,8 @@
 # C16-item-solutions - Item Solution Workbook
 
-The implementation-translation layer: each sheet names a concept, each row names an item, and **"Drupal primitive to use"** gives the build approach. Bridge from "what is required" (C01–C15) to "how to build it" (D). Source-of-truth is the live code; these sheets are derived/maintained as markdown (no separate `.xlsx` for this rebuild).
+Layer chuyển đổi sang implementation: mỗi sheet đặt tên cho một concept, mỗi dòng đặt tên cho một item, và cột **"Drupal primitive to use"** cho biết cách tiếp cận để build. Đây là cầu nối từ "cái gì được yêu cầu" (C01–C15) sang "build nó như thế nào" (D). Source-of-truth là code thực tế đang chạy; các sheet này được derive/duy trì dưới dạng markdown (không có file `.xlsx` riêng cho lần rebuild này).
 
-Generated: 2026-06-21 (as-built). Sheet 10 (migration) is **N/A** — EverLMS is documented in place, not migrated from another platform.
+Generated: 2026-06-21 (as-built). Sheet 10 (migration) là **N/A** — EverLMS được tài liệu hóa tại chỗ (in place), không phải migrate từ platform khác.
 
 | Sheet | Markdown | Rows | Purpose |
 | ----- | -------- | ---- | ------- |
@@ -19,4 +19,4 @@ Generated: 2026-06-21 (as-built). Sheet 10 (migration) is **N/A** — EverLMS is
 | 12 | [12-objects.md](12-objects.md) | 5 | object-level solutions |
 | 13 | [13-release-ops.md](13-release-ops.md) | gates | quality/release/ops solutions |
 
-Use C16 before implementation when deciding whether something is a content entity, config entity, taxonomy, route/controller, Form API form, Views display, workflow service, importer, exporter, component, or release gate.
+Dùng C16 trước khi implementation khi cần quyết định một thứ gì đó là content entity, config entity, taxonomy, route/controller, Form API form, Views display, workflow service, importer, exporter, component, hay release gate.

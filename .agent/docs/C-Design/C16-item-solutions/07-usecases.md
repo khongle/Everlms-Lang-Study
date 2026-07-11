@@ -1,6 +1,6 @@
 # C16 Sheet - 07 usecases
 
-C13 usecase → implementation work. Source: [C13](../C13-usecases/README.md).
+C13 usecase → công việc implementation. Nguồn: [C13](../C13-usecases/README.md).
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |

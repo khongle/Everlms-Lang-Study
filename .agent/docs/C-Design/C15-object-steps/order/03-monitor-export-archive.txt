@@ -1,3 +1,3 @@
-- [/workspace/orders] - monitor - review order list and status - module: lms_order - actors: Manager
-- [/admin/lms/reports/users/export] - export - export revenue/order data - module: lms_analytics
-- [/workspace/orders/{id}/edit] - archive - archive/refund completed order - module: lms_order - process: order-checkout-and-payment
+- [/workspace/orders] - monitor - review order list and status - module: lms_order - actors: Manager - expected: order list with ID/learner/amount/status renders
+- [/admin/lms/reports/users/export] - export - export revenue/order data - module: lms_analytics - expected: CSV file downloaded with order rows
+- [/workspace/orders/{id}/edit] - archive - archive/refund completed order - module: lms_order - process: order-checkout-and-payment - expected: order marked archived/refunded

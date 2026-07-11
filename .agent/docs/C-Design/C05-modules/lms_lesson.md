@@ -3,7 +3,7 @@
 **Name:** Lessons & media · **Phase:** 2 · **Epic:** [E02](../../D-Development/D02-epics/E02-course-catalog.md) · **Status:** done
 
 ## Responsibility
-Owns the lesson entity and content delivery: rich text, video (URL/file), SCORM, H5P, Zoom links, attachments, drip, and free-preview. The most-connected content module (depends on 5 modules: datetime, file, comment, lms_base, lms_chapter).
+Sở hữu entity lesson và việc phân phối nội dung: rich text, video (URL/file), SCORM, H5P, link Zoom, attachment, drip, và free-preview. Là module content có nhiều kết nối nhất (phụ thuộc vào 5 module: datetime, file, comment, lms_base, lms_chapter).
 
 ## Owned / related entities
 - [lms_lesson](../C04-entities/lms_lesson.md)
@@ -19,7 +19,7 @@ Owns the lesson entity and content delivery: rich text, video (URL/file), SCORM,
 | [WF-001](../../B-Requirements/B04-business-workflows/WF-001-enrollment-and-learning.md) | Enrollment & learning |
 
 ## Integrations / APIs (B06 / C06)
-- H5P (`field_h5p_upload` configurable field); Zoom link fields (lms_zoom, [INT-004](../C06-apis/INT-004-zoom.md)); served via mobile API.
+- H5P (configurable field `field_h5p_upload`); field link Zoom (lms_zoom, [INT-004](../C06-apis/INT-004-zoom.md)); phục vụ qua mobile API.
 
 ## Backing pages
 | Label | URL |
@@ -28,10 +28,10 @@ Owns the lesson entity and content delivery: rich text, video (URL/file), SCORM,
 | Lesson edit | `/lesson/{lesson}/edit` |
 
 ## Cross references
-- Entity [C04 lms_lesson](../C04-entities/lms_lesson.md); progress [lms_progress](lms_progress.md); notes [lms_note](lms_note.md).
+- Entity [C04 lms_lesson](../C04-entities/lms_lesson.md); progress ở [lms_progress](lms_progress.md); note ở [lms_note](lms_note.md).
 
 ## Dependencies
 - datetime, file, comment, lms_base, lms_chapter.
 
 ## Implementation notes
-- Comment integration (core `comment`) for lesson discussion; `datetime` for scheduling/drip; `file` for media/SCORM/attachments. Access gated by enrollment + drip + free-preview.
+- Tích hợp comment (core `comment`) cho thảo luận lesson; `datetime` cho scheduling/drip; `file` cho media/SCORM/attachment. Access được gate bởi enrollment + drip + free-preview.

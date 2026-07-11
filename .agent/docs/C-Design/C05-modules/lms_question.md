@@ -3,7 +3,7 @@
 **Name:** Questions (8 types) · **Phase:** 4 · **Epic:** [E04](../../D-Development/D02-epics/E04-assessment.md) · **Status:** done
 
 ## Responsibility
-Owns the question bank: the bundleable `lms_question` entity (8 `lms_question_type` bundles) plus answer sub-entities (`lms_answer`, `lms_matching_pair`). Defines what a question is per type; grading lives in lms_quiz.
+Sở hữu question bank: entity `lms_question` có thể bundle (8 bundle `lms_question_type`) cùng sub-entity answer (`lms_answer`, `lms_matching_pair`). Định nghĩa một question là gì theo từng type; việc grading nằm ở lms_quiz.
 
 ## Owned / related entities
 - [lms_question](../C04-entities/lms_question.md) · [lms_question_type](../C04-entities/lms_question_type.md) · [lms_answer](../C04-entities/lms_answer.md) · [lms_matching_pair](../C04-entities/lms_matching_pair.md)
@@ -28,10 +28,10 @@ Owns the question bank: the bundleable `lms_question` entity (8 `lms_question_ty
 | Question edit (per type) | `/question/{question}/edit` |
 
 ## Cross references
-- Entities [C04](../C04-entities/lms_question.md); consumed by [lms_quiz](lms_quiz.md).
+- Entity [C04](../C04-entities/lms_question.md); được [lms_quiz](lms_quiz.md) sử dụng.
 
 ## Dependencies
 - lms_base.
 
 ## Implementation notes
-- 8 config bundles: single_choice, multiple_choice, true_false, short_answer, essay, fill_blank, matching, ordering. Type-specific answer fields; choice/correct sub-entities created inline.
+- 8 config bundle: single_choice, multiple_choice, true_false, short_answer, essay, fill_blank, matching, ordering. Field answer riêng theo từng type; sub-entity choice/correct được tạo inline.

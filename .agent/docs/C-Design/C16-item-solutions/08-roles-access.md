@@ -1,6 +1,6 @@
 # C16 Sheet - 08 roles-access
 
-Role + permission solutions. Source: [C02](../C02-user-roles/_index.md), `config/sync/user.role.*`.
+Giải pháp cho role + permission. Nguồn: [C02](../C02-user-roles/_index.md), `config/sync/user.role.*`.
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |

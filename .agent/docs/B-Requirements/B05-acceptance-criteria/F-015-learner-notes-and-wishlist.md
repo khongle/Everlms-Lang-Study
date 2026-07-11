@@ -1,11 +1,11 @@
 # F-015 Acceptance Criteria - Learner notes & wishlist
 
 ## Core criteria
-1. **Given** a learner on a lesson/course, **when** they save a note (`lms_note`), **then** it persists and is visible only to them.
-2. **Given** a catalog course, **when** the learner adds it to wishlist (`lms_wishlist`), **then** it appears in their wishlist.
-3. **Given** a wishlisted course, **when** the learner removes it, **then** it disappears from the wishlist.
-4. **Given** a wishlisted paid course, **when** the learner checks out, **then** the wishlist item converts to an order (F-010).
+1. **Given** một learner đang ở lesson/course, **when** họ lưu một note (`lms_note`), **then** note được lưu lại và chỉ hiển thị với riêng họ.
+2. **Given** một course trong catalog, **when** learner thêm nó vào wishlist (`lms_wishlist`), **then** course xuất hiện trong wishlist của họ.
+3. **Given** một course trong wishlist, **when** learner xóa nó, **then** course biến mất khỏi wishlist.
+4. **Given** một course trả phí trong wishlist, **when** learner checkout, **then** item trong wishlist chuyển thành một order (F-010).
 
 ## Evidence expected
 - Modules: [lms_note](../../C-Design/C05-modules/lms_note.md), [lms_wishlist](../../C-Design/C05-modules/lms_wishlist.md).
-- Test: note privacy test (other users cannot read); wishlist add/remove test (E03).
+- Test: note privacy test (user khác không đọc được); wishlist add/remove test (E03).

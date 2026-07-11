@@ -1,5 +1,5 @@
-- [/workspace/orders] - review orders - view orders, confirm bank transfers - actor: Manager - module: lms_order - source: C-Design/C13-usecases/WF-004-order-checkout-and-payment/UC-WF-004-001-buy-a-course.md
-- [/workspace/orders/{id}/edit] - update order - mark paid / refund - actor: Manager - module: lms_order - process: order-checkout-and-payment
-- [/workspace/pricing] - manage plans - create/edit membership plans - actor: Manager - module: lms_membership
-- [/workspace/reports] - read reports - enrollments/completions/revenue - actor: Manager - module: lms_course
-- [/admin/lms/reports/courses] - export - export analytics CSV - actor: Manager - module: lms_analytics
+- [/workspace/orders] - review orders - view orders, confirm bank transfers - actor: Manager - module: lms_order - source: C-Design/C13-usecases/WF-004-order-checkout-and-payment/UC-WF-004-001-buy-a-course.md - expected: order list with status badges renders
+- [/workspace/orders/{id}/edit] - update order - mark paid / refund - actor: Manager - module: lms_order - process: order-checkout-and-payment - expected: order status updated, entitlement granted on completed
+- [/workspace/pricing] - manage plans - create/edit membership plans - actor: Manager - module: lms_membership - source: C-Design/C13-usecases/WF-005-membership-subscription/UC-WF-005-001-subscribe-to-a-plan.md - expected: plan saved, available at checkout
+- [/workspace/reports] - read reports - enrollments/completions/revenue - actor: Manager - module: lms_course - expected: report widgets render aggregated counts
+- [/admin/lms/reports/courses] - export - export analytics CSV - actor: Manager - module: lms_analytics - expected: CSV file downloaded with report rows

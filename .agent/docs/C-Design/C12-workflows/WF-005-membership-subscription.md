@@ -1,5 +1,7 @@
 # C12 Workflow - WF-005 Membership subscription
 
+**Object:** membership
+
 ## Business source
 [B04 WF-005](../../B-Requirements/B04-business-workflows/WF-005-membership-subscription.md)
 
@@ -18,23 +20,30 @@
 | rejected_or_returned (cancelled) | user cancelled |
 | archived (expired) | past `field_end_date` |
 
+## Transitions
+| From | To | Trigger |
+| ---- | -- | ------- |
+| submitted | approved_or_completed | order thanh toán hoàn tất |
+| approved_or_completed | rejected_or_returned | user cancel membership |
+| approved_or_completed | archived | quá field_end_date |
+
 ## Permission model
-- Initiator: user (subscribe via order).
-- Admin: manager creates/edits memberships.
+- Initiator: user (subscribe qua order).
+- Admin: manager tạo/sửa membership.
 
 ## Membership validity contract
-- `active`/`trial` is valid only when `field_end_date` is in the future.
-- Learner-facing membership pages must hide stale active rows with missing or expired end dates.
-- Completing a membership order for an already-current user/plan extends the existing membership instead of creating a duplicate card.
-- Completing a membership order when only a stale row exists for the same user/plan reactivates that row with fresh start/end dates.
+- `active`/`trial` chỉ valid khi `field_end_date` còn ở tương lai.
+- Các trang membership hướng tới learner phải ẩn các dòng active đã cũ (stale) có end date thiếu hoặc đã hết hạn.
+- Hoàn tất một order membership cho user/plan đang current sẽ gia hạn membership hiện có thay vì tạo thêm card duplicate.
+- Hoàn tất một order membership khi chỉ tồn tại một dòng stale cho cùng user/plan sẽ reactivate dòng đó với start/end date mới.
 
 ## Round-2 QA verification
-Core validity contracts confirmed working:
-- `MembershipManager::hasActiveMembership()` requires `field_status IN (active,trial)` **and** `field_end_date > now`, so NULL/expired rows never count (maria's stale plan-9 row with NULL end date is excluded).
-- `MembershipController::myMembership()` (`/my-membership`) dedupes by plan and hides stale rows — maria's 10 duplicate active plan-7 rows render as **one** "Basic Access" card.
-- Order completion (`lms_order.module`) extends an existing active membership, else reactivates a stale one, else creates — no new duplicates.
+Các contract về validity cốt lõi đã xác nhận hoạt động đúng:
+- `MembershipManager::hasActiveMembership()` yêu cầu `field_status IN (active,trial)` **và** `field_end_date > now`, nên các dòng NULL/expired không bao giờ được tính (dòng plan-9 stale của maria với end date NULL bị loại).
+- `MembershipController::myMembership()` (`/my-membership`) dedupe theo plan và ẩn các dòng stale — 10 dòng active plan-7 duplicate của maria chỉ render thành **một** card "Basic Access".
+- Hoàn tất order (`lms_order.module`) sẽ gia hạn membership active hiện có, nếu không thì reactivate dòng stale, nếu không nữa mới tạo mới — không phát sinh duplicate mới.
 
-⚠️ **Product gap (`WF-005-001`, open):** entitlement is tier-agnostic — any active membership unlocks the whole catalog, so a free "Basic Access" member can open paid specialist courses despite the differentiated `/pricing` tiers. Needs a product decision + a plan access-level field.
+⚠️ **Product gap (`WF-005-001`, còn mở):** entitlement không phân biệt tier — bất kỳ membership active nào cũng mở khóa toàn bộ catalog, nên một member "Basic Access" miễn phí vẫn mở được các course chuyên sâu trả phí, dù `/pricing` đã phân tier khác nhau. Cần quyết định product + thêm field access-level cho plan.
 
 ## Notifications
-Activation + renewal/expiry reminders (cron). Lapsed → access revoked in F-004 gating.
+Nhắc kích hoạt + gia hạn/hết hạn (qua cron). Hết hạn (lapsed) → access bị revoke theo gating của F-004.

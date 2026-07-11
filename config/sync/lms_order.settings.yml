@@ -1,0 +1,15 @@
+coupons:
+  -
+    code: SILVERCARE10
+    label: 'SilverCare 10 percent'
+    type: percent
+    amount: 10
+    enabled: true
+    minimum_order: 0
+  -
+    code: WELCOME20
+    label: 'Welcome 20 dollars'
+    type: fixed
+    amount: 20
+    enabled: true
+    minimum_order: 50

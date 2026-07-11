@@ -1,6 +1,6 @@
 # D07-code-map - Code Map
 
-Module → key source locations (under `web/modules/custom/<module>/`). Mirrors [D03 stories](../D03-stories/_index.md) and [C05 modules](../../C-Design/C05-modules/_index.md) by module. Update on file create/modify.
+Module → vị trí source chính (dưới `web/modules/custom/<module>/`). Mirror theo module với [D03 stories](../D03-stories/_index.md) và [C05 modules](../../C-Design/C05-modules/_index.md). Cập nhật khi tạo/sửa file.
 
 | Module | Key paths / classes |
 | ------ | ------------------- |
@@ -34,4 +34,4 @@ Module → key source locations (under `web/modules/custom/<module>/`). Mirrors 
 | lms_content_tools | `src/Service/ContentToolsManager.php`; `src/Controller/ContentToolsController.php`; `src/Form/SeedInputForm.php`; `src/Commands/ContentToolsCommands.php` |
 | lms_theme (theme) | `web/themes/custom/lms_theme/` — `*.info.yml` (16 regions), `*.libraries.yml` (21), `*.theme`, `templates/`, `scss/` |
 
-Per-module detail files: [lms_base](lms_base.md) · [open_switcher](open_switcher.md) · [lms_course](lms_course.md) · [lms_chapter](lms_chapter.md) · [lms_lesson](lms_lesson.md) · [lms_progress](lms_progress.md) · [lms_question](lms_question.md) · [lms_quiz](lms_quiz.md) (others: see table above + [C05](../../C-Design/C05-modules/_index.md)).
+File deep-dive theo từng module (đủ 28/28): [lms_base](lms_base.md) · [open_switcher](open_switcher.md) · [lms_course](lms_course.md) · [lms_chapter](lms_chapter.md) · [lms_lesson](lms_lesson.md) · [lms_quiz](lms_quiz.md) · [lms_question](lms_question.md) · [lms_progress](lms_progress.md) · [lms_certificate](lms_certificate.md) · [lms_badge](lms_badge.md) · [lms_order](lms_order.md) · [lms_payment](lms_payment.md) · [lms_stripe](lms_stripe.md) · [lms_paypal](lms_paypal.md) · [lms_bundle](lms_bundle.md) · [lms_membership](lms_membership.md) · [lms_forum](lms_forum.md) · [lms_rating](lms_rating.md) · [lms_note](lms_note.md) · [lms_wishlist](lms_wishlist.md) · [lms_blog](lms_blog.md) · [lms_faq](lms_faq.md) · [lms_zoom](lms_zoom.md) · [lms_notification](lms_notification.md) · [lms_ai](lms_ai.md) · [lms_mobile_api](lms_mobile_api.md) · [lms_analytics](lms_analytics.md) · [lms_content_tools](lms_content_tools.md).

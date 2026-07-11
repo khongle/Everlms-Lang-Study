@@ -1,11 +1,11 @@
 # F-004 Acceptance Criteria - Enrollment & content gating
 
 ## Core criteria
-1. **Given** a free course, **when** a user enrolls, **then** a `lms_user_course` record is created and lesson content unlocks.
-2. **Given** a paid course, **when** a user without an order/membership opens it, **then** content is gated and checkout is offered.
-3. **Given** a completed paid order (WF-004), **when** it finalises, **then** the buyer is enrolled and content unlocks.
-4. **Given** an active membership entitling the course, **when** the member opens it, **then** content unlocks without a per-course purchase.
+1. **Given** một course miễn phí, **when** user enroll, **then** một bản ghi `lms_user_course` được tạo và nội dung lesson được mở khóa.
+2. **Given** một course trả phí, **when** user không có order/membership mở course, **then** nội dung bị gate và checkout được đề xuất.
+3. **Given** một paid order đã hoàn tất (WF-004), **when** order được finalise, **then** buyer được enroll và nội dung được mở khóa.
+4. **Given** một membership đang active cho phép truy cập course, **when** member mở course, **then** nội dung được mở khóa mà không cần mua riêng từng course.
 
 ## Evidence expected
 - Modules: [lms_progress](../../C-Design/C05-modules/lms_progress.md), [lms_course](../../C-Design/C05-modules/lms_course.md).
-- Test: gating matrix test (free / paid-unpaid / paid-paid / membership) on web and `/api/v1` (F-019).
+- Test: gating matrix test (free / paid-unpaid / paid-paid / membership) trên web và `/api/v1` (F-019).

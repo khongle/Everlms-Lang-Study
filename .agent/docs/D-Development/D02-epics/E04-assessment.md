@@ -3,7 +3,7 @@
 **Status:** done · **Phase:** 4
 
 ## Goal
-Multi-type quizzes with automated grading; the certification gate.
+Quiz nhiều loại (multi-type) với chấm điểm tự động; đây là certification gate (cổng chứng nhận).
 
 ## Scope
 - Modules: [lms_quiz](../../C-Design/C05-modules/lms_quiz.md), [lms_question](../../C-Design/C05-modules/lms_question.md)
@@ -17,4 +17,4 @@ Multi-type quizzes with automated grading; the certification gate.
 E03.
 
 ## Open work
-Manual grading UI for essays (verify depth); automated grading-strategy tests (R-006).
+UI chấm điểm thủ công (manual grading) cho essay (cần verify độ sâu); test cho các grading-strategy tự động (R-006).

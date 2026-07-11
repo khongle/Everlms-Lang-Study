@@ -8,14 +8,14 @@
 **Source:** `web/modules/custom/lms_badge/`
 
 ## Requirement
-Define achievement badges (`lms_badge`, typed via `badge_type` vocabulary) and grant them to users (`lms_user_badge`) when they reach milestones (course completion, quiz mastery, streaks). Learners see earned badges on their profile.
+Định nghĩa achievement badge (`lms_badge`, phân loại qua vocabulary `badge_type`) và cấp (grant) cho user (`lms_user_badge`) khi họ đạt milestone (course completion, quiz mastery, streak). Learner thấy các badge đã kiếm được trên profile của mình.
 
 ## Business value
-Gamification lifts engagement and completion; badges complement certificates with lighter, more frequent recognition.
+Gamification nâng cao engagement và completion; badge bổ sung cho certificate bằng hình thức ghi nhận nhẹ nhàng và thường xuyên hơn.
 
 ## Scope notes
-- ⚠️ **As-built gap:** `lms_badge`/`lms_user_badge` entities and admin exist, but **no automatic award trigger is implemented** — badges are never granted by the system. Tracked as risk R-003 / blocker BLK-003.
-- Requirement here documents the intended (`target`) behavior; E06 records the gap honestly.
+- ⚠️ **Khoảng trống as-built:** entity `lms_badge`/`lms_user_badge` và trang admin đã tồn tại, nhưng **chưa có automatic award trigger nào được implement** — hệ thống không bao giờ tự cấp badge. Được track như risk R-003 / blocker BLK-003.
+- Requirement ở đây mô tả behavior dự kiến (`target`); E06 ghi nhận khoảng trống này một cách trung thực.
 
 ## Cross references
 - Design: [C04 lms_badge](../../C-Design/C04-entities/lms_badge.md), [C04 lms_user_badge](../../C-Design/C04-entities/lms_user_badge.md)

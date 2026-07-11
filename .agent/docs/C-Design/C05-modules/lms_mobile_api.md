@@ -3,10 +3,10 @@
 **Name:** Mobile REST API · **Phase:** 11 · **Epic:** [E11](../../D-Development/D02-epics/E11-mobile-api.md) · **Status:** done
 
 ## Responsibility
-Exposes the `/api/v1` JSON API for the Flutter app: OTP/token auth, catalog, and learning/progress. ~22 routes. The project's `public_api_surface`.
+Cung cấp JSON API `/api/v1` cho app Flutter: OTP/token auth, catalog, và learning/progress. ~22 route. Là `public_api_surface` của dự án.
 
 ## Owned / related entities
-- None (serializes other modules' entities).
+- Không có (serialize entity của các module khác).
 
 ## Requirements features (B03)
 | Feature | Title |
@@ -20,16 +20,16 @@ Exposes the `/api/v1` JSON API for the Flutter app: OTP/token auth, catalog, and
 | [WF-001](../../B-Requirements/B04-business-workflows/WF-001-enrollment-and-learning.md) | Enrollment & learning |
 
 ## Integrations / APIs (B06 / C06)
-- Push to app via [INT-009](../C06-apis/INT-009-push-firebase-apns.md). Full spec: [I-External/I01](../../I-External/I01-public-api-spec/README.md).
+- Push tới app qua [INT-009](../C06-apis/INT-009-push-firebase-apns.md). Spec đầy đủ: [I-External/I01](../../I-External/I01-public-api-spec/README.md).
 
 ## Backing pages
-- API only (no themed pages). Consumer: `app/` Flutter.
+- Chỉ API (không có trang themed). Consumer: app Flutter (`app/`).
 
 ## Cross references
-- Controllers: `MobileAuthController`, `MobileCourseController`, `MobileLearningController`; `OtpService`. Mobile design: [C06](../C06-apis/_index.md).
+- Controller: `MobileAuthController`, `MobileCourseController`, `MobileLearningController`; `OtpService`. Thiết kế mobile: [C06](../C06-apis/_index.md).
 
 ## Dependencies
 - user (Drupal core).
 
 ## Implementation notes
-- Auth: OTP request/verify (`OtpService`) → bearer token; token on subsequent calls. ~22 routes under `/api/v1`. JSON envelope. Notably depends only on `user` (reads other entities via entity API/services).
+- Auth: OTP request/verify (`OtpService`) → bearer token; token dùng cho các call tiếp theo. ~22 route dưới `/api/v1`. JSON envelope. Đáng chú ý là chỉ phụ thuộc vào `user` (đọc các entity khác qua entity API/service).

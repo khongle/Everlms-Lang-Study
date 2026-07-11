@@ -10,7 +10,7 @@ adequacy: PASS
 # C11 Block - Enroll / buy CTA
 
 ## Purpose
-Context-aware call-to-action on the course detail: enroll (free), buy (paid), continue (enrolled), or included (membership).
+Call-to-action tuỳ ngữ cảnh trên trang course detail: enroll (miễn phí), buy (trả phí), continue (đã enroll), hoặc included (đã có sẵn trong membership).
 
 ## Drupal 11 Contract
 | Concern | Contract |
@@ -40,4 +40,4 @@ Context-aware call-to-action on the course detail: enroll (free), buy (paid), co
 | Live | course detail sidebar |
 
 ## Tests / Checks
-- CTA state correct per entitlement (free/paid/enrolled/member); routes to enroll/checkout/continue.
+- Trạng thái CTA đúng theo entitlement (free/paid/enrolled/member); điều hướng đúng route enroll/checkout/continue.

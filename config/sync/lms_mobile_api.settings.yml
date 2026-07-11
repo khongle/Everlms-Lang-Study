@@ -1,0 +1,6 @@
+_core:
+  default_config_hash: _LdJwH9Ge0xFVuJnnoVIOfjkuCuzxc46YS5o9NRi1ss
+oauth_client_id: ''
+oauth_client_secret: ''
+otp_expiry_seconds: 900
+reset_token_expiry_seconds: 1800

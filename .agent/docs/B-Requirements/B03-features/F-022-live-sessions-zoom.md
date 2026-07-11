@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_zoom/`
 
 ## Requirement
-Instructors schedule live **Zoom** sessions tied to a course; learners see upcoming sessions and a join link. Integration with the Zoom API (INT-004) creates meetings and surfaces join URLs.
+Instructor lên lịch (schedule) session **Zoom** trực tiếp gắn với một course; learner thấy các session sắp tới và join link. Tích hợp với Zoom API (INT-004) tạo meeting và hiển thị join URL.
 
 ## Business value
-Live sessions blend self-paced and instructor-led delivery — valuable for cohort-based or compliance training requiring live attendance.
+Live session kết hợp giữa self-paced và instructor-led delivery — có giá trị cho đào tạo theo cohort hoặc đào tạo compliance yêu cầu tham dự trực tiếp.
 
 ## Scope notes
-- `lms_zoom` (3 routes, 3 deps) integrates with Zoom API (INT-004).
-- ⚠️ As-built depth partial — scheduling/links may exist; attendance tracking/recording likely limited (confirm in E06).
-- Zoom credentials are SENSITIVE (R-001 pattern).
+- `lms_zoom` (3 route, 3 dependency) tích hợp với Zoom API (INT-004).
+- ⚠️ Độ sâu as-built còn partial — scheduling/link có thể đã có; attendance tracking/recording nhiều khả năng còn hạn chế (cần xác nhận ở E06).
+- Credential của Zoom là SENSITIVE (theo pattern R-001).
 
 ## Cross references
 - Design: [C05 lms_zoom](../../C-Design/C05-modules/lms_zoom.md), [C06 INT-004 Zoom](../../C-Design/C06-apis/INT-004-zoom.md)

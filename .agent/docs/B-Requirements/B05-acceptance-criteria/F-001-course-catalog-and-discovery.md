@@ -1,12 +1,12 @@
 # F-001 Acceptance Criteria - Course catalog & discovery
 
 ## Core criteria
-1. **Given** published courses exist, **when** an anonymous user opens the catalog, **then** they see course cards (title, thumbnail, price, rating) without logging in.
-2. **Given** the catalog, **when** a user filters by category/level/language/tag, **then** only matching published courses are listed.
-3. **Given** a course card, **when** the user opens the course, **then** the detail page shows summary, instructor, curriculum outline, price, and aggregate rating.
-4. **Given** an unpublished course, **when** any non-privileged user browses, **then** it does not appear in the catalog.
+1. **Given** đã có course được publish, **when** một anonymous user mở catalog, **then** họ thấy các course card (title, thumbnail, price, rating) mà không cần đăng nhập.
+2. **Given** catalog, **when** user lọc theo category/level/language/tag, **then** chỉ những course đã publish khớp điều kiện mới được liệt kê.
+3. **Given** một course card, **when** user mở course, **then** trang detail hiển thị summary, instructor, curriculum outline, price, và aggregate rating.
+4. **Given** một course chưa publish, **when** bất kỳ user không có quyền nào duyệt, **then** course đó không xuất hiện trong catalog.
 
 ## Evidence expected
-- Module: [C05 lms_course](../../C-Design/C05-modules/lms_course.md); pages in [C11 pages](../../C-Design/C11-pages-components/pages/_index.md).
-- Test: catalog-listing functional test (filter by each vocabulary); access test for unpublished courses (E03).
-- Data: seeded 40 courses across categories (live DB).
+- Module: [C05 lms_course](../../C-Design/C05-modules/lms_course.md); các page trong [C11 pages](../../C-Design/C11-pages-components/pages/_index.md).
+- Test: catalog-listing functional test (lọc theo từng vocabulary); access test cho course chưa publish (E03).
+- Data: 40 course đã seed trải khắp các category (live DB).

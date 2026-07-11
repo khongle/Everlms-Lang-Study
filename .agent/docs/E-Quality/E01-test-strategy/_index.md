@@ -25,4 +25,4 @@
 - Coverage threshold (target): ≥60% on new/changed code; happy-path flows covered before release (CP5).
 
 ## Gate mapping
-G1 Build (`composer install`/`drush cr`) → G2 Lint (`phpcs Drupal,DrupalPractice`) → G3 Tests (the pyramid above) → G4 Adversarial (7 categories). See [A06 gates](../../../00-Guidelines/A06-validation-and-adequacy-gates.md).
+G1 Build (`composer install`/`drush cr`) → G2 Lint (`phpcs Drupal,DrupalPractice`) → G3 Tests (the pyramid above) → G4 Adversarial (7 categories). See [A06 gates](../../../_LodeStar/00-Guidelines-v6/A06-validation-and-adequacy-gates.md).

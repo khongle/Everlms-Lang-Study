@@ -3,7 +3,7 @@
 **Name:** Learner notes · **Phase:** 8 · **Epic:** [E08](../../D-Development/D02-epics/E08-community.md) · **Status:** done
 
 ## Responsibility
-Owns private learner notes attached to lessons/courses, optionally timestamped to video position. ~4 routes.
+Sở hữu note riêng tư của learner gắn với lesson/course, có thể gắn timestamp theo vị trí video. ~4 route.
 
 ## Owned / related entities
 - [lms_note](../C04-entities/lms_note.md)
@@ -19,7 +19,7 @@ Owns private learner notes attached to lessons/courses, optionally timestamped t
 | [WF-001](../../B-Requirements/B04-business-workflows/WF-001-enrollment-and-learning.md) | Enrollment & learning |
 
 ## Integrations / APIs (B06 / C06)
-- Notes served via mobile API.
+- Note được phục vụ qua mobile API.
 
 ## Backing pages
 | Label | URL |
@@ -27,10 +27,10 @@ Owns private learner notes attached to lessons/courses, optionally timestamped t
 | Notes (in player / dashboard) | `/course/{course}/lesson/{lesson}` (notes panel) |
 
 ## Cross references
-- Entity [C04](../C04-entities/lms_note.md); lesson [lms_lesson](lms_lesson.md).
+- Entity [C04](../C04-entities/lms_note.md); lesson ở [lms_lesson](lms_lesson.md).
 
 ## Dependencies
 - lms_base, lms_lesson.
 
 ## Implementation notes
-- Owner-private access (only author). `field_video_timestamp` links notes to a moment in the video.
+- Access owner-private (chỉ author). `field_video_timestamp` liên kết note với một thời điểm trong video.

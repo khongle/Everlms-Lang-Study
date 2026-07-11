@@ -4,17 +4,17 @@
 **Participating modules:** [lms_ai](../C05-modules/lms_ai.md)
 
 ## Purpose
-Free text/image generation via the Pollinations `@AiProvider` (low-cost drafts/imagery).
+Sinh text/image miễn phí qua `@AiProvider` là Pollinations (dùng cho draft/hình ảnh chi phí thấp).
 
 ## Proposed contract
-- **REST namespace:** outbound to Pollinations endpoint; internal trigger `/ai/generate`.
-- **Auth:** typically keyless/public; any token treated as SENSITIVE; server-side.
-- **Authorization:** editor roles only.
+- **REST namespace:** gọi ra ngoài tới endpoint Pollinations; trigger nội bộ `/ai/generate`.
+- **Auth:** thường không cần key/công khai; mọi token đều coi là SENSITIVE; chỉ server-side.
+- **Authorization:** chỉ role editor.
 - **Response envelope:** `{ data: {draft|image_url}, error|null, meta: {provider: "pollinations"} }`.
-- **Audit:** log calls + errors; monitor availability (free service → lower SLA).
+- **Audit:** ghi log các lời gọi + lỗi; theo dõi availability (dịch vụ miễn phí → SLA thấp hơn).
 
 ## Test requirements
-- CI: mocked provider; no live calls.
-- Auth+authz: editor gate.
-- Failure/fallback: graceful error + provider switch.
-- Contract test: routing + failure path.
+- CI: mock provider; không gọi live.
+- Auth+authz: gate theo role editor.
+- Failure/fallback: báo lỗi rõ ràng + đổi provider.
+- Contract test: routing + đường lỗi (failure path).

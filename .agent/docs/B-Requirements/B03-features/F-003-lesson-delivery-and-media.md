@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_lesson/`
 
 ## Requirement
-Enrolled learners can view lesson content — rich text body, video, and downloadable attachments (`lms_lesson.field_attachments`) — within the course player, mark a lesson complete, and move to the next lesson. Lessons may carry a quiz (F-006).
+Learner đã enroll có thể xem nội dung lesson — rich text body, video và attachment tải về được (`lms_lesson.field_attachments`) — trong course player, đánh dấu lesson hoàn thành và chuyển sang lesson tiếp theo. Lesson có thể đi kèm quiz (F-006).
 
 ## Business value
-Lesson delivery is where learning actually happens; reliable media playback and a clear "next" flow drive completion rates and certificate eligibility.
+Lesson delivery là nơi việc học thực sự diễn ra; khả năng phát media ổn định và luồng "next" rõ ràng thúc đẩy tỷ lệ completion và điều kiện nhận certificate.
 
 ## Scope notes
-- `lms_lesson` has 5 module dependencies (most-connected content entity) — it ties together course, chapter, progress, and quiz.
-- Media is referenced via file/attachment fields; large files referenced, not inlined.
-- Access gating (must be enrolled / lesson unlocked) is enforced via F-004.
+- `lms_lesson` có 5 module dependency (content entity kết nối nhiều nhất) — nó liên kết course, chapter, progress và quiz.
+- Media được tham chiếu qua file/attachment field; file lớn được reference chứ không nhúng trực tiếp (inline).
+- Việc gating truy cập (phải enroll / lesson đã unlock) được enforce qua F-004.
 
 ## Cross references
 - Design: [C04 lms_lesson](../../C-Design/C04-entities/lms_lesson.md), [C05 lms_lesson](../../C-Design/C05-modules/lms_lesson.md)

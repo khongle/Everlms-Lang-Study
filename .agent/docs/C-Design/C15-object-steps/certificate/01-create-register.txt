@@ -1,3 +1,3 @@
-- [event:QuizPassedEvent] - create object - system creates "User certificate" on pass - module: lms_certificate - actors: System
-- [internal] - register details - assign certificate number, render PDF (mPDF) - module: lms_certificate - process: certificate-issuance
-- [/workspace/certificate-templates] - template - editor maintains layout - module: lms_certificate - actors: Content editor
+- [event:QuizPassedEvent] - create object - system creates "User certificate" on pass - module: lms_certificate - actors: System - expected: lms_user_certificate row created, idempotent per learner/course
+- [internal] - register details - assign certificate number, render PDF (mPDF) - module: lms_certificate - process: certificate-issuance - expected: field_certificate_number + field_pdf_file saved
+- [/workspace/certificate-templates] - template - editor maintains layout - module: lms_certificate - actors: Content editor - expected: template saved, used by next render

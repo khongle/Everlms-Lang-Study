@@ -22,4 +22,4 @@ adequacy: NOT_RUN
 - <specific acceptance>
 
 ## Links
-[story](../../D03-stories/E##S##-<module>.md) · [risk](../../../G-Governance/G02-risk-register/_index.md)
+story `../D03-stories/E##S##-<module>.md` · [risk](../../G-Governance/G02-risk-register/_index.md)

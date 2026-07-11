@@ -3,7 +3,7 @@
 **Status:** partial (certificates done; **badges blocked** — BLK-003)
 
 ## Goal
-Auto-issue PDF certificates on completion; award gamification badges.
+Tự động phát hành certificate PDF khi hoàn thành; trao badge gamification.
 
 ## Scope
 - Modules: [lms_certificate](../../C-Design/C05-modules/lms_certificate.md) (done), [lms_badge](../../C-Design/C05-modules/lms_badge.md) (blocked)
@@ -17,4 +17,4 @@ Auto-issue PDF certificates on completion; award gamification badges.
 E04.
 
 ## Open work
-- ⚠️ Badge award trigger absent (BLK-003 / R-003) — implement event subscriber to grant `lms_user_badge`. Task [E05S02T01](../D04-tasks/todo/E05S02T01-implement-badge-award-subscriber.md).
+- ⚠️ Chưa có badge award trigger (BLK-003 / R-003) — cần implement event subscriber để grant `lms_user_badge`. Task [E05S02T01](../D04-tasks/todo/E05S02T01-implement-badge-award-subscriber.md).

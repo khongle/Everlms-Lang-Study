@@ -1,6 +1,6 @@
 # C06-apis - API Index
 
-Per-integration API/contract design, mirroring [B06](../../B-Requirements/B06-integration-requirements/_index.md) 1:1 by `INT-NNN-<slug>`. C06 is the *design* of how EverLMS calls each external service (and normalises results). The **internal** mobile REST API (`/api/v1`) is specified in [I-External/I01](../../I-External/I01-public-api-spec/README.md).
+Thiết kế API/contract cho từng integration, mirror 1:1 với [B06](../../B-Requirements/B06-integration-requirements/_index.md) theo `INT-NNN-<slug>`. C06 là phần *thiết kế* cách EverLMS gọi từng service bên ngoài (và chuẩn hóa kết quả trả về). REST API mobile **nội bộ** (`/api/v1`) được đặc tả tại [I-External/I01](../../I-External/I01-public-api-spec/README.md).
 
 | ID | API/Contract | Modules | File |
 | -- | ------------ | ------- | ---- |
@@ -14,4 +14,4 @@ Per-integration API/contract design, mirroring [B06](../../B-Requirements/B06-in
 | INT-008 | SMTP / email | lms_notification | [INT-008-smtp-email.md](INT-008-smtp-email.md) |
 | INT-009 | Push (Firebase/APNs) | lms_mobile_api, lms_notification | [INT-009-push-firebase-apns.md](INT-009-push-firebase-apns.md) |
 
-> 9 integrations (mirror of B06). All third-party credentials SENSITIVE (R-001) — referenced, never inlined.
+> 9 integration (mirror của B06). Mọi credential bên thứ ba đều SENSITIVE (R-001) — chỉ được reference, không bao giờ inline trực tiếp.

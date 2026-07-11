@@ -3,7 +3,7 @@
 **Status:** done (zoom partial)
 
 ## Goal
-Forum, ratings, notes, wishlist, blog, FAQ, live sessions — engagement surfaces.
+Forum, rating, note, wishlist, blog, FAQ, live session — các bề mặt engagement (engagement surfaces).
 
 ## Scope
 - Modules: [lms_forum](../../C-Design/C05-modules/lms_forum.md), [lms_rating](../../C-Design/C05-modules/lms_rating.md), [lms_note](../../C-Design/C05-modules/lms_note.md), [lms_wishlist](../../C-Design/C05-modules/lms_wishlist.md), [lms_blog](../../C-Design/C05-modules/lms_blog.md), [lms_faq](../../C-Design/C05-modules/lms_faq.md), [lms_zoom](../../C-Design/C05-modules/lms_zoom.md)
@@ -16,4 +16,4 @@ Forum, ratings, notes, wishlist, blog, FAQ, live sessions — engagement surface
 E02, E03.
 
 ## Open work
-- Zoom (F-022) depth partial — attendance/recording (verify).
+- Zoom (F-022) độ sâu còn hạn chế (partial) — attendance/recording (cần verify).

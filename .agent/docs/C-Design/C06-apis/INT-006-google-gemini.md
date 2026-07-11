@@ -4,17 +4,17 @@
 **Participating modules:** [lms_ai](../C05-modules/lms_ai.md)
 
 ## Purpose
-Alternative LLM backend for AI content generation via the Gemini `@AiProvider`.
+LLM backend thay thế cho sinh nội dung AI qua `@AiProvider` là Gemini.
 
 ## Proposed contract
-- **REST namespace:** outbound to Google Generative Language API; internal trigger `/ai/generate`.
-- **Auth:** Gemini API key in `lms_ai` settings (R-001) → Key/env.
-- **Authorization:** editor roles only; server-side.
+- **REST namespace:** gọi ra ngoài tới Google Generative Language API; trigger nội bộ `/ai/generate`.
+- **Auth:** Gemini API key nằm trong settings của `lms_ai` (R-001) → cần chuyển sang Key/env.
+- **Authorization:** chỉ role editor; chỉ server-side.
 - **Response envelope:** `{ data: {draft}, error|null, meta: {provider: "gemini", model} }`.
-- **Audit:** log prompt metadata + errors; redact keys.
+- **Audit:** ghi log metadata của prompt + lỗi; redact key.
 
 ## Test requirements
-- CI: mocked provider; no live calls.
-- Auth+authz: editor gate.
-- Failure/fallback: graceful error + provider switch.
-- Contract test: routing + failure path.
+- CI: mock provider; không gọi live.
+- Auth+authz: gate theo role editor.
+- Failure/fallback: báo lỗi rõ ràng + đổi provider.
+- Contract test: routing + đường lỗi (failure path).

@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.lms_lesson.lms_lesson.field_h5p_upload
   module:
+    - comment
     - file
     - lms_lesson
     - text
@@ -19,6 +20,12 @@ content:
     region: content
     settings:
       progress_indicator: throbber
+    third_party_settings: {  }
+  field_comments:
+    type: comment_default
+    weight: 4
+    region: content
+    settings: {  }
     third_party_settings: {  }
   field_content:
     type: text_textarea

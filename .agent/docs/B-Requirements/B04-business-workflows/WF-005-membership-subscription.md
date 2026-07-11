@@ -1,7 +1,7 @@
 # WF-005 - Membership subscription
 
 ## Business flow
-A user chooses a membership plan (`lms_membership_plan`) and subscribes via an order (WF-004). On payment, a `lms_user_membership` is created with start/end dates and the plan's feature set (`field_features`). While the membership is active, content access checks (F-004) treat the user as entitled to the plan's courses without per-course purchase. Near/after expiry the user is prompted to renew; lapsed membership removes broad access.
+User chọn một membership plan (`lms_membership_plan`) và subscribe qua một order (WF-004). Khi thanh toán xong, một `lms_user_membership` được tạo với ngày bắt đầu/kết thúc và tập tính năng của plan (`field_features`). Trong thời gian membership active, các kiểm tra quyền truy cập nội dung (F-004) coi user có quyền với các course thuộc plan mà không cần mua riêng từng course. Gần/sau khi hết hạn, user được nhắc gia hạn; membership hết hạn (lapsed) sẽ gỡ bỏ quyền truy cập diện rộng.
 
 ## Participating modules
 [lms_membership](../../C-Design/C05-modules/lms_membership.md), [lms_order](../../C-Design/C05-modules/lms_order.md), [lms_payment](../../C-Design/C05-modules/lms_payment.md)
@@ -10,10 +10,10 @@ A user chooses a membership plan (`lms_membership_plan`) and subscribes via an o
 [F-012](../B03-features/F-012-memberships-and-subscriptions.md)
 
 ## Trigger
-User subscribes to a membership plan (order paid).
+User subscribe một membership plan (order đã paid).
 
 ## Outcome
-Active `lms_user_membership` granting plan-scoped access for its validity window.
+Một `lms_user_membership` active cấp quyền truy cập theo phạm vi plan trong khoảng thời gian hiệu lực của nó.
 
 ## Design link
 [C12 WF-005](../../C-Design/C12-workflows/WF-005-membership-subscription.md)

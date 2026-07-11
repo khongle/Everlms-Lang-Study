@@ -28,3 +28,10 @@ See [A01 commands](../../A-Project-Information/A01-CLAUDE/_index.md): `ddev star
 
 ## Rollback
 See [H02 runbooks/rollback](../../H-Operations/H02-runbooks/rollback.md): restore previous code tag + DB snapshot + `drush cim` of prior config; `drush cr`.
+
+## When NOT to roll back
+Không rollback (fix-forward thay vì roll back) khi:
+- Sự cố nằm ở data/config đã migrate không tương thích ngược (rollback code sẽ để lại schema/config mới → vỡ). Fix-forward + `drush updb`.
+- Chỉ một feature-flag lỗi: tắt flag (H05) thay vì rollback toàn deploy.
+- Sự cố ở third-party (payment/zoom/AI provider) — rollback không giúp; xử lý ở integration/incident (H01).
+- Đã qua mốc irreversible (email/notification/broadcast đã gửi, order đã capture): rollback không thu hồi được side-effect → fix-forward + bồi hoàn thủ công.

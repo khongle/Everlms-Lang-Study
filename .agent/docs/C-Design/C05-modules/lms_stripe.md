@@ -3,10 +3,10 @@
 **Name:** Stripe gateway · **Phase:** 6 · **Epic:** [E06](../../D-Development/D02-epics/E06-commerce.md) · **Status:** done
 
 ## Responsibility
-Adds the `stripe` `@PaymentGateway` plugin using the Stripe PHP SDK — the primary card-payment path.
+Thêm plugin `@PaymentGateway` `stripe` dùng Stripe PHP SDK — là đường thanh toán thẻ (card-payment) chính.
 
 ## Owned / related entities
-- None.
+- Không có.
 
 ## Requirements features (B03)
 | Feature | Title |
@@ -27,10 +27,10 @@ Adds the `stripe` `@PaymentGateway` plugin using the Stripe PHP SDK — the prim
 | (Stripe checkout return handled by lms_payment) | `/payment/stripe/*` |
 
 ## Cross references
-- Host [lms_payment](lms_payment.md); contract [INT-001](../C06-apis/INT-001-stripe.md).
+- Host tại [lms_payment](lms_payment.md); contract [INT-001](../C06-apis/INT-001-stripe.md).
 
 ## Dependencies
 - lms_payment.
 
 ## Implementation notes
-- `src/Plugin/PaymentGateway/StripeGateway.php`. ⚠️ Keys in config (R-001); **no Stripe webhook** (R-002) — add `/api/.../stripe/webhook` + signature verification.
+- `src/Plugin/PaymentGateway/StripeGateway.php`. ⚠️ Key nằm trong config (R-001); **chưa có Stripe webhook** (R-002) — cần thêm `/api/.../stripe/webhook` + signature verification.

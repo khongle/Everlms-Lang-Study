@@ -3,7 +3,7 @@
 **Status:** partial (orders/stripe/bank done; **webhooks + paypal/zalopay** open)
 
 ## Goal
-Custom commerce: orders, bundles, coupons, multi-gateway payments.
+Custom commerce: order, bundle, coupon, thanh toán đa gateway (multi-gateway payments).
 
 ## Scope
 - Modules: [lms_order](../../C-Design/C05-modules/lms_order.md), [lms_bundle](../../C-Design/C05-modules/lms_bundle.md), [lms_payment](../../C-Design/C05-modules/lms_payment.md), [lms_stripe](../../C-Design/C05-modules/lms_stripe.md), [lms_paypal](../../C-Design/C05-modules/lms_paypal.md)
@@ -19,5 +19,5 @@ E01.
 ## Open work
 - ⚠️ Payment webhooks + signature verification (BLK-002 / R-002) — task [E06S02T01](../D04-tasks/todo/E06S02T01-add-payment-webhooks.md).
 - ⚠️ Secrets → Key/env (R-001).
-- ⚠️ Remove duplicate `lms_paypal` (R-004) — task [E06S04T01](../D04-tasks/todo/E06S04T01-dedupe-paypal-gateway.md).
-- ZaloPay gateway completion.
+- ⚠️ Loại bỏ `lms_paypal` bị trùng lặp (R-004) — task [E06S04T01](../D04-tasks/todo/E06S04T01-dedupe-paypal-gateway.md).
+- Hoàn thiện ZaloPay gateway.

@@ -10,7 +10,7 @@ processes: [certificate-issuance]
 # UC-WF-003-001 - Issue certificate on pass
 
 ## Intent
-On course/quiz pass, automatically issue a PDF certificate.
+Khi course/quiz pass, tự động issue một certificate dạng PDF.
 
 ## Workflow context
 | Item | Value |
@@ -25,23 +25,27 @@ On course/quiz pass, automatically issue a PDF certificate.
 System (event subscriber); learner (download); manager (revoke).
 
 ## Preconditions
-Learner passed the course's final quiz; the quiz has `field_course` or a lesson hierarchy path to its course; a `lms_certificate_template` exists.
+Learner đã pass final quiz của course; quiz có `field_course` hoặc một đường lesson hierarchy dẫn tới course của nó; đã tồn tại một `lms_certificate_template`.
 
 ## Trigger
 `QuizPassedEvent` / course completion.
 
 ## Main success scenario
-1. Subscriber checks eligibility + no existing cert (idempotent).
-2. Resolve course from `lms_quiz.field_course`; fall back to lesson/chapter/course hierarchy for embedded quizzes.
-3. Render template to PDF (mPDF) with learner/course/date/code.
-4. Create `lms_user_certificate` (`field_pdf_file`, `field_certificate_number`, `field_quiz_result`).
-5. Notify learner; learner downloads (P023).
-6. Public verifier confirms validity by certificate code.
+1. Subscriber kiểm tra điều kiện đủ điều kiện + chưa có cert nào tồn tại (idempotent).
+2. Resolve course từ `lms_quiz.field_course`; fallback qua hệ thống phân cấp lesson/chapter/course với quiz nhúng (embedded).
+3. Render template thành PDF (mPDF) kèm learner/course/date/code.
+4. Tạo `lms_user_certificate` (`field_pdf_file`, `field_certificate_number`, `field_quiz_result`).
+5. Notify learner; learner tải về (P023).
+6. Public verifier xác nhận tính hợp lệ theo certificate code.
 
 ## Alternate and exception flows
-- Already issued → no duplicate.
-- Render failure → log + retry; no partial cert.
-- Passed quiz without course link → no issuance and must be treated as a data/configuration defect.
+- Đã issue rồi → không tạo duplicate.
+- Render lỗi → log + retry; không tạo cert dở dang.
+- Quiz pass nhưng không link tới course → không issue và phải coi đây là lỗi dữ liệu/cấu hình.
+
+## State transitions (evidence)
+- `approved_or_completed` → `rejected_or_returned`: manager revoke kèm lý do.
+- `approved_or_completed` → `archived`: certificate hết hạn qua field_expiry_date.
 
 ## Entry pages
 | Page | Category | Path |
@@ -49,5 +53,8 @@ Learner passed the course's final quiz; the quiz has `field_course` or a lesson 
 | My certificates | App | /my-certificates |
 | Verify | Public | /certificate/verify |
 
+## Supporting pages
+Public verifier ở Certificate verify (P015) resolve theo certificate number. Content editor duy trì layout tại Certificate templates (P040); manager theo dõi toàn bộ certificate đã issue, kể cả revoke/regenerate, tại Issued certificates (P041).
+
 ## Acceptance and test contract
-- Issuance-on-pass + idempotency tests (B05 F-007); verify code resolves; multiple passed attempts for the same learner/course still produce one certificate.
+- Test issuance-on-pass + idempotency (B05 F-007); verify code resolve đúng; nhiều attempt passed cho cùng learner/course vẫn chỉ tạo ra một certificate.

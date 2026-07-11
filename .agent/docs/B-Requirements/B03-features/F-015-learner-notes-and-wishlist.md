@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_note/`, `lms_wishlist/`
 
 ## Requirement
-Learners take personal **notes** (`lms_note`) against a lesson/course (private to the user) and add courses to a **wishlist** (`lms_wishlist`) for later purchase/enrollment. Both are surfaced on the dashboard and mobile API.
+Learner ghi **note** cá nhân (`lms_note`) gắn với một lesson/course (riêng tư, chỉ user đó thấy) và thêm course vào **wishlist** (`lms_wishlist`) để mua/enroll sau. Cả hai đều được hiển thị trên dashboard và mobile API.
 
 ## Business value
-Notes improve study effectiveness and stickiness; wishlist captures purchase intent for re-marketing.
+Note cải thiện hiệu quả học tập và độ gắn bó (stickiness); wishlist ghi nhận purchase intent phục vụ re-marketing.
 
 ## Scope notes
-- `lms_note`: user-private, attached to lesson/course context.
-- `lms_wishlist`: user ↔ course saved list; convertible to an order (F-010).
-- Two small but distinct entities grouped as "learner personal tools."
+- `lms_note`: riêng tư theo user, gắn với ngữ cảnh lesson/course.
+- `lms_wishlist`: danh sách đã lưu user ↔ course; có thể chuyển thành một order (F-010).
+- Hai entity nhỏ nhưng tách biệt, được gộp nhóm thành "công cụ cá nhân của learner."
 
 ## Cross references
 - Design: [C04 lms_note](../../C-Design/C04-entities/lms_note.md), [C04 lms_wishlist](../../C-Design/C04-entities/lms_wishlist.md)

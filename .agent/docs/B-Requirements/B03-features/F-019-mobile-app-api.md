@@ -8,16 +8,16 @@
 **Source:** `web/modules/custom/lms_mobile_api/`, `app/`
 
 ## Requirement
-The Flutter app (`app/`) consumes a custom REST API under **`/api/v1`** (`lms_mobile_api`, ~22 routes): OTP/token authentication (`MobileAuthController` + `OtpService`), catalog browsing (`MobileCourseController`), and learning/progress (`MobileLearningController`). Responses are JSON; auth is bearer-token.
+Flutter app (`app/`) tiêu thụ (consume) một custom REST API dưới **`/api/v1`** (`lms_mobile_api`, ~22 route): authentication qua OTP/token (`MobileAuthController` + `OtpService`), duyệt catalog (`MobileCourseController`), và learning/progress (`MobileLearningController`). Response dạng JSON; auth dùng bearer-token.
 
 ## Business value
-A native mobile experience expands reach and engagement (learn-on-the-go), a key differentiator for occupational-safety training delivered to field staff.
+Trải nghiệm mobile native mở rộng reach và engagement (học mọi lúc mọi nơi), là điểm khác biệt then chốt cho đào tạo an toàn lao động dành cho nhân sự hiện trường.
 
 ## Scope notes
-- Auth: OTP request/verify → bearer token; token carried on subsequent calls.
-- Endpoints mirror web capabilities (catalog, enroll, lesson, progress) — see I-External for the full spec.
-- Push notifications to the app via INT-009.
-- This is the project's `public_api_surface` → fully documented in I-External.
+- Auth: request/verify OTP → bearer token; token được mang theo trong các call tiếp theo.
+- Endpoint phản chiếu (mirror) năng lực trên web (catalog, enroll, lesson, progress) — xem I-External để có spec đầy đủ.
+- Push notification tới app qua INT-009.
+- Đây là `public_api_surface` của dự án → được document đầy đủ trong I-External.
 
 ## Cross references
 - Design: [C05 lms_mobile_api](../../C-Design/C05-modules/lms_mobile_api.md), [C06 mobile API](../../C-Design/C06-apis/_index.md)

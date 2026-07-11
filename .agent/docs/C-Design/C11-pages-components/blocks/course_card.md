@@ -10,7 +10,7 @@ adequacy: PASS
 # C11 Block - Course card
 
 ## Purpose
-Reusable card showing a course (thumbnail, title, instructor, price, rating). Used on catalog, category, homepage, dashboard.
+Card tái sử dụng hiển thị một course (thumbnail, title, instructor, giá, rating). Dùng ở catalog, category, homepage, dashboard.
 
 ## Drupal 11 Contract
 | Concern | Contract |
@@ -40,4 +40,4 @@ Reusable card showing a course (thumbnail, title, instructor, price, rating). Us
 | Live | `/courses` cards |
 
 ## Tests / Checks
-- Renders all card fields; wishlist toggle reflects state; cache tag invalidates on course edit.
+- Render đủ mọi field của card; toggle wishlist phản ánh đúng trạng thái; cache tag invalidate khi course được chỉnh sửa.

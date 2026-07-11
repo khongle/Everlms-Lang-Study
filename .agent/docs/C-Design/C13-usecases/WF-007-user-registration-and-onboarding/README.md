@@ -3,7 +3,7 @@
 ## Workflow
 - C12: [WF-007](../../C12-workflows/WF-007-user-registration-and-onboarding.md) · B04: [WF-007](../../../B-Requirements/B04-business-workflows/WF-007-user-registration-and-onboarding.md)
 - Modules: user, lms_mobile_api, lms_notification
-- Business flow: web register -> email instructions -> active student; mobile
+- Business flow: web register -> hướng dẫn qua email -> student active; mobile
   register -> OTP/resend -> verify -> bearer token.
 
 ## Usecase index
@@ -12,9 +12,9 @@
 | [UC-WF-007-001](UC-WF-007-001-register-and-verify.md) | Register and verify (web/mobile) | Visitor | User registration | P016 |
 
 ## Completion rule
-Closed when the web registration form creates an active `student` account and
-the mobile API creates a blocked pending account, resends OTP, verifies OTP,
-activates the account, returns a bearer token, and `/api/v1/user/me` returns the
-`student` role. Evidence must include screenshots for web before/after/submit,
-API request/response states, duplicate-email validation, and DB user-role
-verification.
+Đóng khi form registration web tạo được một account `student` active và
+mobile API tạo được một account blocked đang pending, resend OTP, verify OTP,
+activate account, trả về bearer token, và `/api/v1/user/me` trả về đúng
+role `student`. Bằng chứng (evidence) phải bao gồm screenshot cho web trước/sau/submit,
+trạng thái request/response của API, validation email trùng, và verify
+user-role trong DB.

@@ -1,11 +1,11 @@
 # F-018 Acceptance Criteria - AI authoring assistant
 
 ## Core criteria
-1. **Given** a configured provider, **when** an editor submits a topic/prompt, **then** `CourseContentGenerator` returns a structured draft (outline/lessons/quiz).
-2. **Given** multiple providers configured, **when** the admin selects one, **then** `AiProviderManager` routes the call to that `@AiProvider` (OpenAI/Gemini/Pollinations).
-3. **Given** a returned draft, **when** the editor saves it, **then** real course/lesson/quiz entities are created from the draft (human-in-the-loop).
-4. **Given** a provider error/timeout, **when** generation fails, **then** the failure is surfaced gracefully with no partial corruption.
+1. **Given** một provider đã được cấu hình, **when** editor submit một topic/prompt, **then** `CourseContentGenerator` trả về một draft có cấu trúc (outline/lesson/quiz).
+2. **Given** nhiều provider đã được cấu hình, **when** admin chọn một provider, **then** `AiProviderManager` route call đến `@AiProvider` đó (OpenAI/Gemini/Pollinations).
+3. **Given** một draft được trả về, **when** editor lưu nó, **then** các entity course/lesson/quiz thật được tạo từ draft (human-in-the-loop).
+4. **Given** provider bị lỗi/timeout, **when** generation thất bại, **then** lỗi được surface một cách graceful, không gây partial corruption.
 
 ## Evidence expected
 - Module: [lms_ai](../../C-Design/C05-modules/lms_ai.md).
-- Test: provider-routing unit test with a stubbed `@AiProvider`; failure-path test (mock error); secrets via config noted (R-001).
+- Test: provider-routing unit test với `@AiProvider` được stub; failure-path test (mock error); đã ghi nhận secret nằm trong config (R-001). <!-- credential-sweep:allow: risk mention R-001 -->

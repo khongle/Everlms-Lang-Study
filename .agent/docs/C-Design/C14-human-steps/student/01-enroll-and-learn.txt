@@ -1,7 +1,10 @@
-- [/courses] - browse catalog - find a course - actor: Student - source: C-Design/C13-usecases/WF-001-enrollment-and-learning/UC-WF-001-001-enroll-and-complete-course.md
-- [/courses/{id}] - open course - review detail, price, curriculum - actor: Student - module: lms_course
-- [/courses/{id}/enroll-free] - enroll - free enroll (or /checkout/{id} if paid) - actor: Student - module: lms_progress - process: enrollment-and-learning
-- [/learn/{course}/{lesson}] - learn - watch lesson, take notes - actor: Student - module: lms_lesson
-- [/learn/{course}/{lesson}] - complete lesson - mark complete; progress updates - actor: Student - module: lms_progress
-- [/quiz/{quiz}/take] - take quiz - submit final quiz - actor: Student - module: lms_quiz - process: quiz-attempt-and-grading
-- [/my-certificates] - get certificate - download issued certificate - actor: Student - module: lms_certificate
+- [/user/register] - register or login - create an account, or log in if returning - actor: Visitor - module: user - source: C-Design/C13-usecases/WF-007-user-registration-and-onboarding/UC-WF-007-001-register-and-verify.md - expected: authenticated session established with role student
+- [/courses] - browse catalog - find a course - actor: Student - source: C-Design/C13-usecases/WF-001-enrollment-and-learning/UC-WF-001-001-enroll-and-complete-course.md - expected: catalog list renders matching filters
+- [/courses/{id}] - open course - review detail, price, curriculum - actor: Student - module: lms_course - expected: course detail page renders with price and curriculum
+- [/courses/{id}/enroll-free] - enroll - free enroll, or /checkout/{id} if paid - actor: Student - module: lms_progress - process: enrollment-and-learning - expected: lms_user_course created free, or redirected to checkout
+- [/checkout/{course_id}] - apply coupon - optional discount code at checkout - actor: Student - module: lms_order - source: C-Design/C13-usecases/WF-009-coupon-discount-redemption/UC-WF-009-001-apply-coupon-at-checkout.md - expected: discount applied to order total, or rejected with a message
+- [/learn/{course}/{lesson}] - learn - watch lesson, take notes - actor: Student - module: lms_lesson - expected: lesson content renders, note field available
+- [/learn/{course}/{lesson}] - complete lesson - mark complete; progress updates - actor: Student - module: lms_progress - expected: lms_user_lesson written, course progress rolls up
+- [/quiz/{quiz}/take] - take quiz - submit final quiz - actor: Student - module: lms_quiz - process: quiz-attempt-and-grading - expected: quiz_result saved, pass/fail or pending shown
+- [/my-certificates] - get certificate - download issued certificate - actor: Student - module: lms_certificate - source: C-Design/C13-usecases/WF-003-certificate-issuance/UC-WF-003-001-issue-certificate-on-pass.md - expected: certificate PDF downloads with verification code
+- [/forum/new] - post to forum - ask a question about a course - actor: Student - module: lms_forum - source: C-Design/C13-usecases/WF-008-forum-discussion/UC-WF-008-001-post-topic-and-reply.md - expected: lms_forum_topic created, visible on /forum

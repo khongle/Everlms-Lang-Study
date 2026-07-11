@@ -1,3 +1,6 @@
+---
+source_state: REFERENCE
+---
 # Media System Map
 
 Source classification: `00-base/01-classifications/03-visual-04-imagery-media-system-taxonomy.md`.

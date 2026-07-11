@@ -28,3 +28,10 @@ Reconciled the docs tree against the source inventory (28 modules, 29 entities, 
 
 ## Verdict & gate
 **GO-WITH-FIXES.** The documentation is a complete, source-accurate build contract; the **product** is functional and seeded but **not public-release-ready** until the two P0s (secrets, webhooks) are closed. Next steps drive from [D09 queue](../../D-Development/D09-queue/_index.md) W01→W04. Re-review after P0/P1 closure (CP5).
+
+## Scorecard
+| Axis | Score | Note |
+| ---- | ----- | ---- |
+| coverage | 4/5 | mọi slot A–U+Z materialised; leaf spec đầy đủ theo archetype |
+| specificity | 4/5 | contract bám code/config/DB thật; ID/số liệu verify |
+| test-readiness | 2/5 | ~0% automated test (R-006); E03 test-definitions là nguồn behavior tạm |

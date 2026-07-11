@@ -1,6 +1,6 @@
 # C16 Sheet - 11 templates-ui
 
-Template/component solutions. Source: [C09](../C09-themes/_index.md), [C11 blocks](../C11-pages-components/blocks/_index.md).
+Giải pháp cho template/component. Nguồn: [C09](../C09-themes/_index.md), [C11 blocks](../C11-pages-components/blocks/_index.md).
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |

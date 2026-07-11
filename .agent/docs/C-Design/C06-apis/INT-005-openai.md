@@ -4,17 +4,17 @@
 **Participating modules:** [lms_ai](../C05-modules/lms_ai.md)
 
 ## Purpose
-LLM text generation for course/lesson/quiz drafts via the OpenAI `@AiProvider`.
+Sinh nội dung text bằng LLM cho draft course/lesson/quiz qua `@AiProvider` là OpenAI.
 
 ## Proposed contract
-- **REST namespace:** outbound to OpenAI API; internal trigger `/ai/generate`.
-- **Auth:** OpenAI API key in `lms_ai.settings.yml`/`lms_ai.engine.settings.yml` (R-001) → move to Key/env.
-- **Authorization:** instructors/content_editors only; server-side calls.
+- **REST namespace:** gọi ra ngoài tới OpenAI API; trigger nội bộ `/ai/generate`.
+- **Auth:** OpenAI API key nằm trong `lms_ai.settings.yml`/`lms_ai.engine.settings.yml` (R-001) → cần chuyển sang Key/env.
+- **Authorization:** chỉ instructor/content_editor; chỉ gọi phía server-side.
 - **Response envelope:** `{ data: {draft}, error|null, meta: {provider: "openai", model, tokens} }`.
-- **Audit:** log prompt metadata + token usage + errors; do not log full keys.
+- **Audit:** ghi log metadata của prompt + số token dùng + lỗi; không log đầy đủ key.
 
 ## Test requirements
-- CI: mocked `@AiProvider` returning canned completions (no live LLM).
-- Auth+authz: editor-role gate.
-- Failure/fallback: timeout/rate-limit → graceful error, retry/switch provider, no corrupt save.
-- Contract test: provider-routing + failure path.
+- CI: mock `@AiProvider` trả về completion mẫu (canned, không gọi LLM thật).
+- Auth+authz: gate theo role editor.
+- Failure/fallback: timeout/rate-limit → báo lỗi rõ ràng, cho retry/đổi provider, không lưu dữ liệu hỏng.
+- Contract test: provider-routing + đường lỗi (failure path).

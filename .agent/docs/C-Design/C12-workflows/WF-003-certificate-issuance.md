@@ -1,5 +1,7 @@
 # C12 Workflow - WF-003 Certificate issuance
 
+**Object:** certificate
+
 ## Business source
 [B04 WF-003](../../B-Requirements/B04-business-workflows/WF-003-certificate-issuance.md)
 
@@ -18,25 +20,31 @@
 | archived (expired) | past `field_expiry_date` |
 
 ## Issuance invariant
-- `QuizPassedEvent` must resolve the owning course before issuing a certificate.
-- Primary course source is `lms_quiz.field_course`.
-- Legacy fallback is `lms_lesson.field_quiz → lms_chapter.field_lessons → lms_course.field_chapters`.
-- Issuance is idempotent by learner/course: a learner can have multiple passed attempts but only one active `lms_user_certificate` for the course.
-- Public verification resolves by `field_certificate_number` and must show revoked certificates as invalid.
+- `QuizPassedEvent` phải resolve được course sở hữu trước khi issue certificate.
+- Nguồn course chính là `lms_quiz.field_course`.
+- Fallback legacy là `lms_lesson.field_quiz → lms_chapter.field_lessons → lms_course.field_chapters`.
+- Việc issue là idempotent theo learner/course: một learner có thể có nhiều attempt passed nhưng chỉ có một `lms_user_certificate` đang active cho course đó.
+- Public verification resolve theo `field_certificate_number` và phải hiển thị các certificate đã revoke là invalid.
+
+## Transitions
+| From | To | Trigger |
+| ---- | -- | ------- |
+| approved_or_completed | rejected_or_returned | manager revoke kèm lý do |
+| approved_or_completed | archived | certificate hết hạn qua field_expiry_date |
 
 ## Permission model
-- Initiator: system (event subscriber on `QuizPassedEvent`/completion).
-- Admin: manager can revoke/regenerate.
+- Initiator: hệ thống (event subscriber trên `QuizPassedEvent`/completion).
+- Admin: manager có thể revoke/regenerate.
 
 ## As-built issuance, verification & revoke (round-2)
-- Issuance fires from `QuizPassedEvent` (`CertificateEventListener`), resolves the course from `lms_quiz.field_course` (legacy fallback via lesson→chapter→course), renders a PDF (mPDF) into `field_pdf_file`, and stores `field_certificate_number`. Verified: grading result 98 issued cert `FDB2B9BA40` with a PDF, idempotent (single row per learner/course).
-- **Public verifier** `/certificate/verify` (`VerificationForm`, field `certificate_code`) resolves by `field_certificate_number`, shows recipient full name, course, code, issue date, and marks `field_revoked` certificates as **invalid**.
-- **Revoke** `/workspace/certificates/{id}/revoke` (`RevokeCertificateForm`, `administer lms_course`) sets `field_revoked` + reason and returns to `/workspace/certificates`. **Regenerate** re-renders the PDF.
-- Learner list `/my-certificates` shows each certificate with number, issue date, and a PDF download.
-- Names everywhere use `field_first_name`/`field_last_name` via `lms_base_user_format_name_alter()` (not the login username).
+- Việc issue được kích hoạt từ `QuizPassedEvent` (`CertificateEventListener`), resolve course từ `lms_quiz.field_course` (fallback legacy qua lesson→chapter→course), render PDF (mPDF) vào `field_pdf_file`, và lưu `field_certificate_number`. Đã verify: grading result 98 issue cert `FDB2B9BA40` kèm PDF, idempotent (chỉ một dòng cho mỗi learner/course).
+- **Public verifier** `/certificate/verify` (`VerificationForm`, field `certificate_code`) resolve theo `field_certificate_number`, hiển thị họ tên đầy đủ của recipient, course, code, ngày issue, và đánh dấu các certificate `field_revoked` là **invalid**.
+- **Revoke** `/workspace/certificates/{id}/revoke` (`RevokeCertificateForm`, `administer lms_course`) set `field_revoked` + lý do rồi quay về `/workspace/certificates`. **Regenerate** sẽ render lại PDF.
+- Danh sách learner tại `/my-certificates` hiển thị từng certificate kèm số, ngày issue, và link tải PDF.
+- Tên hiển thị ở mọi nơi đều dùng `field_first_name`/`field_last_name` qua `lms_base_user_format_name_alter()` (không dùng login username).
 
 ## Notifications
-Issuance notification + download link to learner (role-protected). Idempotent: re-pass does not duplicate.
+Notification khi issue + link download gửi learner (bảo vệ theo role). Idempotent: pass lại không tạo duplicate.
 
 ## Round-2 QA evidence
-Screens: `.agent/docs/E-Quality/E00-workflows/round-2/_screens/003-certificate-issuance/`. Issues fixed: `WF-003-001..004` (name, revoke access, revoke 500, stat label).
+Screens: `.agent/docs/E-Quality/E00-workflows/round-2/_screens/003-certificate-issuance/`. Các issue đã fix: `WF-003-001..004` (tên hiển thị, quyền revoke, revoke lỗi 500, nhãn thống kê).

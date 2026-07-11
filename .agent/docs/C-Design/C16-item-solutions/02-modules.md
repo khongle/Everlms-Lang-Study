@@ -1,6 +1,6 @@
 # C16 Sheet - 02 modules
 
-Module build choices. Source: [C05-modules](../C05-modules/_index.md).
+Lựa chọn cách build module. Nguồn: [C05-modules](../C05-modules/_index.md).
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |

@@ -3,10 +3,10 @@
 **Name:** EverLMS front-end theme · **Phase:** 1 · **Epic:** [E01](../../D-Development/D02-epics/E01-foundation.md) · **Status:** done
 
 ## Responsibility
-The default front-end **theme** (not a module): Twig templates by area, SCSS/CSS, JS, 16 regions, 21 asset libraries, 15 selectable homepage skins, and `theme-settings.php` for branding. `base theme: false` (standalone; bundles its own Bootstrap-based styling).
+**Theme** front-end mặc định (không phải module): Twig template theo từng area, SCSS/CSS, JS, 16 region, 21 asset library, 15 skin homepage có thể chọn, và `theme-settings.php` cho branding. `base theme: false` (standalone; tự đóng gói styling nền Bootstrap riêng).
 
 ## Owned / related entities
-- None (presentation only; data/access stay in modules — see [C09](../C09-themes/_index.md) scope boundary).
+- Không có (chỉ presentation; data/access vẫn nằm ở module — xem ranh giới phạm vi ở [C09](../C09-themes/_index.md)).
 
 ## Requirements features (B03)
 | Feature | Title |
@@ -20,14 +20,14 @@ The default front-end **theme** (not a module): Twig templates by area, SCSS/CSS
 - —
 
 ## Backing pages
-- Renders all front-end pages (see [C11](../C11-pages-components/_index.md)); admin uses Claro.
+- Render toàn bộ trang front-end (xem [C11](../C11-pages-components/_index.md)); admin dùng Claro.
 
 ## Cross references
-- Design system: [C09 themes](../C09-themes/_index.md); wireframes: [C08](../C08-wireframes/_index.md). Alt theme: `lms_classic`.
+- Design system: [C09 themes](../C09-themes/_index.md); wireframe: [C08](../C08-wireframes/_index.md). Theme thay thế: `lms_classic`.
 
 ## Dependencies
-- Drupal core theme system; `core_version_requirement: ^11`.
+- Hệ thống theme của Drupal core; `core_version_requirement: ^11`.
 
 ## Implementation notes
-- 16 regions (header, primary_menu, secondary_menu, hero, breadcrumb, highlighted, content_top, content, content_bottom, sidebar_first/second, footer_first..fourth, footer_bottom).
-- Thin `lms_theme.theme` preprocess; SCSS compiled to CSS; `package.json` for the build toolchain.
+- 16 region (header, primary_menu, secondary_menu, hero, breadcrumb, highlighted, content_top, content, content_bottom, sidebar_first/second, footer_first..fourth, footer_bottom).
+- `lms_theme.theme` preprocess mỏng (thin); SCSS được compile ra CSS; `package.json` cho build toolchain.

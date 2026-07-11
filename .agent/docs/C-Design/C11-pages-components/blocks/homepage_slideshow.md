@@ -10,7 +10,7 @@ adequacy: PASS
 # C11 Block - Homepage slideshow
 
 ## Purpose
-Editor-managed hero slideshow on the homepage (slides with heading/subheading/image/link).
+Slideshow hero trên homepage do editor quản lý (mỗi slide gồm heading/subheading/image/link).
 
 ## Drupal 11 Contract
 | Concern | Contract |
@@ -40,4 +40,4 @@ Editor-managed hero slideshow on the homepage (slides with heading/subheading/im
 | Live | homepage hero |
 
 ## Tests / Checks
-- Editing a slide changes the homepage (edit-smoke); image alt present (a11y).
+- Chỉnh sửa một slide thì homepage thay đổi theo (edit-smoke); ảnh có alt text (a11y).

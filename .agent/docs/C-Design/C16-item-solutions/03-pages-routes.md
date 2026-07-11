@@ -1,6 +1,6 @@
 # C16 Sheet - 03 pages-routes
 
-Pages → build approach. Source: [C07](../C07-sitemap/_index.md), [C11](../C11-pages-components/_index.md).
+Page → cách tiếp cận build. Nguồn: [C07](../C07-sitemap/_index.md), [C11](../C11-pages-components/_index.md).
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |

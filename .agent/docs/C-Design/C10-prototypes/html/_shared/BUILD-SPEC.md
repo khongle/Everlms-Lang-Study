@@ -22,7 +22,7 @@ cross-navigation to everything a role can reach is provided by the injected menu
    under `html/`, so `../` always reaches a sibling role folder.
 5. **Real photos** from `../_shared/img/` (manifest §5). Never hotlink the web.
 6. **No emojis, no dashes-as-bullets in UI.** Use inline SVG icons (24×24,
-   `stroke="currentColor"`). No lorem ipsum — write real, professional copy.
+   `stroke="currentColor"`). No placeholder filler text — write real, professional copy.
 7. Accessible: semantic landmarks, `alt` on every `<img>`, labels on inputs, WCAG AA.
 8. Responsive at Bootstrap 5 breakpoints (already handled by the CSS; only add
    `@media (max-width: 575.98|767.98|991.98|1199.98|1399.98px)` if you must).

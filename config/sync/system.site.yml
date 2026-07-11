@@ -2,9 +2,9 @@ _core:
   default_config_hash: ijfbzDTN4CbE7Sr-6ubWzy_t1vH4OtU1doNCLssVz-4
 langcode: en
 uuid: 147dda8b-f28b-4fd5-851b-8d29fb643724
-name: 'Drush Site-Install'
+name: SilverCare
 mail: admin@example.com
-slogan: ''
+slogan: 'Geriatric care training for international nurses'
 page:
   403: ''
   404: ''

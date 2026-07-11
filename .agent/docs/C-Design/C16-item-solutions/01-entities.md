@@ -1,6 +1,6 @@
 # C16 Sheet - 01 entities
 
-Data objects → Drupal primitive. Source: [C04-entities](../C04-entities/_index.md), [C03](../C03-entity-module-map/_index.md).
+Data object → Drupal primitive. Nguồn: [C04-entities](../C04-entities/_index.md), [C03](../C03-entity-module-map/_index.md).
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Key fields/config | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | ----------------- | --------------- | ------------ |

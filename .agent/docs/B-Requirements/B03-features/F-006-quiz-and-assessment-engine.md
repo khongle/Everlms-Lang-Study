@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_quiz/`, `lms_question/`
 
 ## Requirement
-Instructors build quizzes (`lms_quiz`) from questions (`lms_question`) of **8 types** (`lms_question_type` config bundles: single_choice, multiple_choice, true_false, short_answer, essay, fill_blank, matching, ordering). Learners attempt a quiz; the engine auto-grades objective types via a `GradingStrategyFactory` (one strategy per type), records a `lms_quiz_result` with per-question `lms_question_response`, computes a score, and applies a pass threshold. Quizzes may have prerequisites (`field_prerequisite_quizzes`).
+Instructor xây dựng quiz (`lms_quiz`) từ các question (`lms_question`) thuộc **8 type** (config bundle `lms_question_type`: single_choice, multiple_choice, true_false, short_answer, essay, fill_blank, matching, ordering). Learner làm một quiz (attempt); engine tự động chấm (auto-grade) các type khách quan qua `GradingStrategyFactory` (một strategy cho mỗi type), ghi nhận một `lms_quiz_result` kèm `lms_question_response` cho từng question, tính điểm số và áp dụng pass threshold. Quiz có thể có prerequisite (`field_prerequisite_quizzes`).
 
 ## Business value
-Assessment validates learning, gates certification, and differentiates a real LMS from a content site.
+Assessment xác thực việc học, gate certification, và là điểm khác biệt giữa một LMS thực thụ với một trang nội dung thông thường.
 
 ## Scope notes
-- Objective types auto-graded; essay/short_answer may require manual review.
-- Passing a final quiz emits `QuizPassedEvent` → certificate issuance (F-007/WF-003).
-- Question sub-entities: `lms_answer`, `lms_matching_pair`; quiz result holds `field_responses`.
+- Các type khách quan được auto-grade; essay/short_answer có thể cần manual review.
+- Pass một final quiz sẽ phát `QuizPassedEvent` → issuance certificate (F-007/WF-003).
+- Sub-entity của question: `lms_answer`, `lms_matching_pair`; quiz result chứa `field_responses`.
 
 ## Cross references
 - Design: [C04 lms_quiz](../../C-Design/C04-entities/lms_quiz.md), [C04 lms_question](../../C-Design/C04-entities/lms_question.md), [C04 lms_quiz_result](../../C-Design/C04-entities/lms_quiz_result.md), [C12 WF-002](../../C-Design/C12-workflows/WF-002-quiz-attempt-and-grading.md)

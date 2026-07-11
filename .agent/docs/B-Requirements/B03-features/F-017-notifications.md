@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_notification/`
 
 ## Requirement
-The system notifies users about key events (enrollment, certificate issued, order paid, new forum reply) across channels **in_app / email / push** (`lms_notification.field_channel`). Users see in-app notifications; email/push deliver out-of-band. Templates are editor-managed.
+Hệ thống notify user về các event quan trọng (enrollment, certificate issued, order paid, forum reply mới) qua các channel **in_app / email / push** (`lms_notification.field_channel`). User thấy notification in-app; email/push gửi ra ngoài kênh chính (out-of-band). Template do editor quản lý.
 
 ## Business value
-Timely notifications drive re-engagement, completion, and trust (payment/certificate confirmations).
+Notification kịp thời thúc đẩy re-engagement, completion và sự tin tưởng (xác nhận payment/certificate).
 
 ## Scope notes
-- `lms_notification` entity with `field_channel` (in_app, email, push).
-- ⚠️ As-built: in-app works; **email and push delivery are stubbed/incomplete** (R-005). Push depends on INT-009 (Firebase/APNs).
-- Dispatched via events + cron (`ddev drush cron`); `LmsNotificationCommands` drush support.
+- Entity `lms_notification` với `field_channel` (in_app, email, push).
+- ⚠️ As-built: in-app hoạt động; **việc gửi email và push vẫn ở dạng stub/chưa hoàn chỉnh** (R-005). Push phụ thuộc vào INT-009 (Firebase/APNs).
+- Được dispatch qua event + cron (`ddev drush cron`); có hỗ trợ drush qua `LmsNotificationCommands`.
 
 ## Cross references
 - Design: [C04 lms_notification](../../C-Design/C04-entities/lms_notification.md), [C06 INT-008 SMTP](../../C-Design/C06-apis/INT-008-smtp-email.md), [C06 INT-009 Push](../../C-Design/C06-apis/INT-009-push-firebase-apns.md)

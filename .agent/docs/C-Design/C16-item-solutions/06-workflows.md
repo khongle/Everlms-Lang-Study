@@ -1,6 +1,6 @@
 # C16 Sheet - 06 workflows
 
-Workflow/state-machine solutions. Source: [C12](../C12-workflows/README.md).
+Giải pháp cho workflow/state-machine. Nguồn: [C12](../C12-workflows/README.md).
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |
@@ -15,4 +15,4 @@ Workflow/state-machine solutions. Source: [C12](../C12-workflows/README.md).
 | Coupon | WF-009 | config-driven coupon service + discount fields on order | lms_order | validate→apply→persist | C12 WF-009 | valid/invalid/persist |
 | AI gen | WF-010 | provider plugin + private draft + entity hierarchy save | lms_ai | form-login prompt/provider -> draft preview -> save unpublished course/chapter/lesson/quiz -> queue lessons; unsupported provider fails with no save | C12 WF-010 | provider/hierarchy/failure-path |
 
-> No Drupal core Workflow/Content Moderation module is used; states are status fields on entities.
+> Không dùng module Workflow/Content Moderation của Drupal core; các state là status field trên entity.

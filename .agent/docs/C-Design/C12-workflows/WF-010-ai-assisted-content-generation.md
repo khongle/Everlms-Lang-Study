@@ -1,5 +1,7 @@
 # C12 Workflow - WF-010 AI-assisted content generation
 
+**Object:** course
+
 ## Business source
 [B04 WF-010](../../B-Requirements/B04-business-workflows/WF-010-ai-assisted-content-generation.md)
 
@@ -10,7 +12,7 @@
 [F-018](../../B-Requirements/B03-features/F-018-ai-authoring-assistant.md)
 
 ## State model
-generation lifecycle:
+vòng đời của generation:
 | State | Meaning |
 | ----- | ------- |
 | submitted (prompted) | editor submits topic/prompt + provider |
@@ -18,19 +20,26 @@ generation lifecycle:
 | approved_or_completed (saved) | editor accepts -> draft course/chapter/lesson/quiz entities created |
 | rejected_or_returned (discarded/failed) | provider error or editor discards; no course is persisted |
 
+## Transitions
+| From | To | Trigger |
+| ---- | -- | ------- |
+| submitted | in_review | provider trả về draft JSON |
+| in_review | approved_or_completed | editor accept, entity course/lesson/quiz được tạo |
+| in_review | rejected_or_returned | provider lỗi hoặc editor discard |
+
 ## Permission model
-- Initiator: instructor/content_editor with `create lms_course`.
-- Guardrail: human-in-the-loop. Provider output is previewed before entity save.
-- Course builder uses `AiProviderManager`; course drafts require a provider with JSON/text support. Pollinations is visible as a provider but fails gracefully for course drafts because it is image-only in this implementation.
+- Initiator: instructor/content_editor có quyền `create lms_course`.
+- Guardrail: human-in-the-loop. Output của provider được preview trước khi lưu entity.
+- Course builder dùng `AiProviderManager`; draft course cần một provider hỗ trợ JSON/text. Pollinations vẫn hiện ra như một provider nhưng fail có kiểm soát (graceful) với draft course vì trong triển khai này nó chỉ hỗ trợ image.
 
 ## Notifications
-Inline result/error in the AI builder; no async notification. Lesson body generation is queued after a valid draft hierarchy is saved. Provider failures degrade gracefully (no corrupt save).
+Kết quả/lỗi hiển thị inline trong AI builder; không có notification bất đồng bộ (async). Việc generate lesson body được đưa vào queue sau khi hệ thống phân cấp draft hợp lệ đã được lưu. Lỗi provider được xử lý có kiểm soát (không làm hỏng dữ liệu đã lưu).
 
 ## Round-2 QA verification
-- Builder UI (`/manage/courses/ai-builder`, `create lms_course`) is functional and human-in-the-loop for both `instructor` and `content_editor`: Topic / Audience / Tone / Provider → "Generate draft" (preview) before entities are saved. Providers configured: OpenAI (default, gpt-4o) + Gemini. Live generation not re-run in round-2 to avoid consuming the owner's API credits (round-1 course 138 already proves the save path).
-- 🚨 **Security (`WF-010-001`, critical, open):** provider API keys (OpenAI + Gemini) are stored **in plaintext in `lms_ai.settings` and committed to `config/sync/lms_ai.settings.yml`** — the concrete manifestation of risk **R-001**. Keys must be rotated and moved to the `key` module / env; not auto-fixed (rotation is owner-only).
+- Builder UI (`/manage/courses/ai-builder`, `create lms_course`) hoạt động tốt và có human-in-the-loop cho cả `instructor` lẫn `content_editor`: Topic / Audience / Tone / Provider → "Generate draft" (preview) trước khi entity được lưu. Provider đã cấu hình: OpenAI (mặc định, gpt-4o) + Gemini. Không chạy lại live generation ở round-2 để tránh tốn API credit của owner (course 138 ở round-1 đã chứng minh được đường lưu dữ liệu).
+- 🚨 **Security (`WF-010-001`, critical, còn mở):** API key của provider (OpenAI + Gemini) đang được lưu **dạng plaintext trong `lms_ai.settings` và commit vào `config/sync/lms_ai.settings.yml`** — đây là biểu hiện cụ thể của rủi ro **R-001**. Cần xoay vòng (rotate) key và chuyển sang module `key` / env; không tự động fix (việc rotate chỉ owner mới làm được).
 
 ## Round-1 QA evidence
-- Screenshots: `.agent/docs/E-Quality/E00-workflows/round-1/_screens/010-ai-assisted-content-generation/`
-- Final real course: `138` (`Safe Wheelchair Transfer for Beginner Caregivers`), owner uid `56`, draft status `0`.
-- Verified hierarchy: course -> 3 chapters -> text lessons + final quiz lesson -> quiz `87`.
+- Screenshot: `.agent/docs/E-Quality/E00-workflows/round-1/_screens/010-ai-assisted-content-generation/`
+- Course thật cuối cùng: `138` (`Safe Wheelchair Transfer for Beginner Caregivers`), owner uid `56`, draft status `0`.
+- Hệ thống phân cấp đã verify: course -> 3 chapter -> lesson text + lesson quiz cuối -> quiz `87`.

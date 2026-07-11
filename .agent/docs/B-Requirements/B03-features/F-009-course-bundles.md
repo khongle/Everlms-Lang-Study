@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_bundle/`
 
 ## Requirement
-Editors can group multiple courses into a **bundle** (`lms_course_bundle.field_courses`) sold at a single bundle price. Purchasing a bundle enrolls the buyer in all included courses.
+Editor có thể gộp nhiều course thành một **bundle** (`lms_course_bundle.field_courses`) bán với một mức giá bundle duy nhất. Mua một bundle sẽ enroll buyer vào toàn bộ course có trong đó.
 
 ## Business value
-Bundles increase average order value and let organisations package role-based learning paths (e.g. a full occupational-safety program).
+Bundle làm tăng average order value và cho phép tổ chức đóng gói learning path theo vai trò (ví dụ một chương trình an toàn lao động đầy đủ).
 
 ## Scope notes
-- `lms_course_bundle` references courses via `field_courses`.
-- Bundle purchase fans out to per-course enrollment (F-004) at order completion.
-- Pricing/discount relative to buying courses individually is a bundle-level field.
+- `lms_course_bundle` tham chiếu course qua `field_courses`.
+- Việc mua bundle sẽ fan out thành enrollment cho từng course (F-004) khi order hoàn tất.
+- Pricing/discount so với việc mua course lẻ là một field ở cấp bundle.
 
 ## Cross references
 - Design: [C04 lms_course_bundle](../../C-Design/C04-entities/lms_course_bundle.md), [C05 lms_bundle](../../C-Design/C05-modules/lms_bundle.md)

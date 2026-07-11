@@ -1,6 +1,6 @@
 # B06-integration-requirements - Index
 
-9 external integrations (`INT-NNN`), one file each, mirrored 1:1 by [C06-apis/](../../C-Design/C06-apis/_index.md) — same number, same slug. Each per-integration file answers the four fixed contract expectations (auth/authz, failure/retry/fallback, CI fixture/stub, operational owner + alerting).
+9 integration bên ngoài (`INT-NNN`), mỗi integration một file, được mirror 1:1 bởi [C06-apis/](../../C-Design/C06-apis/_index.md) — cùng số lượng, cùng slug. Mỗi file per-integration trả lời bốn kỳ vọng contract cố định (auth/authz, failure/retry/fallback, CI fixture/stub, operational owner + alerting).
 
 | ID | Integration | Modules | Description |
 | -- | ----------- | ------- | ----------- |
@@ -14,4 +14,4 @@
 | [INT-008](INT-008-smtp-email.md) | SMTP / email delivery | lms_notification, core mail | Transactional email (notifications, certificates) |
 | [INT-009](INT-009-push-firebase-apns.md) | Push (Firebase/APNs) | lms_mobile_api, lms_notification | Mobile push to the Flutter app (FCM + Apple APNs) |
 
-> Count (9) is data-derived from the external services the code calls (2026-06-21). All third-party credentials are SENSITIVE and currently stored in config YAML (R-001) — never reproduced in docs.
+> Con số (9) là data-derived từ các external service mà code gọi tới (2026-06-21). Mọi third-party credential đều SENSITIVE và hiện đang được lưu trong config YAML (R-001) — không bao giờ được sao chép lại trong docs.

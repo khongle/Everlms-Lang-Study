@@ -1,16 +1,16 @@
 # INT-005 - OpenAI
 
 ## Requirement
-Generate course/lesson/quiz draft content (F-018/WF-010) via OpenAI's LLM, behind the `@AiProvider` plugin (OpenAI) in `lms_ai`.
+Sinh nội dung draft cho course/lesson/quiz (F-018/WF-010) qua LLM của OpenAI, đứng sau plugin `@AiProvider` (OpenAI) trong `lms_ai`.
 
 ## Participating modules
 [lms_ai](../../C-Design/C05-modules/lms_ai.md)
 
 ## Contract expectations
-1. **Auth/authz:** OpenAI API key — SENSITIVE (R-001), config YAML today; server-side calls only.
-2. **Failure/retry/fallback:** on API error/timeout/rate-limit, the generator surfaces a graceful error; editor can retry or switch provider; no partial-corrupt entities saved.
-3. **CI test fixture/stub:** mocked `@AiProvider` returning canned completions; no live LLM calls in CI.
-4. **Operational owner + alerting:** AI-features owner; track token spend / error rate.
+1. **Auth/authz:** OpenAI API key — SENSITIVE (R-001), hiện nằm trong config YAML; chỉ gọi server-side.
+2. **Failure/retry/fallback:** khi API lỗi/timeout/rate-limit, generator surface một lỗi graceful; editor có thể retry hoặc đổi provider; không entity nào bị lưu ở trạng thái partial-corrupt.
+3. **CI test fixture/stub:** `@AiProvider` được mock trả về completion dựng sẵn; không gọi LLM thật trong CI.
+4. **Operational owner + alerting:** AI-features owner; theo dõi token spend / error rate.
 
 ## Design link
 [C06 INT-005](../../C-Design/C06-apis/INT-005-openai.md)

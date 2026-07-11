@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-06-21
 
-The distilled how-we-work snapshot. Full machinery: `.agent/00-Guidelines/A02-agent-operating-protocol.md` (personas/phases) and `.agent/00-Guidelines/A06-validation-and-adequacy-gates.md` (gates).
+Bản snapshot cô đọng về cách chúng ta làm việc (how-we-work). Cơ chế đầy đủ: `.agent/_LodeStar/00-Guidelines-v6/A02-agent-operating-protocol.md` (personas/phases) và `.agent/_LodeStar/00-Guidelines-v6/A06-validation-and-adequacy-gates.md` (gates).
 
 ## Phases
 1. **Ideation / Requirements** (Agent_BA) → CP1
@@ -13,13 +13,13 @@ The distilled how-we-work snapshot. Full machinery: `.agent/00-Guidelines/A02-ag
 6. **Release** (Agent_PM) → CP6
 7. **Maintenance / Post-release** (Agent_PM, IC) → continuous
 
-> For EverLMS (a rebuild), Phases 1-3 are executed **as-built** — requirements/architecture/framework are reverse-documented from the existing code rather than designed forward; Phases 4-7 slots are scaffolded for ongoing work (gap-closure, hardening, release).
+> Đối với EverLMS (một rebuild), Phases 1-3 được thực hiện theo kiểu **as-built** — requirements/architecture/framework được reverse-document lại từ code hiện có thay vì được thiết kế trước (forward); các slot của Phases 4-7 được scaffold sẵn cho công việc đang diễn ra (gap-closure, hardening, release).
 
 ## Gate sequence
-- **G1 Build → G2 Lint → G3 Tests → G4 Adversarial.** Strict order; max 3 retries/gate; 3 fails ⇒ BLOCKED + notify SA + STOP.
-- Checkpoints **CP1-CP6** are SA-approved exit gates; **CP4** runs per Epic.
-- G4 forbids "Looks good" without proof across 7 categories: SECURITY, ERROR_HANDLING, PERFORMANCE, EDGE_CASES, ARCHITECTURE, DATA_INTEGRITY, MAINTAINABILITY.
-- ⚠️ As-built: no automated test suites exist yet, so G3 is effectively manual — see `E-Quality/E01-test-strategy/`.
+- **G1 Build → G2 Lint → G3 Tests → G4 Adversarial.** Thứ tự bắt buộc nghiêm ngặt; tối đa 3 lần retry/gate; thất bại 3 lần ⇒ BLOCKED + notify SA + STOP.
+- Checkpoint **CP1-CP6** là các exit gate cần SA approve; **CP4** chạy theo từng Epic.
+- G4 cấm việc chỉ nói "Looks good" mà không có proof, xét trên 7 category: SECURITY, ERROR_HANDLING, PERFORMANCE, EDGE_CASES, ARCHITECTURE, DATA_INTEGRITY, MAINTAINABILITY.
+- ⚠️ As-built: hiện chưa có automated test suite nào, nên G3 trên thực tế đang chạy manual — xem `E-Quality/E01-test-strategy/`.
 
 ## Maintenance work types
-`HOTFIX | BUG_FIX | ENHANCEMENT | REFACTOR | DEPENDENCY_UPDATE` — mirrored by `M-Maintenance/M01-maintenance-workflows/`.
+`HOTFIX | BUG_FIX | ENHANCEMENT | REFACTOR | DEPENDENCY_UPDATE` — được mirror bởi `M-Maintenance/M01-maintenance-workflows/`.

@@ -1,11 +1,11 @@
 # F-007 Acceptance Criteria - Certificate issuance
 
 ## Core criteria
-1. **Given** a learner passes a course's final quiz, **when** `QuizPassedEvent` fires, **then** a `lms_user_certificate` is created and a PDF rendered from the course's `lms_certificate_template`.
-2. **Given** an already-issued certificate, **when** the learner re-passes, **then** **no duplicate** certificate is created (idempotent).
-3. **Given** an issued certificate, **when** the learner opens their certificates, **then** they can download the PDF showing their name, course, date, and unique code.
-4. **Given** an editor changes a certificate template, **when** new certificates issue, **then** they use the updated layout (no code change).
+1. **Given** learner pass final quiz của course, **when** `QuizPassedEvent` được kích hoạt, **then** một `lms_user_certificate` được tạo và một PDF được render từ `lms_certificate_template` của course.
+2. **Given** một certificate đã được phát hành, **when** learner pass lại, **then** **không tạo certificate trùng lặp** (idempotent).
+3. **Given** một certificate đã phát hành, **when** learner mở mục certificate của mình, **then** họ có thể tải PDF hiển thị tên, course, ngày, và mã unique.
+4. **Given** editor thay đổi certificate template, **when** certificate mới được phát hành, **then** chúng dùng layout đã cập nhật (không cần đổi code).
 
 ## Evidence expected
-- Module: [lms_certificate](../../C-Design/C05-modules/lms_certificate.md); mPDF rendering.
-- Test: issuance-on-pass kernel test; idempotency test; template-edit smoke; `lms:mock-certs` for fixtures (E03).
+- Module: [lms_certificate](../../C-Design/C05-modules/lms_certificate.md); render bằng mPDF.
+- Test: issuance-on-pass kernel test; idempotency test; template-edit smoke; `lms:mock-certs` cho fixture (E03).

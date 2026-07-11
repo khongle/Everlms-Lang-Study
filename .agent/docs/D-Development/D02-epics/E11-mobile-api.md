@@ -3,7 +3,7 @@
 **Status:** done
 
 ## Goal
-`/api/v1` REST API powering the Flutter app (auth, catalog, learning).
+REST API `/api/v1` cung cấp nền cho app Flutter (auth, catalog, learning).
 
 ## Scope
 - Module: [lms_mobile_api](../../C-Design/C05-modules/lms_mobile_api.md)
@@ -17,4 +17,4 @@
 E02, E03, E04.
 
 ## Open work
-- Token/OTP hardening; rate limiting ([I06](../../I-External/I06-rate-limits-quotas/_index.md)).
+- Tăng cường bảo mật (hardening) Token/OTP; rate limiting ([I06](../../I-External/I06-rate-limits-quotas/_index.md)).

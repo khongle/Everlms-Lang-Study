@@ -1,6 +1,6 @@
 # B05-acceptance-criteria - Index
 
-Acceptance criteria, one file per feature, mirroring [B03-features/](../B03-features/_index.md) **1:1** by identical `F-NNN-<slug>`. Row count == B03 feature count (24). Each file states testable Given/When/Then criteria and names the evidence (C05 module / C11 page / PHPUnit / Playwright).
+Acceptance criteria, mỗi feature một file, mirror **1:1** với [B03-features/](../B03-features/_index.md) theo cùng `F-NNN-<slug>`. Số row == số feature của B03 (24). Mỗi file nêu rõ các tiêu chí Given/When/Then có thể test được, và nêu tên evidence (C05 module / C11 page / PHPUnit / Playwright).
 
 | Feature | File |
 | ------- | ---- |

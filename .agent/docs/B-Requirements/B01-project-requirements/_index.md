@@ -4,7 +4,7 @@
 **source_state:** REQUIREMENT (reverse-derived from as-built behavior + `.agent/seed/seed-input.json`)
 
 ## Goal
-Provide a self-hosted, brandable **Learning Management System** on Drupal 11 that lets an organisation publish structured online courses, assess learners, monetise access (one-off purchase or membership), certify completion, and grow a learning community — accessible both through a themed web front-end and a native mobile app. The shipped configuration targets **occupational-safety training** but the platform is domain-agnostic.
+Cung cấp một **Learning Management System** self-hosted, có thể brand riêng, trên Drupal 11, cho phép một tổ chức xuất bản course online có cấu trúc, đánh giá learner, kiếm tiền từ quyền truy cập (mua một lần hoặc membership), cấp certificate hoàn thành, và phát triển một cộng đồng học tập — có thể truy cập cả qua web front-end được theme lẫn một native mobile app. Cấu hình được ship nhắm tới **occupational-safety training** nhưng bản thân platform không giới hạn theo lĩnh vực (domain-agnostic).
 
 ## Stakeholders
 | Stakeholder | Need |
@@ -18,18 +18,18 @@ Provide a self-hosted, brandable **Learning Management System** on Drupal 11 tha
 | Mobile app | Authenticate (OTP/token) and consume catalog + learning data over `/api/v1` |
 
 ## Functional scope
-Each goal below projects onto one or more features in [B03-features/](../B03-features/_index.md):
-1. **Catalog & authoring** — course→chapter→lesson hierarchy, media lessons, bundles, categories/tags (F-001, F-002, F-003, F-009, F-024).
-2. **Learning & assessment** — enrollment, content gating, progress tracking/resume, multi-type quizzes with automated grading (F-004, F-005, F-006).
-3. **Certification** — auto-issued PDF certificates on pass; badges/gamification (F-007, F-008).
-4. **Commerce** — orders, checkout, coupons, multiple payment gateways, memberships/subscriptions (F-010, F-011, F-012).
-5. **Community & engagement** — forum, ratings/reviews, notes, wishlist, blog, FAQ, notifications (F-013, F-014, F-015, F-016, F-017).
-6. **AI & integrations** — AI-assisted content generation, Zoom live sessions, push/email delivery (F-018, F-022).
-7. **Reach & operations** — mobile API, analytics, user/role management & impersonation, content seeding tools (F-019, F-020, F-021, F-023).
+Mỗi goal bên dưới ánh xạ (project) vào một hoặc nhiều feature trong [B03-features/](../B03-features/_index.md):
+1. **Catalog & authoring** — hierarchy course→chapter→lesson, lesson dạng media, bundle, category/tag (F-001, F-002, F-003, F-009, F-024).
+2. **Learning & assessment** — enrollment, content gating, progress tracking/resume, quiz nhiều loại (multi-type) với automated grading (F-004, F-005, F-006).
+3. **Certification** — certificate PDF được tự động phát hành khi pass; badge/gamification (F-007, F-008).
+4. **Commerce** — order, checkout, coupon, nhiều payment gateway, membership/subscription (F-010, F-011, F-012).
+5. **Community & engagement** — forum, rating/review, note, wishlist, blog, FAQ, notification (F-013, F-014, F-015, F-016, F-017).
+6. **AI & integrations** — tạo content với sự hỗ trợ của AI, live session qua Zoom, gửi push/email (F-018, F-022).
+7. **Reach & operations** — mobile API, analytics, quản lý user/role & impersonation, công cụ content seeding (F-019, F-020, F-021, F-023).
 
 ## Business constraints
-- **Self-hosted Drupal 11 / PHP 8.3 / MariaDB**; deployable via DDEV locally. No reliance on Drupal Commerce — commerce is custom (`lms_order`/`lms_payment`).
-- **Editorial independence:** all learner-visible copy (course/lesson text, certificates, notifications, FAQ, homepage skins) must be editable by non-developers (see B02 Editorial-usability NFR).
-- **Multi-channel:** the same content must serve the web theme and the Flutter mobile app via a stable API.
-- **Localisation:** shipped content is Vietnamese; the platform must not hardcode language.
-- **Known as-built gaps (constraints on release):** secrets currently in config YAML, no payment webhooks, badge awarding incomplete, ~0% automated tests — see [G02-risk-register](../../G-Governance/G02-risk-register/_index.md).
+- **Self-hosted Drupal 11 / PHP 8.3 / MariaDB**; deploy được qua DDEV ở local. Không phụ thuộc vào Drupal Commerce — phần commerce là custom (`lms_order`/`lms_payment`).
+- **Editorial independence:** mọi copy hiển thị cho learner (course/lesson text, certificate, notification, FAQ, homepage skin) đều phải editable bởi non-developer (xem B02 Editorial-usability NFR).
+- **Multi-channel:** cùng một content phải phục vụ được cả web theme lẫn Flutter mobile app qua một API ổn định.
+- **Localisation:** content được ship là tiếng Việt; platform không được hardcode ngôn ngữ.
+- **Known as-built gaps (constraints on release):** secret hiện đang nằm trong config YAML, chưa có payment webhook, việc trao badge chưa hoàn chỉnh, ~0% automated test — xem [G02-risk-register](../../G-Governance/G02-risk-register/_index.md).

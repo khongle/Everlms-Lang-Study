@@ -3,7 +3,7 @@
 **Status:** done
 
 ## Goal
-AI-assisted content generation via pluggable providers.
+Sinh nội dung có AI hỗ trợ (AI-assisted) qua các provider dạng pluggable.
 
 ## Scope
 - Module: [lms_ai](../../C-Design/C05-modules/lms_ai.md)

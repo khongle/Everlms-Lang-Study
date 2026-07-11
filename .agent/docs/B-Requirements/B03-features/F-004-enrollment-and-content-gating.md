@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_progress/`, `lms_course/`
 
 ## Requirement
-A user becomes enrolled in a course (via free enrollment, a paid order F-010, or a membership F-012). Enrollment creates a `lms_user_course` record. Lesson/course content is **gated**: only enrolled (or membership-entitled) users can open lesson content; non-enrolled users see the catalog/landing page and a call-to-action.
+Một user trở thành enrolled trong course (qua free enrollment, một paid order F-010, hoặc một membership F-012). Enrollment tạo ra một record `lms_user_course`. Nội dung lesson/course bị **gate**: chỉ user đã enroll (hoặc được entitled qua membership) mới mở được nội dung lesson; user chưa enroll chỉ thấy trang catalog/landing và một call-to-action.
 
 ## Business value
-Gating is what makes the catalog monetisable and ties payment/membership to access; it is the control point between marketing and delivery.
+Gating là thứ giúp catalog có thể thu tiền được (monetisable) và gắn payment/membership với quyền truy cập; đây là điểm kiểm soát giữa marketing và delivery.
 
 ## Scope notes
-- `lms_user_course` is the enrollment/progress join entity (user ↔ course).
-- Entitlement sources: direct free enroll, paid order, active membership plan.
-- Access checks live in route access / controllers; must be consistent on web and mobile API (F-019).
+- `lms_user_course` là join entity cho enrollment/progress (user ↔ course).
+- Nguồn entitlement: free enroll trực tiếp, paid order, membership plan đang active.
+- Kiểm tra access nằm trong route access / controller; phải nhất quán trên cả web và mobile API (F-019).
 
 ## Cross references
 - Design: [C04 lms_user_course](../../C-Design/C04-entities/lms_user_course.md), [C12 WF-001](../../C-Design/C12-workflows/WF-001-enrollment-and-learning.md)

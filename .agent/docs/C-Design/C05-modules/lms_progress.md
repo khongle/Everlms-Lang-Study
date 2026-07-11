@@ -3,7 +3,7 @@
 **Name:** Enrollment & progress · **Phase:** 3 · **Epic:** [E03](../../D-Development/D02-epics/E03-learning-progress.md) · **Status:** done
 
 ## Responsibility
-Owns enrollment + progress: the user-course join (`lms_user_course`) and per-lesson progress (`lms_user_lesson`). Drives content gating, resume, completion detection, and certificate eligibility.
+Sở hữu enrollment + progress: join user-course (`lms_user_course`) và progress theo từng lesson (`lms_user_lesson`). Điều khiển content gating, resume, phát hiện completion, và điều kiện nhận certificate.
 
 ## Owned / related entities
 - [lms_user_course](../C04-entities/lms_user_course.md)
@@ -21,7 +21,7 @@ Owns enrollment + progress: the user-course join (`lms_user_course`) and per-les
 | [WF-001](../../B-Requirements/B04-business-workflows/WF-001-enrollment-and-learning.md) | Enrollment & learning |
 
 ## Integrations / APIs (B06 / C06)
-- Progress served over the mobile API ([F-019](../../B-Requirements/B03-features/F-019-mobile-app-api.md)).
+- Progress được phục vụ qua mobile API ([F-019](../../B-Requirements/B03-features/F-019-mobile-app-api.md)).
 
 ## Backing pages
 | Label | URL |
@@ -31,10 +31,10 @@ Owns enrollment + progress: the user-course join (`lms_user_course`) and per-les
 | Progress (in player) | `/course/{course}/learn` |
 
 ## Cross references
-- Entities [C04](../C04-entities/lms_user_course.md); completion feeds [lms_certificate](lms_certificate.md).
+- Entity [C04](../C04-entities/lms_user_course.md); completion feed sang [lms_certificate](lms_certificate.md).
 
 ## Dependencies
 - lms_base, lms_course, lms_chapter, lms_lesson.
 
 ## Implementation notes
-- Lesson completion updates `lms_user_lesson`; rollup recomputes `lms_user_course.field_progress`. Completion of required lessons + final quiz pass → course complete (event for certificate). ~81 enrollments live.
+- Lesson completion cập nhật `lms_user_lesson`; rollup tính lại `lms_user_course.field_progress`. Hoàn tất các lesson bắt buộc + đậu quiz cuối → course complete (event cho certificate). ~81 enrollment đang live.

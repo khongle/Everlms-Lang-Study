@@ -3,7 +3,7 @@
 **Status:** partial
 
 ## Goal
-Dashboards/reports: enrollments, completions, pass rates, revenue.
+Dashboard/report: enrollment, completion, pass rate, revenue.
 
 ## Scope
 - Module: [lms_analytics](../../C-Design/C05-modules/lms_analytics.md)
@@ -16,4 +16,4 @@ Dashboards/reports: enrollments, completions, pass rates, revenue.
 E03, E04, E06.
 
 ## Open work
-- ⚠️ KPI depth partial — flesh reports; confirm role scoping. Task [E12S01T01](../D04-tasks/todo/E12S01T01-complete-analytics-kpis.md).
+- ⚠️ Độ sâu KPI còn partial — cần hoàn thiện report; xác nhận role scoping. Task [E12S01T01](../D04-tasks/todo/E12S01T01-complete-analytics-kpis.md).

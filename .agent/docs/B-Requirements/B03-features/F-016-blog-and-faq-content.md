@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_blog/`, `lms_faq/`
 
 ## Requirement
-Editors publish **blog articles** (`lms_article`, tagged via `blog_tags`) for marketing/educational content and maintain a **FAQ** (`lms_faq`, categorised via `faq_category`). Both are public and editor-managed (no hardcoded copy).
+Editor publish **blog article** (`lms_article`, gắn tag qua `blog_tags`) cho nội dung marketing/giáo dục và duy trì một **FAQ** (`lms_faq`, phân loại qua `faq_category`). Cả hai đều public và do editor quản lý (không có copy hardcode).
 
 ## Business value
-Content marketing drives organic discovery (SEO) and the FAQ deflects support questions; both are pure editorial surfaces.
+Content marketing thúc đẩy organic discovery (SEO) và FAQ giúp giảm câu hỏi gửi tới support; cả hai đều là bề mặt (surface) thuần editorial.
 
 ## Scope notes
-- `lms_article` (blog) and `lms_faq` are separate content entities.
-- Public listing + detail pages; FAQ may render as accordions.
-- Note: core also ships `node.type` `blog`, `article`, `glossary` etc.; the LMS blog uses the custom `lms_article` entity.
+- `lms_article` (blog) và `lms_faq` là hai content entity riêng biệt.
+- Có trang listing + detail công khai; FAQ có thể render dạng accordion.
+- Lưu ý: Drupal core cũng đi kèm `node.type` `blog`, `article`, `glossary`...; blog của LMS dùng custom entity `lms_article`.
 
 ## Cross references
 - Design: [C04 lms_article](../../C-Design/C04-entities/lms_article.md), [C04 lms_faq](../../C-Design/C04-entities/lms_faq.md)

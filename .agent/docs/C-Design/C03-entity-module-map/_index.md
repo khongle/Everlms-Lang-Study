@@ -32,4 +32,4 @@
 | lms_user_membership | lms_membership | [C04](../C04-entities/lms_user_membership.md) · [C05](../C05-modules/lms_membership.md) |
 | lms_wishlist | lms_wishlist | [C04](../C04-entities/lms_wishlist.md) · [C05](../C05-modules/lms_wishlist.md) |
 
-> 29 entity types (28 content + 1 config `lms_question_type`, which also defines 8 question bundles). Bidirectional closure: every row has a C04 file and every owning module has a C05 file.
+> 29 entity type (28 content + 1 config `lms_question_type`, entity này cũng định nghĩa 8 question bundle). Bidirectional closure: mỗi dòng đều có một file C04 và mỗi module sở hữu đều có một file C05.

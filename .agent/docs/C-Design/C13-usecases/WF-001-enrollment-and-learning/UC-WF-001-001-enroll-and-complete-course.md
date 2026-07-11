@@ -10,7 +10,7 @@ processes: [enrollment-and-learning]
 # UC-WF-001-001 - Enroll and complete a course
 
 ## Intent
-A learner enrolls in a course and works through it to completion.
+Một learner enroll vào một course và học qua tới khi hoàn tất.
 
 ## Workflow context
 | Item | Value |
@@ -25,24 +25,29 @@ A learner enrolls in a course and works through it to completion.
 Student (primary); system (progress).
 
 ## Preconditions
-Authenticated; entitled (free / order / membership).
+Đã authenticated; đã có entitlement (free / order / membership).
 
 ## Trigger
-Learner clicks Enroll / Start learning.
+Learner click Enroll / Start learning.
 
 ## Main success scenario
-1. Open course detail (P003).
-2. Enroll (free) or complete checkout (WF-004).
-3. `lms_user_course` created if the learner is not already enrolled in that course.
-4. Open lesson player (P019); view content.
-5. Mark lesson complete → `lms_user_lesson`; progress rolls up.
-6. Repeat until all required lessons + final quiz (WF-002) done.
-7. Course marked complete → certificate eligibility (WF-003).
+1. Mở course detail (P003).
+2. Enroll (free) hoặc hoàn tất checkout (WF-004).
+3. `lms_user_course` được tạo nếu learner chưa enroll course đó.
+4. Mở lesson player (P019); xem nội dung.
+5. Đánh dấu lesson complete → `lms_user_lesson`; progress được rollup.
+6. Lặp lại tới khi hoàn tất mọi lesson bắt buộc + final quiz (WF-002).
+7. Course được đánh dấu complete → đủ điều kiện nhận certificate (WF-003).
 
 ## Alternate and exception flows
-- Not entitled → gated, CTA to buy.
-- Already enrolled → reuse existing enrollment; do not create duplicate learner/course rows.
-- Drip-locked lesson → shown locked until `field_drip_days`.
+- Chưa có entitlement → bị gate, hiện CTA để mua.
+- Đã enroll sẵn → tái sử dụng enrollment hiện có; không tạo thêm dòng learner/course duplicate.
+- Lesson bị drip-lock → hiển thị khóa cho tới `field_drip_days`.
+
+## State transitions (evidence)
+- `submitted` → `in_review`: learner mở lesson đầu tiên (P019).
+- `in_review` → `approved_or_completed`: hoàn tất mọi lesson bắt buộc + pass final quiz (WF-002).
+- `approved_or_completed` → `archived`: manager unenroll learner (hiếm).
 
 ## Entry pages
 | Page | Category | Path |
@@ -51,5 +56,8 @@ Learner clicks Enroll / Start learning.
 | Lesson player | App | /learn/{c}/{l} |
 | Dashboard | App | /dashboard |
 
+## Supporting pages
+Learner tìm course qua Course catalog (P002) trước khi mở course detail (P003). Sau enroll, Dashboard (P017) là điểm quay lại để continue learning, My courses (P018) liệt kê toàn bộ course đã enroll, và Notifications (P027) báo khi có cập nhật tiến độ hoặc certificate mới.
+
 ## Acceptance and test contract
-- Enroll creates or reuses one active learner/course enrollment; complete updates lesson progress and course progress; learner dashboards render one course card per course; gating matrix passes (B05 F-004/F-005).
+- Enroll tạo mới hoặc tái sử dụng một enrollment learner/course đang active; complete cập nhật lesson progress và course progress; dashboard của learner render một course card cho mỗi course; gating matrix pass (B05 F-004/F-005).

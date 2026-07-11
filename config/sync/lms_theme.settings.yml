@@ -4,10 +4,119 @@ features:
   comment_user_verification: 1
   favicon: 1
 logo:
-  use_default: 1
+  use_default: 0
+  path: 'public://logo LMS_0_5.svg'
 favicon:
   use_default: 1
-homepage_style: minimalist
-footer_copyright: |-
-  Copyright © 2025 EverLMS. Product by WeebPal (since 2012). All rights reserved.
-  Authored by Hai Nguyen, Maintained by the Phat Le & WeebPal Team, Developed by Claude.
+homepage_style: medical
+homepage_sections_enabled:
+  hero: hero
+  stats: stats
+  continue_learning: continue_learning
+  featured: featured
+  categories: categories
+  introductions: introductions
+  bundles: bundles
+  testimonials: testimonials
+  faqs: faqs
+  news: news
+  membership: membership
+  cta_guest: cta_guest
+  training_process: 0
+site_tagline: ''
+site_logo_alt: 'EverLMS logo'
+stats_students_label: Students
+stats_students_value: '5,000+'
+stats_satisfaction_label: Satisfaction
+stats_satisfaction_value: 98%
+stats_courses_label: Courses
+stats_certs_label: Certificates
+hero_fallback_heading: 'Welcome to EverLMS'
+hero_fallback_subtext: 'Start your learning journey with our premium courses today.'
+hero_fallback_cta_text: 'Explore Courses'
+hero_fallback_cta_url: /courses
+default_slide_cta_text: 'Explore Now'
+default_intro_cta_text: 'Learn More'
+hero_secondary_cta_text: 'Browse Catalog'
+categories_section_title: 'Explore Categories'
+categories_section_subtitle: 'Find the perfect topic to build practical skills and advance your career.'
+featured_section_title: 'Featured Programs'
+featured_section_subtitle: 'Hand-picked premium content for your growth.'
+featured_section_link_text: 'Explore All'
+bundles_section_title: 'Popular Learning Bundles'
+bundles_section_subtitle: 'Save multiple courses by enrolling into verified bundles.'
+introductions_section_title: ''
+introductions_section_subtitle: ''
+testimonials_section_title: 'What Our Students Say'
+testimonials_section_subtitle: 'Real feedback from our professional community.'
+membership_section_title: ''
+membership_section_subtitle: ''
+membership_recommended_badge_text: 'Most Popular'
+membership_free_price_text: Free
+membership_free_supporting_text: ''
+membership_paid_supporting_text: ''
+membership_free_cta_text: 'Get Started'
+membership_recommended_cta_text: 'Get Started'
+membership_paid_cta_text: 'Get Started'
+faq_section_title: 'Frequently Asked Questions'
+faq_section_subtitle: 'Got questions? We have answers. Check out our most common queries below.'
+news_section_title: ''
+news_section_subtitle: ''
+news_section_link_text: 'View all news'
+training_process_section_title: ''
+training_process_section_subtitle: ''
+training_process_step_1_title: ''
+training_process_step_1_description: ''
+training_process_step_2_title: ''
+training_process_step_2_description: ''
+training_process_step_3_title: ''
+training_process_step_3_description: ''
+training_process_step_4_title: ''
+training_process_step_4_description: ''
+training_process_panel_title: ''
+training_process_panel_subtitle: ''
+training_process_feature_1: ''
+training_process_feature_2: ''
+training_process_feature_3: ''
+training_process_feature_4: ''
+training_process_feature_5: ''
+training_process_feature_6: ''
+training_process_panel_cta_text: ''
+faq_support_title: ''
+faq_support_subtitle: ''
+faq_support_body: ''
+faq_support_cta_text: ''
+faq_quicklinks_title: ''
+faq_quicklink_catalog_text: ''
+faq_quicklink_categories_text: ''
+faq_quicklink_dashboard_text: ''
+faq_quicklink_certificates_text: ''
+cta_banner_title: 'Ready to Transform Your Career?'
+cta_banner_description: 'Join thousands of professionals mastering new skills every day. Registration takes less than a minute.'
+cta_primary_text: 'Create Free Account'
+cta_secondary_text: 'Browse Catalog'
+cta_logged_in_secondary_text: 'Go to Dashboard'
+pricing_page_title: 'Choose Your Plan'
+pricing_page_subtitle: 'Get unlimited access to courses and certifications'
+pricing_recommended_badge_text: 'Most Popular'
+pricing_free_price_text: Free
+pricing_month_label: month
+pricing_year_label: year
+pricing_lifetime_access_text: 'lifetime access'
+pricing_paid_cta_text: 'Get Started'
+pricing_free_cta_text: 'Start Free'
+pricing_empty_state_title: 'Pricing plans are being updated.'
+pricing_empty_state_body: 'Membership plans will appear here once they are available in the system.'
+footer_address: 'Ho Chi Minh City, Vietnam'
+footer_phone: (+84)938.893.995
+footer_email: ' contact@weebpal.com'
+footer_working_hours: 'Mon–Fri, 8:00 AM – 5:00 PM'
+footer_copyright: 'Copyright © 2025 SilverCare. Product by WeebPal (since 2012). All rights reserved.'
+footer_map_embed_url: ''
+social_facebook: ''
+social_youtube: ''
+social_linkedin: ''
+social_tiktok: ''
+social_zalo: ''
+app_store_url: ''
+google_play_url: ''

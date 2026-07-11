@@ -1,6 +1,6 @@
 # C05-modules - Module Index
 
-28 custom modules (27 `lms_*` + `open_switcher`), plus the `lms_theme` **theme** documented here for completeness (the theme is not counted among the 28 modules; full theme contract in [C09](../C09-themes/_index.md)). Phase/Epic per [C01](../C01-architecture-decision/_index.md). Status: `done | in-progress | blocked` (as-built-backed, 2026-06-21).
+28 module custom (27 `lms_*` + `open_switcher`), cộng thêm **theme** `lms_theme` được tài liệu hóa tại đây cho đầy đủ (theme này không được tính vào 28 module; contract đầy đủ của theme ở [C09](../C09-themes/_index.md)). Phase/Epic theo [C01](../C01-architecture-decision/_index.md). Status: `done | in-progress | blocked` (as-built-backed, 2026-06-21).
 
 | Module | Name | Phase | Epic | Status | Entities | Features | Workflows | Pages |
 | ------ | ---- | ----- | ---- | ------ | -------- | -------- | --------- | ----- |
@@ -34,4 +34,4 @@
 | [lms_analytics](lms_analytics.md) | Analytics | 12 | E12 | in-progress | — | F-020 | — | 3 |
 | [lms_content_tools](lms_content_tools.md) | Content tools | 13 | E13 | done | — | F-023 | — | 1 |
 
-> 28 modules (data-derived). Every module has a contract file here and a [D07 code-map](../../D-Development/D07-code-map/README.md) entry.
+> 28 module (data-derived). Mỗi module đều có một file contract ở đây và một dòng trong bảng tổng hợp [D07 code-map](../../D-Development/D07-code-map/README.md); mỗi module có file code-map đào sâu (deep-dive) riêng (đủ 28/28).

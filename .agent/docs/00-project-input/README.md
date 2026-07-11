@@ -12,7 +12,7 @@ This folder is the **raw-source drop zone** that every `A-U` layer is derived fr
 | Source ID | Path (repo-relative) | Type | Status | Contains | Sensitive | Last checked |
 |---|---|---|---|---|---|---|
 | SRC-01 | `web/modules/custom/` | Legacy/as-built code | current | 27 `lms_*` modules + `open_switcher`; entities, controllers, services, plugins, routing, forms, events | N | 2026-06-21 |
-| SRC-02 | `config/sync/` | Config export (`drush cex`) | current | 397 YAML: 29 entity types, 48 fields, 53 blocks, 15 views, 11 vocabularies, 7 roles, 6 menus, 8 question-type bundles | N | 2026-06-21 |
+| SRC-02 | `config/sync/` | Config export (`drush cex`) | current | 396 YAML: 29 entity types, 48 fields, 53 blocks, 15 views, 11 vocabularies, 7 roles, 6 menus, 8 question-type bundles | N | 2026-06-21 |
 | SRC-03 | `database/db.sql` | DB dump (full) | current | 202 tables incl. 52 `lms_*` tables + Drupal core; seeded demo data (40 courses, 600 lessons, 39 users) | **Y** | 2026-06-21 |
 | SRC-04 | `database/db_bk_version_1.sql` | DB dump (prior backup) | reference | Earlier DB snapshot (~17 MB); historical comparison only | **Y** | 2026-06-21 |
 | SRC-05 | `web/themes/custom/lms_theme/` | Theme / front-end | current | Default theme: Twig templates (by area), SCSS/CSS, JS, `theme-settings.php`, 15 homepage skins | N | 2026-06-21 |
@@ -41,3 +41,13 @@ EverLMS is shipped as a **Learning Management System for occupational-safety / w
 - Mobile API (`I-External`, `C06`) ← SRC-01 `lms_mobile_api` + SRC-07
 
 > **No secrets, ever.** No credential, token, connection string, signing key, or PII value is copied from any source into this index or any `A-U` doc. SRC-03/04 (DB dumps) and key material under SRC-07 (`app/*.p8`, `app/file.keystore`, `app/keystore.txt`) are flagged SENSITIVE and live only in the repo, never in the shared docs tree.
+
+## Cross-check log
+Sổ đối soát nguồn ↔ docs (disposition ledger). Cập nhật khi một source được ingest/verify/reconcile.
+
+| Date | Source | Disposition | Note |
+| ---- | ------ | ----------- | ---- |
+| 2026-06-21 | SRC-01 live code `web/modules/custom/` | INGESTED | Nguồn as-built chính (28 module); mirror sang C05/D07 |
+| 2026-06-21 | SRC-02 `config/sync/` (396 YAML) | INGESTED | Roles/fields/entities/vocab → C02/C03/C04 |
+| 2026-06-21 | SRC-03 `database/db.sql` | INGESTED | Seed counts → README baseline |
+| 2026-07-11 | C10 prototype `C-Design/C10-prototypes/html/` | RECONCILED | Nối C11 pages (Message copy/Responsive) vs prototype |

@@ -1,10 +1,10 @@
 # EverLMS — Project Documentation (`.agent/docs/`)
 
-> Shareable, development-grade documentation for **EverLMS**, a full-featured **Drupal 11** Learning Management System (courses, chapters, lessons, quizzes, progress, custom commerce, certificates, community, AI authoring) with a companion **Flutter** mobile app.
+> Bộ tài liệu development-grade, chia sẻ được, cho **EverLMS** — một hệ **Drupal 11** Learning Management System đầy đủ (courses, chapters, lessons, quizzes, progress, custom commerce, certificates, community, AI authoring) kèm app **Flutter** đồng hành.
 >
-> **Documentation mode:** *as-built / rebuild* — every spec is grounded in the live codebase, `config/sync/` export, and database as of **2026-06-21**. Stubs, dead code, and gaps are labelled honestly.
+> **Documentation mode:** *as-built / rebuild* — mọi spec bám sát live codebase, config export `config/sync/`, và database tại mốc **2026-06-21**. Các stub, dead code và khoảng trống được ghi nhận trung thực.
 >
-> **Build:** full **A–U + Z** tree, regenerated fresh from source per `.agent/00-Guidelines/A01-target-docs-structure.md`.
+> **Build:** cây tài liệu đầy đủ **A–U + Z**, regenerate lại từ source theo `.agent/_LodeStar/00-Guidelines-v6/A01-target-docs-structure.md`.
 
 ## Start here
 | If you want to… | Read |
@@ -25,21 +25,21 @@
 ## Layer map
 | Layer | Folder | Contents |
 |---|---|---|
-| **00** | [00-project-input/](00-project-input/README.md) | Raw-source index (code/config/DB/app referenced in place) |
-| **A** | [A-Project-Information/](A-Project-Information/) | AI config, overview, living context, prompt catalog, primers, evolution log |
-| **B** | [B-Requirements/](B-Requirements/) | Project/technical reqs, 24 features, 10 workflows, 24 AC, 9 integrations |
-| **C** | [C-Design/](C-Design/) | Architecture, roles, 29 entities, 28 modules, APIs, sitemap (51 pages), page/block contracts, workflows, usecases, steps, solution workbook |
-| **D** | [D-Development/](D-Development/) | Conventions, 13 epics, 29 stories, kanban tasks, code-map, queue, sessions |
-| **E** | [E-Quality/](E-Quality/) | Test strategy, 10 issues, test defs, traceability, status, NFR |
-| **F** | [F-Release/](F-Release/) | Deployment, release checklist, changelog, comms |
-| **G** | [G-Governance/](G-Governance/) | 5 ADRs, risk register, blockers, change requests |
-| **H** | [H-Operations/](H-Operations/) | Incidents, runbooks, deps, tech-debt, flags, capacity, observability |
-| **I** | [I-External/](I-External/) | Mobile API spec, SDK, webhooks, portal, changelog, rate limits, migration |
-| **K** | [K-Knowledge/](K-Knowledge/) | Glossary, coding conventions, architecture patterns, lessons |
-| **M** | [M-Maintenance/](M-Maintenance/) | Maintenance workflows, decision trees, impact templates, monitoring, evolution |
-| **S** | [S-System/](S-System/) | Service catalog, contracts, topology, data-flow, deps matrix, SLOs |
-| **U** | [U-Userguide/](U-Userguide/) | User/admin guides, getting-started, 24 feature guides, FAQ, troubleshooting, tutorials |
-| **Z** | [Z-Reviews/](Z-Reviews/README.md) | Independent build-readiness audits |
+| 00-project-input | [00-project-input/](00-project-input/README.md) | Raw-source index (code/config/DB/app referenced in place) |
+| A-Project-Information | [A-Project-Information/](A-Project-Information/) | AI config, overview, living context, prompt catalog, primers, evolution log |
+| B-Requirements | [B-Requirements/](B-Requirements/) | Project/technical reqs, 24 features, 10 workflows, 24 AC, 9 integrations |
+| C-Design | [C-Design/](C-Design/) | Architecture, roles, 29 entities, 28 modules, APIs, sitemap (51 pages), page/block contracts, workflows, usecases, steps, solution workbook |
+| D-Development | [D-Development/](D-Development/) | Conventions, 13 epics, 29 stories, kanban tasks, code-map, queue, sessions |
+| E-Quality | [E-Quality/](E-Quality/) | Test strategy, 10 issues, test defs, traceability, status, NFR |
+| F-Release | [F-Release/](F-Release/) | Deployment, release checklist, changelog, comms |
+| G-Governance | [G-Governance/](G-Governance/) | 5 ADRs, risk register, blockers, change requests |
+| H-Operations | [H-Operations/](H-Operations/) | Incidents, runbooks, deps, tech-debt, flags, capacity, observability |
+| I-External | [I-External/](I-External/) | Mobile API spec, SDK, webhooks, portal, changelog, rate limits, migration |
+| K-Knowledge | [K-Knowledge/](K-Knowledge/) | Glossary, coding conventions, architecture patterns, lessons |
+| M-Maintenance | [M-Maintenance/](M-Maintenance/) | Maintenance workflows, decision trees, impact templates, monitoring, evolution |
+| S-System | [S-System/](S-System/) | Service catalog, contracts, topology, data-flow, deps matrix, SLOs |
+| U-Userguide | [U-Userguide/](U-Userguide/) | User/admin guides, getting-started, 24 feature guides, FAQ, troubleshooting, tutorials |
+| Z-Reviews | [Z-Reviews/](Z-Reviews/README.md) | Independent build-readiness audits |
 
 ## Key facts (as-built, 2026-06-21)
 - **Stack:** Drupal 11 (^11.3) · PHP 8.3 · MariaDB 10.11 · nginx-fpm · DDEV (`everlms.ddev.site`) · Drush ^13.7 · mPDF · Stripe SDK · theme `lms_theme` (16 regions, 15 skins) · Flutter app (`app/`).
@@ -49,4 +49,4 @@
 - **Top risks (P0):** secrets in config YAML (R-001), no payment webhooks (R-002). **P1:** badge awarding (R-003), ~0% tests (R-006), email/push (R-005). Full list: [G02](G-Governance/G02-risk-register/_index.md).
 
 ## Provenance
-Rebuilt 2026-06-21 fresh from source (live **code > config export > database**); prior drafts (`.agent/docs-draft`, `.agent/docs-draft-1`) used only as reference and demoted to [00-project-input](00-project-input/README.md). Structure authority: `.agent/00-Guidelines/A01-target-docs-structure.md`. No secrets/PII reproduced anywhere in this tree.
+Dựng lại 2026-06-21 từ source (theo thứ tự ưu tiên live **code > config export > database**); các draft cũ (`.agent/docs-draft`, `.agent/docs-draft-1`) chỉ dùng tham chiếu và đã hạ xuống [00-project-input](00-project-input/README.md). Structure authority: `.agent/_LodeStar/00-Guidelines-v6/A01-target-docs-structure.md`. Không reproduce secrets/PII ở bất kỳ đâu trong cây tài liệu này.

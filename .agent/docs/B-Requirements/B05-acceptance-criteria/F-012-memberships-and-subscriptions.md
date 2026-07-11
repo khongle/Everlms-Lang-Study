@@ -1,11 +1,11 @@
 # F-012 Acceptance Criteria - Memberships & subscriptions
 
 ## Core criteria
-1. **Given** an admin, **when** they create a plan (`lms_membership_plan`, `field_features`), **then** it appears as purchasable.
-2. **Given** a user subscribing via an order, **when** payment completes, **then** a `lms_user_membership` with start/end dates is created.
-3. **Given** an active membership, **when** the member opens an entitled course, **then** access is granted without per-course purchase (F-004).
-4. **Given** an expired membership, **when** the member opens a previously-entitled course, **then** broad access is revoked.
+1. **Given** một admin, **when** họ tạo một plan (`lms_membership_plan`, `field_features`), **then** plan xuất hiện ở trạng thái có thể mua được.
+2. **Given** một user subscribe qua một order, **when** payment hoàn tất, **then** một `lms_user_membership` có start/end date được tạo.
+3. **Given** một membership đang active, **when** member mở một course được entitle, **then** quyền truy cập được cấp mà không cần mua riêng từng course (F-004).
+4. **Given** một membership đã hết hạn, **when** member mở một course từng được entitle, **then** quyền truy cập rộng bị thu hồi.
 
 ## Evidence expected
 - Module: [lms_membership](../../C-Design/C05-modules/lms_membership.md).
-- Test: membership-entitlement test (active vs expired) integrated with the F-004 gating matrix (E03).
+- Test: membership-entitlement test (active vs expired) tích hợp với gating matrix của F-004 (E03).

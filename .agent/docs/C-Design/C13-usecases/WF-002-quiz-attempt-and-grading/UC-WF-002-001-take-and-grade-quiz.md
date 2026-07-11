@@ -10,7 +10,7 @@ processes: [quiz-attempt-and-grading]
 # UC-WF-002-001 - Take and grade a quiz
 
 ## Intent
-A learner attempts a quiz and receives a trustworthy result state: auto-graded pass/fail when all items are objective, or pending review when any item requires instructor grading.
+Một learner làm một quiz và nhận được một kết quả state đáng tin cậy: pass/fail chấm tự động khi mọi câu hỏi đều objective, hoặc pending review khi có câu hỏi cần instructor chấm tay.
 
 ## Workflow context
 | Item | Value |
@@ -22,26 +22,32 @@ A learner attempts a quiz and receives a trustworthy result state: auto-graded p
 | B04 source | WF-002 |
 
 ## Actors
-Student (primary); instructor (manual grade for essays).
+Student (primary); instructor (chấm tay cho essay).
 
 ## Preconditions
-Enrolled; prerequisites met; attempts remaining.
+Đã enroll; đủ prerequisite; còn lượt attempt.
 
 ## Trigger
-Learner submits the quiz.
+Learner submit quiz.
 
 ## Main success scenario
-1. Open quiz (P020); answer questions (8 types).
-2. Submit → `GradingStrategyFactory` grades objective items.
-3. `lms_quiz_result` + `lms_question_response` stored; pending-review flags are persisted per response.
-4. If no manual review is required, the result is finalized as Passed/Failed against `field_threshold`.
-5. If manual review is required, the result remains Pending/In review and the score is displayed as provisional.
-6. On finalized pass of a final quiz → `QuizPassedEvent` (WF-003).
+1. Mở quiz (P020); trả lời câu hỏi (8 loại).
+2. Submit → `GradingStrategyFactory` chấm các câu objective.
+3. `lms_quiz_result` + `lms_question_response` được lưu; cờ pending-review được lưu theo từng response.
+4. Nếu không cần manual review, kết quả được finalize thành Passed/Failed dựa trên `field_threshold`.
+5. Nếu cần manual review, kết quả giữ nguyên Pending/In review và điểm hiển thị ở dạng tạm tính (provisional).
+6. Khi một final quiz được finalize là pass → `QuizPassedEvent` (WF-003).
 
 ## Alternate and exception flows
-- Time limit reached → auto-submit.
-- Essay → pending manual grade by instructor.
-- Fail → retry if attempts remain.
+- Hết thời gian → tự động submit.
+- Essay → chờ instructor chấm tay.
+- Fail → cho retry nếu còn lượt attempt.
+
+## State transitions (evidence)
+- `submitted` → `in_review`: có response essay/short-answer cần chấm tay.
+- `in_review` → `approved_or_completed`: instructor chấm, điểm đạt threshold.
+- `in_review` → `rejected_or_returned`: instructor chấm, điểm dưới threshold.
+- `rejected_or_returned` → `submitted`: learner retry trong field_take_quiz_number.
 
 ## Entry pages
 | Page | Category | Path |
@@ -50,5 +56,8 @@ Learner submits the quiz.
 | Quiz result | App | /quiz-result/{r} |
 | Grade submission (instructor) | Manage | /manage/quiz-results/{r}/grade |
 
+## Supporting pages
+Sau khi submit, kết quả từng attempt hiển thị tại Quiz result (P021); learner xem lại toàn bộ lịch sử attempt tại My quiz results (P022).
+
 ## Acceptance and test contract
-- Per-strategy grading correct; threshold pass/fail only after the result is finalized; pending attempts are not counted as passed; event fired only on finalized pass (B05 F-006).
+- Grading đúng theo từng strategy; pass/fail theo threshold chỉ áp dụng sau khi result đã finalize; attempt đang pending không được tính là passed; event chỉ fire khi đã finalize pass (B05 F-006).

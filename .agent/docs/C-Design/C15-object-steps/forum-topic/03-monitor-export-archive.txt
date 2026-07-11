@@ -1,0 +1,3 @@
+- [/forum] - monitor - public topic list - module: lms_forum - actors: Anyone - expected: new/resolved topics appear without manual cache rebuild
+- [/workspace/content/{content_type}] - moderate - staff reviews/removes violating topics - module: lms_forum - actors: Manager - expected: violating content removed from public index
+- [internal] - archive - locked/old topics retained for audit - module: lms_forum - process: forum-discussion - expected: archived topics remain queryable

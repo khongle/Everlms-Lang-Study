@@ -1,6 +1,6 @@
 # C13-usecases - Workflow Usecase Index
 
-One subfolder per [C12 workflow](../C12-workflows/README.md) (same WF slug), each with a README + ≥1 usecase (`UC-WF-NNN-NNN`). Usecases decompose a workflow into implementable units that D03 stories close against.
+Mỗi [C12 workflow](../C12-workflows/README.md) có một subfolder riêng (cùng WF slug), mỗi subfolder có một README + ≥1 usecase (`UC-WF-NNN-NNN`). Usecase phân rã một workflow thành các đơn vị có thể triển khai được, mà story D03 sẽ đóng (close) dựa theo đó.
 
 ## Workflow folders
 | Workflow | Folder | Usecases | Modules | C12 |
@@ -17,5 +17,5 @@ One subfolder per [C12 workflow](../C12-workflows/README.md) (same WF slug), eac
 | WF-010 AI content generation | [WF-010-ai-assisted-content-generation/](WF-010-ai-assisted-content-generation/) | UC-001 | lms_ai | [C12](../C12-workflows/WF-010-ai-assisted-content-generation.md) |
 
 ## Authoring contract
-- Folder per C12 workflow (same slug); each has a README + `UC-WF-NNN-NNN-<slug>.md`.
-- Each UC names ≥1 entry page (C11 `P###`), actors, main success scenario, and acceptance/test contract.
+- Mỗi C12 workflow có một folder riêng (cùng slug); mỗi folder có một README + `UC-WF-NNN-NNN-<slug>.md`.
+- Mỗi UC nêu rõ ≥1 entry page (C11 `P###`), actor, main success scenario, và acceptance/test contract.

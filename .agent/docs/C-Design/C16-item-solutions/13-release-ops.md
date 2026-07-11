@@ -1,6 +1,6 @@
 # C16 Sheet - 13 release-ops
 
-Quality/release/operations solutions. Source: E/F/H layers.
+Giải pháp cho quality/release/operations. Nguồn: E/F/H layers.
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |

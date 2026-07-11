@@ -26,3 +26,38 @@ Workspace-list archetype = filter + table + row ops (create/edit/delete). Form a
 
 ## C11 relationship
 Stands in for P031–P045.
+
+## Archetype wireframes
+
+<!-- archetype: workspace-list -->
+### workspace-list (P032, P034, P035, P036, P037, P038, P039, P041, P043)
+```text
++------------------------------------------------------+
+| header: workspace nav | account                       |
++----------------------------+-------------------------+
+| sidebar_first (workspace   | content                  |
+|  menu: courses/quizzes/    |  pagehead (title + count |
+|  users/orders/...)         |   + HeaderCTA "+ New X") |
+|                             |  segmented/toolbar        |
+|                             |   (Filterbar: status tabs)|
+|                             |  tablecard (row + .rowbtns|
+|                             |   Edit/Archive/Delete)    |
+|                             |  pager                    |
++----------------------------+-------------------------+
+```
+
+<!-- archetype: report -->
+### report (P045, P049)
+```text
++------------------------------------------------------+
+| header: workspace nav | account                       |
++----------------------------+-------------------------+
+| sidebar_first (workspace    | content                 |
+|  menu)                      |  pagehead + date range   |
+|                              |   picker + Export CSV    |
+|                              |  content_top: KPI tiles  |
+|                              |   (dashboard_kpis)       |
+|                              |  content: chart(s) +     |
+|                              |   breakdown table        |
++----------------------------+-------------------------+
+```

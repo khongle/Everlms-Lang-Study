@@ -1,7 +1,7 @@
 # WF-003 - Certificate issuance
 
 ## Business flow
-When a learner completes a course / passes its final quiz, a `QuizPassedEvent` (or course-completion) subscriber checks eligibility, selects the course's `lms_certificate_template`, renders it to PDF via mPDF, and creates a `lms_user_certificate` record with a unique verification code. Issuance is **idempotent** — a learner who re-passes does not get a duplicate certificate. The learner is notified (WF-via F-017) and can download the PDF; editors can re-render via `lms:mock-certs` / `scripts/regenerate_all_certs.php`.
+Khi learner hoàn thành một course / pass quiz cuối, một subscriber lắng nghe `QuizPassedEvent` (hoặc course-completion) sẽ kiểm tra điều kiện đủ điều kiện, chọn `lms_certificate_template` của course, render ra PDF qua mPDF, và tạo một bản ghi `lms_user_certificate` với mã xác thực (verification code) duy nhất. Việc cấp certificate có tính **idempotent** — learner pass lại quiz sẽ không nhận certificate trùng lặp. Learner được thông báo (qua WF liên quan F-017) và có thể tải PDF; editor có thể render lại qua `lms:mock-certs` / `scripts/regenerate_all_certs.php`.
 
 ## Participating modules
 [lms_certificate](../../C-Design/C05-modules/lms_certificate.md), [lms_quiz](../../C-Design/C05-modules/lms_quiz.md), [lms_notification](../../C-Design/C05-modules/lms_notification.md)
@@ -10,10 +10,10 @@ When a learner completes a course / passes its final quiz, a `QuizPassedEvent` (
 [F-007](../B03-features/F-007-certificate-issuance.md)
 
 ## Trigger
-`QuizPassedEvent` / course completion.
+`QuizPassedEvent` / course hoàn thành.
 
 ## Outcome
-A single `lms_user_certificate` PDF issued per learner-per-course; learner notified.
+Một file PDF `lms_user_certificate` duy nhất được cấp cho mỗi learner-per-course; learner được thông báo.
 
 ## Design link
 [C12 WF-003](../../C-Design/C12-workflows/WF-003-certificate-issuance.md)

@@ -10,7 +10,7 @@ processes: [order-checkout-and-payment]
 # UC-WF-004-001 - Buy a course
 
 ## Intent
-A buyer purchases a course and gains access.
+Một buyer mua một course và có được quyền truy cập.
 
 ## Workflow context
 | Item | Value |
@@ -22,27 +22,34 @@ A buyer purchases a course and gains access.
 | B04 source | WF-004 |
 
 ## Actors
-Buyer (primary); gateway; manager (bank confirm).
+Buyer (primary); gateway; manager (xác nhận bank).
 
 ## Preconditions
-Authenticated; course is paid; gateway enabled.
+Đã authenticated; course có trả phí; gateway đã bật.
 
 ## Trigger
-Buyer confirms checkout.
+Buyer xác nhận checkout.
 
 ## Main success scenario
-1. Open checkout (P029); review item.
-2. Optionally apply coupon (WF-009).
-3. Select gateway (stripe/bank_transfer/…); pay.
-4. Online gateway success → order paid/completed; enrollment granted (WF-001).
-5. Bank transfer success path → order stays `pending`, buyer sees QR/payment instructions, uploads receipt, order moves to `processing`.
-6. Manager opens P036 `/workspace/orders`, filters `processing`, reviews the receipt, and marks the order `completed`; entitlement is granted (WF-001).
+1. Mở checkout (P029); review item.
+2. Có thể áp coupon (WF-009).
+3. Chọn gateway (stripe/bank_transfer/…); thanh toán.
+4. Gateway online thành công → order paid/completed; enrollment được cấp (WF-001).
+5. Đường bank transfer thành công → order giữ `pending`, buyer thấy QR/hướng dẫn thanh toán, upload biên lai, order chuyển sang `processing`.
+6. Manager mở P036 `/workspace/orders`, filter `processing`, review biên lai, và đánh dấu order `completed`; entitlement được cấp (WF-001).
 
 ## Alternate and exception flows
-- Declined → order pending; retry/switch gateway.
-- Bank transfer without receipt → stays `pending`.
-- Bank transfer with receipt uploaded → `processing` until manager confirms (P036).
-- ⚠️ No webhook (R-002) → reliance on synchronous return.
+- Bị declined → order pending; retry/đổi gateway.
+- Bank transfer chưa có biên lai → giữ `pending`.
+- Bank transfer đã upload biên lai → `processing` cho tới khi manager xác nhận (P036).
+- ⚠️ Chưa có webhook (R-002) → phải dựa vào synchronous return.
+
+## State transitions (evidence)
+- `draft` → `submitted`: buyer xác nhận checkout.
+- `submitted` → `in_review`: biên lai bank transfer đã upload.
+- `in_review` → `approved_or_completed`: manager xác nhận thanh toán.
+- `submitted` → `rejected_or_returned`: gateway declined/cancelled.
+- `approved_or_completed` → `archived`: hoàn tiền thủ công.
 
 ## Entry pages
 | Page | Category | Path |
@@ -51,7 +58,10 @@ Buyer confirms checkout.
 | Bank transfer instructions | App | /checkout/bank-transfer/{lms_order} |
 | Manage orders | Manage | /workspace/orders |
 
+## Supporting pages
+Administrator cấu hình gateway tại Payment settings (P047) trước khi checkout khả dụng. Manager theo dõi doanh thu/đơn hàng tại Reports workspace (P045) và xuất báo cáo chi tiết tại Analytics reports (P049).
+
 ## Acceptance and test contract
-- Online paid order → entitlement; declined → no access (B05 F-010/F-011).
-- Bank transfer order records the exact payable total, shows transfer instructions, accepts receipt upload, moves to `processing`, and grants entitlement only after manager approval.
-- Manager order list supports a `Processing` filter and shows complete Order ID, learner, amount, date, status badge, and visible review/edit action without truncation at standard desktop width.
+- Order trả phí online → entitlement; bị declined → không có quyền truy cập (B05 F-010/F-011).
+- Order bank transfer ghi đúng tổng tiền phải trả, hiển thị hướng dẫn transfer, cho upload biên lai, chuyển sang `processing`, và chỉ cấp entitlement sau khi manager approve.
+- Danh sách order của manager hỗ trợ filter `Processing` và hiển thị đầy đủ Order ID, learner, số tiền, ngày, status badge, và action review/edit hiển thị được, không bị cắt ở độ rộng desktop chuẩn.

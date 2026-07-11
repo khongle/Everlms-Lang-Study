@@ -4,17 +4,17 @@
 **Participating modules:** [lms_zoom](../C05-modules/lms_zoom.md)
 
 ## Purpose
-Create Zoom meetings for course live sessions and surface join links to enrolled learners.
+Tạo Zoom meeting cho các buổi học trực tuyến (live session) của course và hiển thị join link cho learner đã enroll.
 
 ## Proposed contract
-- **REST namespace:** outbound to Zoom API (`api.zoom.us/v2/...`); internal routes `/zoom/*`.
-- **Auth:** Zoom OAuth (server-to-server) / JWT credentials in `lms_zoom.settings.yml` (R-001).
-- **Authorization:** instructors/staff may create meetings; enrolled learners may view join links.
-- **Response envelope:** `{ data: {meeting_id, join_url, schedule}, error|null, meta: {provider: "zoom"} }`; stored on `lms_lesson.field_zoom_*`.
-- **Audit:** log create/update meeting calls; do not expose host keys to learners.
+- **REST namespace:** gọi ra ngoài tới Zoom API (`api.zoom.us/v2/...`); route nội bộ `/zoom/*`.
+- **Auth:** Zoom OAuth (server-to-server) / JWT credentials nằm trong `lms_zoom.settings.yml` (R-001).
+- **Authorization:** instructor/staff được tạo meeting; learner đã enroll được xem join link.
+- **Response envelope:** `{ data: {meeting_id, join_url, schedule}, error|null, meta: {provider: "zoom"} }`; lưu trên `lms_lesson.field_zoom_*`.
+- **Audit:** ghi log các lời gọi create/update meeting; không lộ host key cho learner.
 
 ## Test requirements
-- CI: mocked Zoom client returning canned meeting payloads.
-- Auth+authz: only authorised creators; learners read-only.
-- Failure/fallback: Zoom API error → surfaced, no broken link shown.
-- Contract test: create-meeting + access-to-link by role.
+- CI: mock Zoom client trả về payload meeting mẫu (canned).
+- Auth+authz: chỉ người tạo được authorised; learner chỉ read-only.
+- Failure/fallback: Zoom API lỗi → hiển thị lỗi rõ ràng cho người dùng, không hiện link hỏng.
+- Contract test: create-meeting + kiểm tra quyền truy cập link theo role.

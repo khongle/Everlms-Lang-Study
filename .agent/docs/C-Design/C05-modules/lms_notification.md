@@ -3,7 +3,7 @@
 **Name:** Notifications · **Phase:** 9 · **Epic:** [E09](../../D-Development/D02-epics/E09-notifications.md) · **Status:** in-progress
 
 ## Responsibility
-Owns the notification entity + dispatch across in_app / email / push channels, driven by domain events + cron. ~4 routes + Drush commands.
+Sở hữu entity notification + dispatch qua các kênh in_app / email / push, được kích hoạt bởi domain event + cron. ~4 route + Drush command.
 
 ## Owned / related entities
 - [lms_notification](../C04-entities/lms_notification.md)
@@ -33,4 +33,4 @@ Owns the notification entity + dispatch across in_app / email / push channels, d
 - lms_base.
 
 ## Implementation notes
-- `field_channel` (in_app/email/push); polymorphic `field_reference_*`. ⚠️ **in_app works; email/push partial/stubbed (R-005)**. Cron dispatch; `src/Commands/LmsNotificationCommands.php`.
+- `field_channel` (in_app/email/push); `field_reference_*` polymorphic. ⚠️ **in_app hoạt động; email/push chỉ một phần/stub (R-005)**. Dispatch qua cron; `src/Commands/LmsNotificationCommands.php`.

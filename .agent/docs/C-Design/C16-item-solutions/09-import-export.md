@@ -1,6 +1,6 @@
 # C16 Sheet - 09 import-export
 
-Importer + export-form solutions. Source: lms_content_tools, lms_analytics.
+Giải pháp cho importer + export-form. Nguồn: lms_content_tools, lms_analytics.
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |

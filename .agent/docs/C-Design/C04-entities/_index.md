@@ -1,6 +1,6 @@
 # C04-entities - Entity Index
 
-29 custom entity types (28 content + 1 config `lms_question_type`). Fields are defined as **base fields in code** (`baseFieldDefinitions`), not configurable fields (the only configurable field on a custom entity is `lms_lesson.field_h5p_upload`). Field lists below are derived from the live DB schema (`information_schema`, 2026-06-21).
+29 custom entity type (28 content + 1 config `lms_question_type`). Field được định nghĩa dưới dạng **base field trong code** (`baseFieldDefinitions`), không phải configurable field (field configurable duy nhất trên một custom entity là `lms_lesson.field_h5p_upload`). Danh sách field bên dưới được lấy từ DB schema thực tế (`information_schema`, 2026-06-21).
 
 | Entity | Module(s) | File |
 | ------ | --------- | ---- |
@@ -34,4 +34,4 @@
 | lms_article | lms_blog | [lms_article.md](lms_article.md) |
 | lms_faq | lms_faq | [lms_faq.md](lms_faq.md) |
 
-> 29 entities (data-derived). Translatable entities (`_field_data` tables): lms_course, lms_chapter, lms_lesson, lms_quiz, lms_question, lms_article, lms_faq.
+> 29 entity (data-derived). Các entity có thể translate (bảng `_field_data`): lms_course, lms_chapter, lms_lesson, lms_quiz, lms_question, lms_article, lms_faq.

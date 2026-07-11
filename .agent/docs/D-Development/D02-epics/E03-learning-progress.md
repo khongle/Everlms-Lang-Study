@@ -3,7 +3,7 @@
 **Status:** done · **Phase:** 3
 
 ## Goal
-Enrollment, content gating, progress tracking, and resume.
+Enrollment, content gating, theo dõi tiến độ (progress tracking), và tính năng resume (học tiếp).
 
 ## Scope
 - Module: [lms_progress](../../C-Design/C05-modules/lms_progress.md)
@@ -17,4 +17,4 @@ Enrollment, content gating, progress tracking, and resume.
 E02.
 
 ## Open work
-None core (81 enrollments live).
+Không có việc cốt lõi (81 enrollments đang hoạt động).

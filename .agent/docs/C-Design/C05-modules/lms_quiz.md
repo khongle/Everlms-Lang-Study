@@ -3,7 +3,7 @@
 **Name:** Quizzes & grading · **Phase:** 4 · **Epic:** [E04](../../D-Development/D02-epics/E04-assessment.md) · **Status:** done
 
 ## Responsibility
-Owns quiz assembly, attempts, and **automated grading**. Hosts `GradingStrategyFactory` (one `QuestionGradingInterface` strategy per question type) and the result entities. Emits `QuizPassedEvent` on pass (consumed by lms_certificate).
+Sở hữu việc lắp ráp (assembly) quiz, attempt, và **automated grading**. Host `GradingStrategyFactory` (một strategy `QuestionGradingInterface` cho mỗi question type) và các entity result. Phát ra `QuizPassedEvent` khi đậu (được lms_certificate sử dụng).
 
 ## Owned / related entities
 - [lms_quiz](../C04-entities/lms_quiz.md) · [lms_quiz_result](../C04-entities/lms_quiz_result.md) · [lms_question_response](../C04-entities/lms_question_response.md)
@@ -19,7 +19,7 @@ Owns quiz assembly, attempts, and **automated grading**. Hosts `GradingStrategyF
 | [WF-002](../../B-Requirements/B04-business-workflows/WF-002-quiz-attempt-and-grading.md) | Quiz attempt & grading |
 
 ## Integrations / APIs (B06 / C06)
-- Quiz attempt/results available via mobile API.
+- Quiz attempt/result có sẵn qua mobile API.
 
 ## Backing pages
 | Label | URL |
@@ -29,10 +29,10 @@ Owns quiz assembly, attempts, and **automated grading**. Hosts `GradingStrategyF
 | Quiz manage | `/quiz/{quiz}/edit` |
 
 ## Cross references
-- Questions [lms_question](lms_question.md); certificate trigger [lms_certificate](lms_certificate.md); [WF-002](../C12-workflows/WF-002-quiz-attempt-and-grading.md).
+- Question ở [lms_question](lms_question.md); trigger certificate ở [lms_certificate](lms_certificate.md); [WF-002](../C12-workflows/WF-002-quiz-attempt-and-grading.md).
 
 ## Dependencies
 - lms_base, lms_question.
 
 ## Implementation notes
-- **`src/Grading/GradingStrategyFactory.php`** + `QuestionGradingInterface`: a strategy per question type (8). Static factory selects strategy by bundle; objective types auto-graded, essay/short_answer → `field_pending_review` for manual grading. Pass vs `field_threshold` → `QuizPassedEvent`.
+- **`src/Grading/GradingStrategyFactory.php`** + `QuestionGradingInterface`: một strategy cho mỗi question type (8 loại). Static factory chọn strategy theo bundle; type khách quan (objective) được auto-grade, essay/short_answer → `field_pending_review` để grading thủ công. So sánh với `field_threshold` để xác định pass → `QuizPassedEvent`.

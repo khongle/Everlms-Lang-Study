@@ -12,8 +12,8 @@ label: Instructor
 weight: 3
 is_admin: false
 permissions:
-  - 'access h5p editor'
   - 'access comments'
+  - 'access h5p editor'
   - 'administer comments'
   - 'create lms_course'
   - 'edit own comments'

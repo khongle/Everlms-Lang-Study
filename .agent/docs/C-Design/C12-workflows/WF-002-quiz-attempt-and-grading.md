@@ -1,5 +1,7 @@
 # C12 Workflow - WF-002 Quiz attempt & grading
 
+**Object:** quiz-result
+
 ## Business source
 [B04 WF-002](../../B-Requirements/B04-business-workflows/WF-002-quiz-attempt-and-grading.md)
 
@@ -19,23 +21,31 @@
 | rejected_or_returned | failed attempt (may retry within `field_take_quiz_number`) |
 
 ## Result invariant
-- `lms_quiz_result.field_result` is the source of truth for learner-facing state.
-- If any `lms_question_response.field_pending_review` is true, the quiz result must remain `Pending`/`in_review` even when the provisional objective score is above threshold.
-- Only a finalized `Passed` result may fire `QuizPassedEvent` for WF-003 certificate issuance.
-- Result/history UI must display pending attempts separately from passed/failed attempts and label the score as provisional until review is complete.
+- `lms_quiz_result.field_result` là nguồn sự thật duy nhất (source of truth) cho state hiển thị với learner.
+- Nếu bất kỳ `lms_question_response.field_pending_review` nào là true, kết quả quiz phải giữ nguyên `Pending`/`in_review` kể cả khi điểm objective tạm tính đã trên threshold.
+- Chỉ kết quả `Passed` đã finalize mới được fire `QuizPassedEvent` cho WF-003 issue certificate.
+- UI kết quả/lịch sử phải hiển thị các attempt đang pending tách riêng khỏi các attempt passed/failed, và gắn nhãn điểm là tạm tính (provisional) cho tới khi review xong.
+
+## Transitions
+| From | To | Trigger |
+| ---- | -- | ------- |
+| submitted | in_review | có response cần chấm tay (essay/short-answer) |
+| in_review | approved_or_completed | instructor chấm, điểm đạt threshold |
+| in_review | rejected_or_returned | instructor chấm, điểm dưới threshold |
+| rejected_or_returned | submitted | learner retry trong field_take_quiz_number |
 
 ## Permission model
-- Initiator: enrolled learner.
-- Responsible (manual grade): instructor for pending essays.
-- Approver: instructor confirms/overrides scores.
+- Initiator: learner đã enroll.
+- Responsible (chấm tay): instructor chấm các bài essay đang pending.
+- Approver: instructor xác nhận/ghi đè điểm số.
 
 ## As-built grading (round-2)
-- `field_result` is an entity reference to a `quiz_results` taxonomy term (`Passed` / `Failed` / `Pending`), set by `QuizController::submitQuiz`. Any response with `field_pending_review = 1` forces the result term to `Pending` regardless of the provisional `field_score`.
-- **Manual grading** (added round-2): instructors grade pending responses at `lms_quiz.grade` → `/manage/quiz-results/{id}/grade` (`QuizGradeForm`). Access = `administer lms_course` OR the quiz's course owner OR a listed `field_instructor`. The form scores each pending response, clears `field_pending_review`, recomputes the percentage via `GradingStrategyFactory::getMaxScore`, resets the result term to `Passed`/`Failed`, and on a pass fires `QuizPassedEvent($result, $quiz, $resultOwner)` — the event carries the **learner** (result owner), not the grader. A "Grade this submission" CTA is shown on the result page to graders while the result is Pending.
-- **Verified chain:** result 98 (maria/quiz 43, essay) → Pending → sabine (instructor) graded → Passed 100% → certificate `FDB2B9BA40` issued (WF-003), idempotent (single cert for learner/course).
+- `field_result` là entity reference tới một taxonomy term `quiz_results` (`Passed` / `Failed` / `Pending`), được set bởi `QuizController::submitQuiz`. Bất kỳ response nào có `field_pending_review = 1` đều buộc result term thành `Pending`, bất kể `field_score` tạm tính là bao nhiêu.
+- **Manual grading** (bổ sung ở round-2): instructor chấm các response đang pending tại `lms_quiz.grade` → `/manage/quiz-results/{id}/grade` (`QuizGradeForm`). Access = `administer lms_course` HOẶC là course owner của quiz đó HOẶC nằm trong danh sách `field_instructor`. Form cho điểm từng response pending, xóa `field_pending_review`, tính lại phần trăm qua `GradingStrategyFactory::getMaxScore`, đặt lại result term thành `Passed`/`Failed`, và khi pass sẽ fire `QuizPassedEvent($result, $quiz, $resultOwner)` — event này mang theo **learner** (owner của result), không phải người chấm. CTA "Grade this submission" hiện trên trang result cho grader khi result đang Pending.
+- **Chuỗi đã verify:** result 98 (maria/quiz 43, essay) → Pending → sabine (instructor) chấm → Passed 100% → certificate `FDB2B9BA40` được issue (WF-003), idempotent (chỉ một certificate cho mỗi learner/course).
 
 ## Notifications
-Result notification to learner; pending-review notification to instructor. Pass → fires `QuizPassedEvent` (WF-003).
+Notification kết quả gửi learner; notification pending-review gửi instructor. Pass → fire `QuizPassedEvent` (WF-003).
 
 ## Round-2 QA evidence
-Screens: `.agent/docs/E-Quality/E00-workflows/round-2/_screens/002-quiz-attempt-and-grading/`. Issue `WF-002-001` (missing grading UI) found + fixed.
+Screens: `.agent/docs/E-Quality/E00-workflows/round-2/_screens/002-quiz-attempt-and-grading/`. Issue `WF-002-001` (thiếu UI chấm điểm) đã phát hiện + fix.

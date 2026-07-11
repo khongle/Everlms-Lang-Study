@@ -3,10 +3,10 @@
 **Name:** Analytics & reporting · **Phase:** 12 · **Epic:** [E12](../../D-Development/D02-epics/E12-analytics.md) · **Status:** in-progress
 
 ## Responsibility
-Read-only reporting over existing entities: enrollments, completions, quiz pass rates, revenue, per-course/learner progress. ~7 routes.
+Báo cáo chỉ đọc (read-only) trên các entity hiện có: enrollment, completion, tỷ lệ đậu quiz, doanh thu, tiến độ theo course/learner. ~7 route.
 
 ## Owned / related entities
-- None (aggregates progress/orders/quiz results).
+- Không có (tổng hợp từ progress/orders/quiz results).
 
 ## Requirements features (B03)
 | Feature | Title |
@@ -27,10 +27,10 @@ Read-only reporting over existing entities: enrollments, completions, quiz pass 
 | Revenue report | `/manage/analytics/revenue` |
 
 ## Cross references
-- Reads [lms_progress](lms_progress.md), [lms_order](lms_order.md), [lms_quiz](lms_quiz.md).
+- Đọc dữ liệu từ [lms_progress](lms_progress.md), [lms_order](lms_order.md), [lms_quiz](lms_quiz.md).
 
 ## Dependencies
 - lms_base.
 
 ## Implementation notes
-- ⚠️ Coverage partial — some KPIs basic/placeholder (confirm depth in E06). Must respect role scoping (manager = org; instructor = own courses).
+- ⚠️ Coverage chưa đầy đủ — một số KPI còn cơ bản/placeholder (xác nhận độ sâu ở E06). Phải tôn trọng role scoping (manager = org; instructor = own courses).

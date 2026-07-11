@@ -1,6 +1,6 @@
 # C16 Sheet - 12 objects
 
-Object-level solutions. Source: [C15](../C15-object-steps/README.md).
+Giải pháp ở cấp object. Nguồn: [C15](../C15-object-steps/README.md).
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |

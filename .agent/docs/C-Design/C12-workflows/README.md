@@ -1,6 +1,6 @@
 # C12-workflows - Index
 
-Design view of the 10 business workflows (state model, permissions, notifications), mirroring [B04](../../B-Requirements/B04-business-workflows/_index.md) by `WF-NNN-<slug>`. B04 = "what business flow & why"; C12 = "what states, who transitions, what fires". Canonical states: `draft, submitted, in_review, approved_or_completed, rejected_or_returned, archived` (subset per workflow).
+Góc nhìn thiết kế của 10 business workflow (state model, permission, notification), mirror với [B04](../../B-Requirements/B04-business-workflows/_index.md) theo `WF-NNN-<slug>`. B04 = "business flow là gì & vì sao"; C12 = "state nào, ai transition, cái gì được fire". Canonical state: `draft, submitted, in_review, approved_or_completed, rejected_or_returned, archived` (mỗi workflow dùng một tập con).
 
 | ID | Workflow | Modules |
 | -- | -------- | ------- |
@@ -15,4 +15,4 @@ Design view of the 10 business workflows (state model, permissions, notification
 | [WF-009](WF-009-coupon-discount-redemption.md) | Coupon / discount redemption | lms_order |
 | [WF-010](WF-010-ai-assisted-content-generation.md) | AI-assisted content generation | lms_ai |
 
-**Round-2 QA (2026-07-11):** every workflow was walked end-to-end with real users/data and updated with an as-built/verification section. 14 issues fixed + 2 open (see [E00-workflows/round-2](../../E-Quality/E00-workflows/round-2/README.md)). Open items: `WF-005-001` (membership tiering) and **`WF-010-001` — critical: AI API keys in plaintext config (R-001), rotate + relocate**.
+**Round-2 QA (2026-07-11):** mọi workflow đều đã được đi qua (walked) end-to-end với user/data thật và được cập nhật thêm phần as-built/verification. 14 issue đã fix + 2 issue còn mở (xem [E00-workflows/round-2](../../E-Quality/E13-qa-rounds/round-2/README.md)). Các mục còn mở: `WF-005-001` (membership tiering) và **`WF-010-001` — critical: AI API key nằm plaintext trong config (R-001), cần rotate + relocate**.

@@ -1,6 +1,6 @@
 # C16 Sheet - 05 views-lists
 
-List/report/detail solutions. Source: C11 listing pages, config `views.view.*`.
+Giải pháp cho list/report/detail. Nguồn: C11 listing pages, config `views.view.*`.
 
 | Concept | Item | Drupal primitive to use | Owner module | Implementation pattern | Source evidence | Tests/checks |
 | ------- | ---- | ----------------------- | ------------ | ---------------------- | --------------- | ------------ |

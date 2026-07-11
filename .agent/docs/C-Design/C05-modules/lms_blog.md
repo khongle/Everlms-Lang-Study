@@ -3,7 +3,7 @@
 **Name:** Blog · **Phase:** 8 · **Epic:** [E08](../../D-Development/D02-epics/E08-community.md) · **Status:** done
 
 ## Responsibility
-Owns the blog article entity (`lms_article`) for marketing/educational content with SEO; AI-assisted drafting via lms_ai. ~6 routes.
+Sở hữu entity blog article (`lms_article`) cho nội dung marketing/giáo dục có SEO; soạn thảo có hỗ trợ AI qua lms_ai. ~6 route.
 
 ## Owned / related entities
 - [lms_article](../C04-entities/lms_article.md)
@@ -19,7 +19,7 @@ Owns the blog article entity (`lms_article`) for marketing/educational content w
 | [WF-006](../../B-Requirements/B04-business-workflows/WF-006-course-authoring-and-publishing.md) | Course authoring & publishing (editorial) |
 
 ## Integrations / APIs (B06 / C06)
-- AI drafting via [lms_ai](lms_ai.md) ([INT-005](../C06-apis/INT-005-openai.md)).
+- Soạn thảo bằng AI qua [lms_ai](lms_ai.md) ([INT-005](../C06-apis/INT-005-openai.md)).
 
 ## Backing pages
 | Label | URL |
@@ -28,10 +28,10 @@ Owns the blog article entity (`lms_article`) for marketing/educational content w
 | Article detail | `/blog/{article}` |
 
 ## Cross references
-- Entity [C04](../C04-entities/lms_article.md); tags `blog_tags`.
+- Entity [C04](../C04-entities/lms_article.md); tag `blog_tags`.
 
 ## Dependencies
 - lms_base, lms_ai.
 
 ## Implementation notes
-- Distinct from core `node` blog; uses custom `lms_article`. SEO fields; translatable.
+- Khác với blog `node` của core; dùng `lms_article` tùy biến riêng. Có field SEO; hỗ trợ translatable (đa ngôn ngữ).

@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/open_switcher/`, `config/sync/user.role.*`
 
 ## Requirement
-The platform defines 7 roles — administrator, manager, instructor, content_editor, student, authenticated, anonymous — with permission-scoped access to catalog, learning, commerce, and admin surfaces. Support staff can **impersonate** a user (`open_switcher`) to reproduce issues, then switch back safely.
+Platform định nghĩa 7 role — administrator, manager, instructor, content_editor, student, authenticated, anonymous — với quyền truy cập được scope theo permission tới catalog, learning, commerce và các bề mặt admin. Nhân viên support có thể **impersonate** một user (`open_switcher`) để tái hiện (reproduce) sự cố, rồi switch trở lại một cách an toàn.
 
 ## Business value
-A clear role model is the basis of all access control and monetisation; impersonation cuts support resolution time dramatically.
+Một role model rõ ràng là nền tảng của toàn bộ access control và monetisation; impersonation rút ngắn đáng kể thời gian xử lý support.
 
 ## Scope notes
-- Roles/permissions defined in config (`user.role.*`); enforced on routes/entities.
-- `open_switcher` provides the user-switch/impersonation utility (note: package "Open Platform", not `lms_*`).
-- Registration/login flows are Drupal core + customisations; onboarding is WF-007.
+- Role/permission được định nghĩa trong config (`user.role.*`); được enforce trên route/entity.
+- `open_switcher` cung cấp tiện ích user-switch/impersonation (lưu ý: thuộc package "Open Platform", không phải `lms_*`).
+- Luồng registration/login dùng Drupal core + tùy biến (customisation); onboarding thuộc WF-007.
 
 ## Cross references
 - Design: [C02 user roles](../../C-Design/C02-user-roles/_index.md), [C05 open_switcher](../../C-Design/C05-modules/open_switcher.md)

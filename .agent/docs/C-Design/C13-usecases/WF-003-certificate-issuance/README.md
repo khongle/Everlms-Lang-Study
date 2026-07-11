@@ -11,4 +11,4 @@
 | [UC-WF-003-001](UC-WF-003-001-issue-certificate-on-pass.md) | Issue certificate on pass | System | Certificate issuance | P023 |
 
 ## Completion rule
-Closed when passing a course-linked final quiz produces exactly one downloadable and publicly verifiable certificate.
+Đóng khi việc pass một final quiz gắn với course tạo ra đúng một certificate có thể tải về và verify công khai.

@@ -10,7 +10,7 @@ adequacy: PASS
 # C11 Block - Notification bell
 
 ## Purpose
-Header bell with unread count + dropdown of recent notifications (in-app).
+Chuông thông báo trên header kèm số đếm chưa đọc + dropdown các thông báo gần đây (in-app).
 
 ## Drupal 11 Contract
 | Concern | Contract |
@@ -40,4 +40,4 @@ Header bell with unread count + dropdown of recent notifications (in-app).
 | Live | site header (authed) |
 
 ## Tests / Checks
-- Unread count accurate; never leaks others' notifications; mark-read updates badge.
+- Số đếm chưa đọc chính xác; không bao giờ lộ thông báo của user khác; mark-read cập nhật badge.

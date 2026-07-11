@@ -3,7 +3,7 @@
 **Status:** done · **Phase:** 2
 
 ## Goal
-Course→Chapter→Lesson catalog and authoring; the content spine.
+Catalog và công cụ authoring theo cấu trúc Course→Chapter→Lesson; đây là xương sống nội dung (content spine).
 
 ## Scope
 - Modules: [lms_course](../../C-Design/C05-modules/lms_course.md), [lms_chapter](../../C-Design/C05-modules/lms_chapter.md), [lms_lesson](../../C-Design/C05-modules/lms_lesson.md)
@@ -17,4 +17,4 @@ Course→Chapter→Lesson catalog and authoring; the content spine.
 E01.
 
 ## Open work
-None core (catalog complete; 40 courses/600 lessons seeded).
+Không có việc cốt lõi (catalog đã hoàn tất; đã seed 40 courses/600 lessons).

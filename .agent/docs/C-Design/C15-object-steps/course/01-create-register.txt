@@ -1,3 +1,3 @@
-- [/workspace/courses/create] - create object - create "Course" entity - module: lms_course - actors: Instructor, Content editor
-- [/workspace/courses/{id}/edit] - register details - set metadata, chapters, lessons - module: lms_course - process: course-authoring-and-publishing
-- [/manage/courses/ai-builder] - assist - optional AI draft - module: lms_ai
+- [/workspace/courses/create] - create object - create "Course" entity - module: lms_course - actors: Instructor, Content editor - expected: draft course entity created, status=0
+- [/workspace/courses/{id}/edit] - register details - set metadata, chapters, lessons - module: lms_course - process: course-authoring-and-publishing - expected: chapters/lessons persisted under course
+- [/manage/courses/ai-builder] - assist - optional AI draft - module: lms_ai - expected: AI draft preview returned before any entity is saved

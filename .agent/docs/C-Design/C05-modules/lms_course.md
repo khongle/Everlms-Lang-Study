@@ -3,7 +3,7 @@
 **Name:** Courses & catalog · **Phase:** 2 · **Epic:** [E02](../../D-Development/D02-epics/E02-course-catalog.md) · **Status:** done
 
 ## Responsibility
-Owns the course entity and the public catalog: browsing, filtering by taxonomy, course detail/landing, and course authoring metadata. The catalog root the rest of the domain hangs off. Largest custom routing file (~37 routes).
+Sở hữu entity course và catalog công khai: browsing, filter theo taxonomy, course detail/landing, và metadata course authoring. Là gốc catalog mà phần còn lại của domain phụ thuộc vào. File routing custom lớn nhất (~37 route).
 
 ## Owned / related entities
 - [lms_course](../C04-entities/lms_course.md)
@@ -21,7 +21,7 @@ Owns the course entity and the public catalog: browsing, filtering by taxonomy, 
 | [WF-006](../../B-Requirements/B04-business-workflows/WF-006-course-authoring-and-publishing.md) | Course authoring & publishing |
 
 ## Integrations / APIs (B06 / C06)
-- Catalog data also served over the mobile API ([F-019](../../B-Requirements/B03-features/F-019-mobile-app-api.md)).
+- Dữ liệu catalog cũng được phục vụ qua mobile API ([F-019](../../B-Requirements/B03-features/F-019-mobile-app-api.md)).
 
 ## Backing pages
 | Label | URL |
@@ -32,10 +32,10 @@ Owns the course entity and the public catalog: browsing, filtering by taxonomy, 
 | Course manage | `/course/{course}/edit` |
 
 ## Cross references
-- Entity [C04 lms_course](../C04-entities/lms_course.md); taxonomy vocabularies `course_category/level/language/tags`; pages [C11](../C11-pages-components/pages/_index.md).
+- Entity [C04 lms_course](../C04-entities/lms_course.md); taxonomy vocabulary `course_category/level/language/tags`; trang [C11](../C11-pages-components/pages/_index.md).
 
 ## Dependencies
 - lms_base, taxonomy.
 
 ## Implementation notes
-- ~37 routes (catalog, detail, learn, CRUD). Uses Views + controllers for listing; entity forms for authoring. Primary route groups: Public (catalog) + App/Manage (learn/author).
+- ~37 route (catalog, detail, learn, CRUD). Dùng Views + controller để listing; entity form để authoring. Route group chính: Public (catalog) + App/Manage (learn/author).

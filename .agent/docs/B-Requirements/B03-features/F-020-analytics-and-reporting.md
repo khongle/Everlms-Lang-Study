@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_analytics/`
 
 ## Requirement
-Managers/instructors view dashboards and reports: enrollments over time, completion rates, quiz pass rates, revenue, and per-course/per-learner progress (`lms_analytics`, ~7 routes). Data is derived from progress, orders, and quiz results.
+Manager/instructor xem dashboard và report: enrollment theo thời gian, completion rate, quiz pass rate, doanh thu, và progress theo từng course/từng learner (`lms_analytics`, ~7 route). Dữ liệu được suy ra (derive) từ progress, order và quiz result.
 
 ## Business value
-Analytics turns activity into decisions — which courses sell, where learners drop off, instructor performance — and is essential for B2B reporting.
+Analytics biến hoạt động thành quyết định — course nào bán chạy, learner drop off ở đâu, hiệu suất của instructor — và là yếu tố thiết yếu cho B2B reporting.
 
 ## Scope notes
-- Read-only reporting layer over existing entities (no new domain entity).
-- ⚠️ As-built coverage is partial — some reports/KPIs are basic or placeholder; depth to be confirmed in E06.
-- Should respect role scoping (a manager sees org data; an instructor sees their courses).
+- Lớp reporting chỉ đọc (read-only) đặt trên các entity đã có (không tạo domain entity mới).
+- ⚠️ Độ bao phủ as-built còn partial — một số report/KPI còn cơ bản hoặc chỉ là placeholder; độ sâu cần được xác nhận thêm ở E06.
+- Cần tôn trọng role scoping (manager thấy dữ liệu toàn org; instructor chỉ thấy course của mình).
 
 ## Cross references
 - Design: [C05 lms_analytics](../../C-Design/C05-modules/lms_analytics.md)

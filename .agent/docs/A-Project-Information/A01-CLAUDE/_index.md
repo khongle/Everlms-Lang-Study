@@ -2,16 +2,22 @@
 
 **Last updated:** 2026-06-21
 
-The agent-config seed for **EverLMS**. Read this file alone and you know the project, how to run/rebuild it, what is banned, the gate order, and the non-negotiable documentation rules. Structure authority lives in `.agent/00-Guidelines/A01-target-docs-structure.md`; how-to-work in `.agent/00-Guidelines/A02-agent-operating-protocol.md`.
+The agent-config seed for **EverLMS**. Read this file alone and you know the project, how to run/rebuild it, what is banned, the gate order, and the non-negotiable documentation rules. Structure authority lives in `.agent/_LodeStar/00-Guidelines-v6/A01-target-docs-structure.md`; how-to-work in `.agent/_LodeStar/00-Guidelines-v6/A02-agent-operating-protocol.md`.
 
 ## Project
 - Name: **EverLMS** — a full-featured Drupal 11 Learning Management System (courses, chapters, lessons, quizzes, progress, commerce, certificates, community, AI authoring) with a Flutter mobile app. Shipped demo = occupational-safety training (Vietnamese).
+- machine_name: lms — project admin namespace: workspace tại `/workspace/*`, `/manage/*`; admin config tại `/admin/config/lms/*` và `/admin/lms/*` (theo convention Drupal core). Deviation as-built: `lms_payment` dùng `/admin/config/everlms/payment`; `open_switcher` dùng `/admin/switch-user` (route của package) — ghi nhận, không đổi.
 - Posture: **rebuild / as-built** — documenting an existing, working system from its live code, config export, and database (not a greenfield brief).
 - Created: 2026 (documentation baseline) · Last updated: 2026-06-21
 - Project input: `00-project-input/` (raw sources referenced in-place — see its `README.md`)
+- docs_language: vi — văn bản dẫn dắt/diễn giải cho người đọc dùng **tiếng Việt**; định danh kỹ thuật giữ tiếng Anh (ID module/entity/field, `P###`/`F-NNN`/`WF-NNN`, config keys, code, route paths, giá trị enum). Domain terms gloss một lần trong `K-Knowledge/K01-domain-glossary/`.
+- design_reference: ../Templates — repo design-reference ngang hàng project root (nguồn C09 token + C10 look-and-feel; dùng khi dựng prototype).
+- build_tier: level-4-advanced
+- (build_tier note) — dùng hierarchical WBS `E##S##T##` (story/task); có D09 queue + A13 coding-navigator (level-4+ MANDATORY trừ khi có ADR waiver).
+- framework_path: .agent/_LodeStar/00-Guidelines-v6 — bản copy framework package (Gate 2.E/10.8 resolve từ đây; bản distilled shippable ở `A05-framework-primer`/`A06-workflow-primer`).
 
 ## Working surface
-- Build docs into: `.agent/docs/` (target tree authoritative in `.agent/00-Guidelines/A01-target-docs-structure.md`).
+- Build docs into: `.agent/docs/` (target tree authoritative in `.agent/_LodeStar/00-Guidelines-v6/A01-target-docs-structure.md`).
 - **Source of truth (rebuild precedence):** live **code** (`web/modules/custom/`, `web/themes/custom/`) > **config export** (`config/sync/`) > **database** (`database/db.sql`) > prior docs drafts. No `02-xlsx` normalization layer is used for this project; A-U cite code/config/DB directly.
 - Code map: `D-Development/D07-code-map/` mirrors `web/modules/custom/<module>/`.
 
@@ -29,7 +35,7 @@ ddev drush uli                          # one-time login link (uid 1)
 ddev launch                             # open the site in a browser
 
 # --- Config (config_sync_directory = ../config/sync) ---
-ddev drush cim -y                       # import config from config/sync/ (397 YAML)
+ddev drush cim -y                       # import config from config/sync/ (396 YAML)
 ddev drush cex -y                       # export config to config/sync/ (commit the diff)
 
 # --- Demo / seed content (Drush commands) ---
@@ -67,7 +73,7 @@ ddev drush cron
 ## Conventions
 - Module/entity IDs: snake_case, single project prefix **`lms_*`** (plus `open_switcher`). Pages: `P###`. See `A05-framework-primer/_index.md` for the full ID registry.
 - Coding standards enforced by the Lint command (Drupal + DrupalPractice). Full catalogue in `D-Development/D00-conventions/`.
-- Folder-per-slot + index convention per `.agent/00-Guidelines/A04-layer-contracts/_index.md`.
+- Folder-per-slot + index convention per `.agent/_LodeStar/00-Guidelines-v6/A04-layer-contracts/_index.md`.
 
 ## Banned patterns
 - No hardcoded editorial content in PHP/Twig/JS/CSS (Entity-first Editorial-Usability invariant).
@@ -77,7 +83,7 @@ ddev drush cron
 
 ## Gate sequence
 - **G1 Build → G2 Lint → G3 Tests → G4 Adversarial.** Strict order; max 3 retries/gate; 3 fails ⇒ BLOCKED + notify SA + STOP.
-- Details: `.agent/00-Guidelines/A06-validation-and-adequacy-gates.md`.
+- Details: `.agent/_LodeStar/00-Guidelines-v6/A06-validation-and-adequacy-gates.md`.
 - ⚠️ As-built reality: automated test coverage is ~0% (no PHPUnit suites). G3 currently passes vacuously — treat manual verification + `E-Quality/E03-test-definitions/` as the interim behavior source until suites exist (`E-Quality/E02-issues/`).
 
 ## G4 adversarial categories (find ≥1 real issue OR give the proof statement per category)
@@ -86,7 +92,7 @@ ddev drush cron
 
 ## Mandatory documentation rules
 - **Entity-first Editorial-Usability invariant:** every business-owned visible surface is editable by a non-developer via a management UI; each `C11` page declares editable source, editor URL, role/permission, validation, revision/moderation/translation policy, and cache tags/contexts invalidated.
-- **Structure Lock:** `.agent/00-Guidelines/A01-target-docs-structure.md` is structure-authoritative; update it FIRST in any structural change-set.
+- **Structure Lock:** `.agent/_LodeStar/00-Guidelines-v6/A01-target-docs-structure.md` is structure-authoritative; update it FIRST in any structural change-set.
 - Update `D07-code-map/` on file create/modify; check `D06-handoff-protocol/` at session start; update `D05-session-status/` at session end.
 - Tests are source-of-truth for behavior (after intent-vs-observed triage); feature flags default OFF on first deploy.
 

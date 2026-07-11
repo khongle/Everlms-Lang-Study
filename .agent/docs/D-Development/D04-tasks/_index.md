@@ -1,6 +1,6 @@
 # D04-tasks - Kanban Index
 
-Task cards by status folder. **As-built modelling:** completed module work is represented by the `resolved`/`done` stories in [D03](../D03-stories/_index.md) (not duplicated as cards); **D04 cards track the remaining open work** (gap-closure for the risks in [G02](../../G-Governance/G02-risk-register/_index.md)). Card ID = `E##S##T##` (or `X##` cross-cutting). Statuses: `backlog, todo, in-progress, resolved, in-review, blocked, closed, done`.
+Task card theo status folder. **As-built modelling:** phần công việc module đã hoàn tất được biểu diễn bằng story `resolved`/`done` trong [D03](../D03-stories/_index.md) (không nhân đôi thành card); **D04 card theo dõi phần việc còn mở** (gap-closure cho các risk trong [G02](../../G-Governance/G02-risk-register/_index.md)). Card ID = `E##S##T##` (hoặc `X##` cross-cutting). Statuses: `backlog, todo, in-progress, resolved, in-review, blocked, closed, done`.
 
 ## Open tasks (todo)
 | Task | Title | Story | Risk |
@@ -15,6 +15,6 @@ Task cards by status folder. **As-built modelling:** completed module work is re
 | [E12S01T01](todo/E12S01T01-complete-analytics-kpis.md) | Complete analytics KPIs | E12S01 | — (P2) |
 
 ## Other status folders
-`backlog/`, `in-progress/`, `resolved/`, `in-review/`, `blocked/`, `closed/`, `done/` — currently empty (as-built work is in D03 stories). New work flows todo → in-progress → resolved → in-review → done (Phase F).
+`backlog/`, `in-progress/`, `resolved/`, `in-review/`, `blocked/`, `closed/`, `done/` — hiện đang trống (công việc as-built nằm trong D03 stories). Việc mới đi theo luồng todo → in-progress → resolved → in-review → done (Phase F).
 
-Card template: [_template.md](_template.md).
+Mẫu card: [_template.md](_template.md).

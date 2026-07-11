@@ -1,7 +1,7 @@
 # WF-002 - Quiz attempt & grading
 
 ## Business flow
-A learner opens a quiz attached to a lesson/course. The system presents questions (8 types) and the learner submits answers. On submit, the `GradingStrategyFactory` selects a grading strategy per question type, scores objective questions automatically, stores per-question `lms_question_response` and an overall `lms_quiz_result`, and compares the score to the pass threshold. Objective quizzes return a result immediately; essay/short-answer items may be flagged for manual review. A pass on a course's final quiz emits `QuizPassedEvent`, consumed by WF-003.
+Learner mở một quiz gắn với lesson/course. Hệ thống hiển thị các câu hỏi (8 loại) và learner nộp câu trả lời. Khi nộp bài, `GradingStrategyFactory` chọn chiến lược chấm điểm theo từng loại câu hỏi, tự động chấm các câu hỏi khách quan, lưu `lms_question_response` cho từng câu hỏi và một `lms_quiz_result` tổng thể, rồi so sánh điểm với ngưỡng đạt (pass threshold). Quiz khách quan trả kết quả ngay lập tức; các câu tự luận/trả lời ngắn có thể được đánh dấu để review thủ công. Khi pass quiz cuối của một course, hệ thống phát sự kiện `QuizPassedEvent`, được WF-003 tiêu thụ.
 
 ## Participating modules
 [lms_quiz](../../C-Design/C05-modules/lms_quiz.md), [lms_question](../../C-Design/C05-modules/lms_question.md), [lms_progress](../../C-Design/C05-modules/lms_progress.md)
@@ -10,10 +10,10 @@ A learner opens a quiz attached to a lesson/course. The system presents question
 [F-006](../B03-features/F-006-quiz-and-assessment-engine.md), [F-008](../B03-features/F-008-badges-and-gamification.md)
 
 ## Trigger
-Learner submits a quiz attempt.
+Learner nộp một lượt làm quiz (quiz attempt).
 
 ## Outcome
-`lms_quiz_result` + `lms_question_response` records persisted; score and pass/fail computed; `QuizPassedEvent` fired on pass.
+Các bản ghi `lms_quiz_result` + `lms_question_response` được lưu; điểm số và kết quả pass/fail được tính; sự kiện `QuizPassedEvent` được phát khi pass.
 
 ## Design link
 [C12 WF-002](../../C-Design/C12-workflows/WF-002-quiz-attempt-and-grading.md)

@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_progress/`
 
 ## Requirement
-The system records per-lesson completion (`lms_user_lesson`) and rolls it up into per-course progress (`lms_user_course`): percent complete, last-accessed lesson, and completion timestamp. Learners can resume where they left off; completion unlocks certificate eligibility (F-007).
+Hệ thống ghi nhận completion theo từng lesson (`lms_user_lesson`) và tổng hợp (roll up) thành progress theo từng course (`lms_user_course`): phần trăm hoàn thành, lesson truy cập gần nhất, và timestamp hoàn thành. Learner có thể resume tại chỗ đã dừng; việc hoàn thành mở khóa điều kiện nhận certificate (F-007).
 
 ## Business value
-Progress is the spine of the learning experience and the prerequisite for certification and analytics; "resume" reduces drop-off.
+Progress là xương sống của trải nghiệm học tập và là điều kiện tiên quyết cho certification và analytics; tính năng "resume" giúp giảm drop-off.
 
 ## Scope notes
-- Two progress entities: `lms_user_lesson` (granular) and `lms_user_course` (rollup).
-- Completion of all required lessons + passing quizzes drives course completion → emits the event consumed by F-007.
-- Surfaced on the learner dashboard and mobile API (F-019).
+- Hai progress entity: `lms_user_lesson` (chi tiết) và `lms_user_course` (tổng hợp).
+- Hoàn thành toàn bộ lesson bắt buộc + pass quiz sẽ dẫn tới course completion → phát event mà F-007 tiêu thụ (consume).
+- Được hiển thị trên learner dashboard và mobile API (F-019).
 
 ## Cross references
 - Design: [C04 lms_user_lesson](../../C-Design/C04-entities/lms_user_lesson.md), [C04 lms_user_course](../../C-Design/C04-entities/lms_user_course.md)

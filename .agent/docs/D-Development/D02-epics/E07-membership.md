@@ -3,7 +3,7 @@
 **Status:** done
 
 ## Goal
-Recurring/tiered membership plans granting broad course access.
+Gói membership định kỳ/theo tier (recurring/tiered), cấp quyền truy cập rộng vào course.
 
 ## Scope
 - Module: [lms_membership](../../C-Design/C05-modules/lms_membership.md)
@@ -14,7 +14,7 @@ Recurring/tiered membership plans granting broad course access.
 - [E07S01](../D03-stories/E07S01-lms_membership.md)
 
 ## Dependencies
-E06 (purchased via order).
+E06 (mua qua order).
 
 ## Open work
-None core; renewal/expiry automation depends on cron health (H-Operations).
+Không có việc cốt lõi; tự động renewal/expiry phụ thuộc vào tình trạng cron (H-Operations).

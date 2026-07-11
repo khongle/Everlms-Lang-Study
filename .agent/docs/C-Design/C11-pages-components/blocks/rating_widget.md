@@ -10,7 +10,7 @@ adequacy: PASS
 # C11 Block - Rating & reviews
 
 ## Purpose
-Shows aggregate rating + review list and a submit form (enrolled learners) on course detail.
+Hiển thị rating tổng hợp + danh sách review và form gửi review (dành cho learner đã enroll) trên trang course detail.
 
 ## Drupal 11 Contract
 | Concern | Contract |
@@ -40,4 +40,4 @@ Shows aggregate rating + review list and a submit form (enrolled learners) on co
 | Live | course detail reviews |
 
 ## Tests / Checks
-- Aggregate matches approved ratings; submit gated to enrolled; one-per-user.
+- Số liệu tổng hợp khớp với các rating đã approved; chỉ learner đã enroll mới submit được; giới hạn một rating/user.

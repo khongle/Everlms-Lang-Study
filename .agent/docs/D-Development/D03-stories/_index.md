@@ -1,6 +1,6 @@
 # D03-stories - Story Index
 
-A story = a **task index** for one module's build spine (hierarchical `E##S##`). As-built: most are `resolved`/`done`; open work surfaces as `todo`/`blocked` tasks in [D04](../D04-tasks/_index.md). Each story links its module ([C05](../../C-Design/C05-modules/_index.md)) + code-map ([D07](../D07-code-map/README.md)).
+Một story = **task index** cho khung xây dựng của một module (phân cấp `E##S##`). As-built: phần lớn là `resolved`/`done`; việc còn mở thể hiện dưới dạng task `todo`/`blocked` trong [D04](../D04-tasks/_index.md). Mỗi story liên kết tới module của nó ([C05](../../C-Design/C05-modules/_index.md)) + code-map ([D07](../D07-code-map/README.md)).
 
 | Story | Module | Epic | Status |
 | ----- | ------ | ---- | ------ |
@@ -34,4 +34,14 @@ A story = a **task index** for one module's build spine (hierarchical `E##S##`).
 | [E12S01](E12S01-lms_analytics.md) | lms_analytics | E12 | in-progress |
 | [E13S01](E13S01-lms_content_tools.md) | lms_content_tools | E13 | done |
 
-> 29 stories (28 modules + lms_theme). Open tasks for the in-progress/blocked stories are in [D04 todo/blocked](../D04-tasks/_index.md).
+> 29 story (28 module + lms_theme). Task còn mở cho các story in-progress/blocked nằm trong [D04 todo/blocked](../D04-tasks/_index.md).
+
+## As-built deviation: glue stories (A06 Gate 8.C)
+A06's normative Build Standard giả định một **5-story spine + 5 glue story** trên mỗi module (greenfield build). EverLMS là **as-built rebuild** ánh xạ ngược từ code đã chạy, nên D01 khai báo rõ scale thực tế là **story-model gọn: 1 story/module** (xem ghi chú "Coverage note" ở [D01](../D01-dev-overview/_index.md)) — không có 5-story spine, và do đó không có 5 story `glue:` tách riêng theo đúng khuôn mẫu greenfield.
+
+Thay vì bịa ra 5 story `glue:` mới không phản ánh WBS thật, 3/5 giá trị glue được gắn (tag) vào đúng story module-level đã đảm nhiệm vai trò đó trong thực tế (frontmatter `glue:` + đoạn "Glue role" giải thích, có link bằng chứng):
+- `site-assembly` → [E01S01-lms_base](E01S01-lms_base.md) (module nền tảng mọi module khác phụ thuộc; bootstrap thực tế ở X00).
+- `navigation-assembly` → [E01S03-lms_theme](E01S03-lms_theme.md) (sở hữu region `primary_menu`/`secondary_menu`/footer — nơi lắp navigation toàn site).
+- `demo-seed` → [E13S01-lms_content_tools](E13S01-lms_content_tools.md) (service/Drush import-seed-clean chuẩn; gọi bởi X00).
+
+**Residual (chưa đóng, KHÔNG bịa):** `role-clickthrough` và `golden-path-e2e` không có story module-level nào có thể gắn nhãn một cách trung thực — hai hoạt động này là QA runtime cắt ngang nhiều module, bằng chứng thật nằm ở tầng E (không phải D03): xem [E13-qa-rounds](../../E-Quality/E13-qa-rounds/_index.md) round-1/round-2 (crawl thực qua Playwright, theo role qua `ddev drush user:login`, 10 workflow C12 WF-001..010, golden path enroll→learn→quiz→certificate verify ở WF-001→002→003). Gate 8.C sẽ còn FAIL ở 2 dòng `glue:` này cho tới khi có quyết định: (a) chấp nhận E13 làm bằng chứng tương đương và nới gate, hoặc (b) mở một story cross-cutting thật (không phải story giả định) cho hai hoạt động này.

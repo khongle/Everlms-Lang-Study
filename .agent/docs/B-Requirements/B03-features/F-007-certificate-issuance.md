@@ -8,15 +8,15 @@
 **Source:** `web/modules/custom/lms_certificate/`
 
 ## Requirement
-On course completion / quiz pass, the system auto-issues a certificate: an event subscriber on `QuizPassedEvent` (or course completion) renders a `lms_certificate_template` to PDF (mPDF) and stores a `lms_user_certificate` record with a unique code. Learners download their certificate; editors manage templates without code.
+Khi course completion / quiz pass, hệ thống tự động issue một certificate: một event subscriber lắng nghe `QuizPassedEvent` (hoặc course completion) render một `lms_certificate_template` ra PDF (mPDF) và lưu một record `lms_user_certificate` kèm mã unique. Learner tải certificate của mình về; editor quản lý template mà không cần code.
 
 ## Business value
-Certificates are the tangible outcome learners pay for — proof of completion for compliance/occupational-safety contexts; template editing keeps branding in editors' hands.
+Certificate là kết quả hữu hình mà learner bỏ tiền ra mua — bằng chứng hoàn thành cho bối cảnh compliance/an toàn lao động; việc chỉnh sửa template giữ quyền kiểm soát branding trong tay editor.
 
 ## Scope notes
-- `lms_certificate_template` (config-like content entity) holds the editable layout; `lms_user_certificate` is the issued instance.
-- Issuance must be **idempotent** (no duplicate certs on re-pass) — reliability NFR.
-- `lms:mock-certs` and `scripts/regenerate_all_certs.php` support bulk (re)generation.
+- `lms_certificate_template` (content entity kiểu config) chứa layout có thể chỉnh sửa; `lms_user_certificate` là instance đã được issue.
+- Việc issuance phải **idempotent** (không tạo cert trùng khi pass lại) — đây là một NFR về reliability.
+- `lms:mock-certs` và `scripts/regenerate_all_certs.php` hỗ trợ (re)generation hàng loạt.
 
 ## Cross references
 - Design: [C04 lms_certificate_template](../../C-Design/C04-entities/lms_certificate_template.md), [C04 lms_user_certificate](../../C-Design/C04-entities/lms_user_certificate.md), [C12 WF-003](../../C-Design/C12-workflows/WF-003-certificate-issuance.md)

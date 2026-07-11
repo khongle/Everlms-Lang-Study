@@ -1,11 +1,11 @@
 # F-003 Acceptance Criteria - Lesson delivery & media
 
 ## Core criteria
-1. **Given** an enrolled learner, **when** they open a lesson, **then** body text, video, and attachments (`field_attachments`) render in the player.
-2. **Given** a lesson, **when** the learner marks it complete, **then** a `lms_user_lesson` record is created/updated and the next lesson is reachable.
-3. **Given** a non-enrolled user, **when** they try to open lesson content, **then** access is denied / a CTA to enroll is shown (gating via F-004).
-4. **Given** a lesson with an attachment, **when** the learner downloads it, **then** the file is served (referenced file, not inlined).
+1. **Given** một learner đã enroll, **when** họ mở một lesson, **then** body text, video, và attachment (`field_attachments`) được render trong player.
+2. **Given** một lesson, **when** learner đánh dấu hoàn thành, **then** một bản ghi `lms_user_lesson` được tạo/cập nhật và lesson tiếp theo có thể truy cập được.
+3. **Given** một user chưa enroll, **when** họ cố mở nội dung lesson, **then** quyền truy cập bị từ chối / một CTA mời enroll được hiển thị (gating qua F-004).
+4. **Given** một lesson có attachment, **when** learner tải file xuống, **then** file được phục vụ (referenced file, không inline).
 
 ## Evidence expected
-- Module: [lms_lesson](../../C-Design/C05-modules/lms_lesson.md); player page in C11.
-- Test: lesson-access test (enrolled vs not); complete-lesson progress test (E03).
+- Module: [lms_lesson](../../C-Design/C05-modules/lms_lesson.md); player page trong C11.
+- Test: lesson-access test (đã enroll vs chưa); complete-lesson progress test (E03).

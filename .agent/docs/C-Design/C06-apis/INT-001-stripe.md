@@ -4,17 +4,17 @@
 **Participating modules:** [lms_stripe](../C05-modules/lms_stripe.md), [lms_payment](../C05-modules/lms_payment.md)
 
 ## Purpose
-Charge card payments at checkout via the Stripe PHP SDK behind the `stripe` `@PaymentGateway`. Outbound integration; no card data stored by EverLMS.
+Thực hiện thanh toán thẻ tại checkout qua Stripe PHP SDK, đứng sau `@PaymentGateway` là `stripe`. Đây là tích hợp outbound; EverLMS không lưu dữ liệu thẻ.
 
 ## Proposed contract
-- **REST namespace:** outbound to Stripe API (`api.stripe.com`) via SDK; inbound return at `/payment/stripe/return`. **Recommended (gap):** webhook `POST /api/v1/payment/stripe/webhook`.
-- **Auth:** Stripe secret key (server) + publishable key (client). ⚠️ stored in `lms_payment.settings.yml` (R-001) — move to Key/env.
-- **Authorization:** only an authenticated buyer with a pending order may initiate; gateway calls server-side only.
+- **REST namespace:** gọi ra ngoài tới Stripe API (`api.stripe.com`) qua SDK; nhận return inbound tại `/payment/stripe/return`. **Recommended (gap):** webhook `POST /api/v1/payment/stripe/webhook`.
+- **Auth:** Stripe secret key (server) + publishable key (client). ⚠️ đang lưu trong `lms_payment.settings.yml` (R-001) — cần chuyển sang Key/env.
+- **Authorization:** chỉ buyer đã authenticated và có order đang pending mới được khởi tạo; gateway chỉ được gọi ở phía server-side.
 - **Response envelope (internal normalisation):** `{ data: {payment_id, status}, error: {code, message}|null, meta: {gateway: "stripe"} }`.
-- **Audit:** log charge attempt/result + `field_payment_id` on the order; never log full card/PAN.
+- **Audit:** ghi log lần charge attempt/result + `field_payment_id` trên order; không bao giờ log đầy đủ số thẻ/PAN.
 
 ## Test requirements
-- CI: mocked Stripe client (no live calls); Stripe test-mode keys for integration env.
-- Auth+authz: only order owner can pay; reject unauthenticated.
-- Failure/retry/fallback: declined card → order stays pending, clear error, retry/other gateway.
-- Contract test: success + decline + (target) webhook signature verification.
+- CI: mock Stripe client (không gọi live); dùng Stripe test-mode keys cho integration env.
+- Auth+authz: chỉ order owner mới được thanh toán; từ chối request chưa authenticated.
+- Failure/retry/fallback: thẻ bị declined → order giữ nguyên pending, hiển thị lỗi rõ ràng, cho retry/đổi gateway khác.
+- Contract test: success + decline + (target) xác minh chữ ký webhook.

@@ -47,7 +47,7 @@ permissions:
   - 'edit own page content'
   - 'edit terms in tags'
   - 'revert all revisions'
-  - 'view lms_course'
   - 'view all revisions'
+  - 'view lms_course'
   - 'view own unpublished content'
   - 'view the administration theme'

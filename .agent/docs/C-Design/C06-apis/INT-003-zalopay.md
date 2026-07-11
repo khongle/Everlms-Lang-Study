@@ -4,17 +4,17 @@
 **Participating modules:** [lms_payment](../C05-modules/lms_payment.md)
 
 ## Purpose
-ZaloPay wallet checkout via the `zalopay` `@PaymentGateway` for the Vietnamese market. ⚠️ Stub.
+Checkout ví ZaloPay qua `@PaymentGateway` là `zalopay`, phục vụ thị trường Việt Nam. ⚠️ Mới là stub.
 
 ## Proposed contract
-- **REST namespace:** outbound to ZaloPay API; inbound callback `/payment/zalopay/callback`.
-- **Auth:** ZaloPay app id + key1/key2 in config (R-001) → move to Key/env.
-- **Authorization:** order owner; server-side.
+- **REST namespace:** gọi ra ngoài tới ZaloPay API; nhận callback inbound `/payment/zalopay/callback`.
+- **Auth:** ZaloPay app id + key1/key2 nằm trong config (R-001) → cần chuyển sang Key/env.
+- **Authorization:** order owner; chỉ server-side.
 - **Response envelope:** `{ data: {payment_id, status}, error|null, meta: {gateway: "zalopay"} }`.
-- **Audit:** log attempt/result + transaction id; ZaloPay requires HMAC callback verification (implement).
+- **Audit:** ghi log attempt/result + transaction id; ZaloPay yêu cầu xác minh callback bằng HMAC (cần triển khai).
 
 ## Test requirements
-- CI: mocked client; sandbox creds.
-- Auth+authz: order-owner gate; verify callback HMAC.
-- Failure/fallback: failed → pending, retry/switch.
-- Contract test: success + callback signature; mark stub gaps in [E06](../../E-Quality/E06-implementation-status/_index.md).
+- CI: mock client; dùng sandbox creds.
+- Auth+authz: order-owner gate; xác minh HMAC của callback.
+- Failure/fallback: thất bại → giữ pending, cho retry/đổi gateway.
+- Contract test: success + chữ ký callback; ghi nhận các gap còn ở dạng stub trong [E06](../../E-Quality/E06-implementation-status/_index.md).

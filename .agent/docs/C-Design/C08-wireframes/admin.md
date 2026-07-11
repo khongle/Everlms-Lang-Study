@@ -24,3 +24,23 @@ Config archetype = settings form (⚠️ secret fields → R-001). Report archet
 
 ## C11 relationship
 Stands in for P046–P051.
+
+## Archetype wireframes
+
+<!-- archetype: config -->
+### config (P046, P047, P048, P050)
+```text
++------------------------------------------------------+
+| Claro admin toolbar                                   |
++------------------------------------------------------+
+| breadcrumb (Home > Administration > Configuration)     |
++------------------------------------------------------+
+| content: top tabs (if multiple provider/gateway tabs)  |
++------------------------------------------------------+
+| content: form panels                                    |
+|  [provider/gateway select | API key/secret fields       |
+|   (masked, ⚠️ R-001) | feature toggles]                 |
++------------------------------------------------------+
+| content_bottom: save bar (Save configuration)           |
++------------------------------------------------------+
+```

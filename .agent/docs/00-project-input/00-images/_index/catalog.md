@@ -1,3 +1,6 @@
+---
+source_state: REFERENCE
+---
 # Available Image Catalog
 
 Total available images: **4774**

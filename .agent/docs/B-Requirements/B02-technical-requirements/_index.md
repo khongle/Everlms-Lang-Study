@@ -17,14 +17,14 @@
 | AI | Custom `@AiProvider` plugins: OpenAI, Google Gemini, Pollinations |
 | Frontend | Theme `lms_theme` (Bootstrap 5.x, Twig, SCSS, 15 homepage skins); alt `lms_classic`; admin `Claro` |
 | Mobile | Flutter app (`app/`, v1.0.10+33) over custom bearer-token REST API `/api/v1` (`lms_mobile_api`); Firebase/APNs push |
-| Config | `config_sync_directory = ../config/sync` (397 YAML, git-tracked) |
+| Config | `config_sync_directory = ../config/sync` (396 YAML, git-tracked) |
 | Custom code | 27 `lms_*` modules + `open_switcher`; 29 entity types; ~137 routes |
 
-`public_api_surface = yes` (the mobile `/api/v1` is a first-class API surface → I-External materialised).
-`end_user_presence = yes` (themed web + mobile end-users → U-Userguide materialised).
+`public_api_surface = yes` (mobile `/api/v1` là một API surface hạng nhất (first-class) → I-External được hiện thực hóa).
+`end_user_presence = yes` (themed web + mobile end-user → U-Userguide được hiện thực hóa).
 
 ## NFRs
-NFR names align **bidirectionally** with [E10-nfr-tracking](../../E-Quality/E10-nfr-tracking/_index.md) (same names, both directions).
+Tên NFR align **bidirectionally** (hai chiều) với [E10-nfr-tracking](../../E-Quality/E10-nfr-tracking/_index.md) (cùng tên, cả hai chiều).
 
 | NFR | Target |
 | --- | ------ |
@@ -34,3 +34,8 @@ NFR names align **bidirectionally** with [E10-nfr-tracking](../../E-Quality/E10-
 | Accessibility | Themed pages meet WCAG 2.1 AA targets (semantic Twig, alt text on media, keyboard-navigable quiz UI). Verified per E03 accessibility test def. |
 | Maintainability | Single project prefix `lms_*`; PSR-4 + Drupal coding standards (phpcs Drupal,DrupalPractice); plugin-based extensibility (gateways, AI providers, grading strategies); code-map in D07. |
 | Editorial usability | Every business-visible value maps to a named editable source (entity field / config / View / menu / block / form) — no hardcoded editorial content. Evidence: E03 edit-smoke test def + E04 editor-usability QA. |
+
+## Public-API & end-user presence
+- public_api_surface: YES — mobile bearer-token API `/api/v1` (`lms_mobile_api`, ~22 routes) cho Flutter app.
+- end_user_presence: YES — public catalog + authenticated learner app (dashboard, player, checkout).
+- editorial_content: YES — nội dung do editor quản lý qua management UI (entity-first invariant): course/lesson/quiz/blog/faq/certificate template/notification.

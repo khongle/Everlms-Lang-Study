@@ -10,7 +10,7 @@ adequacy: PASS
 # C11 Block - Course progress
 
 ## Purpose
-Shows the learner's percent-complete for a course; used in player and my-courses/dashboard.
+Hiển thị phần trăm hoàn thành của learner cho một course; dùng trong player và my-courses/dashboard.
 
 ## Drupal 11 Contract
 | Concern | Contract |
@@ -40,4 +40,4 @@ Shows the learner's percent-complete for a course; used in player and my-courses
 | Live | player header |
 
 ## Tests / Checks
-- Percent updates after lesson completion; never shows other users' progress.
+- Phần trăm cập nhật sau khi hoàn thành lesson; không bao giờ hiển thị progress của user khác.

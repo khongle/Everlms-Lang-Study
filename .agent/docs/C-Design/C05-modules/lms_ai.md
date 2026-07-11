@@ -3,10 +3,10 @@
 **Name:** AI authoring · **Phase:** 10 · **Epic:** [E10](../../D-Development/D02-epics/E10-ai.md) · **Status:** done
 
 ## Responsibility
-The `@AiProvider` **plugin host** (`AiProviderManager` + `AiProviderInterface`) with OpenAI / Gemini / Pollinations providers, plus `CourseContentGenerator` to turn prompts into course/lesson/quiz drafts. ~4 routes.
+**Plugin host** `@AiProvider` (`AiProviderManager` + `AiProviderInterface`) với các provider OpenAI / Gemini / Pollinations, cùng `CourseContentGenerator` để biến prompt thành bản nháp course/lesson/quiz. ~4 route.
 
 ## Owned / related entities
-- None (generates content into other modules' entities).
+- Không có (sinh nội dung vào entity của các module khác).
 
 ## Requirements features (B03)
 | Feature | Title |
@@ -27,10 +27,10 @@ The `@AiProvider` **plugin host** (`AiProviderManager` + `AiProviderInterface`) 
 | AI generate (in authoring) | `/ai/generate` |
 
 ## Cross references
-- Used by [lms_blog](lms_blog.md), [lms_zoom](lms_zoom.md); generates into [lms_course](lms_course.md)/[lms_quiz](lms_quiz.md).
+- Được dùng bởi [lms_blog](lms_blog.md), [lms_zoom](lms_zoom.md); sinh nội dung vào [lms_course](lms_course.md)/[lms_quiz](lms_quiz.md).
 
 ## Dependencies
-- lms_base, **key** (declared dep; ⚠️ no key entities configured — AI keys live in `lms_ai.settings.yml`/`lms_ai.engine.settings.yml`, R-001).
+- lms_base, **key** (dependency đã khai báo; ⚠️ chưa cấu hình key entity nào — key AI nằm trong `lms_ai.settings.yml`/`lms_ai.engine.settings.yml`, R-001).
 
 ## Implementation notes
-- `src/Plugin/AiProvider/{OpenAiProvider,GeminiProvider,PollinationsProvider}.php` + `AiProviderManager`; `CourseContentGenerator` builds structured drafts. Human-in-the-loop: output is a draft to review before save.
+- `src/Plugin/AiProvider/{OpenAiProvider,GeminiProvider,PollinationsProvider}.php` + `AiProviderManager`; `CourseContentGenerator` tạo bản nháp có cấu trúc. Human-in-the-loop: kết quả là bản nháp cần review trước khi lưu.

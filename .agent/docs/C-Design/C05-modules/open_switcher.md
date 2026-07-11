@@ -3,10 +3,10 @@
 **Name:** User impersonation / switcher · **Phase:** 1 · **Epic:** [E01](../../D-Development/D02-epics/E01-foundation.md) · **Status:** done
 
 ## Responsibility
-Let an authorised support/admin user impersonate ("switch to") another user to reproduce issues, then switch back safely. Package "Open Platform" (a reusable utility, not LMS-specific).
+Cho phép user support/admin được ủy quyền impersonate ("switch to") một user khác để tái hiện issue, sau đó switch back an toàn. Thuộc package "Open Platform" (một utility tái sử dụng được, không đặc thù cho LMS).
 
 ## Owned / related entities
-- None (operates on Drupal `user`).
+- Không có (thao tác trên `user` của Drupal).
 
 ## Requirements features (B03)
 | Feature | Title |
@@ -19,7 +19,7 @@ Let an authorised support/admin user impersonate ("switch to") another user to r
 | [WF-007](../../B-Requirements/B04-business-workflows/WF-007-user-registration-and-onboarding.md) | User registration & onboarding (support flows) |
 
 ## Integrations / APIs (B06 / C06)
-- — (none)
+- — (không có)
 
 ## Backing pages
 | Label | URL |
@@ -27,10 +27,10 @@ Let an authorised support/admin user impersonate ("switch to") another user to r
 | Switch user | `/open-switcher/*` (~5 routes) |
 
 ## Cross references
-- Roles/permissions: [C02](../C02-user-roles/_index.md).
+- Role/permission: [C02](../C02-user-roles/_index.md).
 
 ## Dependencies
-- none.
+- không có.
 
 ## Implementation notes
-- ~5 routes; gated by a dedicated switch permission. Restore-original-session on switch back. Audit who-switched-to-whom is recommended (verify in code).
+- ~5 route; được gate bởi một permission switch riêng. Restore lại session gốc khi switch back. Nên có audit ai-đã-switch-sang-ai (verify trong code).

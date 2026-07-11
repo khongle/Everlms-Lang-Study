@@ -3,10 +3,10 @@
 **Name:** PayPal gateway (duplicate) · **Phase:** 6 · **Epic:** [E06](../../D-Development/D02-epics/E06-commerce.md) · **Status:** blocked (dead/duplicate — R-004)
 
 ## Responsibility
-Intended to add a PayPal `@PaymentGateway`. ⚠️ **Duplicates** the PayPal gateway already shipped inside `lms_payment` — this module is effectively dead/duplicate code.
+Dự định thêm một `@PaymentGateway` PayPal. ⚠️ **Trùng lặp (duplicate)** với gateway PayPal đã có sẵn trong `lms_payment` — module này về bản chất là code chết/trùng lặp.
 
 ## Owned / related entities
-- None.
+- Không có.
 
 ## Requirements features (B03)
 | Feature | Title |
@@ -25,10 +25,10 @@ Intended to add a PayPal `@PaymentGateway`. ⚠️ **Duplicates** the PayPal gat
 - —
 
 ## Cross references
-- Duplicate of [lms_payment](lms_payment.md) PayPalGateway; [G02 R-004](../../G-Governance/G02-risk-register/_index.md).
+- Trùng lặp với PayPalGateway của [lms_payment](lms_payment.md); [G02 R-004](../../G-Governance/G02-risk-register/_index.md).
 
 ## Dependencies
 - lms_payment.
 
 ## Implementation notes
-- `src/Plugin/PaymentGateway/PayPalGateway.php` mirrors `lms_payment/.../PayPalGateway.php`. **Recommendation:** remove this module and keep one PayPal gateway in `lms_payment` (tech-debt H04 / R-004).
+- `src/Plugin/PaymentGateway/PayPalGateway.php` mirror lại `lms_payment/.../PayPalGateway.php`. **Khuyến nghị:** loại bỏ module này và chỉ giữ một gateway PayPal trong `lms_payment` (tech-debt H04 / R-004).

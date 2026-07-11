@@ -10,7 +10,7 @@ adequacy: PASS
 # C11 Block - Certificate download
 
 ## Purpose
-Lists a learner's earned certificates with download links; on my-certificates and dashboard.
+Liệt kê các certificate learner đã đạt được kèm link tải; xuất hiện ở my-certificates và dashboard.
 
 ## Drupal 11 Contract
 | Concern | Contract |
@@ -40,4 +40,4 @@ Lists a learner's earned certificates with download links; on my-certificates an
 | Live | `/my-certificates` |
 
 ## Tests / Checks
-- Only own certificates; download serves the PDF; revoked certs flagged.
+- Chỉ hiển thị certificate của chính mình; download trả về đúng file PDF; certificate đã revoke được đánh dấu (flagged).

@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-06-21 · **source_state:** AS_BUILT (route paths from `*.routing.yml`, 2026-06-21)
 
-Global page numbering (`#` 1..N) is the backbone reused by [C11 pages](../C11-pages-components/pages/_index.md) and [C08 wireframes](../C08-wireframes/_index.md). Route groups per [C01](../C01-architecture-decision/_index.md): Public `/*`, App (learner `/dashboard`,`/my-*`,`/learn/*`), Manage (`/workspace/*`,`/manage/*`), Admin (`/admin/*`), API (`/api/*`, documented in [I-External](../../I-External/I01-public-api-spec/README.md)). Host: `https://everlms.ddev.site`.
+Đánh số trang toàn cục (`#` 1..N) là xương sống được tái sử dụng bởi [C11 pages](../C11-pages-components/pages/_index.md) và [C08 wireframes](../C08-wireframes/_index.md). Route group theo [C01](../C01-architecture-decision/_index.md): Public `/*`, App (learner `/dashboard`,`/my-*`,`/learn/*`), Manage (`/workspace/*`,`/manage/*`), Admin (`/admin/*`), API (`/api/*`, được tài liệu hóa tại [I-External](../../I-External/I01-public-api-spec/README.md)). Host: `https://everlms.ddev.site`.
 
 ## Public / Marketing
 | # | Label | Title | URL |
@@ -16,7 +16,7 @@ Global page numbering (`#` 1..N) is the backbone reused by [C11 pages](../C11-pa
 | 7 | Instructor profile | Instructor page | `/instructor/{user}` |
 | 8 | Blog / News | Article listing | `/news` |
 | 9 | Article detail | Blog article | `/news/{node}` |
-| 10 | FAQ / About | About page | `/about` |
+| 10 | About | About page | `/about` |
 | 11 | Contact | Contact page | `/contact` |
 | 12 | Glossary | Term glossary | `/glossary` |
 | 13 | Forum index | Community forum | `/forum` |
@@ -71,4 +71,20 @@ Global page numbering (`#` 1..N) is the backbone reused by [C11 pages](../C11-pa
 | 50 | Notification broadcast | Send broadcast | `/admin/lms/notifications/broadcast` |
 | 51 | Switch user | Impersonation | `/admin/switch-user` |
 
-> 51 logical pages (data-derived from routing, 2026-06-21; per-id add/edit/delete action routes collapsed into their parent logical page). Each row maps to a [C11 page spec](../C11-pages-components/pages/_index.md); each area maps to a [C08 wireframe](../C08-wireframes/_index.md). API routes (`/api/v1/*`) are specified in [I-External](../../I-External/I01-public-api-spec/README.md), not as themed pages.
+> 51 trang logic (data-derived từ routing, 2026-06-21; các route action add/edit/delete theo id được gộp vào trang logic cha của chúng). Mỗi dòng map tới một [C11 page spec](../C11-pages-components/pages/_index.md); mỗi khu vực map tới một [C08 wireframe](../C08-wireframes/_index.md). Route API (`/api/v1/*`) được đặc tả tại [I-External](../../I-External/I01-public-api-spec/README.md), không phải dạng trang có theme.
+
+## Entity CRUD coverage
+
+Một dòng cho mỗi object có lifecycle ở [C15-object-steps](../C15-object-steps/README.md) (7 object). Ô là số trang toàn cục (#) ở trên, hoặc `WAIVED` khi route đó không có trang riêng (as-built gap hoặc hành vi system-generated, không phải form admin).
+
+| Entity | List | Create | Detail | Edit | Waiver reason |
+| --- | --- | --- | --- | --- | --- |
+| account | 35 | 16 | 28 | 35 | — |
+| course | 32 | 33 | 3 | 33 | — |
+| forum-topic | 13 | 13 | 14 | 14 | — |
+| order | 36 | WAIVED | 36 | 36 | Order được tạo bởi student ở checkout (`/checkout/{course_id}`, #29), không có admin create-order form; reconcile/refund (`/workspace/orders/{id}/edit`) gộp vào Manage orders (#36) theo quy ước fold route-by-id ở trên |
+| certificate | 41 | WAIVED | 15 | 41 | `lms_user_certificate` auto-issue qua `QuizPassedEvent` bắn từ kết quả quiz đã chấm (#21) — không có manual create UI; revoke/regenerate (`/admin/lms/certificates/{cert}/revoke`, `/workspace/certificates/{cert}/regenerate`) gộp vào Issued certificates (#41) |
+| membership | 38 | 30 | 26 | 38 | — |
+| quiz-result | 22 | 20 | 21 | 21 | — |
+
+> `membership` List/Edit dùng chung page #38: [P038 Manage pricing/plans](../C11-pages-components/pages/P038-manage-pricing.md) cover cả `/workspace/pricing` lẫn `/workspace/user-memberships` (list `lms_membership.admin_user_memberships`, edit `lms_membership.admin_user_memberships.edit` — xác minh trong `lms_membership.routing.yml`), nên không cần page riêng.

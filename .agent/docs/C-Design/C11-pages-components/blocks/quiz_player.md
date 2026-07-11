@@ -10,7 +10,7 @@ adequacy: PASS
 # C11 Block - Quiz player
 
 ## Purpose
-Renders quiz questions (8 types), timer, and submit on the quiz-take page.
+Render câu hỏi quiz (8 loại), timer, và submit trên trang quiz-take.
 
 ## Drupal 11 Contract
 | Concern | Contract |
@@ -40,4 +40,4 @@ Renders quiz questions (8 types), timer, and submit on the quiz-take page.
 | Live | `/quiz/{id}/take` |
 
 ## Tests / Checks
-- All 8 widget types render; timer enforces limit; submit posts to grading.
+- Cả 8 loại widget đều render đúng; timer áp giới hạn thời gian; submit gửi sang chấm điểm (grading).

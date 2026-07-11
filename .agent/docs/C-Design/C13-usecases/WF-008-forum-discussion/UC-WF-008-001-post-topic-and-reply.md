@@ -10,8 +10,8 @@ processes: [forum-discussion]
 # UC-WF-008-001 - Post a topic and reply
 
 ## Intent
-Learners discuss via persisted topics and replies, and the topic owner resolves
-the discussion by selecting a best answer.
+Learner thảo luận qua các topic và reply được lưu lại, và topic owner resolve
+cuộc thảo luận bằng cách chọn một best answer.
 
 ## Workflow context
 | Item | Value |
@@ -26,35 +26,40 @@ the discussion by selecting a best answer.
 Learner/instructor (primary); moderator.
 
 ## Preconditions
-- Public `/forum` is readable.
-- Topic/reply creation requires an authenticated user.
-- At least one `forum_category` term exists.
-- `lms_notification` is enabled for reply notifications.
+- `/forum` công khai đọc được.
+- Tạo topic/reply cần user đã authenticated.
+- Tồn tại ít nhất một term `forum_category`.
+- `lms_notification` đã bật cho notification reply.
 
 ## Trigger
-Create topic or post reply.
+Tạo topic hoặc đăng reply.
 
 ## Main success scenario
-1. Anonymous visitor opens `/forum` and sees the public topic list.
-2. Student author logs in through `/user/login`.
-3. Student author opens `/forum`, then `/forum/new`.
-4. Student author fills title, body, and category, then saves.
-5. Topic detail `/forum/{id}` displays the topic and an authenticated reply form.
-6. A second student logs in through `/user/login`.
-7. Second student opens the topic, fills the reply form, and posts.
-8. The topic owner receives an `lms_notification` for the new reply.
-9. The topic owner reopens the topic and marks the reply as best answer.
-10. Topic detail shows `Resolved`; the reply shows `Best Answer`; reply form is
-    closed.
-11. Anonymous visitor opens the topic URL and sees the teaser CTA.
-12. Anonymous visitor opens `/forum` and sees the newly resolved topic in the
-    list.
+1. Visitor anonymous mở `/forum` và thấy danh sách topic công khai.
+2. Student author đăng nhập qua `/user/login`.
+3. Student author mở `/forum`, rồi `/forum/new`.
+4. Student author điền title, body, và category, rồi lưu.
+5. Topic detail `/forum/{id}` hiển thị topic và một form reply cho user đã authenticated.
+6. Một student thứ hai đăng nhập qua `/user/login`.
+7. Student thứ hai mở topic, điền form reply, và đăng.
+8. Topic owner nhận một `lms_notification` cho reply mới.
+9. Topic owner mở lại topic và đánh dấu reply đó là best answer.
+10. Topic detail hiển thị `Resolved`; reply hiển thị `Best Answer`; form reply
+    bị đóng.
+11. Visitor anonymous mở URL của topic và thấy teaser CTA.
+12. Visitor anonymous mở `/forum` và thấy topic vừa resolved trong
+    danh sách.
 
 ## Alternate and exception flows
-- Moderator locks/pins/deletes.
-- Empty post → validation error.
-- Anonymous can read topic list/detail teaser but cannot reply.
-- Cached anonymous forum index must refresh when topics/replies/resolution change.
+- Moderator lock/pin/delete.
+- Post rỗng → lỗi validation.
+- Anonymous đọc được topic list/teaser detail nhưng không reply được.
+- Forum index cache cho anonymous phải refresh khi topic/reply/resolution thay đổi.
+
+## State transitions (evidence)
+- `submitted` → `in_review`: reply đầu tiên được đăng.
+- `in_review` → `approved_or_completed`: owner đánh dấu best answer.
+- `approved_or_completed` → `archived`: moderator lock topic.
 
 ## Entry pages
 | Page | Category | Path |
@@ -64,13 +69,16 @@ Create topic or post reply.
 | New topic | Authenticated | /forum/new |
 | Forum topic | Public | /forum/{topic} |
 
+## Supporting pages
+Danh sách topic công khai hiển thị tại Forum index (P013); từng topic + reply thread hiển thị tại Forum topic (P014).
+
 ## Acceptance and test contract
-- Real login form is used for both student users.
-- Topic is created through `/forum/new` and persists with category.
-- Reply is created by another user and appears under the topic.
-- Notification is created for the topic owner on reply.
-- Owner can mark best answer; topic becomes resolved.
-- Anonymous topic detail uses teaser CTA while public `/forum` lists the resolved
-  topic.
-- Cache tags prevent stale anonymous forum lists.
-- Screenshots cover before/after form states and resolved/index verification.
+- Cả hai student user đều dùng login form thật.
+- Topic được tạo qua `/forum/new` và lưu lại kèm category.
+- Reply được tạo bởi một user khác và xuất hiện dưới topic.
+- Notification được tạo cho topic owner khi có reply.
+- Owner đánh dấu được best answer; topic chuyển thành resolved.
+- Topic detail ở chế độ anonymous dùng teaser CTA trong khi `/forum` công khai liệt kê
+  topic đã resolved.
+- Cache tag ngăn forum list anonymous bị stale.
+- Screenshot bao quát trạng thái form trước/sau và verify resolved/index.

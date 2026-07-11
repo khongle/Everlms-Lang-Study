@@ -3,10 +3,10 @@
 **Name:** Live sessions (Zoom) · **Phase:** 8 · **Epic:** [E08](../../D-Development/D02-epics/E08-community.md) · **Status:** in-progress
 
 ## Responsibility
-Integrates Zoom for live sessions tied to lessons/courses: create meetings, surface join links. ~3 routes.
+Tích hợp Zoom cho live session gắn với lesson/course: tạo meeting, hiển thị link join. ~3 route.
 
 ## Owned / related entities
-- None (uses `lms_lesson` zoom fields: `field_zoom_meeting_id`, `field_zoom_schedule`).
+- Không có (dùng field zoom của `lms_lesson`: `field_zoom_meeting_id`, `field_zoom_schedule`).
 
 ## Requirements features (B03)
 | Feature | Title |
@@ -25,10 +25,10 @@ Integrates Zoom for live sessions tied to lessons/courses: create meetings, surf
 | Live session / join | `/zoom/*` |
 
 ## Cross references
-- Lesson fields [lms_lesson](lms_lesson.md); contract [INT-004](../C06-apis/INT-004-zoom.md).
+- Field lesson ở [lms_lesson](lms_lesson.md); contract [INT-004](../C06-apis/INT-004-zoom.md).
 
 ## Dependencies
 - lms_base, lms_lesson, lms_ai.
 
 ## Implementation notes
-- Zoom creds in `lms_zoom.settings.yml` (R-001). ⚠️ As-built depth partial — scheduling/links present; attendance/recording likely limited (confirm in E06). Depends on lms_ai (likely for session summaries — verify).
+- Credential Zoom nằm trong `lms_zoom.settings.yml` (R-001). ⚠️ Độ sâu as-built còn một phần — scheduling/link đã có; attendance/recording có khả năng còn hạn chế (xác nhận ở E06). Phụ thuộc lms_ai (có thể để tóm tắt session — cần verify).

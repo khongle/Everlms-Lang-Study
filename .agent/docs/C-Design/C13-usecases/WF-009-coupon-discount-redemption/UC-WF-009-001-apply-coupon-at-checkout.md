@@ -10,7 +10,7 @@ processes: [coupon-discount-redemption]
 # UC-WF-009-001 - Apply a coupon at checkout
 
 ## Intent
-A buyer reduces their total with a coupon.
+Một buyer giảm tổng tiền của mình bằng một coupon.
 
 ## Workflow context
 | Item | Value |
@@ -22,25 +22,29 @@ A buyer reduces their total with a coupon.
 | B04 source | WF-009 |
 
 ## Actors
-Buyer (primary); administrator/config maintainer for coupon definitions.
+Buyer (primary); administrator/config maintainer cho định nghĩa coupon.
 
 ## Preconditions
-At checkout with an order in progress.
+Đang ở checkout với một order đang thực hiện.
 
 ## Trigger
-Buyer enters a coupon code.
+Buyer nhập một mã coupon.
 
 ## Main success scenario
-1. Enter code at checkout (P029).
-2. Validate (validity/eligibility/limit).
-3. Redirect back to checkout with the applied coupon in the query state.
-4. Show inline coupon confirmation, subtotal, discount, and adjusted total.
-5. On checkout submit, persist `field_coupon_code`, `field_discount`, and adjusted `field_total`.
+1. Nhập mã tại checkout (P029).
+2. Validate (tính hợp lệ/điều kiện/giới hạn).
+3. Redirect về lại checkout với coupon đã áp trong query state.
+4. Hiện xác nhận coupon inline, subtotal, discount, và tổng đã điều chỉnh.
+5. Khi submit checkout, lưu `field_coupon_code`, `field_discount`, và `field_total` đã điều chỉnh.
 
 ## Alternate and exception flows
-- Invalid/expired/over-limit → rejected with message.
-- External payment methods must use the adjusted payable total after coupon application.
-- Current as-built coupon definitions are config-driven (`lms_order.settings`); a manager coupon UI is not yet present.
+- Không hợp lệ/hết hạn/vượt giới hạn → bị từ chối kèm thông báo.
+- Các phương thức thanh toán bên ngoài phải dùng tổng phải trả đã điều chỉnh sau khi áp coupon.
+- Định nghĩa coupon as-built hiện tại được điều khiển qua config (`lms_order.settings`); UI coupon cho manager chưa có.
+
+## State transitions (evidence)
+- `submitted` → `approved_or_completed`: coupon hợp lệ, discount áp vào tổng order.
+- `submitted` → `rejected_or_returned`: mã hết hạn/không đủ điều kiện/vượt giới hạn.
 
 ## Entry pages
 | Page | Category | Path |
@@ -48,5 +52,5 @@ Buyer enters a coupon code.
 | Checkout | App | /checkout/{course} |
 
 ## Acceptance and test contract
-- Valid → total reduced; invalid → rejected; discount recorded (B05 F-010).
-- Verified test coupon: `SILVERCARE10` applies 10% discount to a paid SilverCare course.
+- Hợp lệ → tổng giảm; không hợp lệ → bị từ chối; discount được ghi lại (B05 F-010).
+- Coupon test đã verify: `SILVERCARE10` áp discount 10% cho một course SilverCare trả phí.

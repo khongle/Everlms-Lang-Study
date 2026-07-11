@@ -1,6 +1,6 @@
 # C11 Common Page + Block Contract
 
-Shared rules for all C11 page/block specs. Concise (archetype-covered) page files inherit the archetype defaults here and only state their deltas.
+Rule dùng chung cho mọi spec page/block của C11. Các file page súc tích (được archetype bao phủ) kế thừa default của archetype ở đây và chỉ nêu phần khác biệt (delta) của riêng chúng.
 
 ## Drupal 11 concepts
 | Concept | Meaning in this folder | Drupal 11 implementation |
@@ -11,10 +11,10 @@ Shared rules for all C11 page/block specs. Concise (archetype-covered) page file
 | Main content | The page body | `{{ page.content }}` / controller render array |
 
 ## Common rules
-- All pages render via `lms_theme` (front-end) or Claro (admin); markup/classes live in Twig, never business logic.
-- Access is enforced in route `_permission`/`_custom_access`, not in Twig; hide controls when permission is absent.
-- Cache: every render declares cache tags (entity tags `lms_*:<id>`, list tags) + contexts (`user.roles`, `route`, `url`).
-- **Invariant (last rule):** every business-owned visible value maps to an entity/config/View/menu/block/form source, or is marked computed/read-only with a reason in `## Hardcoded content exceptions`.
+- Mọi page đều render qua `lms_theme` (front-end) hoặc Claro (admin); markup/class nằm trong Twig, business logic thì không bao giờ.
+- Access được thực thi tại route `_permission`/`_custom_access`, không phải trong Twig; ẩn control khi không có permission.
+- Cache: mỗi lần render đều khai báo cache tag (entity tag `lms_*:<id>`, list tag) + context (`user.roles`, `route`, `url`).
+- **Invariant (rule cuối):** mọi giá trị hiển thị do business sở hữu đều phải map tới một nguồn entity/config/View/menu/block/form, hoặc được đánh dấu computed/read-only kèm lý do trong `## Hardcoded content exceptions`.
 
 ## Archetype defaults (inherited by concise specs)
 | Archetype | Route group | Drupal primitive | Access default | Key sections |
@@ -28,6 +28,6 @@ Shared rules for all C11 page/block specs. Concise (archetype-covered) page file
 | workspace-list | Manage | View list + ops | staff role | list + create/edit/delete actions |
 | report | Manage/Admin | controller + export | manager/admin | metrics + export |
 | config | Admin | config form | administer perm | settings fields (secrets → R-001) |
-| auth/util | Public/App/Admin | controller/form | varies | minimal |
+| auth-util | Public/App/Admin | controller/form | varies | minimal |
 
-> Concise page specs state: YAML frontmatter, `## Purpose`, `## Drupal 11 Page Definition`, `## Visible content inventory`, `## Page States`, and (when `mode: target`) `## Implementation status`. Full specs add Source Evidence, Placed Blocks, Main Content Contract, Prototype Inventory, and Hardcoded exceptions.
+> Spec page súc tích nêu: YAML frontmatter, `## Purpose`, `## Drupal 11 Page Definition`, `## Visible content inventory`, `## Page States`, và (khi `mode: target`) `## Implementation status`. Spec đầy đủ (full) bổ sung thêm Source Evidence, Placed Blocks, Main Content Contract, Prototype Inventory, và Hardcoded exceptions.

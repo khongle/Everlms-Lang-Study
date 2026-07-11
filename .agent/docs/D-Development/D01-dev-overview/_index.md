@@ -2,10 +2,10 @@
 
 **Last updated:** 2026-06-21
 
-EverLMS is an **as-built rebuild**: most delivery is already complete. This layer documents the build spine (epics → stories → tasks) reverse-mapped from the code, with the **open work** (gap-closure for risks) tracked as actionable kanban items in [D04](../D04-tasks/_index.md).
+EverLMS là một **as-built rebuild**: phần lớn công việc triển khai đã hoàn tất. Layer này ghi lại khung xây dựng (epics → stories → tasks) được ánh xạ ngược từ code, với phần **việc còn mở** (gap-closure cho các risk) được theo dõi dưới dạng kanban item trong [D04](../D04-tasks/_index.md).
 
 ## Epic registry
-13 epics (hierarchical WBS `E##`), one per domain area. Status reflects as-built completeness.
+13 epic (WBS phân cấp `E##`), mỗi epic ứng với một domain area. Status phản ánh mức độ hoàn thiện as-built.
 
 | Epic | Title | Modules | Status |
 | ---- | ----- | ------- | ------ |
@@ -24,9 +24,9 @@ EverLMS is an **as-built rebuild**: most delivery is already complete. This laye
 | [E13](../D02-epics/E13-content-tools.md) | Content tools & seeding | lms_content_tools | done |
 
 ## WBS scale
-- 13 epics · ~28 module stories (one per module, [D03](../D03-stories/_index.md)) + cross-cutting · open tasks in [D04](../D04-tasks/_index.md).
-- ID scheme: hierarchical (`E##` / `E##S##` / `E##S##T##`) — collision-free.
-- Code map: [D07](../D07-code-map/README.md) (one file per module).
+- 13 epic · ~28 story theo module (mỗi module một story, [D03](../D03-stories/_index.md)) + cross-cutting · task còn mở trong [D04](../D04-tasks/_index.md).
+- Sơ đồ ID: phân cấp (`E##` / `E##S##` / `E##S##T##`) — không trùng lặp (collision-free).
+- Code map: [D07](../D07-code-map/README.md) (mỗi module một file).
 
 ## Coverage note
-As-built modules are represented as `resolved`/`done` stories. The **remaining build work** = the open risks (secrets→Key, payment webhooks, badge awarding, test baseline, email/push, paypal dedup) — tracked as `todo`/`blocked` tasks in D04 and risks in [G02](../../G-Governance/G02-risk-register/_index.md).
+Các module as-built được biểu diễn dưới dạng story `resolved`/`done`. **Phần việc build còn lại** = các risk còn mở (secrets→Key, payment webhooks, badge awarding, test baseline, email/push, paypal dedup) — được theo dõi dưới dạng task `todo`/`blocked` trong D04 và risk trong [G02](../../G-Governance/G02-risk-register/_index.md).

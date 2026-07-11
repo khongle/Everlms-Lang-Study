@@ -4,7 +4,7 @@
 **source_state:** AS_BUILT (from `config/sync/user.role.*.yml`)
 
 ## Source
-Seven roles are defined in config (`user.role.*.yml`). `administrator` is flagged `is_admin: true` (implicitly all permissions, shows 0 explicit). `anonymous`/`authenticated` are Drupal system roles. Permission counts (explicit): manager 13, content_editor 23, instructor 5, student 4.
+Bảy role được định nghĩa trong config (`user.role.*.yml`). `administrator` được đánh dấu `is_admin: true` (ngầm định có toàn bộ permission, hiển thị 0 permission tường minh). `anonymous`/`authenticated` là role hệ thống của Drupal. Số permission tường minh: manager 13, content_editor 27, instructor 10, student 4.
 
 ## Role access summary
 | RID | Role | Group | Reachable pages | Denied/skipped | Assignable |
@@ -17,7 +17,7 @@ Seven roles are defined in config (`user.role.*.yml`). `administrator` is flagge
 | authenticated | Authenticated user | Learners | ~18 | ~27 | No (system) |
 | anonymous | Anonymous user | Public | ~10 | ~35 | No (system) |
 
-> Reachable/denied counts are INFERENCE against the ~45-page sitemap (C07); refine when C11 access is finalised.
+> Số liệu Reachable/denied là INFERENCE (suy luận) dựa trên sitemap ~45 trang (C07); sẽ tinh chỉnh khi access của C11 được chốt.
 
 ## Role groups
 | Group | Roles |
@@ -38,8 +38,10 @@ Cells: `full | scoped | none`.
 | Learners | full | scoped | none | scoped | none |
 | Public | scoped | none | none | scoped (catalog/auth) | none |
 
+> Cột `API` không có trang C11 tương ứng (route group JSON-only, xem residual as-built ở [C01](../C01-architecture-decision/_index.md#route-groups)) — access ở đây mô tả scope bearer-token của `lms_mobile_api`, không phải quyền xem trang.
+
 ## Editorial management matrix
-The entity-first invariant anchor: every business-visible surface names a non-developer editor role + management UI.
+Neo (anchor) của bất biến entity-first: mọi surface hiển thị cho business đều phải chỉ rõ một editor role không phải developer + management UI đi kèm.
 | Entity / content surface | Owner module | Editor role(s) | Management UI | Permission |
 | ------------------------ | ------------ | -------------- | ------------- | ---------- |
 | Course / chapter / lesson | [lms_course](../C05-modules/lms_course.md), lms_chapter, lms_lesson | instructor, content_editor | Course/lesson entity forms | manage own/all courses |
@@ -52,9 +54,9 @@ The entity-first invariant anchor: every business-visible surface names a non-de
 | Taxonomy (categories/levels/tags) | core taxonomy | content_editor | Taxonomy term UI | administer taxonomy |
 
 ## Access design notes
-- `administrator` is `is_admin` (super-role) — grant sparingly; day-to-day staff use `manager`.
-- `content_editor` (23 perms) is the broadest non-admin role — content across modules but not system config.
-- `instructor` (5 perms) is intentionally narrow — author/manage own teaching content.
-- Mobile API access (F-019) is bearer-token scoped; anonymous can reach catalog + auth endpoints only.
-- Impersonation (`open_switcher`) is gated by a dedicated switch permission — support/admin only.
-- No credentials in this file. Auth integration design: [C06 mobile API](../C06-apis/_index.md).
+- `administrator` là `is_admin` (super-role) — chỉ cấp khi thật cần thiết; nhân sự vận hành hằng ngày dùng `manager`.
+- `content_editor` (23 perms) là role non-admin rộng nhất — quản lý content trên nhiều module nhưng không đụng đến system config.
+- `instructor` (5 perms) được thiết kế hẹp có chủ đích — chỉ author/quản lý nội dung giảng dạy của chính mình.
+- Mobile API access (F-019) được scope theo bearer-token; anonymous chỉ truy cập được endpoint catalog + auth.
+- Impersonation (`open_switcher`) được chặn bởi một permission switch riêng — chỉ dành cho support/admin.
+- File này không chứa credential nào. Thiết kế tích hợp auth: [C06 mobile API](../C06-apis/_index.md).

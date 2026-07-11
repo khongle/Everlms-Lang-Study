@@ -1,11 +1,11 @@
 # F-023 Acceptance Criteria - Content tools & seeding
 
 ## Core criteria
-1. **Given** a fresh install, **when** an admin runs `lms:import` (from `.agent/generated/*.json`), **then** the documented catalog (courses/quizzes/users/etc.) is created.
-2. **Given** seeded content, **when** `lms:clean` runs, **then** generated content is removed without breaking the install.
-3. **Given** `lms:generate-demo`, **when** run, **then** procedural demo courses/chapters/lessons are created.
-4. **Given** the `SeedInputForm` UI, **when** an admin submits seed input, **then** it is processed by `ContentToolsManager`.
+1. **Given** một fresh install, **when** admin chạy `lms:import` (từ `.agent/generated/*.json`), **then** catalog đã tài liệu hóa (course/quiz/user/v.v.) được tạo.
+2. **Given** content đã seed, **when** `lms:clean` chạy, **then** content được sinh ra bị xóa mà không làm hỏng install.
+3. **Given** `lms:generate-demo`, **when** được chạy, **then** course/chapter/lesson demo dạng procedural được tạo.
+4. **Given** UI `SeedInputForm`, **when** admin submit seed input, **then** input được xử lý bởi `ContentToolsManager`.
 
 ## Evidence expected
 - Module: [lms_content_tools](../../C-Design/C05-modules/lms_content_tools.md); inputs SRC-10/11.
-- Test: import→count assertion vs live DB (40 courses/600 lessons); clean idempotency test (E03).
+- Test: import→count assertion so với live DB (40 course/600 lesson); clean idempotency test (E03).

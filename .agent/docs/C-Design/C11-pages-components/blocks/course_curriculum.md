@@ -10,7 +10,7 @@ adequacy: PASS
 # C11 Block - Curriculum outline
 
 ## Purpose
-Chapter/lesson outline for a course; navigable in the player, read-only on detail.
+Outline chapter/lesson của một course; có thể điều hướng trong player, chỉ đọc (read-only) ở trang detail.
 
 ## Drupal 11 Contract
 | Concern | Contract |
@@ -40,4 +40,4 @@ Chapter/lesson outline for a course; navigable in the player, read-only on detai
 | Live | course detail / player sidebar |
 
 ## Tests / Checks
-- Reflects chapter/lesson order; completed lessons marked; locked state honors gating.
+- Phản ánh đúng thứ tự chapter/lesson; lesson đã hoàn thành được đánh dấu; trạng thái locked tuân theo gating.

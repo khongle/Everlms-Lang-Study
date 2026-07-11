@@ -2,10 +2,10 @@
 
 **Last updated:** 2026-06-21
 
-The handoff anchor for any persona resuming work. The one A-slot that legitimately changes often. Mirrors live blockers from `G-Governance/G03-blockers/` and the latest readiness verdict from `Z-Reviews/`.
+Đây là điểm neo bàn giao (handoff anchor) cho bất kỳ persona nào tiếp tục công việc. Đây là A-slot duy nhất thực sự thay đổi thường xuyên. Nó phản chiếu (mirror) các blocker đang tồn tại từ `G-Governance/G03-blockers/` và verdict readiness mới nhất từ `Z-Reviews/`.
 
 ## Current state
-The `.agent/docs/` tree is being **rebuilt fresh from source** (live code > config export > DB) into the full A-U + Z structure per the updated `00-Guidelines`. The product itself (EverLMS) is a working Drupal 11 LMS with seeded demo data; the documentation — not the code — is the active work. Phase posture for the *product* is **post-build / maintenance** (most modules built, several gaps and risks open); for the *docs* it is **Phase 1-3 regeneration** (requirements/architecture/framework captured as-built).
+Cây `.agent/docs/` đang được **rebuild từ đầu dựa trên source** (live code > config export > DB) thành đầy đủ cấu trúc A-U + Z theo `00-Guidelines` đã cập nhật. Bản thân sản phẩm (EverLMS) là một LMS Drupal 11 đang hoạt động với dữ liệu demo đã seed; tài liệu — chứ không phải code — mới là phần công việc đang được thực hiện. Tình trạng phase của *sản phẩm* là **post-build / maintenance** (phần lớn module đã được build, còn một số gap và risk còn mở); còn của *docs* là **Phase 1-3 regeneration** (requirements/architecture/framework được ghi nhận as-built).
 
 ## Recent decisions
 | Date | Decision | Rationale | Linked docs |
@@ -23,12 +23,12 @@ The `.agent/docs/` tree is being **rebuilt fresh from source** (live code > conf
 | BLK-003 | `lms_badge` award logic absent — badges defined but never granted | Agent_Implementer | 2026-06-20 |
 | BLK-004 | ~0% automated test coverage — G3 passes vacuously | Agent_QA | 2026-06-20 |
 
-<!-- Mirror G03-blockers/_index.md; clear rows when resolved (log resolution in G03/E02). -->
+<!-- Phản chiếu (mirror) G03-blockers/_index.md; xóa các row khi đã resolve (ghi log resolution tại G03/E02). -->
 
 ## Next steps
-Driven by the latest readiness verdict — `Z-Reviews/2026-06-21-initial-build-readiness-review/` → **GO-WITH-FIXES** (P0: BLK-001 secrets, BLK-002 webhooks; P1: BLK-003 badges, BLK-004 tests).
-- [ ] Complete the A-U+Z documentation rebuild (Agent_Architect, this pass)
-- [ ] Move third-party secrets to Key module / env (BLK-001, P0)
-- [ ] Add payment webhook endpoints + signature verification for Stripe (BLK-002, P0)
-- [ ] Implement `lms_badge` award triggers or mark formally deferred (BLK-003, P1)
-- [ ] Establish a PHPUnit kernel/functional baseline for core flows (BLK-004, P1)
+Được dẫn dắt bởi verdict readiness mới nhất — `Z-Reviews/2026-07-11-a-d-consistency-review/` (mới nhất) → **GO-WITH-FIXES**; và `Z-Reviews/2026-06-21-initial-build-readiness-review/` (P0: BLK-001 secrets, BLK-002 webhooks; P1: BLK-003 badges, BLK-004 tests).
+- [ ] Hoàn tất việc rebuild tài liệu A-U+Z (Agent_Architect, đợt này)
+- [ ] Chuyển các third-party secret sang Key module / env (BLK-001, P0)
+- [ ] Thêm các payment webhook endpoint + signature verification cho Stripe (BLK-002, P0)
+- [ ] Implement trigger trao `lms_badge` hoặc đánh dấu chính thức deferred (BLK-003, P1)
+- [ ] Thiết lập baseline PHPUnit kernel/functional cho các core flow (BLK-004, P1)

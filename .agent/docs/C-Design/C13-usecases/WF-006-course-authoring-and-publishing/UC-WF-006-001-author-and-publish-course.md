@@ -10,7 +10,7 @@ processes: [course-authoring-and-publishing]
 # UC-WF-006-001 - Author and publish a course
 
 ## Intent
-An instructor builds and publishes a real course with a persisted curriculum.
+Một instructor dựng và publish một course thật với curriculum được lưu lại.
 
 ## Workflow context
 | Item | Value |
@@ -22,40 +22,44 @@ An instructor builds and publishes a real course with a persisted curriculum.
 | B04 source | WF-006 |
 
 ## Actors
-Instructor/content_editor (primary); manager (publish approval, optional).
+Instructor/content_editor (primary); manager (duyệt publish, tùy chọn).
 
 ## Preconditions
-- User has the `instructor` or `content_editor` role.
-- The role can create courses, edit own courses, view course workspace pages, and
-  use the administration theme.
-- Workspace course creation renders the `lms_course` entity form inside the
+- User có role `instructor` hoặc `content_editor`.
+- Role đó có thể tạo course, sửa course của chính mình, xem trang workspace course, và
+  dùng administration theme.
+- Việc tạo course trong workspace render entity form `lms_course` bên trong
   workspace shell.
 
 ## Trigger
-Instructor starts a new course from `/workspace/courses/create`.
+Instructor bắt đầu một course mới từ `/workspace/courses/create`.
 
 ## Main success scenario
-1. Instructor logs in through `/user/login`.
-2. Instructor opens `/workspace/courses` and sees an own-course scoped list.
-3. Instructor opens `/workspace/courses/create`.
-4. Instructor fills course metadata, including title, description, level,
-   category/collection fields, and draft status.
-5. Instructor adds a chapter through course `field_chapters`.
-6. Instructor adds a lesson through the chapter `field_lessons` nested Inline
-   Entity Form.
-7. Instructor saves the draft course and returns to `/workspace/courses`.
-8. Instructor reopens `/workspace/courses/{id}/edit`.
-9. Instructor checks published status and saves.
-10. Anonymous learner searches `/courses?search=...`, opens `/courses/{id}`, and
-    verifies the Curriculum tab shows the chapter and lesson.
+1. Instructor đăng nhập qua `/user/login`.
+2. Instructor mở `/workspace/courses` và thấy danh sách chỉ gồm course của mình.
+3. Instructor mở `/workspace/courses/create`.
+4. Instructor điền metadata course, bao gồm title, description, level,
+   field category/collection, và draft status.
+5. Instructor thêm một chapter qua `field_chapters` của course.
+6. Instructor thêm một lesson qua Inline Entity Form lồng nhau ở
+   `field_lessons` của chapter.
+7. Instructor lưu course draft và quay về `/workspace/courses`.
+8. Instructor mở lại `/workspace/courses/{id}/edit`.
+9. Instructor kiểm tra published status và lưu.
+10. Learner anonymous tìm kiếm `/courses?search=...`, mở `/courses/{id}`, và
+    xác minh tab Curriculum hiển thị chapter và lesson.
 
 ## Alternate and exception flows
-- Save draft; publish later.
-- Review step (manager) before publish where used.
-- H5P embed can be authored where configured. The H5P upload widget remains
-  hidden until the Drupal 11 widget integration is validated.
-- AI builder support belongs to WF-010 and may generate draft structure before
-  the instructor reviews and saves it.
+- Lưu draft; publish sau.
+- Bước review (manager) trước khi publish nếu có dùng.
+- H5P embed có thể được soạn ở nơi đã cấu hình. Widget upload H5P vẫn
+  bị ẩn cho tới khi tích hợp widget Drupal 11 được xác minh.
+- Hỗ trợ AI builder thuộc WF-010 và có thể sinh cấu trúc draft trước khi
+  instructor review và lưu.
+
+## State transitions (evidence)
+- `draft` → `published`: instructor tick Published và lưu.
+- `published` → `archived`: manager unpublish/retire course.
 
 ## Entry pages
 | Page | Category | Path |
@@ -67,12 +71,15 @@ Instructor starts a new course from `/workspace/courses/create`.
 | Course catalog | Public | /courses |
 | Course detail | Public | /courses/{id} |
 
+## Supporting pages
+Instructor quản lý danh sách course tại Manage courses (P032) và dựng curriculum tại Course editor (P033); quiz cuối course được gắn tại Manage quizzes (P034). Content editor quản lý FAQ/nội dung phụ trợ tại Manage content (P037) và bài blog liên quan tại Manage blog (P043), theo cùng mô hình publish của B04 WF-006.
+
 ## Acceptance and test contract
-- Real user session uses the login form, not a one-time login URL.
-- Course, chapter, and lesson are created through the UI and persist as linked
-  entities.
-- Draft course is not treated as public until published.
-- Published course appears in the catalog and public detail page.
-- Curriculum tab on the public detail page displays the saved chapter and lesson.
-- Screenshots are stored in the WF-006 round-1 evidence folder, including
-  before/after form states.
+- Session user thật dùng login form, không dùng one-time login URL.
+- Course, chapter, và lesson được tạo qua UI và lưu lại thành các entity
+  liên kết với nhau.
+- Course draft không được coi là public cho tới khi publish.
+- Course đã publish xuất hiện trong catalog và trang detail công khai.
+- Tab Curriculum trên trang detail công khai hiển thị chapter và lesson đã lưu.
+- Screenshot được lưu trong thư mục evidence round-1 của WF-006, bao gồm
+  trạng thái form trước/sau.

@@ -3,7 +3,7 @@
 **Status:** done · **Phase:** 1
 
 ## Goal
-Shared base, theme, and platform utilities every other epic builds on.
+Nền tảng chung, theme và các tiện ích platform mà mọi epic khác đều dựa vào.
 
 ## Scope
 - Modules: [lms_base](../../C-Design/C05-modules/lms_base.md), [open_switcher](../../C-Design/C05-modules/open_switcher.md), [lms_theme](../../C-Design/C05-modules/lms_theme.md)
@@ -14,7 +14,7 @@ Shared base, theme, and platform utilities every other epic builds on.
 - [E01S01](../D03-stories/E01S01-lms_base.md), [E01S02](../D03-stories/E01S02-open_switcher.md), [E01S03](../D03-stories/E01S03-lms_theme.md)
 
 ## Dependencies
-None (root).
+Không có (root).
 
 ## Open work
-None core; secrets/Key (R-001) and test baseline (R-006) cross-cut (D04).
+Không có việc cốt lõi; secrets/Key (R-001) và test baseline (R-006) mang tính cross-cutting (D04).
