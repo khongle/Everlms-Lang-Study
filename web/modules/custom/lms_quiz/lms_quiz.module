@@ -27,6 +27,8 @@ function lms_quiz_theme(): array {
         'result_label' => '',
         'score' => 0,
         'responses' => [],
+        'can_grade' => FALSE,
+        'grade_url' => '',
       ],
       'template' => 'lms-quiz-result',
     ],

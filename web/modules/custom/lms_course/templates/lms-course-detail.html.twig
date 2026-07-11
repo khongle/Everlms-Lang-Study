@@ -55,7 +55,7 @@
         </span>
         <span style="display: flex; align-items: center; gap: 0.5rem; color: #8b949e;">
           <i class="fas fa-users" style="color: #667eea;"></i> 
-          <strong style="color: #fff;">{{ enrolled_students|number_format }}</strong> {{ 'students'|t }}
+          <strong style="color: #fff;">{{ enrolled_students|number_format }}</strong> {{ enrolled_students == 1 ? 'student'|t : 'students'|t }}
         </span>
         <span style="display: flex; align-items: center; gap: 0.5rem; color: #8b949e;">
           <i class="fas fa-globe" style="color: #4facfe;"></i> 
@@ -393,13 +393,14 @@
 
           {% if logged_in %}
             {% if is_enrolled %}
+               {% set enrolled_cta = has_progress ? 'Continue Learning'|t : 'Start Learning'|t %}
                {% if continue_url %}
                  <a href="{{ continue_url }}" class="btn-lms-primary" style="width: 100%; justify-content: center; padding: 1.125rem; font-size: 1.125rem; border-radius: 0.75rem; margin-bottom: 1rem; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(102,126,234,0.4);">
-                   {{ 'Continue Learning'|t }}
+                   {{ enrolled_cta }}
                  </a>
                {% else %}
                  <a href="{{ path('lms_course.detail', {'lms_course': course.id()}) }}" class="btn-lms-primary" style="width: 100%; justify-content: center; padding: 1.125rem; font-size: 1.125rem; border-radius: 0.75rem; margin-bottom: 1rem; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(102,126,234,0.4);">
-                   {{ 'Continue Learning'|t }}
+                   {{ enrolled_cta }}
                  </a>
                {% endif %}
             {% else %}

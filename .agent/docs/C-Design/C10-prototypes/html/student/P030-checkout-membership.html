@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout · EverLMS</title>
+<meta name="description" content="Subscribe to the EverLMS Pro plan — unlimited courses, certificates and mentoring.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/everlms.css">
+<link rel="stylesheet" href="../_shared/css/skins.css">
+</head>
+<body>
+<div id="site-header" data-shell="app" data-role="student" data-active="P017"></div>
+
+<main id="main">
+
+  <section class="workhero">
+    <div class="container">
+      <nav class="crumb"><a href="../anonymous/P006-pricing.html">Pricing</a><span class="sep">/</span><span>Checkout</span></nav>
+      <div class="pagehead" style="margin-bottom:0">
+        <div class="pagehead__t"><p class="eyebrow">Checkout</p><h1>Subscribe to Pro</h1><p>Unlock unlimited courses, certificates and monthly mentoring.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="detail">
+
+        <!-- payment form -->
+        <div>
+          <div class="panel" style="margin-bottom:1.4rem">
+            <h3>Contact</h3>
+            <div class="form">
+              <div class="field"><label for="email">Email address</label><input id="email" name="email" type="email" value="alex.morgan@example.com"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Payment method</h3>
+            <div class="chip-row" style="margin-bottom:1.2rem">
+              <span class="chip is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Card</span>
+              <span class="chip">PayPal</span>
+              <span class="chip">Bank transfer</span>
+            </div>
+
+            <form class="form">
+              <div class="field"><label for="cardname">Name on card</label><input id="cardname" name="cardname" type="text" value="Alex Morgan"></div>
+              <div class="field"><label for="cardnum">Card number</label><input id="cardnum" name="cardnum" type="text" inputmode="numeric" value="4242 4242 4242 4242"></div>
+              <div class="field field--row">
+                <div><label for="exp">Expiry date</label><input id="exp" name="exp" type="text" placeholder="MM / YY" value="09 / 28"></div>
+                <div><label for="cvc">CVC</label><input id="cvc" name="cvc" type="text" inputmode="numeric" value="123"></div>
+              </div>
+              <div class="field"><label for="country">Billing country</label>
+                <select id="country" name="country" class="select" style="width:100%">
+                  <option>United States</option>
+                  <option>Vietnam</option>
+                  <option>United Kingdom</option>
+                  <option>Canada</option>
+                  <option>Australia</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="coupon">Coupon code</label>
+                <div class="flex gap-1"><input id="coupon" name="coupon" type="text" value="WELCOME5" style="flex:1"><button class="btn btn--ghost" type="button">Apply</button></div>
+              </div>
+
+              <div class="alert alert--success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <div><b>Coupon WELCOME5 applied</b><p style="margin:.2rem 0 0;color:var(--ink-soft)">You saved $5.00 on your first month.</p></div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- order summary -->
+        <aside class="panel">
+          <h3>Order summary</h3>
+
+          <div class="toggle" style="margin-bottom:1.2rem">
+            <button type="button" class="is-active">Monthly</button>
+            <button type="button">Annual <span class="save">Save 20%</span></button>
+          </div>
+
+          <div class="flex gap-2" style="align-items:center;margin-bottom:1rem">
+            <div class="card__icon card__icon--accent" style="margin:0"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></div>
+            <div>
+              <p style="font-weight:800;margin:0;font-family:var(--font-display)">Pro plan</p>
+              <p class="text-muted text-sm" style="margin:.1rem 0 0">Billed monthly</p>
+            </div>
+          </div>
+
+          <div class="plan__price" style="margin-bottom:1rem">$29<small>/mo</small></div>
+
+          <ul class="plan__list" style="margin-bottom:1.2rem">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Unlimited courses &amp; learning tracks</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Certificates of completion</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Offline downloads on mobile</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Monthly live mentoring session</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Priority support</li>
+          </ul>
+
+          <div style="border-top:1px solid var(--line);padding-top:1rem">
+            <div class="flex justify-between" style="padding:.3rem 0"><span class="text-muted">Pro plan · monthly</span><span>$29.00</span></div>
+            <div class="flex justify-between" style="padding:.3rem 0"><span class="text-muted">Coupon WELCOME5</span><span style="color:var(--success)">&minus;$5.00</span></div>
+            <div class="flex justify-between" style="padding:.6rem 0 0;margin-top:.3rem;border-top:1px solid var(--line);font-weight:800;font-size:1.15rem"><span>Due today</span><span>$24.00</span></div>
+            <p class="text-muted text-sm" style="margin:.5rem 0 0">Then $29.00/mo, cancel anytime.</p>
+          </div>
+
+          <a class="btn btn--primary btn--lg btn--block" href="../student/P026-my-membership.html" style="margin-top:1.2rem">Subscribe &mdash; $24.00 today</a>
+
+          <div class="flex gap-1 flex-wrap" style="margin-top:1rem">
+            <span class="badge badge--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Secure checkout</span>
+            <span class="badge badge--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/></svg>Cancel anytime</span>
+            <span class="badge badge--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>SSL encrypted</span>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

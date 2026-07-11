@@ -26,17 +26,6 @@ lms_course.detail:
       lms_course:
         type: entity:lms_course
 
-lms_course.enroll_free:
-  path: '/courses/{lms_course}/enroll-free'
-  defaults:
-    _controller: '\Drupal\lms_course\Controller\CourseEnrollmentController::enrollFree'
-  requirements:
-    _permission: 'access content'
-  options:
-    parameters:
-      lms_course:
-        type: entity:lms_course
-
 lms_course.category:
   path: '/categories'
   defaults:

@@ -525,7 +525,7 @@
       {% set name_to_show = current_user_name|default(user.displayname)|default('Manager User') %}
       <img src="https://ui-avatars.com/api/?name={{ name_to_show|url_encode }}&background=1d70f5&color=fff" alt="Avatar" class="lms-admin__profile-avatar">
       <div class="lms-admin__profile-text">
-        <span class="lms-admin__profile-role">{{ 'Manager'|t }}</span>
+        <span class="lms-admin__profile-role">{{ current_user_role|default('Member'|t) }}</span>
         <span class="lms-admin__profile-name" style="max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ name_to_show }}</span>
       </div>
     </div>

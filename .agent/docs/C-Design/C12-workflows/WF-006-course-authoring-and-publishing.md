@@ -71,5 +71,10 @@ curriculum hierarchy.
 - Verification must prove `lms_course -> lms_chapter -> lms_lesson` persistence
   and public catalog visibility after publish.
 
+## Round-2 QA verification
+- `/workspace/courses/create` renders the real `lms_course` entity form (tabs: Info / Course Collection / Chapter & lesson / Quiz; CKEditor bodies; thumbnail/banner uploads), not a static prototype (round-1 WF-006-001 holds).
+- **Draft-first fixed (`WF-006-002`):** `Course` `status` now defaults to `FALSE`. A course created by an instructor persists as `status = 0` (owner = author), is hidden from `/courses`, and only appears after the author ticks **Published** (Course Collection tab). Verified with course 140 (`sabine.mueller`).
+- **Role label fixed (`WF-006-001`):** the workspace sidebar shows the real role (Instructor / Manager / Administrator) via `current_user_role`, not a hard-coded "Manager".
+
 ## Notifications
 Optional editor notifications on submit/publish. Content edited via entity forms (editorial-usability).

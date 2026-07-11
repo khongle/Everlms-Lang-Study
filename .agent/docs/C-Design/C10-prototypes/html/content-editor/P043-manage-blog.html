@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage blog · EverLMS Workspace</title>
+<meta name="description" content="Workspace — create, edit and publish blog articles.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/everlms.css">
+<link rel="stylesheet" href="../_shared/css/skins.css">
+</head>
+<body>
+<div id="site-header" data-shell="app" data-role="content-editor" data-active="P043"></div>
+
+<main id="main">
+
+  <section class="workhero">
+    <div class="container">
+      <nav class="crumb"><a href="../instructor/P031-workspace-home.html">Workspace</a><span class="sep">/</span><span>Blog</span></nav>
+      <div class="pagehead" style="margin-bottom:0">
+        <div class="pagehead__t"><h1>Manage blog</h1><p>36 posts · 2 scheduled · 4 drafts</p></div>
+        <div class="pagehead__actions">
+          <a class="btn btn--ghost" href="../content-editor/P042-content-tools.html">Draft with AI</a>
+          <a class="btn btn--primary" href="#">New post</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- filters -->
+      <div class="toolbar">
+        <div class="segmented">
+          <a href="#" class="is-active">All (36)</a>
+          <a href="#">Published (30)</a>
+          <a href="#">Draft (4)</a>
+          <a href="#">Scheduled (2)</a>
+        </div>
+        <label class="nav__search" style="min-width:220px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><input type="search" placeholder="Search posts…" aria-label="Search posts"></label>
+      </div>
+
+      <!-- table -->
+      <div class="tablecard" style="margin-top:1.2rem">
+        <div class="wtable__wrap">
+          <table class="wtable">
+            <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Status</th><th>Date</th><th class="num">Views</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><b>5 Habits of Learners Who Finish What They Start</b></td>
+                <td>Personal Development</td>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-02.jpg" alt=""><div><b>Priya Sharma</b></div></div></td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Published</span></td>
+                <td>Jul 8, 2026</td>
+                <td class="num">4,210</td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../anonymous/P009-article-detail.html" aria-label="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>What's New in React 19: A Practical Guide</b></td>
+                <td>Web Development</td>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-01.jpg" alt=""><div><b>Sarah Chen</b></div></div></td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Published</span></td>
+                <td>Jul 5, 2026</td>
+                <td class="num">9,860</td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../anonymous/P009-article-detail.html" aria-label="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>How to Read a Confusion Matrix</b></td>
+                <td>AI &amp; Machine Learning</td>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-m-01.jpg" alt=""><div><b>Dr. Marcus Reed</b></div></div></td>
+                <td><span class="status status--warning status--dot">Draft</span></td>
+                <td>Not scheduled</td>
+                <td class="num">—</td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>Figma to Production: A Design Handoff Checklist</b></td>
+                <td>Design &amp; UX</td>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-03.jpg" alt=""><div><b>Elena Rossi</b></div></div></td>
+                <td><span class="status status--info status--dot">Scheduled</span></td>
+                <td>Jul 15, 2026</td>
+                <td class="num">—</td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>Building a Marketing Funnel That Actually Converts</b></td>
+                <td>Marketing</td>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-m-02.jpg" alt=""><div><b>James Carter</b></div></div></td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Published</span></td>
+                <td>Jun 29, 2026</td>
+                <td class="num">6,430</td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../anonymous/P009-article-detail.html" aria-label="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>SQL Window Functions, Explained With Examples</b></td>
+                <td>Data &amp; Analytics</td>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-02.jpg" alt=""><div><b>Priya Sharma</b></div></div></td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Published</span></td>
+                <td>Jun 24, 2026</td>
+                <td class="num">5,120</td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../anonymous/P009-article-detail.html" aria-label="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>A Beginner's Guide to Ethical Hacking Labs</b></td>
+                <td>Data &amp; Analytics</td>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-08.jpg" alt=""><div><b>Tomás Alvarez</b></div></div></td>
+                <td><span class="status status--warning status--dot">Draft</span></td>
+                <td>Not scheduled</td>
+                <td class="num">—</td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <nav class="pager" aria-label="Pagination">
+        <span class="is-disabled">Prev</span><span class="is-active">1</span><a href="#">2</a><a href="#">3</a><span>…</span><a href="#">5</a><a href="#">Next</a>
+      </nav>
+
+      <div class="alert" style="margin-top:1.6rem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div><b>No posts match your filters</b><p class="text-muted text-sm" style="margin:.2rem 0 0">Try clearing the search or switching back to "All" — or <a href="#">start a new post</a>.</p></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

@@ -64,5 +64,8 @@
 - Verification must prove topic, reply, best-answer, resolved state, notification,
   and anonymous index visibility.
 
+## Round-2 QA evidence
+Full flow verified with real users: anonymous `/forum` list → `maria.santos` created topic 44 (`/forum/new`, product wrapper, category General Discussion) → `julia.nowak` replied (reply 169) → owner marked best answer (`field_best_answer=1`, topic `field_resolved=1`) → anonymous sees the first post + a "Join the Discussion" teaser (reply thread hidden) → the new resolved topic appears on the anonymous `/forum` list with no manual cache rebuild. Fixed `WF-008-001` (teaser "1 replies" → plural-aware). Screens: `.agent/docs/E-Quality/E00-workflows/round-2/_screens/008-forum-discussion/`.
+
 ## Notifications
 New reply → topic owner/subscribers; best-answer → replier (in_app; email/push partial R-005).

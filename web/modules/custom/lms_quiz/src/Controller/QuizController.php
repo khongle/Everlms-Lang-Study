@@ -315,6 +315,37 @@ final class QuizController extends ControllerBase {
       ];
     }
 
+    // Whether the current user may open the manual-grading form for a
+    // still-pending submission (course admins, course owner, or instructor).
+    $account = $this->currentUser;
+    $can_grade = FALSE;
+    if (($result_term?->label() === 'Pending')) {
+      if ($account->hasPermission('administer lms_course')) {
+        $can_grade = TRUE;
+      }
+      else {
+        $course = ($quiz && $quiz->hasField('field_course') && !$quiz->get('field_course')->isEmpty())
+          ? $quiz->get('field_course')->entity
+          : NULL;
+        if ($course) {
+          if ($course->hasField('uid') && (int) $course->get('uid')->target_id === (int) $account->id()) {
+            $can_grade = TRUE;
+          }
+          elseif ($course->hasField('field_instructor')) {
+            foreach ($course->get('field_instructor') as $item) {
+              if ((int) $item->target_id === (int) $account->id()) {
+                $can_grade = TRUE;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    $grade_url = $can_grade
+      ? \Drupal\Core\Url::fromRoute('lms_quiz.grade', ['lms_quiz_result' => $lms_quiz_result->id()])->toString()
+      : '';
+
     return [
       '#theme' => 'lms_quiz_result',
       '#quiz' => $quiz,
@@ -322,6 +353,9 @@ final class QuizController extends ControllerBase {
       '#result_label' => $result_term?->label() ?? 'N/A',
       '#score' => (float) $lms_quiz_result->get('field_score')->value,
       '#responses' => $responses,
+      '#can_grade' => $can_grade,
+      '#grade_url' => $grade_url,
+      '#cache' => ['contexts' => ['user']],
     ];
   }
 

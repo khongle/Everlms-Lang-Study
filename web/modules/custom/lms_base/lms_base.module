@@ -115,3 +115,28 @@ function lms_base_user_login(\Drupal\Core\Session\AccountInterface $account) {
     }
   }
 }
+
+/**
+ * Implements hook_user_format_name_alter().
+ *
+ * Present learners/instructors by their real full name (field_first_name +
+ * field_last_name) instead of the raw account/login name. This corrects every
+ * getDisplayName() surface at once — public certificate verifier, quiz grading,
+ * profile chips, etc. — and avoids leaking login names on public pages.
+ */
+function lms_base_user_format_name_alter(&$name, \Drupal\Core\Session\AccountInterface $account) {
+  $uid = (int) $account->id();
+  if ($uid <= 0) {
+    return;
+  }
+  $user = $account instanceof UserInterface ? $account : \Drupal\user\Entity\User::load($uid);
+  if (!$user || !$user->hasField('field_first_name')) {
+    return;
+  }
+  $first = trim((string) $user->get('field_first_name')->value);
+  $last = $user->hasField('field_last_name') ? trim((string) $user->get('field_last_name')->value) : '';
+  $full = trim($first . ' ' . $last);
+  if ($full !== '') {
+    $name = $full;
+  }
+}

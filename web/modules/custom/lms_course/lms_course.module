@@ -89,6 +89,7 @@ function lms_course_theme(): array {
         'faqs' => [],
         'logged_in' => FALSE,
         'is_enrolled' => FALSE,
+        'has_progress' => FALSE,
         'continue_url' => '',
         'course_reviews' => [],
         'rating_form' => NULL,
@@ -283,8 +284,28 @@ function lms_course_preprocess(&$variables, $hook) {
       $last_name = $user->hasField('field_last_name') ? $user->get('field_last_name')->value : '';
       $full_name = trim("$first_name $last_name");
       $variables['current_user_name'] = $full_name ?: $user->getDisplayName();
+
+      // Friendly label for the user's highest-privilege role, so the admin
+      // sidebar shows the real role (Instructor, Content Editor, …) instead of
+      // a hard-coded "Manager".
+      $role_labels = [
+        'administrator' => t('Administrator'),
+        'manager' => t('Manager'),
+        'content_editor' => t('Content Editor'),
+        'instructor' => t('Instructor'),
+        'student' => t('Student'),
+      ];
+      $user_roles = $user->getRoles();
+      $variables['current_user_role'] = t('Member');
+      foreach ($role_labels as $rid => $label) {
+        if (in_array($rid, $user_roles, TRUE)) {
+          $variables['current_user_role'] = $label;
+          break;
+        }
+      }
     } else {
       $variables['current_user_name'] = 'Guest';
+      $variables['current_user_role'] = t('Guest');
     }
 
     // Inject site logo/name so admin sidebar can display the same logo as the frontend.

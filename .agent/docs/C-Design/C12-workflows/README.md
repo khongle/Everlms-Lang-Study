@@ -14,3 +14,5 @@ Design view of the 10 business workflows (state model, permissions, notification
 | [WF-008](WF-008-forum-discussion.md) | Forum discussion | lms_forum |
 | [WF-009](WF-009-coupon-discount-redemption.md) | Coupon / discount redemption | lms_order |
 | [WF-010](WF-010-ai-assisted-content-generation.md) | AI-assisted content generation | lms_ai |
+
+**Round-2 QA (2026-07-11):** every workflow was walked end-to-end with real users/data and updated with an as-built/verification section. 14 issues fixed + 2 open (see [E00-workflows/round-2](../../E-Quality/E00-workflows/round-2/README.md)). Open items: `WF-005-001` (membership tiering) and **`WF-010-001` — critical: AI API keys in plaintext config (R-001), rotate + relocate**.

@@ -43,3 +43,15 @@ lms_quiz.my_results:
     _title: 'My Quiz Results'
   requirements:
     _user_is_logged_in: 'TRUE'
+
+lms_quiz.grade:
+  path: '/manage/quiz-results/{lms_quiz_result}/grade'
+  defaults:
+    _form: '\Drupal\lms_quiz\Form\QuizGradeForm'
+    _title: 'Grade quiz submission'
+  requirements:
+    _custom_access: '\Drupal\lms_quiz\Form\QuizGradeForm::access'
+  options:
+    parameters:
+      lms_quiz_result:
+        type: entity:lms_quiz_result

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workspace reports · EverLMS</title>
+<meta name="description" content="Enrollments, revenue, completion and refunds across your courses.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/everlms.css">
+<link rel="stylesheet" href="../_shared/css/skins.css">
+</head>
+<body>
+<div id="site-header" data-shell="app" data-role="instructor" data-active="P045"></div>
+
+<main id="main">
+
+  <section class="workhero">
+    <div class="container">
+      <nav class="crumb"><a href="../instructor/P031-workspace-home.html">Workspace</a><span class="sep">/</span><span>Reports</span></nav>
+      <div class="pagehead" style="margin-bottom:0">
+        <div class="pagehead__t"><h1>Reports</h1><p>Performance across your 24 courses</p></div>
+        <div class="pagehead__actions">
+          <button class="btn btn--ghost" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Export CSV</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <div class="segmented" style="margin-bottom:1.8rem">
+        <a href="#">7 days</a>
+        <a href="#" class="is-active">30 days</a>
+        <a href="#">90 days</a>
+        <a href="#">Year to date</a>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpis" style="margin-bottom:2rem">
+        <div class="kpi">
+          <div class="kpi__ic kpi__ic--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <div><div class="kpi__n">3,214</div><div class="kpi__l">Enrollments</div><div class="kpi__trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>+11.2%</div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div><div class="kpi__n">$48,900</div><div class="kpi__l">Revenue</div><div class="kpi__trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>+8.4%</div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <div><div class="kpi__n">74%</div><div class="kpi__l">Completion rate</div><div class="kpi__trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>+2.1pt</div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi__ic kpi__ic--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg></div>
+          <div><div class="kpi__n">18</div><div class="kpi__l">Refunds</div><div class="kpi__trend down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 6l6 6-6 6M19 12H5"/></svg>0.6% of orders</div></div>
+        </div>
+      </div>
+
+      <!-- charts -->
+      <div class="grid grid--2" style="margin-bottom:2rem">
+        <div class="chartcard">
+          <h3 style="margin:0 0 .6rem">Enrollments over time</h3>
+          <div class="barchart">
+            <div class="bar" style="height:42%"><span>620</span><small>Wk 1</small></div>
+            <div class="bar" style="height:55%"><span>810</span><small>Wk 2</small></div>
+            <div class="bar" style="height:64%"><span>940</span><small>Wk 3</small></div>
+            <div class="bar" style="height:100%"><span>1,244</span><small>Wk 4</small></div>
+          </div>
+        </div>
+        <div class="chartcard">
+          <h3 style="margin:0 0 .6rem">Revenue by course</h3>
+          <div class="barchart">
+            <div class="bar" style="height:100%"><span>$28.4k</span><small>React</small></div>
+            <div class="bar" style="height:70%"><span>$19.8k</span><small>ML A&ndash;Z</small></div>
+            <div class="bar" style="height:6%"><span>$0</span><small>Python</small></div>
+            <div class="bar" style="height:16%"><span>$700</span><small>Other</small></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- breakdown table -->
+      <h3 style="margin-bottom:1rem">Per-course breakdown</h3>
+      <div class="tablecard">
+        <div class="wtable__wrap">
+          <table class="wtable">
+            <thead><tr><th>Course</th><th class="num">Enrollments</th><th class="num">Revenue</th><th class="num">Completion</th><th class="num">Refunds</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="cell-user"><img class="cell-thumb" src="../_shared/img/course-web-01.jpg" alt=""><div><b>Complete Modern React &amp; Next.js Bootcamp</b><small>Web Development</small></div></div></td>
+                <td class="num">1,840</td><td class="num">$28,400</td><td class="num">79%</td><td class="num">9</td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img class="cell-thumb" src="../_shared/img/course-ai-01.jpg" alt=""><div><b>Machine Learning A&ndash;Z: Hands-On Python &amp; AI</b><small>AI &amp; Machine Learning</small></div></div></td>
+                <td class="num">920</td><td class="num">$19,800</td><td class="num">68%</td><td class="num">6</td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img class="cell-thumb" src="../_shared/img/course-edu-01.jpg" alt=""><div><b>Python for Everybody: Zero to Hero</b><small>Web Development</small></div></div></td>
+                <td class="num">410</td><td class="num">Free</td><td class="num">81%</td><td class="num">&mdash;</td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img class="cell-thumb" src="../_shared/img/course-design-01.jpg" alt=""><div><b>UI/UX Design Masterclass: Figma to Product</b><small>Design &amp; UX</small></div></div></td>
+                <td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">&mdash;</td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img class="cell-thumb" src="../_shared/img/course-data-01.jpg" alt=""><div><b>Data Analytics with SQL, Python &amp; Power BI</b><small>Data &amp; Analytics</small></div></div></td>
+                <td class="num">44</td><td class="num">$700</td><td class="num">22%</td><td class="num">3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="alert" style="margin-top:1.6rem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <div>UI/UX Design Masterclass shows no data yet &mdash; it&rsquo;s still in review and has not been published to learners.</div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

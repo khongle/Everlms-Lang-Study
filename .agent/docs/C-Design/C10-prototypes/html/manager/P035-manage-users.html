@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage users · EverLMS Workspace</title>
+<meta name="description" content="Workspace — administer learner and staff accounts, roles and access.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/everlms.css">
+<link rel="stylesheet" href="../_shared/css/skins.css">
+</head>
+<body>
+<div id="site-header" data-shell="app" data-role="manager" data-active="P035"></div>
+
+<main id="main">
+
+  <section class="workhero">
+    <div class="container">
+      <nav class="crumb"><a href="../instructor/P031-workspace-home.html">Workspace</a><span class="sep">/</span><span>Users</span></nav>
+      <div class="pagehead" style="margin-bottom:0">
+        <div class="pagehead__t"><h1>Manage users</h1><p>1,248 accounts · 86 new in the last 30 days</p></div>
+        <div class="pagehead__actions">
+          <a class="btn btn--ghost" href="#">Export CSV</a>
+          <a class="btn btn--primary" href="#">Invite user</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- KPIs -->
+      <div class="kpis" style="margin-bottom:1.6rem">
+        <div class="kpi"><div class="kpi__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><div class="kpi__n">1,248</div><div class="kpi__l">Total users</div></div></div>
+        <div class="kpi"><div class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></div><div><div class="kpi__n">1,190</div><div class="kpi__l">Active accounts</div></div></div>
+        <div class="kpi"><div class="kpi__ic kpi__ic--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg></div><div><div class="kpi__n">86</div><div class="kpi__l">New (30 days)</div></div></div>
+        <div class="kpi"><div class="kpi__ic kpi__ic--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><div><div class="kpi__n">44</div><div class="kpi__l">Staff accounts</div></div></div>
+      </div>
+
+      <!-- filters -->
+      <div class="toolbar">
+        <div class="segmented">
+          <a href="#" class="is-active">All (1,248)</a>
+          <a href="#">Students (1,204)</a>
+          <a href="#">Instructors (28)</a>
+          <a href="#">Staff (16)</a>
+        </div>
+        <div class="flex gap-1 items-center flex-wrap">
+          <label class="nav__search" style="min-width:220px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><input type="search" placeholder="Search name or email…" aria-label="Search users"></label>
+          <select class="select" aria-label="Sort users"><option>Newest first</option><option>Name A–Z</option><option>Most active</option><option>Role</option></select>
+        </div>
+      </div>
+
+      <!-- table -->
+      <div class="tablecard" style="margin-top:1.2rem">
+        <div class="wtable__wrap">
+          <table class="wtable">
+            <thead><tr><th>User</th><th>Role</th><th>Enrolled / courses</th><th>Joined</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="cell-user"><img src="../_shared/img/avatar-03.jpg" alt=""><div><b>Alex Morgan</b><small>alex.morgan82@mail.com</small></div></div></td>
+                <td><span class="badge badge--info">Student</span></td>
+                <td>6 courses enrolled</td>
+                <td>Jan 12, 2025</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Active</span></td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../administrator/P051-switch-user.html" aria-label="Impersonate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img src="../_shared/img/avatar-01.jpg" alt=""><div><b>Linh Tran</b><small>linh.tran@mail.com</small></div></div></td>
+                <td><span class="badge badge--info">Student</span></td>
+                <td>3 courses enrolled</td>
+                <td>Mar 3, 2025</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Active</span></td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../administrator/P051-switch-user.html" aria-label="Impersonate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img src="../_shared/img/avatar-02.jpg" alt=""><div><b>Michael O'Brien</b><small>michael.obrien@mail.com</small></div></div></td>
+                <td><span class="badge badge--info">Student</span></td>
+                <td>1 course enrolled</td>
+                <td>Feb 20, 2025</td>
+                <td><span class="status status--error status--dot">Suspended</span></td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="#" aria-label="Reactivate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-01.jpg" alt=""><div><b>Sarah Chen</b><small>sarah.chen@everlms.com</small></div></div></td>
+                <td><span class="badge badge--accent">Instructor</span></td>
+                <td>24 courses teaching</td>
+                <td>Aug 14, 2023</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Active</span></td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../administrator/P051-switch-user.html" aria-label="Impersonate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-03.jpg" alt=""><div><b>David Kim</b><small>david.kim@everlms.com</small></div></div></td>
+                <td><span class="badge badge--accent">Instructor</span></td>
+                <td>8 courses teaching</td>
+                <td>Nov 2, 2024</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Active</span></td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../administrator/P051-switch-user.html" aria-label="Impersonate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-02.jpg" alt=""><div><b>Priya Sharma</b><small>priya.sharma@everlms.com</small></div></div></td>
+                <td><span class="badge badge--warning">Content Editor</span></td>
+                <td>46 articles</td>
+                <td>Jun 30, 2023</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Active</span></td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../administrator/P051-switch-user.html" aria-label="Impersonate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img src="../_shared/img/instructor-m-02.jpg" alt=""><div><b>James Carter</b><small>james.carter@everlms.com</small></div></div></td>
+                <td><span class="badge badge--success">Manager</span></td>
+                <td>—</td>
+                <td>Jan 10, 2022</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Active</span></td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../administrator/P051-switch-user.html" aria-label="Impersonate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img src="../_shared/img/avatar-06.jpg" alt=""><div><b>Dana Whitfield</b><small>dana.whitfield@everlms.com</small></div></div></td>
+                <td><span class="badge badge--solid">Administrator</span></td>
+                <td>—</td>
+                <td>May 1, 2021</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Active</span></td>
+                <td><div class="rowbtns"><a href="#" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../administrator/P051-switch-user.html" aria-label="Impersonate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/></svg></a></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="hint">Suspended accounts cannot sign in until reactivated. Impersonation opens the Switch user tool and is logged for audit.</p>
+
+      <nav class="pager" aria-label="Pagination">
+        <span class="is-disabled">Prev</span><span class="is-active">1</span><a href="#">2</a><a href="#">3</a><span>…</span><a href="#">156</a><a href="#">Next</a>
+      </nav>
+
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

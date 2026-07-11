@@ -193,7 +193,11 @@
               </div>
             {% else %}
                <div class="lms-learn__placeholder lms-learn__placeholder--muted">
-                 {{ 'No overview description available for this lesson.'|t }}
+                 {% if type == 'text' %}
+                   {{ 'The full lesson reading is shown above. Use the Resources, Notes, and Q&A tabs for extras.'|t }}
+                 {% else %}
+                   {{ 'No overview description available for this lesson.'|t }}
+                 {% endif %}
                </div>
             {% endif %}
           </div>
@@ -286,7 +290,7 @@
           {% endif %}
         {% endfor %}
       {% endfor %}
-      {% set progress_percent = total_lessons > 0 ? (completed_lessons / total_lessons * 100)|round : 0 %}
+      {% set progress_percent = total_lessons > 0 ? (completed_lessons / total_lessons * 100)|round(0, 'floor') : 0 %}
       
       <div class="lms-learn__progress-wrapper">
         <div class="lms-learn__progress-meta">

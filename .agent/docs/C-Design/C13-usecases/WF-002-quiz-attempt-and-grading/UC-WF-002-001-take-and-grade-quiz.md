@@ -48,6 +48,7 @@ Learner submits the quiz.
 | ---- | -------- | ---- |
 | Quiz take | App | /quiz/{quiz}/take |
 | Quiz result | App | /quiz-result/{r} |
+| Grade submission (instructor) | Manage | /manage/quiz-results/{r}/grade |
 
 ## Acceptance and test contract
 - Per-strategy grading correct; threshold pass/fail only after the result is finalized; pending attempts are not counted as passed; event fired only on finalized pass (B05 F-006).

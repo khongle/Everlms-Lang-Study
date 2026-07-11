@@ -1520,6 +1520,28 @@ final class CoursePublicController extends ControllerBase {
       }
     }
 
+    // Determine whether the learner has actually started this course. This
+    // drives the "Start Learning" vs "Continue Learning" CTA: a membership or
+    // fresh enrolment grants access (is_enrolled) but is not yet "in progress".
+    $has_progress = FALSE;
+    if ($logged_in) {
+      $curriculum_lesson_ids = [];
+      foreach ($curriculum as $section) {
+        foreach ($section['lessons'] as $lesson_entity) {
+          $curriculum_lesson_ids[] = $lesson_entity->id();
+        }
+      }
+      if (!empty($curriculum_lesson_ids)) {
+        $started_ids = $this->entityTypeManager->getStorage('lms_user_lesson')->getQuery()
+          ->condition('uid', $user->id())
+          ->condition('field_lesson', $curriculum_lesson_ids, 'IN')
+          ->accessCheck(FALSE)
+          ->range(0, 1)
+          ->execute();
+        $has_progress = !empty($started_ids);
+      }
+    }
+
     return [
       '#theme' => 'lms_course_detail',
       '#course' => $lms_course,
@@ -1537,6 +1559,7 @@ final class CoursePublicController extends ControllerBase {
       '#faqs' => $faqs,
       '#logged_in' => $logged_in,
       '#is_enrolled' => $is_enrolled,
+      '#has_progress' => $has_progress,
       '#continue_url' => $continue_url,
       '#course_reviews' => $course_reviews,
       '#rating_form' => $is_enrolled && \Drupal::moduleHandler()->moduleExists('lms_rating') ? \Drupal::formBuilder()->getForm('\Drupal\lms_rating\Form\RatingForm', $lms_course->id()) : NULL,

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment settings · EverLMS Workspace</title>
+<meta name="description" content="Configure payment gateways, currency, tax, webhooks and instructor payouts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/everlms.css">
+<link rel="stylesheet" href="../_shared/css/skins.css">
+</head>
+<body>
+<div id="site-header" data-shell="app" data-role="administrator" data-active="P047"></div>
+
+<main id="main">
+
+  <section class="workhero">
+    <div class="container">
+      <nav class="crumb"><a href="../instructor/P031-workspace-home.html">Workspace</a><span class="sep">/</span><span>Payment settings</span></nav>
+      <div class="pagehead" style="margin-bottom:0">
+        <div class="pagehead__t"><h1>Payment settings</h1><p>Manage gateways, currency &amp; tax, webhooks and instructor payouts.</p></div>
+        <div class="pagehead__actions">
+          <span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Stripe live mode</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <div class="tabs" data-tabs>
+        <button data-tab="gateways" class="is-active">Gateways</button>
+        <button data-tab="tax">Currency &amp; tax</button>
+        <button data-tab="webhooks">Webhooks</button>
+        <button data-tab="payouts">Payouts</button>
+      </div>
+
+      <form>
+
+      <!-- GATEWAYS -->
+      <div class="tabpane is-active" data-pane="gateways">
+        <div class="grid grid--2">
+          <div class="panel">
+            <div class="switchrow" style="border-bottom:0;padding-top:0">
+              <div><h3 style="margin:0">Stripe</h3><p class="hint">Cards, wallets and local payment methods.</p></div>
+              <button type="button" class="swtoggle is-on" aria-pressed="true" aria-label="Enable Stripe"></button>
+            </div>
+            <div class="segmented" style="margin-bottom:1.1rem">
+              <a href="#">Test mode</a><a href="#" class="is-active">Live mode</a>
+            </div>
+            <div class="formgrid">
+              <div class="field"><label for="stripe-pk">Publishable key</label><input type="text" id="stripe-pk" value="pk_live_51NcQ••••••••••••••••••2xLk" readonly></div>
+              <div class="field"><label for="stripe-sk">Secret key</label><input type="text" id="stripe-sk" value="sk_live_51NcQ••••••••••••••••••9fRz" readonly></div>
+            </div>
+            <div class="btn-row" style="margin-top:1rem">
+              <button type="button" class="btn btn--ghost btn--sm">Rotate keys</button>
+              <button type="button" class="btn btn--brand btn--sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Test connection</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="switchrow" style="border-bottom:0;padding-top:0">
+              <div><h3 style="margin:0">PayPal</h3><p class="hint">PayPal balance, cards and Pay Later.</p></div>
+              <button type="button" class="swtoggle" aria-pressed="false" aria-label="Enable PayPal"></button>
+            </div>
+            <div class="segmented" style="margin-bottom:1.1rem">
+              <a href="#" class="is-active">Sandbox mode</a><a href="#">Live mode</a>
+            </div>
+            <div class="formgrid">
+              <div class="field"><label for="pp-id">Client ID</label><input type="text" id="pp-id" value="AaBn7••••••••••••••••••Q3mZ" readonly></div>
+              <div class="field"><label for="pp-secret">Client secret</label><input type="text" id="pp-secret" value="EL9k••••••••••••••••••7pTx" readonly></div>
+            </div>
+            <div class="btn-row" style="margin-top:1rem">
+              <button type="button" class="btn btn--ghost btn--sm">Rotate keys</button>
+              <button type="button" class="btn btn--ghost btn--sm" disabled>Test connection</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CURRENCY & TAX -->
+      <div class="tabpane" data-pane="tax">
+        <div class="panel">
+          <h3>Currency &amp; tax</h3>
+          <div class="formgrid formgrid--2">
+            <div class="field">
+              <label for="currency">Default currency</label>
+              <select class="select" id="currency" style="width:100%">
+                <option selected>USD — US Dollar ($)</option>
+                <option>EUR — Euro (€)</option>
+                <option>GBP — British Pound (£)</option>
+                <option>VND — Vietnamese Dong (₫)</option>
+              </select>
+            </div>
+            <div class="field"><label for="taxrate">Default tax rate</label><input type="text" id="taxrate" value="8.5%"></div>
+            <div class="field"><label for="taxid">Tax / VAT ID</label><input type="text" id="taxid" value="US-EIN-84-1922016"></div>
+            <div class="field">
+              <label for="taxdisplay">Price display</label>
+              <select class="select" id="taxdisplay" style="width:100%">
+                <option selected>Tax-exclusive (added at checkout)</option>
+                <option>Tax-inclusive</option>
+              </select>
+            </div>
+          </div>
+          <div class="switchrow"><div><b>Show tax breakdown at checkout</b><p class="hint">Display a separate tax line item on the order summary.</p></div><button type="button" class="swtoggle is-on" aria-pressed="true" aria-label="Show tax breakdown at checkout"></button></div>
+          <div class="switchrow"><div><b>Collect tax ID from business buyers</b><p class="hint">Ask Teams-plan buyers for a VAT/EIN at checkout.</p></div><button type="button" class="swtoggle" aria-pressed="false" aria-label="Collect tax ID from business buyers"></button></div>
+        </div>
+      </div>
+
+      <!-- WEBHOOKS -->
+      <div class="tabpane" data-pane="webhooks">
+        <div class="panel">
+          <h3>Webhook endpoint</h3>
+          <div class="formgrid">
+            <div class="field"><label for="wh-url">Endpoint URL</label><input type="text" id="wh-url" value="https://everlms.com/payment/webhook/stripe" readonly></div>
+            <div class="field"><label for="wh-secret">Signing secret</label><input type="text" id="wh-secret" value="whsec_••••••••••••••••••••4kQe" readonly></div>
+          </div>
+          <div class="btn-row" style="margin-top:1rem">
+            <button type="button" class="btn btn--ghost btn--sm">Regenerate secret</button>
+            <button type="button" class="btn btn--ghost btn--sm">Send test event</button>
+          </div>
+        </div>
+
+        <div class="tablecard" style="margin-top:1.4rem">
+          <div class="toolbar"><h3 style="margin:0">Recent webhook deliveries</h3></div>
+          <div class="wtable__wrap">
+            <table class="wtable">
+              <thead><tr><th>Event</th><th>Gateway</th><th>Status</th><th>Received</th></tr></thead>
+              <tbody>
+                <tr><td><code>checkout.session.completed</code></td><td>Stripe</td><td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Delivered</span></td><td>2 minutes ago</td></tr>
+                <tr><td><code>invoice.payment_failed</code></td><td>Stripe</td><td><span class="status status--error status--dot">Failed</span></td><td>1 hour ago</td></tr>
+                <tr><td><code>charge.refunded</code></td><td>Stripe</td><td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Delivered</span></td><td>Yesterday</td></tr>
+                <tr><td><code>PAYMENT.CAPTURE.COMPLETED</code></td><td>PayPal</td><td><span class="status status--warning status--dot">Retrying</span></td><td>2 days ago</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYOUTS -->
+      <div class="tabpane" data-pane="payouts">
+        <div class="editor">
+          <div class="panel">
+            <h3>Payout schedule</h3>
+            <div class="formgrid formgrid--2">
+              <div class="field">
+                <label for="payout-sched">Payout frequency</label>
+                <select class="select" id="payout-sched" style="width:100%">
+                  <option>Weekly</option>
+                  <option selected>Monthly</option>
+                </select>
+              </div>
+              <div class="field"><label for="payout-min">Minimum payout threshold</label><input type="text" id="payout-min" value="$50.00"></div>
+            </div>
+            <div class="switchrow"><div><b>Automatic payouts</b><p class="hint">Pay eligible instructors automatically on the schedule above.</p></div><button type="button" class="swtoggle is-on" aria-pressed="true" aria-label="Automatic payouts"></button></div>
+
+            <div class="tablecard" style="margin-top:1.2rem">
+              <div class="wtable__wrap">
+                <table class="wtable">
+                  <thead><tr><th>Instructor</th><th class="num">Amount</th><th>Status</th><th>Date</th></tr></thead>
+                  <tbody>
+                    <tr><td><div class="cell-user"><img src="../_shared/img/instructor-01.jpg" alt=""><div><b>Sarah Chen</b></div></div></td><td class="num">$8,420.00</td><td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Paid</span></td><td>Jul 1, 2026</td></tr>
+                    <tr><td><div class="cell-user"><img src="../_shared/img/instructor-02.jpg" alt=""><div><b>Priya Sharma</b></div></div></td><td class="num">$3,110.00</td><td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Paid</span></td><td>Jul 1, 2026</td></tr>
+                    <tr><td><div class="cell-user"><img src="../_shared/img/instructor-m-02.jpg" alt=""><div><b>James Carter</b></div></div></td><td class="num">$2,640.00</td><td><span class="status status--info status--dot">Processing</span></td><td>Aug 1, 2026</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="editor__aside">
+            <div class="panel panel--soft">
+              <h3>Platform payout account</h3>
+              <p class="hint">Payouts are funded from this connected bank account.</p>
+              <p style="font-weight:700">Chase Business •••• 4821</p>
+              <a class="btn btn--ghost btn--sm btn--block" href="#">Manage bank account</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar" style="margin-top:2.2rem;padding-top:1.4rem;border-top:1px solid var(--line)">
+        <span class="hint" style="margin:0">Last saved 5 days ago by Dana Whitfield</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn--ghost">Discard changes</button>
+          <button type="submit" class="btn btn--primary">Save changes</button>
+        </div>
+      </div>
+
+      </form>
+
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

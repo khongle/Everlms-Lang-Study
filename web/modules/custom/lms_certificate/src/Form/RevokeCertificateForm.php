@@ -35,7 +35,8 @@ class RevokeCertificateForm extends ConfirmFormBase {
   }
 
   public function getCancelUrl() {
-    return new Url('entity.lms_user_certificate.collection');
+    // The certificate management dashboard (no entity collection route exists).
+    return Url::fromRoute('lms_certificate.admin_dashboard');
   }
 
   public function submitForm(array &$form, FormStateInterface $form_state) {

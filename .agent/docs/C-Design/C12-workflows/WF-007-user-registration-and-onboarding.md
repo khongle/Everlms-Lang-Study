@@ -49,7 +49,7 @@ Account lifecycle:
 ## Implementation requirements
 - `lms_mobile_api` must be enabled in active config and config sync; otherwise
   the documented `/api/v1/user/*` routes return 404.
-- Mobile duplicate-email registration returns `422 validation_error`.
+- Mobile duplicate-email registration returns `422 validation_error` **when an active account already uses that email**. Re-registering a still-pending (blocked/unverified) email is allowed — the stale blocked user is deleted and a fresh OTP session is issued (retry UX). *(Round-2 verified: active-email dup → 422; pending re-register → new OTP.)*
 - API screenshots should redact OTP/access tokens while proving status codes and
   response shapes.
 - Web screenshots must capture before-fill, after-fill, and submitted
@@ -57,3 +57,6 @@ Account lifecycle:
 
 ## Notifications
 Welcome/verification (web email; mobile OTP). Mobile bearer token issued on OTP verify.
+
+## Round-2 QA evidence
+Verified healthy (no code changes needed). Web: `/user/register` → active account + `student` role (uid 106) + homepage success alert. Mobile API end-to-end: register → verify-otp (uid 109, Bearer, `expires_in` 604800) → `/api/v1/user/me` (roles `student`) → active-email duplicate `422`. Screens: `.agent/docs/E-Quality/E00-workflows/round-2/_screens/007-user-registration-and-onboarding/` (incl. `09-mobile-api-flow.txt`, OTP/tokens redacted).

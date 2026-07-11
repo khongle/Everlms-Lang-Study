@@ -28,5 +28,13 @@
 - Completing a membership order for an already-current user/plan extends the existing membership instead of creating a duplicate card.
 - Completing a membership order when only a stale row exists for the same user/plan reactivates that row with fresh start/end dates.
 
+## Round-2 QA verification
+Core validity contracts confirmed working:
+- `MembershipManager::hasActiveMembership()` requires `field_status IN (active,trial)` **and** `field_end_date > now`, so NULL/expired rows never count (maria's stale plan-9 row with NULL end date is excluded).
+- `MembershipController::myMembership()` (`/my-membership`) dedupes by plan and hides stale rows — maria's 10 duplicate active plan-7 rows render as **one** "Basic Access" card.
+- Order completion (`lms_order.module`) extends an existing active membership, else reactivates a stale one, else creates — no new duplicates.
+
+⚠️ **Product gap (`WF-005-001`, open):** entitlement is tier-agnostic — any active membership unlocks the whole catalog, so a free "Basic Access" member can open paid specialist courses despite the differentiated `/pricing` tiers. Needs a product decision + a plan access-level field.
+
 ## Notifications
 Activation + renewal/expiry reminders (cron). Lapsed → access revoked in F-004 gating.

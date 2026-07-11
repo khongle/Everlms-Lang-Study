@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage courses · EverLMS Workspace</title>
+<meta name="description" content="Workspace — create, edit and publish your courses.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/everlms.css">
+<link rel="stylesheet" href="../_shared/css/skins.css">
+</head>
+<body>
+<div id="site-header" data-shell="app" data-role="instructor" data-active="P032"></div>
+
+<main id="main">
+
+  <section class="workhero">
+    <div class="container">
+      <nav class="crumb"><a href="../instructor/P031-workspace-home.html">Workspace</a><span class="sep">/</span><span>Courses</span></nav>
+      <div class="pagehead" style="margin-bottom:0">
+        <div class="pagehead__t"><h1>Manage courses</h1><p>24 courses · 3 drafts · 1 pending review</p></div>
+        <div class="pagehead__actions">
+          <a class="btn btn--ghost" href="../instructor/P044-ai-course-builder.html">Build with AI</a>
+          <a class="btn btn--primary" href="../instructor/P033-course-editor.html">New course</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- KPIs -->
+      <div class="kpis" style="margin-bottom:1.6rem">
+        <div class="kpi"><div class="kpi__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/></svg></div><div><div class="kpi__n">24</div><div class="kpi__l">Published courses</div></div></div>
+        <div class="kpi"><div class="kpi__ic kpi__ic--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="kpi__n">18,240</div><div class="kpi__l">Enrolled learners</div></div></div>
+        <div class="kpi"><div class="kpi__ic kpi__ic--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></div><div><div class="kpi__n">4.9</div><div class="kpi__l">Average rating</div></div></div>
+        <div class="kpi"><div class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><div class="kpi__n">$48,900</div><div class="kpi__l">Revenue (30d)</div></div></div>
+      </div>
+
+      <!-- filters -->
+      <div class="toolbar">
+        <div class="segmented">
+          <a href="#" class="is-active">All (24)</a>
+          <a href="#">Published (20)</a>
+          <a href="#">Draft (3)</a>
+          <a href="#">In review (1)</a>
+        </div>
+        <div class="flex gap-1 items-center flex-wrap">
+          <label class="nav__search" style="min-width:200px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><input type="search" placeholder="Search courses…" aria-label="Search courses"></label>
+          <select class="select"><option>Newest</option><option>Most enrolled</option><option>Top rated</option><option>Revenue</option></select>
+        </div>
+      </div>
+
+      <!-- table -->
+      <div class="tablecard" style="margin-top:1.2rem">
+        <div class="wtable__wrap">
+          <table class="wtable">
+            <thead><tr><th>Course</th><th>Status</th><th>Enrolled</th><th>Rating</th><th class="num">Revenue</th><th>Updated</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="cell-user"><img class="cell-thumb" src="../_shared/img/course-web-01.jpg" alt=""><div><b>Complete Modern React &amp; Next.js Bootcamp</b><small>Web Development · 52h</small></div></div></td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Published</span></td>
+                <td>12,480</td><td>4.9</td><td class="num">$28,400</td><td>2 days ago</td>
+                <td><div class="rowbtns"><a href="../instructor/P033-course-editor.html" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../anonymous/P003-course-detail.html" aria-label="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img class="cell-thumb" src="../_shared/img/course-ai-01.jpg" alt=""><div><b>Machine Learning A–Z: Hands-On Python</b><small>AI &amp; ML · 44h</small></div></div></td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Published</span></td>
+                <td>9,210</td><td>4.8</td><td class="num">$19,800</td><td>1 week ago</td>
+                <td><div class="rowbtns"><a href="../instructor/P033-course-editor.html" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../anonymous/P003-course-detail.html" aria-label="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img class="cell-thumb" src="../_shared/img/course-design-01.jpg" alt=""><div><b>UI/UX Design Masterclass: Figma to Product</b><small>Design &amp; UX · 30h</small></div></div></td>
+                <td><span class="status status--info status--dot">In review</span></td>
+                <td>—</td><td>—</td><td class="num">—</td><td>3 hours ago</td>
+                <td><div class="rowbtns"><a href="../instructor/P033-course-editor.html" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img class="cell-thumb" src="../_shared/img/course-data-01.jpg" alt=""><div><b>Data Analytics with SQL, Python &amp; Power BI</b><small>Data · 38h</small></div></div></td>
+                <td><span class="status status--warning status--dot">Draft</span></td>
+                <td>—</td><td>—</td><td class="num">—</td><td>Yesterday</td>
+                <td><div class="rowbtns"><a href="../instructor/P033-course-editor.html" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><img class="cell-thumb" src="../_shared/img/course-edu-01.jpg" alt=""><div><b>Python for Everybody: Zero to Hero</b><small>Web Development · 28h</small></div></div></td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Published</span></td>
+                <td>22,050</td><td>4.8</td><td class="num">Free</td><td>2 weeks ago</td>
+                <td><div class="rowbtns"><a href="../instructor/P033-course-editor.html" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a><a href="../anonymous/P003-course-detail.html" aria-label="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <nav class="pager" aria-label="Pagination">
+        <span class="is-disabled">Prev</span><span class="is-active">1</span><a href="#">2</a><a href="#">3</a><span>…</span><a href="#">5</a><a href="#">Next</a>
+      </nav>
+
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

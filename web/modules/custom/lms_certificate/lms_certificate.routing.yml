@@ -7,12 +7,14 @@ lms_certificate.verify:
     _access: 'TRUE'
 
 lms_certificate.revoke:
-  path: '/admin/lms/certificates/{lms_user_certificate}/revoke'
+  path: '/workspace/certificates/{lms_user_certificate}/revoke'
   defaults:
     _form: '\Drupal\lms_certificate\Form\RevokeCertificateForm'
     _title: 'Revoke Certificate'
   requirements:
-    _permission: 'revoke any certificate'
+    # Managers/admins manage certificates via 'administer lms_course', matching
+    # the dashboard and regenerate routes (C12 WF-003: manager can revoke).
+    _permission: 'administer lms_course'
   options:
     parameters:
       lms_user_certificate:

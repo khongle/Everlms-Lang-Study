@@ -1,69 +1,66 @@
-# EverLMS — Interactive Prototype (v3)
+# EverLMS — C10 HTML prototype (v4, per-role)
 
-A complete, responsive, multi-page HTML/CSS prototype for the **EverLMS** learning
-platform. Built on one token-driven design system, with real photography and six
-swappable color skins. No build step, no dependencies — open the files directly.
+A self-contained, multi-page HTML prototype for **EverLMS** (Drupal 11 LMS). One shared
+design system, one injected navigation shell, **51 pages** organised **by role**.
 
-## Start here
-- **`gallery.html`** — the showcase: live thumbnails of every page + every skin.
-- **`index.html`** — the homepage (try the skin switcher, bottom-right).
+## How to open
+Open any page in a browser (works over `file://`, no server or build step). Start at
+[`anonymous/P001-homepage.html`](anonymous/P001-homepage.html) and follow the menus — the
+header, My Account mega menu and footer are injected by `_shared/js/shell.js`, so every
+page cross-links correctly.
 
-> Tip: view over a local server for best results (iframes in the gallery and the
-> Google Fonts link load fastest that way), e.g. `python3 -m http.server` then
-> open `http://localhost:8000/gallery.html`. Opening files directly also works.
+## Folder = role (filed once, lowest accessible role)
+Each page lives in the folder of the **lowest role** that can reach it, filed exactly once
+(per the C10 per-role gate). Navigation to everything a role can access is provided by the
+menu, which links across folders — so a role never needs duplicate copies.
 
-## Pages (17)
-**Public:** `index` (Homepage) · `courses` (Catalog) · `course-detail` ·
-`categories` · `category-detail` · `pricing` · `instructor` · `blog` ·
-`article-detail` · `about` · `contact` · `login` (Login/Register).
-**Learner app:** `dashboard` · `my-courses` · `learn` (Lesson player) ·
-`quiz` · `my-certificates`.
+| Folder | Role | Pages |
+| ------ | ---- | ----- |
+| [`anonymous/`](anonymous/) | Public (anonymous) | P001–P016 (marketing, catalog, forum, auth) |
+| [`student/`](student/) | Student / authenticated learner | P017–P030 (dashboard, learning, checkout) |
+| [`instructor/`](instructor/) | Instructor | P031–P034, P044, P045 (course/quiz authoring, AI, reports) |
+| [`content-editor/`](content-editor/) | Content Editor | P037, P039–P043 (content, blog, certificates, ratings, tools) |
+| [`manager/`](manager/) | Manager | P035, P036, P038 (users, orders, pricing) |
+| [`administrator/`](administrator/) | Administrator | P046–P051 (AI/payment/zoom settings, analytics, broadcast, switch-user) |
 
-These mirror the canonical [C11 page contract](../../C11-pages-components/_index.md)
-(Public + App archetypes) and the [C07 sitemap](../../C07-sitemap/_index.md).
+`_shared/` holds the design system and is **not** a role folder.
 
-## Color skins (6)
-Same homepage markup, different palette — applied via `<html data-skin="…">`:
-**Indigo Premium** (default) · **Ocean Scholar** · **Midnight Electric** ·
-**Emerald Focus** · **Sunset Coral** · **Rose Quartz**.
-Frozen snapshots: `home-ocean.html`, `home-midnight.html`, `home-emerald.html`,
-`home-sunset.html`, `home-rose.html`. The default skin + live switcher live on `index.html`.
+## Navigation system (per the brief)
+Two shells, injected from the page's `data-*` attributes on `#site-header`:
 
-## How it's built
-```
-html/
-  gallery.html            showcase / index of everything (live screenshot thumbnails)
-  index.html              homepage (Indigo + live skin switcher)
-  home-<skin>.html        frozen homepage in each of the 5 other skins
-  *.html                  the 17 pages
-  assets/
-    css/everlms.css       the design system (tokens → base → components → LMS)
-    css/skins.css         the 6 color skins (override the color tokens only)
-    js/app.js             nav, accordion, tabs, quiz, skin switcher
-    img/                  74 curated real photos (course, instructor, scene)
-  _screens/               full-page PNG screenshot of every page (1440px)
-  _partials/              canonical header/footer + BUILD-SPEC (build-time refs)
-```
+- **Front shell** (`data-shell="front"`, public pages) — the main menu (Courses mega,
+  Categories, Pricing, Blog, Forum, About, Contact) with search + **Log in / Sign up** at
+  top-right. When logged in, top-right becomes the notification bell + **My Account**.
+- **App / backend shell** (`data-shell="app" data-role="…"`, everything behind login) — a
+  role-scoped **backend main menu**, plus at top-right a **Home icon** (back to the public
+  homepage), the notification bell, and the **My Account mega menu**.
 
-### Design system
-- **Tokens** (`everlms.css` `:root`): color, 8pt spacing, fluid type scale,
-  radius, shadow, container, z-index. Skins re-map **only** the color group.
-- **Type:** Plus Jakarta Sans (display) + Inter (body), via Google Fonts.
-- **Components:** full marketing kit + LMS library — course cards, curriculum
-  accordion, enroll panel, lesson player, dashboard KPIs/rings, quiz player,
-  pricing tiers, reviews, certificates, instructor header, catalog filters.
-- **Accessibility:** semantic landmarks, alt text, labelled controls, visible
-  focus, AA-minded contrast (WCAG 2.1 AA target per C09).
+**My Account mega menu** is the role-filtered launcher: it opens on click and lists the
+App / Manage / Admin / Account destinations that role can reach (Student sees Learning;
+staff see their Workspace; Administrator also sees Admin). This realises the brief's flow:
+*log in → My Account (top-right) → mega menu (manage + app) → click a link → land in the
+backend with the backend main menu and a Home icon back to the front site.*
 
-### Provenance
-- Design vocabulary stands on the QA-hardened **Templates** system
-  (`/Templates/templates/00-base`), rethemed to Indigo Premium and extended with
-  LMS-specific components.
-- Photography curated from the shared catalog
-  (`/Templates/_shared/01-base/00-images`) and copied into `assets/img/`.
+**No sidebar navigation** anywhere. The only vertical rails are page **business** content:
+the curriculum accordion on the course detail (P003), the lesson rail on the player (P019),
+and the question navigator on the quiz (P020).
 
-## Status
-This is forward-looking **design exploration** to develop the EverLMS product line
-(C10). It is not wired to data; copy/figures are representative (see the content
-bible in `_partials/BUILD-SPEC.md`). Promote chosen patterns into
-[C11](../../C11-pages-components/_index.md) when implementing in `lms_theme`.
+## Design system (`_shared/`)
+- `css/everlms.css` — token-driven design system (colors, type, spacing, components:
+  cards, course cards, curriculum, player, quiz, pricing, workspace tables, mega menu…).
+- `css/skins.css` — 6 color skins (Indigo default · Ocean · Midnight · Emerald · Sunset ·
+  Rose), switchable live on the homepage.
+- `js/shell.js` — renders the header/footer/menus from the page registry (single source of
+  truth for every link and role).
+- `js/app.js` — page behaviors (tabs, curriculum accordion, quiz selection, skin switcher,
+  mobile nav, bookmark).
+- `img/` — 74 real photographs (course thumbnails, instructor/learner portraits, scenes).
+- `BUILD-SPEC.md` — the authoring contract every page follows.
+
+## Breakpoints
+Bootstrap 5 exactly, desktop-first (`max-width`): 575.98 · 767.98 · 991.98 · 1199.98 ·
+1399.98 px; container widths 540 / 720 / 960 / 1140 / 1320.
+
+## Coverage
+See [`../coverage-checklist.md`](../coverage-checklist.md) — 51 pages × 5 canonical states
+(Normal · Empty · Access denied · Validation error · Loading).

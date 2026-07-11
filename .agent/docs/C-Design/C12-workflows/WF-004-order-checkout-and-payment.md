@@ -33,3 +33,6 @@
 
 ## Notifications
 Order confirmation + receipt instructions to buyer. Bank transfer buyers upload a receipt; manager verification moves the order to completed and grants entitlement. ⚠️ No webhook reconciliation (R-002) — online gateways rely on synchronous return, while bank transfer remains manual.
+
+## Round-2 QA evidence
+End-to-end verified with a real non-member buyer: `julia.nowak` (uid 71) bought paid course 90 ($45) via **Bank Transfer** → order 154 `processing` (receipt uploaded, **no entitlement yet**) → manager `Jenny Pham` filtered `/workspace/orders?status=processing`, reviewed via `ApproveOrderForm`, set **Completed → order 154 `completed`**, and entitlement was granted (`lms_user_course` 218 for uid 71/course 90). Manager list shows full Order ID / learner (full name) / amount / date / status badge / Edit action. Payment methods: Stripe, PayPal, Bank Transfer (VietQR); the Stripe test-mode "Autofill" chip is a Stripe Elements artifact (absent under live keys), not app code. Round-1 fixes (WF-004-001..003) hold. Screens: `.agent/docs/E-Quality/E00-workflows/round-2/_screens/004-order-checkout-and-payment/`.

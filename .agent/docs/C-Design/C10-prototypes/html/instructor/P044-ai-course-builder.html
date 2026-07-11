@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI course builder · EverLMS</title>
+<meta name="description" content="Generate a course outline from a prompt, then review and accept it into the course editor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/everlms.css">
+<link rel="stylesheet" href="../_shared/css/skins.css">
+</head>
+<body>
+<div id="site-header" data-shell="app" data-role="instructor" data-active="P044"></div>
+
+<main id="main">
+
+  <section class="workhero">
+    <div class="container">
+      <nav class="crumb"><a href="../instructor/P031-workspace-home.html">Workspace</a><span class="sep">/</span><span>AI course builder</span></nav>
+      <div class="pagehead" style="margin-bottom:0">
+        <div class="pagehead__t"><h1>AI course builder</h1><p>Describe the course you want to teach &mdash; get a draft outline in seconds.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <div class="alert alert--info" style="margin-bottom:1.8rem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>
+        <div><b>AI-assisted drafting.</b> The outline below is generated automatically and may need edits. Nothing is saved until you accept &mdash; review sections and lessons, regenerate anything that misses the mark, then send it to the course editor.</div>
+      </div>
+
+      <div class="editor">
+        <div class="stack-lg">
+
+          <div class="panel">
+            <h3>1. Describe the course</h3>
+            <form class="formgrid" onsubmit="return false">
+              <div class="field">
+                <label for="ai-topic">Topic</label>
+                <input id="ai-topic" name="topic" type="text" value="Cloud infrastructure with AWS for backend developers">
+              </div>
+              <div class="formgrid formgrid--2">
+                <div class="field">
+                  <label for="ai-audience">Target audience</label>
+                  <input id="ai-audience" name="audience" type="text" value="Backend developers moving into DevOps">
+                </div>
+                <div class="field">
+                  <label for="ai-level">Level</label>
+                  <select id="ai-level" name="level" class="select" style="width:100%">
+                    <option>Beginner</option>
+                    <option selected>Intermediate</option>
+                    <option>Advanced</option>
+                    <option>All levels</option>
+                  </select>
+                </div>
+              </div>
+              <div class="formgrid formgrid--2">
+                <div class="field">
+                  <label for="ai-modules">Number of modules</label>
+                  <input id="ai-modules" name="modules" type="number" min="2" max="12" value="5">
+                </div>
+                <div class="field">
+                  <label for="ai-tone">Tone</label>
+                  <select id="ai-tone" name="tone" class="select" style="width:100%">
+                    <option selected>Practical &amp; hands-on</option>
+                    <option>Academic &amp; thorough</option>
+                    <option>Conversational</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn--primary" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>Generate outline</button>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="flex justify-between items-center flex-wrap gap-2" style="margin-bottom:1rem">
+              <h3 style="margin:0">2. Review the draft</h3>
+              <span class="badge badge--accent">Generated just now</span>
+            </div>
+            <p class="text-muted" style="margin:0 0 1.2rem">Cloud Infrastructure with AWS: from EC2 &amp; VPC fundamentals to CI/CD pipelines and production monitoring.</p>
+
+            <div class="curri">
+              <div class="curri__sec is-open">
+                <div class="curri__head">S1 &middot; AWS Foundations <small>4 lessons</small></div>
+                <ul class="curri__list">
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Account setup &amp; IAM basics
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Regions, AZs &amp; VPC design
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Launching EC2 instances
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Security groups &amp; NACLs
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                </ul>
+              </div>
+              <div class="curri__sec is-open">
+                <div class="curri__head">S2 &middot; Storage &amp; Databases <small>5 lessons</small></div>
+                <ul class="curri__list">
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>S3 buckets &amp; lifecycle rules
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>RDS for relational data
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>DynamoDB fundamentals
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Backups &amp; snapshots
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Project: provisioning a data tier
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                </ul>
+              </div>
+              <div class="curri__sec">
+                <div class="curri__head">S3 &middot; CI/CD Pipelines <small>4 lessons</small></div>
+                <ul class="curri__list">
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>CodePipeline overview
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Automated testing gates
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                </ul>
+              </div>
+              <div class="curri__sec">
+                <div class="curri__head">S4 &middot; Monitoring &amp; Cost Control <small>3 lessons</small></div>
+                <ul class="curri__list">
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>CloudWatch dashboards
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                </ul>
+              </div>
+              <div class="curri__sec">
+                <div class="curri__head">S5 &middot; Capstone <small>2 lessons</small></div>
+                <ul class="curri__list">
+                  <li class="curri__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Deploying a production-ready API
+                    <span class="dur"><button class="btn btn--ghost btn--sm" type="button" style="padding:.3rem .7rem">Regenerate</button></span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="flex gap-2 flex-wrap" style="margin-top:1.6rem">
+              <button class="btn btn--ghost" type="button">Regenerate all</button>
+              <a class="btn btn--primary" href="../instructor/P033-course-editor.html">Accept &amp; open in editor</a>
+            </div>
+          </div>
+
+        </div>
+
+        <aside class="editor__aside">
+          <div class="panel">
+            <h3>Generation pipeline</h3>
+            <div class="steps" style="grid-template-columns:1fr;gap:1.1rem">
+              <div class="step"><div class="step__n">1</div><h3>Prompt</h3><p>Topic, audience, level and tone captured from the form.</p></div>
+              <div class="step"><div class="step__n">2</div><h3>Draft outline</h3><p>AI proposes sections and lessons based on similar published courses.</p></div>
+              <div class="step"><div class="step__n">3</div><h3>Human review</h3><p>You accept, edit or regenerate each item &mdash; nothing publishes automatically.</p></div>
+              <div class="step"><div class="step__n">4</div><h3>Save as draft</h3><p>Accepted outline becomes an unpublished course in the editor.</p></div>
+            </div>
+          </div>
+          <div class="panel panel--soft">
+            <h3>Provider</h3>
+            <div class="field">
+              <label for="ai-provider">AI provider</label>
+              <select id="ai-provider" class="select" style="width:100%">
+                <option selected>OpenAI</option>
+                <option>Gemini</option>
+                <option>Pollinations</option>
+              </select>
+            </div>
+            <p class="hint">Configured by your administrator in AI settings.</p>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

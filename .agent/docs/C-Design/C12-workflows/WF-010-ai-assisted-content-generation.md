@@ -26,6 +26,10 @@ generation lifecycle:
 ## Notifications
 Inline result/error in the AI builder; no async notification. Lesson body generation is queued after a valid draft hierarchy is saved. Provider failures degrade gracefully (no corrupt save).
 
+## Round-2 QA verification
+- Builder UI (`/manage/courses/ai-builder`, `create lms_course`) is functional and human-in-the-loop for both `instructor` and `content_editor`: Topic / Audience / Tone / Provider → "Generate draft" (preview) before entities are saved. Providers configured: OpenAI (default, gpt-4o) + Gemini. Live generation not re-run in round-2 to avoid consuming the owner's API credits (round-1 course 138 already proves the save path).
+- 🚨 **Security (`WF-010-001`, critical, open):** provider API keys (OpenAI + Gemini) are stored **in plaintext in `lms_ai.settings` and committed to `config/sync/lms_ai.settings.yml`** — the concrete manifestation of risk **R-001**. Keys must be rotated and moved to the `key` module / env; not auto-fixed (rotation is owner-only).
+
 ## Round-1 QA evidence
 - Screenshots: `.agent/docs/E-Quality/E00-workflows/round-1/_screens/010-ai-assisted-content-generation/`
 - Final real course: `138` (`Safe Wheelchair Transfer for Beginner Caregivers`), owner uid `56`, draft status `0`.

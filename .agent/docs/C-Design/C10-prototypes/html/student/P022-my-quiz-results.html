@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My quiz results · EverLMS</title>
+<meta name="description" content="Review every quiz attempt, your scores, and where to focus next.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/everlms.css">
+<link rel="stylesheet" href="../_shared/css/skins.css">
+</head>
+<body>
+<div id="site-header" data-shell="app" data-role="student" data-active="P022"></div>
+
+<main id="main">
+
+  <section class="workhero">
+    <div class="container">
+      <div class="pagehead" style="margin-bottom:0">
+        <div class="pagehead__t"><p class="eyebrow">Learning progress</p><h1>My quiz results</h1><p>9 attempts across 5 courses. Keep an eye on Next.js &amp; Full-Stack and Model Evaluation — a retake is available any time.</p></div>
+        <div class="pagehead__actions"><a class="btn btn--primary" href="../student/P018-my-courses.html">Go to my courses</a><a class="btn btn--ghost" href="../student/P017-dashboard.html">Back to dashboard</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- KPIs -->
+      <div class="kpis">
+        <div class="kpi"><div class="kpi__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><div><div class="kpi__n">9</div><div class="kpi__l">Total attempts</div></div></div>
+        <div class="kpi"><div class="kpi__ic kpi__ic--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></div><div><div class="kpi__n">80%</div><div class="kpi__l">Average score</div></div></div>
+        <div class="kpi"><div class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div><div><div class="kpi__n">7</div><div class="kpi__l">Passed</div></div></div>
+        <div class="kpi"><div class="kpi__ic kpi__ic--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14l-5-4.8 7-.9z"/></svg></div><div><div class="kpi__n">96%</div><div class="kpi__l">Best score</div></div></div>
+      </div>
+
+      <!-- filters -->
+      <div class="toolbar" style="margin-top:2rem">
+        <div class="segmented">
+          <a href="#" class="is-active">All (9)</a>
+          <a href="#">Passed (7)</a>
+          <a href="#">Failed (2)</a>
+        </div>
+        <div class="toolbar__count"><b>9</b> attempts total</div>
+      </div>
+
+      <!-- table -->
+      <div class="tablecard">
+        <div class="wtable__wrap">
+          <table class="wtable">
+            <thead><tr><th>Quiz</th><th>Course</th><th class="num">Score</th><th>Status</th><th>Date</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><b>React Fundamentals Quiz</b></td>
+                <td>Complete Modern React &amp; Next.js Bootcamp</td>
+                <td class="num">92%</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Passed</span></td>
+                <td>Jul 2, 2026</td>
+                <td><div class="rowbtns"><a href="../student/P021-quiz-result.html" aria-label="View result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>Hooks in Depth Quiz</b></td>
+                <td>Complete Modern React &amp; Next.js Bootcamp</td>
+                <td class="num">88%</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Passed</span></td>
+                <td>Jul 6, 2026</td>
+                <td><div class="rowbtns"><a href="../student/P021-quiz-result.html" aria-label="View result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>Next.js &amp; Full-Stack Quiz</b></td>
+                <td>Complete Modern React &amp; Next.js Bootcamp</td>
+                <td class="num">61%</td>
+                <td><span class="status status--error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>Failed</span></td>
+                <td>Jul 9, 2026</td>
+                <td><div class="rowbtns"><a href="../student/P021-quiz-result.html" aria-label="View result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>Supervised Learning Quiz</b></td>
+                <td>Machine Learning A&ndash;Z: Hands-On Python &amp; AI</td>
+                <td class="num">84%</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Passed</span></td>
+                <td>Jun 28, 2026</td>
+                <td><div class="rowbtns"><a href="../student/P021-quiz-result.html" aria-label="View result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>Model Evaluation Quiz</b></td>
+                <td>Machine Learning A&ndash;Z: Hands-On Python &amp; AI</td>
+                <td class="num">55%</td>
+                <td><span class="status status--error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>Failed</span></td>
+                <td>Jul 3, 2026</td>
+                <td><div class="rowbtns"><a href="../student/P021-quiz-result.html" aria-label="View result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>SQL Fundamentals Quiz</b></td>
+                <td>Data Analytics with SQL, Python &amp; Power BI</td>
+                <td class="num">96%</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Passed</span></td>
+                <td>Jun 20, 2026</td>
+                <td><div class="rowbtns"><a href="../student/P021-quiz-result.html" aria-label="View result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>Design Foundations Quiz</b></td>
+                <td>UI/UX Design Masterclass: Figma to Product</td>
+                <td class="num">78%</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Passed</span></td>
+                <td>Jun 24, 2026</td>
+                <td><div class="rowbtns"><a href="../student/P021-quiz-result.html" aria-label="View result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>Ethical Hacking Basics Quiz</b></td>
+                <td>Cybersecurity &amp; Ethical Hacking Fundamentals</td>
+                <td class="num">90%</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Passed</span></td>
+                <td>Jun 15, 2026</td>
+                <td><div class="rowbtns"><a href="../student/P021-quiz-result.html" aria-label="View result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+              <tr>
+                <td><b>Network Security Quiz</b></td>
+                <td>Cybersecurity &amp; Ethical Hacking Fundamentals</td>
+                <td class="num">73%</td>
+                <td><span class="status status--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Passed</span></td>
+                <td>Jun 18, 2026</td>
+                <td><div class="rowbtns"><a href="../student/P021-quiz-result.html" aria-label="View result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></a></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- empty state (reference — shown when a filter or a brand-new account has no attempts) -->
+      <p class="eyebrow" style="margin-top:2.4rem">No results state</p>
+      <div class="card card--soft center" style="padding:2.2rem 1.5rem">
+        <div class="kpi__ic" style="margin:0 auto .9rem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <h3 style="font-size:1.05rem;margin:0 0 .3rem">No attempts match this filter</h3>
+        <p class="text-muted text-sm" style="margin:0 0 1rem">Try a different filter, or take a quiz from any lesson to see your results appear here.</p>
+        <a class="btn btn--ghost btn--sm" href="../student/P018-my-courses.html">Go to my courses</a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

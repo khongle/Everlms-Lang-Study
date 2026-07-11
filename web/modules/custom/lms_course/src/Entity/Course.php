@@ -305,7 +305,9 @@ class Course extends ContentEntityBase implements EntityOwnerInterface {
 
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(new TranslatableMarkup('Published'))
-      ->setDefaultValue(TRUE)
+      // Draft-first authoring (C12 WF-006): a new course starts unpublished so
+      // the "Published" checkbox is unticked until the author explicitly publishes.
+      ->setDefaultValue(FALSE)
       ->setDisplayOptions('form', [
         'type' => 'boolean_checkbox',
         'weight' => 10,

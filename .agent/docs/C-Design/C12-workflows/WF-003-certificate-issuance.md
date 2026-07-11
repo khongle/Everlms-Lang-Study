@@ -28,5 +28,15 @@
 - Initiator: system (event subscriber on `QuizPassedEvent`/completion).
 - Admin: manager can revoke/regenerate.
 
+## As-built issuance, verification & revoke (round-2)
+- Issuance fires from `QuizPassedEvent` (`CertificateEventListener`), resolves the course from `lms_quiz.field_course` (legacy fallback via lesson→chapter→course), renders a PDF (mPDF) into `field_pdf_file`, and stores `field_certificate_number`. Verified: grading result 98 issued cert `FDB2B9BA40` with a PDF, idempotent (single row per learner/course).
+- **Public verifier** `/certificate/verify` (`VerificationForm`, field `certificate_code`) resolves by `field_certificate_number`, shows recipient full name, course, code, issue date, and marks `field_revoked` certificates as **invalid**.
+- **Revoke** `/workspace/certificates/{id}/revoke` (`RevokeCertificateForm`, `administer lms_course`) sets `field_revoked` + reason and returns to `/workspace/certificates`. **Regenerate** re-renders the PDF.
+- Learner list `/my-certificates` shows each certificate with number, issue date, and a PDF download.
+- Names everywhere use `field_first_name`/`field_last_name` via `lms_base_user_format_name_alter()` (not the login username).
+
 ## Notifications
 Issuance notification + download link to learner (role-protected). Idempotent: re-pass does not duplicate.
+
+## Round-2 QA evidence
+Screens: `.agent/docs/E-Quality/E00-workflows/round-2/_screens/003-certificate-issuance/`. Issues fixed: `WF-003-001..004` (name, revoke access, revoke 500, stat label).

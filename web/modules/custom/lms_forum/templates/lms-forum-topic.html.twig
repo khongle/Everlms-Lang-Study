@@ -95,6 +95,8 @@
           </h3>
           <p style="color: #8b949e; margin-bottom: 1.5rem; font-size: 0.95rem;">
             {% trans %}
+              There is <strong>{{ total_replies }} reply</strong> in this topic. You must hop in to view and participate in the community discussion!
+            {% plural total_replies %}
               There are <strong>{{ total_replies }} replies</strong> in this topic. You must hop in to view and participate in the community discussion!
             {% endtrans %}
           </p>
