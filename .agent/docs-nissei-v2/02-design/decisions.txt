@@ -105,6 +105,26 @@ DEC-12 SSO / HRIS / OFFLINE = OPTION CÓ CỔNG, VẼ ĐÚNG TRẠNG THÁI
   Hệ quả: tránh gold-plating; layout đã tính chỗ cho chúng nên bật sau
   không phải vẽ lại.
 
+DEC-15 VỎ HỢP NHẤT HAI TẦNG — MỘT KHUNG CHO MỌI SHELL (2026-07-16)
+  Bối cảnh: header còn "sượng" vì hai shell dựng bằng hai bộ markup khác
+  nhau. Hệ quả nhìn thấy được: logo hàng 1 ở manage nhưng hàng 2 ở front;
+  menu manage canh trái còn menu front canh phải; ngôn ngữ có ở front
+  nhưng manage thì chôn trong account dropdown; "Verify a certificate"
+  LẶP ở cả topbar lẫn main menu.
+  Quyết định: một khung hai tầng dùng chung (chi tiết sitemap.txt §2.2):
+    tầng 1 .topbar      ngữ cảnh trái · danh tính phải
+                        [scope][chuông][NGÔN NGỮ][auth] — ngôn ngữ luôn
+                        sát control đăng nhập
+    tầng 2 .site-header LOGO trái · MAIN MENU phải
+  + Logo bấm vào = home của chính bạn (một luật, mọi shell).
+  + Tầng 1 không chứa điểm đến; điểm đến chỉ nằm trong menu.
+  + Xóa hẳn .mhead*/.mnav; back-office và public dùng CHUNG .nav__links.
+  + Pill phạm vi chuyển sang cạnh danh tính (scope LÀ một phần danh tính),
+    đổi sang bảng màu nền tối.
+  Hệ quả: hết seam giữa public và back-office; ít CSS riêng hơn; sửa một
+  chỗ (tierOne/tierTwo) là cả 9 trạng thái shell đổi theo. Có script audit
+  assert 6 tiêu chí bố cục trên cả 9 trạng thái.
+
 DEC-14 ĐIỀU HƯỚNG: MENU LÀ NƠI LÀM VIỆC; PERSONA NHẤT QUÁN (2026-07-16)
   Bối cảnh: bản đầu "sượng" ở bốn điểm: menu chính của nhân viên là menu
   public (workspace chôn trong account dropdown); luồng học đứt 3 nhịp

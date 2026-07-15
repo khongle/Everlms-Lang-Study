@@ -369,23 +369,86 @@ function acctPill(roleKey, from, active) {
     '</button>' + acctMega(roleKey, from, active) + '</div>';
 }
 
+/* ========================================================== SHARED CHROME ==
+   Every shell is built from the SAME two tiers, so public and back-office
+   have no visible seam:
+
+     tier 1  .topbar        context on the left · identity on the right
+                            [scope] [bell] [LANGUAGE] [auth]
+                            language is always immediately beside the auth
+                            control, nowhere else
+     tier 2  .site-header   BRAND on the left · main menu on the right
+
+   Rules that keep it honest:
+   - the logo is only ever in tier 2, on the left, in every shell
+   - the main menu is only ever in tier 2, on the right, in every shell
+   - navigation destinations (Verify a certificate, Home) live in the menu
+     and never duplicate into the identity cluster
+   - tier 1 carries no destinations, only who-you-are and what-you-reach
+   ========================================================================== */
+
+/* identity cluster — the right side of tier 1, identical everywhere.
+   hideAuth: on the sign-in pages themselves, offering a Sign in button would
+   point at the page you are already on. Language stays: choosing a language
+   before signing in is exactly when a factory worker needs it. */
+function identity(roleKey, from, active, hideAuth) {
+  var out = [];
+  if (hideAuth) {
+    return '<span class="topbar__actions"><span class="langgrid">' +
+      langChips('EN') + '</span></span>';
+  }
+  if (roleKey) {
+    var R = ROLES[roleKey];
+    if (R.scope) {
+      out.push('<span class="scopepill scopepill--' + R.scopeKind + '">' + esc(R.scope) + '</span>');
+    }
+    out.push(notifBell(roleKey, from));
+    out.push('<span class="langgrid">' +
+      langChips(/\.zh\.html$/.test(currentFile()) ? 'ZH' : R.lang) + '</span>');
+    out.push(acctPill(roleKey, from, active));
+  } else {
+    out.push('<span class="langgrid">' + langChips('EN') + '</span>');
+    out.push('<a class="btn btn--white btn--sm" href="' + href('P001', from) + '">Sign in</a>');
+  }
+  return '<span class="topbar__actions">' + out.join('') + '</span>';
+}
+
+function tierOne(contextHtml, roleKey, from, active, hideAuth) {
+  return '<div class="topbar"><div class="container">' +
+    '<span class="topbar__ctx">' + (contextHtml || '') + '</span>' +
+    identity(roleKey, from, active, hideAuth) +
+  '</div></div>';
+}
+
+/* One rule for the logo everywhere: it goes to YOUR home. A guest's home is
+   the public page; a signed-in person's home is their own landing page. */
+function tierTwo(roleKey, from, sublabel, navHtml) {
+  var brandTarget = roleKey && ROLES[roleKey] ? ROLES[roleKey].home : 'P004';
+  return '<header class="site-header"><div class="container">' +
+    '<nav class="nav" aria-label="Primary">' +
+      '<a class="brand" href="' + href(brandTarget, from) + '">' +
+        '<span class="brand__mark">N</span>' +
+        '<span class="brand__name">Nissei Training<small>' + esc(sublabel) + '</small></span></a>' +
+      '<span class="nav__spacer"></span>' +
+      '<ul class="nav__links" id="nav-menu" data-nav>' + navHtml + '</ul>' +
+      '<button class="nav__toggle" aria-label="Menu" aria-controls="nav-menu" aria-expanded="false">' +
+        '<span></span><span></span><span></span></button>' +
+    '</nav></div></header>';
+}
+
 /* ------------------------------------------------------------ AUTH CHROME */
 function authHeader(from) {
-  return '<header class="site-header"><div class="container">' +
-    '<nav class="nav" aria-label="Primary" style="justify-content:space-between">' +
-      '<a class="brand" href="' + href('P004', from) + '">' +
-        '<span class="brand__mark">N</span>' +
-        '<span class="brand__name">Nissei Training<small>Compliance system</small></span></a>' +
-      '<a class="text-sm fw-700 flex items-center gap-2" href="' + href('P004', from) + '">' +
-        svg('home', 16) + 'Back to website</a>' +
-    '</nav></div></header>';
+  return tierOne('', '', from, '', true) +
+    tierTwo('', from, 'Compliance system',
+      '<li><a href="' + href('P004', from) + '">' + svg('home', 16) + 'Back to website</a></li>');
 }
 
 /* ----------------------------------------------------------- FRONT CHROME */
 /* Public site. Guest sees Sign in; a signed-in employee sees My account,
    exactly as in references/menu/frontend-logged-in.png. */
-/* Public chrome. Utility actions live in the TOPBAR (sign-in / account, as in
-   the reference layout); the main menu sits right-aligned next to the brand. */
+/* ----------------------------------------------------------- FRONT CHROME */
+/* Public site, and the employee's own area behind it. "Verify a certificate"
+   is a destination, so it lives in the menu only — never beside Sign in. */
 function frontHeader(roleKey, from, active) {
   /* Guest sees the public menu. A signed-in member's main menu IS their
      workspace — never bury the primary navigation of the largest user
@@ -398,37 +461,14 @@ function frontHeader(roleKey, from, active) {
       (l[0] === active ? ' aria-current="page"' : '') + '>' + l[1] + '</a></li>';
   }).join('');
 
-  var topActions = roleKey
-    ? '<span class="topbar__actions">' +
-        '<span class="langgrid">' + langChips(/\.zh\.html$/.test(currentFile()) ? 'ZH'
-          : ROLES[roleKey].lang) + '</span>' +
-        '<a class="icon-btn icon-btn--bar" aria-label="Notifications" href="' +
-          href('P019', from) + '">' + svg('bell', 18) + '<span class="icon-btn__dot"></span></a>' +
-        acctPill(roleKey, from, active) +
-      '</span>'
-    : '<span class="topbar__actions">' +
-        '<span class="langgrid">' + LANGS.map(function (l, i) {
-          return '<span class="langchip' + (i === 0 ? ' langchip--live' : '') + '">' + l[0] + '</span>';
-        }).join('') + '</span>' +
-        '<a class="topbar__link" href="' + href('P003', from) + '">Verify a certificate</a>' +
-        '<a class="btn btn--white btn--sm" href="' + href('P001', from) + '">Sign in</a>' +
-      '</span>';
+  var ctx = roleKey
+    ? '<span class="topbar__promo">' + esc(ROLES[roleKey].branch) +
+        ' &middot; ' + esc(ROLES[roleKey].job) + '</span>'
+    : '<span class="topbar__promo">Annual safety refresher window opens <b>01 Aug 2026</b>. ' +
+        '<a href="' + href('P001', from) + '">Sign in to check your due dates</a></span>';
 
-  return '<div class="topbar"><div class="container">' +
-      '<span class="topbar__promo">Annual safety refresher window opens <b>01 Aug 2026</b>. ' +
-        '<a href="' + href('P001', from) + '">Sign in to check your due dates</a></span>' +
-      topActions +
-    '</div></div>' +
-    '<header class="site-header"><div class="container">' +
-      '<nav class="nav" aria-label="Primary">' +
-        '<a class="brand" href="' + href('P004', from) + '">' +
-          '<span class="brand__mark">N</span>' +
-          '<span class="brand__name">Nissei Training<small>Compliance system</small></span></a>' +
-        '<span class="nav__spacer"></span>' +
-        '<ul class="nav__links" id="nav-menu" data-nav>' + links + '</ul>' +
-        '<button class="nav__toggle" aria-label="Menu" aria-controls="nav-menu" aria-expanded="false">' +
-          '<span></span><span></span><span></span></button>' +
-      '</nav></div></header>';
+  return tierOne(ctx, roleKey, from, active) +
+    tierTwo(roleKey, from, 'Compliance system', links);
 }
 
 /* ---------------------------------------------------------- MANAGE CHROME */
@@ -441,7 +481,7 @@ function notifBell(roleKey, from) {
     return '<a class="icon-btn" href="' + href('P019', from) + '" aria-label="Notifications">' +
       svg('bell') + '<span class="icon-btn__dot"></span></a>';
   }
-  return '<div class="acct notif">' +
+  return '<div class="acct">' +
     '<button class="icon-btn acct__tgl" aria-label="Notifications" aria-expanded="false">' +
       svg('bell') + '<span class="icon-btn__dot"></span></button>' +
     '<div class="acctmega acctmega--notif">' +
@@ -471,26 +511,14 @@ function manageHeader(roleKey, from, active) {
         return megaitem(id, from, active); }).join('') + '</div></li>';
   }).join('');
 
-  return '<div class="mhead">' +
-    '<div class="container"><div class="mhead__r1">' +
-      '<a class="brand mbrand" href="' + href(R.home, from) + '">' +
-        '<span class="brand__mark">N</span>' +
-        '<span class="brand__name">Nissei Training<small>Manage · ' + esc(R.label) + '</small></span></a>' +
-      '<span class="scopepill scopepill--' + R.scopeKind + '">' + esc(R.scope) + '</span>' +
-      '<span class="nav__search" style="max-width:320px;flex:1">' + svg('search', 18) +
-        '<label class="sr-only" for="gsearch">Search</label>' +
-        '<input id="gsearch" type="search" placeholder="Search people, courses, certificates..."></span>' +
-      '<span class="mhead__tools">' +
-        '<a class="icon-btn" href="' + href('P004', from) + '" aria-label="Public front-end">' +
-          svg('home') + '</a>' +
-        notifBell(roleKey, from) +
-        acctPill(roleKey, from, active) +
-      '</span>' +
-    '</div></div>' +
-    '<div class="mhead__r2"><div class="container">' +
-      '<ul class="mnav" data-nav>' + nav + '</ul>' +
-    '</div></div>' +
-  '</div>';
+  /* tier 1 context = global search; tier 2 = brand left, sections right —
+     the same two tiers the public site uses */
+  var ctx = '<span class="nav__search topsearch">' + svg('search', 18) +
+      '<label class="sr-only" for="gsearch">Search</label>' +
+      '<input id="gsearch" type="search" placeholder="Search people, courses, certificates..."></span>';
+
+  return tierOne(ctx, roleKey, from, active) +
+    tierTwo(roleKey, from, 'Manage \u00b7 ' + R.label, nav);
 }
 
 /* ---------------------------------------------------------------- FOOTER */

@@ -19,16 +19,27 @@ P001 role picker ──▶ any role's home ──▶ "Public front-end" ──�
 
 **Start at `html/01-anonymous/P001-sign-in.html`.** Below the sign-in form is a **role picker**: every role is a door into its own prototype. Once inside any role, **My account → Switch account** moves you to another role, and **My account → Public front-end** takes you back out to the public site. You never have to open a file by hand.
 
-Three chromes, derived from the page's role — never declared by the page itself:
+One chrome, two tiers, every shell — public, member and back-office share the same markup so there is no seam between them:
 
-| Chrome | Pages | What it looks like |
-|---|---|---|
-| `auth` | P001, P002 | brand + "Back to website" |
-| `front` | P003, P004 | public topbar + nav; a guest sees **Sign in** |
-| `front` (signed in) | P010–P020 | the *same* public chrome, plus bell + **My account** mega |
-| `manage` | P021–P063 | brand + `Manage · {role}` + **scope pill** + search + tools, and a section nav with hover menus |
+```
+tier 1  .topbar        context (left)          [scope] [bell] [LANGUAGE] [auth]  (right)
+tier 2  .site-header   LOGO (left)                            main menu  (right)
+```
 
-The **scope pill** in the manage header states a role's reach in one glance: `NEH-HAN` (one branch) / `ALL BRANCHES` / `GROUP · READ ONLY` / `SYSTEM`. It is the header-level version of the same rule the pages make at content level.
+Three invariants make it consistent everywhere:
+
+1. **The logo is only ever tier 2, left** — and clicking it goes to *your* home: a guest lands on the public page, a member on their Overview, staff on their role's home.
+2. **The main menu is only ever tier 2, right** — and it is the same `.nav__links` component in the public site and the back-office. The only difference is that a multi-page back-office section also opens a hover panel.
+3. **Tier 1 carries no destinations, only identity** — scope, notifications, language, and the auth control, with **language always immediately beside Sign in / My account**. "Verify a certificate" is a destination, so it lives in the menu and never beside Sign in.
+
+| Shell | Pages | Tier 1 context | Tier 2 menu |
+|---|---|---|---|
+| `auth` | P001, P002 | — | Back to website |
+| `front` guest | P003, P004 | announcement | Home · Verify certificate |
+| `front` member | P010–P020 | branch · job title | the member's own workspace |
+| `manage` | P021–P063 | global search | the role's sections |
+
+The **scope pill** sits beside the identity because scope *is* identity: `NEH-HAN` (one branch) / `ALL BRANCHES` / `GROUP · READ ONLY` / `PLATFORM · BREAK-GLASS`.
 
 The public surface is deliberately only two pages. This is an internal system: no marketing site, no public catalog, no self-registration. It exists because two audiences legitimately arrive without an account — inspectors verifying a certificate, and employees on their way to sign in.
 

@@ -57,16 +57,33 @@ Kết quả: 58 trang logic, đánh số lại từ đầu theo route group.
   ở một tập đoàn Nhật khác để catalog công khai; posture Nhật của Nissei có thể
   không chấp nhận. Câu hỏi này thuộc khảo sát GĐ 0 (Q5 strategy-full).
 
-2.2 BA VỎ (SHELL) — KIẾN TRÚC ĐIỀU HƯỚNG
-  Tham khảo LOGIC từ references/menu/*.png (không lấy trang/role của họ):
-    auth   P001, P002        — brand + "Back to website"
-    front  P003, P004        — topbar + nav công khai; khách thấy "Sign in"
-    app    P010–P020         — DÙNG LẠI vỏ front, nhưng đã đăng nhập:
-                               chuông + pill "My account" → megamenu
-    manage P021–P063         — back-office: brand + "Manage · <role>" +
-                               PILL PHẠM VI + search + tools; hàng 2 là
-                               section nav có mega thả xuống
+2.2 VỎ HỢP NHẤT — MỘT KHUNG HAI TẦNG CHO MỌI SHELL (rework 2026-07-16)
+  Tham khảo LOGIC từ references/menu/*.png (không lấy trang/role của họ).
+  TRƯỚC ĐÂY hai shell dựng bằng hai bộ markup khác nhau (front: topbar +
+  site-header; manage: mhead__r1 + mhead__r2) → logo, menu, ngôn ngữ mỗi
+  nơi một chỗ ⇒ "sượng". NAY MỘT khung duy nhất:
+
+    TẦNG 1  .topbar (nền tối)   — ngữ cảnh TRÁI · danh tính PHẢI
+              trái : front-khách = thông báo · front-member = chi nhánh ·
+                     chức danh · manage = ô tìm kiếm toàn cục
+              phải : [pill phạm vi] [chuông] [NGÔN NGỮ] [Sign in / My account]
+              → NGÔN NGỮ LUÔN sát ngay control đăng nhập, không nơi nào khác
+    TẦNG 2  .site-header        — LOGO TRÁI · MAIN MENU PHẢI (mọi shell)
+
+  BA LUẬT BẤT BIẾN:
+  (a) Logo CHỈ ở tầng 2, bên trái, mọi shell. Bấm logo = về HOME CỦA BẠN
+      (khách→P004 · member→P010 · staff→home của role).
+  (b) Main menu CHỈ ở tầng 2, bên phải, dùng CHUNG class .nav__links cho cả
+      public lẫn back-office (khác biệt duy nhất: section nhiều trang mở
+      thêm mega). Class .mnav/.mhead đã bị xóa.
+  (c) Tầng 1 KHÔNG chứa điểm đến. "Verify a certificate" là điểm đến ⇒ chỉ
+      nằm trong menu, TUYỆT ĐỐI không cạnh Sign in (trước đây bị lặp ở cả
+      hai chỗ — đó là một nguồn "sượng").
+
   Vỏ được SUY RA từ data-role trong shell.js, trang không tự chọn vỏ.
+  Kiểm chứng: script audit render cả 9 trạng thái shell và assert 6 tiêu chí
+  (logo tầng 2 trái · logo vắng tầng 1 · menu phải · lang sát auth · không
+  có Verify ở tầng 1 · có control auth ở tầng 1).
 
 2.3 VÒNG LIÊN KẾT — thứ làm 8 folder thành MỘT hệ thống
     P001 (role picker) ──▶ home của role bất kỳ ──▶ "Public front-end" ──▶ P004

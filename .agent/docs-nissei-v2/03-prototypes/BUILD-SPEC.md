@@ -14,7 +14,18 @@ Basis documents: `../02-design/roles.txt` (roles, scope model, content bible) an
 5. **No emojis. No dash-bullets. No lorem ipsum.** Icons are inline SVG (24×24, `stroke="currentColor"`, `fill="none"`, `stroke-width="2"`). Copy is real, professional, and English (see §5).
 6. **Real data only.** Every number, name, branch code and course code comes from the content bible in `roles.txt` §6. Do not invent a sixth branch or a fourteenth course.
 7. **Accessible.** Semantic landmarks, `alt` on every image, `<label>` on every input, `scope` on table headers, WCAG AA contrast. Status is never colour alone — always colour + label (see `.cstat`).
-8. **Responsive** at Bootstrap 5 breakpoints. Wide tables go inside `.wtable__wrap` / `.matrixwrap` so the page body never scrolls horizontally.
+8. **Responsive on the Bootstrap 5 ladder, and nothing else.** Wide tables go inside `.wtable__wrap` / `.matrixwrap` so the page body never scrolls horizontally.
+
+   | Tier | Media query to write | Container |
+   |---|---|---|
+   | xs | `(max-width:575.98px)` | fluid, 100% |
+   | sm | `(max-width:767.98px)` | 540px |
+   | md | `(max-width:991.98px)` | 720px |
+   | lg | `(max-width:1199.98px)` | 960px |
+   | xl | `(max-width:1399.98px)` | 1140px |
+   | xxl | default | 1320px |
+
+   Never invent a breakpoint (no 900px, no 1100px). `nissei.css` re-states base.css's few off-ladder collapses on the nearest tier, so authoring only ever needs the six values above. Every page — including sign-in — puts its content inside `.container` so it lines up with the header on the same grid.
 
 ---
 
