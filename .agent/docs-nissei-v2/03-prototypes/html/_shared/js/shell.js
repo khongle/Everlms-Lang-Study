@@ -420,15 +420,21 @@ function tierOne(contextHtml, roleKey, from, active, hideAuth) {
   '</div></div>';
 }
 
-/* One rule for the logo everywhere: it goes to YOUR home. A guest's home is
-   the public page; a signed-in person's home is their own landing page. */
+/* Brand block, one rule in every shell:
+     line 1 = the company. Constant. It never changes, so the logo is an
+              anchor rather than a label that shifts under you.
+     line 2 = context. WHERE you are and, in the back-office, AS WHOM.
+   Never restate line 1 in line 2 ("Nissei Training / Training portal" says
+   the word twice and answers nothing).
+   Clicking the logo goes to YOUR home: a guest lands on the public page, a
+   signed-in person on their own landing page. */
 function tierTwo(roleKey, from, sublabel, navHtml) {
   var brandTarget = roleKey && ROLES[roleKey] ? ROLES[roleKey].home : 'P004';
   return '<header class="site-header"><div class="container">' +
     '<nav class="nav" aria-label="Primary">' +
       '<a class="brand" href="' + href(brandTarget, from) + '">' +
         '<span class="brand__mark">N</span>' +
-        '<span class="brand__name">Nissei Training<small>' + esc(sublabel) + '</small></span></a>' +
+        '<span class="brand__name">Nissei Electric<small>' + esc(sublabel) + '</small></span></a>' +
       '<span class="nav__spacer"></span>' +
       '<ul class="nav__links" id="nav-menu" data-nav>' + navHtml + '</ul>' +
       '<button class="nav__toggle" aria-label="Menu" aria-controls="nav-menu" aria-expanded="false">' +
@@ -439,7 +445,7 @@ function tierTwo(roleKey, from, sublabel, navHtml) {
 /* ------------------------------------------------------------ AUTH CHROME */
 function authHeader(from) {
   return tierOne('', '', from, '', true) +
-    tierTwo('', from, 'Compliance system',
+    tierTwo('', from, 'Training system',
       '<li><a href="' + href('P004', from) + '">' + svg('home', 16) + 'Back to website</a></li>');
 }
 
@@ -468,7 +474,7 @@ function frontHeader(roleKey, from, active) {
         '<a href="' + href('P001', from) + '">Sign in to check your due dates</a></span>';
 
   return tierOne(ctx, roleKey, from, active) +
-    tierTwo(roleKey, from, 'Compliance system', links);
+    tierTwo(roleKey, from, 'Training system', links);
 }
 
 /* ---------------------------------------------------------- MANAGE CHROME */
@@ -527,7 +533,7 @@ function footer(roleKey, from) {
   return '<footer class="site-footer"><div class="container">' +
     '<div class="footer__legal" style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap">' +
       '<span class="text-sm text-muted">&copy; 2026 Nissei Electric &middot; ' +
-        'Compliance Training System</span>' +
+        'Training System</span>' +
       '<span class="text-sm text-muted">' +
         (R ? 'Signed in as ' + esc(R.who) + ' &middot; ' + esc(R.label)
            : 'Internal system &middot; authorized users only') +

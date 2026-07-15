@@ -1,5 +1,5 @@
 ================================================================================
-ROLES — MÔ HÌNH VAI TRÒ & PHÂN QUYỀN (Nissei Compliance Training System)
+ROLES — MÔ HÌNH VAI TRÒ & PHÂN QUYỀN (Nissei Training System)
 ================================================================================
 Loại tài liệu : Cơ sở thiết kế prototype (input cho 03-prototypes/html/)
 Ngày lập      : 2026-07-15

@@ -1,5 +1,5 @@
 ================================================================================
-MOBILE — ĐẶC TẢ ỨNG DỤNG DI ĐỘNG (Nissei Compliance Training System)
+MOBILE — ĐẶC TẢ ỨNG DỤNG DI ĐỘNG (Nissei Training System)
 ================================================================================
 Loại tài liệu : Đặc tả app cho công nhân — bề mặt được dùng NHIỀU NHẤT của
                 hệ thống (5.000+ công nhân xưởng) nhưng chưa có tài liệu

@@ -1,5 +1,5 @@
 ================================================================================
-DATA MODEL — MÔ HÌNH DỮ LIỆU (Nissei Compliance Training System)
+DATA MODEL — MÔ HÌNH DỮ LIỆU (Nissei Training System)
 ================================================================================
 Loại tài liệu : Thiết kế dữ liệu mức khái niệm→logic. Phân lớp theo nguyên
                 tắc E4: TÁI DÙNG (entity EverLMS có sẵn) / MỚI (2 module

@@ -1,5 +1,5 @@
 ================================================================================
-DECISIONS — NHẬT KÝ QUYẾT ĐỊNH THIẾT KẾ (Nissei Compliance Training System)
+DECISIONS — NHẬT KÝ QUYẾT ĐỊNH THIẾT KẾ (Nissei Training System)
 ================================================================================
 Loại tài liệu : ADR-lite. Mỗi quyết định: bối cảnh → quyết định → hệ quả.
                 Mục đích: người đến sau (hoặc chính mình 3 tháng nữa) không
@@ -104,6 +104,53 @@ DEC-12 SSO / HRIS / OFFLINE = OPTION CÓ CỔNG, VẼ ĐÚNG TRẠNG THÁI
   requirements.txt OPT-1/2/5).
   Hệ quả: tránh gold-plating; layout đã tính chỗ cho chúng nên bật sau
   không phải vẽ lại.
+
+DEC-16 TÊN HỆ THỐNG: "TRAINING SYSTEM", COMPLIANCE LÀ ENGINE (2026-07-16)
+  Bối cảnh: tên cũ "Compliance Training System" + nhãn UI "Compliance
+  system" hẹp hơn thực tế. Bằng chứng từ chính hệ thống:
+    - 13 khóa trải 6 lĩnh vực (an toàn ×7, PCCC, ISO 9001, ISO 14001,
+      ergonomics, đạo đức, an ninh mạng); chỉ 1/13 khóa mang chữ
+      "Compliance" trong tên.
+    - Ma trận có 12 ô TÙY CHỌN (optional) + catalog có mục "Optional
+      courses" — khóa tự chọn về định nghĩa KHÔNG phải compliance.
+    - UI tự mâu thuẫn: logo ghi "Compliance system" nhưng H1 trang public
+      ghi "Training portal".
+  Ghi nhận phía ngược lại: "compliance training" là thuật ngữ ngành có
+  nghĩa rộng (đào tạo buộc phải làm + phải chứng minh), nên ISO 9001
+  awareness hay cybersecurity chu kỳ 12 tháng vẫn tính. Nhưng với công
+  nhân thì đó là biệt ngữ, và vẫn bỏ sót phần tự chọn.
+  Quyết định: TÊN = "Nissei Training System" (thứ nó LÀ). Compliance là
+  ENGINE, được mô tả bên trong chứ không nằm trong tên — README mở đầu
+  bằng đúng hai câu: hệ thống là gì, và engine tuân thủ làm nó khác LMS
+  thường ở đâu.
+  Hệ quả: tên trung thực với độ phủ thật; RỦI RO đã biết — tên nhạt hơn
+  khi đưa HQ Nhật, nên proposal PHẢI nêu engine tuân thủ ngay đoạn mở
+  (nếu không sẽ bị đọc thành "một LMS nữa"). Đó là lý do README đặt hai
+  câu đó lên trên cùng.
+
+DEC-17 KHỐI BRAND: CÔNG TY / NGỮ CẢNH (2026-07-16)
+  Bối cảnh: sau DEC-16, nhãn front đổi thành "Training portal" nhưng đặt
+  dưới logo "Nissei Training" ⇒ LẶP chữ Training và nhãn không nói thêm
+  được gì. Trong khi nhãn manage ("Manage · HR/HSE Central") thì trả lời
+  hẳn một câu hỏi: bạn đang ở đâu, với tư cách gì. Hai nhãn không cùng
+  loại ⇒ vẫn "sượng".
+  Quyết định: khối brand có MỘT luật cho mọi shell:
+    dòng 1 = CÔNG TY ("Nissei Electric") — cố định, không bao giờ đổi, nên
+             logo là mỏ neo chứ không phải cái nhãn trượt dưới chân
+    dòng 2 = NGỮ CẢNH — bạn đang ở đâu ("Training system") và trong
+             back-office là với tư cách gì ("Manage · <role>")
+    Cấm dòng 2 nhắc lại dòng 1.
+  Hệ quả: hết lặp chữ ở cả 9 trạng thái shell (có kiểm chứng bằng script:
+  so từ giữa 2 dòng, 0 trùng); hai nhãn giờ cùng trả lời MỘT câu hỏi.
+  Ghi chú: <title> 72 trang vẫn là "· Nissei Training" — đó là TÊN HỆ
+  THỐNG (tab trình duyệt), khác với khối brand (công ty + ngữ cảnh). Không
+  mâu thuẫn, nhưng nếu sau này muốn đồng bộ tuyệt đối thì đổi title thành
+  "· Nissei Training System".
+  MỞ: nhãn role "Nissei Administrator" (DEC-03) giờ đọc thành "Nissei
+  Electric / Manage · Nissei Administrator" — lặp chữ "Nissei". Trong hệ
+  thống của chính Nissei, nhãn "Administrator" là đủ để đối lập với
+  "Platform Administrator". Chưa đổi vì DEC-03 chốt nhãn theo khách; hỏi
+  lại khi chốt nhãn hiển thị với khách hàng.
 
 DEC-15 VỎ HỢP NHẤT HAI TẦNG — MỘT KHUNG CHO MỌI SHELL (2026-07-16)
   Bối cảnh: header còn "sượng" vì hai shell dựng bằng hai bộ markup khác

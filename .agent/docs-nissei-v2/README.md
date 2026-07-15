@@ -1,4 +1,7 @@
-# docs-nissei-v2 — Hồ sơ giải pháp Nissei Compliance Training System
+# docs-nissei-v2 — Hồ sơ giải pháp Nissei Training System
+
+**Hệ thống này là gì:** nền tảng đào tạo nội bộ cho toàn bộ Nissei Electric — an toàn lao động, phòng cháy, chất lượng (ISO 9001), môi trường (ISO 14001), đạo đức nghề nghiệp, an ninh mạng — gồm cả khóa **bắt buộc lẫn tự chọn**.
+**Thứ làm nó khác một LMS thường:** *engine tuân thủ* — ma trận theo vị trí công việc sinh nghĩa vụ đào tạo → chứng chỉ **có hạn** theo chu kỳ → nhắc hạn → danh sách quá hạn → bằng chứng audit bất biến. Vòng lặp đó khép kín, không ai phải theo dõi bằng tay.
 
 Bộ hồ sơ đầy đủ cho engagement Nissei Electric: từ bối cảnh khách hàng → yêu cầu → thiết kế → prototype duyệt được bằng trình duyệt. **v2 thay thế v1** (`../docs-nissei/` giữ làm snapshot): bổ sung tầng requirements + design vốn trống ở v1, sửa các số liệu lệch sau lần tách quyền quản trị, dọn file rác.
 

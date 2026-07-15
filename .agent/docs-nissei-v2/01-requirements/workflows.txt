@@ -1,5 +1,5 @@
 ================================================================================
-WORKFLOWS — LUỒNG NGHIỆP VỤ CHUẨN (Nissei Compliance Training System)
+WORKFLOWS — LUỒNG NGHIỆP VỤ CHUẨN (Nissei Training System)
 ================================================================================
 Loại tài liệu : Đặc tả luồng — mỗi WF ghi: kích hoạt → các bước → kết thúc ở
                 đâu trong prototype. Bổ trợ cho requirements.txt (F-xx).

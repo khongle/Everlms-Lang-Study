@@ -1,4 +1,4 @@
-# Nissei Compliance Training System — HTML prototype
+# Nissei Training System — HTML prototype
 
 Static, self-contained prototype. **Open `html/01-anonymous/P001-sign-in.html` in a browser** — no server, no build step, works over `file://`.
 
@@ -28,7 +28,7 @@ tier 2  .site-header   LOGO (left)                            main menu  (right)
 
 Three invariants make it consistent everywhere:
 
-1. **The logo is only ever tier 2, left** — and clicking it goes to *your* home: a guest lands on the public page, a member on their Overview, staff on their role's home.
+1. **The logo is only ever tier 2, left** — and clicking it goes to *your* home: a guest lands on the public page, a member on their Overview, staff on their role's home. The brand block itself follows one rule everywhere: **line 1 is the company** (`Nissei Electric`, constant, so the logo is an anchor) and **line 2 is context** (`Training system`, or `Manage · {role}` in the back-office). Line 2 never restates line 1.
 2. **The main menu is only ever tier 2, right** — and it is the same `.nav__links` component in the public site and the back-office. The only difference is that a multi-page back-office section also opens a hover panel.
 3. **Tier 1 carries no destinations, only identity** — scope, notifications, language, and the auth control, with **language always immediately beside Sign in / My account**. "Verify a certificate" is a destination, so it lives in the menu and never beside Sign in.
 

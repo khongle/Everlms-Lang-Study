@@ -1,5 +1,5 @@
 ================================================================================
-ACCEPTANCE — TIÊU CHÍ NGHIỆM THU (Nissei Compliance Training System)
+ACCEPTANCE — TIÊU CHÍ NGHIỆM THU (Nissei Training System)
 ================================================================================
 Loại tài liệu : Tiêu chí nghiệm thu dạng Given/When/Then — đây là các điều
                 kiện ĐO ĐƯỢC để khách ký nhận từng nhóm yêu cầu. Dùng làm

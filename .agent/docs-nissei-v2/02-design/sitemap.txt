@@ -1,5 +1,5 @@
 ================================================================================
-SITEMAP — BẢN ĐỒ TRANG (Nissei Compliance Training System)
+SITEMAP — BẢN ĐỒ TRANG (Nissei Training System)
 ================================================================================
 Loại tài liệu : Cơ sở thiết kế prototype (page registry cho 03-prototypes/html/)
 Ngày lập      : 2026-07-15
@@ -73,6 +73,9 @@ Kết quả: 58 trang logic, đánh số lại từ đầu theo route group.
   BA LUẬT BẤT BIẾN:
   (a) Logo CHỈ ở tầng 2, bên trái, mọi shell. Bấm logo = về HOME CỦA BẠN
       (khách→P004 · member→P010 · staff→home của role).
+      KHỐI BRAND (DEC-17): dòng 1 = CÔNG TY "Nissei Electric", cố định,
+      không bao giờ đổi. dòng 2 = NGỮ CẢNH: "Training system" (front) hoặc
+      "Manage · <role>" (back-office). Dòng 2 CẤM nhắc lại dòng 1.
   (b) Main menu CHỈ ở tầng 2, bên phải, dùng CHUNG class .nav__links cho cả
       public lẫn back-office (khác biệt duy nhất: section nhiều trang mở
       thêm mega). Class .mnav/.mhead đã bị xóa.

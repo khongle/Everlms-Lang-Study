@@ -1,5 +1,5 @@
 ================================================================================
-REQUIREMENTS — YÊU CẦU HỆ THỐNG (Nissei Compliance Training System)
+REQUIREMENTS — YÊU CẦU HỆ THỐNG (Nissei Training System)
 ================================================================================
 Loại tài liệu : Đặc tả yêu cầu (FR + NFR) — tầng giữa nối strategy-final.txt
                 (00-project-input) với thiết kế (02-design) và prototype

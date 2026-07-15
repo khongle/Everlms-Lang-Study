@@ -1,4 +1,4 @@
-# BUILD-SPEC — Nissei Compliance Training System prototype
+# BUILD-SPEC — Nissei Training System prototype
 
 **Read before authoring any page.** Adapted from `docs/C-Design/C10-prototypes/html/_shared/BUILD-SPEC.md`.
 Basis documents: `../02-design/roles.txt` (roles, scope model, content bible) and `../02-design/sitemap.txt` (page registry, per-page notes). Read both first — this file only covers *how to build*, not *what to build*.
