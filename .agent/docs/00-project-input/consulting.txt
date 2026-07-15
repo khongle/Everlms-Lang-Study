@@ -1,0 +1,213 @@
+================================================================================
+CONSULTING NOTE — HỆ THỐNG TRAINING ĐỒNG BỘ CHO NISSEI ELECTRIC
+================================================================================
+Loại tài liệu : Consulting draft (pre-sales / solution shaping) — INFERENCE
+Ngày lập      : 2026-07-15
+Liên quan     : company-info.txt (cùng thư mục) — hồ sơ công ty đã xác minh
+Trạng thái    : Đề xuất của agent, CHƯA trao đổi với khách hàng. Mọi giả định
+                về hiện trạng nội bộ Nissei đều cần xác nhận trong buổi khảo sát.
+
+--------------------------------------------------------------------------------
+1. NỖI ĐAU ĐƯỢC MÔ TẢ & CHẨN ĐOÁN
+--------------------------------------------------------------------------------
+Khách hàng nêu: "Hệ thống training nhân sự không đồng bộ giữa các chi nhánh,
+không biết bắt đầu từ đâu."
+
+Chẩn đoán (điển hình cho doanh nghiệp sản xuất Nhật đa nhà máy, cần xác nhận):
+  - Mỗi nhà máy tự tổ chức đào tạo: giáo trình riêng, Excel/giấy riêng,
+    quy ước đặt tên và chu kỳ đào tạo lại (re-training) khác nhau.
+  - Không có "hồ sơ đào tạo duy nhất theo nhân viên": người chuyển từ nhà máy
+    HCM ra Hà Nội phải học lại từ đầu vì không mang theo được lịch sử.
+  - Báo cáo tuân thủ (ATLĐ, ISO) tổng hợp thủ công, chậm, không so sánh được
+    giữa các site → ban lãnh đạo (và HQ Nhật) không có bức tranh chung.
+  - Nội dung do từng site tự soạn → chất lượng lệch, không có version control,
+    khi luật thay đổi thì mỗi nơi cập nhật một kiểu.
+
+ĐIỂM MẤU CHỐT TƯ VẤN: "Không đồng bộ" là vấn đề QUẢN TRỊ trước, phần mềm sau.
+Nếu chỉ cài LMS mà không chuẩn hóa khung năng lực + danh mục khóa học trước,
+kết quả là 3 nhà máy dùng chung 1 phần mềm nhưng vẫn dạy 3 kiểu khác nhau —
+tức là mua công cụ mà không giải quyết nỗi đau.
+
+--------------------------------------------------------------------------------
+2. ĐỊNH NGHĨA "ĐỒNG BỘ" — MỤC TIÊU ĐO ĐƯỢC
+--------------------------------------------------------------------------------
+Trước khi bắt đầu, chốt với khách hàng "đồng bộ" nghĩa là gì. Đề xuất 6 tiêu chí:
+  D1. MỘT danh mục khóa học master (có version) dùng chung toàn hệ thống;
+      site chỉ được thêm phần đặc thù địa phương, không sửa lõi.
+  D2. MỘT khung năng lực / ma trận đào tạo theo vị trí công việc
+      (job role x khóa bắt buộc x chu kỳ đào tạo lại).
+  D3. MỘT hồ sơ đào tạo duy nhất cho mỗi nhân viên, theo suốt khi luân chuyển
+      giữa các chi nhánh.
+  D4. MỘT chuẩn chứng chỉ: mẫu, thời hạn hiệu lực, quy tắc tái đào tạo.
+  D5. Báo cáo tuân thủ hợp nhất: xem theo từng site VÀ toàn tập đoàn,
+      cùng một bộ KPI (tỷ lệ hoàn thành, tỷ lệ quá hạn, giờ đào tạo/người).
+  D6. MỘT quy trình sản xuất nội dung: ai soạn, ai duyệt, phát hành thế nào,
+      bản dịch (VI/JA/ZH) đồng bộ với bản gốc ra sao.
+
+--------------------------------------------------------------------------------
+3. NGUYÊN TẮC GIẢI PHÁP: "CHUẨN TRUNG TÂM — THỰC THI ĐỊA PHƯƠNG"
+--------------------------------------------------------------------------------
+  - Trung tâm (governance): khung năng lực, danh mục khóa master, chuẩn chứng
+    chỉ, KPI báo cáo. Đặt ở đâu cũng được nhưng phải có MỘT chủ sở hữu.
+  - Địa phương (execution): lịch đào tạo, giảng viên nội bộ, nội dung đặc thù
+    pháp lý từng nước (VN: NĐ 44/2016 & nhóm 1–6 ATLĐ; TQ: Luật An toàn sản
+    xuất + quy định địa phương), ngôn ngữ.
+  - Hệ thống phần mềm chỉ là lớp thực thi của mô hình trên: 1 nền tảng,
+    phân vùng theo chi nhánh, dữ liệu nhân viên là master data dùng chung.
+
+--------------------------------------------------------------------------------
+4. LỘ TRÌNH ĐỀ XUẤT (PHẠM VI VN + TQ)
+--------------------------------------------------------------------------------
+GĐ 0 — Khảo sát & liên kết (3–4 tuần)
+  - Stakeholder map: HR + HSE + IT của 3 nhà máy VN, 2 VP Trung Quốc,
+    và MỘT sponsor phía Nhật (xem mục 6 — bắt buộc, kể cả khi không triển khai
+    ở Nhật).
+  - Kiểm kê hiện trạng: mỗi site đang đào tạo gì, lưu hồ sơ bằng gì, ai duyệt.
+  - Chốt định nghĩa "đồng bộ" (mục 2) thành KPI có chữ ký.
+  Deliverable: báo cáo hiện trạng + gap analysis + phạm vi hợp đồng.
+
+GĐ 1 — Chuẩn hóa (4–6 tuần, chạy song song cuối GĐ 0)
+  - Xây ma trận đào tạo theo vị trí (D2) — bắt đầu từ ATLĐ vì là nghĩa vụ
+    pháp lý, dễ đạt đồng thuận nhất, đúng thế mạnh domain của EverLMS.
+  - Chuẩn hóa danh mục khóa, quy tắc version, mẫu chứng chỉ song ngữ.
+  - Chuẩn hóa master data: mã nhân viên, cây tổ chức, chức danh — điều kiện
+    tiên quyết cho D3 (hồ sơ duy nhất).
+
+GĐ 2 — Pilot 1 nhà máy VN (8–10 tuần)
+  - Đề xuất pilot tại Nissei Electric Hà Nội (2.000 người, 1 site gọn) hoặc
+    HCM (3.000 người, site đầu tiên, chính trị nội bộ mạnh hơn) — chọn theo
+    mức độ ủng hộ của giám đốc nhà máy, không theo kỹ thuật.
+  - Triển khai EverLMS 1 instance: khóa ATLĐ nhóm 1–6, app mobile cho công
+    nhân, import hồ sơ đào tạo cũ, chạy 1 chu kỳ đào tạo thật.
+  - Đo bằng KPI đã chốt ở GĐ 0 → làm bằng chứng bán rollout.
+
+GĐ 3 — Rollout toàn VN (6–8 tuần)
+  - Nhân rộng ra 2 nhà máy còn lại (HCM/Hà Nội + Mỹ Tho).
+  - Bật phân vùng chi nhánh + báo cáo hợp nhất (D5).
+  - Thiết lập quy trình nội dung trung tâm (D6) với hội đồng duyệt liên-site.
+
+GĐ 4 — Trung Quốc (4–6 tuần, TRIỂN KHAI NHẸ — xem mục 5)
+  - Web-first cho 2 văn phòng thương mại, nội dung ZH, kiểm tra pháp lý PIPL.
+
+GĐ 5 — Đóng gói "chuẩn khu vực" bàn giao HQ (tùy chọn)
+  - Tài liệu hóa toàn bộ khung (bằng EN/JA) để HQ Nhật có thể nhân rộng sang
+    Thái Lan, Ấn Độ... → biến ràng buộc phạm vi thành cơ hội mở rộng hợp đồng.
+
+--------------------------------------------------------------------------------
+5. RÀNG BUỘC VN + TRUNG QUỐC: GIẢI PHÁP KHÁC GÌ?
+--------------------------------------------------------------------------------
+Trả lời ngắn: KHÁC, ở 3 điểm — quản trị, kiến trúc hạ tầng, và pháp lý dữ liệu.
+Nhưng có một tin tốt làm mọi thứ nhẹ đi nhiều:
+
+[QUAN TRỌNG] Theo trang cứ điểm chính thức của Nissei, Trung Quốc chỉ có
+2 VĂN PHÒNG THƯƠNG MẠI (贸易/trading office), KHÔNG có nhà máy. Tức là phía TQ
+chỉ vài chục nhân viên văn phòng, không phải hàng nghìn công nhân như VN.
+=> KHÔNG nên dựng hạ tầng riêng trong đại lục cho quy mô này. Trọng tâm dự án
+   là Việt Nam (5.000+ người); Trung Quốc là phần mở rộng nhẹ.
+
+5.1 Kiến trúc hạ tầng
+  - 1 instance EverLMS trung tâm đặt tại VN (hoặc Singapore nếu cần cân bằng
+    độ trễ VN–TQ). KHÔNG cần instance riêng tại đại lục ở giai đoạn này.
+  - Vấn đề Great Firewall: truy cập từ đại lục ra server nước ngoài có thể
+    chậm/chập chờn. Giảm thiểu:
+      * Chọn hosting/CDN có tuyến tốt vào đại lục (HK/SG POP).
+      * TUYỆT ĐỐI không để trang phụ thuộc tài nguyên bị chặn: Google Fonts,
+        reCAPTCHA, YouTube embed, Google Analytics → tự host toàn bộ media
+        và font. (Cần audit theme lms_theme về các dependency này.)
+  - App mobile cho user TQ: Firebase Cloud Messaging KHÔNG hoạt động tin cậy
+    ở đại lục (app EverLMS hiện dùng Firebase — SRC-07). Với vài chục nhân viên
+    văn phòng: cho họ dùng WEB, không cần app → né toàn bộ vấn đề FCM +
+    phân phối app (Google Play không có ở TQ).
+  - CHỈ KHI Nissei mở nhà máy tại TQ mới cân nhắc instance riêng trên
+    Alibaba/Tencent Cloud + ICP备案 (cần pháp nhân TQ đứng tên) — ghi vào
+    hợp đồng như một giai đoạn tương lai, không làm bây giờ.
+
+5.2 Pháp lý dữ liệu
+  - Trung Quốc (PIPL): lưu dữ liệu nhân viên TQ trên server ngoài đại lục là
+    "chuyển dữ liệu xuyên biên giới". Tin tốt: quy định 2024 (Provisions on
+    Promoting and Regulating Cross-border Data Flows) có ngoại lệ cho dữ liệu
+    NHÂN SỰ phục vụ quản lý lao động xuyên biên giới, và ngưỡng miễn trừ cho
+    khối lượng nhỏ (<100k người/năm, không nhạy cảm). Hồ sơ đào tạo của vài
+    chục nhân viên gần như chắc chắn nằm trong vùng an toàn.
+    [!] Vẫn phải: (a) có điều khoản đồng ý trong nội quy lao động/hợp đồng,
+    (b) xác nhận với luật sư TQ của Nissei — ghi thành điều kiện tiên quyết
+    trong hợp đồng, không tự cam kết thay khách.
+  - Việt Nam (NĐ 13/2023 về bảo vệ DLCN + Luật An ninh mạng): đặt server tại
+    VN là phương án sạch nhất — thêm một lý do chọn hosting VN cho instance
+    trung tâm.
+
+5.3 Quản trị — điểm khác biệt LỚN NHẤT
+  - "Đồng bộ toàn bộ hệ thống công ty" nhưng chỉ được triển khai VN+TQ nghĩa
+    là KHÔNG thể ép Nhật/Thái/Ấn dùng theo. Rủi ro chết người: làm xong chuẩn
+    khu vực rồi HQ Nhật áp một LMS toàn cầu khác đè lên → công sức đổ sông.
+  - Cách xử lý:
+      * Đổi cách đóng khung phạm vi trong hợp đồng: không hứa "đồng bộ toàn
+        tập đoàn", hứa "chuẩn đào tạo hợp nhất khối VN+TQ, thiết kế sẵn để
+        HQ nhân rộng" (regional standard, HQ-adoptable).
+      * Ngay GĐ 0 phải tìm được 1 sponsor phía HQ Nhật (HR hoặc HSE bộ phận
+        quản lý nước ngoài) — không phải để họ triển khai, mà để họ BẢO CHỨNG
+        chuẩn khu vực không xung đột định hướng tập đoàn. Nissei là công ty
+        Nhật: quyết định thật nằm ở Hamamatsu, kể cả quyết định "của" chi
+        nhánh VN.
+      * Mọi tài liệu chuẩn (ma trận, quy trình, KPI) viết song ngữ VI + EN/JA
+        ngay từ đầu để HQ đọc được.
+      * Dữ liệu mở đường lui: hồ sơ đào tạo export được theo chuẩn phổ biến
+        (CSV/xAPI nếu khả thi) để nếu tập đoàn hợp nhất về hệ khác thì dữ
+        liệu VN+TQ không bị kẹt. [Cần kiểm tra năng lực export hiện tại của
+        EverLMS — chưa xác minh.]
+
+5.4 Ngôn ngữ & nội dung
+  - Thêm tiếng Trung giản thể (ZH-Hans) cho user TQ; nội dung ATLĐ nhóm 1–6
+    của VN KHÔNG áp cho TQ — văn phòng thương mại TQ cần gói khác: an toàn
+    văn phòng, compliance, đào tạo sản phẩm/quy trình bán hàng.
+  - Checklist kỹ thuật EverLMS cần xác minh (chưa kiểm tra trong code):
+      * Mức độ hỗ trợ đa ngôn ngữ hiện tại (VI/EN/JA/ZH) của web + app Flutter
+        (app đã có l10n framework — SRC-07, cần xem locale nào đã bật).
+      * Mẫu chứng chỉ mPDF render CJK (font tiếng Nhật/Trung) được không.
+      * open_switcher có đáp ứng mô hình phân vùng chi nhánh không, hay cần
+        thiết kế thêm (field chi nhánh + role per site).
+
+--------------------------------------------------------------------------------
+6. RỦI RO CHÍNH
+--------------------------------------------------------------------------------
+  R1. Không có sponsor HQ Nhật → chuẩn khu vực bị thay giữa chừng. (Cao/Nặng)
+      Giảm thiểu: điều kiện tiên quyết ở GĐ 0, mục 5.3.
+  R2. Nhầm bài toán quản trị thành bài toán phần mềm → LMS thành kho file chết.
+      Giảm thiểu: GĐ 1 (chuẩn hóa) đi trước triển khai, có chữ ký KPI.
+  R3. Master data nhân sự 3 nhà máy không khớp (mã NV trùng/lệch) → không xây
+      được hồ sơ duy nhất (D3). Giảm thiểu: audit master data ngay GĐ 0.
+  R4. Truy cập từ đại lục kém → user TQ bỏ hệ thống. Giảm thiểu: mục 5.1;
+      test thực tế từ văn phòng TQ trong GĐ 4 trước khi golive.
+  R5. PIPL/NĐ13 diễn giải sai. Giảm thiểu: đẩy nghĩa vụ xác nhận pháp lý về
+      phía luật sư của khách, ghi rõ trong hợp đồng.
+  R6. Pilot chọn sai nhà máy (nơi giám đốc không ủng hộ) → KPI xấu oan.
+      Giảm thiểu: chọn site theo sponsor, mục 4 GĐ 2.
+
+--------------------------------------------------------------------------------
+7. VIỆC CẦN LÀM NGAY (NEXT STEPS)
+--------------------------------------------------------------------------------
+  N1. Chốt với đầu mối Nissei: buổi khảo sát GĐ 0 (2 buổi: HR/HSE + IT).
+  N2. Hỏi 5 câu định hình phạm vi:
+      (1) Ai ở HQ Nhật biết/bảo trợ sáng kiến này?
+      (2) "Các chi nhánh" trong nỗi đau của họ là 3 nhà máy VN, hay gồm cả TQ,
+          hay cả tập đoàn? (định cỡ kỳ vọng)
+      (3) Hồ sơ đào tạo hiện lưu bằng gì ở từng site?
+      (4) Có hệ thống HR/AD nào làm nguồn master data nhân viên không?
+      (5) Tiếng Nhật có bắt buộc cho báo cáo quản lý không?
+  N3. Nội bộ (EverLMS): kiểm tra 3 mục kỹ thuật ở 5.4 (đa ngôn ngữ, CJK trong
+      chứng chỉ mPDF, năng lực open_switcher) trước buổi demo.
+  N4. Chuẩn bị demo theo kịch bản Nissei: 2 chi nhánh mẫu + ma trận ATLĐ
+      nhóm 1–6 + báo cáo hợp nhất — demo đúng nỗi đau, không demo tính năng.
+
+--------------------------------------------------------------------------------
+8. NGUỒN & CĂN CỨ
+--------------------------------------------------------------------------------
+  - company-info.txt (cùng thư mục): quy mô site, cứ điểm TQ = 2 VP thương mại
+    [nguồn A — trang chính thức nissei-el.co.jp/company/group/].
+  - Quy định VN: NĐ 44/2016/NĐ-CP (huấn luyện ATVSLĐ, nhóm 1–6), NĐ 13/2023
+    (DLCN) — kiến thức nền của agent, cần luật sư xác nhận bản cập nhật 2026.
+  - Quy định TQ: PIPL 2021 + Provisions on Cross-border Data Flows 03/2024 —
+    kiến thức nền của agent, cần xác nhận pháp lý.
+  - Toàn bộ mục 1 (chẩn đoán hiện trạng nội bộ Nissei) là GIẢ THUYẾT tư vấn,
+    chưa có dữ kiện từ khách hàng.
+================================================================================

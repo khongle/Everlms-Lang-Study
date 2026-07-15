@@ -1,0 +1,323 @@
+================================================================================
+SITEMAP — BẢN ĐỒ TRANG (Nissei Compliance Training System)
+================================================================================
+Loại tài liệu : Cơ sở thiết kế prototype (page registry cho 01-prototypes/html/)
+Ngày lập      : 2026-07-15
+Nguồn         : docs-nissei/00-project-input/strategy-final.txt (mục 5, 6, 9)
+                roles.txt (cùng thư mục — ĐỌC TRƯỚC file này)
+Tham chiếu    : docs/C-Design/C07-sitemap (cách đánh số + chia route group),
+                C10-prototypes/html/_shared/BUILD-SPEC.md (quy ước file)
+Host giả định : https://training.nissei-el.local
+
+--------------------------------------------------------------------------------
+1. VÌ SAO KHÔNG TÁI SỬ DỤNG ĐƯỢC SITEMAP CỦA EVERLMS
+--------------------------------------------------------------------------------
+C07-sitemap của EverLMS có 51 trang, trong đó ~20 trang KHÔNG áp dụng được
+cho Nissei vì thuộc mô hình bán khóa học:
+  BỎ: Homepage marketing (#1), Course catalog công khai (#2), Categories
+  (#4,#5), Pricing (#6), Instructor profile công khai (#7), Blog/News
+  (#8,#9), About (#10), Contact (#11), Glossary (#12), Forum (#13,#14),
+  Register (#16), Wishlist (#25), My membership (#26), Checkout (#29,#30),
+  Manage orders (#36), Manage pricing/plans (#38), Manage ratings (#39),
+  Manage blog (#43), Payment settings (#47), Zoom settings (#48).
+
+Và ~25 trang MỚI mà EverLMS không có, sinh ra từ 6 tiêu chí D1–D6:
+  ma trận đào tạo, vị trí công việc, chi nhánh, hồ sơ tuân thủ, danh sách
+  quá hạn, import nhân viên/hồ sơ lịch sử, quy tắc nhắc hạn, workspace
+  dịch thuật, quy trình duyệt nội dung, dashboard HQ, so sánh chi nhánh,
+  audit log, cấu hình ngôn ngữ, chính sách lưu trữ dữ liệu.
+
+Giữ lại và tái dùng được (~11 trang): bộ máy học–thi–chứng chỉ của EverLMS
+(lesson player, quiz take/result, certificates, notifications, profile,
+course editor, quiz builder) — đây chính là phần "nền tảng đã có" trong
+strategy-final mục 4.
+
+Kết quả: 52 trang logic, đánh số lại từ đầu theo route group.
+
+--------------------------------------------------------------------------------
+2. ROUTE GROUP
+--------------------------------------------------------------------------------
+  Auth       /user/*                   — đăng nhập, đặt lại mật khẩu
+  Public     /, /verify                — bề mặt công khai (xem 2.1)
+  App        /dashboard, /my-*, /learn/*, /quiz/*  — bề mặt học của nhân viên
+  Workspace  /workspace/*              — vận hành đào tạo (instructor, site mgr)
+  Central    /central/*                — chuẩn trung tâm (hr/hse)
+  HQ         /hq/*                     — giám sát hợp nhất (hq viewer, read-only)
+  Admin      /admin/*                  — cấu hình hệ thống (administrator)
+
+2.1 BỀ MẶT CÔNG KHAI — VÌ SAO CÓ, VÀ VÌ SAO NHỎ
+  Nissei là hệ thống NỘI BỘ: không marketing site, không catalog công khai,
+  không đăng ký. Nhưng public KHÔNG rỗng, vì hai nhóm hợp lệ đến mà không có
+  tài khoản:
+    - Thanh tra ATLĐ / auditor ISO / auditor khách hàng (Canon, Panasonic):
+      cần xác thực chứng chỉ theo mã → P003.
+    - Nhân viên trên đường vào đăng nhập: cần chỗ đáp → P004.
+  Nên public = ĐÚNG 2 trang (P004 home + P003 verify). Không hơn.
+  [MỞ] Có nên để lộ tên khóa học trước đăng nhập không? Deployment tương đương
+  ở một tập đoàn Nhật khác để catalog công khai; posture Nhật của Nissei có thể
+  không chấp nhận. Câu hỏi này thuộc khảo sát GĐ 0 (Q5 strategy-full).
+
+2.2 BA VỎ (SHELL) — KIẾN TRÚC ĐIỀU HƯỚNG
+  Tham khảo LOGIC từ references/menu/*.png (không lấy trang/role của họ):
+    auth   P001, P002        — brand + "Back to website"
+    front  P003, P004        — topbar + nav công khai; khách thấy "Sign in"
+    app    P010–P020         — DÙNG LẠI vỏ front, nhưng đã đăng nhập:
+                               chuông + pill "My account" → megamenu
+    manage P021–P058         — back-office: brand + "Manage · <role>" +
+                               PILL PHẠM VI + search + tools; hàng 2 là
+                               section nav có mega thả xuống
+  Vỏ được SUY RA từ data-role trong shell.js, trang không tự chọn vỏ.
+
+2.3 VÒNG LIÊN KẾT — thứ làm 7 folder thành MỘT hệ thống
+    P001 (role picker) ──▶ home của role bất kỳ ──▶ "Public front-end" ──▶ P004
+          ▲                        │                                        │
+          └──── "Switch role" ─────┴──────────── Sign in ──────────────────┘
+  - P001 có ROLE PICKER: mỗi role là một cửa, render thẳng từ registry của
+    shell.js nên không bao giờ lệch với trang thật.
+  - Mọi role đăng nhập đều ra được public (footer megamenu + icon home ở
+    manage header) và đều đổi được role ("Switch role" ở megamenu + footer).
+  - PILL PHẠM VI trên manage header: NEV-HCM / NEH-HAN (branch) · ALL BRANCHES
+    (global) · GROUP · READ ONLY · SYSTEM. Đây là tuyên bố cấp header của
+    đúng quy tắc branch scope mà từng trang thể hiện ở cấp nội dung.
+
+Ký hiệu cột Access (định nghĩa đầy đủ ở roles.txt mục 5):
+  ●  OWN — dựng trong folder role này
+  △  VARIANT — dựng bản riêng, giao diện khác thật sự
+  ○  VIA — access được, đến qua cross-link, không nhân bản
+  —  không có quyền
+Thứ tự cột: anon | empl | inst | site | hrhse | hq | admin
+
+--------------------------------------------------------------------------------
+3. PAGE REGISTRY
+--------------------------------------------------------------------------------
+
+### AUTH + PUBLIC (4) — folder: anonymous/
+| ID | Title | URL | shell | anon empl inst site hrhse hq admin |
+|----|-------|-----|-------|-----------------------------------|
+| P001 | Sign in + role picker | /user/login | auth | ● ○ ○ ○ ○ ○ ○ |
+| P002 | Password reset | /user/password | auth | ● — — — — — — |
+| P003 | Certificate verification | /verify | front | ● ○ ○ ○ ○ ○ ○ |
+| P004 | Public home | / | front | ● ○ ○ ○ ○ ○ ○ |
+
+P001 — Đăng nhập bằng MÃ NHÂN VIÊN (không phải email: công nhân xưởng
+       không có email công ty). Có nút SSO (chờ OPT-1, hiện vẽ đúng trạng
+       thái chưa kết nối), language switcher EN/VI/JA/ZH. KHÔNG có link
+       đăng ký — tài khoản do HR tạo/import.
+       KIÊM ROLE PICKER (xem 2.3): dưới form là 6 cửa vào 6 role, render
+       từ registry shell.js. Mọi role đều access P001 vì "Switch role" và
+       "Sign out" đều dẫn về đây — đó là bản lề của cả vòng liên kết.
+P003 — Trang công khai quan trọng nhất với thanh tra/auditor: nhập mã
+       chứng chỉ → xác thực hợp lệ + hạn hiệu lực. Không lộ PII ngoài tên +
+       khóa + ngày cấp/hết hạn. Dùng vỏ front (không phải auth) vì đây là
+       trang công khai thật, không phải bước đăng nhập.
+P004 — Điểm đáp của bề mặt công khai (lý do tồn tại: 2.1). Gồm: hero + CTA
+       đăng nhập, 3 nhóm người dùng (nhân viên / thanh tra & auditor / phòng
+       đào tạo), tổng quan chương trình đào tạo (KHÔNG có nội dung khóa), và
+       danh bạ đào tạo 5 site. Là đích của "Public front-end" từ mọi role.
+
+### APP (11) — folder: employee/
+| ID | Title | URL | anon empl inst site hrhse hq admin |
+|----|-------|-----|-----------------------------------|
+| P010 | My dashboard | /dashboard | — ● ○ ○ ○ — ○ |
+| P011 | My required training | /my-training | — ● ○ ○ ○ — ○ |
+| P012 | Course catalog | /courses | — ● ○ ○ ○ — ○ |
+| P013 | Course detail | /courses/{course} | — ● ○ ○ ○ — ○ |
+| P014 | Lesson player | /learn/{course}/{lesson} | — ● ○ ○ ○ — ○ |
+| P015 | Quiz attempt | /quiz/{quiz}/take | — ● ○ ○ ○ — ○ |
+| P016 | Quiz result | /quiz-result/{result} | — ● ○ ○ ○ — ○ |
+| P017 | My training record | /my-record | — ● ○ ○ ○ — ○ |
+| P018 | My certificates | /my-certificates | — ● ○ ○ ○ — ○ |
+| P019 | Notifications | /notifications | — ● ○ ○ ○ — ○ |
+| P020 | My profile | /profile | — ● ○ ○ ○ — ○ |
+
+P010 — Dashboard TUÂN THỦ, không phải dashboard học tập: nghĩa vụ đào tạo
+       của tôi, cái gì quá hạn, cái gì sắp hết hạn. (Khác hẳn P017
+       dashboard của EverLMS vốn xoay quanh streak/khóa đang học.)
+P011 — Hiện thực hóa D2 ở góc nhìn nhân viên: ma trận sinh ra danh sách
+       khóa bắt buộc theo vị trí "Production Operator" + hạn từng khóa.
+P017 — Hiện thực hóa D3: hồ sơ đào tạo ĐẦY ĐỦ theo người, gồm cả lịch sử
+       ở chi nhánh cũ khi luân chuyển (demo: 1 dòng từ NEH-HAN trước khi
+       chuyển vào NEV-HCM) + hồ sơ import từ Excel trước khi có hệ thống.
+P018 — Chứng chỉ CÓ HẠN (khác EverLMS: chứng chỉ vĩnh viễn). Hiển thị
+       ngày hết hiệu lực + trạng thái + bản song ngữ VI/JA.
+P012 — Catalog NỘI BỘ: khóa bắt buộc (gán tự động) + khóa tự chọn. Không
+       giá, không giỏ hàng. Bản zh cho VP TQ: employee/P012-course-catalog.zh.html
+       — annotation ngôn ngữ (theo quyết định UI tiếng Anh, bản zh chỉ để
+       chứng minh cơ chế đa ngôn ngữ).
+
+### WORKSPACE (14) — folder: instructor/ + site-training-manager/
+| ID | Title | URL | anon empl inst site hrhse hq admin |
+|----|-------|-----|-----------------------------------|
+| P021 | Workspace home | /workspace | — — △ △ ○ — ○ |
+| P022 | Training schedule | /workspace/sessions | — — △ △ ○ — ○ |
+| P023 | Session detail & attendance | /workspace/sessions/{s} | — — ● ○ ○ — ○ |
+| P024 | Manage courses | /workspace/courses | — — ● — ○ — ○ |
+| P025 | Course editor | /workspace/courses/{c}/edit | — — ● — ○ — ○ |
+| P026 | Quiz builder | /workspace/quizzes | — — ● — ○ — ○ |
+| P027 | Learner progress | /workspace/progress | — — △ △ ○ — ○ |
+| P028 | Site compliance dashboard | /workspace/site | — — — ● ○ — ○ |
+| P029 | Employees | /workspace/employees | — — — △ △ — △ |
+| P030 | Employee training record | /workspace/employees/{u} | — — ○ △ △ — ○ |
+| P031 | Assign training | /workspace/assign | — — — △ △ — ○ |
+| P032 | Due & overdue worklist | /workspace/overdue | — — — △ △ — ○ |
+| P033 | Reports | /workspace/reports | — — — △ △ △ ○ |
+| P034 | Certificates | /workspace/certificates | — — — △ △ — ○ |
+
+P021 △ — instructor: lớp sắp dạy + khóa cần soạn.
+       site: KPI tuân thủ site + việc cần xử lý hôm nay.
+P022 △ — instructor: chỉ ca của tôi. site: toàn bộ ca trong site + gán
+       giảng viên. Đây là phần "thực thi địa phương" của mô hình đồng bộ.
+P027 △ — instructor: học viên trong lớp mình. site: toàn bộ nhân viên site.
+P029 △ — TRANG THỂ HIỆN RÕ NHẤT CHIỀU BRANCH SCOPE (xem roles.txt mục 5):
+       site: cố định 1 chi nhánh, KHÔNG có bộ lọc chi nhánh, nhãn tĩnh
+             "NEH-HAN" cạnh tiêu đề; 2,000 dòng.
+       hrhse: có bộ lọc chi nhánh + cột Branch; 5,842 dòng; có nút import.
+       admin: thêm cột kỹ thuật (account status, last login, locale) mà
+             role nghiệp vụ không thấy; có nút impersonate → P056.
+P031 △ — site: gán trong site mình. hrhse: gán hàng loạt theo vị trí ×
+       chi nhánh (áp ma trận cho cả nhóm).
+P032 △ — Trang vận hành quan trọng nhất của site manager: ai quá hạn,
+       quá bao lâu, hành động gì. site: site mình. hrhse: toàn hệ + xếp
+       hạng chi nhánh.
+P033 △ — site: báo cáo 1 site. hrhse: mọi site + hợp nhất + export CSV.
+       hq: bản CHỈ ĐỌC hợp nhất, không có control export thủ công (HQ dùng
+       lịch xuất định kỳ ở P049).
+P034 △ — site: chứng chỉ cấp trong site. hrhse: toàn hệ + thu hồi/cấp lại
+       + đối chiếu mẫu.
+
+### CENTRAL (12) — folder: hr-hse-central/
+| ID | Title | URL | anon empl inst site hrhse hq admin |
+|----|-------|-----|-----------------------------------|
+| P035 | Central compliance dashboard | /central | — — — — ● ○ ○ |
+| P036 | Training matrix | /central/matrix | — — ○ ○ ● ○ ○ |
+| P037 | Job roles | /central/job-roles | — — — ○ ● — ○ |
+| P038 | Master course catalog | /central/courses | — — ○ ○ ● — ○ |
+| P039 | Course versions & publishing | /central/courses/{c}/versions | — — ○ — ● — ○ |
+| P040 | Branches | /central/branches | — — — ○ ● ○ ○ |
+| P041 | Import employees | /central/import/employees | — — — — ● — ○ |
+| P042 | Import training history | /central/import/history | — — — — ● — ○ |
+| P043 | Certificate templates | /central/certificate-templates | — — — — ● — ○ |
+| P044 | Reminder rules | /central/reminders | — — — — ● — ○ |
+| P045 | Translation workspace | /central/translations | — — — — ● — ○ |
+| P046 | Content approval | /central/approvals | — — ○ — ● — ○ |
+
+P036 — TRANG LÕI CỦA CẢ HỆ THỐNG (D2). Lưới vị trí × khóa: ô = bắt buộc/
+       tùy chọn + chu kỳ. Chọn chi nhánh → ruleset của chi nhánh đó (thể
+       hiện nguyên tắc E2: quy tắc là DỮ LIỆU, không hardcode luật VN).
+       Ô demo: Forklift Operator × SAF-106 = bắt buộc, 24 tháng, Group 3.
+       VP TQ (NES-SHA) có ruleset khác hẳn: chỉ OFF-101, CMP-101, CYB-101.
+P039 — D1: version + trạng thái (draft/review/published) + trang nào đang
+       dùng version nào. Phát hành version mới → mọi site nhận đồng loạt.
+P040 — Chi nhánh ở góc NGHIỆP VỤ (tên, mã, số nhân viên, ruleset áp dụng).
+       Khác P052 (admin): cấu hình KỸ THUẬT (timezone, locale, trạng thái).
+       Tách hai trang là có chủ đích — nguyên tắc least-privilege ở
+       roles.txt mục 4.
+P041 — Wizard 4 bước: upload CSV → map cột → ĐỐI SOÁT LỖI → commit.
+       Màn hình đối soát lỗi là phần khách hàng cần thấy nhất (rủi ro
+       R70-3 master data nát trong strategy-full).
+P042 — Import hồ sơ đào tạo lịch sử từ Excel các nhà máy: hệ thống khởi
+       động CÓ lịch sử, không từ số không.
+P045 — D6: bản dịch gắn version bản gốc. Bản gốc lên version mới → các
+       bản dịch bị đánh dấu "outdated", hiện rõ cái nào cần dịch lại.
+       Cột: EN (gốc) · VI · JA · ZH × trạng thái.
+P043 — Mẫu chứng chỉ song ngữ VI/JA + preview mPDF (font CJK).
+
+### HQ (3) — folder: hq-viewer/
+| ID | Title | URL | anon empl inst site hrhse hq admin |
+|----|-------|-----|-----------------------------------|
+| P047 | HQ dashboard | /hq | — — — — ○ ● ○ |
+| P048 | Branch comparison | /hq/branches | — — — — ○ ● ○ |
+| P049 | Scheduled exports | /hq/exports | — — — — — ● ○ |
+
+P047 — Toàn cảnh VN + TQ trên một màn hình, CHỈ ĐỌC: không có nút gán,
+       sửa, thu hồi. Prototype phải cho thấy rõ sự VẮNG MẶT của control
+       vận hành — đó chính là thiết kế least-privilege.
+P048 — So sánh 5 chi nhánh trên cùng bộ KPI (D5). Chuẩn bị sẵn cho ngày
+       thêm chi nhánh nước khác (nguyên tắc E1) — bảng không hardcode 5 site.
+P049 — Lịch xuất báo cáo định kỳ về HQ. Annotation: bản thật là tiếng Nhật.
+
+### ADMIN (9) — folder: administrator/
+| ID | Title | URL | anon empl inst site hrhse hq admin |
+|----|-------|-----|-----------------------------------|
+| P050 | Admin overview | /admin | — — — — — — ● |
+| P051 | Roles & permissions | /admin/roles | — — — — — — ● |
+| P052 | Branch configuration | /admin/branches | — — — — — — ● |
+| P053 | Language & localization | /admin/languages | — — — — — — ● |
+| P054 | Integrations | /admin/integrations | — — — — — — ● |
+| P055 | Audit log | /admin/audit | — — — — — — ● |
+| P056 | Switch user | /admin/switch-user | — — — — — — ● |
+| P057 | System health & jobs | /admin/health | — — — — — — ● |
+| P058 | Data retention & privacy | /admin/privacy | — — — — — — ● |
+
+P051 — Ma trận 7 role × quyền, có cột SCOPE (own/branch/global) — chiều
+       mới so với EverLMS, xem roles.txt mục 1.
+P052 — Cấu hình kỹ thuật chi nhánh: quốc gia, timezone, locale mặc định.
+       Nút "Add branch" là hiện thân của nguyên tắc E1 (thêm nước = thêm
+       dữ liệu, không thêm code) — prototype phải cho thấy điều đó.
+P053 — Bật/tắt ngôn ngữ, tiến độ dịch UI, ngôn ngữ mặc định theo chi nhánh.
+P054 — SMTP (đang dùng), SSO/AD + HRIS sync (annotation: OPT-1/OPT-2,
+       hiển thị dạng chưa kết nối — KHÔNG vẽ như đã có).
+P055 — Audit log bất biến: ai làm gì, lúc nào, ở chi nhánh nào. Có bộ lọc
+       theo loại sự kiện (enrollment/quiz/certificate/impersonation).
+       Nhấn mạnh: không có nút xóa/sửa — bản chất bất biến.
+P056 — Impersonation, BẮT BUỘC nhập lý do trước khi switch + banner cảnh
+       báo khi đang impersonate + mọi phiên đều vào P055.
+P058 — NĐ 13/2023 + PIPL: chính sách lưu trữ hồ sơ đào tạo, dữ liệu nhân
+       viên TQ, thời hạn giữ, quyền xóa.
+
+--------------------------------------------------------------------------------
+4. TỔNG HỢP FILE DỰNG
+--------------------------------------------------------------------------------
+| Folder | Pages | Số file |
+|--------|-------|---------|
+| anonymous/ | P001, P002, P003, P004 | 4 |
+| employee/ | P010–P020 (+P012 bản .zh) | 12 |
+| instructor/ | P021, P022, P023, P024, P025, P026, P027 | 7 |
+| site-training-manager/ | P021, P022, P027, P028, P029, P030, P031, P032, P033, P034 | 10 |
+| hr-hse-central/ | P029, P030, P031, P032, P033, P034, P035–P046 | 18 |
+| hq-viewer/ | P033, P047, P048, P049 | 4 |
+| administrator/ | P029, P050–P058 | 10 |
+| **TỔNG** | **53 trang logic** | **65 file** |
+
+_shared/ (không phải role folder): BUILD-SPEC.md, css/, js/, img/
+
+Ghi chú kiến trúc: điều hướng KHÔNG nằm trong trang. shell.js giữ registry
+53 trang + 6 role và render toàn bộ chrome. Thêm/đổi tên trang = sửa registry,
+không sửa 65 file. Role picker ở P001 và pill phạm vi ở manage header cũng
+sinh từ chính registry đó.
+
+--------------------------------------------------------------------------------
+5. ĐỐI CHIẾU D1–D6 → TRANG
+--------------------------------------------------------------------------------
+  D1 Danh mục master + version ...... P038, P039, P046
+  D2 Ma trận theo vị trí ............ P036, P037 · góc nhân viên: P011
+                                      · áp dụng: P031
+  D3 Hồ sơ duy nhất theo người ...... P017 (nhân viên), P030 (quản lý)
+                                      · nhập lịch sử: P042
+  D4 Chuẩn chứng chỉ + chu kỳ ....... P043 (mẫu), P034 (sổ cấp), P018 (cá
+                                      nhân), P003 (tra cứu công khai)
+  D5 Báo cáo hợp nhất ............... P033 (3 biến thể), P035, P047, P048
+  D6 Quy trình nội dung + dịch ...... P046 (duyệt), P045 (dịch), P039 (phát
+                                      hành), P025 (soạn)
+  Vòng lặp tuân thủ khép kín ........ P036 → P031 → P011 → P014/P015 →
+                                      P018 → P044 (nhắc hạn) → P032 (quá
+                                      hạn) → quay lại
+  Nền tuân thủ/audit ................ P055, P056, P058
+  Kiến trúc mở rộng E1/E2 ........... P052 (thêm chi nhánh), P036 (ruleset
+                                      theo chi nhánh), P053 (thêm ngôn ngữ)
+
+--------------------------------------------------------------------------------
+6. TRẠNG THÁI TRANG (kế thừa quy ước C10 BUILD-SPEC §3)
+--------------------------------------------------------------------------------
+Mỗi trang dựng MỘT file thể hiện trạng thái default/primary đầy đủ. Các
+trạng thái khác (loading, empty, error, permission-denied) được nhúng
+INLINE ngay trong markup khi đọc lên tự nhiên, dùng component có sẵn
+(.alert, empty-state card, .status). Không tách file riêng, không toggle ẩn.
+
+Trạng thái nên nhúng inline ở các trang cụ thể:
+  P041/P042 — validation error (dòng CSV lỗi) là NỘI DUNG CHÍNH của trang
+  P032 — empty state "no overdue training" là kết quả TỐT, phải vẽ đẹp
+  P029 (site) — không có bộ lọc chi nhánh = thể hiện permission scope
+  P047 — vắng control vận hành = thể hiện read-only
+  P015 — validation khi chưa chọn đáp án
+================================================================================

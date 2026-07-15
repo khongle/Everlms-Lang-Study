@@ -1,0 +1,340 @@
+/* ============================================================================
+   nissei.css — Theme override + compliance components
+   Loads AFTER base.css. Two jobs:
+   1. Re-theme the EverLMS design system to an enterprise/industrial palette
+      (39-enterprise, from Templates/templates/04-colors/all/39-enterprise).
+   2. Add components that a compliance training system needs and a
+      course-selling LMS does not: branch scope bar, training matrix,
+      certificate validity, import wizard, translation grid, audit log.
+   Never invent colors here — everything resolves to a token.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- 1. THEME */
+/* Color tokens only. Space/type/radius/shadow scales stay from base.css.
+   Status colors are deliberately kept far apart from --brand and --accent:
+   in this product green/amber/red carry compliance meaning, not decoration. */
+:root{
+  --brand:#1e3a8a; --brand-dark:#172d6b; --brand-soft:#e4e7f0; --brand-2:#3b5ba9;
+  --accent:#475569; --accent-dark:#374251; --accent-soft:#e8eaed;
+  --ink:#0f172a; --ink-soft:#1e293b; --muted:#64748b;
+  --paper:#ffffff; --paper-2:#f8fafc; --paper-3:#f1f5f9; --line:#e2e8f0;
+
+  --success:#15803d; --success-soft:#dcfce7;
+  --warning:#b45309; --warning-soft:#fef3c7;
+  --error:#b91c1c;   --error-soft:#fee2e2;
+  --info:#1d4ed8;    --info-soft:#dbeafe;
+
+  --grad:linear-gradient(135deg,#1e3a8a 0%,#3b5ba9 55%,#5b7bc7 100%);
+  --grad-soft:linear-gradient(135deg,#f8fafc,#e4e7f0);
+  --shadow-brand:0 16px 40px rgba(30,58,138,.28);
+
+  /* Data-dense admin UI: one family, no display face. */
+  --font-display:'Inter',system-ui,-apple-system,sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono:ui-monospace,'SFMono-Regular','Cascadia Code',Menlo,monospace;
+
+  /* compliance-specific */
+  --req:#1e3a8a;        /* mandatory   */
+  --opt:#64748b;        /* optional    */
+}
+
+/* ------------------------------------------------- 2. BRANCH SCOPE CONTEXT */
+/* The single most important idea in this product: every screen is scoped to
+   a branch, and the control you get depends on your scope.
+   .branchbar--switch  global roles (hr-hse-central, hq-viewer, administrator)
+   .branchbar--fixed   branch roles (site-training-manager) — label, no control */
+.branchbar{display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;
+  padding:var(--space-3) 0;border-bottom:1px solid var(--line);margin-bottom:var(--space-4)}
+.branchbar__lb{font-size:var(--text-xs);font-weight:700;letter-spacing:var(--tracking-wide);
+  text-transform:uppercase;color:var(--muted)}
+.branchbar__sel{display:inline-flex;align-items:center;gap:var(--space-2);
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:.4rem .7rem;font-weight:600;font-size:var(--text-sm);color:var(--ink);cursor:pointer}
+.branchbar__sel:hover{border-color:var(--brand)}
+.branchbar__sel svg{width:16px;height:16px;color:var(--muted)}
+.branchtag{display:inline-flex;align-items:center;gap:.4rem;background:var(--brand-soft);
+  color:var(--brand-dark);border-radius:var(--radius-pill);padding:.25rem .7rem;
+  font-size:var(--text-xs);font-weight:700;letter-spacing:.02em}
+.branchtag--lock svg{width:13px;height:13px;opacity:.75}
+.branchbar__scope{margin-inline-start:auto;font-size:var(--text-xs);color:var(--muted)}
+
+/* --------------------------------------------------- 3. COMPLIANCE STATUS */
+/* Colour + label + shape — never colour alone (colourblind-safe, WCAG AA). */
+.cstat{display:inline-flex;align-items:center;gap:.35rem;border-radius:var(--radius-pill);
+  padding:.2rem .6rem;font-size:var(--text-xs);font-weight:700;white-space:nowrap}
+.cstat::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:0 0 auto}
+.cstat--ok{background:var(--success-soft);color:var(--success)}
+.cstat--due{background:var(--warning-soft);color:var(--warning)}
+.cstat--over{background:var(--error-soft);color:var(--error)}
+.cstat--prog{background:var(--info-soft);color:var(--info)}
+.cstat--none{background:var(--paper-3);color:var(--muted)}
+
+/* base.css styles .progress>span only. Every meter in this product uses <i>
+   as the fill (.duemeter, .covbar below), so accept <i> on .progress too
+   rather than running two conventions side by side. */
+.progress > i{display:block;height:100%;background:var(--grad);border-radius:inherit;transition:width .4s}
+.progress--success > i{background:var(--success)}
+
+/* days-remaining meter, sits under a due date */
+.duemeter{height:4px;border-radius:var(--radius-pill);background:var(--paper-3);overflow:hidden;margin-top:.3rem}
+.duemeter > i{display:block;height:100%;border-radius:inherit;background:var(--success)}
+.duemeter--due > i{background:var(--warning)}
+.duemeter--over > i{background:var(--error)}
+.dueline{font-size:var(--text-xs);color:var(--muted);margin-top:.25rem}
+
+/* ------------------------------------------------------ 4. TRAINING MATRIX */
+/* P036 — job role x course grid. The core of D2.
+   Sticky first column so the job role stays visible while scrolling courses. */
+.matrixwrap{overflow:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)}
+.matrix{border-collapse:separate;border-spacing:0;width:100%;font-size:var(--text-sm)}
+.matrix th,.matrix td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);
+  padding:.6rem .7rem;text-align:center;vertical-align:middle}
+.matrix thead th{background:var(--paper-2);position:sticky;top:0;z-index:2;
+  font-size:var(--text-xs);font-weight:700;color:var(--ink-soft);white-space:nowrap}
+.matrix tbody th{position:sticky;left:0;z-index:1;background:var(--paper);text-align:left;
+  font-weight:600;color:var(--ink);white-space:nowrap;min-width:180px}
+.matrix thead th:first-child{left:0;z-index:3}
+.matrix tr:hover tbody th{background:var(--paper-2)}
+.matrix td:hover{background:var(--brand-soft);cursor:pointer}
+.mcell{display:inline-flex;flex-direction:column;align-items:center;gap:.15rem;line-height:1.2}
+.mcell__m{font-weight:800;font-size:var(--text-xs);color:var(--req)}
+.mcell__o{font-weight:600;font-size:var(--text-xs);color:var(--opt)}
+.mcell__c{font-size:.68rem;color:var(--muted)}
+.mcell--empty{color:var(--line)}
+/* retraining cycle pill */
+.cycle{display:inline-block;background:var(--paper-3);color:var(--ink-soft);
+  border-radius:var(--radius-pill);padding:.05rem .4rem;font-size:.68rem;font-weight:700}
+/* Decree 44/2016 group tag */
+.grouptag{display:inline-block;background:var(--brand-soft);color:var(--brand-dark);
+  border-radius:var(--radius-sm);padding:.05rem .35rem;font-size:.68rem;font-weight:700;
+  font-family:var(--font-mono)}
+
+/* ------------------------------------------------------- 5. COVERAGE BARS */
+/* Per-branch / per-course compliance rate, used on dashboards and reports. */
+.covrow{display:grid;grid-template-columns:150px 1fr 56px;gap:var(--space-3);align-items:center;
+  padding:.5rem 0;border-bottom:1px solid var(--line)}
+.covrow:last-child{border-bottom:0}
+.covrow__l{font-weight:600;font-size:var(--text-sm);color:var(--ink)}
+.covrow__l small{display:block;font-weight:500;color:var(--muted);font-size:var(--text-xs)}
+.covbar{height:8px;border-radius:var(--radius-pill);background:var(--paper-3);overflow:hidden}
+.covbar > i{display:block;height:100%;border-radius:inherit;background:var(--success)}
+.covbar--warn > i{background:var(--warning)}
+.covbar--bad > i{background:var(--error)}
+.covrow__v{text-align:right;font-weight:800;font-size:var(--text-sm);font-variant-numeric:tabular-nums}
+
+/* -------------------------------------------------------- 6. CERTIFICATES */
+.certvalid{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);
+  padding:.5rem .75rem;border-radius:var(--radius-sm);background:var(--paper-2);
+  border:1px solid var(--line);font-size:var(--text-sm)}
+.certno{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--ink-soft);
+  background:var(--paper-3);border-radius:var(--radius-sm);padding:.1rem .4rem}
+/* bilingual certificate preview (VI/JA) */
+.certbi{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);
+  border-radius:var(--radius);overflow:hidden;background:var(--paper)}
+.certbi__side{padding:var(--space-5);text-align:center}
+.certbi__side + .certbi__side{border-left:1px dashed var(--line)}
+.certbi__lang{font-size:var(--text-xs);font-weight:700;letter-spacing:var(--tracking-wide);
+  text-transform:uppercase;color:var(--muted);margin-bottom:var(--space-3)}
+@media(max-width:767.98px){.certbi{grid-template-columns:1fr}
+  .certbi__side + .certbi__side{border-left:0;border-top:1px dashed var(--line)}}
+
+/* ------------------------------------------------------- 7. IMPORT WIZARD */
+/* P041/P042 — the reconciliation screen is the point, not the upload. */
+.wizard{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-bottom:var(--space-5)}
+.wstep{display:flex;align-items:center;gap:.5rem;padding:.45rem .8rem;border-radius:var(--radius-pill);
+  background:var(--paper-2);border:1px solid var(--line);font-size:var(--text-sm);font-weight:600;color:var(--muted)}
+.wstep__n{width:20px;height:20px;border-radius:50%;background:var(--line);color:var(--paper);
+  display:grid;place-items:center;font-size:.7rem;font-weight:800}
+.wstep.is-done{color:var(--success);border-color:var(--success-soft);background:var(--success-soft)}
+.wstep.is-done .wstep__n{background:var(--success)}
+.wstep.is-active{color:var(--brand-dark);border-color:var(--brand);background:var(--brand-soft)}
+.wstep.is-active .wstep__n{background:var(--brand)}
+/* row-level import errors */
+.errrow{background:var(--error-soft)}
+.errmark{color:var(--error);font-weight:700;font-size:var(--text-xs)}
+.fixcell{background:var(--paper);border:1px solid var(--error);border-radius:var(--radius-sm);
+  padding:.2rem .4rem;font-size:var(--text-sm);width:100%}
+
+/* --------------------------------------------------- 8. TRANSLATION STATUS */
+/* P045 — D6: translations are pinned to a source version. */
+.langgrid{display:flex;gap:.35rem;flex-wrap:wrap}
+.langchip{display:inline-flex;align-items:center;gap:.3rem;border-radius:var(--radius-sm);
+  padding:.15rem .45rem;font-size:.7rem;font-weight:700;font-family:var(--font-mono);
+  border:1px solid var(--line);background:var(--paper-2);color:var(--muted)}
+.langchip--live{background:var(--success-soft);color:var(--success);border-color:transparent}
+.langchip--stale{background:var(--warning-soft);color:var(--warning);border-color:transparent}
+.langchip--missing{background:var(--paper-3);color:var(--muted);border-style:dashed}
+.langchip--src{background:var(--brand-soft);color:var(--brand-dark);border-color:transparent}
+.vertag{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--ink-soft);
+  background:var(--paper-3);border-radius:var(--radius-sm);padding:.1rem .35rem;font-weight:700}
+
+/* ------------------------------------------------------------ 9. AUDIT LOG */
+/* P055 — immutable. No edit/delete affordance anywhere by design. */
+.auditwrap{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--paper)}
+.auditline{display:grid;grid-template-columns:150px 120px 1fr 110px;gap:var(--space-3);
+  padding:.55rem .8rem;border-bottom:1px solid var(--line);font-size:var(--text-sm);align-items:center}
+.auditline:last-child{border-bottom:0}
+.auditline:nth-child(even){background:var(--paper-2)}
+.auditline__t{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--muted);white-space:nowrap}
+.auditline__ev{font-size:.68rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;
+  border-radius:var(--radius-sm);padding:.1rem .4rem;text-align:center;white-space:nowrap}
+.ev--enroll{background:var(--info-soft);color:var(--info)}
+.ev--quiz{background:var(--brand-soft);color:var(--brand-dark)}
+.ev--cert{background:var(--success-soft);color:var(--success)}
+.ev--imp{background:var(--error-soft);color:var(--error)}
+.ev--cfg{background:var(--paper-3);color:var(--ink-soft)}
+.auditline__b{color:var(--muted);font-size:var(--text-xs);text-align:right;font-family:var(--font-mono)}
+@media(max-width:767.98px){.auditline{grid-template-columns:1fr;gap:.25rem}
+  .auditline__b{text-align:left}}
+.immutable{display:inline-flex;align-items:center;gap:.4rem;font-size:var(--text-xs);
+  color:var(--muted);font-weight:600}
+.immutable svg{width:14px;height:14px}
+
+/* ------------------------------------------------- 10. READ-ONLY / SCOPE UI */
+/* P047 — HQ sees everything and can change nothing. The absence of controls
+   is the design; this band names it so a reviewer does not read it as a gap. */
+.roband{display:flex;align-items:center;gap:var(--space-3);background:var(--paper-2);
+  border:1px solid var(--line);border-left:3px solid var(--brand);border-radius:var(--radius-sm);
+  padding:.6rem .8rem;font-size:var(--text-sm);color:var(--ink-soft);margin-bottom:var(--space-5)}
+.roband svg{width:18px;height:18px;color:var(--brand);flex:0 0 auto}
+
+/* impersonation reason — required before switching */
+.reasonbox{border:1px solid var(--warning);background:var(--warning-soft);border-radius:var(--radius);
+  padding:var(--space-4)}
+.impbanner{background:var(--error);color:#fff;padding:.5rem 0;font-size:var(--text-sm);font-weight:700}
+.impbanner .container{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3)}
+
+/* ============================================================================
+   SHELLS — three chromes, one connected system
+   auth   : sign-in, and the role picker that is the door into every prototype
+   front  : the public site + the employee's own area (/app), light
+   manage : back-office for staff roles, carries the branch SCOPE pill
+   Layout follows references/menu/*.png. Rendered by js/shell.js — never by hand.
+   ========================================================================== */
+
+/* ---------------------------------------------- account button + mega menu */
+.acct__btn{display:flex;align-items:center;gap:.5rem;background:var(--paper);border:1px solid var(--line);
+  cursor:pointer;font:inherit;color:var(--ink);padding:.3rem .7rem .3rem .35rem;
+  border-radius:var(--radius-pill)}
+.acct__btn:hover{border-color:var(--brand)}
+.acct__btn svg{color:var(--muted)}
+.acct.is-open .acct__btn{border-color:var(--brand)}
+@media(max-width:767.98px){.acct__btn > span.acct__nm{display:none}}
+
+/* mega item: icon + title + description (matches the reference menus) */
+.megaitem{display:flex;gap:.65rem;align-items:flex-start;padding:.5rem .6rem;
+  border-radius:var(--radius-sm);color:var(--ink-soft)}
+.megaitem:hover{background:var(--paper-2);text-decoration:none}
+.megaitem__ic{width:32px;height:32px;border-radius:9px;background:var(--brand-soft);display:grid;
+  place-items:center;flex:0 0 auto}
+.megaitem__ic svg{width:16px;height:16px;stroke:var(--brand)}
+.megaitem b{display:block;font-size:var(--text-sm);font-weight:700;color:var(--ink);line-height:1.25}
+.megaitem small{display:block;font-size:.74rem;color:var(--muted);line-height:1.3}
+.megaitem[aria-current=page]{background:var(--brand-soft)}
+.megaitem[aria-current=page] b{color:var(--brand-dark)}
+
+.acctmega__foot{display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;
+  padding:.7rem 1.2rem;border-top:1px solid var(--line);background:var(--paper-2)}
+.acctmega__foot .spacer{margin-inline-start:auto}
+.footlink{display:flex;gap:.6rem;align-items:center;padding:.35rem .5rem;border-radius:var(--radius-sm);
+  color:var(--ink-soft)}
+.footlink:hover{background:var(--paper);text-decoration:none;color:var(--brand)}
+.footlink svg{width:18px;height:18px;flex:0 0 auto}
+.footlink b{display:block;font-size:var(--text-sm);font-weight:700;color:var(--ink)}
+.footlink small{display:block;font-size:.72rem;color:var(--muted)}
+.footlink--danger:hover{color:var(--error)}
+.footlink--danger svg{color:var(--error)}
+/* switch role: the device that makes the prototype navigable as one system */
+.footlink--switch b{color:var(--brand)}
+.footlink--switch svg{color:var(--brand)}
+
+/* ------------------------------------------------------- manage chrome */
+.mhead{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;
+  z-index:var(--z-sticky)}
+.mhead__r1{display:flex;align-items:center;gap:var(--space-4);padding:.6rem 0}
+.mhead__r2{border-top:1px solid var(--line)}
+.mbrand small{color:var(--muted);font-weight:700;font-size:.62rem;letter-spacing:.12em;
+  text-transform:uppercase;display:block}
+/* scope pill — where a role's reach is stated in one glance.
+   In the reference this is "HEAD OFFICE"; here it carries the branch scope. */
+.scopepill{display:inline-flex;align-items:center;gap:.45rem;border-radius:var(--radius-pill);
+  padding:.3rem .8rem;font-size:.72rem;font-weight:800;letter-spacing:.04em;white-space:nowrap;
+  background:var(--brand-soft);color:var(--brand-dark);border:1px solid transparent}
+.scopepill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.scopepill--branch{background:var(--warning-soft);color:var(--warning)}
+.scopepill--global{background:var(--brand-soft);color:var(--brand-dark)}
+.scopepill--read{background:var(--paper-3);color:var(--ink-soft)}
+.scopepill--system{background:var(--error-soft);color:var(--error)}
+.mhead__tools{margin-inline-start:auto;display:flex;align-items:center;gap:.5rem}
+/* section nav: hover dropdowns, no sidebar (BUILD-SPEC rule stands) */
+.mnav{display:flex;gap:.2rem;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.mnav > li{position:relative}
+.mnav > li > a{display:inline-flex;align-items:center;gap:.35rem;padding:.7rem .9rem;font-weight:700;
+  font-size:var(--text-sm);color:var(--ink-soft);border-bottom:2px solid transparent}
+.mnav > li > a:hover{color:var(--brand);text-decoration:none}
+.mnav > li > a svg{width:14px;height:14px;opacity:.6}
+.mnav > li.is-active > a{color:var(--brand);border-bottom-color:var(--brand)}
+.mnav .mega{min-width:460px;padding:.7rem}
+@media(max-width:991.98px){.mhead__r1{flex-wrap:wrap}.mnav{overflow-x:auto;flex-wrap:nowrap}}
+
+/* ------------------------------------------------------- front chrome */
+.fnav__cta{display:flex;align-items:center;gap:.6rem;margin-inline-start:auto}
+.topbar .langgrid .langchip{background:rgba(255,255,255,.12);border-color:transparent;color:#fff}
+.topbar .langgrid .langchip--live{background:#fff;color:var(--ink)}
+
+/* --------------------------------------------- auth: the role picker */
+/* Every role is a door. This is what makes the prototype one system rather
+   than seven unrelated folders. */
+.rolecards{display:grid;gap:.5rem;margin-top:var(--space-4)}
+.rolecard{display:flex;align-items:center;gap:.8rem;border:1px solid var(--line);
+  border-radius:var(--radius);padding:.7rem .8rem;background:var(--paper);color:var(--ink)}
+.rolecard:hover{border-color:var(--brand);box-shadow:var(--shadow-1);text-decoration:none;
+  transform:translateY(-1px)}
+.rolecard img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:0 0 auto}
+.rolecard__t{min-width:0;flex:1}
+.rolecard__t b{display:block;font-size:var(--text-sm);font-weight:700;line-height:1.3}
+.rolecard__t small{display:block;font-size:.74rem;color:var(--muted);line-height:1.35}
+.rolecard__go{color:var(--muted);flex:0 0 auto}
+.rolecard:hover .rolecard__go{color:var(--brand)}
+.authdiv{display:flex;align-items:center;gap:var(--space-3);margin:var(--space-5) 0 0}
+.authdiv::before,.authdiv::after{content:"";flex:1;height:1px;background:var(--line)}
+.authdiv span{font-size:var(--text-xs);color:var(--muted);font-weight:600;white-space:nowrap}
+
+/* -------------------------------------------------- 11. PROTOTYPE ANNOTATION */
+/* Design notes that must not be mistaken for product UI. Dashed + labelled.
+   Used for: real-language notes (JA/ZH), option-gated features, scope rules. */
+.annot{border:1px dashed var(--brand);background:var(--brand-soft);border-radius:var(--radius-sm);
+  padding:.55rem .75rem;font-size:var(--text-xs);color:var(--brand-dark);line-height:1.5;
+  margin-top:var(--space-3)}
+.annot b{font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:.66rem;
+  display:block;margin-bottom:.15rem;opacity:.75}
+
+/* -------------------------------------------------------- 12. SMALL THINGS */
+/* Screen-reader-only. base.css ships .skip but has no .sr-only, and this
+   product leans on it heavily: every data table carries a <caption> and the
+   dense toolbars use unlabelled-looking inputs. Without this rule those
+   captions and labels render visibly and the tables look broken. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.sr-only-focusable:focus,.sr-only-focusable:focus-visible{position:static;width:auto;height:auto;
+  margin:0;overflow:visible;clip:auto;white-space:normal}
+
+.codecell{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--ink-soft);font-weight:600}
+.num{font-variant-numeric:tabular-nums}
+.kpi__sub{font-size:var(--text-xs);color:var(--muted);margin-top:.15rem}
+/* course tile — this product has no stock course photography; a coded tile
+   reads as an industrial course catalogue and never looks like filler */
+.ctile{width:44px;height:44px;border-radius:var(--radius-sm);display:grid;place-items:center;
+  font-family:var(--font-mono);font-weight:800;font-size:.62rem;color:#fff;flex:0 0 auto;
+  background:var(--brand);letter-spacing:.02em}
+.ctile--saf{background:#1e3a8a}
+.ctile--fir{background:#b91c1c}
+.ctile--qms{background:#0f766e}
+.ctile--env{background:#15803d}
+.ctile--off{background:#64748b}
+.ctile--cmp{background:#7c3aed}
+.ctile--cyb{background:#0369a1}
+.ctile--lg{width:64px;height:64px;font-size:.75rem;border-radius:var(--radius)}
+.cell-course{display:flex;align-items:center;gap:var(--space-3);text-align:left}
+.cell-course b{display:block;font-weight:700;color:var(--ink);font-size:var(--text-sm)}
+.cell-course small{color:var(--muted);font-size:var(--text-xs)}

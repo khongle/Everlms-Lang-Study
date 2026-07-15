@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Branch configuration · Nissei Training</title>
+<meta name="description" content="Technical configuration for each branch: country, timezone, default locale, status and data region.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="administrator" data-active="P052"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P050-admin-overview.html">Admin</a> <span aria-hidden="true">/</span> <span>Branch configuration</span>
+    </nav>
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Branch configuration</h1>
+        <p class="lede">Technical settings for each branch: country, timezone, default locale, status and
+          data region. 5 branches configured.</p>
+      </div>
+      <div class="pagehead__actions">
+        <a class="btn btn--brand" href="#add-branch">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Add branch</a>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="tablecard">
+      <div class="wtable__wrap">
+      <table class="wtable">
+        <caption class="sr-only">Technical configuration of the five branches</caption>
+        <thead>
+          <tr>
+            <th scope="col">Branch</th>
+            <th scope="col">Country</th>
+            <th scope="col">Timezone</th>
+            <th scope="col">Default locale</th>
+            <th scope="col">Data region</th>
+            <th scope="col">Status</th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="codecell">NEV-HCM</span><br><b>Nissei Electric Vietnam</b>
+              <div class="text-sm text-muted">Linh Trung EPZ, Thu Duc, HCMC &middot; 3,000 employees</div></td>
+            <td>Vietnam</td>
+            <td>GMT+7 &middot; Asia/Ho_Chi_Minh</td>
+            <td><span class="langchip langchip--live">VI</span></td>
+            <td>ap-southeast (Vietnam)</td>
+            <td><span class="cstat cstat--ok">Active</span></td>
+            <td class="rowbtns"><button class="btn btn--ghost btn--sm" type="button">Edit</button></td>
+          </tr>
+          <tr>
+            <td><span class="codecell">NEH-HAN</span><br><b>Nissei Electric Hanoi</b>
+              <div class="text-sm text-muted">Thang Long IP, Hanoi &middot; 2,000 employees</div></td>
+            <td>Vietnam</td>
+            <td>GMT+7 &middot; Asia/Ho_Chi_Minh</td>
+            <td><span class="langchip langchip--live">VI</span></td>
+            <td>ap-southeast (Vietnam)</td>
+            <td><span class="cstat cstat--ok">Active</span></td>
+            <td class="rowbtns"><button class="btn btn--ghost btn--sm" type="button">Edit</button></td>
+          </tr>
+          <tr>
+            <td><span class="codecell">NEM-MTO</span><br><b>Nissei Electric My Tho</b>
+              <div class="text-sm text-muted">Dong Thap &middot; 800 employees</div></td>
+            <td>Vietnam</td>
+            <td>GMT+7 &middot; Asia/Ho_Chi_Minh</td>
+            <td><span class="langchip langchip--live">VI</span></td>
+            <td>ap-southeast (Vietnam)</td>
+            <td><span class="cstat cstat--ok">Active</span></td>
+            <td class="rowbtns"><button class="btn btn--ghost btn--sm" type="button">Edit</button></td>
+          </tr>
+          <tr>
+            <td><span class="codecell">NES-SHA</span><br><b>Shanghai Trading Office</b>
+              <div class="text-sm text-muted">Shanghai &middot; 24 employees</div></td>
+            <td>China</td>
+            <td>GMT+8 &middot; Asia/Shanghai</td>
+            <td><span class="langchip langchip--live">ZH</span></td>
+            <td>cn-north (China)</td>
+            <td><span class="cstat cstat--ok">Active</span></td>
+            <td class="rowbtns"><button class="btn btn--ghost btn--sm" type="button">Edit</button></td>
+          </tr>
+          <tr>
+            <td><span class="codecell">NES-SZN</span><br><b>Shenzhen Trading Office</b>
+              <div class="text-sm text-muted">Shenzhen &middot; 18 employees</div></td>
+            <td>China</td>
+            <td>GMT+8 &middot; Asia/Shanghai</td>
+            <td><span class="langchip langchip--live">ZH</span></td>
+            <td>cn-north (China)</td>
+            <td><span class="cstat cstat--ok">Active</span></td>
+            <td class="rowbtns"><button class="btn btn--ghost btn--sm" type="button">Edit</button></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="annot"><b>Architecture made visible</b>Employee counts and site names shown here are for
+      orientation only; they are owned and edited as business data by HR/HSE Central at
+      hr-hse-central/P040-branches.html. This page owns a deliberately separate set of fields
+      (timezone, locale, data region, status) because who configures &ldquo;which country is this
+      branch in&rdquo; and who configures &ldquo;how many people work there&rdquo; are different jobs, per
+      the least-privilege split in the data ownership matrix. The two pages are never merged.</div>
+
+    <!-- add branch: the affordance made concrete, not just a button -->
+    <div class="card" id="add-branch" style="margin-top:2rem">
+      <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Add a branch</h3>
+      <p class="text-sm text-muted" style="margin:0 0 1.2rem">A sixth branch, or a branch in a new country
+        entirely, is entered here. It is a data record, not a code change.</p>
+      <form class="formgrid formgrid--2">
+        <div class="field"><label for="nb-code">Branch code</label>
+          <input type="text" id="nb-code" placeholder="e.g. NEV-DAN"></div>
+        <div class="field"><label for="nb-name">Branch name</label>
+          <input type="text" id="nb-name" placeholder="e.g. Nissei Electric Da Nang"></div>
+        <div class="field"><label for="nb-country">Country</label>
+          <select class="select" id="nb-country" style="width:100%">
+            <option>Vietnam</option><option>China</option><option>Other &hellip;</option>
+          </select></div>
+        <div class="field"><label for="nb-tz">Timezone</label>
+          <select class="select" id="nb-tz" style="width:100%">
+            <option>GMT+7 &middot; Asia/Ho_Chi_Minh</option>
+            <option>GMT+8 &middot; Asia/Shanghai</option>
+            <option>Other &hellip;</option>
+          </select></div>
+        <div class="field"><label for="nb-locale">Default locale</label>
+          <select class="select" id="nb-locale" style="width:100%">
+            <option>VI &middot; Tieng Viet</option><option>ZH &middot; Zhongwen</option>
+            <option>EN &middot; English</option><option>JA &middot; Nihongo</option>
+          </select></div>
+        <div class="field"><label for="nb-region">Data region</label>
+          <select class="select" id="nb-region" style="width:100%">
+            <option>ap-southeast (Vietnam)</option><option>cn-north (China)</option>
+            <option>Other &hellip;</option>
+          </select></div>
+      </form>
+      <div class="btn-row" style="margin-top:1.2rem">
+        <button class="btn btn--brand btn--sm" type="button">Save branch</button>
+        <button class="btn btn--ghost btn--sm" type="button">Cancel</button>
+      </div>
+      <p class="hint">Saving does not assign a training ruleset. HR/HSE Central sets the mandatory-course
+        ruleset for the new branch at the training matrix (hr-hse-central/P036) once it appears in the
+        branch list there.</p>
+    </div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

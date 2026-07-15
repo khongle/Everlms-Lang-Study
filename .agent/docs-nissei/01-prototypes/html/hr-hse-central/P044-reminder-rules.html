@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reminder rules · Nissei Training</title>
+<meta name="description" content="The rules that generate every training reminder and escalation, across all branches.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="hr-hse-central" data-active="P044"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P035-central-dashboard.html">Central</a> <span aria-hidden="true">/</span> <span>Reminder rules</span>
+    </nav>
+
+    <div class="branchbar">
+      <span class="branchbar__lb">Branch</span>
+      <button class="branchbar__sel" type="button" aria-haspopup="listbox">
+        All branches (5)
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <span class="branchbar__scope">Rules apply to all 5 branches unless a branch-specific override is added</span>
+    </div>
+
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Reminder rules</h1>
+        <p class="lede">The schedule and channels that generate every reminder in the system. Editing a rule
+          here changes what every employee and site training manager sees, everywhere.</p>
+      </div>
+      <div class="pagehead__actions">
+        <button class="btn btn--brand" type="button">Add rule</button>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <h2 style="font-size:var(--text-lg);margin:0 0 1rem">Before expiry</h2>
+    <div class="card">
+      <div class="switchrow">
+        <span><b class="text-sm">T&minus;60 days before expiry</b>
+          <span class="chip-row" style="margin-top:.4rem">
+            <span class="badge badge--info">Email</span>
+          </span>
+          <small class="hint" style="display:block;margin-top:.4rem">Recipients: employee</small></span>
+        <button class="swtoggle is-on" type="button" role="switch" aria-checked="true"
+          aria-label="T minus 60 days before expiry"></button>
+      </div>
+      <div class="switchrow">
+        <span><b class="text-sm">T&minus;30 days before expiry</b>
+          <span class="chip-row" style="margin-top:.4rem">
+            <span class="badge badge--info">Email</span><span class="badge badge--info">In-app</span>
+          </span>
+          <small class="hint" style="display:block;margin-top:.4rem">Recipients: employee</small></span>
+        <button class="swtoggle is-on" type="button" role="switch" aria-checked="true"
+          aria-label="T minus 30 days before expiry"></button>
+      </div>
+      <div class="switchrow">
+        <span><b class="text-sm">T&minus;7 days before expiry</b>
+          <span class="chip-row" style="margin-top:.4rem">
+            <span class="badge badge--info">Email</span><span class="badge badge--info">In-app</span>
+            <span class="badge badge--info">Push</span>
+          </span>
+          <small class="hint" style="display:block;margin-top:.4rem">Recipients: employee, site training manager</small></span>
+        <button class="swtoggle is-on" type="button" role="switch" aria-checked="true"
+          aria-label="T minus 7 days before expiry"></button>
+      </div>
+    </div>
+
+    <h2 style="font-size:var(--text-lg);margin:2.2rem 0 1rem">On and after expiry</h2>
+    <div class="card">
+      <div class="switchrow">
+        <span><b class="text-sm">On expiry (day 0)</b>
+          <span class="chip-row" style="margin-top:.4rem">
+            <span class="badge badge--warning">Email</span><span class="badge badge--warning">In-app</span>
+            <span class="badge badge--warning">Push</span>
+          </span>
+          <small class="hint" style="display:block;margin-top:.4rem">Recipients: employee, site training manager</small></span>
+        <button class="swtoggle is-on" type="button" role="switch" aria-checked="true"
+          aria-label="On expiry"></button>
+      </div>
+      <div class="switchrow">
+        <span><b class="text-sm">Weekly, while overdue</b>
+          <span class="chip-row" style="margin-top:.4rem">
+            <span class="badge badge--error">Email</span><span class="badge badge--error">In-app</span>
+          </span>
+          <small class="hint" style="display:block;margin-top:.4rem">Recipients: employee, site training manager</small></span>
+        <button class="swtoggle is-on" type="button" role="switch" aria-checked="true"
+          aria-label="Weekly while overdue"></button>
+      </div>
+      <div class="switchrow">
+        <span><b class="text-sm">Escalate to site training manager</b>
+          <span class="chip-row" style="margin-top:.4rem">
+            <span class="badge badge--error">Email</span>
+          </span>
+          <small class="hint" style="display:block;margin-top:.4rem">Recipients: site training manager,
+            HR/HSE Central &middot; fires once, does not repeat</small></span>
+        <button class="swtoggle is-on" type="button" role="switch" aria-checked="true"
+          aria-label="Escalate to site training manager"></button>
+      </div>
+    </div>
+
+    <h2 style="font-size:var(--text-lg);margin:2.2rem 0 1rem">Escalation thresholds</h2>
+    <div class="panel">
+      <div class="formgrid formgrid--2">
+        <div class="field"><label for="esc-site">Escalate to site training manager after</label>
+          <select class="select" id="esc-site" style="width:100%">
+            <option>7 days overdue</option>
+            <option selected>14 days overdue</option>
+            <option>21 days overdue</option>
+            <option>30 days overdue</option>
+          </select></div>
+        <div class="field"><label for="esc-central">Escalate to HR/HSE Central after</label>
+          <select class="select" id="esc-central" style="width:100%">
+            <option>14 days overdue</option>
+            <option selected>30 days overdue</option>
+            <option>45 days overdue</option>
+            <option>60 days overdue</option>
+          </select></div>
+      </div>
+      <p class="text-sm text-muted" style="margin:1rem 0 0">An employee still overdue 30 days after their site
+        training manager was escalated to also notifies HR/HSE Central, so a gap cannot sit unnoticed at one
+        branch indefinitely.</p>
+    </div>
+
+    <h2 style="font-size:var(--text-lg);margin:2.2rem 0 1rem">Worked example</h2>
+    <div class="card">
+      <p class="text-sm text-muted" style="margin:0 0 1rem">SAF-105 First Aid &amp; Emergency Response,
+        Nguyen Van Minh (NEV-004821, NEV-HCM). Certificate expired 28 Jun 2026; today is 15 Jul 2026, 17 days
+        overdue.</p>
+      <ul class="timeline">
+        <li><span class="year">29 Apr 2026</span>
+          <p class="text-sm" style="margin:.2rem 0 0">T&minus;60 reminder sent by email to Nguyen Van Minh.</p></li>
+        <li><span class="year">29 May 2026</span>
+          <p class="text-sm" style="margin:.2rem 0 0">T&minus;30 reminder sent by email and in-app.</p></li>
+        <li><span class="year">21 Jun 2026</span>
+          <p class="text-sm" style="margin:.2rem 0 0">T&minus;7 reminder sent by email, in-app, and push, and
+            also to the site training manager (NEV-HCM).</p></li>
+        <li><span class="year">28 Jun 2026</span>
+          <p class="text-sm" style="margin:.2rem 0 0"><b>Certificate expired.</b> On-expiry reminder sent to
+            Nguyen Van Minh and the site training manager (NEV-HCM).</p></li>
+        <li><span class="year">05 Jul &amp; 12 Jul 2026</span>
+          <p class="text-sm" style="margin:.2rem 0 0">Weekly overdue reminders sent.</p></li>
+        <li><span class="year">12 Jul 2026</span>
+          <p class="text-sm" style="margin:.2rem 0 0"><b>Escalated.</b> 14 days overdue: the site
+            training manager (NEV-HCM) was notified directly, in addition to the weekly reminder.</p></li>
+        <li><span class="year">15 Jul 2026 &middot; today</span>
+          <p class="text-sm" style="margin:.2rem 0 0">17 days overdue. Next weekly reminder: 19 Jul 2026.
+            HR/HSE Central escalation is not due until 28 Jul 2026 (30 days overdue).</p></li>
+      </ul>
+    </div>
+
+    <div class="annot"><b>This is what closes the loop</b>No one at Nissei manually decides when to remind an
+      employee. These rules generate every reminder and escalation automatically from the training matrix
+      (P036) and each employee&rsquo;s due dates. The same reminders appear in an employee&rsquo;s
+      notifications (employee/P019-notifications.html). Turn a rule off here and it stops firing everywhere,
+      immediately, for every branch.</div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+================================================================================
+STRATEGY — PHÁT TRIỂN EVERLMS ĐỂ TRIỂN KHAI CHO NISSEI ELECTRIC
+================================================================================
+Loại tài liệu : Product & delivery strategy (input cho A/B/G layers) — DRAFT
+Ngày lập      : 2026-07-15
+Liên quan     : company-info.txt (hồ sơ khách), consulting.txt (lộ trình tư vấn)
+Căn cứ        : docs A–D (build 2026-06-21, verdict GO-WITH-FIXES 2026-07-11),
+                config/sync (drush cex, commit a9dba680 ngày 2026-07-11),
+                site thật https://lms.jfcsystem.com.au/, framework LodeStar.
+Quy ước       : [AS-BUILT] = có trong code/config/docs; [GAP] = chưa có, phải
+                làm mới; [DECISION] = đề xuất cần chốt; [INFERENCE] = suy luận.
+
+--------------------------------------------------------------------------------
+1. BỨC TRANH CHIẾN LƯỢC — 3 MẢNH GHÉP
+--------------------------------------------------------------------------------
+MẢNH 1 — SẢN PHẨM [AS-BUILT]
+  EverLMS: Drupal 11 modular monolith, 28 module lms_*, 29 entity, 7 role,
+  quiz engine 8 loại câu hỏi, chứng chỉ PDF (mPDF) event-driven idempotent,
+  commerce tự viết (Stripe chạy được), app Flutter + REST /api/v1 (~22 route,
+  OTP/bearer). 13 epic phần lớn done; partial: badges (E05), webhooks (E06),
+  notifications (E09), analytics (E12). Test tự động ~0%.
+
+MẢNH 2 — BẰNG CHỨNG THỊ TRƯỜNG [AS-BUILT, xác minh 2026-07-15]
+  lms.jfcsystem.com.au = EverLMS chạy production cho JFC Australia/New Zealand
+  (tập đoàn thực phẩm Nhật, HQ Sydney) ở chế độ "đào tạo an toàn & tuân thủ
+  NỘI BỘ": 17 khóa miễn phí (HACCP, Forklift, Manual Handling, Cybersecurity),
+  login-only, không bán khóa. Phân nhóm bằng course category theo bộ phận
+  (All Employees / Warehouse / Driving / Customer Service).
+  => Ý NGHĨA CHIẾN LƯỢC: sản phẩm đã được chứng minh ở ĐÚNG phân khúc Nissei
+  cần (công ty Nhật + đào tạo tuân thủ nội bộ + đa pháp nhân AU/NZ). JFC là
+  reference case; Nissei là khách hàng #2 của cùng một "mode".
+  Lưu ý học được từ JFC: category "Merged, Do Not Use" còn treo trên catalog
+  → dấu hiệu thiếu cơ chế phân vùng thật và data hygiene; Nissei ở quy mô
+  5.000+ người sẽ không sống được bằng cách phân nhóm bằng category.
+
+MẢNH 3 — KHÁCH HÀNG MỤC TIÊU [xem company-info.txt + consulting.txt]
+  Nissei Electric: 3 nhà máy VN (~5.000+ công nhân) + 2 VP thương mại TQ.
+  Nỗi đau: đào tạo không đồng bộ giữa chi nhánh. Ràng buộc: chỉ triển khai
+  VN+TQ, quyết định thật ở HQ Hamamatsu. Nhu cầu lõi: 6 tiêu chí đồng bộ
+  D1–D6 (consulting.txt mục 2) — danh mục khóa master, ma trận đào tạo theo
+  vị trí, hồ sơ đào tạo duy nhất theo nhân viên, chuẩn chứng chỉ + chu kỳ
+  tái đào tạo, báo cáo tuân thủ hợp nhất, quy trình nội dung trung tâm.
+
+ĐỊNH VỊ [DECISION đề xuất]:
+  Phát triển EverLMS thành nền tảng có 2 chế độ triển khai chính thức:
+    Mode A — "Academy" (bán khóa học, catalog công khai, commerce): như demo.
+    Mode B — "Enterprise Compliance Training" (nội bộ, miễn phí, multi-branch,
+             hồ sơ tuân thủ): JFC đã chạy dạng sơ khai, Nissei là khách kéo
+             product lên chuẩn. KHÔNG làm multi-tenant SaaS (giữ non-goal
+             trong A02) — mỗi khách 1 instance; "multi-branch" là phân vùng
+             NỘI BỘ một tổ chức, không phải tenancy.
+  Deal Nissei được dùng làm đòn bẩy: mọi tính năng mới đi vào PRODUCT CORE
+  (JFC cũng hưởng lợi → upsell), không fork riêng cho Nissei.
+
+--------------------------------------------------------------------------------
+2. GAP ANALYSIS — NISSEI CẦN vs EVERLMS CÓ
+--------------------------------------------------------------------------------
+Nguồn: agent scan A–D + config/sync ngày 2026-07-15.
+
+| # | Nissei cần | Hiện trạng | Cỡ |
+|---|------------|-----------|----|
+| G1 | Phân vùng chi nhánh (3 nhà máy + 2 VP): user thuộc site, manager chỉ quản site mình, báo cáo per-site + hợp nhất | [GAP] Không có entity/field org nào trong 29 entity; role phẳng + ownership; chỉ có field_company dạng text tự do trên user | L |
+| G2 | Đa ngôn ngữ VI (công nhân) + JA (báo cáo quản lý) + ZH (VP TQ) | [GAP] Install đơn ngữ EN; chưa bật language/locale/content_translation; 7 entity đã translatable ở schema (course, chapter, lesson, quiz, question, article, faq) = nền sẵn nhưng chưa dùng | L |
+| G3 | Ma trận đào tạo theo vị trí + chu kỳ tái đào tạo + cảnh báo hết hạn (ATLĐ nhóm 1–6, NĐ 44/2016) | [GAP] Có certificate idempotent + enrollment, KHÔNG có khái niệm "khóa bắt buộc theo chức danh", "hạn hiệu lực", "re-certification due" | L |
+| G4 | Báo cáo tuân thủ hợp nhất (tỷ lệ hoàn thành/quá hạn per site) | [GAP một phần] lms_analytics partial (E12, KPI cơ bản, CSV export); chưa có compliance KPI, chưa per-branch | M |
+| G5 | Import hàng nghìn nhân viên + đồng bộ HR/master data | [GAP] Chỉ có seed/demo import (lms_content_tools); không có bulk user import, không HRIS sync | M |
+| G6 | Qua vòng security review của công ty Nhật | [GAP nghiêm trọng] R-001: secrets plaintext trong config/sync đã commit git — Stripe, PayPal, Zoom, OpenAI, Gemini, VÀ Google OAuth token còn sống. Key module đã bật nhưng chưa dùng. Test ~0% (R-006) | M |
+| G7 | Chứng chỉ song ngữ VI + JA/ZH (font CJK trong mPDF) | [GAP] Docs không nhắc CJK; token font chỉ Latin (Inter). mPDF hỗ trợ CJK nhưng phải cấu hình font + kiểm tra template | S |
+| G8 | Email nhắc hạn đào tạo + thông báo | [GAP một phần] E09 partial; SMTP module có nhưng smtp_on:false, mail = php_mail; email channel nằm trong queue W02 | S–M |
+| G9 | User TQ truy cập qua GFW (web-first, không FCM) | [GAP nhỏ] Cần audit theme/app bỏ tài nguyên Google-hosted; user TQ dùng web nên né được FCM | S |
+| G10 | SSO / AD (khả năng HQ yêu cầu) | [GAP] Không có thiết kế SSO nào (chỉ là chữ trong copy marketing) | M — CHỜ HỎI, đừng build trước |
+
+Cái Nissei KHÔNG cần mà product đang dở → chủ động loại khỏi phạm vi deal:
+  - Payment webhooks (R-002), PayPal/ZaloPay: đào tạo nội bộ không thanh toán.
+    Tắt module commerce trong instance Nissei. (Vẫn giữ trong core cho Mode A.)
+  - Badges (R-003): nice-to-have gamification, không nằm trong D1–D6.
+  - Zoom (partial): chỉ bật nếu khảo sát GĐ 0 cho thấy có đào tạo trực tuyến.
+
+--------------------------------------------------------------------------------
+3. QUYẾT ĐỊNH KIẾN TRÚC CHIẾN LƯỢC [DECISION — cần SA chốt]
+--------------------------------------------------------------------------------
+AD-S1. Multi-branch đi vào PRODUCT CORE, không fork.
+  Module mới đề xuất: lms_organization (theo chuẩn lms_* + plugin pattern).
+  - Entity lms_branch (hoặc vocabulary + entity reference — chọn khi thiết kế;
+    thiên về ENTITY vì cần metadata: mã site, quốc gia, timezone, ngôn ngữ).
+  - field_branch (entity ref) trên user + các entity vận hành (enrollment,
+    quiz_result, user_certificate); course KHÔNG thuộc branch (danh mục master
+    dùng chung — đúng nguyên tắc "chuẩn trung tâm, thực thi địa phương").
+  - Role scoping: thêm biến thể quyền "in own branch" cho manager/instructor
+    (mở rộng mô hình own/all sẵn có trong permission-registry).
+  - Rủi ro kiến trúc: đụng access-control của toàn bộ route hiện hữu → phải
+    có test baseline (W03) TRƯỚC khi làm. Đây là lý do kỹ thuật để kéo R-006
+    vào phạm vi deal.
+
+AD-S2. Compliance là module mới lms_compliance, không nhét vào certificate.
+  - Training matrix: job_role (vocabulary mới) x course bắt buộc x chu kỳ.
+  - Hạn hiệu lực chứng chỉ + trạng thái due/overdue + event nhắc hạn (nối vào
+    lms_notification email channel).
+  - Báo cáo: mở rộng lms_analytics thêm compliance KPIs per-branch — trùng
+    luôn task E12S01T01 đang mở trong queue.
+  - Đây là DIFFERENTIATOR của Mode B — thứ JFC chưa có, bán lại được cho JFC.
+
+AD-S3. Đa ngôn ngữ: bật core i18n stack (language + locale + content_translation
+  + config_translation), KHÔNG tự chế. 7 entity đã translatable là lợi thế;
+  việc lớn nằm ở: dịch UI string VI/JA/ZH, template email/notification đa ngữ,
+  Flutter app l10n (framework l10n đã có trong app — cần bật locale mới),
+  mPDF font CJK, và QUY TRÌNH dịch nội dung (D6 trong consulting.txt).
+
+AD-S4. Chuỗi giá trị theo instance: mỗi khách 1 instance tự host (giữ non-goal
+  không SaaS). Nissei: instance đặt tại VN (NĐ 13/2023 + độ trễ), user TQ dùng
+  web. Không dựng hạ tầng đại lục cho 2 VP (xem consulting.txt 5.1).
+
+AD-S5. Mô hình docs "product core + customer project" — LỖ HỔNG FRAMEWORK.
+  LodeStar hiện là quy trình build docs cho MỘT dự án; không có khái niệm
+  re-instantiate cho khách mới (đã xác minh 2026-07-15). Đề xuất mở rộng
+  (đưa vào ideas/ của framework, GIỮ NGUYÊN nguyên tắc IP: 00-Guidelines
+  không ship cho khách, docs khách hàng là bản distilled):
+  - Repo product (repo này): giữ nguyên tree A–U+Z = tài liệu SẢN PHẨM.
+  - Mỗi khách = 1 project tree riêng chạy lại recipe, trong đó 00-project-input
+    của khách chứa: company-info, consulting, strategy (3 file này chính là
+    khởi đầu của pattern đó), khảo sát GĐ 0, và THAM CHIẾU docs product như
+    nguồn as-built (giống rebuild-mode đã có sẵn trong framework).
+  - Delta khách (config, theme skin, nội dung khóa) tách khỏi core bằng
+    config split / recipe Drupal — tránh lặp lại tình trạng JFC (không rõ
+    JFC instance đang lệch core bao xa — CẦN KIỂM KÊ, xem mục 6).
+
+--------------------------------------------------------------------------------
+4. ROADMAP PHÁT TRIỂN SẢN PHẨM — ĐỒNG BỘ VỚI LỘ TRÌNH BÁN HÀNG
+--------------------------------------------------------------------------------
+Nguyên tắc trình tự: (1) cái gì chặn việc BÁN làm trước; (2) nền móng có rủi
+ro kiến trúc (branch, i18n) làm sớm khi có test baseline; (3) không build cái
+chưa hỏi khách (SSO, offline, Zoom).
+
+WAVE S0 — SALES ENABLER (làm ngay, trước/không phụ thuộc hợp đồng)
+  S0.1 Xử lý R-001: chuyển toàn bộ secrets sang Key module / env override,
+       ROTATE mọi key đã lộ trong git history (Stripe, PayPal, Zoom, OpenAI,
+       Gemini, Google OAuth). Điều kiện sống còn để qua security review Nhật
+       — và là task W01 sẵn có trong queue. [G6]
+  S0.2 Demo instance kịch bản Nissei: 2 branch mẫu (giả lập bằng category
+       như JFC làm — chấp nhận tạm cho demo), ma trận ATLĐ nhóm 1–6, nội dung
+       VI, mẫu chứng chỉ song ngữ VI/JA tĩnh. Demo đúng nỗi đau (consulting.txt
+       N4), nói rõ phần branch thật nằm trong roadmap có hợp đồng.
+  S0.3 Spike kỹ thuật 3 mục: (a) mPDF render font JA/ZH trong template chứng
+       chỉ hiện tại [G7]; (b) bật language+content_translation trên bản dev,
+       đo mức vỡ của theme/views [G2]; (c) audit tài nguyên Google-hosted
+       trong lms_theme + app [G9]. Output: 3 spike note vào docs.
+  S0.4 Kiểm kê delta instance JFC so với core (xem mục 6).
+
+WAVE S1 — NỀN MÓNG ENTERPRISE (khi có hợp đồng GĐ 1–2 của consulting.txt)
+  S1.1 Test baseline PHPUnit cho access-control + enrollment + quiz + cert
+       (kéo W03/R-006 lên sớm — điều kiện kỹ thuật của S1.2). [G6]
+  S1.2 lms_organization: branch entity + field trên user/enrollment/result/
+       cert + quyền "in own branch" + branch switcher cho manager. [G1]
+  S1.3 Bulk user import CSV (mã NV, tên, branch, job_role, email/phone) +
+       màn hình đối soát lỗi — ăn khớp audit master data GĐ 0. [G5]
+  S1.4 Email channel + SMTP cấu hình chuẩn (W02/R-005 sẵn trong queue). [G8]
+
+WAVE S2 — COMPLIANCE CORE (pilot GĐ 2)
+  S2.1 lms_compliance: job_role vocab, training matrix, hạn hiệu lực, trạng
+       thái due/overdue, event nhắc hạn qua email/in-app. [G3]
+  S2.2 Compliance KPIs per-branch trong lms_analytics + CSV export
+       (gộp task E12S01T01 đang mở). [G4]
+  S2.3 Import hồ sơ đào tạo lịch sử (mapping từ Excel các nhà máy). [G5]
+
+WAVE S3 — ĐA NGÔN NGỮ (rollout GĐ 3–4)
+  S3.1 Bật i18n stack; dịch UI VI trước (người dùng đông nhất), JA cho màn
+       quản lý/báo cáo, ZH cho gói khóa học VP TQ. [G2]
+  S3.2 mPDF CJK production-grade + template chứng chỉ đa ngữ. [G7]
+  S3.3 Flutter app: bật locale VI/JA/ZH, rebrand Nissei, phân phối
+       enterprise (APK/MDM hoặc store riêng — hỏi IT khách). [G2]
+  S3.4 GFW hardening theo spike S0.3c. [G9]
+
+WAVE S4 — THEO KHẢO SÁT (chỉ build sau khi GĐ 0 trả lời)
+  SSO/AD [G10] | HRIS sync tự động [G5] | Zoom | offline mobile | audit log
+  open_switcher (docs ghi "should have", chưa xác minh có trong code — nếu
+  khách hỏi audit trail thì phải kiểm tra và bổ sung).
+
+--------------------------------------------------------------------------------
+5. GÓC THƯƠNG MẠI [INFERENCE — đề xuất để bàn]
+--------------------------------------------------------------------------------
+  - Cấu trúc deal bám lộ trình consulting.txt: bán GĐ 0 (khảo sát, phí cố
+    định, cam kết deliverable) → hợp đồng triển khai theo giai đoạn → phí
+    vận hành/SLA hàng năm. Tránh bán "license trọn gói" một cục khi chưa
+    khảo sát — chưa đủ dữ kiện định giá.
+  - Giá trị tài sản hóa: G1 (branch) + G3 (compliance) + G2 (i18n) là tài
+    sản PRODUCT dùng lại cho mọi khách enterprise sau này (và upsell JFC);
+    có thể chấp nhận biên lợi nhuận thấp ở deal Nissei để đổi lấy product
+    asset + reference case thứ 2, NHƯNG phải giữ IP các module core thuộc
+    về mình (license cho khách dùng, không bán đứt source độc quyền).
+  - Reference story khi chào Nissei: "nền tảng đang vận hành chương trình
+    đào tạo an toàn & tuân thủ cho một tập đoàn Nhật tại Úc/New Zealand"
+    — đồng dạng văn hóa + đúng use case. (Xin phép JFC trước khi nêu tên.)
+  - Kênh quyết định: theo consulting.txt 5.3, sponsor HQ Hamamatsu là điều
+    kiện tiên quyết; chuẩn bị one-pager EN/JA về sản phẩm + security posture
+    (sau khi S0.1 xong mới dám đưa).
+
+--------------------------------------------------------------------------------
+6. VIỆC PHẢI KIỂM KÊ / CÂU HỎI MỞ
+--------------------------------------------------------------------------------
+  Q1. Instance JFC đang chạy bản code nào, lệch repo này bao xa? (Nếu đã
+      fork-drift thì AD-S1 "mọi thứ vào core" cần kế hoạch merge-back.)
+      => Việc S0.4, làm trước khi hứa bất cứ điều gì về "core chung".
+  Q2. Quy mô ghế thật của Nissei (5.000+ là ước tính nguồn C) → định cỡ
+      hạ tầng + giá. Hỏi trong GĐ 0.
+  Q3. HQ có LMS tập đoàn nào đang dùng ở Nhật không? (Rủi ro R1 consulting.txt)
+  Q4. SSO/AD có bắt buộc không? MDM phân phối app kiểu gì? (G10, S3.3)
+  Q5. Catalog có cần login-wall hoàn toàn không (JFC hiện để anonymous xem
+      danh mục — posture Nhật có thể không chấp nhận)?
+  Q6. open_switcher có audit log thật trong code không? (docs chưa xác minh)
+  Q7. Chu kỳ tái đào tạo ATLĐ theo NĐ 44/2016 cho từng nhóm 1–6 — lấy luật
+      sư/HSE khách xác nhận bảng chu kỳ để cấu hình lms_compliance đúng.
+
+--------------------------------------------------------------------------------
+7. NEXT ACTIONS (2 TUẦN TỚI)
+--------------------------------------------------------------------------------
+  N1. Chốt các DECISION mục 3 (AD-S1..S5) — người quyết: SA/owner (bạn).
+  N2. Chạy S0.1 (secrets + rotate) — không phụ thuộc gì, giá trị cao nhất.
+  N3. Chạy 3 spike S0.3 song song (mPDF CJK, i18n enable, GFW audit).
+  N4. Kiểm kê JFC delta (S0.4 / Q1).
+  N5. Dựng demo kịch bản Nissei (S0.2) sau khi N2 xong.
+  N6. Đặt lịch khảo sát GĐ 0 với đầu mối Nissei (consulting.txt N1–N2).
+  Khi có hợp đồng: đưa G1–G9 vào B-layer (feature/AC mới F-025+) và D-layer
+  (epic E14 organization, E15 compliance, E16 i18n) theo đúng quy trình gate
+  của framework — strategy.txt này là input, không phải spec.
+
+--------------------------------------------------------------------------------
+8. NGUỒN
+--------------------------------------------------------------------------------
+  - Docs product: .agent/docs/ A01–A03, B01–B06, C01–C16, D00–D10
+    (scan bằng agent 2026-07-15; chi tiết trích dẫn trong từng mục).
+  - Config: config/sync/ (396 YAML, commit a9dba680 2026-07-11) — đơn ngữ EN,
+    không org-entity, secrets tồn dư (R-001).
+  - Site thật: https://lms.jfcsystem.com.au/ (fetch 2026-07-15).
+  - Framework: .agent/_LodeStar/00-Guidelines-final (đọc distilled — KHÔNG
+    trích verbatim; xác nhận chưa có mô hình per-customer).
+  - Khách hàng: company-info.txt, consulting.txt (cùng thư mục).
+================================================================================

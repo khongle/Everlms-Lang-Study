@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Switch user · Nissei Training</title>
+<meta name="description" content="Temporarily act as another employee for support, with a mandatory reason and full audit logging.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="administrator" data-active="P056"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P050-admin-overview.html">Admin</a> <span aria-hidden="true">/</span> <span>Switch user</span>
+    </nav>
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Switch user</h1>
+        <p class="lede">Temporarily browse the system as another employee to diagnose a support ticket.
+          Every switch requires a written reason and is recorded permanently.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="alert alert--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>
+      <div><b>About impersonation.</b> Switching lets you see exactly what an employee sees, to resolve
+        issues that cannot be diagnosed from their record alone. A reason is required before the switch
+        happens, a red banner marks every page while it is active, and the full session (who, whom,
+        when, why, and how long) is written to the <a href="P055-audit-log.html">audit log</a>.
+        Always switch back when you are done.</div>
+    </div>
+
+    <!-- search -->
+    <div class="toolbar" style="margin-top:2rem">
+      <form class="form--inline" role="search">
+        <label class="nav__search" style="min-width:260px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+          <input type="search" placeholder="Find an employee by name or code&hellip;"
+            aria-label="Find an employee by name or code"></label>
+        <select class="select"><option>All branches</option><option>NEV-HCM</option><option>NEH-HAN</option>
+          <option>NEM-MTO</option><option>NES-SHA</option><option>NES-SZN</option></select>
+        <select class="select"><option>All roles</option><option>Employee</option><option>Instructor</option>
+          <option>Site Training Manager</option><option>HR/HSE Central</option></select>
+        <button type="submit" class="btn btn--brand btn--sm">Search</button>
+      </form>
+    </div>
+
+    <div class="tablecard" style="margin-top:1rem">
+      <div class="wtable__wrap">
+        <table class="wtable">
+          <caption class="sr-only">Employees available to switch to</caption>
+          <thead><tr><th scope="col">Employee</th><th scope="col">Role</th><th scope="col">Branch</th>
+            <th scope="col">Last active</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="cell-user"><img src="../_shared/img/avatar-02.jpg" alt="">
+                <span><b>Do Van Thanh</b><small class="codecell">NEH-002914</small></span></div></td>
+              <td><span class="badge badge--info">Employee</span></td>
+              <td>NEH-HAN</td>
+              <td class="text-sm text-muted">15 Jul 2026, 07:52</td>
+              <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="#confirm-switch">Switch to</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><img src="../_shared/img/avatar-06.jpg" alt="">
+                <span><b>Chen Wei</b><small class="codecell">NES-000112</small></span></div></td>
+              <td><span class="badge badge--info">Employee</span></td>
+              <td>NES-SHA</td>
+              <td class="text-sm text-muted">15 Jul 2026, 09:10</td>
+              <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="#confirm-switch">Switch to</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><img src="../_shared/img/avatar-01.jpg" alt="">
+                <span><b>Nguyen Van Minh</b><small class="codecell">NEV-004821</small></span></div></td>
+              <td><span class="badge badge--info">Employee</span></td>
+              <td>NEV-HCM</td>
+              <td class="text-sm text-muted">15 Jul 2026, 08:15</td>
+              <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="#confirm-switch">Switch to</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><img src="../_shared/img/avatar-07.jpg" alt="">
+                <span><b>Le Quoc Bao</b><small class="codecell">NEH-000377</small></span></div></td>
+              <td><span class="badge badge--accent">Site Training Manager</span></td>
+              <td>NEH-HAN</td>
+              <td class="text-sm text-muted">15 Jul 2026, 08:40</td>
+              <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="#confirm-switch">Switch to</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- reason required before switching -->
+    <div class="reasonbox" id="confirm-switch" style="margin-top:2rem">
+      <div class="flex items-center gap-3" style="margin-bottom:1rem">
+        <img src="../_shared/img/avatar-02.jpg" alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover">
+        <div><b>Confirm switch to Do Van Thanh</b>
+          <p class="text-sm text-muted" style="margin:.1rem 0 0">NEH-002914 &middot; Forklift Operator &middot; NEH-HAN</p></div>
+      </div>
+      <div class="field">
+        <label for="switch-reason">Reason for this session <span style="color:var(--error)">*</span></label>
+        <textarea id="switch-reason" rows="3" required
+          placeholder="e.g. Investigating why a completed SAF-106 attempt is not reflected on the employee record (ticket HD-4821)"></textarea>
+        <p class="hint">Required. This text is written to the audit log with your name, the employee you
+          switched to, and the time the session starts and ends. It cannot be edited afterward.</p>
+      </div>
+      <div class="btn-row" style="margin-top:1rem">
+        <button class="btn btn--brand btn--sm" type="button">Confirm switch</button>
+        <button class="btn btn--ghost btn--sm" type="button">Cancel</button>
+      </div>
+    </div>
+
+    <!-- example: active impersonation banner, shown inline -->
+    <p class="hint" style="margin-top:2rem">Example: the banner shown at the top of every page while
+      a switch is active:</p>
+    <div class="impbanner" style="margin-top:.5rem;border-radius:var(--radius-sm)">
+      <div class="container">
+        <span class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+            <path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/><path d="M12 9v4M12 17h.01"/></svg>
+          Impersonating Do Van Thanh (NEH-002914) &middot; started 6 minutes ago by Dang Minh Tuan</span>
+        <button type="button" class="btn btn--white btn--sm">End impersonation</button>
+      </div>
+    </div>
+
+    <!-- recent sessions -->
+    <div style="margin-top:2.4rem">
+      <h2 style="font-size:var(--text-lg);margin:0 0 1rem">Recent impersonation sessions</h2>
+      <div class="tablecard">
+        <div class="wtable__wrap">
+          <table class="wtable">
+            <caption class="sr-only">Recent impersonation sessions: who, whom, when, why and duration</caption>
+            <thead>
+              <tr><th scope="col">Who</th><th scope="col">Impersonated</th><th scope="col">Branch</th>
+                <th scope="col">Started</th><th scope="col">Duration</th><th scope="col">Reason</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Dang Minh Tuan</td>
+                <td><div class="cell-user"><img src="../_shared/img/avatar-02.jpg" alt="">
+                  <span><b>Do Van Thanh</b><small class="codecell">NEH-002914</small></span></div></td>
+                <td>NEH-HAN</td>
+                <td class="text-sm text-muted">15 Jul 2026, 09:42</td>
+                <td class="text-sm">16 min</td>
+                <td class="text-sm">Investigating SAF-106 completion not reflecting, ticket HD-4821</td>
+              </tr>
+              <tr>
+                <td>Dang Minh Tuan</td>
+                <td><div class="cell-user"><img src="../_shared/img/avatar-05.jpg" alt="">
+                  <span><b>Vu Thi Mai</b><small class="codecell">NEH-002250</small></span></div></td>
+                <td>NEH-HAN</td>
+                <td class="text-sm text-muted">11 Jul 2026, 15:12</td>
+                <td class="text-sm" style="color:var(--warning);font-weight:700">34 min</td>
+                <td class="text-sm">Verifying FIR-101 assignment date, ticket HD-4790</td>
+              </tr>
+              <tr>
+                <td>Dang Minh Tuan</td>
+                <td><div class="cell-user"><img src="../_shared/img/avatar-06.jpg" alt="">
+                  <span><b>Chen Wei</b><small class="codecell">NES-000112</small></span></div></td>
+                <td>NES-SHA</td>
+                <td class="text-sm text-muted">03 Jul 2026, 10:05</td>
+                <td class="text-sm">8 min</td>
+                <td class="text-sm">Confirming OFF-101 lesson visibility on office ruleset</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="hint">Every row above is a read-only mirror of entries already in the
+        <a href="P055-audit-log.html">audit log</a>, filtered to event type Impersonation.</p>
+    </div>
+
+    <div class="annot"><b>Designed in, not bolted on</b>The base EverLMS platform documents impersonation
+      logging as something a build &ldquo;should have,&rdquo; not something guaranteed. For a customer
+      undergoing labour inspections and ISO audits, optional logging is not acceptable: the reason field is
+      required by this form before a switch can be confirmed, and every session is written to the audit log
+      automatically, with no way to skip it.</div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

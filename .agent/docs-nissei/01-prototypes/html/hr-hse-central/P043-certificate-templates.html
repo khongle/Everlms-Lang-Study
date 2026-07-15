@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificate templates · Nissei Training</title>
+<meta name="description" content="Bilingual Vietnamese/Japanese certificate template editor with live preview.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="hr-hse-central" data-active="P043"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P034-certificates.html">Certificates</a> <span aria-hidden="true">/</span> <span>Certificate templates</span>
+    </nav>
+
+    <div class="branchbar">
+      <span class="branchbar__lb">Branch</span>
+      <button class="branchbar__sel" type="button" aria-haspopup="listbox">
+        All branches (5)
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <span class="branchbar__scope">One template, applied to every branch &middot; only the language pair is fixed</span>
+    </div>
+
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Certificate templates</h1>
+        <p class="lede">Edit the bilingual Vietnamese/Japanese certificate template. Changes apply the next
+          time a certificate is generated, or across all 12,940 valid certificates on a bulk regenerate.</p>
+      </div>
+      <div class="pagehead__actions">
+        <a class="btn btn--ghost" href="P034-certificates.html">Bulk regenerate certificates</a>
+        <button class="btn btn--brand" type="button">Save template</button>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="alert alert--warning">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/>
+        <path d="M12 9v4M12 17h.01"/></svg>
+      <div>
+        <b>CJK font requirement for PDF generation</b>
+        <p class="text-sm" style="margin:.2rem 0 0">Certificates are rendered to PDF with mPDF. The default
+          Latin font cannot draw Japanese glyphs. Without an embedded CJK-capable font, the Japanese
+          side prints as empty boxes (tofu). Font profile: <b>Noto Sans JP Regular</b>, embedded at PDF build
+          time. This is a build dependency, not a template setting, and must be verified on every server that
+          generates certificates.</p>
+      </div>
+    </div>
+
+    <div class="grid grid--2" style="margin-top:1.8rem;align-items:start">
+
+      <div class="stack">
+        <div class="panel">
+          <h3 style="font-size:var(--text-md);margin:0 0 1rem">Logo &amp; layout</h3>
+          <div class="dropzone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
+            <p style="margin:0"><b>nissei-logo.svg</b></p>
+            <p class="text-sm" style="margin:.2rem 0 0">Drop a new logo file, or keep the current one</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:var(--text-md);margin:0 0 1rem">Title</h3>
+          <div class="formgrid formgrid--2">
+            <div class="field"><label for="title-vi">Title (Vietnamese)</label>
+              <input id="title-vi" type="text" value="CH&#7912NG NH&#7852N HO&#192N TH&#192NH &#272;&#192O T&#7840O" style="width:100%"></div>
+            <div class="field"><label for="title-ja">Title (Japanese)</label>
+              <input id="title-ja" type="text" value="&#30740;&#20462;&#20462;&#20102;&#35388;&#26126;&#26360;" style="width:100%"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Body</h3>
+          <p class="hint" style="margin:0 0 1rem">Use merge tokens: <code>{{employee_name}}</code>
+            <code>{{employee_code}}</code> <code>{{course_code}}</code> <code>{{course_title}}</code>
+            <code>{{branch_name}}</code> <code>{{completion_date}}</code> <code>{{valid_until}}</code></p>
+          <div class="field" style="margin-bottom:1rem"><label for="body-vi">Body (Vietnamese)</label>
+            <textarea id="body-vi" rows="4" style="width:100%">Ch&#7913ng nh&#7853n {{employee_name}} ({{employee_code}}) &#273;&#227; ho&#224n th&#224nh kh&#243a &#273;&#224o t&#7841o {{course_code}} {{course_title}} t&#7841i {{branch_name}}, ng&#224y {{completion_date}}. Ch&#7913ng ch&#7881 c&#243 gi&#225 tr&#7883 &#273;&#7871n {{valid_until}}.</textarea></div>
+          <div class="field"><label for="body-ja">Body (Japanese)</label>
+            <textarea id="body-ja" rows="4" style="width:100%">{{employee_name}}&#65288;{{employee_code}}&#65289;&#27663;&#12399;&#12289;{{branch_name}}&#12395;&#12390;{{course_code}} {{course_title}}&#30740;&#20462;&#12434;{{completion_date}}&#12395;&#20462;&#20102;&#12375;&#12383;&#12371;&#12392;&#12434;&#35388;&#26126;&#12375;&#12414;&#12377;&#12290;&#26377;&#21177;&#26399;&#38480;&#65306;{{valid_until}}&#12290;</textarea></div>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:var(--text-md);margin:0 0 1rem">Signature</h3>
+          <div class="formgrid formgrid--2">
+            <div class="field"><label for="sig-name">Signatory name</label>
+              <input id="sig-name" type="text" value="Pham Thu Ha" style="width:100%"></div>
+            <div class="field"><label for="sig-title-vi">Title (Vietnamese)</label>
+              <input id="sig-title-vi" type="text" value="Tr&#432;&#7903ng ph&#242ng HSE Trung t&#226m" style="width:100%"></div>
+            <div class="field"><label for="sig-title-ja">Title (Japanese)</label>
+              <input id="sig-title-ja" type="text" value="&#12475;&#12531;&#12488;&#12521;&#12523;HSE&#12510;&#12493;&#12540;&#12472;&#12515;&#12540;" style="width:100%"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:var(--text-md);margin:0 0 1rem">Certificate number &amp; validity</h3>
+          <div class="formgrid formgrid--2">
+            <div class="field"><label for="certfmt">Certificate number format</label>
+              <input id="certfmt" type="text" value="{BRANCH}-{YEAR}-{EMP_CODE}-{COURSE}" style="width:100%">
+              <p class="hint">Example: NEV-2026-004821-104</p></div>
+            <div class="field"><label for="validity">Validity period</label>
+              <select class="select" id="validity" style="width:100%">
+                <option>Follows course retraining cycle (recommended)</option>
+                <option>Fixed override (months)</option>
+                <option>No expiry</option>
+              </select></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack" style="position:sticky;top:90px">
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Live preview</h3>
+          <p class="text-sm text-muted" style="margin:0 0 1rem">Rendered with a sample record: Nguyen Van
+            Minh, SAF-104 Safe Machine Operation, NEV-HCM.</p>
+          <div class="certbi">
+            <div class="certbi__side">
+              <div class="certbi__lang">Vietnamese</div>
+              <p style="font-weight:800;font-size:var(--text-md);margin:0 0 .8rem">CH&#7912NG NH&#7852N HO&#192N
+                TH&#192NH &#272;&#192O T&#7840O</p>
+              <p class="text-sm" style="margin:0 0 1rem">Ch&#7913ng nh&#7853n <b>Nguyen Van Minh</b>
+                (NEV-004821) &#273;&#227; ho&#224n th&#224nh kh&#243a &#273;&#224o t&#7841o SAF-104 Safe Machine
+                Operation t&#7841i Nissei Electric Vietnam, ng&#224y 20 Mar 2026. Ch&#7913ng ch&#7881 c&#243 gi&#225
+                tr&#7883 &#273;&#7871n 20 Mar 2028.</p>
+              <p class="text-sm" style="margin:0"><b>Pham Thu Ha</b><br>Tr&#432;&#7903ng ph&#242ng HSE Trung t&#226m</p>
+              <p class="certno" style="margin-top:.8rem;display:inline-block">NEV-2026-004821-104</p>
+            </div>
+            <div class="certbi__side">
+              <div class="certbi__lang">Japanese</div>
+              <p style="font-weight:800;font-size:var(--text-md);margin:0 0 .8rem">&#30740;&#20462;&#20462;&#20102;&#35388;&#26126;&#26360;</p>
+              <p class="text-sm" style="margin:0 0 1rem">Nguyen Van Minh&#65288;NEV-004821&#65289;&#27663;&#12399;&#12289;
+                Nissei Electric Vietnam&#12395;&#12390;SAF-104 Safe Machine Operation&#30740;&#20462;&#12434;
+                2026&#24180;3&#26376;20&#26085;&#12395;&#20462;&#20102;&#12375;&#12383;&#12371;&#12392;&#12434;
+                &#35388;&#26126;&#12375;&#12414;&#12377;&#12290;&#26377;&#21177;&#26399;&#38480;&#65306;2028&#24180;3&#26376;20&#26085;&#12290;</p>
+              <p class="text-sm" style="margin:0"><b>&#12497;&#12512;&#12539;&#12488;&#12452;&#12539;&#12495;</b><br>
+                &#12475;&#12531;&#12488;&#12521;&#12523;HSE&#12510;&#12493;&#12540;&#12472;&#12515;&#12540;</p>
+              <p class="certno" style="margin-top:.8rem;display:inline-block">NEV-2026-004821-104</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annot"><b>Why bilingual, on every certificate</b>Every certificate is Vietnamese and Japanese
+      on the same PDF, not two separate documents. Vietnamese is what the Decree 44/2016 labor inspector and
+      the employee expect; Japanese is what Hamamatsu HQ (roles.txt hq_viewer) needs to review without
+      translation. One template with two content blocks keeps both audiences on a single source of truth
+      instead of a translated copy drifting out of sync.</div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

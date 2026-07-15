@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports · Nissei Training</title>
+<meta name="description" content="Consolidated compliance reporting across every branch, read-only.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="hq-viewer" data-active="P033"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P047-hq-dashboard.html">HQ</a> <span aria-hidden="true">/</span> <span>Reports</span>
+    </nav>
+
+    <!-- READ-ONLY: named explicitly so the absence of controls reads as a design decision -->
+    <div class="roband">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/>
+        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg>
+      <span><b>Read-only oversight.</b> This is a report to view, not a report to build. There is no
+        manual export control and no schedule editor on this page.</span>
+    </div>
+
+    <!-- BRANCH SCOPE: switchable, read-only (hq_viewer) -->
+    <div class="branchbar">
+      <span class="branchbar__lb">Branch</span>
+      <button class="branchbar__sel" type="button" aria-haspopup="listbox">All branches (5)
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <span class="branchbar__scope">5,842 employees &middot; VN 5,800 &middot; CN 42</span>
+    </div>
+
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Reports</h1>
+        <p class="lede">Consolidated compliance reporting across every branch, read-only.</p>
+      </div>
+      <div class="pagehead__actions">
+        <a class="btn btn--ghost" href="P049-scheduled-exports.html">Scheduled exports</a>
+      </div>
+    </div>
+
+    <div class="annot"><b>Variant difference</b>This is the read-only, consolidated version of Reports.
+      There is no manual &ldquo;Export CSV&rdquo; button and no schedule editor here. Compare with the
+      HR/HSE Central version of this page (hr-hse-central/P033-reports.html), which can generate an
+      export on demand and edit delivery schedules, or the site version (site-training-manager/P033),
+      which covers one branch only. HQ does not pull these reports; HQ receives them automatically, see
+      Scheduled exports.</div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <nav class="segmented" aria-label="Filter by report type">
+      <a href="#" class="is-active">All reports <span class="num">5</span></a>
+      <a href="#">Monthly</a>
+      <a href="#">Quarterly</a>
+      <a href="#">Annual</a>
+    </nav>
+
+    <div class="tablecard" style="margin-top:1.2rem">
+      <div class="wtable__wrap">
+      <table class="wtable">
+        <caption class="sr-only">Available compliance reports with coverage, period, format and
+          generation date</caption>
+        <thead>
+          <tr>
+            <th scope="col">Report</th>
+            <th scope="col">Coverage</th>
+            <th scope="col">Period</th>
+            <th scope="col">Format</th>
+            <th scope="col">Generated</th>
+            <th scope="col"><span class="sr-only">Open</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="cell-course">
+              <span class="kpi__ic" style="width:40px;height:40px;border-radius:10px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+                  <path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+              <span><b>Monthly Compliance Report</b><small>All branches, company-wide summary</small></span>
+            </div></td>
+            <td>All branches</td>
+            <td>Jul 2026</td>
+            <td><span class="badge badge--accent">PDF</span> <span class="badge badge--accent">CSV</span></td>
+            <td class="text-sm text-muted">01 Jul 2026</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="#report-monthly">View</a></td>
+          </tr>
+          <tr>
+            <td><div class="cell-course">
+              <span class="kpi__ic kpi__ic--accent" style="width:40px;height:40px;border-radius:10px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+                  <path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+              <span><b>Quarterly Statutory Summary</b><small>Decree 44/2016, Vietnam factories</small></span>
+            </div></td>
+            <td>VN factories</td>
+            <td>Q2 2026 (Apr to Jun)</td>
+            <td><span class="badge badge--accent">PDF</span></td>
+            <td class="text-sm text-muted">01 Jul 2026</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="#">View</a></td>
+          </tr>
+          <tr>
+            <td><div class="cell-course">
+              <span class="kpi__ic kpi__ic--success" style="width:40px;height:40px;border-radius:10px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+                  <path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+              <span><b>Annual Audit Pack</b><small>Full statutory and certificate record, FY2025</small></span>
+            </div></td>
+            <td>All branches</td>
+            <td>FY2025</td>
+            <td><span class="badge badge--accent">PDF</span></td>
+            <td class="text-sm text-muted">02 Jan 2026</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="#">View</a></td>
+          </tr>
+          <tr>
+            <td><div class="cell-course">
+              <span class="kpi__ic" style="width:40px;height:40px;border-radius:10px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+                  <path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+              <span><b>Branch Compliance Snapshot</b><small>All branches, point in time</small></span>
+            </div></td>
+            <td>All branches</td>
+            <td>As of 15 Jul 2026</td>
+            <td><span class="badge badge--accent">PDF</span></td>
+            <td class="text-sm text-muted">15 Jul 2026</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="#">View</a></td>
+          </tr>
+          <tr>
+            <td><div class="cell-course">
+              <span class="kpi__ic kpi__ic--info" style="width:40px;height:40px;border-radius:10px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+                  <path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+              <span><b>Certificate Validity Register</b><small>All branches, point in time</small></span>
+            </div></td>
+            <td>All branches</td>
+            <td>As of 15 Jul 2026</td>
+            <td><span class="badge badge--accent">CSV</span></td>
+            <td class="text-sm text-muted">15 Jul 2026</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="#">View</a></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- default state, shown richly: the primary Monthly Compliance Report opened -->
+    <div class="card" id="report-monthly" style="margin-top:2rem">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <h2 style="font-size:var(--text-lg);margin:0 0 .2rem">Monthly Compliance Report, Jul 2026</h2>
+          <p class="text-sm text-muted" style="margin:0">All branches &middot; generated 01 Jul 2026
+            &middot; delivered in Japanese, shown here in English</p>
+        </div>
+        <div class="flex gap-2">
+          <span class="badge badge--accent">PDF</span>
+          <span class="badge badge--accent">CSV</span>
+        </div>
+      </div>
+
+      <div class="kpis" style="margin-top:1.4rem">
+        <div class="kpi">
+          <span class="kpi__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <div><div class="stat__n num">5,842</div><div class="stat__l">Employees</div></div>
+        </div>
+        <div class="kpi">
+          <span class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span>
+          <div><div class="stat__n num">87.4%</div><div class="stat__l">Global compliance</div></div>
+        </div>
+        <div class="kpi">
+          <span class="kpi__ic" style="background:var(--error-soft)"><svg viewBox="0 0 24 24" fill="none"
+            stroke="var(--error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            aria-hidden="true"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/>
+            <path d="M12 9v4M12 17h.01"/></svg></span>
+          <div><div class="stat__n num" style="color:var(--error)">312</div><div class="stat__l">Overdue</div></div>
+        </div>
+        <div class="kpi">
+          <span class="kpi__ic kpi__ic--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+          <div><div class="stat__n num">468</div><div class="stat__l">Due in 30 days</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:var(--text-md);margin:1.6rem 0 .8rem">By branch</h3>
+      <div class="stack-sm">
+        <div class="covrow">
+          <span class="covrow__l">NEV-HCM<small>Vietnam &middot; factory</small></span>
+          <div class="covbar"><i style="width:89.1%"></i></div>
+          <span class="covrow__v">89.1%</span>
+        </div>
+        <div class="covrow">
+          <span class="covrow__l">NEH-HAN<small>Vietnam &middot; factory</small></span>
+          <div class="covbar"><i style="width:86.2%"></i></div>
+          <span class="covrow__v">86.2%</span>
+        </div>
+        <div class="covrow">
+          <span class="covrow__l">NEM-MTO<small>Vietnam &middot; factory</small></span>
+          <div class="covbar covbar--warn"><i style="width:82.7%"></i></div>
+          <span class="covrow__v">82.7%</span>
+        </div>
+        <div class="covrow">
+          <span class="covrow__l">NES-SHA<small>China &middot; trading office</small></span>
+          <div class="covbar"><i style="width:95.8%"></i></div>
+          <span class="covrow__v">95.8%</span>
+        </div>
+        <div class="covrow">
+          <span class="covrow__l">NES-SZN<small>China &middot; trading office</small></span>
+          <div class="covbar"><i style="width:94.4%"></i></div>
+          <span class="covrow__v">94.4%</span>
+        </div>
+      </div>
+    </div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>
