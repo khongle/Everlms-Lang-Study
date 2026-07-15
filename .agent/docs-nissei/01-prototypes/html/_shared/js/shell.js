@@ -104,16 +104,22 @@ var P = {
   P047:{f:'P047-hq-dashboard.html',r:'hq-viewer',t:'HQ dashboard',d:'The group on one screen',i:'grid'},
   P048:{f:'P048-branch-comparison.html',r:'hq-viewer',t:'Branch comparison',d:'One KPI set, every site',i:'chart'},
   P049:{f:'P049-scheduled-exports.html',r:'hq-viewer',t:'Scheduled exports',d:'What arrives at HQ',i:'up'},
-  /* ADMIN */
-  P050:{f:'P050-admin-overview.html',r:'administrator',t:'Admin overview',d:'System at a glance',i:'grid'},
-  P051:{f:'P051-roles-permissions.html',r:'administrator',t:'Roles and permissions',d:'Seven roles, three scopes',i:'shield'},
-  P052:{f:'P052-branch-configuration.html',r:'administrator',t:'Branch configuration',d:'Add a country as data',i:'globe'},
-  P053:{f:'P053-language-localization.html',r:'administrator',t:'Language',d:'Locales and fallback',i:'lang'},
-  P054:{f:'P054-integrations.html',r:'administrator',t:'Integrations',d:'SMTP, SSO, HRIS',i:'cog'},
-  P055:{f:'P055-audit-log.html',r:'administrator',t:'Audit log',d:'Immutable trail',i:'list'},
-  P056:{f:'P056-switch-user.html',r:'administrator',t:'Switch user',d:'Impersonation, always logged',i:'swap'},
+  /* NISSEI ADMIN — the customer's own administrator (role key: org_admin) */
+  P050:{f:'P050-admin-overview.html',r:'org_admin',t:'Admin overview',d:'The deployment at a glance',i:'grid'},
+  P051:{f:'P051-roles-permissions.html',r:'org_admin',t:'Roles and access',d:'Assign roles; read the matrix',i:'shield'},
+  P052:{f:'P052-branch-configuration.html',r:'org_admin',t:'Branch configuration',d:'Add a country as data',i:'globe'},
+  P053:{f:'P053-language-localization.html',r:'org_admin',t:'Language',d:'Locales and fallback',i:'lang'},
+  P054:{f:'P054-integrations.html',r:'org_admin',t:'Integrations',d:'SMTP, SSO, HRIS',i:'cog'},
+  P055:{f:'P055-audit-log.html',r:'org_admin',t:'Audit log',d:'Immutable trail',i:'list'},
+  P056:{f:'P056-switch-user.html',r:'org_admin',t:'Switch user',d:'Impersonation, always logged',i:'swap'},
+  P058:{f:'P058-data-retention.html',r:'org_admin',t:'Data retention',d:'Decree 13 and PIPL',i:'shield'},
+  P059:{f:'P059-editorial-content.html',r:'org_admin',t:'Editorial content',d:'Public page, notices, templates',i:'book'},
+  /* PLATFORM ADMIN — owns how the system is built (role key: administrator) */
   P057:{f:'P057-system-health.html',r:'administrator',t:'System health',d:'Jobs and queues',i:'cog'},
-  P058:{f:'P058-data-retention.html',r:'administrator',t:'Data retention',d:'Decree 13 and PIPL',i:'shield'}
+  P060:{f:'P060-platform-overview.html',r:'administrator',t:'Platform overview',d:'Release, environment, tenants',i:'grid'},
+  P061:{f:'P061-site-structure.html',r:'administrator',t:'Site structure',d:'Entities, fields, views: the core',i:'matrix'},
+  P062:{f:'P062-modules-updates.html',r:'administrator',t:'Modules and updates',d:'Product core and versions',i:'up'},
+  P063:{f:'P063-config-sync.html',r:'administrator',t:'Configuration sync',d:'Core against customer delta',i:'swap'}
 };
 
 /* Variants: a page built inside a non-owner folder because that role's view
@@ -129,7 +135,11 @@ var VARIANT = {
   'hr-hse-central/P033':'P033-reports.html',
   'hr-hse-central/P034':'P034-certificates.html',
   'hq-viewer/P033':'P033-reports.html',
-  'administrator/P029':'P029-employees.html'
+  'org_admin/P029':'P029-employees.html',
+  /* the platform administrator sees the same two security surfaces at a
+     wider angle: config and structure events, and break-glass access */
+  'administrator/P055':'P055-audit-log.html',
+  'administrator/P056':'P056-switch-user.html'
 };
 
 /* ------------------------------------------------------------------- ROLES */
@@ -186,18 +196,39 @@ var ROLES = {
     sections:[{n:'Oversight',p:['P047','P048','P033','P049']},
               {n:'Account',p:['P019','P020']}]
   },
-  administrator:{
-    label:'Administrator', who:'Dang Minh Tuan', code:'NEV-000009', job:'IT Administrator',
+  /* The customer's own administrator. Everything Nissei needs to run the
+     system day to day, and nothing that can change how it is built.
+     Core role key is generic (org_admin) so the same role serves the next
+     customer; only the label is Nissei's. */
+  org_admin:{
+    label:'Nissei Administrator', who:'Dang Minh Tuan', code:'NEV-000009', job:'IT Administrator',
     branch:'Central', av:'avatar-04.jpg', lang:'EN', chrome:'manage', home:'P050',
-    blurb:'Configuration, security and the audit trail',
-    scope:'SYSTEM', scopeKind:'system',
-    sections:[{n:'System',p:['P050','P052','P053','P054','P057','P058']},
-              {n:'Security',p:['P051','P055','P056']},
-              {n:'Business surfaces',p:['P035','P036','P029','P033']},
+    blurb:'Accounts, access, settings and the audit trail',
+    scope:'ALL BRANCHES · ADMIN', scopeKind:'global',
+    sections:[{n:'Overview',p:['P050']},
+              {n:'People and access',p:['P029','P051','P056']},
+              {n:'Configuration',p:['P052','P053','P054']},
+              {n:'Content',p:['P059']},
+              {n:'Compliance',p:['P055','P058']},
+              {n:'Account',p:['P019','P020']}]
+  },
+  /* The platform administrator. Owns how the system is built: structure,
+     modules, config sync. Fenced off from the customer on purpose, so the
+     deployment cannot drift from the product core (strategy-final E4). */
+  administrator:{
+    label:'Platform Administrator', who:'Vu Hoang Nam', code:'PLT-000001',
+    job:'Platform Engineer', branch:'Platform operations', av:'avatar-02.jpg', lang:'EN',
+    chrome:'manage', home:'P060',
+    blurb:'Structure, modules and releases. Break-glass only',
+    scope:'PLATFORM · BREAK-GLASS', scopeKind:'system',
+    sections:[{n:'Platform',p:['P060','P062','P063','P057']},
+              {n:'Core',p:['P061']},
+              {n:'Security',p:['P055','P056']},
               {n:'Account',p:['P019','P020']}]
   }
 };
-var ROLE_ORDER = ['employee','instructor','site-training-manager','hr-hse-central','hq-viewer','administrator'];
+var ROLE_ORDER = ['employee','instructor','site-training-manager','hr-hse-central','hq-viewer',
+                  'org_admin','administrator'];
 var LANGS = [['EN','English'],['VI','Tieng Viet'],['JA','Nihongo'],['ZH','Zhongwen']];
 
 /* Role key -> folder on disk. Folders are numbered so they list in the order
@@ -210,7 +241,8 @@ var DIR = {
   'site-training-manager':'04-site-training-manager',
   'hr-hse-central':'05-hr-hse-central',
   'hq-viewer':'06-hq-viewer',
-  administrator:'07-administrator'
+  org_admin:'07-nissei-admin',
+  administrator:'08-administrator'
 };
 
 /* Resolve a link from role `from` to page id `id`: prefer a variant built in
