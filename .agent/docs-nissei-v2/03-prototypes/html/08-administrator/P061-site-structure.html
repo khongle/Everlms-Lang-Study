@@ -34,14 +34,6 @@
 
   <section class="section"><div class="container">
 
-    <div class="roband">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-        stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      <span>There is no add, edit or delete control anywhere on this page, for any row, for any role,
-        including Platform Administrator. This page is also completely absent from the Nissei Administrator
-        surface: it is not a permission that could be granted, it is a page that does not exist in that
-        role&rsquo;s menu at all. Structure is never hand-edited in production; see the alert below.</span>
-    </div>
 
     <div class="alert alert--warning">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -86,14 +78,14 @@
 
     <!-- entity types -->
     <h2 style="font-size:var(--text-lg);margin:2.2rem 0 .3rem">Entity types</h2>
-    <p class="text-sm text-muted" style="margin:0 0 1rem">A representative sample of the 27 content entity
-      types the product core ships. The entity <i>type</i> and its fields are always CORE; the
+    <p class="text-sm text-muted" style="margin:0 0 1rem">The product core ships 27 content entity types;
+      the most-referenced are listed below. The entity <i>type</i> and its fields are always CORE; the
       <i>records</i> in it (a course, a branch, a compliance rule) are DATA, owned and edited by a business
       role elsewhere in this system.</p>
     <div class="tablecard">
       <div class="wtable__wrap">
         <table class="wtable">
-          <caption class="sr-only">Sample of content entity types: owning module, ownership and where the data is edited</caption>
+          <caption class="sr-only">Content entity types: owning module, ownership and where the data is edited</caption>
           <thead>
             <tr><th scope="col">Entity type</th><th scope="col">Module</th><th scope="col">Ownership</th>
               <th scope="col">Records edited at</th></tr>
@@ -262,15 +254,6 @@
       </div>
     </div>
 
-    <div class="annot"><b>Why this fence exists</b> The product is delivered as three layers: CORE
-      (this page), DELTA (Nissei&rsquo;s configuration, edited at
-      <a href="../07-nissei-admin/P052-branch-configuration.html">Branch configuration</a>,
-      <a href="../07-nissei-admin/P053-language-localization.html">Language</a> and similar surfaces), and
-      DATA (their employees, courses and training matrix entries, edited by business roles). If Nissei could
-      edit entity types, fields, views or menus directly, their deployment would drift away from the product
-      core and could no longer take upgrades. That has already happened once on a comparable deployment.
-      Structure changes ship as a release instead, see <a href="P062-modules-updates.html">Modules and
-      updates</a>, so the same core keeps serving Nissei and can serve the next customer unchanged.</div>
 
   </div></section>
 </main>

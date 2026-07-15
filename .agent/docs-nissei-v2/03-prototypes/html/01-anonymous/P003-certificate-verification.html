@@ -45,9 +45,7 @@
       </form>
     </div>
 
-    <!-- VALID result -->
-    <p class="text-sm text-muted fw-700" style="margin:2rem 0 .6rem">Example result: valid certificate</p>
-    <div class="card">
+    <div class="card" style="margin-top:1.6rem">
       <div class="flex items-center justify-between gap-2" style="margin-bottom:1.2rem">
         <div class="flex items-center gap-3">
           <span class="ctile ctile--saf">SAF<br>104</span>
@@ -69,28 +67,11 @@
       </table>
     </div>
 
-    <!-- INVALID / not found result -->
-    <p class="text-sm text-muted fw-700" style="margin:2rem 0 .6rem">Example result: certificate not found</p>
-    <div class="alert alert--error">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-           stroke-linejoin="round" aria-hidden="true"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/>
-        <path d="M12 9v4M12 17h.01"/></svg>
-      <div>
-        <b>No certificate matches &ldquo;NEV-2026-000000-000&rdquo;.</b>
-        <p class="text-sm" style="margin:.2rem 0 0">Check the number for typing errors. Certificate numbers
-          use the format branch code, issue year, employee code, course code. If the number is correct and
-          this still fails, the certificate may have been revoked and reissued under a new number, or it
-          may not have been entered into the system yet. Contact the site training manager for the branch
-          shown on the certificate.</p>
-      </div>
-    </div>
+    <p class="text-sm text-muted" style="margin:1.6rem 0 0">If a number does not match, check it for typing
+      errors first: certificate numbers read branch code, issue year, employee code, course code. A correct
+      number that still fails may have been revoked and reissued under a new number; contact the training
+      department of the branch shown on the certificate.</p>
 
-    <div class="annot"><b>Prototype note</b>This page shows only what an inspector or auditor needs to
-      confirm authenticity: holder name, course, issue date and expiry date. It never shows date of birth,
-      home address, phone number, salary, or the employee&rsquo;s full training history. That minimal-PII
-      rule is deliberate: this is the one page in the system that anyone can open without an account, so it
-      discloses the least amount of personal data that still proves the certificate is real, consistent with
-      data minimisation under Decree 13/2023 (Vietnam) and PIPL (China).</div>
 
   </div></section>
 

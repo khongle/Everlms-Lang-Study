@@ -39,6 +39,10 @@ Ví dụ đi trọn một sợi: D2 (ma trận theo vị trí) → F-03/F-04 →
 - **Commerce, forum, gamification, catalog công khai, multi-tenant, hạ tầng Trung Quốc** — non-goals có lý do, xem `01-requirements/requirements.txt` §2.
 - **SSO / HRIS / offline mobile** — options có cổng kích hoạt bằng bằng chứng khảo sát, prototype vẽ đúng trạng thái "chưa kết nối" (DEC-12).
 
+## Prototype là site như thật
+
+`03-prototypes/html/` chỉ chứa sản phẩm: **không chú thích thiết kế, không ghi chú prototype, không tài liệu** — thứ khách mở lên là hệ thống nói bằng giọng của chính nó. Mọi lý giải nằm ở `01-requirements/` + `02-design/`; hướng dẫn xem nằm ở `03-prototypes/README.md` (ngoài thư mục html). Mạch liên kết giữ trọn: role picker ở trang đăng nhập → vào bất kỳ role nào → account menu có **Switch account** (đổi role) và **Public front-end** (ra trang công khai) → đăng nhập lại — khách đi xuyên suốt cả hệ thống không cần mở file tay, kể cả chuyển ngôn ngữ EN↔ZH trên trang catalog bằng language switch thật.
+
 ## Thay đổi so với v1
 
 - **Thêm tầng giữa** `01-requirements/` (requirements, workflows, acceptance) và `02-design/` mở rộng (data-model, decisions, mobile) — v1 nhảy thẳng từ input sang prototype, không có gì để khách ký ngoài hình.

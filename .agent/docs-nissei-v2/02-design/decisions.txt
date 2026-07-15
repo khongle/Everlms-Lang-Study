@@ -74,12 +74,20 @@ DEC-09 TRUNG QUỐC: WEB-FIRST, KHÔNG HẠ TẦNG ĐẠI LỤC
   Hệ quả: AC-S.6; app chỉ phân phối cho VN; PIPL đi theo ngoại lệ HR
   xuyên biên giới (xác nhận: luật sư khách).
 
-DEC-10 PROTOTYPE: TIẾNG ANH + ANNOTATION; VARIANT/VIA
-  Quyết định: (a) UI prototype EN, ngôn ngữ thật ghi bằng .annot, một
-  trang .zh làm proof-of-mechanism; (b) trang chỉ nhân bản giữa các
+DEC-10 PROTOTYPE: TIẾNG ANH; VARIANT/VIA; SITE SẠCH NHƯ THẬT
+  Quyết định: (a) UI prototype EN; (b) trang chỉ nhân bản giữa các
   folder role khi giao diện KHÁC THẬT (△ VARIANT), giống hệt thì đi
   cross-link (○ VIA) — diff nhìn thấy được chính là deliverable.
-  Hệ quả: 58 trang logic / 72 file thay vì ~120 file trùng lặp.
+  (c) SỬA ĐỔI 2026-07-16 theo yêu cầu khách hàng nội bộ: bộ HTML là
+  SITE NHƯ THẬT — đã gỡ toàn bộ chú thích thiết kế (.annot, .roband,
+  chữ "Prototype" ở footer); mọi lý giải chuyển về 01-requirements +
+  02-design; tài liệu (README, BUILD-SPEC) chuyển ra ngoài html/;
+  cặp EN↔ZH của catalog nối bằng language switch THẬT trong account
+  menu thay cho chú thích. Link liên kết hệ thống (role picker ở
+  login, Switch account, Public front-end, impersonate) GIỮ NGUYÊN —
+  chúng là mạch dẫn khách đi xuyên hệ thống.
+  Hệ quả: 58 trang logic / 72 file thay vì ~120 file trùng lặp; khách
+  xem sản phẩm nói bằng giọng của chính nó.
 
 DEC-11 CẤU TRÚC CHỈ ĐỔI QUA RELEASE; DRIFT PHẢI BẮT ĐƯỢC
   Bối cảnh: bài học instance JFC lệch core chưa kiểm kê được (Q1); cam

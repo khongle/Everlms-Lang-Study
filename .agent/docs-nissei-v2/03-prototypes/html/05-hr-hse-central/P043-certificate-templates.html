@@ -113,7 +113,7 @@
           <div class="formgrid formgrid--2">
             <div class="field"><label for="certfmt">Certificate number format</label>
               <input id="certfmt" type="text" value="{BRANCH}-{YEAR}-{EMP_CODE}-{COURSE}" style="width:100%">
-              <p class="hint">Example: NEV-2026-004821-104</p></div>
+              <p class="hint">Renders as NEV-2026-004821-104</p></div>
             <div class="field"><label for="validity">Validity period</label>
               <select class="select" id="validity" style="width:100%">
                 <option>Follows course retraining cycle (recommended)</option>
@@ -127,8 +127,8 @@
       <div class="stack" style="position:sticky;top:90px">
         <div class="card">
           <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Live preview</h3>
-          <p class="text-sm text-muted" style="margin:0 0 1rem">Rendered with a sample record: Nguyen Van
-            Minh, SAF-104 Safe Machine Operation, NEV-HCM.</p>
+          <p class="text-sm text-muted" style="margin:0 0 1rem">Nguyen Van Minh &middot; SAF-104 Safe
+            Machine Operation &middot; NEV-HCM</p>
           <div class="certbi">
             <div class="certbi__side">
               <div class="certbi__lang">Vietnamese</div>
@@ -157,11 +157,6 @@
       </div>
     </div>
 
-    <div class="annot"><b>Why bilingual, on every certificate</b>Every certificate is Vietnamese and Japanese
-      on the same PDF, not two separate documents. Vietnamese is what the Decree 44/2016 labor inspector and
-      the employee expect; Japanese is what Hamamatsu HQ (roles.txt hq_viewer) needs to review without
-      translation. One template with two content blocks keeps both audiences on a single source of truth
-      instead of a translated copy drifting out of sync.</div>
 
   </div></section>
 </main>

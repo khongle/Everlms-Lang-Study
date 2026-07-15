@@ -132,7 +132,7 @@ administrator mới chạm core.
   — tách role thay vì cấp quyền manager cho HQ là quyết định bảo mật có
   chủ đích (nguyên tắc least-privilege).
   Ghi chú ngôn ngữ: thực tế role này dùng tiếng Nhật; prototype dựng bản
-  tiếng Anh theo quyết định ngôn ngữ chung, có annotation nêu rõ.
+  tiếng Anh theo quyết định ngôn ngữ chung (ngôn ngữ thật ghi ở đây và mobile.txt — trang KHÔNG mang chú thích).
 
 2.7 org_admin — "Nissei Administrator"  ← ROLE MỚI, ADMIN CỦA KHÁCH
   IT của Nissei. Chủ sở hữu tầng DATA + DELTA. Dùng hằng ngày.
@@ -352,7 +352,7 @@ TRẠNG THÁI TUÂN THỦ (bảng màu thống nhất, dùng .status của desig
     khác biệt hiển thị chính giữa hai role, và là điểm cần nhìn thấy được
     trong prototype.
   - Ngôn ngữ: mọi trang có language switcher (EN/VI/JA/ZH) ở account menu.
-    Prototype dựng bản EN; annotation ghi rõ ngôn ngữ thật của từng persona.
+    Prototype dựng bản EN; ngôn ngữ thật của từng persona ghi ở §6 và mobile.txt — trang customer-facing không mang chú thích.
   - Impersonation (P056) kế thừa open_switcher của EverLMS nhưng BẮT BUỘC
     ghi audit (docs EverLMS ghi "should have" nhưng chưa xác minh trong
     code — với khách Nhật đây là yêu cầu cứng, không phải tùy chọn).

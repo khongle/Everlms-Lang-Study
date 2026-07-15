@@ -231,6 +231,25 @@ var ROLE_ORDER = ['employee','instructor','site-training-manager','hr-hse-centra
                   'org_admin','administrator'];
 var LANGS = [['EN','English'],['VI','Tieng Viet'],['JA','Nihongo'],['ZH','Zhongwen']];
 
+/* Pages that exist in more than one language: filename -> {LANG: sibling}.
+   The language chips in the account menu become real links on these pages,
+   so switching language is something a reviewer DOES, not something a note
+   has to explain. */
+var LANG_ALT = {
+  'P012-course-catalog.html':    {ZH:'P012-course-catalog.zh.html'},
+  'P012-course-catalog.zh.html': {EN:'P012-course-catalog.html', VI:'P012-course-catalog.html'}
+};
+function currentFile(){ var s = location.pathname.split('/'); return s[s.length-1] || ''; }
+function langChips(activeLang) {
+  var alts = LANG_ALT[currentFile()] || {};
+  return LANGS.map(function (l) {
+    var cls = 'langchip' + (l[0] === activeLang ? ' langchip--live' : '');
+    return alts[l[0]]
+      ? '<a class="' + cls + '" href="' + alts[l[0]] + '" title="' + l[1] + '">' + l[0] + '</a>'
+      : '<span class="' + cls + '">' + l[0] + '</span>';
+  }).join('');
+}
+
 /* Role key -> folder on disk. Folders are numbered so they list in the order
    the system is actually walked, instead of alphabetically. Everything else
    addresses roles by KEY, so renaming a folder is a one-line change here. */
@@ -287,11 +306,11 @@ function acctMega(roleKey, from, active) {
         '<span><b>Public front-end</b><small>Return to the public home</small></span></a>' +
       '<span class="spacer"></span>' +
       '<span class="flex items-center gap-2 text-sm text-muted">' + svg('globe', 16) +
-        '<span class="langgrid">' + LANGS.map(function (l) {
-          return '<span class="langchip' + (l[0] === R.lang ? ' langchip--live' : '') + '">' +
-            l[0] + '</span>'; }).join('') + '</span></span>' +
+        '<span class="langgrid">' +
+          langChips(/\.zh\.html$/.test(currentFile()) ? 'ZH' : R.lang) +
+        '</span></span>' +
       '<a class="footlink footlink--switch" href="' + href('P001', from) + '">' + svg('swap', 18) +
-        '<span><b>Switch role</b><small>Open another role</small></span></a>' +
+        '<span><b>Switch account</b><small>Sign in as another user</small></span></a>' +
       '<a class="footlink footlink--danger" href="' + href('P001', from) + '">' + svg('out', 18) +
         '<span><b>Sign out</b><small>End this session</small></span></a>' +
     '</div>' +
@@ -322,6 +341,8 @@ function authHeader(from) {
 /* ----------------------------------------------------------- FRONT CHROME */
 /* Public site. Guest sees Sign in; a signed-in employee sees My account,
    exactly as in references/menu/frontend-logged-in.png. */
+/* Public chrome. Utility actions live in the TOPBAR (sign-in / account, as in
+   the reference layout); the main menu sits right-aligned next to the brand. */
 function frontHeader(roleKey, from, active) {
   var links = [
     ['P004','Home'], ['P003','Verify certificate']
@@ -330,29 +351,34 @@ function frontHeader(roleKey, from, active) {
       (l[0] === active ? ' aria-current="page"' : '') + '>' + l[1] + '</a></li>';
   }).join('');
 
-  var right = roleKey
-    ? '<div class="fnav__cta">' +
-        '<button class="icon-btn" aria-label="Notifications" onclick="location.href=\'' +
-          href('P019', from) + '\'">' + svg('bell') + '<span class="icon-btn__dot"></span></button>' +
-        acctPill(roleKey, from, active) + '</div>'
-    : '<div class="fnav__cta">' +
-        '<a class="btn btn--ghost btn--sm" href="' + href('P003', from) + '">Verify a certificate</a>' +
-        '<a class="btn btn--brand btn--sm" href="' + href('P001', from) + '">Sign in</a></div>';
+  var topActions = roleKey
+    ? '<span class="topbar__actions">' +
+        '<span class="langgrid">' + langChips(/\.zh\.html$/.test(currentFile()) ? 'ZH'
+          : ROLES[roleKey].lang) + '</span>' +
+        '<a class="icon-btn icon-btn--bar" aria-label="Notifications" href="' +
+          href('P019', from) + '">' + svg('bell', 18) + '<span class="icon-btn__dot"></span></a>' +
+        acctPill(roleKey, from, active) +
+      '</span>'
+    : '<span class="topbar__actions">' +
+        '<span class="langgrid">' + LANGS.map(function (l, i) {
+          return '<span class="langchip' + (i === 0 ? ' langchip--live' : '') + '">' + l[0] + '</span>';
+        }).join('') + '</span>' +
+        '<a class="topbar__link" href="' + href('P003', from) + '">Verify a certificate</a>' +
+        '<a class="btn btn--white btn--sm" href="' + href('P001', from) + '">Sign in</a>' +
+      '</span>';
 
   return '<div class="topbar"><div class="container">' +
       '<span class="topbar__promo">Annual safety refresher window opens <b>01 Aug 2026</b>. ' +
         '<a href="' + href('P001', from) + '">Sign in to check your due dates</a></span>' +
-      '<span class="langgrid">' + LANGS.map(function (l, i) {
-        return '<span class="langchip' + (i === 0 ? ' langchip--live' : '') + '">' + l[0] + '</span>';
-      }).join('') + '</span>' +
+      topActions +
     '</div></div>' +
     '<header class="site-header"><div class="container">' +
       '<nav class="nav" aria-label="Primary">' +
         '<a class="brand" href="' + href('P004', from) + '">' +
           '<span class="brand__mark">N</span>' +
           '<span class="brand__name">Nissei Training<small>Compliance system</small></span></a>' +
+        '<span class="nav__spacer"></span>' +
         '<ul class="nav__links" id="nav-menu" data-nav>' + links + '</ul>' +
-        right +
         '<button class="nav__toggle" aria-label="Menu" aria-controls="nav-menu" aria-expanded="false">' +
           '<span></span><span></span><span></span></button>' +
       '</nav></div></header>';
@@ -399,15 +425,13 @@ function manageHeader(roleKey, from, active) {
 /* ---------------------------------------------------------------- FOOTER */
 function footer(roleKey, from) {
   var R = roleKey && ROLES[roleKey];
-  var scope = R ? (R.scope || 'own record only') : 'Internal system. Sign-in required.';
   return '<footer class="site-footer"><div class="container">' +
     '<div class="footer__legal" style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap">' +
-      '<span class="text-sm text-muted">Nissei Electric. Compliance Training System. ' +
-        'Prototype with demo data, not production.</span>' +
+      '<span class="text-sm text-muted">&copy; 2026 Nissei Electric &middot; ' +
+        'Compliance Training System</span>' +
       '<span class="text-sm text-muted">' +
-        (R ? 'Signed in as ' + esc(R.label) + ' · scope: ' + esc(scope) +
-             ' · <a href="' + href('P001', from) + '">Switch role</a>'
-           : esc(scope)) +
+        (R ? 'Signed in as ' + esc(R.who) + ' &middot; ' + esc(R.label)
+           : 'Internal system &middot; authorized users only') +
       '</span>' +
     '</div></div></footer>';
 }

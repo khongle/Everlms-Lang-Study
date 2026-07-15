@@ -142,7 +142,7 @@ P018 — Chứng chỉ CÓ HẠN (khác EverLMS: chứng chỉ vĩnh viễn). Hi
        ngày hết hiệu lực + trạng thái + bản song ngữ VI/JA.
 P012 — Catalog NỘI BỘ: khóa bắt buộc (gán tự động) + khóa tự chọn. Không
        giá, không giỏ hàng. Bản zh cho VP TQ: 02-employee/P012-course-catalog.zh.html
-       — annotation ngôn ngữ (theo quyết định UI tiếng Anh, bản zh chỉ để
+       — language switch EN↔ZH là LINK THẬT trong account menu (bản zh để
        chứng minh cơ chế đa ngôn ngữ).
 
 ### WORKSPACE (14) — folder: 03-instructor/ + 04-site-training-manager/
