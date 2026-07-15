@@ -261,6 +261,11 @@ Ngoại lệ đã áp dụng:
   A1. Bề mặt App cá nhân (P010–P020) chỉ dựng ở folder `02-employee/`. Các
       role staff cũng có nghĩa vụ đào tạo của riêng họ nhưng màn hình y
       hệt → đánh ○ VIA, không nhân bản 11 trang × 4 role.
+      LƯU Ý (quy tắc persona, DEC-14): quyền own-app của staff là THẬT
+      trong sản phẩm, nhưng menu prototype KHÔNG link chéo sang folder
+      02-employee/ — mỗi persona đi trong thế giới của mình; trải nghiệm
+      học xem bằng persona Minh qua role picker. ○ VIA ở ma trận vì thế
+      mô tả QUYỀN, không phải link menu.
   A2. P003 Certificate verification nằm ở `01-anonymous/` dù mọi role đều mở
       được — đây là trang công khai không cần đăng nhập, đúng chỗ nhất là
       folder anonymous.

@@ -68,17 +68,54 @@ Kết quả: 58 trang logic, đánh số lại từ đầu theo route group.
                                section nav có mega thả xuống
   Vỏ được SUY RA từ data-role trong shell.js, trang không tự chọn vỏ.
 
-2.3 VÒNG LIÊN KẾT — thứ làm 7 folder thành MỘT hệ thống
+2.3 VÒNG LIÊN KẾT — thứ làm 8 folder thành MỘT hệ thống
     P001 (role picker) ──▶ home của role bất kỳ ──▶ "Public front-end" ──▶ P004
           ▲                        │                                        │
-          └──── "Switch role" ─────┴──────────── Sign in ──────────────────┘
-  - P001 có ROLE PICKER: mỗi role là một cửa, render thẳng từ registry của
-    shell.js nên không bao giờ lệch với trang thật.
+          └─── "Switch account" ───┴──────────── Sign in ──────────────────┘
+  - P001 có ROLE PICKER ("Quick sign-in"): mỗi role là một cửa, render thẳng
+    từ registry của shell.js nên không bao giờ lệch với trang thật.
   - Mọi role đăng nhập đều ra được public (footer megamenu + icon home ở
-    manage header) và đều đổi được role ("Switch role" ở megamenu + footer).
+    manage header) và đều đổi được role ("Switch account" ở megamenu).
   - PILL PHẠM VI trên manage header: NEV-HCM / NEH-HAN (branch) · ALL BRANCHES
     (global) · GROUP · READ ONLY · SYSTEM. Đây là tuyên bố cấp header của
     đúng quy tắc branch scope mà từng trang thể hiện ở cấp nội dung.
+
+2.4 MENU MAP — nguyên tắc & cấu trúc điều hướng (rework 2026-07-16)
+  BA NGUYÊN TẮC:
+  (a) MENU LIỆT KÊ NƠI LÀM VIỆC, KHÔNG LIỆT KÊ TRANG CHI TIẾT — chi tiết đi
+      từ danh sách như sản phẩm thật: P023 (session) từ P022, P025 (editor)
+      từ P024, P030 (hồ sơ NV) từ P029, P039 (versions) từ P038, P013–P016
+      (luồng học) từ P010/P011/P012.
+  (b) SECTION 1 TRANG = LINK PHẲNG, section nhiều trang = mega thả xuống.
+  (c) QUY TẮC PERSONA: điều hướng của một role KHÔNG BAO GIỜ link sang folder
+      persona khác. Quyền own-app của staff (ma trận §3 roles.txt) là thật
+      trong sản phẩm, nhưng prototype giữ mỗi persona nhất quán — trải nghiệm
+      nhân viên xem bằng persona Minh. Chuông ở manage header vì thế là
+      DROPDOWN THÔNG BÁO THEO ROLE (2–3 mục, link trong đúng persona),
+      không trỏ về P019 của nhân viên.
+
+  MENU CHÍNH TỪNG ROLE (từ registry shell.js — sửa ở đó, không sửa tay):
+  employee (front, canh phải): Overview · My required training · Course
+    catalog · My training record · My certificates   ← workspace là menu
+    chính, KHÔNG chôn trong account dropdown
+  instructor (phẳng): Overview · Sessions · Courses · Quizzes · Learners
+  site-training-manager: Overview · Employees · Training▾(Due&overdue,
+    Assign, Schedule, Progress) · Records▾(Reports, Certificates)
+  hr-hse-central: Overview · Standards▾(Matrix, Job roles, Catalog,
+    Approval, Translations) · People▾(Employees, Assign, 2×Import) ·
+    Compliance▾(Overdue, Reports, Certificates, Templates, Reminders) ·
+    Branches
+  hq-viewer (phẳng): Overview · Branch comparison · Reports · Exports
+  org_admin: Overview · People & access▾ · Configuration▾ · Content ·
+    Compliance▾
+  administrator: Overview · Structure · Releases▾(Modules, Config sync) ·
+    Operations · Security▾
+
+  HAI LUỒNG HỌC PHẢI BẤM THÔNG SUỐT (kiểm tra khi sửa trang):
+  Online : P010/P011 ─Continue→ P014 ─quiz→ P015 ─Submit→ P016 → P018
+           ─Verify→ P003 (khép về public)
+  Lớp học: P011 ─Open course→ P013 (phiên 22 Jul) · điểm danh phía
+           instructor ở P023 · hàng due-soon/compliant → P018 (chứng chỉ)
 
 Ký hiệu cột Access (định nghĩa đầy đủ ở roles.txt mục 5):
   ●  OWN — dựng trong folder role này

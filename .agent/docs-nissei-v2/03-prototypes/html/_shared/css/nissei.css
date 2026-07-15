@@ -233,6 +233,17 @@
 .megaitem[aria-current=page]{background:var(--brand-soft)}
 .megaitem[aria-current=page] b{color:var(--brand-dark)}
 
+/* notification bell dropdown — same .acct open/close mechanics, narrower */
+.acctmega--notif{width:min(380px,92vw);padding:0}
+.notifhead{padding:.8rem 1rem .6rem;font-size:var(--text-xs);font-weight:800;
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--muted);
+  border-bottom:1px solid var(--line)}
+.notifrow{display:block;padding:.7rem 1rem;border-bottom:1px solid var(--line);color:var(--ink)}
+.notifrow:last-child{border-bottom:0}
+.notifrow:hover{background:var(--paper-2);text-decoration:none}
+.notifrow b{display:block;font-size:var(--text-sm);font-weight:700;line-height:1.35}
+.notifrow small{display:block;font-size:.74rem;color:var(--muted);margin-top:.1rem}
+
 .acctmega__foot{display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;
   padding:.7rem 1.2rem;border-top:1px solid var(--line);background:var(--paper-2)}
 .acctmega__foot .spacer{margin-inline-start:auto}

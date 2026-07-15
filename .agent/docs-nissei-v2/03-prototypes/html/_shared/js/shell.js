@@ -145,13 +145,23 @@ var VARIANT = {
 /* ------------------------------------------------------------------- ROLES */
 /* who/code/job/branch/av : the demo person (content bible, roles.txt §6)
    scope : the reach pill in the manage header — a role's power in one glance
-   sections : back-office nav, grouped; each opens a hover mega
+   sections : the role's navigation. A one-page section renders as a plain
+              top-level link; a multi-page section opens a hover menu.
+              MENUS LIST WORKPLACES, NOT DETAILS: detail pages (a session, an
+              employee record, a course editor) are reached from their list
+              pages, the way a real product works.
+   PERSONA RULE: a role's navigation never links into another persona's
+   folder. Staff do have their own training record in the real product, but
+   the prototype keeps each signed-in persona coherent — the employee
+   experience is walked as Nguyen Van Minh.
    home : where "enter this role" lands from the login role picker */
 var ROLES = {
   employee:{
     label:'Employee', who:'Nguyen Van Minh', code:'NEV-004821', job:'Production Operator',
     branch:'NEV-HCM', av:'avatar-01.jpg', lang:'VI', chrome:'front', home:'P010',
     blurb:'My training, my record, my certificates',
+    /* the member's real main menu — not the public one */
+    nav:['P010','P011','P012','P017','P018'],
     sections:[{n:'My learning',p:['P010','P011','P012','P017','P018']},
               {n:'Account',p:['P019','P020']}]
   },
@@ -160,41 +170,44 @@ var ROLES = {
     branch:'NEV-HCM', av:'avatar-05.jpg', lang:'VI', chrome:'manage', home:'P021',
     blurb:'Sessions, attendance and course authoring',
     scope:'NEV-HCM', scopeKind:'branch',
-    sections:[{n:'Teaching',p:['P021','P022','P023']},
-              {n:'Content',p:['P024','P025','P026']},
-              {n:'Learners',p:['P027']},
-              {n:'My learning',p:['P010','P011','P017','P018']},
-              {n:'Account',p:['P019','P020']}]
+    /* flat nav: every area is one workplace; details open from the lists
+       (session detail from the schedule, the editor from Manage courses) */
+    sections:[{n:'Overview',p:['P021']},
+              {n:'Sessions',p:['P022']},
+              {n:'Courses',p:['P024']},
+              {n:'Quizzes',p:['P026']},
+              {n:'Learners',p:['P027']}]
   },
   'site-training-manager':{
     label:'Site Training Manager', who:'Le Quoc Bao', code:'NEH-000377', job:'Training Manager',
     branch:'NEH-HAN', av:'avatar-07.jpg', lang:'VI', chrome:'manage', home:'P028',
     blurb:'One branch: people, overdue, schedule, reports',
     scope:'NEH-HAN', scopeKind:'branch',
-    sections:[{n:'Site',p:['P028','P029','P030']},
-              {n:'Training',p:['P031','P032','P022','P027']},
-              {n:'Records',p:['P033','P034']},
-              {n:'My learning',p:['P010','P011','P017','P018']},
-              {n:'Account',p:['P019','P020']}]
+    sections:[{n:'Overview',p:['P028']},
+              {n:'Employees',p:['P029']},
+              {n:'Training',p:['P032','P031','P022','P027']},
+              {n:'Records',p:['P033','P034']}]
   },
   'hr-hse-central':{
     label:'HR/HSE Central', who:'Pham Thu Ha', code:'NEV-000045', job:'HSE Manager',
     branch:'Central', av:'avatar-03.jpg', lang:'VI', chrome:'manage', home:'P035',
     blurb:'Owns the standard: matrix, catalog, translations',
     scope:'ALL BRANCHES', scopeKind:'global',
-    sections:[{n:'Standards',p:['P036','P037','P038','P039','P046','P045']},
-              {n:'People',p:['P029','P030','P031','P041','P042']},
-              {n:'Compliance',p:['P035','P032','P033','P034','P043','P044']},
-              {n:'Oversight',p:['P040','P047','P048']},
-              {n:'Account',p:['P019','P020']}]
+    sections:[{n:'Overview',p:['P035']},
+              {n:'Standards',p:['P036','P037','P038','P046','P045']},
+              {n:'People',p:['P029','P031','P041','P042']},
+              {n:'Compliance',p:['P032','P033','P034','P043','P044']},
+              {n:'Branches',p:['P040']}]
   },
   'hq-viewer':{
     label:'HQ Viewer', who:'Sato Kenji', code:'HQ-000012', job:'Global HSE',
     branch:'Hamamatsu HQ', av:'avatar-09.jpg', lang:'JA', chrome:'manage', home:'P047',
     blurb:'Read-only oversight of the whole group',
     scope:'GROUP · READ ONLY', scopeKind:'read',
-    sections:[{n:'Oversight',p:['P047','P048','P033','P049']},
-              {n:'Account',p:['P019','P020']}]
+    sections:[{n:'Overview',p:['P047']},
+              {n:'Branch comparison',p:['P048']},
+              {n:'Reports',p:['P033']},
+              {n:'Scheduled exports',p:['P049']}]
   },
   /* The customer's own administrator. Everything Nissei needs to run the
      system day to day, and nothing that can change how it is built.
@@ -209,8 +222,7 @@ var ROLES = {
               {n:'People and access',p:['P029','P051','P056']},
               {n:'Configuration',p:['P052','P053','P054']},
               {n:'Content',p:['P059']},
-              {n:'Compliance',p:['P055','P058']},
-              {n:'Account',p:['P019','P020']}]
+              {n:'Compliance',p:['P055','P058']}]
   },
   /* The platform administrator. Owns how the system is built: structure,
      modules, config sync. Fenced off from the customer on purpose, so the
@@ -221,11 +233,42 @@ var ROLES = {
     chrome:'manage', home:'P060',
     blurb:'Structure, modules and releases. Break-glass only',
     scope:'PLATFORM · BREAK-GLASS', scopeKind:'system',
-    sections:[{n:'Platform',p:['P060','P062','P063','P057']},
-              {n:'Core',p:['P061']},
-              {n:'Security',p:['P055','P056']},
-              {n:'Account',p:['P019','P020']}]
+    sections:[{n:'Overview',p:['P060']},
+              {n:'Structure',p:['P061']},
+              {n:'Releases',p:['P062','P063']},
+              {n:'Operations',p:['P057']},
+              {n:'Security',p:['P055','P056']}]
   }
+};
+
+/* Role-aware notification feed for the bell in the manage header. Every item
+   links inside the SAME persona, so the bell never teleports the reviewer
+   into another user's account. The employee's bell links to the full
+   notification centre (P019) instead — that page is their own. */
+var NOTIFS = {
+  instructor:[
+    {t:'SAF-105 session on 22 Jul: 14 of 16 booked',s:'Training Room 2 · NEV-HCM',p:'P022'},
+    {t:'SAF-107 v2.1 returned with review comments',s:'From HR/HSE Central · 11 Jul',p:'P024'},
+    {t:'3 learners finished SAF-107 lesson 10 today',s:'Ready for the quiz',p:'P027'}],
+  'site-training-manager':[
+    {t:'113 employees overdue at NEH-HAN',s:'8 more than last week',p:'P032'},
+    {t:'SAF-106 practical session tomorrow, 08:00',s:'Trainer confirmed · Warehouse B',p:'P022'},
+    {t:'Monthly site report is ready',s:'June 2026 · NEH-HAN',p:'P033'}],
+  'hr-hse-central':[
+    {t:'SAF-107 v2.1 is waiting for approval',s:'Submitted by Tran Thi Hoa · 09 Jul',p:'P046'},
+    {t:'VI and ZH translations are outdated',s:'Source moved to v2.1',p:'P045'},
+    {t:'Employee import completed: 1,847 rows',s:'12 errors resolved · 14 Jul',p:'P041'}],
+  'hq-viewer':[
+    {t:'Monthly compliance report delivered',s:'July 2026 · PDF and CSV, Japanese',p:'P049'},
+    {t:'Group compliance moved to 87.4%',s:'Up 1.1 points in June',p:'P047'}],
+  org_admin:[
+    {t:'3 accounts locked after failed sign-ins',s:'NEV-HCM · today',p:'P029'},
+    {t:'SMTP delivery normal: 4,102 sent this week',s:'No bounces above threshold',p:'P054'},
+    {t:'One impersonation session logged yesterday',s:'Reason recorded · 16 min',p:'P055'}],
+  administrator:[
+    {t:'Configuration drift pending reconciliation',s:'Certificate template · since 09 Jul',p:'P063'},
+    {t:'Security update available: lms_mobile_api',s:'8.2.4, apply via staging',p:'P062'},
+    {t:'Nightly recalculation: 5,842 records in 22 min',s:'Completed 02:22 · no failures',p:'P057'}]
 };
 var ROLE_ORDER = ['employee','instructor','site-training-manager','hr-hse-central','hq-viewer',
                   'org_admin','administrator'];
@@ -344,9 +387,13 @@ function authHeader(from) {
 /* Public chrome. Utility actions live in the TOPBAR (sign-in / account, as in
    the reference layout); the main menu sits right-aligned next to the brand. */
 function frontHeader(roleKey, from, active) {
-  var links = [
-    ['P004','Home'], ['P003','Verify certificate']
-  ].map(function (l) {
+  /* Guest sees the public menu. A signed-in member's main menu IS their
+     workspace — never bury the primary navigation of the largest user
+     group inside an account dropdown. */
+  var items = roleKey && ROLES[roleKey].nav
+    ? ROLES[roleKey].nav.map(function (id) { return [id, P[id].t]; })
+    : [['P004','Home'], ['P003','Verify certificate']];
+  var links = items.map(function (l) {
     return '<li><a href="' + href(l[0], from) + '"' +
       (l[0] === active ? ' aria-current="page"' : '') + '>' + l[1] + '</a></li>';
   }).join('');
@@ -386,14 +433,39 @@ function frontHeader(roleKey, from, active) {
 
 /* ---------------------------------------------------------- MANAGE CHROME */
 /* Back-office. Row 1 = brand + SCOPE pill + search + tools. Row 2 = section
-   nav with hover megas. Follows references/menu/manage*.png. */
+   nav: a one-page section is a plain link, a multi-page section opens a
+   hover menu. Follows references/menu/manage*.png. */
+function notifBell(roleKey, from) {
+  var items = NOTIFS[roleKey];
+  if (!items) {
+    return '<a class="icon-btn" href="' + href('P019', from) + '" aria-label="Notifications">' +
+      svg('bell') + '<span class="icon-btn__dot"></span></a>';
+  }
+  return '<div class="acct notif">' +
+    '<button class="icon-btn acct__tgl" aria-label="Notifications" aria-expanded="false">' +
+      svg('bell') + '<span class="icon-btn__dot"></span></button>' +
+    '<div class="acctmega acctmega--notif">' +
+      '<div class="notifhead">Notifications</div>' +
+      items.map(function (n) {
+        return '<a class="notifrow" href="' + href(n.p, from) + '">' +
+          '<b>' + esc(n.t) + '</b><small>' + esc(n.s) + '</small></a>';
+      }).join('') +
+    '</div></div>';
+}
+
 function manageHeader(roleKey, from, active) {
   var R = ROLES[roleKey];
   var activeSection = -1;
   R.sections.forEach(function (s, i) { if (s.p.indexOf(active) > -1) activeSection = i; });
 
   var nav = R.sections.map(function (s, i) {
-    return '<li class="' + (i === activeSection ? 'is-active ' : '') + 'has-mega">' +
+    var on = i === activeSection ? 'is-active ' : '';
+    if (s.p.length === 1) {
+      return '<li class="' + on + '">' +
+        '<a href="' + href(s.p[0], from) + '"' +
+        (s.p[0] === active ? ' aria-current="page"' : '') + '>' + esc(s.n) + '</a></li>';
+    }
+    return '<li class="' + on + 'has-mega">' +
       '<a href="' + href(s.p[0], from) + '">' + esc(s.n) + svg('chev', 14) + '</a>' +
       '<div class="mega">' + s.p.map(function (id) {
         return megaitem(id, from, active); }).join('') + '</div></li>';
@@ -411,8 +483,7 @@ function manageHeader(roleKey, from, active) {
       '<span class="mhead__tools">' +
         '<a class="icon-btn" href="' + href('P004', from) + '" aria-label="Public front-end">' +
           svg('home') + '</a>' +
-        '<a class="icon-btn" href="' + href('P019', from) + '" aria-label="Notifications">' +
-          svg('bell') + '<span class="icon-btn__dot"></span></a>' +
+        notifBell(roleKey, from) +
         acctPill(roleKey, from, active) +
       '</span>' +
     '</div></div>' +
@@ -459,24 +530,30 @@ if (h) {
   var f = document.getElementById('site-footer');
   if (f) f.outerHTML = footer(shell === 'auth' || shell === 'front' ? (role || '') : role, from);
 
-  /* account mega: base.css opens it via .acct.is-open */
-  var btn = document.querySelector('.acct__btn');
-  if (btn) {
-    var acct = btn.closest('.acct');
-    btn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      var open = acct.classList.toggle('is-open');
-      btn.setAttribute('aria-expanded', String(open));
+  /* dropdowns (account mega + notification bell): base.css opens a .acct
+     via .acct.is-open. One dropdown open at a time. */
+  var toggles = document.querySelectorAll('.acct__btn, .acct__tgl');
+  function closeAll() {
+    toggles.forEach(function (b) {
+      b.closest('.acct').classList.remove('is-open');
+      b.setAttribute('aria-expanded', 'false');
+    });
+  }
+  if (toggles.length) {
+    toggles.forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var acct = b.closest('.acct');
+        var wasOpen = acct.classList.contains('is-open');
+        closeAll();
+        if (!wasOpen) { acct.classList.add('is-open'); b.setAttribute('aria-expanded', 'true'); }
+      });
     });
     document.addEventListener('click', function (e) {
-      if (acct.classList.contains('is-open') && !acct.contains(e.target)) {
-        acct.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false');
-      }
+      if (!e.target.closest('.acct')) closeAll();
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && acct.classList.contains('is-open')) {
-        acct.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); btn.focus();
-      }
+      if (e.key === 'Escape') closeAll();
     });
   }
 }

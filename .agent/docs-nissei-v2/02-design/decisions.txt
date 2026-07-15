@@ -105,6 +105,23 @@ DEC-12 SSO / HRIS / OFFLINE = OPTION CÓ CỔNG, VẼ ĐÚNG TRẠNG THÁI
   Hệ quả: tránh gold-plating; layout đã tính chỗ cho chúng nên bật sau
   không phải vẽ lại.
 
+DEC-14 ĐIỀU HƯỚNG: MENU LÀ NƠI LÀM VIỆC; PERSONA NHẤT QUÁN (2026-07-16)
+  Bối cảnh: bản đầu "sượng" ở bốn điểm: menu chính của nhân viên là menu
+  public (workspace chôn trong account dropdown); luồng học đứt 3 nhịp
+  (P011→P013, P015→P016 không có link); menu staff link chéo sang trang
+  persona nhân viên (bấm "Notifications" từ site manager biến thành
+  Minh); section 1 trang vẫn render dropdown, trang chi tiết nằm trong menu.
+  Quyết định: (a) nav của member = workspace của họ, canh phải; (b) menu
+  chỉ liệt kê nơi làm việc, chi tiết đi từ danh sách; section 1 trang =
+  link phẳng; (c) QUY TẮC PERSONA — không link chéo folder persona; chuông
+  manage = dropdown thông báo theo role, mỗi mục link trong đúng persona;
+  (d) hoàn thiện hai luồng học bấm thông suốt (P011 có cột action với đích
+  CHÍNH XÁC theo trạng thái: overdue→P013, in-progress→P014, còn hạn→P018;
+  P015 là câu hỏi cuối với Submit→P016).
+  Hệ quả: đi được trọn hệ thống không gặp ngõ cụt, không vỡ persona; menu
+  đọc như back-office thật; cấu trúc menu sửa một chỗ ở registry shell.js.
+  Chi tiết: sitemap.txt §2.4 MENU MAP.
+
 DEC-13 HQ VIEWER TÁCH RIÊNG, CHỈ ĐỌC
   Bối cảnh: HQ Hamamatsu cần toàn cảnh nhưng không vận hành; cấp quyền
   manager cho HQ là thừa quyền.
