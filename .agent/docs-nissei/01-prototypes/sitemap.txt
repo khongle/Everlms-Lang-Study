@@ -32,7 +32,7 @@ Giữ lại và tái dùng được (~11 trang): bộ máy học–thi–chứng
 course editor, quiz builder) — đây chính là phần "nền tảng đã có" trong
 strategy-final mục 4.
 
-Kết quả: 52 trang logic, đánh số lại từ đầu theo route group.
+Kết quả: 53 trang logic, đánh số lại từ đầu theo route group.
 
 --------------------------------------------------------------------------------
 2. ROUTE GROUP
@@ -91,7 +91,7 @@ Thứ tự cột: anon | empl | inst | site | hrhse | hq | admin
 3. PAGE REGISTRY
 --------------------------------------------------------------------------------
 
-### AUTH + PUBLIC (4) — folder: anonymous/
+### AUTH + PUBLIC (4) — folder: 01-anonymous/
 | ID | Title | URL | shell | anon empl inst site hrhse hq admin |
 |----|-------|-----|-------|-----------------------------------|
 | P001 | Sign in + role picker | /user/login | auth | ● ○ ○ ○ ○ ○ ○ |
@@ -115,7 +115,7 @@ P004 — Điểm đáp của bề mặt công khai (lý do tồn tại: 2.1). G�
        đào tạo), tổng quan chương trình đào tạo (KHÔNG có nội dung khóa), và
        danh bạ đào tạo 5 site. Là đích của "Public front-end" từ mọi role.
 
-### APP (11) — folder: employee/
+### APP (11) — folder: 02-employee/
 | ID | Title | URL | anon empl inst site hrhse hq admin |
 |----|-------|-----|-----------------------------------|
 | P010 | My dashboard | /dashboard | — ● ○ ○ ○ — ○ |
@@ -141,11 +141,11 @@ P017 — Hiện thực hóa D3: hồ sơ đào tạo ĐẦY ĐỦ theo người,
 P018 — Chứng chỉ CÓ HẠN (khác EverLMS: chứng chỉ vĩnh viễn). Hiển thị
        ngày hết hiệu lực + trạng thái + bản song ngữ VI/JA.
 P012 — Catalog NỘI BỘ: khóa bắt buộc (gán tự động) + khóa tự chọn. Không
-       giá, không giỏ hàng. Bản zh cho VP TQ: employee/P012-course-catalog.zh.html
+       giá, không giỏ hàng. Bản zh cho VP TQ: 02-employee/P012-course-catalog.zh.html
        — annotation ngôn ngữ (theo quyết định UI tiếng Anh, bản zh chỉ để
        chứng minh cơ chế đa ngôn ngữ).
 
-### WORKSPACE (14) — folder: instructor/ + site-training-manager/
+### WORKSPACE (14) — folder: 03-instructor/ + 04-site-training-manager/
 | ID | Title | URL | anon empl inst site hrhse hq admin |
 |----|-------|-----|-----------------------------------|
 | P021 | Workspace home | /workspace | — — △ △ ○ — ○ |
@@ -185,7 +185,7 @@ P033 △ — site: báo cáo 1 site. hrhse: mọi site + hợp nhất + export C
 P034 △ — site: chứng chỉ cấp trong site. hrhse: toàn hệ + thu hồi/cấp lại
        + đối chiếu mẫu.
 
-### CENTRAL (12) — folder: hr-hse-central/
+### CENTRAL (12) — folder: 05-hr-hse-central/
 | ID | Title | URL | anon empl inst site hrhse hq admin |
 |----|-------|-----|-----------------------------------|
 | P035 | Central compliance dashboard | /central | — — — — ● ○ ○ |
@@ -222,7 +222,7 @@ P045 — D6: bản dịch gắn version bản gốc. Bản gốc lên version m�
        Cột: EN (gốc) · VI · JA · ZH × trạng thái.
 P043 — Mẫu chứng chỉ song ngữ VI/JA + preview mPDF (font CJK).
 
-### HQ (3) — folder: hq-viewer/
+### HQ (3) — folder: 06-hq-viewer/
 | ID | Title | URL | anon empl inst site hrhse hq admin |
 |----|-------|-----|-----------------------------------|
 | P047 | HQ dashboard | /hq | — — — — ○ ● ○ |
@@ -236,7 +236,7 @@ P048 — So sánh 5 chi nhánh trên cùng bộ KPI (D5). Chuẩn bị sẵn cho
        thêm chi nhánh nước khác (nguyên tắc E1) — bảng không hardcode 5 site.
 P049 — Lịch xuất báo cáo định kỳ về HQ. Annotation: bản thật là tiếng Nhật.
 
-### ADMIN (9) — folder: administrator/
+### ADMIN (9) — folder: 07-administrator/
 | ID | Title | URL | anon empl inst site hrhse hq admin |
 |----|-------|-----|-----------------------------------|
 | P050 | Admin overview | /admin | — — — — — — ● |
@@ -270,13 +270,13 @@ P058 — NĐ 13/2023 + PIPL: chính sách lưu trữ hồ sơ đào tạo, dữ 
 --------------------------------------------------------------------------------
 | Folder | Pages | Số file |
 |--------|-------|---------|
-| anonymous/ | P001, P002, P003, P004 | 4 |
-| employee/ | P010–P020 (+P012 bản .zh) | 12 |
-| instructor/ | P021, P022, P023, P024, P025, P026, P027 | 7 |
-| site-training-manager/ | P021, P022, P027, P028, P029, P030, P031, P032, P033, P034 | 10 |
-| hr-hse-central/ | P029, P030, P031, P032, P033, P034, P035–P046 | 18 |
-| hq-viewer/ | P033, P047, P048, P049 | 4 |
-| administrator/ | P029, P050–P058 | 10 |
+| 01-anonymous/ | P001, P002, P003, P004 | 4 |
+| 02-employee/ | P010–P020 (+P012 bản .zh) | 12 |
+| 03-instructor/ | P021, P022, P023, P024, P025, P026, P027 | 7 |
+| 04-site-training-manager/ | P021, P022, P027, P028, P029, P030, P031, P032, P033, P034 | 10 |
+| 05-hr-hse-central/ | P029, P030, P031, P032, P033, P034, P035–P046 | 18 |
+| 06-hq-viewer/ | P033, P047, P048, P049 | 4 |
+| 07-administrator/ | P029, P050–P058 | 10 |
 | **TỔNG** | **53 trang logic** | **65 file** |
 
 _shared/ (không phải role folder): BUILD-SPEC.md, css/, js/, img/

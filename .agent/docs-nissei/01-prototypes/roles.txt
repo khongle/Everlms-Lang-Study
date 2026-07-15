@@ -38,13 +38,13 @@ thanh tra ATLĐ và auditor ISO (xem mục 5, ghi chú A2).
 --------------------------------------------------------------------------------
 | RID | Role (UI EN) | Tên Việt | Nhóm | Scope | Folder prototype |
 |-----|--------------|----------|------|-------|------------------|
-| anonymous | Anonymous | Khách chưa đăng nhập | Public | none | anonymous/ |
-| employee | Employee | Nhân viên / công nhân | Learners | own | employee/ |
-| instructor | Instructor | Giảng viên nội bộ | Authoring | own + branch (dạy) | instructor/ |
-| site_training_manager | Site Training Manager | Quản lý đào tạo nhà máy | Operations | branch | site-training-manager/ |
-| hr_hse_central | HR/HSE Central | HR/HSE trung tâm | Operations | global | hr-hse-central/ |
-| hq_viewer | HQ Viewer | Quản lý trụ sở chính | Oversight | global (read-only) | hq-viewer/ |
-| administrator | Administrator | Quản trị hệ thống | Platform admin | global (+ config) | administrator/ |
+| anonymous | Anonymous | Khách chưa đăng nhập | Public | none | 01-anonymous/ |
+| employee | Employee | Nhân viên / công nhân | Learners | own | 02-employee/ |
+| instructor | Instructor | Giảng viên nội bộ | Authoring | own + branch (dạy) | 03-instructor/ |
+| site_training_manager | Site Training Manager | Quản lý đào tạo nhà máy | Operations | branch | 04-site-training-manager/ |
+| hr_hse_central | HR/HSE Central | HR/HSE trung tâm | Operations | global | 05-hr-hse-central/ |
+| hq_viewer | HQ Viewer | Quản lý trụ sở chính | Oversight | global (read-only) | 06-hq-viewer/ |
+| administrator | Administrator | Quản trị hệ thống | Platform admin | global (+ config) | 07-administrator/ |
 
 2.1 anonymous — Khách chưa đăng nhập
   Bề mặt tối thiểu: đăng nhập, đặt lại mật khẩu, và tra cứu chứng chỉ theo
@@ -182,14 +182,14 @@ Nếu cần bản đầy đủ (nhân bản cả ○), nói một tiếng — si
 registry trong shell.js.
 
 Ngoại lệ đã áp dụng:
-  A1. Bề mặt App cá nhân (P010–P020) chỉ dựng ở folder `employee/`. Các
+  A1. Bề mặt App cá nhân (P010–P020) chỉ dựng ở folder `02-employee/`. Các
       role staff cũng có nghĩa vụ đào tạo của riêng họ nhưng màn hình y
       hệt → đánh ○ VIA, không nhân bản 11 trang × 4 role.
-  A2. P003 Certificate verification nằm ở `anonymous/` dù mọi role đều mở
+  A2. P003 Certificate verification nằm ở `01-anonymous/` dù mọi role đều mở
       được — đây là trang công khai không cần đăng nhập, đúng chỗ nhất là
       folder anonymous.
   A3. administrator theo định nghĩa access được TẤT CẢ. Folder
-      `administrator/` chỉ dựng các trang thuộc bề mặt quản trị (P050–P058)
+      `07-administrator/` chỉ dựng các trang thuộc bề mặt quản trị (P050–P058)
       + P029 (biến thể admin: có cột kỹ thuật account status/last login mà
       role nghiệp vụ không thấy). Phần còn lại là ○ VIA.
 

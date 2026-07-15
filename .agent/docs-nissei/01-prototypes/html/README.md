@@ -1,6 +1,6 @@
 # Nissei Compliance Training System — HTML prototype
 
-Static, self-contained prototype. **Open `anonymous/P001-sign-in.html` in a browser** — no server, no build step, works over `file://`.
+Static, self-contained prototype. **Open `01-anonymous/P001-sign-in.html` in a browser** — no server, no build step, works over `file://`.
 
 Basis documents (read these to understand *why* the set looks like this):
 - `../roles.txt` — the 7 roles, the branch scope model, the content bible
@@ -17,7 +17,7 @@ P001 role picker ──▶ any role's home ──▶ "Public front-end" ──�
       └──── "Switch role" ─┴──────────── Sign in ────────────────────┘
 ```
 
-**Start at `anonymous/P001-sign-in.html`.** Below the sign-in form is a **role picker**: every role is a door into its own prototype. Once inside any role, **My account → Switch role** moves you to another role, and **My account → Public front-end** takes you back out to the public site. You never have to open a file by hand.
+**Start at `01-anonymous/P001-sign-in.html`.** Below the sign-in form is a **role picker**: every role is a door into its own prototype. Once inside any role, **My account → Switch role** moves you to another role, and **My account → Public front-end** takes you back out to the public site. You never have to open a file by hand.
 
 Three chromes, derived from the page's role — never declared by the page itself:
 
@@ -36,16 +36,16 @@ The public surface is deliberately only two pages. This is an internal system: n
 
 | If you want to see… | Open |
 |---|---|
-| **The door into everything** | `anonymous/P001-sign-in.html` |
-| The system as a factory worker sees it | `employee/P010-my-dashboard.html` |
-| **The core of the whole product** — the training matrix | `hr-hse-central/P036-training-matrix.html` |
-| **Branch scope, side by side** | `site-training-manager/P029-employees.html` then `hr-hse-central/P029-employees.html` |
-| One training record following a person across branches (D3) | `employee/P017-my-training-record.html` |
-| The day-to-day job of a site training manager | `site-training-manager/P032-overdue-worklist.html` |
-| Translations pinned to a source version (D6) | `hr-hse-central/P045-translation-workspace.html` |
-| What HQ Hamamatsu sees — and cannot do | `hq-viewer/P047-hq-dashboard.html` |
-| The audit trail an inspector would ask for | `administrator/P055-audit-log.html` |
-| Why a sixth country is data, not a release | `administrator/P052-branch-configuration.html` |
+| **The door into everything** | `01-anonymous/P001-sign-in.html` |
+| The system as a factory worker sees it | `02-employee/P010-my-dashboard.html` |
+| **The core of the whole product** — the training matrix | `05-hr-hse-central/P036-training-matrix.html` |
+| **Branch scope, side by side** | `04-site-training-manager/P029-employees.html` then `05-hr-hse-central/P029-employees.html` |
+| One training record following a person across branches (D3) | `02-employee/P017-my-training-record.html` |
+| The day-to-day job of a site training manager | `04-site-training-manager/P032-overdue-worklist.html` |
+| Translations pinned to a source version (D6) | `05-hr-hse-central/P045-translation-workspace.html` |
+| What HQ Hamamatsu sees — and cannot do | `06-hq-viewer/P047-hq-dashboard.html` |
+| The audit trail an inspector would ask for | `07-administrator/P055-audit-log.html` |
+| Why a sixth country is data, not a release | `07-administrator/P052-branch-configuration.html` |
 
 ---
 
@@ -55,13 +55,13 @@ One folder per role. A folder holds the pages that role works with. Where two ro
 
 | Folder | Role | Scope | Pages |
 |---|---|---|---|
-| `anonymous/` | Anonymous | none | P001–P003 |
-| `employee/` | Employee | own | P010–P020 |
-| `instructor/` | Instructor | own + own classes | P021–P027 |
-| `site-training-manager/` | Site Training Manager | **one branch** | P021, P022, P027–P034 |
-| `hr-hse-central/` | HR/HSE Central | **all branches** | P029–P046 |
-| `hq-viewer/` | HQ Viewer | all branches, **read-only** | P033, P047–P049 |
-| `administrator/` | Administrator | all + system config | P029, P050–P058 |
+| `01-anonymous/` | Anonymous | none | P001–P003 |
+| `02-employee/` | Employee | own | P010–P020 |
+| `03-instructor/` | Instructor | own + own classes | P021–P027 |
+| `04-site-training-manager/` | Site Training Manager | **one branch** | P021, P022, P027–P034 |
+| `05-hr-hse-central/` | HR/HSE Central | **all branches** | P029–P046 |
+| `06-hq-viewer/` | HQ Viewer | all branches, **read-only** | P033, P047–P049 |
+| `07-administrator/` | Administrator | all + system config | P029, P050–P058 |
 
 `_shared/` is not a role folder — it holds the design system and the page registry.
 
@@ -69,12 +69,12 @@ One folder per role. A folder holds the pages that role works with. Where two ro
 
 | Page | Compare | The point |
 |---|---|---|
-| P029 Employees | `site-training-manager/` vs `hr-hse-central/` vs `administrator/` | branch-locked vs global vs technical view |
-| P033 Reports | `site-training-manager/` vs `hr-hse-central/` vs `hq-viewer/` | one branch vs consolidated vs read-only |
-| P021 Workspace home | `instructor/` vs `site-training-manager/` | my classes vs my site |
-| P022 Training schedule | `instructor/` vs `site-training-manager/` | my sessions vs all sessions + trainer assignment |
-| P027 Learner progress | `instructor/` vs `site-training-manager/` | my class vs whole site |
-| P030, P031, P032, P034 | `site-training-manager/` vs `hr-hse-central/` | branch scope vs global scope and central-only powers |
+| P029 Employees | `04-site-training-manager/` vs `05-hr-hse-central/` vs `07-administrator/` | branch-locked vs global vs technical view |
+| P033 Reports | `04-site-training-manager/` vs `05-hr-hse-central/` vs `06-hq-viewer/` | one branch vs consolidated vs read-only |
+| P021 Workspace home | `03-instructor/` vs `04-site-training-manager/` | my classes vs my site |
+| P022 Training schedule | `03-instructor/` vs `04-site-training-manager/` | my sessions vs all sessions + trainer assignment |
+| P027 Learner progress | `03-instructor/` vs `04-site-training-manager/` | my class vs whole site |
+| P030, P031, P032, P034 | `04-site-training-manager/` vs `05-hr-hse-central/` | branch scope vs global scope and central-only powers |
 
 ---
 

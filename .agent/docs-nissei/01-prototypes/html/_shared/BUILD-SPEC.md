@@ -35,7 +35,7 @@ Basis documents: `../../roles.txt` (roles, scope model, content bible) and `../.
 <link rel="stylesheet" href="../_shared/css/nissei.css">
 </head>
 <body>
-<div id="site-header" data-shell="app" data-role="{role-folder}" data-active="{P0NN}"></div>
+<div id="site-header" data-shell="app" data-role="{role-key}" data-active="{P0NN}"></div>
 <main id="main">
   … page sections …
 </main>
@@ -60,7 +60,23 @@ There are three chromes, and **a page never picks one**. `shell.js` derives it f
 | Employee's own area (P010–P020) | `data-shell="app" data-role="employee"` | the **same public chrome**, but signed in: bell + **My account** mega |
 | Staff pages (P021–P058) | `data-shell="app" data-role="{staff-role}"` | **manage** chrome: brand + `Manage · {role}` + **scope pill** + search + tools, and a section nav with hover megas |
 
-`data-role` must equal the folder the file lives in, so a variant renders *that* role's navigation.
+### Role keys vs folder names — do not confuse them
+
+`data-role` carries the **role key**, never the folder name:
+
+| Role key (`data-role`) | Folder on disk |
+|---|---|
+| `anonymous` | `01-anonymous/` |
+| `employee` | `02-employee/` |
+| `instructor` | `03-instructor/` |
+| `site-training-manager` | `04-site-training-manager/` |
+| `hr-hse-central` | `05-hr-hse-central/` |
+| `hq-viewer` | `06-hq-viewer/` |
+| `administrator` | `07-administrator/` |
+
+Folders are numbered so they list in the order the system is actually walked rather than alphabetically. The key stays unnumbered, and `shell.js` maps key to folder in one place (`DIR`). So: a variant's `data-role` must be **the role whose folder it sits in** (for `05-hr-hse-central/P029-employees.html` that is `hr-hse-central`), and renumbering folders later is a one-line change in `DIR` plus the hrefs written into page bodies.
+
+In page bodies, cross-folder links use the numbered folder: `../05-hr-hse-central/P036-training-matrix.html`. Take the exact path from the `shell.js` registry; never guess it.
 
 ### The system is a loop, not seven folders
 
@@ -207,7 +223,7 @@ One file per page, showing the **default/primary state richly**. Other states ar
 ## 8. Reference pages
 
 Build these first, mimic them after:
-- **Auth** → `anonymous/P001-sign-in.html`
-- **Employee app** → `employee/P010-my-dashboard.html`
-- **Dense admin table + scope** → `site-training-manager/P029-employees.html`
-- **Complex central tool** → `hr-hse-central/P036-training-matrix.html`
+- **Auth** → `01-anonymous/P001-sign-in.html`
+- **Employee app** → `02-employee/P010-my-dashboard.html`
+- **Dense admin table + scope** → `04-site-training-manager/P029-employees.html`
+- **Complex central tool** → `05-hr-hse-central/P036-training-matrix.html`

@@ -200,13 +200,26 @@ var ROLES = {
 var ROLE_ORDER = ['employee','instructor','site-training-manager','hr-hse-central','hq-viewer','administrator'];
 var LANGS = [['EN','English'],['VI','Tieng Viet'],['JA','Nihongo'],['ZH','Zhongwen']];
 
-/* Resolve a link from folder `from` to page id `id`: prefer a variant that
-   lives in the current folder, else the page's owner folder. */
+/* Role key -> folder on disk. Folders are numbered so they list in the order
+   the system is actually walked, instead of alphabetically. Everything else
+   addresses roles by KEY, so renaming a folder is a one-line change here. */
+var DIR = {
+  anonymous:'01-anonymous',
+  employee:'02-employee',
+  instructor:'03-instructor',
+  'site-training-manager':'04-site-training-manager',
+  'hr-hse-central':'05-hr-hse-central',
+  'hq-viewer':'06-hq-viewer',
+  administrator:'07-administrator'
+};
+
+/* Resolve a link from role `from` to page id `id`: prefer a variant built in
+   the current role's folder, else the page's owner folder. */
 function href(id, from) {
   var v = VARIANT[from + '/' + id];
-  if (v) return '../' + from + '/' + v;
+  if (v) return '../' + DIR[from] + '/' + v;
   var p = P[id];
-  return p ? '../' + p.r + '/' + p.f : '#';
+  return p ? '../' + (DIR[p.r] || p.r) + '/' + p.f : '#';
 }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -373,9 +386,11 @@ if (h) {
   var shell = h.getAttribute('data-shell') || 'app';
   var role  = h.getAttribute('data-role') || '';
   var active = h.getAttribute('data-active') || '';
-  /* current folder = the page's own directory, used to resolve variants */
-  var seg = location.pathname.split('/');
-  var from = seg[seg.length - 2] || (P[active] && P[active].r) || 'anonymous';
+  /* Which role's copy of a page am I? Taken from data-role, not from the
+     folder name, so numbering or renaming folders never breaks link
+     resolution. Auth and public pages have no role: they resolve as
+     anonymous. */
+  var from = role || 'anonymous';
 
   var html;
   if (shell === 'auth')        html = authHeader(from);
