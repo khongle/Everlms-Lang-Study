@@ -17,14 +17,16 @@
 
 <main id="main">
 
-  <div class="player__topbar">
-    <a href="P011-my-required-training.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
-        <path d="M19 12H5M11 18l-6-6 6-6"/></svg> My required training</a>
-    <span class="brand__name">SAF-107 Chemical Handling &amp; MSDS</span>
-  </div>
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P011-my-required-training.html">My required training</a> <span aria-hidden="true">/</span>
+      <a href="P013-course-detail.html">SAF-107 Chemical Handling &amp; MSDS</a>
+      <span aria-hidden="true">/</span> <span>Lesson 7</span>
+    </nav>
+  </div></section>
 
-  <div class="player">
+  <section class="playerwrap"><div class="container">
+  <div class="player" id="player">
     <div class="player__main">
 
       <div class="player__stage">
@@ -35,6 +37,20 @@
         <span>4:12</span>
         <div class="progress"><span style="width:43%"></span></div>
         <span>9:40</span>
+        <span class="player__views">
+          <button class="player__viewbtn" type="button" data-view="theater" aria-pressed="false"
+                  aria-label="Theater mode" title="Theater mode">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+          </button>
+          <button class="player__viewbtn" type="button" data-view="fullscreen"
+                  aria-label="Full screen" title="Full screen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/>
+              <path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+              <path d="M8 21H5a2 2 0 0 1-2-2v-3"/></svg>
+          </button>
+        </span>
       </div>
 
       <div class="player__body">
@@ -73,10 +89,10 @@
                 your station before you need it, not after.</span></li>
           </ul>
           <div class="toolbar" style="margin-top:2.2rem;padding-top:1.6rem;border-top:1px solid rgba(255,255,255,.12)">
-            <a class="btn btn--ghost" href="P014-lesson-player.html"><svg viewBox="0 0 24 24" fill="none"
+            <a class="btn btn--ghost" href="P013-course-detail.html"><svg viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 style="width:16px;height:16px"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
-              Prev: Safe handling and transfer procedures</a>
+              Course outline</a>
             <a class="btn btn--brand" href="P015-quiz-attempt.html">Take quiz to unlock Lesson 8</a>
           </div>
         </div>
@@ -147,6 +163,7 @@
       </div>
     </aside>
   </div>
+  </div></section>
 
 </main>
 

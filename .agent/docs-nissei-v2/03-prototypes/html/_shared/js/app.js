@@ -88,4 +88,36 @@
       b.style.color = b.classList.contains('is-on') ? 'var(--brand)' : '';
     });
   });
+
+  /* ---- lesson player view modes ----
+     Default the player sits on the container grid like every other page.
+     Theater widens it to the viewport; full screen hands the stage to the
+     browser's real Fullscreen API. Same two controls a viewer already knows
+     from any video site. */
+  var player = $('.player');
+  if (player) {
+    var stage = $('.player__stage', player);
+
+    var theater = $('[data-view="theater"]', player);
+    if (theater) {
+      theater.addEventListener('click', function () {
+        var on = player.classList.toggle('is-theater');
+        theater.setAttribute('aria-pressed', String(on));
+      });
+    }
+
+    var full = $('[data-view="fullscreen"]', player);
+    if (full && stage) {
+      full.addEventListener('click', function () {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else if (stage.requestFullscreen) {
+          stage.requestFullscreen().catch(function () { /* denied: stay put */ });
+        }
+      });
+      document.addEventListener('fullscreenchange', function () {
+        full.setAttribute('aria-pressed', String(document.fullscreenElement === stage));
+      });
+    }
+  }
 })();

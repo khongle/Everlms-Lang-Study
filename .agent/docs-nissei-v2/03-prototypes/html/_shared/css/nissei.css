@@ -224,6 +224,28 @@
 :root{ --container-xxl:1320px; }
 @media(max-width:575.98px){ .container{max-width:100%} }
 
+/* ---- lesson player: three view modes, the way a video product does it ----
+   default   the player sits on the container grid like every other page
+   theater    breaks out to the full viewport width, rail drops underneath
+   fullscreen the stage becomes the screen (real Fullscreen API)
+   base.css ships the player as a permanent full-bleed 100vh slab; that is
+   what is overridden here. */
+.playerwrap{padding-block:var(--space-5)}
+.player{min-height:auto;border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden}
+.player.is-theater{width:100vw;margin-inline:calc(50% - 50vw);border-radius:0;border-inline:0}
+@media(max-width:991.98px){.player,.player.is-theater{grid-template-columns:1fr}}
+/* view controls live on the playback bar, where a viewer expects them */
+.player__views{display:inline-flex;gap:.25rem;margin-inline-start:.4rem}
+.player__viewbtn{width:32px;height:32px;border-radius:var(--radius-sm);cursor:pointer;
+  border:1px solid rgba(255,255,255,.22);background:transparent;color:#fff;display:grid;place-items:center}
+.player__viewbtn:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}
+.player__viewbtn[aria-pressed="true"]{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.6)}
+.player__viewbtn svg{width:17px;height:17px}
+/* the stage itself goes fullscreen, so the video fills the screen and the
+   lesson text and rail get out of the way — same as a video site */
+.player__stage:fullscreen{aspect-ratio:auto;width:100vw;height:100vh;background:#000}
+.player__stage:fullscreen img{object-fit:contain;opacity:1}
+
 /* Auth pages sit on the same container grid as every other page, so the
    sign-in panel starts exactly where the logo above it starts. */
 .authpage{padding-block:var(--space-6)}
