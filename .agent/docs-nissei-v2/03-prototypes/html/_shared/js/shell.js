@@ -124,10 +124,21 @@ var P = {
 
 /* Variants: a page built inside a non-owner folder because that role's view
    genuinely differs (roles.txt §5). Key = "role/PID". */
+/* Every object a page shows must be openable, and it must open INSIDE the
+   role you are signed in as. So where a role displays an object type it had
+   no detail page for, it gets its own variant of that detail:
+     instructor/P030            a learner in my class
+     site-training-manager/P013 a course as it stands at my branch
+     org_admin/P030             the account behind a person, not their training
+   That is what keeps "click the name" working without throwing the reviewer
+   into somebody else's persona. */
 var VARIANT = {
   'site-training-manager/P021':'P021-workspace-home.html',
   'site-training-manager/P022':'P022-training-schedule.html',
   'site-training-manager/P027':'P027-learner-progress.html',
+  'site-training-manager/P013':'P013-course-detail.html',
+  'instructor/P030':'P030-employee-record.html',
+  'org_admin/P030':'P030-employee-record.html',
   'hr-hse-central/P029':'P029-employees.html',
   'hr-hse-central/P030':'P030-employee-record.html',
   'hr-hse-central/P031':'P031-assign-training.html',

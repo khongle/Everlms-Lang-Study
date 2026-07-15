@@ -178,7 +178,7 @@ thay Public/Commerce bằng Auth/Central/HQ):
 |------|------|-----------|-----------|---------|----|-----------|----------|
 | anonymous | full | none | none | none | none | none | none |
 | employee | full | scoped (own) | none | none | none | none | none |
-| instructor | full | scoped (own) | scoped (lớp mình) | none | none | none | none |
+| instructor | full | scoped (own) | scoped (lớp mình) | read | none | none | none |
 | site_training_manager | full | scoped (own) | scoped (branch) | none | none | none | none |
 | hr_hse_central | full | scoped (own) | full (global) | full | read | none | none |
 | hq_viewer | full | none | none | none | read | none | none |
@@ -192,7 +192,16 @@ Ghi chú:
     administrator là người của đội nền tảng (không phải nhân sự Nissei).
   - hr_hse_central có `read` ở HQ: xem báo cáo hợp nhất nhưng không cấu
     hình lịch xuất báo cáo của HQ.
+  - instructor có `read` ở Central: cần XEM được ma trận (P036) và danh mục
+    master (P038) để biết khóa mình dạy bắt buộc với ai, chu kỳ bao lâu, và
+    theo dõi trạng thái duyệt nội dung mình gửi (P046). KHÔNG sửa được gì —
+    đó là quyền hr_hse_central. (Sửa 2026-07-16: bảng này từng ghi `none`,
+    mâu thuẫn với sitemap vốn đã đánh ○ VIA cho P036/P038/P046 — audit link
+    bắt được. Bảng này là nguồn đúng, sitemap khớp theo.)
   - KHÔNG role nghiệp vụ nào chạm được Org-admin — kể cả hr_hse_central.
+  - org_admin KHÔNG chạm được Platform (`none`) và administrator KHÔNG có
+    `full` ở bề mặt nghiệp vụ nào. Hai chiều cấm này là hiện thân của
+    DEC-02: hai role admin cùng tầm nhìn dữ liệu nhưng khác TẦNG.
   - org_admin có `read` ở nghiệp vụ (để hỗ trợ khi user báo lỗi) nhưng
     KHÔNG sửa được ma trận/danh mục — đó là quyền hr_hse_central.
   - administrator KHÔNG có `full` ở bất kỳ bề mặt nghiệp vụ nào. Nó là

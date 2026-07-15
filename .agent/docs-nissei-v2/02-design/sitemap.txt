@@ -381,7 +381,7 @@ P056 △ — BREAK-GLASS: chặt hơn support impersonation của org_admin — 
 | 06-hq-viewer/ | P033, P047, P048, P049 | 4 |
 | 07-nissei-admin/ | P029, P050–P056, P058, P059 | 10 |
 | 08-administrator/ | P055, P056, P057, P060–P063 | 7 |
-| **TỔNG** | **58 trang logic** | **72 file** |
+| **TỔNG** | **58 trang logic** | **75 file** |
 
 _shared/ (không phải role folder): BUILD-SPEC.md, css/, js/, img/
 

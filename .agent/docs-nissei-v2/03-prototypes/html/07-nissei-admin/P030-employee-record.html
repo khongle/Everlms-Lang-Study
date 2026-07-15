@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nguyen Van Minh &middot; Account · Nissei Training</title>
+<meta name="description" content="The account behind Nguyen Van Minh: identity, access and security. Training records are owned by HR/HSE Central and the site training manager, not this page.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="org_admin" data-active="P030"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P029-employees.html">Employees</a> <span aria-hidden="true">/</span> <span>Nguyen Van Minh</span>
+    </nav>
+
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <div class="flex items-center gap-3">
+          <img src="../_shared/img/avatar-01.jpg" alt="" style="width:56px;height:56px;border-radius:50%;object-fit:cover">
+          <div>
+            <h1 style="margin:0">Nguyen Van Minh</h1>
+            <p class="lede" style="margin:.2rem 0 0"><span class="codecell">NEV-004821</span> &middot;
+              Production Operator &middot; Nissei Electric Vietnam (NEV-HCM)</p>
+          </div>
+        </div>
+        <p class="text-sm text-muted" style="margin:.6rem 0 0;max-width:60ch">This is the account behind
+          Nguyen Van Minh: identity, access and security. It is not a training record, and this role does
+          not manage training.</p>
+      </div>
+      <div class="pagehead__actions">
+        <a class="btn btn--ghost" href="#account-actions">Reset password</a>
+        <a class="btn btn--ghost" href="#account-actions">Lock account</a>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="grid grid--2" style="align-items:start">
+
+      <div class="stack">
+
+        <!-- IDENTITY: immutable / HR-owned, read-only here -->
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Identity</h3>
+          <p class="text-sm text-muted" style="margin:0 0 1rem">Set by the HR employee import. Nissei
+            Administrator can see these fields but does not edit them here.</p>
+          <table class="dtable">
+            <caption class="sr-only">Identity fields for this account: employee code, branch and job role</caption>
+            <tbody>
+              <tr>
+                <th scope="row">Employee code</th>
+                <td><span class="codecell">NEV-004821</span>
+                  <div class="immutable" style="margin-top:.4rem">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Immutable group identity, set at HR import. Not editable here or anywhere in this system.</div></td>
+              </tr>
+              <tr>
+                <th scope="row">Branch</th>
+                <td>NEV-HCM <span class="text-muted">&middot; Nissei Electric Vietnam</span>
+                  <p class="hint" style="margin:.4rem 0 0">Read-only. Comes from the HR import. Branch
+                    transfers are made by HR/HSE Central or the site training manager, not from this
+                    account page.</p></td>
+              </tr>
+              <tr>
+                <th scope="row">Job role</th>
+                <td>Production Operator
+                  <p class="hint" style="margin:.4rem 0 0">Read-only. Comes from the HR import. Changing a
+                    job role changes this employee&rsquo;s training obligations, so it is owned by HR/HSE
+                    Central, not Nissei Administrator.</p></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ACCOUNT: what org_admin actually owns -->
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 1rem">Account</h3>
+          <table class="dtable">
+            <caption class="sr-only">Account status, creation, sign-in, authentication and locale</caption>
+            <tbody>
+              <tr>
+                <th scope="row">Status</th>
+                <td><span class="status status--success status--dot">Active</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Created</th>
+                <td>12 Aug 2025 <span class="text-muted">&middot; HR employee import</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Last sign-in</th>
+                <td>15 Jul 2026, 08:15</td>
+              </tr>
+              <tr>
+                <th scope="row">Auth method</th>
+                <td>Password
+                  <span class="status status--muted status--dot" style="margin-left:.5rem">SSO not connected</span>
+                  <p class="hint" style="margin:.4rem 0 0">Signs in with employee code and password, issued
+                    by HR. Active Directory is not linked yet, see
+                    <a href="P054-integrations.html">Integrations</a>.</p></td>
+              </tr>
+              <tr>
+                <th scope="row">Locale preference</th>
+                <td><span class="langchip langchip--live">VI</span> <span class="text-muted">Vietnamese</span>
+                  <p class="hint" style="margin:.4rem 0 0">Set by the employee in their own profile.</p></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ROLES: the one thing on this page that is genuinely editable -->
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Roles assigned</h3>
+          <p class="text-sm text-muted" style="margin:0 0 1rem">What this account can reach. Assigning a
+            role here changes who holds it, not what the role is permitted to do.</p>
+          <div class="wtable__wrap">
+            <table class="wtable">
+              <caption class="sr-only">Roles currently assigned to this account</caption>
+              <thead>
+                <tr><th scope="col">Role</th><th scope="col">Scope</th><th scope="col"><span class="sr-only">Actions</span></th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge badge--info">Employee</span></td>
+                  <td class="text-sm text-muted">Own training record only</td>
+                  <td class="rowbtns"><button class="btn btn--ghost btn--sm" type="button">Revoke</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="panel panel--soft" style="margin-top:1.2rem;padding:1rem 1.2rem">
+            <h4 style="font-size:var(--text-sm);margin:0 0 .8rem">Assign an additional role</h4>
+            <form class="formgrid" style="max-width:360px">
+              <div class="field"><label for="ar-role">Role</label>
+                <select class="select" id="ar-role" style="width:100%">
+                  <option>Instructor</option>
+                  <option>Site Training Manager</option>
+                  <option>HR/HSE Central</option>
+                  <option>HQ Viewer</option>
+                  <option>Nissei Administrator</option>
+                  <option disabled>Platform Administrator (provisioned by the platform team)</option>
+                </select></div>
+            </form>
+            <div class="btn-row" style="margin-top:1rem">
+              <button class="btn btn--brand btn--sm" type="button">Assign role</button>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:1rem">This is the same control as <a href="P051-roles-permissions.html">Roles
+            &amp; permissions</a>, applied to one person. See that page for what each role can reach.</p>
+        </div>
+
+        <!-- SIGN-IN ACTIVITY -->
+        <div>
+          <h2 style="font-size:var(--text-lg);margin:0 0 1rem">Recent sign-in activity</h2>
+          <div class="tablecard">
+            <div class="wtable__wrap">
+              <table class="wtable">
+                <caption class="sr-only">Recent sign-ins to this account with device and result</caption>
+                <thead>
+                  <tr><th scope="col">Time</th><th scope="col">Device</th><th scope="col">Result</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-sm text-muted">15 Jul 2026, 08:15</td>
+                    <td class="text-sm">Nissei Training App &middot; Android &middot; NEV-HCM factory floor</td>
+                    <td><span class="status status--success status--dot">Success</span></td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm text-muted">14 Jul 2026, 07:58</td>
+                    <td class="text-sm">Nissei Training App &middot; Android &middot; NEV-HCM factory floor</td>
+                    <td><span class="status status--success status--dot">Success</span></td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm text-muted">12 Jul 2026, 20:10</td>
+                    <td class="text-sm">Web browser &middot; Chrome on Windows</td>
+                    <td><span class="status status--success status--dot">Success</span></td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm text-muted">11 Jul 2026, 07:41</td>
+                    <td class="text-sm">Nissei Training App &middot; Android &middot; NEV-HCM factory floor</td>
+                    <td><span class="status status--success status--dot">Success</span></td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm text-muted">09 Jul 2026, 07:36</td>
+                    <td class="text-sm">Nissei Training App &middot; Android &middot; NEV-HCM factory floor</td>
+                    <td><span class="status status--success status--dot">Success</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMPERSONATION: good empty state for this particular account -->
+        <div>
+          <h2 style="font-size:var(--text-lg);margin:1.6rem 0 1rem">Recent impersonation of this account</h2>
+          <div class="card card--soft">
+            <div class="flex items-center gap-3">
+              <span class="card__icon" style="width:40px;height:40px;background:var(--success-soft)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <div>
+                <b class="text-sm">No impersonation sessions recorded for this account</b>
+                <p class="text-sm text-muted" style="margin:.2rem 0 0">Every switch into any account requires
+                  a written reason and is written permanently to the
+                  <a href="P055-audit-log.html">audit log</a>. Start one from
+                  <a href="P056-switch-user.html">Switch user</a>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- side rail -->
+      <div class="stack" id="account-actions">
+
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 .8rem">Account actions</h3>
+          <div class="stack-sm">
+            <button class="btn btn--brand btn--sm btn--block" type="button">Reset password</button>
+            <button class="btn btn--ghost btn--sm btn--block" type="button">Lock account</button>
+            <button class="btn btn--ghost btn--sm btn--block" type="button">Force sign-out (all devices)</button>
+          </div>
+          <p class="hint" style="margin-top:1rem">Reset sends a one-time password link to this employee.
+            Locking blocks sign-in immediately and is reversible from <a href="P029-employees.html">Employees</a>.
+            Every action here is written to the <a href="P055-audit-log.html">audit log</a>.</p>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 .8rem">Enrolled device</h3>
+          <div class="stack-sm">
+            <div class="switchrow" style="padding-top:0">
+              <div><b class="text-sm">Nissei Training App</b>
+                <p class="hint">Android &middot; Samsung Galaxy A14 &middot; last active today, 06:42,
+                  NEV-HCM factory floor</p></div>
+            </div>
+            <div class="switchrow">
+              <div><b class="text-sm">Web browser</b>
+                <p class="hint">Chrome on Windows &middot; last active 12 Jul 2026</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card--soft">
+          <h3 style="font-size:var(--text-md);margin:0 0 .5rem">About this account</h3>
+          <p class="text-sm text-muted" style="margin:0">Nissei Administrator manages who can sign in and
+            what they can reach, not what they have learned. Training history, certificates and compliance
+            status for Nguyen Van Minh are owned by HR/HSE Central and the site training manager at
+            NEV-HCM, and are not shown here. To see what this account&rsquo;s roles are permitted to do,
+            read <a href="P051-roles-permissions.html">Roles &amp; permissions</a>.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>
