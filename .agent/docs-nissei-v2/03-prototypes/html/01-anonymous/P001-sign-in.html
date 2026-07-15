@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Nissei Training</title>
+<meta name="description" content="Sign in to the Nissei Electric compliance training system with your employee code.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="auth" data-active="P001"></div>
+
+<main id="main">
+  <div class="authwrap">
+
+    <!-- brand side -->
+    <aside class="authwrap__aside">
+      <span class="eyebrow" style="color:#fff;opacity:.8">Nissei Electric</span>
+      <h2 style="font-size:var(--text-2xl);margin:.4rem 0 1rem">One training system for every site</h2>
+      <p style="opacity:.9;max-width:38ch">Occupational safety and compliance training for Nissei Electric
+        Vietnam, Hanoi, My Tho, and the Shanghai and Shenzhen offices. Your training record follows you
+        across branches.</p>
+
+      <div class="stack" style="margin-top:2.4rem">
+        <div class="flex items-center gap-3">
+          <span class="ctile ctile--saf">SAF</span>
+          <div><b style="color:#fff">Statutory safety training</b>
+            <small style="display:block;opacity:.75">Decree 44/2016 groups 1 to 6</small></div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="ctile ctile--qms">QMS</span>
+          <div><b style="color:#fff">ISO 9001 and 14001 awareness</b>
+            <small style="display:block;opacity:.75">Audit-ready training records</small></div>
+        </div>
+      </div>
+
+      <p style="margin-top:2.4rem;opacity:.7;font-size:var(--text-xs)">5,842 employees &middot; 5 branches
+        &middot; 2 countries</p>
+    </aside>
+
+    <!-- form side -->
+    <div class="authwrap__form">
+      <h1 style="font-size:var(--text-xl);margin:0 0 .3rem">Sign in</h1>
+      <p class="muted" style="margin:0 0 1.6rem">Use the employee code printed on your ID badge.</p>
+
+      <form class="form stack" onsubmit="return false">
+        <div class="field">
+          <label for="empcode">Employee code</label>
+          <input id="empcode" name="empcode" type="text" autocomplete="username"
+                 placeholder="NEV-004821" required>
+          <span class="hint">Format: branch code, then your six-digit number.</span>
+        </div>
+
+        <div class="field">
+          <label for="pw">Password</label>
+          <input id="pw" name="pw" type="password" autocomplete="current-password" required>
+        </div>
+
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <label class="flex items-center gap-2 text-sm" for="remember" style="font-weight:500">
+            <input id="remember" type="checkbox"> Keep me signed in on this device
+          </label>
+          <a class="text-sm" href="P002-password-reset.html">Forgot password</a>
+        </div>
+
+        <button class="btn btn--brand btn--block" type="submit">Sign in</button>
+      </form>
+
+      <button class="btn btn--ghost btn--block" type="button" disabled
+              style="opacity:.55;cursor:not-allowed;margin-top:.8rem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        Sign in with company account
+      </button>
+      <div class="annot"><b>Prototype note</b>Single sign-on against the corporate directory is an
+        option, not committed scope. It is shown as not connected so the layout accounts for it
+        without implying it exists. There is also deliberately no &ldquo;create account&rdquo; link:
+        accounts come from the HR employee import, never from self-registration.</div>
+
+      <!-- ===== THE ROLE PICKER =====================================
+           This is the door into every role's prototype, and the thing that
+           makes the set navigable as one system rather than seven folders.
+           Rendered from the shell.js registry so it can never drift out of
+           step with the pages that actually exist. -->
+      <div class="authdiv"><span>Or open the prototype as any role</span></div>
+      <div class="rolecards" id="rolecards"></div>
+
+      <div class="annot"><b>Prototype note</b>A real deployment has one sign-in that resolves to
+        whichever role your account holds. These cards exist so a reviewer can enter every role
+        directly. Once inside, use <b>My account &rarr; Switch role</b> to move between them, or
+        <b>Public front-end</b> to come back out to the public site.</div>
+
+      <p class="text-sm text-muted" style="margin-top:1.6rem">
+        Auditors and inspectors can
+        <a href="P003-certificate-verification.html">verify a certificate</a> without signing in.
+      </p>
+    </div>
+
+  </div>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script>
+/* Role picker, rendered from the single registry in shell.js. */
+(function () {
+  var N = window.NISSEI; if (!N) return;
+  document.getElementById('rolecards').innerHTML = N.ROLE_ORDER.map(function (k) {
+    var R = N.ROLES[k];
+    var scope = R.scope ? R.scope : 'Own record only';
+    return '<a class="rolecard" href="' + N.href(R.home, 'anonymous') + '">' +
+      '<img src="../_shared/img/' + R.av + '" alt="">' +
+      '<span class="rolecard__t"><b>' + R.label + '</b><small>' + R.blurb +
+        '</small><small class="codecell">' + R.who + ' · ' + scope + '</small></span>' +
+      '<span class="rolecard__go">' + N.svg('right', 18) + '</span></a>';
+  }).join('');
+})();
+</script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

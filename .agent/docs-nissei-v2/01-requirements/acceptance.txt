@@ -1,0 +1,110 @@
+================================================================================
+ACCEPTANCE — TIÊU CHÍ NGHIỆM THU (Nissei Compliance Training System)
+================================================================================
+Loại tài liệu : Tiêu chí nghiệm thu dạng Given/When/Then — đây là các điều
+                kiện ĐO ĐƯỢC để khách ký nhận từng nhóm yêu cầu. Dùng làm
+                cơ sở UAT và làm KPI "đồng bộ" có chữ ký (consulting.txt
+                GĐ 0 yêu cầu chốt định nghĩa đồng bộ trước khi build).
+Ngày lập      : 2026-07-15
+Phạm vi       : AC cho D1–D6 + các bất biến hệ thống. Mỗi AC ghi WF/F liên
+                quan. Dữ liệu ví dụ lấy từ content bible (roles.txt §6).
+
+--------------------------------------------------------------------------------
+D1 — MỘT DANH MỤC MASTER
+--------------------------------------------------------------------------------
+AC-1.1 (F-10) Given SAF-107 published v2.0 đang chạy ở cả 5 chi nhánh,
+  When trung tâm phát hành v2.1, Then cả 5 chi nhánh nhận v2.1 cùng lúc
+  và KHÔNG tồn tại thao tác nào cho phép một site giữ/фork bản riêng.
+AC-1.2 (F-10) Given instructor sửa nội dung khóa được phân công,
+  When submit, Then khóa ở trạng thái review và KHÔNG xuất hiện cho học
+  viên đến khi trung tâm approve + publish.
+
+--------------------------------------------------------------------------------
+D2 — MỘT MA TRẬN THEO VỊ TRÍ
+--------------------------------------------------------------------------------
+AC-2.1 (F-03/F-04) Given nhân viên mới import với vị trí "Forklift
+  Operator" tại NEV-HCM, When job đêm chạy, Then danh sách nghĩa vụ của
+  người đó đúng bằng các rule Forklift Operator × NEV-HCM trong ma trận
+  (gồm SAF-106 bắt buộc, chu kỳ 24 tháng) mà KHÔNG ai gán tay.
+AC-2.2 (F-03) Given VP Thượng Hải dùng ruleset văn phòng, When xem nghĩa
+  vụ của Chen Wei (Office Staff, NES-SHA), Then chỉ có OFF-101, CMP-101,
+  CYB-101 — không dính bất kỳ khóa NĐ44 nào của ruleset nhà máy VN.
+AC-2.3 (F-03) Given trung tâm sửa một ô ma trận (đổi chu kỳ SAF-106 từ
+  24→12 tháng cho NEV-HCM), When job đêm kế chạy, Then hạn của TOÀN BỘ
+  nhân viên giữ vị trí đó tại chi nhánh đó được tính lại, và thay đổi
+  nằm trong audit log kèm người sửa + thời điểm.
+
+--------------------------------------------------------------------------------
+D3 — MỘT HỒ SƠ THEO NGƯỜI
+--------------------------------------------------------------------------------
+AC-3.1 (F-02, WF-03) Given Nguyen Van Minh có lịch sử đào tạo tại NEH-HAN,
+  When chuyển sang NEV-HCM, Then: (a) hồ sơ cũ nguyên vẹn kèm nhãn chi
+  nhánh cấp; (b) chứng chỉ còn hạn vẫn còn hạn; (c) nghĩa vụ mới theo
+  ruleset NEV-HCM sau job đêm; (d) site manager NEH-HAN KHÔNG còn thấy
+  người này, site manager NEV-HCM thấy.
+AC-3.2 (F-02, WF-08) Given hồ sơ lịch sử import từ Excel NEH-HAN,
+  When xem hồ sơ cá nhân, Then dòng lịch sử hiển thị rõ nguồn import +
+  ngày import, và hạn tái đào tạo tính từ ngày hoàn thành lịch sử —
+  không bắt học lại những gì còn hiệu lực.
+AC-3.3 (F-02) Given hai nhân viên trùng họ tên, When import, Then hệ
+  thống phân biệt bằng mã nhân viên tập đoàn; import trùng mã bị chặn ở
+  bước đối soát với thông báo dòng-cụ-thể.
+
+--------------------------------------------------------------------------------
+D4 — MỘT CHUẨN CHỨNG CHỈ
+--------------------------------------------------------------------------------
+AC-4.1 (F-06) Given nhân viên thi đạt SAF-107, When kết quả ghi nhận,
+  Then chứng chỉ tự cấp trong cùng phiên xử lý, đúng MỘT bản (thi lại
+  không sinh bản thứ hai), có mã duy nhất + hạn = ngày đạt + chu kỳ rule.
+AC-4.2 (F-06) Given chứng chỉ song ngữ, When xuất PDF, Then phần tiếng
+  Nhật render đúng glyph CJK (kiểm bằng chuỗi 有効期限) trên bản in.
+AC-4.3 (F-06) Given thanh tra có mã chứng chỉ, When tra tại P003 không
+  đăng nhập, Then thấy: tên, khóa, ngày cấp, hạn, trạng thái — và KHÔNG
+  thấy bất kỳ trường nào khác. Mã không tồn tại → thông báo không-tìm-
+  thấy, không lộ gợi ý.
+AC-4.4 (F-07) Given chứng chỉ hết hạn ngày X, When tới X-30/X-7/X,
+  Then nhắc đúng lịch quy tắc (P044) tới nhân viên và quản lý site; quá
+  hạn 14 ngày → người đó xuất hiện trong worklist leo thang của site.
+
+--------------------------------------------------------------------------------
+D5 — BÁO CÁO HỢP NHẤT, CÙNG MỘT BỘ SỐ
+--------------------------------------------------------------------------------
+AC-5.1 (F-08) Given cùng thời điểm chốt số, When so tỷ lệ tuân thủ của
+  NEH-HAN trên: dashboard site (P028), báo cáo trung tâm (P033 bản
+  global), dashboard HQ (P047), Then ba nơi ra CÙNG một con số.
+AC-5.2 (F-08) Given site manager NEH-HAN đăng nhập, When mở bất kỳ trang
+  nào, Then không tồn tại đường nào (UI hoặc URL trực tiếp) xem được dữ
+  liệu NEV-HCM. Đây là AC của branch scope — test bằng cả gõ URL thẳng.
+AC-5.3 (F-08) Given hq_viewer đăng nhập, When duyệt toàn bộ bề mặt HQ,
+  Then không có bất kỳ control ghi nào (gán/sửa/thu hồi/export tay);
+  báo cáo định kỳ JA đến theo lịch ở P049.
+
+--------------------------------------------------------------------------------
+D6 — MỘT QUY TRÌNH NỘI DUNG & DỊCH
+--------------------------------------------------------------------------------
+AC-6.1 (F-09, WF-04) Given bản dịch VI của SAF-107 gắn v2.0, When gốc
+  phát hành v2.1, Then bản VI tự chuyển trạng thái OUTDATED và xuất hiện
+  trong hàng đợi dịch — không cần ai nhớ.
+AC-6.2 (F-09) Given công nhân đặt ngôn ngữ VI, When dùng app/web, Then
+  toàn bộ UI + nội dung có bản dịch hiển thị VI; phần chưa dịch fallback
+  theo quy tắc P053 (không trắng trang).
+
+--------------------------------------------------------------------------------
+BẤT BIẾN HỆ THỐNG (không thuộc D nào nhưng vi phạm là fail nghiệm thu)
+--------------------------------------------------------------------------------
+AC-S.1 (F-11) Audit log không có thao tác sửa/xóa ở MỌI role kể cả
+  administrator; thử qua UI và API đều bị từ chối + tự ghi log lần thử.
+AC-S.2 (F-11) Mọi phiên impersonation/break-glass đều có: người thực
+  hiện, người bị nhập vai, lý do (+ticket với break-glass), thời điểm,
+  thời lượng — truy được trong audit sau khi phiên kết thúc.
+AC-S.3 (F-12) org_admin không có đường nào (UI/URL) tới bề mặt cấu trúc
+  (P061–P063); administrator không có quyền ghi trên bất kỳ bề mặt
+  nghiệp vụ nào (ma trận, hồ sơ, chứng chỉ).
+AC-S.4 (N-01) Load test: 5.000 phiên thi đồng thời trong 60 phút, p95
+  thời gian phản hồi nộp bài ≤ 3s, không mất bài làm nào.
+AC-S.5 (F-01, E1) Tạo chi nhánh thứ 6 hoàn toàn qua UI (P052 + P036 +
+  P041): không cần deploy, nhân viên site mới có nghĩa vụ đúng sau job
+  đêm đầu tiên.
+AC-S.6 (N-04) Từ mạng văn phòng TQ (hoặc giả lập chặn domain Google):
+  trang web tải đầy đủ — không request nào ra tài nguyên bị chặn.
+================================================================================

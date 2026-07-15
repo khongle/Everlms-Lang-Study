@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System health &amp; jobs · Nissei Training</title>
+<meta name="description" content="Background job status, queue depths, cron health and storage for the compliance training platform.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="administrator" data-active="P057"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P060-platform-overview.html">Platform</a> <span aria-hidden="true">/</span> <span>System health &amp; jobs</span>
+    </nav>
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>System health &amp; jobs</h1>
+        <p class="lede">Background jobs, queue depths, cron status and storage for the platform that
+          computes 5,842 employees&rsquo; training obligations every night.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="kpis">
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <div><div class="stat__n">Healthy</div><div class="stat__l">Cron status</div>
+          <div class="kpi__sub">Last heartbeat 15 Jul 2026, 15:02</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/>
+          <rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg></span>
+        <div><div class="stat__n num">4</div><div class="stat__l">Jobs run today</div>
+          <div class="kpi__sub">All completed successfully</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></span>
+        <div><div class="stat__n num">1</div><div class="stat__l">Failures (7d)</div>
+          <div class="kpi__sub">Auto-retried and recovered</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/>
+          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></span>
+        <div><div class="stat__n num">46.8 GB</div><div class="stat__l">Storage used</div>
+          <div class="kpi__sub">19% of 250 GB capacity</div></div>
+      </div>
+    </div>
+
+    <!-- peak load note -->
+    <div class="alert alert--info" style="margin-top:2rem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>
+      <div><b>What actually sizes this system.</b> Average daily traffic is not the constraint. The whole
+        factory works the same shift pattern, so hundreds of operators can finish a lesson and sit its quiz
+        in the same narrow window, and the nightly compliance recalculation has to walk every one of
+        5,842 employees&rsquo; obligations before the morning shift starts. Quiz-submission concurrency and
+        the nightly recalculation window are the two numbers this platform is sized against, not page views.</div>
+    </div>
+
+    <!-- background jobs -->
+    <h2 style="font-size:var(--text-lg);margin:2rem 0 1rem">Background jobs</h2>
+    <div class="tablecard">
+      <div class="wtable__wrap">
+        <table class="wtable">
+          <caption class="sr-only">Background jobs, schedule, last run and status</caption>
+          <thead>
+            <tr><th scope="col">Job</th><th scope="col">Schedule</th><th scope="col">Last run</th>
+              <th scope="col">Duration</th><th scope="col">Status</th><th scope="col">Next run</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Nightly compliance recalculation</b>
+                <div class="text-sm text-muted">Regenerates every employee&rsquo;s due dates from the training matrix</div></td>
+              <td class="text-sm">02:00 daily (ICT)</td>
+              <td class="text-sm">15 Jul 2026, 02:00</td>
+              <td class="text-sm num">6m 42s</td>
+              <td><span class="status status--success status--dot">Success</span></td>
+              <td class="text-sm">16 Jul 2026, 02:00</td>
+            </tr>
+            <tr>
+              <td><b>Reminder dispatch</b>
+                <div class="text-sm text-muted">Sends due/overdue email and push reminders from the reminder rules</div></td>
+              <td class="text-sm">06:00 &amp; 14:00 daily</td>
+              <td class="text-sm">15 Jul 2026, 14:00</td>
+              <td class="text-sm num">1m 58s</td>
+              <td><span class="status status--success status--dot">Success</span></td>
+              <td class="text-sm">16 Jul 2026, 06:00</td>
+            </tr>
+            <tr>
+              <td><b>Certificate generation queue</b>
+                <div class="text-sm text-muted">Renders and files a certificate PDF after each course completion</div></td>
+              <td class="text-sm">Continuous, polls every 60s</td>
+              <td class="text-sm">15 Jul 2026, 15:10</td>
+              <td class="text-sm num">&lt; 1s / item</td>
+              <td><span class="status status--success status--dot">Success</span></td>
+              <td class="text-sm">Continuous</td>
+            </tr>
+            <tr>
+              <td><b>Import jobs</b>
+                <div class="text-sm text-muted">Employee and training-history CSV imports, triggered from Central</div></td>
+              <td class="text-sm">On demand</td>
+              <td class="text-sm">10 Jul 2026, 11:20</td>
+              <td class="text-sm num">2m 10s</td>
+              <td><span class="status status--success status--dot">Success</span></td>
+              <td class="text-sm">On demand</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- queue depths -->
+    <h2 style="font-size:var(--text-lg);margin:2rem 0 1rem">Queue depths</h2>
+    <div class="grid grid--3">
+      <div class="card card--soft">
+        <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Certificate generation</h3>
+        <div class="stat__n num">3</div>
+        <p class="text-sm text-muted" style="margin:.2rem 0 0">Pending &middot; average wait 2 min</p>
+      </div>
+      <div class="card card--soft">
+        <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Reminder dispatch</h3>
+        <div class="stat__n num">0</div>
+        <p class="text-sm text-muted" style="margin:.2rem 0 0">Queued &middot; last batch cleared 14:00</p>
+      </div>
+      <div class="card card--soft">
+        <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Import processing</h3>
+        <div class="stat__n num">0</div>
+        <p class="text-sm text-muted" style="margin:.2rem 0 0">Idle &middot; no import in progress</p>
+      </div>
+    </div>
+
+    <!-- recent incidents -->
+    <h2 style="font-size:var(--text-lg);margin:2rem 0 1rem">Recent incidents</h2>
+    <div class="card">
+      <ul class="timeline">
+        <li><span class="year">09 Jul</span>
+          <p style="margin:.3rem 0 0"><b>Reminder dispatch failed:</b> SMTP relay timed out after 30s
+            during the 06:00 run. Job auto-retried at 06:05 and succeeded; 214 reminders were sent 5 minutes
+            late. No manual action was needed.</p></li>
+        <li><span class="year">Ongoing</span>
+          <p style="margin:.3rem 0 0"><b>No unresolved failures.</b> All four background jobs have completed
+            successfully on every run in the last 7 days except the single retried run above.</p></li>
+      </ul>
+    </div>
+
+    <!-- storage breakdown -->
+    <h2 style="font-size:var(--text-lg);margin:2rem 0 1rem">Storage breakdown</h2>
+    <div class="chartcard">
+      <div class="stack-sm">
+        <div>
+          <div class="progress-label"><span>Database (employee, matrix, training records)</span><span class="num">18.2 GB</span></div>
+          <div class="progress"><span style="width:39%"></span></div>
+        </div>
+        <div>
+          <div class="progress-label"><span>Course content &amp; media</span><span class="num">14.1 GB</span></div>
+          <div class="progress"><span style="width:30%"></span></div>
+        </div>
+        <div>
+          <div class="progress-label"><span>Certificates (PDF)</span><span class="num">9.4 GB</span></div>
+          <div class="progress"><span style="width:20%"></span></div>
+        </div>
+        <div>
+          <div class="progress-label"><span>Import source files</span><span class="num">5.1 GB</span></div>
+          <div class="progress"><span style="width:11%"></span></div>
+        </div>
+      </div>
+      <p class="text-sm text-muted" style="margin-top:1rem">46.8 GB total of 250 GB capacity &middot; 19% used</p>
+    </div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

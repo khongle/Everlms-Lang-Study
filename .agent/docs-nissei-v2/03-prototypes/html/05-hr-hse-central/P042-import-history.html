@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Import training history · Nissei Training</title>
+<meta name="description" content="Import historical training records from the factories' pre-system Excel files.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="hr-hse-central" data-active="P042"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P029-employees.html">Employees</a> <span aria-hidden="true">/</span> <span>Import training history</span>
+    </nav>
+
+    <div class="branchbar">
+      <span class="branchbar__lb">Branch</span>
+      <button class="branchbar__sel" type="button" aria-haspopup="listbox">
+        All branches (5)
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <span class="branchbar__scope">Each row carries its own issuing branch &middot; source: factory Excel logs, 2019 to 2026</span>
+    </div>
+
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Import training history</h1>
+        <p class="lede">Bring historical training records from the factories&rsquo; pre-system Excel files
+          into the platform, so the system starts with history instead of from zero.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <nav class="wizard" aria-label="Import steps">
+      <span class="wstep is-done"><span class="wstep__n">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><path d="M20 6 9 17l-5-5"/></svg>
+      </span>1. Upload CSV</span>
+      <span class="wstep is-done"><span class="wstep__n">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><path d="M20 6 9 17l-5-5"/></svg>
+      </span>2. Map columns</span>
+      <span class="wstep is-active"><span class="wstep__n">3</span>3. Reconcile errors</span>
+      <span class="wstep"><span class="wstep__n">4</span>4. Commit</span>
+    </nav>
+
+    <div class="grid grid--2" style="margin-bottom:1.6rem;gap:1rem">
+      <div class="panel panel--soft" style="padding:1rem 1.2rem">
+        <p class="text-sm" style="margin:0"><b>Step 1 &middot; File uploaded</b></p>
+        <p class="text-sm text-muted" style="margin:.2rem 0 0">training-history-all-sites-2026.csv &middot;
+          1.1 MB &middot; 3,204 rows &middot; uploaded 15 Jul 2026, 10:02</p>
+      </div>
+      <div class="panel panel--soft" style="padding:1rem 1.2rem">
+        <p class="text-sm" style="margin:0"><b>Step 2 &middot; Columns mapped</b></p>
+        <p class="text-sm text-muted" style="margin:.2rem 0 0">Employee code, course name, completion date,
+          score, issuing branch, certificate number.</p>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div><div class="stat__n num">3,204</div><div class="stat__l">Legacy rows</div></div></div>
+      <div class="kpi"><div><div class="stat__n num">9</div><div class="stat__l">Course names auto-matched</div></div></div>
+      <div class="kpi"><div><div class="stat__n num" style="color:var(--error)">18</div><div class="stat__l">Errors</div></div></div>
+      <div class="kpi"><div><div class="stat__n num" style="color:var(--warning)">61</div><div class="stat__l">Warnings</div></div></div>
+    </div>
+
+    <h2 style="font-size:var(--text-lg);margin:2rem 0 .4rem">Legacy course name mapping</h2>
+    <p class="text-sm text-muted" style="margin:0 0 1rem">Factory Excel files used local, inconsistent course
+      names. Each one is fuzzy-matched to a master catalog code and needs a human confirmation before it is
+      trusted.</p>
+    <div class="tablecard">
+      <div class="wtable__wrap">
+      <table class="wtable">
+        <caption class="sr-only">Legacy course names matched to master catalog codes</caption>
+        <thead>
+          <tr>
+            <th scope="col">Legacy course name (as written in Excel)</th>
+            <th scope="col">Suggested master code</th>
+            <th scope="col" class="num">Confidence</th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><i>&ldquo;An toan lao dong tong quat&rdquo;</i> <span class="text-sm text-muted">312 rows</span></td>
+            <td><span class="cell-course"><span class="ctile ctile--saf" style="width:28px;height:28px;font-size:.5rem">SAF<br>101</span>General Occupational Safety</span></td>
+            <td class="num">95%</td>
+            <td class="rowbtns"><button class="btn btn--brand btn--sm" type="button">Confirm</button></td>
+          </tr>
+          <tr>
+            <td><i>&ldquo;Lam viec tren cao&rdquo;</i> <span class="text-sm text-muted">88 rows</span></td>
+            <td><span class="cell-course"><span class="ctile ctile--saf" style="width:28px;height:28px;font-size:.5rem">SAF<br>102</span>Working at Height</span></td>
+            <td class="num">91%</td>
+            <td class="rowbtns"><button class="btn btn--brand btn--sm" type="button">Confirm</button></td>
+          </tr>
+          <tr>
+            <td><i>&ldquo;Dien an toan&rdquo;</i> <span class="text-sm text-muted">104 rows</span></td>
+            <td><span class="cell-course"><span class="ctile ctile--saf" style="width:28px;height:28px;font-size:.5rem">SAF<br>103</span>Electrical Safety on Site</span></td>
+            <td class="num">88%</td>
+            <td class="rowbtns"><button class="btn btn--brand btn--sm" type="button">Confirm</button></td>
+          </tr>
+          <tr>
+            <td><i>&ldquo;PCCC co ban&rdquo;</i> <span class="text-sm text-muted">276 rows</span></td>
+            <td><span class="cell-course"><span class="ctile ctile--fir" style="width:28px;height:28px;font-size:.5rem">FIR<br>101</span>Fire Prevention &amp; Evacuation</span></td>
+            <td class="num">93%</td>
+            <td class="rowbtns"><button class="btn btn--brand btn--sm" type="button">Confirm</button></td>
+          </tr>
+          <tr>
+            <td><i>&ldquo;So cap cuu&rdquo;</i> <span class="text-sm text-muted">201 rows</span></td>
+            <td><span class="cell-course"><span class="ctile ctile--saf" style="width:28px;height:28px;font-size:.5rem">SAF<br>105</span>First Aid &amp; Emergency Response</span></td>
+            <td class="num">90%</td>
+            <td class="rowbtns"><button class="btn btn--brand btn--sm" type="button">Confirm</button></td>
+          </tr>
+          <tr>
+            <td><i>&ldquo;Van hanh xe nang&rdquo;</i> <span class="text-sm text-muted">142 rows</span></td>
+            <td><span class="cell-course"><span class="ctile ctile--saf" style="width:28px;height:28px;font-size:.5rem">SAF<br>106</span>Forklift Operation</span></td>
+            <td class="num">97%</td>
+            <td class="rowbtns"><button class="btn btn--brand btn--sm" type="button">Confirm</button></td>
+          </tr>
+          <tr class="errrow">
+            <td><i>&ldquo;An toan hoa chat&rdquo;</i> <span class="text-sm text-muted">67 rows</span></td>
+            <td><span class="cell-course"><span class="ctile ctile--saf" style="width:28px;height:28px;font-size:.5rem">SAF<br>107</span>Chemical Handling &amp; MSDS</span>
+              <div class="dueline"><span class="errmark">Low confidence: needs review</span></div></td>
+            <td class="num">82%</td>
+            <td class="rowbtns"><button class="btn btn--brand btn--sm" type="button">Confirm</button>
+              <button class="btn btn--ghost btn--sm" type="button">Change</button></td>
+          </tr>
+          <tr>
+            <td><i>&ldquo;ISO 9001 nhan thuc&rdquo;</i> <span class="text-sm text-muted">54 rows</span></td>
+            <td><span class="cell-course"><span class="ctile ctile--qms" style="width:28px;height:28px;font-size:.5rem">QMS<br>201</span>ISO 9001 Awareness</span></td>
+            <td class="num">94%</td>
+            <td class="rowbtns"><button class="btn btn--brand btn--sm" type="button">Confirm</button></td>
+          </tr>
+          <tr>
+            <td><i>&ldquo;Quy tac ung xu&rdquo;</i> <span class="text-sm text-muted">39 rows</span></td>
+            <td><span class="cell-course"><span class="ctile ctile--cmp" style="width:28px;height:28px;font-size:.5rem">CMP<br>101</span>Compliance &amp; Code of Conduct</span></td>
+            <td class="num">89%</td>
+            <td class="rowbtns"><button class="btn btn--brand btn--sm" type="button">Confirm</button></td>
+          </tr>
+          <tr class="errrow">
+            <td><i>&ldquo;Ky nang mem&rdquo;</i> <span class="text-sm text-muted">21 rows</span></td>
+            <td><span class="errmark">No match found</span>
+              <div class="dueline">Not in the 13-course master catalog (soft-skills course, discontinued)</div></td>
+            <td class="num text-muted">-</td>
+            <td class="rowbtns"><button class="btn btn--ghost btn--sm" type="button">Map manually</button>
+              <button class="btn btn--ghost btn--sm" type="button">Skip rows</button></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <h2 style="font-size:var(--text-lg);margin:2rem 0 1rem">Row-level errors</h2>
+    <div class="tablecard">
+      <div class="wtable__wrap">
+      <table class="wtable">
+        <caption class="sr-only">Rows with field-level errors that block import</caption>
+        <thead>
+          <tr>
+            <th scope="col">Row</th>
+            <th scope="col">Employee code</th>
+            <th scope="col">Course</th>
+            <th scope="col">Issue</th>
+            <th scope="col">Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="errrow">
+            <td class="num text-sm text-muted">45</td>
+            <td class="codecell">NEH-002914</td>
+            <td>SAF-103 Electrical Safety on Site</td>
+            <td><span class="errmark">Missing required field</span>
+              <div class="dueline">Completion date is empty</div></td>
+            <td><input class="fixcell" type="text" placeholder="DD MMM YYYY" aria-label="Completion date for row 45"></td>
+          </tr>
+          <tr class="errrow">
+            <td class="num text-sm text-muted">190</td>
+            <td class="codecell">NEV-004821</td>
+            <td>SAF-105 First Aid &amp; Emergency Response</td>
+            <td><span class="errmark">Invalid score</span>
+              <div class="dueline">&ldquo;105&rdquo; is out of range. Score must be 0 to 100</div></td>
+            <td><input class="fixcell" type="text" placeholder="0-100" aria-label="Corrected score for row 190"></td>
+          </tr>
+          <tr class="errrow">
+            <td class="num text-sm text-muted">302</td>
+            <td class="codecell">NEM-000512</td>
+            <td>SAF-102 Working at Height</td>
+            <td><span class="errmark">Unknown branch code</span>
+              <div class="dueline">&ldquo;MyTho&rdquo; is not a branch code. Did you mean NEM-MTO?</div></td>
+            <td><select class="fixcell" aria-label="Corrected issuing branch for row 302">
+              <option>NEM-MTO</option><option>NEV-HCM</option><option>NEH-HAN</option>
+            </select></td>
+          </tr>
+          <tr class="errrow">
+            <td class="num text-sm text-muted">415</td>
+            <td class="codecell">NEV-004821</td>
+            <td>SAF-105 First Aid &amp; Emergency Response</td>
+            <td><span class="errmark">Duplicate certificate number</span>
+              <div class="dueline">NEH-2023-004821-105 already exists on this employee&rsquo;s record</div></td>
+            <td><button class="btn btn--ghost btn--sm" type="button">Skip duplicate row</button></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="toolbar" style="border-top:1px solid var(--line);border-bottom:0">
+        <span class="text-sm text-muted">Showing 4 of <span class="num">18</span> errors &middot;
+          <span class="num">61</span> lower-severity warnings not shown</span>
+        <button class="btn btn--ghost btn--sm" type="button">Show all</button>
+      </div>
+    </div>
+
+    <div class="btn-row" style="margin-top:1.6rem">
+      <button class="btn btn--ghost" type="button">Download error report</button>
+      <button class="btn btn--ghost" type="button">Re-validate</button>
+      <button class="btn btn--brand" type="button">Continue to commit &middot; 3,167 ready, 37 blocked</button>
+    </div>
+
+    <div class="annot"><b>What this import unlocks</b>Without this step, every employee&rsquo;s training
+      record would start empty on go-live day, even for staff who completed real safety training years ago
+      on paper or in factory Excel logs. Committing this import is what lets Nguyen Van Minh&rsquo;s record
+      (employee/P017-my-training-record.html) show his 2023 first-aid certificate from NEH-HAN instead of a
+      blank history. The system starts with history, not from zero.</div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

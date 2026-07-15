@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Branch comparison · Nissei Training</title>
+<meta name="description" content="The same KPI set for every branch, so any two sites can be compared like for like.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="hq-viewer" data-active="P048"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P047-hq-dashboard.html">HQ</a> <span aria-hidden="true">/</span> <span>Branch comparison</span>
+    </nav>
+
+    <!-- READ-ONLY: named explicitly so the absence of controls reads as a design decision -->
+    <div class="roband">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/>
+        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg>
+      <span><b>Read-only oversight.</b> This comparison is a view. There is no per-branch edit, no
+        target-setting, no assignment control anywhere on this page.</span>
+    </div>
+
+    <!-- BRANCH SCOPE: switchable, read-only (hq_viewer) -->
+    <div class="branchbar">
+      <span class="branchbar__lb">Branch</span>
+      <button class="branchbar__sel" type="button" aria-haspopup="listbox">All branches (5)
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <span class="branchbar__scope">5,842 employees &middot; VN 5,800 &middot; CN 42</span>
+    </div>
+
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Branch comparison</h1>
+        <p class="lede">The same KPI set for every branch, so any two sites can be compared like for
+          like, and the ones that cannot be compared are labelled as such.</p>
+      </div>
+      <div class="pagehead__actions">
+        <a class="btn btn--ghost" href="P047-hq-dashboard.html">HQ dashboard</a>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="flex items-center gap-3 flex-wrap text-sm text-muted" style="margin-bottom:1.2rem">
+      <span><b>Avg. days to complete</b> assignment to completion, last closed cohort</span>
+      <span><b>Training hours / head</b> year to date</span>
+      <span><b>Certificate validity</b> issued certificates not yet expired</span>
+    </div>
+
+    <nav class="segmented" aria-label="Filter by branch type">
+      <a href="#" class="is-active">All branches <span class="num">5</span></a>
+      <a href="#">Factories <span class="num">3</span></a>
+      <a href="#">Trading offices <span class="num">2</span></a>
+    </nav>
+
+    <div class="tablecard" style="margin-top:1.2rem">
+      <div class="wtable__wrap">
+      <table class="wtable">
+        <caption class="sr-only">Branch comparison: compliance rate, overdue count, average days to
+          complete, training hours per head, and certificate validity for every branch</caption>
+        <thead>
+          <tr>
+            <th scope="col">Branch</th>
+            <th scope="col">Type</th>
+            <th scope="col" class="num">Employees</th>
+            <th scope="col">Compliance rate</th>
+            <th scope="col" class="num">Overdue</th>
+            <th scope="col" class="num">Avg. days to complete</th>
+            <th scope="col" class="num">Training hours / head</th>
+            <th scope="col" class="num">Certificate validity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>NEV-HCM</b><br><small class="text-muted">Nissei Electric Vietnam</small></td>
+            <td><span class="badge badge--accent">Factory</span></td>
+            <td class="num">3,000</td>
+            <td><span class="num fw-700">89.1%</span>
+              <div class="covbar" style="margin-top:.3rem"><i style="width:89.1%"></i></div></td>
+            <td class="num">137</td>
+            <td class="num">18</td>
+            <td class="num">7.6</td>
+            <td class="num">92.4%</td>
+          </tr>
+          <tr>
+            <td><b>NEH-HAN</b><br><small class="text-muted">Nissei Electric Hanoi</small></td>
+            <td><span class="badge badge--accent">Factory</span></td>
+            <td class="num">2,000</td>
+            <td><span class="num fw-700">86.2%</span>
+              <div class="covbar" style="margin-top:.3rem"><i style="width:86.2%"></i></div></td>
+            <td class="num">116</td>
+            <td class="num">21</td>
+            <td class="num">7.0</td>
+            <td class="num">90.1%</td>
+          </tr>
+          <tr>
+            <td><b>NEM-MTO</b><br><small class="text-muted">Nissei Electric My Tho</small></td>
+            <td><span class="badge badge--accent">Factory</span></td>
+            <td class="num">800</td>
+            <td><span class="num fw-700">82.7%</span>
+              <div class="covbar covbar--warn" style="margin-top:.3rem"><i style="width:82.7%"></i></div></td>
+            <td class="num">58</td>
+            <td class="num">27</td>
+            <td class="num">5.3</td>
+            <td class="num">87.6%</td>
+          </tr>
+          <tr>
+            <td><b>NES-SHA</b><br><small class="text-muted">Shanghai Trading Office</small></td>
+            <td><span class="badge badge--info">Office</span></td>
+            <td class="num">24</td>
+            <td><span class="num fw-700">95.8%</span>
+              <div class="covbar" style="margin-top:.3rem"><i style="width:95.8%"></i></div></td>
+            <td class="num">1</td>
+            <td class="num">9</td>
+            <td class="num">8.4</td>
+            <td class="num">97.9%</td>
+          </tr>
+          <tr>
+            <td><b>NES-SZN</b><br><small class="text-muted">Shenzhen Trading Office</small></td>
+            <td><span class="badge badge--info">Office</span></td>
+            <td class="num">18</td>
+            <td><span class="num fw-700">94.4%</span>
+              <div class="covbar" style="margin-top:.3rem"><i style="width:94.4%"></i></div></td>
+            <td class="num">0</td>
+            <td class="num">11</td>
+            <td class="num">8.1</td>
+            <td class="num">96.8%</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="annot"><b>Architecture made visible</b>This table is not hardcoded to five branches.
+      Each row is one branch record, driven by the same branch data that appears in Branches (P040)
+      and the ruleset shown in the training matrix (P036). A sixth branch, for example a Thailand
+      facility, would be a new row that HR/HSE Central adds as data. It is not a release of this page.</div>
+
+    <div class="annot"><b>Not like for like</b>The Shanghai and Shenzhen trading offices run a 3-rule
+      ruleset (OFF-101, CMP-101, CYB-101) with no Decree 44 statutory groups, while the three Vietnam
+      sites run the full factory ruleset under Decree 44/2016. Their higher compliance and certificate
+      validity rates reflect a much smaller, non-statutory course set, not stronger performance. Compare
+      factories with factories and offices with offices, not across the two groups.</div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

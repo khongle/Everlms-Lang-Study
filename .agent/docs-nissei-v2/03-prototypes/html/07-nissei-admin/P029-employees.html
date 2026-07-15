@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Employees · Nissei Training</title>
+<meta name="description" content="All employees system-wide with account status, last sign-in, locale and authentication method.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="org_admin" data-active="P029"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P050-admin-overview.html">Admin</a> <span aria-hidden="true">/</span> <span>Employees</span>
+    </nav>
+
+    <!-- BRANCH SCOPE: switchable, global. Canonical pattern from BUILD-SPEC §3. -->
+    <div class="branchbar">
+      <span class="branchbar__lb">Branch</span>
+      <button class="branchbar__sel" type="button" aria-haspopup="listbox">All branches (5)
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <span class="branchbar__scope">5,842 employees &middot; VN 5,800 &middot; CN 42</span>
+    </div>
+
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Employees</h1>
+        <p class="lede">5,842 employees across 5 branches, with the technical account fields business
+          roles do not see.</p>
+      </div>
+      <div class="pagehead__actions">
+        <a class="btn btn--ghost" href="P051-roles-permissions.html">Roles &amp; permissions</a>
+        <a class="btn btn--brand" href="P056-switch-user.html">Switch user</a>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <!-- filters: compliance status, branch, job role -->
+    <div class="flex items-center justify-between gap-3 flex-wrap" style="margin-bottom:1.2rem">
+      <nav class="segmented" aria-label="Filter by compliance status">
+        <a href="#" class="is-active">All <span class="num">5,842</span></a>
+        <a href="#">Compliant <span class="num">5,062</span></a>
+        <a href="#">Due soon <span class="num">468</span></a>
+        <a href="#">Overdue <span class="num">312</span></a>
+      </nav>
+      <div class="flex items-center gap-2 flex-wrap">
+        <label class="sr-only" for="branch">Branch</label>
+        <select class="select" id="branch">
+          <option>All branches</option>
+          <option>NEV-HCM &middot; Nissei Electric Vietnam</option>
+          <option>NEH-HAN &middot; Nissei Electric Hanoi</option>
+          <option>NEM-MTO &middot; Nissei Electric My Tho</option>
+          <option>NES-SHA &middot; Shanghai Trading Office</option>
+          <option>NES-SZN &middot; Shenzhen Trading Office</option>
+        </select>
+        <label class="sr-only" for="jobrole">Job role</label>
+        <select class="select" id="jobrole">
+          <option>All job roles</option>
+          <option>Production Operator</option><option>Line Leader</option><option>Forklift Operator</option>
+          <option>Electrical Technician</option><option>Maintenance Technician</option><option>Warehouse Staff</option>
+          <option>QA Inspector</option><option>Supervisor</option><option>Office Staff</option><option>HSE Officer</option>
+        </select>
+        <label class="sr-only" for="q">Search</label>
+        <input class="select" id="q" type="search" placeholder="Name or employee code" style="min-width:200px">
+        <button class="btn btn--ghost btn--sm" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+          Export CSV</button>
+      </div>
+    </div>
+
+    <div class="tablecard">
+      <div class="wtable__wrap">
+      <table class="wtable">
+        <caption class="sr-only">Employees system-wide with technical account fields</caption>
+        <thead>
+          <tr>
+            <th scope="col">Employee</th>
+            <th scope="col">Branch</th>
+            <th scope="col">Job role</th>
+            <th scope="col">Compliance</th>
+            <th scope="col">Account status</th>
+            <th scope="col">Last sign-in</th>
+            <th scope="col">Locale</th>
+            <th scope="col">Auth method</th>
+            <th scope="col">Device</th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="cell-user"><img src="../_shared/img/avatar-02.jpg" alt="">
+              <span><b>Do Van Thanh</b><small class="codecell">NEH-002914</small></span></div></td>
+            <td><span class="codecell">NEH-HAN</span></td>
+            <td>Forklift Operator</td>
+            <td><span class="cstat cstat--over">Overdue</span></td>
+            <td><span class="status status--success status--dot">Active</span></td>
+            <td class="text-sm text-muted">15 Jul 2026, 07:52</td>
+            <td><span class="langchip langchip--live">VI</span></td>
+            <td class="text-sm">Password</td>
+            <td class="text-sm">Android factory app</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="../04-site-training-manager/P030-employee-record.html">Record</a>
+              <a class="btn btn--ghost btn--sm" href="P056-switch-user.html">Impersonate</a></td>
+          </tr>
+          <tr>
+            <td><div class="cell-user"><img src="../_shared/img/avatar-06.jpg" alt="">
+              <span><b>Chen Wei</b><small class="codecell">NES-000112</small></span></div></td>
+            <td><span class="codecell">NES-SHA</span></td>
+            <td>Office Staff</td>
+            <td><span class="cstat cstat--ok">Compliant</span></td>
+            <td><span class="status status--success status--dot">Active</span></td>
+            <td class="text-sm text-muted">15 Jul 2026, 09:10</td>
+            <td><span class="langchip langchip--live">ZH</span></td>
+            <td class="text-sm">Password</td>
+            <td class="text-sm">Desktop web</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="../04-site-training-manager/P030-employee-record.html">Record</a>
+              <a class="btn btn--ghost btn--sm" href="P056-switch-user.html">Impersonate</a></td>
+          </tr>
+          <tr>
+            <td><div class="cell-user"><img src="../_shared/img/avatar-01.jpg" alt="">
+              <span><b>Nguyen Van Minh</b><small class="codecell">NEV-004821</small></span></div></td>
+            <td><span class="codecell">NEV-HCM</span></td>
+            <td>Production Operator</td>
+            <td><span class="cstat cstat--over">Overdue</span></td>
+            <td><span class="status status--success status--dot">Active</span></td>
+            <td class="text-sm text-muted">15 Jul 2026, 08:15</td>
+            <td><span class="langchip langchip--live">VI</span></td>
+            <td class="text-sm">Password</td>
+            <td class="text-sm">Android factory app</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="../04-site-training-manager/P030-employee-record.html">Record</a>
+              <a class="btn btn--ghost btn--sm" href="P056-switch-user.html">Impersonate</a></td>
+          </tr>
+          <tr>
+            <td><div class="cell-user"><img src="../_shared/img/avatar-09.jpg" alt="">
+              <span><b>Pham Thi Nga</b><small class="codecell">NEM-005522</small></span></div></td>
+            <td><span class="codecell">NEM-MTO</span></td>
+            <td>Warehouse Staff</td>
+            <td><span class="cstat cstat--none">Not started</span></td>
+            <td><span class="status status--muted status--dot">Never signed in</span></td>
+            <td class="text-sm text-muted">Not applicable</td>
+            <td><span class="langchip langchip--live">VI</span></td>
+            <td class="text-sm">Password (unused)</td>
+            <td class="text-sm text-muted">Not enrolled</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="../04-site-training-manager/P030-employee-record.html">Record</a>
+              <a class="btn btn--ghost btn--sm" href="P056-switch-user.html">Impersonate</a></td>
+          </tr>
+          <tr>
+            <td><div class="cell-user"><img src="../_shared/img/avatar-10.jpg" alt="">
+              <span><b>Tran Van Long</b><small class="codecell">NEV-002233</small></span></div></td>
+            <td><span class="codecell">NEV-HCM</span></td>
+            <td>Maintenance Technician</td>
+            <td><span class="cstat cstat--due">Due soon</span></td>
+            <td><span class="status status--error status--dot">Locked &middot; 5 failed attempts</span></td>
+            <td class="text-sm text-muted">02 Jun 2026</td>
+            <td><span class="langchip langchip--live">VI</span></td>
+            <td class="text-sm">Password</td>
+            <td class="text-sm">Android factory app</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="../04-site-training-manager/P030-employee-record.html">Record</a>
+              <a class="btn btn--brand btn--sm" href="#">Unlock</a></td>
+          </tr>
+          <tr>
+            <td><div class="cell-user"><img src="../_shared/img/avatar-03.jpg" alt="">
+              <span><b>Wu Fang</b><small class="codecell">NES-000108</small></span></div></td>
+            <td><span class="codecell">NES-SZN</span></td>
+            <td>Office Staff</td>
+            <td><span class="cstat cstat--ok">Compliant</span></td>
+            <td><span class="status status--success status--dot">Active</span></td>
+            <td class="text-sm text-muted">14 Jul 2026, 17:20</td>
+            <td><span class="langchip langchip--live">ZH</span></td>
+            <td class="text-sm">SSO pending<sup>*</sup></td>
+            <td class="text-sm">Desktop web</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="../04-site-training-manager/P030-employee-record.html">Record</a>
+              <a class="btn btn--ghost btn--sm" href="P056-switch-user.html">Impersonate</a></td>
+          </tr>
+          <tr>
+            <td><div class="cell-user"><img src="../_shared/img/avatar-07.jpg" alt="">
+              <span><b>Le Quoc Bao</b><small class="codecell">NEH-000377</small></span></div></td>
+            <td><span class="codecell">NEH-HAN</span></td>
+            <td>Training Manager</td>
+            <td><span class="cstat cstat--ok">Compliant</span></td>
+            <td><span class="status status--success status--dot">Active</span></td>
+            <td class="text-sm text-muted">15 Jul 2026, 08:40</td>
+            <td><span class="langchip langchip--live">VI</span></td>
+            <td class="text-sm">Password</td>
+            <td class="text-sm">Desktop web</td>
+            <td class="rowbtns"><a class="btn btn--ghost btn--sm" href="../04-site-training-manager/P030-employee-record.html">Record</a>
+              <a class="btn btn--ghost btn--sm" href="P056-switch-user.html">Impersonate</a></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="hint" style="padding:0 1.2rem 1rem">* SSO pending marks an account flagged to migrate once
+        Active Directory is connected (see <a href="P054-integrations.html">Integrations</a>). SSO is not
+        connected today. This account still signs in with a password like everyone else.</p>
+      <div class="toolbar" style="border-top:1px solid var(--line);border-bottom:0;display:flex;
+        align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+        <span class="text-sm text-muted">Showing 1-7 of <span class="num">5,842</span></span>
+        <nav class="pager" aria-label="Pagination">
+          <a href="#" aria-current="page">1</a><a href="#">2</a><a href="#">3</a>
+          <span>&hellip;</span><a href="#">835</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="annot"><b>What this variant adds</b>This is the Nissei Administrator (<code>org_admin</code>)
+      view of Employees: same people, same compliance data as the other two builds of this page, but with
+      the columns only an account administrator needs: account status (active, locked, never signed in),
+      last sign-in, locale, authentication method and enrolled device. Compare with
+      site-training-manager/P029-employees.html, which locks the branch and shows none of these columns,
+      and hr-hse-central/P029-employees.html, which adds the branch switcher and a Branch column but no
+      account-technical fields and no impersonate action. Only this build carries the Impersonate row
+      action into <a href="P056-switch-user.html">Switch user</a>. The Platform Administrator has no
+      Employees view at all: accounts are Nissei's data, not the platform's.</div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

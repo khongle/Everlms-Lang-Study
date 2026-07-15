@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data retention &amp; privacy · Nissei Training</title>
+<meta name="description" content="Retention periods, personal data held, Vietnamese and Chinese data rules, and export/erasure requests.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="org_admin" data-active="P058"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P050-admin-overview.html">Admin</a> <span aria-hidden="true">/</span> <span>Data retention &amp; privacy</span>
+    </nav>
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Data retention &amp; privacy</h1>
+        <p class="lede">How long training data is kept, what personal data the system holds, the Vietnamese
+          and Chinese rules that apply, and how export or erasure requests are handled.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <!-- retention periods -->
+    <h2 style="font-size:var(--text-lg);margin:0 0 1rem">Retention periods</h2>
+    <div class="tablecard">
+      <div class="wtable__wrap">
+        <table class="wtable">
+          <caption class="sr-only">Retention period by data category</caption>
+          <thead>
+            <tr><th scope="col">Data category</th><th scope="col">Retention period</th>
+              <th scope="col">Basis</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Statutory safety training records</b>
+                <div class="text-sm text-muted">SAF/FIR courses mapped to Decree 44/2016 groups</div></td>
+              <td class="text-sm">10 years after course completion</td>
+              <td class="text-sm">Vietnam labour inspection record-keeping practice</td>
+            </tr>
+            <tr>
+              <td><b>Other course records</b>
+                <div class="text-sm text-muted">QMS, ENV, OFF, CMP, CYB: non-statutory courses</div></td>
+              <td class="text-sm">5 years after course completion</td>
+              <td class="text-sm">Internal compliance policy</td>
+            </tr>
+            <tr>
+              <td><b>Certificates</b></td>
+              <td class="text-sm">Retained until superseded, plus the record retention above</td>
+              <td class="text-sm">Verification continuity (P003 public lookup)</td>
+            </tr>
+            <tr>
+              <td><b>Personal profile data</b>
+                <div class="text-sm text-muted">Name, contact, job role, branch</div></td>
+              <td class="text-sm">Duration of employment, plus statutory record period</td>
+              <td class="text-sm">Employment record requirement</td>
+            </tr>
+            <tr>
+              <td><b>Audit log</b></td>
+              <td class="text-sm">Indefinite, never deleted</td>
+              <td class="text-sm">Immutability by design, see <a href="P055-audit-log.html">audit log</a></td>
+            </tr>
+            <tr>
+              <td><b>Import source files</b>
+                <div class="text-sm text-muted">Uploaded CSV batches</div></td>
+              <td class="text-sm">1 year after import</td>
+              <td class="text-sm">Troubleshooting window</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- personal data fields -->
+    <h2 style="font-size:var(--text-lg);margin:2rem 0 1rem">Personal data fields held</h2>
+    <div class="card">
+      <ul class="icon-list" style="grid-template-columns:1fr 1fr;display:grid;gap:.9rem">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <span>Full name, employee code, photo</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span>Date of birth, employment start date</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg>
+          <span>Job role, branch, site history</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+          <span>Phone or contact detail on file</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>Training history, quiz scores, attendance</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round"><path d="M12 2 4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z"/></svg>
+          <span>Certificate records and validity dates</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+          <span>Device enrollment (mobile app installs)</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span>Sign-in activity and account status</span></li>
+      </ul>
+    </div>
+
+    <!-- VN and CN rules -->
+    <h2 style="font-size:var(--text-lg);margin:2rem 0 1rem">Cross-border and local data rules</h2>
+    <div class="grid grid--2">
+      <div class="card">
+        <h3 style="font-size:var(--text-md);margin:0 0 .4rem">Vietnam &middot; NEV-HCM, NEH-HAN, NEM-MTO</h3>
+        <p class="text-sm text-muted" style="margin:0 0 .8rem">5,800 employees</p>
+        <p class="text-sm" style="margin:0">Personal data collected from Vietnamese staff for training
+          compliance is processed under Decree 13/2023 on personal data protection: purpose limitation to
+          training and safety compliance, data subject notice, and the retention periods above. Data for
+          these three branches stays in the ap-southeast (Vietnam) data region set at
+          <a href="P052-branch-configuration.html">Branch configuration</a>.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-size:var(--text-md);margin:0 0 .4rem">China &middot; NES-SHA, NES-SZN</h3>
+        <p class="text-sm text-muted" style="margin:0 0 .8rem">42 employees</p>
+        <p class="text-sm" style="margin:0">Training records for the Shanghai and Shenzhen trading offices
+          are treated as HR-management personal information, which PIPL exempts from a separate
+          cross-border consent for each individual transfer when the purpose is legally required human
+          resource management such as occupational training records. Onward transfer and security
+          assessment obligations still apply if data volume or sensitivity thresholds are crossed.</p>
+      </div>
+    </div>
+
+    <!-- tension -->
+    <div class="alert alert--warning" style="margin-top:1.4rem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/>
+        <path d="M12 9v4M12 17h.01"/></svg>
+      <div><b>Right to erasure versus the duty to keep evidence.</b> An employee&rsquo;s request to erase
+        their personal data can conflict directly with the statutory duty to retain occupational safety
+        training evidence for the periods above. This system does not auto-delete training or certificate
+        records on request. An erasure request is logged and routed for legal review; only fields outside
+        the statutory record (such as a contact phone number) can be removed without that review.</div>
+    </div>
+
+    <!-- export/delete requests -->
+    <h2 style="font-size:var(--text-lg);margin:2rem 0 1rem">Export &amp; erasure requests</h2>
+    <div class="tablecard">
+      <div class="wtable__wrap">
+        <table class="wtable">
+          <caption class="sr-only">Recent data export and erasure requests</caption>
+          <thead>
+            <tr><th scope="col">Requester</th><th scope="col">Type</th><th scope="col">Branch</th>
+              <th scope="col">Submitted</th><th scope="col">Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="cell-user"><img src="../_shared/img/avatar-08.jpg" alt="">
+                <span><b>Pham Van Duc</b><small class="codecell">NEH-001885</small></span></div></td>
+              <td><span class="badge badge--info">Export</span></td>
+              <td>NEH-HAN</td>
+              <td class="text-sm text-muted">08 Jul 2026</td>
+              <td><span class="cstat cstat--ok">Fulfilled</span></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><img src="../_shared/img/avatar-06.jpg" alt="">
+                <span><b>Chen Wei</b><small class="codecell">NES-000112</small></span></div></td>
+              <td><span class="badge badge--warning">Erasure</span></td>
+              <td>NES-SHA</td>
+              <td class="text-sm text-muted">10 Jul 2026</td>
+              <td><span class="cstat cstat--prog">Under legal review</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="annot"><b>Not a legal determination</b>The retention periods, PIPL exemption framing and
+      Decree 13/2023 application described on this page are the system&rsquo;s configuration and behaviour,
+      not a legal opinion. Confirming that this framework satisfies Vietnamese and Chinese law is the
+      customer&rsquo;s counsel&rsquo;s job; the system enforces whatever periods and rules counsel confirms,
+      it does not decide them.</div>
+
+    <div class="annot"><b>Policy versus enforcement</b>The retention periods above are Nissei's legal call,
+      set and owned by Nissei Administrator on this page. Actually deleting an import file after a year or
+      purging a superseded record on schedule runs as a background job on the platform side; see
+      <a href="../08-administrator/P057-system-health.html">System health</a> (platform-owned). Nissei
+      decides how long; the platform is what actually enforces it on time, every time.</div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

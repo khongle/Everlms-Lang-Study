@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site structure · Nissei Training</title>
+<meta name="description" content="Entity types, fields, views, menus and themes that make up the product core. Read-only here; structure changes ship as a release.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="administrator" data-active="P061"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P060-platform-overview.html">Platform</a> <span aria-hidden="true">/</span> <span>Site structure</span>
+    </nav>
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Site structure</h1>
+        <p class="lede">What the product core is built from: entity types, fields, views, menus and themes.
+          Read-only here. Structure changes ship as a release, see
+          <a href="P062-modules-updates.html">Modules and updates</a>, and are validated in staging before
+          they reach production.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="roband">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>There is no add, edit or delete control anywhere on this page, for any row, for any role,
+        including Platform Administrator. This page is also completely absent from the Nissei Administrator
+        surface: it is not a permission that could be granted, it is a page that does not exist in that
+        role&rsquo;s menu at all. Structure is never hand-edited in production; see the alert below.</span>
+    </div>
+
+    <div class="alert alert--warning">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><b>Hand-editing structure in production is what causes drift.</b> Adding a field, changing a
+        view or renaming a menu link directly on this environment, outside a packaged release, is exactly
+        the failure mode <a href="P063-config-sync.html">Configuration sync</a> exists to catch. It has
+        happened once already, from a break-glass session on 09 Jul 2026: see that page for the item
+        still pending reconciliation.</div>
+    </div>
+
+    <!-- summary KPIs -->
+    <div class="kpis" style="margin-top:1.6rem">
+      <div class="kpi">
+        <span class="kpi__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M3 9h18M3 15h18M9 3v18"/></svg></span>
+        <div><div class="stat__n num">27</div><div class="stat__l">Content entity types</div>
+          <div class="kpi__sub">24 active &middot; 6 not installed here</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/>
+          <path d="M12 1v6m0 10v6M4.2 4.2l4.2 4.2m7.2 7.2 4.2 4.2M1 12h6m10 0h6M4.2 19.8l4.2-4.2m7.2-7.2 4.2-4.2"/></svg></span>
+        <div><div class="stat__n num">318</div><div class="stat__l">Fields defined</div>
+          <div class="kpi__sub">All CORE &middot; product-owned</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>
+        <div><div class="stat__n num">46</div><div class="stat__l">Views</div>
+          <div class="kpi__sub">Logic CORE &middot; some display settings DELTA</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic" style="background:var(--paper-3)"><svg viewBox="0 0 24 24" fill="none"
+          stroke="var(--ink-soft)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5h11M9 3v2M7 5c0 4.5 3 8 7 9M11 8c0 3 3 6.5 7 8"/><path d="m17 12 4 9M21 21l-4-9"/></svg></span>
+        <div><div class="stat__n num">3</div><div class="stat__l">Menus</div>
+          <div class="kpi__sub">Structure CORE &middot; labels DELTA</div></div>
+      </div>
+    </div>
+
+    <!-- entity types -->
+    <h2 style="font-size:var(--text-lg);margin:2.2rem 0 .3rem">Entity types</h2>
+    <p class="text-sm text-muted" style="margin:0 0 1rem">A representative sample of the 27 content entity
+      types the product core ships. The entity <i>type</i> and its fields are always CORE; the
+      <i>records</i> in it (a course, a branch, a compliance rule) are DATA, owned and edited by a business
+      role elsewhere in this system.</p>
+    <div class="tablecard">
+      <div class="wtable__wrap">
+        <table class="wtable">
+          <caption class="sr-only">Sample of content entity types: owning module, ownership and where the data is edited</caption>
+          <thead>
+            <tr><th scope="col">Entity type</th><th scope="col">Module</th><th scope="col">Ownership</th>
+              <th scope="col">Records edited at</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Course</b><div class="text-sm text-muted">course</div></td>
+              <td class="codecell">lms_course</td>
+              <td><span class="badge" style="background:var(--paper-3);color:var(--ink-soft)">CORE &middot; locked</span></td>
+              <td class="text-sm"><a href="../05-hr-hse-central/P038-master-catalog.html">Master catalog</a> &middot; 13 courses</td>
+            </tr>
+            <tr>
+              <td><b>Chapter</b> / <b>Lesson</b><div class="text-sm text-muted">chapter, lesson</div></td>
+              <td class="codecell">lms_chapter, lms_lesson</td>
+              <td><span class="badge" style="background:var(--paper-3);color:var(--ink-soft)">CORE &middot; locked</span></td>
+              <td class="text-sm"><a href="../03-instructor/P025-course-editor.html">Course editor</a> (instructor, own courses)</td>
+            </tr>
+            <tr>
+              <td><b>Quiz</b> / <b>Question</b> / <b>Answer</b><div class="text-sm text-muted">quiz, question, matching_pair</div></td>
+              <td class="codecell">lms_quiz, lms_question</td>
+              <td><span class="badge" style="background:var(--paper-3);color:var(--ink-soft)">CORE &middot; locked</span></td>
+              <td class="text-sm"><a href="../03-instructor/P026-quiz-builder.html">Quiz builder</a> (instructor, own quizzes)</td>
+            </tr>
+            <tr>
+              <td><b>Certificate template</b> / <b>User certificate</b><div class="text-sm text-muted">certificate_template, user_certificate</div></td>
+              <td class="codecell">lms_certificate</td>
+              <td><span class="badge" style="background:var(--paper-3);color:var(--ink-soft)">CORE &middot; locked</span></td>
+              <td class="text-sm"><a href="../05-hr-hse-central/P043-certificate-templates.html">Certificate templates</a> (bilingual content is DELTA)</td>
+            </tr>
+            <tr style="background:var(--brand-soft)">
+              <td><b>Organization (branch)</b><div class="text-sm text-muted">organization &middot; new for this product line</div></td>
+              <td class="codecell">lms_organization</td>
+              <td><span class="badge badge--info">CORE &middot; locked</span></td>
+              <td class="text-sm"><a href="../05-hr-hse-central/P040-branches.html">Branches</a> &middot; 5 branch records (DATA)</td>
+            </tr>
+            <tr style="background:var(--brand-soft)">
+              <td><b>Compliance rule</b><div class="text-sm text-muted">compliance_rule &middot; new for this product line</div></td>
+              <td class="codecell">lms_compliance</td>
+              <td><span class="badge badge--info">CORE &middot; locked</span></td>
+              <td class="text-sm"><a href="../05-hr-hse-central/P036-training-matrix.html">Training matrix</a> &middot; 79 rules (DATA)</td>
+            </tr>
+            <tr>
+              <td><b>Notification</b><div class="text-sm text-muted">notification</div></td>
+              <td class="codecell">lms_notification</td>
+              <td><span class="badge" style="background:var(--paper-3);color:var(--ink-soft)">CORE &middot; locked</span></td>
+              <td class="text-sm"><a href="../05-hr-hse-central/P044-reminder-rules.html">Reminder rules</a> (rule data, not structure)</td>
+            </tr>
+            <tr style="opacity:.6">
+              <td><b>Order</b> / <b>Order item</b> / <b>Membership plan</b> / <b>Wishlist</b>
+                <div class="text-sm text-muted">commerce entities inherited from the base platform</div></td>
+              <td class="codecell">lms_order, lms_payment, lms_membership, lms_wishlist</td>
+              <td><span class="badge" style="background:var(--paper-3);color:var(--muted)">Not installed</span></td>
+              <td class="text-sm text-muted">This system is internal, login-only; no commerce</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="hint">+ 20 more entity types (badge, rating, note, forum topic/reply, FAQ, blog article and the
+      progress/result join entities), all CORE, listed in full in the release manifest for v3.4.0.</p>
+
+    <!-- fields -->
+    <h2 style="font-size:var(--text-lg);margin:2.2rem 0 .3rem">Fields on Course and Organization</h2>
+    <p class="text-sm text-muted" style="margin:0 0 1rem">Two entity types, to show what a field definition
+      looks like. Every field here is CORE; its type, machine name and validation ship in a release and
+      cannot be added or renamed from this environment.</p>
+    <div class="grid grid--2">
+      <div class="tablecard">
+        <div class="wtable__wrap">
+          <table class="wtable">
+            <caption class="sr-only">Fields on the Course entity type</caption>
+            <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col"></th></tr></thead>
+            <tbody>
+              <tr><td class="codecell">field_course_code</td><td class="text-sm text-muted">string</td>
+                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" width="14" height="14" style="color:var(--muted)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></td></tr>
+              <tr><td class="codecell">field_nd44_group</td><td class="text-sm text-muted">list (Group 3, Group 4, none)</td>
+                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" width="14" height="14" style="color:var(--muted)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></td></tr>
+              <tr><td class="codecell">field_retrain_cycle_months</td><td class="text-sm text-muted">integer</td>
+                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" width="14" height="14" style="color:var(--muted)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></td></tr>
+              <tr><td class="codecell">field_pass_mark</td><td class="text-sm text-muted">integer (percent)</td>
+                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" width="14" height="14" style="color:var(--muted)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tablecard">
+        <div class="wtable__wrap">
+          <table class="wtable">
+            <caption class="sr-only">Fields on the Organization (branch) entity type</caption>
+            <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col"></th></tr></thead>
+            <tbody>
+              <tr><td class="codecell">field_branch_code</td><td class="text-sm text-muted">string (e.g. NEV-HCM)</td>
+                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" width="14" height="14" style="color:var(--muted)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></td></tr>
+              <tr><td class="codecell">field_country</td><td class="text-sm text-muted">list (VN, CN)</td>
+                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" width="14" height="14" style="color:var(--muted)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></td></tr>
+              <tr><td class="codecell">field_timezone</td><td class="text-sm text-muted">string (e.g. GMT+7)</td>
+                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" width="14" height="14" style="color:var(--muted)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></td></tr>
+              <tr><td class="codecell">field_default_locale</td><td class="text-sm text-muted">list (vi, zh)</td>
+                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" width="14" height="14" style="color:var(--muted)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <p class="hint">The <span class="codecell">field_branch_code</span> definition (that a branch has a code,
+      a country, a timezone) is CORE. That NEV-HCM is one, with value GMT+7, is DATA, typed in at
+      <a href="../05-hr-hse-central/P040-branches.html">Branches</a>, not shipped in a release.</p>
+
+    <!-- views + menus + themes -->
+    <div class="grid grid--2" style="margin-top:2.2rem;align-items:start">
+
+      <div class="card">
+        <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Views</h3>
+        <p class="text-sm text-muted" style="margin:0 0 .9rem">The query, the filters and the sort logic are
+          CORE. A display&rsquo;s exposed-filter defaults can be part of the customer delta.</p>
+        <table class="dtable">
+          <tbody>
+            <tr><td>Training matrix</td><td><span class="badge" style="background:var(--paper-3);color:var(--ink-soft)">CORE</span></td></tr>
+            <tr><td>Employee directory</td><td><span class="badge" style="background:var(--paper-3);color:var(--ink-soft)">CORE</span></td></tr>
+            <tr><td>Overdue worklist</td><td><span class="badge" style="background:var(--paper-3);color:var(--ink-soft)">CORE</span></td></tr>
+            <tr><td>Employee directory &middot; default branch filter</td><td><span class="badge badge--info">DELTA</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Menus</h3>
+        <p class="text-sm text-muted" style="margin:0 0 .9rem">The menu structure and which routes exist per
+          role are CORE. Link labels shown to Nissei staff are DELTA.</p>
+        <table class="dtable">
+          <tbody>
+            <tr><td>Manage navigation (per-role sections)</td><td><span class="badge" style="background:var(--paper-3);color:var(--ink-soft)">CORE</span></td></tr>
+            <tr><td>Account mega menu</td><td><span class="badge" style="background:var(--paper-3);color:var(--ink-soft)">CORE</span></td></tr>
+            <tr><td>Section label &ldquo;HR/HSE Central&rdquo;</td><td><span class="badge badge--info">DELTA</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top:1.6rem">
+      <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Themes</h3>
+      <div class="grid grid--2" style="margin-top:.8rem">
+        <div>
+          <p class="text-sm" style="margin:0 0 .3rem"><b class="codecell">lms_base</b>
+            <span class="badge" style="background:var(--paper-3);color:var(--ink-soft);margin-left:.4rem">CORE</span></p>
+          <p class="text-sm text-muted" style="margin:0">Base theme and shared component library
+            (<span class="codecell">base.css</span>): layout, buttons, tables, the whole design-token scale.
+            Identical for every customer.</p>
+        </div>
+        <div>
+          <p class="text-sm" style="margin:0 0 .3rem"><b>Nissei re-theme</b>
+            <span class="badge badge--info" style="margin-left:.4rem">DELTA</span></p>
+          <p class="text-sm text-muted" style="margin:0">Brand colour, logo and status-colour mapping
+            (<span class="codecell">nissei.css</span>): this customer&rsquo;s palette layered on top,
+            never modifying the base file it loads after.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="annot"><b>Why this fence exists</b> The product is delivered as three layers: CORE
+      (this page), DELTA (Nissei&rsquo;s configuration, edited at
+      <a href="../07-nissei-admin/P052-branch-configuration.html">Branch configuration</a>,
+      <a href="../07-nissei-admin/P053-language-localization.html">Language</a> and similar surfaces), and
+      DATA (their employees, courses and training matrix entries, edited by business roles). If Nissei could
+      edit entity types, fields, views or menus directly, their deployment would drift away from the product
+      core and could no longer take upgrades. That has already happened once on a comparable deployment.
+      Structure changes ship as a release instead, see <a href="P062-modules-updates.html">Modules and
+      updates</a>, so the same core keeps serving Nissei and can serve the next customer unchanged.</div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

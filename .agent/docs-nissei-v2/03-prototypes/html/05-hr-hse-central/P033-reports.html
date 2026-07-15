@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports · Nissei Training</title>
+<meta name="description" content="Compliance reports across all branches, consolidated, with export and scheduling.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="hr-hse-central" data-active="P033"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P035-central-dashboard.html">Central</a> <span aria-hidden="true">/</span> <span>Reports</span>
+    </nav>
+
+    <div class="branchbar">
+      <span class="branchbar__lb">Branch</span>
+      <button class="branchbar__sel" type="button" aria-haspopup="listbox">
+        All branches (5) &middot; consolidated
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <span class="branchbar__scope">5,842 employees &middot; 87.4% compliant</span>
+    </div>
+
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Reports</h1>
+        <p class="lede">Compliance across every branch, consolidated for HQ and management reporting.</p>
+      </div>
+      <div class="pagehead__actions">
+        <button class="btn btn--ghost" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+          Export CSV
+        </button>
+        <button class="btn btn--brand" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Schedule report
+        </button>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="kpis">
+      <div class="kpi"><div><div class="stat__n num">5,842</div><div class="stat__l">Employees</div></div></div>
+      <div class="kpi"><div><div class="stat__n num">87.4%</div><div class="stat__l">Global compliance</div></div></div>
+      <div class="kpi"><div><div class="stat__n num" style="color:var(--error)">312</div><div class="stat__l">Overdue</div></div></div>
+      <div class="kpi"><div><div class="stat__n num">41,200</div><div class="stat__l">Training hours YTD</div></div></div>
+    </div>
+
+    <div class="tabs" data-tabs="reports" role="tablist" style="margin-top:2.2rem">
+      <button class="is-active" data-tab="branch" role="tab" aria-selected="true">By branch</button>
+      <button data-tab="jobrole" role="tab" aria-selected="false">By job role</button>
+      <button data-tab="course" role="tab" aria-selected="false">By course</button>
+      <button data-tab="month" role="tab" aria-selected="false">By month</button>
+    </div>
+
+    <div class="tabpane is-active" data-pane="branch">
+      <div class="grid grid--2" style="align-items:start">
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 1rem">Compliance by branch</h3>
+          <div class="stack-sm">
+            <div class="covrow">
+              <span class="covrow__l">NEV-HCM<small>Vietnam &middot; factory &middot; 3,000 employees</small></span>
+              <div class="covbar"><i style="width:89.1%"></i></div>
+              <span class="covrow__v">89.1%</span>
+            </div>
+            <div class="covrow">
+              <span class="covrow__l">NEH-HAN<small>Vietnam &middot; factory &middot; 2,000 employees</small></span>
+              <div class="covbar covbar--warn"><i style="width:86.2%"></i></div>
+              <span class="covrow__v">86.2%</span>
+            </div>
+            <div class="covrow">
+              <span class="covrow__l">NEM-MTO<small>Vietnam &middot; factory &middot; 800 employees</small></span>
+              <div class="covbar covbar--warn"><i style="width:82.7%"></i></div>
+              <span class="covrow__v">82.7%</span>
+            </div>
+            <div class="covrow">
+              <span class="covrow__l">NES-SHA<small>China &middot; trading office &middot; 24 employees</small></span>
+              <div class="covbar"><i style="width:95.8%"></i></div>
+              <span class="covrow__v">95.8%</span>
+            </div>
+            <div class="covrow">
+              <span class="covrow__l">NES-SZN<small>China &middot; trading office &middot; 18 employees</small></span>
+              <div class="covbar"><i style="width:94.4%"></i></div>
+              <span class="covrow__v">94.4%</span>
+            </div>
+            <div class="covrow" style="border-top:2px solid var(--line);margin-top:.4rem;padding-top:.8rem">
+              <span class="covrow__l"><b>Global (all 5 branches)</b></span>
+              <div class="covbar"><i style="width:87.4%"></i></div>
+              <span class="covrow__v"><b>87.4%</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="chartcard">
+          <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Branch compliance rate</h3>
+          <p class="text-sm text-muted" style="margin:0 0 1rem">Vietnam factories trail the two China trading
+            offices, consistent with a younger, larger, higher-turnover workforce.</p>
+          <div class="barchart">
+            <div class="bar" style="height:89.1%"><span>89.1%</span><small>NEV-HCM</small></div>
+            <div class="bar" style="height:86.2%"><span>86.2%</span><small>NEH-HAN</small></div>
+            <div class="bar" style="height:82.7%"><span>82.7%</span><small>NEM-MTO</small></div>
+            <div class="bar" style="height:95.8%"><span>95.8%</span><small>NES-SHA</small></div>
+            <div class="bar" style="height:94.4%"><span>94.4%</span><small>NES-SZN</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabpane" data-pane="jobrole">
+      <div class="card">
+        <h3 style="font-size:var(--text-md);margin:0 0 1rem">Compliance by job role</h3>
+        <div class="stack-sm">
+          <div class="covrow"><span class="covrow__l">HSE Officer</span><div class="covbar"><i style="width:99.1%"></i></div><span class="covrow__v">99.1%</span></div>
+          <div class="covrow"><span class="covrow__l">Office Staff</span><div class="covbar"><i style="width:96.5%"></i></div><span class="covrow__v">96.5%</span></div>
+          <div class="covrow"><span class="covrow__l">QA Inspector</span><div class="covbar"><i style="width:94.8%"></i></div><span class="covrow__v">94.8%</span></div>
+          <div class="covrow"><span class="covrow__l">Supervisor</span><div class="covbar"><i style="width:92.0%"></i></div><span class="covrow__v">92.0%</span></div>
+          <div class="covrow"><span class="covrow__l">Electrical Technician</span><div class="covbar"><i style="width:93.1%"></i></div><span class="covrow__v">93.1%</span></div>
+          <div class="covrow"><span class="covrow__l">Maintenance Technician</span><div class="covbar covbar--warn"><i style="width:89.6%"></i></div><span class="covrow__v">89.6%</span></div>
+          <div class="covrow"><span class="covrow__l">Forklift Operator</span><div class="covbar covbar--warn"><i style="width:88.7%"></i></div><span class="covrow__v">88.7%</span></div>
+          <div class="covrow"><span class="covrow__l">Line Leader</span><div class="covbar covbar--warn"><i style="width:91.3%"></i></div><span class="covrow__v">91.3%</span></div>
+          <div class="covrow"><span class="covrow__l">Production Operator</span><div class="covbar covbar--bad"><i style="width:85.2%"></i></div><span class="covrow__v">85.2%</span></div>
+          <div class="covrow"><span class="covrow__l">Warehouse Staff</span><div class="covbar covbar--bad"><i style="width:82.4%"></i></div><span class="covrow__v">82.4%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabpane" data-pane="course">
+      <div class="card">
+        <h3 style="font-size:var(--text-md);margin:0 0 1rem">Compliance by course</h3>
+        <div class="stack-sm">
+          <div class="covrow"><span class="covrow__l">OFF-101 Office Safety &amp; Ergonomics</span><div class="covbar"><i style="width:98.1%"></i></div><span class="covrow__v">98.1%</span></div>
+          <div class="covrow"><span class="covrow__l">ENV-201 ISO 14001 Awareness</span><div class="covbar"><i style="width:96.2%"></i></div><span class="covrow__v">96.2%</span></div>
+          <div class="covrow"><span class="covrow__l">CMP-101 Compliance &amp; Code of Conduct</span><div class="covbar"><i style="width:96.9%"></i></div><span class="covrow__v">96.9%</span></div>
+          <div class="covrow"><span class="covrow__l">CYB-101 Cybersecurity Awareness</span><div class="covbar"><i style="width:97.4%"></i></div><span class="covrow__v">97.4%</span></div>
+          <div class="covrow"><span class="covrow__l">QMS-201 ISO 9001 Awareness</span><div class="covbar"><i style="width:95.8%"></i></div><span class="covrow__v">95.8%</span></div>
+          <div class="covrow"><span class="covrow__l">SAF-104 Safe Machine Operation</span><div class="covbar"><i style="width:94.7%"></i></div><span class="covrow__v">94.7%</span></div>
+          <div class="covrow"><span class="covrow__l">SAF-107 Chemical Handling &amp; MSDS</span><div class="covbar"><i style="width:93.5%"></i></div><span class="covrow__v">93.5%</span></div>
+          <div class="covrow"><span class="covrow__l">SAF-102 Working at Height</span><div class="covbar covbar--warn"><i style="width:92.3%"></i></div><span class="covrow__v">92.3%</span></div>
+          <div class="covrow"><span class="covrow__l">SAF-105 First Aid &amp; Emergency Response</span><div class="covbar covbar--warn"><i style="width:88.6%"></i></div><span class="covrow__v">88.6%</span></div>
+          <div class="covrow"><span class="covrow__l">SAF-103 Electrical Safety on Site</span><div class="covbar covbar--warn"><i style="width:87.9%"></i></div><span class="covrow__v">87.9%</span></div>
+          <div class="covrow"><span class="covrow__l">FIR-101 Fire Prevention &amp; Evacuation</span><div class="covbar covbar--bad"><i style="width:85.0%"></i></div><span class="covrow__v">85.0%</span></div>
+          <div class="covrow"><span class="covrow__l">SAF-106 Forklift Operation</span><div class="covbar covbar--bad"><i style="width:84.1%"></i></div><span class="covrow__v">84.1%</span></div>
+          <div class="covrow"><span class="covrow__l">SAF-101 General Occupational Safety</span><div class="covbar covbar--bad"><i style="width:79.4%"></i></div><span class="covrow__v">79.4%</span></div>
+        </div>
+        <p class="text-sm text-muted" style="margin:1rem 0 0">SAF-101, the highest-volume mandatory course
+          (required for almost every job role), is also the lowest-scoring, consistent with it ranking
+          first on the overdue worklist (P032).</p>
+      </div>
+    </div>
+
+    <div class="tabpane" data-pane="month">
+      <div class="chartcard">
+        <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Global compliance rate, last 7 months</h3>
+        <p class="text-sm text-muted" style="margin:0 0 1rem">Steady improvement since the training matrix and
+          reminder rules went live in January 2026.</p>
+        <div class="barchart">
+          <div class="bar" style="height:83.1%"><span>83.1%</span><small>Jan</small></div>
+          <div class="bar" style="height:83.9%"><span>83.9%</span><small>Feb</small></div>
+          <div class="bar" style="height:84.6%"><span>84.6%</span><small>Mar</small></div>
+          <div class="bar" style="height:85.3%"><span>85.3%</span><small>Apr</small></div>
+          <div class="bar" style="height:86.0%"><span>86.0%</span><small>May</small></div>
+          <div class="bar" style="height:86.8%"><span>86.8%</span><small>Jun</small></div>
+          <div class="bar" style="height:87.4%"><span>87.4%</span><small>Jul</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card--soft" style="margin-top:2.2rem">
+      <h3 style="font-size:var(--text-md);margin:0 0 .8rem">Scheduled reports</h3>
+      <div class="switchrow">
+        <span><b class="text-sm">Weekly consolidated summary</b>
+          <small class="hint" style="display:block">Every Monday, 07:00 ICT &middot; emailed to HR/HSE Central
+            and hq-viewer &middot; PDF + CSV attached</small></span>
+        <button class="swtoggle is-on" type="button" role="switch" aria-checked="true"
+          aria-label="Weekly consolidated summary"></button>
+      </div>
+      <div class="switchrow">
+        <span><b class="text-sm">Monthly branch comparison</b>
+          <small class="hint" style="display:block">First working day of the month &middot; emailed to Hamamatsu HQ</small></span>
+        <button class="swtoggle is-on" type="button" role="switch" aria-checked="true"
+          aria-label="Monthly branch comparison"></button>
+      </div>
+    </div>
+
+    <div class="annot"><b>Variant differences</b>The site training manager&rsquo;s version of this page
+      (site-training-manager/P033) shows one branch only and has no export or scheduling control. The
+      hq-viewer version (hq-viewer/P033, a separate file for that role) keeps the consolidated view but is
+      read-only: no Export CSV, no Schedule report, because HQ reads reports through the periodic exports
+      configured at P049 rather than pulling them manually.</div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

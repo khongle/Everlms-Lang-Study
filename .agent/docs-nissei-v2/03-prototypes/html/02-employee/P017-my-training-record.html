@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My training record · Nissei Training</title>
+<meta name="description" content="Your complete training history across every branch you have worked at, including records imported from before the system existed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="employee" data-active="P017"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>My training record</h1>
+        <p class="lede">Every course you have completed, at any branch, in one place, including the
+          years before Nissei ran this system. <span class="codecell">NEV-004821</span> &middot; Nguyen Van Minh</p>
+      </div>
+      <div class="pagehead__actions">
+        <button class="btn btn--ghost" type="button" onclick="window.print()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print / export record
+        </button>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="kpis">
+      <div class="kpi">
+        <span class="kpi__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        <div><div class="stat__n num">10</div><div class="stat__l">Training records</div>
+          <div class="kpi__sub">Since 2019</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <div><div class="stat__n num">2</div><div class="stat__l">Branches</div>
+          <div class="kpi__sub">NEH-HAN, then NEV-HCM</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 21h14"/></svg></span>
+        <div><div class="stat__n num">2</div><div class="stat__l">Imported records</div>
+          <div class="kpi__sub">From pre-system Excel</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <div><div class="stat__n num">4</div><div class="stat__l">Certificates currently valid</div>
+          <div class="kpi__sub">See My certificates</div></div>
+      </div>
+    </div>
+
+    <div class="annot"><b>Prototype note</b>This record is anchored on the group employee code
+      <span class="codecell">NEV-004821</span>, not on an email address or phone number. Factory
+      staff do not have a company email, and phone numbers change. Every completion, quiz result and
+      certificate is written against that code, which is why the rows below follow Minh from NEH-HAN
+      to NEV-HCM without being re-created. A branch transfer only updates which branch is <em>current</em>;
+      it never re-parents which records belong to him.</div>
+
+    <div data-tabs style="margin-top:2rem">
+      <div class="tabs" role="tablist">
+        <button type="button" data-tab="table" class="is-active" role="tab" aria-selected="true">Full history</button>
+        <button type="button" data-tab="timeline" role="tab" aria-selected="false">Timeline</button>
+      </div>
+
+      <!-- FULL HISTORY TABLE -->
+      <div class="tabpane is-active" data-pane="table">
+        <div class="tablecard">
+          <div class="wtable__wrap">
+          <table class="wtable">
+            <caption class="sr-only">Complete training history: course, completion date, score, certificate number, issuing branch, status and record source</caption>
+            <thead>
+              <tr>
+                <th scope="col">Course</th><th scope="col">Completed</th><th scope="col">Score</th>
+                <th scope="col">Certificate no.</th><th scope="col">Branch</th><th scope="col">Status</th><th scope="col">Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>101</span><span><b>General Occupational Safety</b><small><span class="grouptag">Group 4</span> 12-month cycle</small></span></div></td>
+                <td class="text-sm">05 Mar 2019</td>
+                <td class="text-sm text-muted">Pass</td>
+                <td><span class="certno">NEH-2019-004821-101</span></td>
+                <td class="text-sm">NEH-HAN</td>
+                <td><span class="cstat cstat--none">Historical</span></td>
+                <td><span class="badge badge--accent">Imported</span><br><small class="text-muted">12 Feb 2026 from NEH-HAN spreadsheet</small></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>102</span><span><b>Working at Height</b><small><span class="grouptag">Group 3</span> 24-month cycle</small></span></div></td>
+                <td class="text-sm">18 Jun 2019</td>
+                <td class="text-sm text-muted">Pass</td>
+                <td><span class="certno">NEH-2019-004821-102</span></td>
+                <td class="text-sm">NEH-HAN</td>
+                <td><span class="cstat cstat--none">Historical</span></td>
+                <td><span class="badge badge--accent">Imported</span><br><small class="text-muted">12 Feb 2026 from NEH-HAN spreadsheet</small></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>104</span><span><b>Safe Machine Operation</b><small><span class="grouptag">Group 3</span> 24-month cycle</small></span></div></td>
+                <td class="text-sm">21 Mar 2022</td>
+                <td class="text-sm num">92%</td>
+                <td><span class="certno">NEH-2022-004821-104</span></td>
+                <td class="text-sm">NEH-HAN</td>
+                <td><span class="cstat cstat--none">Historical</span></td>
+                <td><span class="badge">System</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>105</span><span><b>First Aid &amp; Emergency Response</b><small>12-month cycle</small></span></div></td>
+                <td class="text-sm">15 Mar 2024</td>
+                <td class="text-sm num">88%</td>
+                <td><span class="certno">NEH-2024-004821-105</span></td>
+                <td class="text-sm">NEH-HAN</td>
+                <td><span class="cstat cstat--none">Historical</span></td>
+                <td><span class="badge">System</span></td>
+              </tr>
+
+              <tr>
+                <td colspan="7" style="background:var(--paper-2);text-align:center;padding:.6rem 1.1rem">
+                  <span class="flex items-center justify-between gap-2" style="justify-content:center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    <b class="text-sm" style="color:var(--brand-dark)">Mar 2025 &middot; Transferred from NEH-HAN (Nissei Electric Hanoi) to NEV-HCM (Nissei Electric Vietnam)</b>
+                  </span>
+                </td>
+              </tr>
+
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>105</span><span><b>First Aid &amp; Emergency Response</b><small>12-month cycle</small></span></div></td>
+                <td class="text-sm">28 Jun 2025</td>
+                <td class="text-sm num">85%</td>
+                <td><span class="certno">NEV-2025-004821-105</span></td>
+                <td class="text-sm">NEV-HCM</td>
+                <td><span class="cstat cstat--over">Overdue</span></td>
+                <td><span class="badge">System</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>101</span><span><b>General Occupational Safety</b><small><span class="grouptag">Group 4</span> 12-month cycle</small></span></div></td>
+                <td class="text-sm">12 Aug 2025</td>
+                <td class="text-sm num">89%</td>
+                <td><span class="certno">NEV-2025-004821-101</span></td>
+                <td class="text-sm">NEV-HCM</td>
+                <td><span class="cstat cstat--due">Due soon</span></td>
+                <td><span class="badge">System</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--fir">FIR<br>101</span><span><b>Fire Prevention &amp; Evacuation</b><small>12-month cycle</small></span></div></td>
+                <td class="text-sm">03 Sep 2025</td>
+                <td class="text-sm num">91%</td>
+                <td><span class="certno">NEV-2025-004821-FIR</span></td>
+                <td class="text-sm">NEV-HCM</td>
+                <td><span class="cstat cstat--due">Due soon</span></td>
+                <td><span class="badge">System</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--cmp">CMP<br>101</span><span><b>Compliance &amp; Code of Conduct</b><small>12-month cycle</small></span></div></td>
+                <td class="text-sm">15 Jan 2026</td>
+                <td class="text-sm num">90%</td>
+                <td><span class="certno">NEV-2026-004821-CMP</span></td>
+                <td class="text-sm">NEV-HCM</td>
+                <td><span class="cstat cstat--ok">Compliant</span></td>
+                <td><span class="badge">System</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>104</span><span><b>Safe Machine Operation</b><small><span class="grouptag">Group 3</span> 24-month cycle</small></span></div></td>
+                <td class="text-sm">20 Mar 2026</td>
+                <td class="text-sm num">95%</td>
+                <td><span class="certno">NEV-2026-004821-104</span></td>
+                <td class="text-sm">NEV-HCM</td>
+                <td><span class="cstat cstat--ok">Compliant</span></td>
+                <td><span class="badge">System</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>107</span><span><b>Chemical Handling &amp; MSDS</b><small><span class="grouptag">Group 3</span> 24-month cycle</small></span></div></td>
+                <td class="text-sm">15 Jul 2026 <small class="text-muted">(today)</small></td>
+                <td class="text-sm num">85% <small class="text-muted">(17/20)</small></td>
+                <td><span class="certno">NEV-2026-004821-107</span></td>
+                <td class="text-sm">NEV-HCM</td>
+                <td><span class="cstat cstat--ok">Compliant</span></td>
+                <td><span class="badge">System</span></td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="tabpane" data-pane="timeline">
+        <div class="card">
+          <ul class="timeline">
+            <li><span class="year">2019</span>
+              <p style="margin:.4rem 0 0"><b>NEH-HAN</b> &middot; joined and completed two courses, later
+                imported from the site's Excel records.</p>
+              <p class="text-sm text-muted" style="margin:.3rem 0 0">05 Mar &middot; SAF-101 General Occupational Safety (Pass)<br>
+                18 Jun &middot; SAF-102 Working at Height (Pass)</p>
+            </li>
+            <li><span class="year">2022</span>
+              <p style="margin:.4rem 0 0"><b>NEH-HAN</b> &middot; 21 Mar &middot; SAF-104 Safe Machine Operation, scored 92%.</p>
+            </li>
+            <li><span class="year">2024</span>
+              <p style="margin:.4rem 0 0"><b>NEH-HAN</b> &middot; 15 Mar &middot; SAF-105 First Aid &amp; Emergency Response, scored 88%.</p>
+            </li>
+            <li><span class="year">2025</span>
+              <p style="margin:.4rem 0 0"><span class="badge badge--accent">Transfer</span>
+                <b style="margin-left:.4rem">Mar 2025: moved from NEH-HAN to NEV-HCM.</b></p>
+              <p class="text-sm text-muted" style="margin:.5rem 0 0">28 Jun &middot; SAF-105 retrained at NEV-HCM, scored 85% (this cycle has since lapsed)<br>
+                12 Aug &middot; SAF-101 retrained, scored 89%<br>
+                03 Sep &middot; FIR-101 completed, scored 91%</p>
+            </li>
+            <li><span class="year">2026</span>
+              <p style="margin:.4rem 0 0"><b>NEV-HCM</b></p>
+              <p class="text-sm text-muted" style="margin:.3rem 0 0">15 Jan &middot; CMP-101 Compliance &amp; Code of Conduct, scored 90%<br>
+                20 Mar &middot; SAF-104 retrained, scored 95%<br>
+                15 Jul (today) &middot; SAF-107 Chemical Handling &amp; MSDS, scored 85%, certificate issued automatically</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

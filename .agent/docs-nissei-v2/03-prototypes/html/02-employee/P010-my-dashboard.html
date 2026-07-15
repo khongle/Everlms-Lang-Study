@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My dashboard · Nissei Training</title>
+<meta name="description" content="Your training obligations, what is due, and what is overdue.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="employee" data-active="P010"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Good morning, Minh</h1>
+        <p class="lede">Production Operator &middot; <span class="codecell">NEV-004821</span>
+          &middot; Nissei Electric Vietnam (NEV-HCM)</p>
+      </div>
+      <div class="pagehead__actions">
+        <a class="btn btn--brand" href="P011-my-required-training.html">View my required training</a>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi">
+        <span class="kpi__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        <div><div class="stat__n num">6</div><div class="stat__l">Required courses</div>
+          <div class="kpi__sub">Set by your job role</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <div><div class="stat__n num">2</div><div class="stat__l">Compliant</div>
+          <div class="kpi__sub">Certificate valid</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v6l4 2"/></svg></span>
+        <div><div class="stat__n num">2</div><div class="stat__l">Due soon</div>
+          <div class="kpi__sub">Within 30 days</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic" style="background:var(--error-soft)"><svg viewBox="0 0 24 24" fill="none"
+          stroke="var(--error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/>
+          <path d="M12 9v4M12 17h.01"/></svg></span>
+        <div><div class="stat__n num" style="color:var(--error)">1</div><div class="stat__l">Overdue</div>
+          <div class="kpi__sub">Action required now</div></div>
+      </div>
+    </div>
+
+    <!-- action needed -->
+    <div class="alert alert--error" style="margin-top:2rem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/>
+        <path d="M12 9v4M12 17h.01"/></svg>
+      <div>
+        <b>SAF-105 First Aid &amp; Emergency Response expired 17 days ago.</b>
+        <p class="text-sm" style="margin:.2rem 0 0">Your certificate lapsed on 28 Jun 2026. Retraining is
+          scheduled at NEV-HCM on 22 Jul 2026, 08:00, Training Room 2.
+          <a href="P013-course-detail.html">Open the course</a>.</p>
+      </div>
+    </div>
+
+    <div class="split" style="margin-top:2rem;display:grid;grid-template-columns:1.6fr 1fr;gap:2rem;align-items:start">
+
+      <!-- required training -->
+      <div>
+        <div class="sec-head" style="margin-bottom:1rem">
+          <h2 style="font-size:var(--text-lg);margin:0">My required training</h2>
+          <a class="text-sm" href="P011-my-required-training.html">See all</a>
+        </div>
+
+        <div class="tablecard">
+          <div class="wtable__wrap">
+          <table class="wtable">
+            <caption class="sr-only">Courses required for your job role, with status and due date</caption>
+            <thead>
+              <tr><th scope="col">Course</th><th scope="col">Status</th><th scope="col">Valid until</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>105</span>
+                  <span><b>First Aid &amp; Emergency Response</b>
+                    <small>12-month cycle</small></span></div></td>
+                <td><span class="cstat cstat--over">Overdue</span></td>
+                <td><span class="text-sm">28 Jun 2026</span>
+                  <div class="duemeter duemeter--over"><i style="width:100%"></i></div>
+                  <div class="dueline">17 days past due</div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>101</span>
+                  <span><b>General Occupational Safety</b>
+                    <small><span class="grouptag">Group 4</span> 12-month cycle</small></span></div></td>
+                <td><span class="cstat cstat--due">Due soon</span></td>
+                <td><span class="text-sm">12 Aug 2026</span>
+                  <div class="duemeter duemeter--due"><i style="width:78%"></i></div>
+                  <div class="dueline">28 days left</div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--fir">FIR<br>101</span>
+                  <span><b>Fire Prevention &amp; Evacuation</b>
+                    <small>12-month cycle</small></span></div></td>
+                <td><span class="cstat cstat--due">Due soon</span></td>
+                <td><span class="text-sm">03 Sep 2026</span>
+                  <div class="duemeter duemeter--due"><i style="width:62%"></i></div>
+                  <div class="dueline">50 days left</div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>107</span>
+                  <span><b>Chemical Handling &amp; MSDS</b>
+                    <small><span class="grouptag">Group 3</span> 24-month cycle</small></span></div></td>
+                <td><span class="cstat cstat--prog">In progress</span></td>
+                <td><span class="text-sm text-muted">Not yet issued</span>
+                  <div class="progress" style="margin-top:.3rem"><i style="width:60%"></i></div>
+                  <div class="dueline">6 of 10 lessons</div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--saf">SAF<br>104</span>
+                  <span><b>Safe Machine Operation</b>
+                    <small><span class="grouptag">Group 3</span> 24-month cycle</small></span></div></td>
+                <td><span class="cstat cstat--ok">Compliant</span></td>
+                <td><span class="text-sm">20 Mar 2028</span>
+                  <div class="duemeter"><i style="width:22%"></i></div>
+                  <div class="dueline">614 days left</div></td>
+              </tr>
+              <tr>
+                <td><div class="cell-course"><span class="ctile ctile--cmp">CMP<br>101</span>
+                  <span><b>Compliance &amp; Code of Conduct</b>
+                    <small>12-month cycle</small></span></div></td>
+                <td><span class="cstat cstat--ok">Compliant</span></td>
+                <td><span class="text-sm">15 Jan 2027</span>
+                  <div class="duemeter"><i style="width:49%"></i></div>
+                  <div class="dueline">184 days left</div></td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+
+        <div class="annot"><b>Prototype note</b>This list is not hand-picked. It is generated by the
+          training matrix for the job role &ldquo;Production Operator&rdquo; at branch NEV-HCM
+          (see the matrix at hr-hse-central/P036). Change someone&rsquo;s job role and this list
+          changes with it.</div>
+      </div>
+
+      <!-- side rail -->
+      <div class="stack">
+
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 .8rem">Continue learning</h3>
+          <div class="flex items-center gap-3">
+            <span class="ctile ctile--saf ctile--lg">SAF<br>107</span>
+            <div style="min-width:0">
+              <b class="text-sm" style="display:block">Chemical Handling &amp; MSDS</b>
+              <small class="text-muted">Lesson 7: Spill response</small>
+              <div class="progress" style="margin-top:.4rem"><i style="width:60%"></i></div>
+            </div>
+          </div>
+          <a class="btn btn--brand btn--sm btn--block" href="P014-lesson-player.html"
+             style="margin-top:1rem">Resume</a>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 .8rem">Next scheduled session</h3>
+          <div class="stack-sm">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-sm fw-700">SAF-105 retraining</span>
+              <span class="cstat cstat--over">Required</span>
+            </div>
+            <p class="text-sm text-muted" style="margin:0">22 Jul 2026 &middot; 08:00&ndash;12:00<br>
+              Training Room 2, NEV-HCM<br>Trainer: Tran Thi Hoa</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 .8rem">My certificates</h3>
+          <div class="stack-sm">
+            <div class="certvalid">
+              <span><b class="text-sm">SAF-104</b><br><span class="certno">NEV-2026-004821-104</span></span>
+              <span class="cstat cstat--ok">Valid</span>
+            </div>
+            <div class="certvalid">
+              <span><b class="text-sm">CMP-101</b><br><span class="certno">NEV-2026-004821-CMP</span></span>
+              <span class="cstat cstat--ok">Valid</span>
+            </div>
+          </div>
+          <a class="btn btn--ghost btn--sm btn--block" href="P018-my-certificates.html"
+             style="margin-top:1rem">All certificates</a>
+        </div>
+
+        <div class="card card--soft">
+          <h3 style="font-size:var(--text-md);margin:0 0 .5rem">Training record</h3>
+          <p class="text-sm text-muted" style="margin:0 0 .8rem">Your full history, including training
+            completed at Nissei Electric Hanoi before your transfer.</p>
+          <a class="text-sm fw-700" href="P017-my-training-record.html">Open my record</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

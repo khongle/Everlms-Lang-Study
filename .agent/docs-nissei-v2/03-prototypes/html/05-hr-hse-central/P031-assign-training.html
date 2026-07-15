@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assign training · Nissei Training</title>
+<meta name="description" content="Bulk-assign a course to employees across job roles and branches, outside the training matrix.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="hr-hse-central" data-active="P031"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P029-employees.html">Employees</a> <span aria-hidden="true">/</span> <span>Assign training</span>
+    </nav>
+
+    <div class="branchbar">
+      <span class="branchbar__lb">Branch</span>
+      <button class="branchbar__sel" type="button" aria-haspopup="listbox">
+        All branches (5)
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <span class="branchbar__scope">5,842 employees &middot; select any combination of branches below</span>
+    </div>
+
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Assign training</h1>
+        <p class="lede">Assign one course to every employee matching a job role and branch combination.</p>
+      </div>
+      <div class="pagehead__actions">
+        <a class="btn btn--ghost" href="P036-training-matrix.html">Open training matrix</a>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="annot"><b>Exception assignment, not the standard path</b>This screen is for ad-hoc,
+      cross-branch assignment: a one-off rollout, a corrective action, a new machine on the floor.
+      Ongoing mandatory training is never assigned by hand: it is generated automatically for every employee
+      by the training matrix (hr-hse-central/P036) based on their job role and branch. Use this page only
+      when a course needs to reach people outside what the matrix already assigns.</div>
+
+    <div class="grid grid--2" style="margin-top:1.6rem;align-items:start">
+
+      <div class="stack">
+        <div class="panel">
+          <h3 style="font-size:var(--text-md);margin:0 0 1rem">1. Select target group</h3>
+
+          <p class="text-sm fw-700" style="margin:0 0 .5rem">Branches</p>
+          <div class="stack-sm" style="margin-bottom:1.2rem">
+            <label class="switchrow" style="padding:.4rem 0">
+              <span class="text-sm">NEV-HCM <small class="text-muted">3,000 employees</small></span>
+              <input type="checkbox" checked style="width:18px;height:18px">
+            </label>
+            <label class="switchrow" style="padding:.4rem 0">
+              <span class="text-sm">NEH-HAN <small class="text-muted">2,000 employees</small></span>
+              <input type="checkbox" checked style="width:18px;height:18px">
+            </label>
+            <label class="switchrow" style="padding:.4rem 0">
+              <span class="text-sm">NEM-MTO <small class="text-muted">800 employees</small></span>
+              <input type="checkbox" checked style="width:18px;height:18px">
+            </label>
+            <label class="switchrow" style="padding:.4rem 0">
+              <span class="text-sm">NES-SHA <small class="text-muted">24 employees</small></span>
+              <input type="checkbox" style="width:18px;height:18px">
+            </label>
+            <label class="switchrow" style="padding:.4rem 0">
+              <span class="text-sm">NES-SZN <small class="text-muted">18 employees</small></span>
+              <input type="checkbox" style="width:18px;height:18px">
+            </label>
+          </div>
+
+          <p class="text-sm fw-700" style="margin:0 0 .5rem">Job roles</p>
+          <div class="grid grid--2" style="gap:.2rem">
+            <label class="switchrow" style="padding:.35rem 0"><span class="text-sm">Production Operator</span>
+              <input type="checkbox" style="width:18px;height:18px"></label>
+            <label class="switchrow" style="padding:.35rem 0"><span class="text-sm">Line Leader</span>
+              <input type="checkbox" style="width:18px;height:18px"></label>
+            <label class="switchrow" style="padding:.35rem 0"><span class="text-sm">Forklift Operator</span>
+              <input type="checkbox" checked style="width:18px;height:18px"></label>
+            <label class="switchrow" style="padding:.35rem 0"><span class="text-sm">Electrical Technician</span>
+              <input type="checkbox" style="width:18px;height:18px"></label>
+            <label class="switchrow" style="padding:.35rem 0"><span class="text-sm">Maintenance Technician</span>
+              <input type="checkbox" style="width:18px;height:18px"></label>
+            <label class="switchrow" style="padding:.35rem 0"><span class="text-sm">Warehouse Staff</span>
+              <input type="checkbox" style="width:18px;height:18px"></label>
+            <label class="switchrow" style="padding:.35rem 0"><span class="text-sm">QA Inspector</span>
+              <input type="checkbox" style="width:18px;height:18px"></label>
+            <label class="switchrow" style="padding:.35rem 0"><span class="text-sm">Supervisor</span>
+              <input type="checkbox" style="width:18px;height:18px"></label>
+            <label class="switchrow" style="padding:.35rem 0"><span class="text-sm">Office Staff</span>
+              <input type="checkbox" style="width:18px;height:18px"></label>
+            <label class="switchrow" style="padding:.35rem 0"><span class="text-sm">HSE Officer</span>
+              <input type="checkbox" style="width:18px;height:18px"></label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:var(--text-md);margin:0 0 1rem">2. Course &amp; parameters</h3>
+          <div class="formgrid">
+            <div class="field"><label for="course">Course</label>
+              <select class="select" id="course" style="width:100%">
+                <option>SAF-106 &middot; Forklift Operation</option>
+                <option>SAF-101 &middot; General Occupational Safety</option>
+                <option>CMP-101 &middot; Compliance &amp; Code of Conduct</option>
+                <option>CYB-101 &middot; Cybersecurity Awareness</option>
+              </select></div>
+            <div class="field"><label for="due">Due date</label>
+              <input class="select" id="due" type="text" value="15 Aug 2026" style="width:100%"></div>
+            <div class="field"><label for="reason">Reason for this assignment</label>
+              <textarea id="reason" rows="2" style="width:100%">New forklift fleet delivered in July 2026; mandatory refresher for all existing forklift operators before they may operate the new units.</textarea></div>
+          </div>
+          <div class="switchrow" style="margin-top:.8rem">
+            <span><b class="text-sm">Notify employees and their site training manager</b>
+              <small class="hint" style="display:block">Email and in-app notification, per the reminder rules.</small></span>
+            <button class="swtoggle is-on" type="button" role="switch" aria-checked="true"
+              aria-label="Notify employees and their site training manager"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="card">
+          <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Selected group</h3>
+          <p class="text-sm text-muted" style="margin:0 0 1rem">Forklift Operator, at NEV-HCM, NEH-HAN, NEM-MTO</p>
+          <div class="stack-sm">
+            <div class="covrow">
+              <span class="covrow__l">NEV-HCM<small>Forklift Operator</small></span>
+              <span class="text-sm text-muted">from training matrix</span>
+              <span class="covrow__v num">96</span>
+            </div>
+            <div class="covrow">
+              <span class="covrow__l">NEH-HAN<small>Forklift Operator</small></span>
+              <span class="text-sm text-muted">from training matrix</span>
+              <span class="covrow__v num">34</span>
+            </div>
+            <div class="covrow">
+              <span class="covrow__l">NEM-MTO<small>Forklift Operator</small></span>
+              <span class="text-sm text-muted">from training matrix</span>
+              <span class="covrow__v num">18</span>
+            </div>
+          </div>
+          <p class="text-sm" style="margin:1rem 0 0"><b class="num" style="font-size:1.4rem">148</b>
+            <span class="text-muted">employees will be assigned SAF-106 Forklift Operation, due 15 Aug 2026</span></p>
+          <div class="btn-row" style="margin-top:1rem">
+            <button class="btn btn--ghost btn--sm" type="button">Preview list</button>
+            <button class="btn btn--brand btn--sm" type="button">Assign now</button>
+          </div>
+        </div>
+
+        <div class="card card--soft">
+          <h3 style="font-size:var(--text-md);margin:0 0 .8rem">Sample of affected employees</h3>
+          <div class="tablecard" style="box-shadow:none">
+            <div class="wtable__wrap">
+            <table class="wtable">
+              <caption class="sr-only">Sample employees affected by this assignment</caption>
+              <thead><tr><th scope="col">Employee</th><th scope="col">Branch</th><th scope="col">Current SAF-106 status</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="cell-user"><img src="../_shared/img/avatar-02.jpg" alt="">
+                    <span><b>Do Van Thanh</b><small class="codecell">NEH-002914</small></span></div></td>
+                  <td><span class="badge">NEH-HAN</span></td>
+                  <td><span class="cstat cstat--over">Overdue, 41 days</span></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-user"><img src="../_shared/img/avatar-04.jpg" alt="">
+                    <span><b>Nguyen Trong Kien</b><small class="codecell">NEV-002337</small></span></div></td>
+                  <td><span class="badge">NEV-HCM</span></td>
+                  <td><span class="cstat cstat--ok">Compliant, retrained early</span></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-user"><img src="../_shared/img/avatar-09.jpg" alt="">
+                    <span><b>Pham Thi Yen</b><small class="codecell">NEM-000144</small></span></div></td>
+                  <td><span class="badge">NEM-MTO</span></td>
+                  <td><span class="cstat cstat--none">Not started</span></td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+================================================================================
+DECISIONS — NHẬT KÝ QUYẾT ĐỊNH THIẾT KẾ (Nissei Compliance Training System)
+================================================================================
+Loại tài liệu : ADR-lite. Mỗi quyết định: bối cảnh → quyết định → hệ quả.
+                Mục đích: người đến sau (hoặc chính mình 3 tháng nữa) không
+                phải khảo cổ lại lý do từ 72 file HTML.
+Ngày lập      : 2026-07-15 · Trạng thái mặc định: ACCEPTED trừ khi ghi khác.
+
+--------------------------------------------------------------------------------
+DEC-01 MULTI-BRANCH, KHÔNG MULTI-TENANT
+  Bối cảnh: 5 site, 2 quốc gia, nhưng MỘT tổ chức.
+  Quyết định: phân vùng nội bộ theo branch entity trong một instance;
+  giữ non-goal "không SaaS" của EverLMS gốc.
+  Hệ quả: đơn giản hơn nhiều tầng; khách mới = instance mới (per-customer
+  delta), không phải tenant mới.
+
+DEC-02 PHÂN QUYỀN HAI CHIỀU: BRANCH SCOPE × LAYER SCOPE
+  Bối cảnh: chiều own/branch/global trả lời "thấy dữ liệu của ai" nhưng
+  không trả lời "được đụng tầng nào của hệ thống".
+  Quyết định: thêm chiều layer (data/delta/core); tách administrator cũ
+  thành org_admin (data+delta) và administrator (core, break-glass).
+  Hệ quả: administrator KHÔNG còn full ở bề mặt nghiệp vụ nào — super-role
+  kỹ thuật, không phải nghiệp vụ. Sinh thêm 5 trang nền tảng (P060–P063,
+  P057) + 2 biến thể. LƯU Ý PHẠM VI: phần nền tảng vượt estimate C2 ban
+  đầu — tác động thương mại theo dõi ở hồ sơ nội bộ (ngoài bộ docs này).
+
+DEC-03 ROLE KEY GENERIC, NHÃN THEO KHÁCH
+  Quyết định: khóa role trong core là `org_admin`; nhãn "Nissei
+  Administrator" chỉ là cấu hình deployment. Folder prototype đặt
+  07-nissei-admin cho dễ đọc.
+  Hệ quả: JFC hoặc khách sau dùng lại nguyên role, đổi mỗi nhãn (AD-S1 —
+  mọi thứ vào product core, không fork).
+
+DEC-04 KHÓA HỌC KHÔNG THUỘC CHI NHÁNH; RULESET THUỘC CHI NHÁNH
+  Bối cảnh: D1 đòi một danh mục master; D2 đòi luật khác nhau theo nước.
+  Quyết định: catalog là tài sản chung (course không có branch_ref);
+  matrix_rule mới mang branch_ref.
+  Hệ quả: "danh mục master" và "báo cáo hợp nhất" là thuộc tính CẤU TRÚC,
+  không phụ thuộc kỷ luật vận hành; thêm nước = thêm ruleset (E1/E2).
+
+DEC-05 ĐỊNH DANH = MÃ NHÂN VIÊN TẬP ĐOÀN, BẤT BIẾN
+  Bối cảnh: công nhân không có email công ty; hồ sơ phải theo người khi
+  luân chuyển xuyên site/quốc gia (D3).
+  Quyết định: employee_code unique toàn hệ, bất biến, do HR cấp; đăng
+  nhập bằng mã này; tài khoản nền tảng dùng hệ mã riêng PLT-*.
+  Hệ quả: AC-3.x test được; app đăng nhập mã NV + OTP SMS.
+
+DEC-06 NGHĨA VỤ (OBLIGATION) LÀ DỮ LIỆU MATERIALIZED, TÍNH MỖI ĐÊM
+  Bối cảnh: 5.842 người × ~80 rule; worklist/báo cáo cần query rẻ; trạng
+  thái tại-thời-điểm phải audit được.
+  Quyết định: job đêm derive obligation và LƯU, không tính on-the-fly.
+  Hệ quả: thay đổi ma trận có hiệu lực "sau job đêm kế" (ghi rõ trong
+  UI P036); job này là hạng mục giám sát số 1 (P057, N-01).
+
+DEC-07 CHỨNG CHỈ CÓ HẠN — KHÁC EVERLMS GỐC
+  Quyết định: mở rộng lms_user_certificate với valid_until/status/cert_no
+  chuẩn hóa; tra cứu công khai tối thiểu PII (P003).
+  Hệ quả: toàn bộ vòng nhắc hạn/tái đào tạo (WF-01/06) treo trên trường
+  này; template song ngữ VI/JA cần mPDF font CJK (N-07 — đã spike).
+
+DEC-08 BỀ MẶT CÔNG KHAI = ĐÚNG 2 TRANG
+  Bối cảnh: hệ nội bộ nhưng có 2 nhóm hợp lệ không tài khoản: thanh tra/
+  auditor (xác thực chứng chỉ) và nhân viên trên đường đăng nhập.
+  Quyết định: chỉ P004 (home) + P003 (verify). Không catalog công khai,
+  không đăng ký.
+  MỞ: có lộ TÊN khóa trước đăng nhập không — hỏi khảo sát GĐ 0 (posture
+  Nhật có thể chặt hơn deployment JFC vốn để catalog công khai).
+
+DEC-09 TRUNG QUỐC: WEB-FIRST, KHÔNG HẠ TẦNG ĐẠI LỤC
+  Bối cảnh: 2 VP ~42 người, không phải nhà máy; GFW chặn tài nguyên
+  Google; FCM không tin cậy ở đại lục.
+  Quyết định: user TQ dùng web (không app/push); tự host toàn bộ font/
+  media/script; không ICP/instance đại lục ở quy mô này.
+  Hệ quả: AC-S.6; app chỉ phân phối cho VN; PIPL đi theo ngoại lệ HR
+  xuyên biên giới (xác nhận: luật sư khách).
+
+DEC-10 PROTOTYPE: TIẾNG ANH + ANNOTATION; VARIANT/VIA
+  Quyết định: (a) UI prototype EN, ngôn ngữ thật ghi bằng .annot, một
+  trang .zh làm proof-of-mechanism; (b) trang chỉ nhân bản giữa các
+  folder role khi giao diện KHÁC THẬT (△ VARIANT), giống hệt thì đi
+  cross-link (○ VIA) — diff nhìn thấy được chính là deliverable.
+  Hệ quả: 58 trang logic / 72 file thay vì ~120 file trùng lặp.
+
+DEC-11 CẤU TRÚC CHỈ ĐỔI QUA RELEASE; DRIFT PHẢI BẮT ĐƯỢC
+  Bối cảnh: bài học instance JFC lệch core chưa kiểm kê được (Q1); cam
+  kết E4 CORE/DELTA/DATA.
+  Quyết định: P061 read-mostly (không sửa cấu trúc trên production);
+  P062 là kênh duy nhất (staging → validate → production); P063 diff
+  CORE↔DELTA và luôn demo ít nhất 1 mục drift.
+  Hệ quả: khách nâng cấp được; "khách không thể phá cấu trúc" thành
+  điểm bán trong security review Nhật.
+
+DEC-12 SSO / HRIS / OFFLINE = OPTION CÓ CỔNG, VẼ ĐÚNG TRẠNG THÁI
+  Quyết định: không build trước; UI vẽ "not connected" (P054), có chỗ
+  cắm sẵn; kích hoạt bằng bằng chứng khảo sát (điều kiện ở
+  requirements.txt OPT-1/2/5).
+  Hệ quả: tránh gold-plating; layout đã tính chỗ cho chúng nên bật sau
+  không phải vẽ lại.
+
+DEC-13 HQ VIEWER TÁCH RIÊNG, CHỈ ĐỌC
+  Bối cảnh: HQ Hamamatsu cần toàn cảnh nhưng không vận hành; cấp quyền
+  manager cho HQ là thừa quyền.
+  Quyết định: role riêng, read-only, nhận báo cáo JA theo lịch (P049);
+  sự VẮNG MẶT của control là thiết kế (roband + annot).
+  Hệ quả: least-privilege chứng minh được; AC-5.3.
+================================================================================

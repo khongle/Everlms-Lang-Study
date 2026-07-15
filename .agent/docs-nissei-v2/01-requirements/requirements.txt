@@ -1,0 +1,154 @@
+================================================================================
+REQUIREMENTS — YÊU CẦU HỆ THỐNG (Nissei Compliance Training System)
+================================================================================
+Loại tài liệu : Đặc tả yêu cầu (FR + NFR) — tầng giữa nối strategy-final.txt
+                (00-project-input) với thiết kế (02-design) và prototype
+                (03-prototypes). Mọi F-xx đều truy nguyên về D1–D6.
+Ngày lập      : 2026-07-15
+Nguồn         : strategy-final.txt (mục 1, 5, 8), consulting.txt (D1–D6),
+                roles.txt + sitemap.txt (02-design)
+Quy ước       : [MUST] bắt buộc cho golive · [OPT] option, kích hoạt bằng
+                bằng chứng khảo sát, KHÔNG build trước · trang P0NN = nơi
+                yêu cầu được thể hiện trong prototype.
+
+--------------------------------------------------------------------------------
+1. YÊU CẦU CHỨC NĂNG (F-01 .. F-14)
+--------------------------------------------------------------------------------
+F-01 TỔ CHỨC ĐA CHI NHÁNH [MUST] ← D3, D5
+  Chi nhánh là entity có metadata (mã, quốc gia, timezone, locale mặc định,
+  data region). Phân quyền theo HAI chiều: branch scope (own/branch/global)
+  × layer scope (data/delta/core) — xem roles.txt mục 1. Thêm chi nhánh =
+  thêm dữ liệu, không cần release.                    → P040, P052, P061
+
+F-02 DANH TÍNH & MASTER DATA NHÂN VIÊN [MUST] ← D3
+  Định danh neo MÃ NHÂN VIÊN TẬP ĐOÀN (không email/SĐT). Import CSV theo
+  template, có bước ĐỐI SOÁT LỖI trước khi ghi; import hồ sơ đào tạo lịch
+  sử từ Excel để golive có lịch sử. Hồ sơ theo người khi luân chuyển site,
+  kể cả xuyên quốc gia.                               → P029, P041, P042, P017
+
+F-03 MA TRẬN ĐÀO TẠO [MUST] ← D2 — TRÁI TIM CỦA HỆ THỐNG
+  Vị trí công việc (taxonomy) × khóa × chu kỳ tái đào tạo. Quy tắc là DỮ
+  LIỆU cấu hình theo chi nhánh (ruleset), không hardcode luật: VN theo
+  NĐ 44/2016 nhóm 1–6, VP TQ dùng ruleset văn phòng 3 khóa. Thuộc tính
+  rule: bắt buộc/tùy chọn, chu kỳ, nhóm pháp định, grace period, cờ chặn
+  vận hành máy khi quá hạn.                           → P036, P037
+
+F-04 SINH NGHĨA VỤ TỰ ĐỘNG [MUST] ← D2
+  Job nền tính lại nghĩa vụ mỗi đêm từ ma trận: nhân viên vào hệ thống /
+  đổi vị trí / đổi chi nhánh → danh sách khóa bắt buộc + hạn tự cập nhật.
+  Gán tay chỉ dành cho ngoại lệ/ad-hoc.               → P011, P031, P057
+
+F-05 HỌC & ĐÁNH GIÁ [MUST]
+  Kế thừa EverLMS: khóa → chương → bài học; quiz 8 loại câu hỏi, ngưỡng
+  đạt, số lần làm. THÊM: lớp học thực hành (session) có điểm danh + kết
+  quả thực hành — điểm danh cũng chốt hoàn thành, không phải mọi khóa đều
+  online.                                             → P012–P016, P022, P023
+
+F-06 CHỨNG CHỈ CÓ HIỆU LỰC [MUST] ← D4
+  Cấp tự động khi đạt (idempotent), CÓ HẠN theo chu kỳ của rule; song ngữ
+  VI/JA (mPDF render CJK); mã số duy nhất; tra cứu công khai tối thiểu
+  PII cho thanh tra/auditor; thu hồi/cấp lại (quyền trung tâm).
+                                                      → P018, P034, P043, P003
+F-07 NHẮC HẠN & LEO THANG [MUST] ← D4
+  Quy tắc nhắc cấu hình được (T-60/30/7, đến hạn, hằng tuần khi quá hạn);
+  kênh email + in-app + push; gửi cả nhân viên lẫn quản lý site; leo thang
+  lên site manager sau N ngày quá hạn.                → P044, P019, P032
+
+F-08 BÁO CÁO & DASHBOARD [MUST] ← D5
+  Cùng MỘT bộ KPI ở mọi cấp: nhân viên (P010) → site (P028, P033) → trung
+  tâm (P035) → HQ (P047, P048). Export CSV; gói báo cáo định kỳ tiếng Nhật
+  gửi HQ theo lịch (P049). HQ chỉ đọc.
+
+F-09 ĐA NGÔN NGỮ [MUST] ← D6
+  EN/VI/JA/ZH. VI = UI công nhân (web+app); ZH = UI văn phòng TQ; JA =
+  chứng chỉ + báo cáo HQ (KHÔNG phải toàn bộ UI quản trị — đó là OPT).
+  Bản dịch nội dung GẮN PHIÊN BẢN bản gốc: gốc lên version mới → bản dịch
+  bị đánh dấu outdated.                               → P045, P053
+
+F-10 QUY TRÌNH NỘI DUNG [MUST] ← D1, D6
+  Danh mục master duy nhất, site không fork. Version + trạng thái draft/
+  review/published; instructor soạn, trung tâm duyệt & phát hành; phát
+  hành đẩy mọi site cùng lúc.                         → P038, P039, P046, P025
+
+F-11 AUDIT & BẰNG CHỨNG TUÂN THỦ [MUST]
+  Log bất biến (append-only, không sửa/xóa) cho: ghi danh, lượt thi, cấp/
+  thu hồi chứng chỉ, impersonation, thay đổi config/cấu trúc. Hai góc
+  nhìn: nghiệp vụ (org_admin) và đầy đủ (platform). Impersonation bắt
+  buộc lý do; break-glass bắt buộc lý do + ticket + time-box + báo
+  org_admin.                                          → P055, P056
+
+F-12 QUẢN TRỊ TÁCH HAI TẦNG [MUST]
+  org_admin (khách): tài khoản, gán role, chi nhánh, ngôn ngữ, tích hợp,
+  nội dung biên tập, audit nghiệp vụ, retention. administrator (nền
+  tảng): cấu trúc, module, release, config sync — là kênh DUY NHẤT đưa
+  thay đổi cấu trúc vào production.                   → P050–P059, P060–P063
+
+F-13 MOBILE CHO CÔNG NHÂN [MUST]
+  App (kế thừa app Flutter EverLMS) locale VI, rebrand; luồng: nghĩa vụ →
+  học → thi → chứng chỉ → thông báo. Đăng nhập mã NV + OTP SMS (công nhân
+  không có email công ty). Push cho user VN. User TQ dùng WEB (không app,
+  không FCM). Chi tiết: 02-design/mobile.txt          → map P010–P020
+
+F-14 NỘI DUNG BIÊN TẬP [MUST]
+  Câu chữ ngoài đào tạo: trang public, thông báo topbar, mẫu email/
+  notification, help/FAQ — thuộc org_admin; đa ngôn ngữ như F-09.
+                                                      → P059, P004
+
+OPTIONS (giá & điều kiện kích hoạt: hồ sơ thương mại nội bộ, không nằm
+trong bộ tài liệu này):
+  OPT-1 SSO/AD          — nếu IT/HQ yêu cầu           → P054 vẽ "not connected"
+  OPT-2 HRIS sync API   — nếu HRIS mở được API        → P054 vẽ "not connected"
+  OPT-3 Pentest bên 3   — nếu security review HQ đòi
+  OPT-4 JA UI đầy đủ    — nếu quản lý Nhật tại VN dùng trực tiếp
+  OPT-5 Offline mobile  — nếu đo được vùng sóng yếu thật trong pilot
+
+--------------------------------------------------------------------------------
+2. NON-GOALS — CỐ Ý KHÔNG LÀM (chống "thừa")
+--------------------------------------------------------------------------------
+  ✘ Thương mại (giỏ hàng, thanh toán, membership) — đào tạo nội bộ miễn phí
+  ✘ Catalog công khai / đăng ký tự do — tài khoản từ HR import
+  ✘ Multi-tenant SaaS — một tổ chức, phân vùng chi nhánh (roles.txt mục 1)
+  ✘ Forum/gamification/badges — không thuộc D1–D6
+  ✘ Zoom/live-class tích hợp — lớp thực hành quản bằng session+điểm danh
+  ✘ Hạ tầng đại lục TQ + ICP — 2 VP nhỏ không justify (consulting.txt 5.1)
+  ✘ Sửa cấu trúc trên production — mọi thay đổi cấu trúc qua release (F-12)
+  Mỗi mục trên chỉ được mở lại khi khảo sát cho bằng chứng ngược.
+
+--------------------------------------------------------------------------------
+3. YÊU CẦU PHI CHỨC NĂNG (NFR)
+--------------------------------------------------------------------------------
+N-01 HIỆU NĂNG: kịch bản đỉnh là "cả nhà máy thi trong cùng khung giờ" —
+     thiết kế + load test ~5.000 user đồng thời; job tính nghĩa vụ hằng
+     đêm phải xong trong cửa sổ đêm với 5.842 hồ sơ × ~80 rule.
+N-02 BẢO MẬT: RBAC 2 chiều trên mọi route; secrets ngoài config/VCS;
+     audit bất biến; impersonation/break-glass như F-11; tài khoản nền
+     tảng tách hệ mã (PLT-*) khỏi nhân sự khách.
+N-03 DỮ LIỆU & PHÁP LÝ: hosting VN (NĐ 13/2023); nhân viên TQ theo ngoại
+     lệ quản lý lao động xuyên biên giới PIPL (xác nhận pháp lý = trách
+     nhiệm luật sư khách); retention cân bằng nghĩa vụ giữ hồ sơ pháp
+     định vs quyền xóa (P058 nêu thẳng xung đột này).
+N-04 TRUY CẬP TỪ TQ: web-first; tự host font/media/script; không phụ
+     thuộc tài nguyên Google-hosted; chấp nhận độ trễ VP→VN.
+N-05 KHẢ DỤNG & VẬN HÀNH: backup hằng ngày; mùa audit không được gián
+     đoạn; job nền giám sát được (P057) với cảnh báo khi fail.
+N-06 TRUY CẬP: WCAG 2.1 AA; trạng thái tuân thủ không bao giờ chỉ bằng
+     màu (màu + nhãn + chấm — .cstat); bảng rộng cuộn trong khung.
+N-07 I18N KỸ THUẬT: mPDF nhúng font CJK cho chứng chỉ JA; UI string tách
+     khỏi code; ngày giờ theo timezone chi nhánh.
+N-08 NÂNG CẤP ĐƯỢC: CORE/DELTA/DATA tách bạch (E4); config sync phát
+     hiện drift; cấu trúc chỉ đổi qua release có staging.
+N-09 TÍCH HỢP: SMTP (golive); SSO/HRIS là OPT có chỗ cắm sẵn ở P054,
+     tuyệt đối không vẽ như đã có.
+
+--------------------------------------------------------------------------------
+4. TRUY NGUYÊN D1–D6 → F → TRANG
+--------------------------------------------------------------------------------
+  D1 Danh mục master ........ F-10           → P038, P039, P046
+  D2 Ma trận theo vị trí .... F-03, F-04     → P036, P037, P011, P031
+  D3 Hồ sơ duy nhất ......... F-01, F-02     → P017, P029, P030, P041, P042
+  D4 Chuẩn chứng chỉ ........ F-06, F-07     → P018, P034, P043, P044, P003
+  D5 Báo cáo hợp nhất ....... F-08 (+F-01)   → P028, P033, P035, P047–P049
+  D6 Quy trình nội dung ..... F-09, F-10     → P045, P046, P039, P025
+  Nền (không map D nào nhưng thiếu là hỏng): F-05 học & thi, F-11 audit,
+  F-12 quản trị 2 tầng, F-13 mobile, F-14 biên tập.
+================================================================================
