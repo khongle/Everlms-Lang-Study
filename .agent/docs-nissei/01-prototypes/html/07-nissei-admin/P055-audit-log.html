@@ -66,7 +66,7 @@
       <label class="sr-only" for="f-actor">Actor</label>
       <select class="select" id="f-actor">
         <option>All actors</option>
-        <option>Dang Minh Tuan (Administrator)</option>
+        <option>Dang Minh Tuan (Nissei Administrator)</option>
         <option>Pham Thu Ha (HR/HSE Central)</option>
         <option>Le Quoc Bao (Site Training Manager)</option>
         <option>System (automated)</option>
@@ -94,7 +94,7 @@
       <div class="auditline">
         <span class="auditline__t">15 Jul 2026 09:42</span>
         <span class="auditline__ev ev--imp">Impersonation</span>
-        <span>Dang Minh Tuan (Administrator) switched to Do Van Thanh (NEH-002914, Forklift Operator),
+        <span>Dang Minh Tuan (Nissei Administrator) switched to Do Van Thanh (NEH-002914, Forklift Operator),
           reason: &ldquo;Investigating SAF-106 completion not reflecting on employee record, ticket HD-4821&rdquo;</span>
         <span class="auditline__b">NEH-HAN</span>
       </div>
@@ -127,7 +127,7 @@
       <div class="auditline">
         <span class="auditline__t">13 Jul 2026 11:04</span>
         <span class="auditline__ev ev--cfg">Config</span>
-        <span>SMTP relay credentials rotated by Dang Minh Tuan (Administrator)</span>
+        <span>SMTP relay credentials rotated by Dang Minh Tuan (Nissei Administrator)</span>
         <span class="auditline__b">Central</span>
       </div>
       <div class="auditline">
@@ -139,7 +139,7 @@
       <div class="auditline">
         <span class="auditline__t">11 Jul 2026 15:12</span>
         <span class="auditline__ev ev--imp">Impersonation</span>
-        <span>Dang Minh Tuan (Administrator) switched to Vu Thi Mai (NEH-002250, Warehouse Staff),
+        <span>Dang Minh Tuan (Nissei Administrator) switched to Vu Thi Mai (NEH-002250, Warehouse Staff),
           reason: &ldquo;Verifying FIR-101 assignment date after employee support ticket HD-4790&rdquo;
           &middot; duration 34 min &middot; flagged: exceeded 30-minute session guideline</span>
         <span class="auditline__b">NEH-HAN</span>
@@ -159,13 +159,13 @@
       <div class="auditline">
         <span class="auditline__t">05 Jul 2026 13:40</span>
         <span class="auditline__ev ev--cfg">Config</span>
-        <span>Branch NES-SZN status confirmed Active by Dang Minh Tuan (Administrator) after data region review</span>
+        <span>Branch NES-SZN status confirmed Active by Dang Minh Tuan (Nissei Administrator) after data region review</span>
         <span class="auditline__b">Central</span>
       </div>
       <div class="auditline">
         <span class="auditline__t">02 Jul 2026 10:15</span>
         <span class="auditline__ev ev--cfg">Config</span>
-        <span>Vietnamese (VI) UI translation updated to v1.4 by Dang Minh Tuan (Administrator)</span>
+        <span>Vietnamese (VI) UI translation updated to v1.4 by Dang Minh Tuan (Nissei Administrator)</span>
         <span class="auditline__b">Central</span>
       </div>
       <div class="auditline">
@@ -189,6 +189,14 @@
       and none ever will. That absence is the design, not a gap the prototype forgot to fill. The
       base EverLMS platform treats an audit trail as a nice-to-have; here it is the record a labour
       inspector or ISO 9001/14001 auditor is shown when they ask &ldquo;prove this training happened.&rdquo;</div>
+
+    <div class="annot"><b>Two logs, one rule</b>This is the customer's audit log: enrolment, quiz,
+      certificate and impersonation events, exactly what a labour inspector or ISO auditor asks to see. A
+      wider variant exists at
+      <a href="../08-administrator/P055-audit-log.html">the platform audit log</a>, covering configuration
+      and deployment events on the platform side (structure changes, module updates, releases). Neither
+      log has an edit control or a delete control, for any row, for any role, including either
+      administrator.</div>
 
   </div></section>
 </main>

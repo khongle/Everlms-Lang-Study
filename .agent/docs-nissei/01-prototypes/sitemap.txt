@@ -236,34 +236,80 @@ P048 — So sánh 5 chi nhánh trên cùng bộ KPI (D5). Chuẩn bị sẵn cho
        thêm chi nhánh nước khác (nguyên tắc E1) — bảng không hardcode 5 site.
 P049 — Lịch xuất báo cáo định kỳ về HQ. Annotation: bản thật là tiếng Nhật.
 
-### ADMIN (9) — folder: 07-administrator/
-| ID | Title | URL | anon empl inst site hrhse hq admin |
-|----|-------|-----|-----------------------------------|
-| P050 | Admin overview | /admin | — — — — — — ● |
-| P051 | Roles & permissions | /admin/roles | — — — — — — ● |
-| P052 | Branch configuration | /admin/branches | — — — — — — ● |
-| P053 | Language & localization | /admin/languages | — — — — — — ● |
-| P054 | Integrations | /admin/integrations | — — — — — — ● |
-| P055 | Audit log | /admin/audit | — — — — — — ● |
-| P056 | Switch user | /admin/switch-user | — — — — — — ● |
-| P057 | System health & jobs | /admin/health | — — — — — — ● |
-| P058 | Data retention & privacy | /admin/privacy | — — — — — — ● |
+### NISSEI ADMIN (10) — folder: 07-nissei-admin/ · role key: org_admin
+Admin của KHÁCH. Tầng data + delta. Dùng hằng ngày. Không đụng cấu trúc.
+| ID | Title | URL | anon empl inst site hrhse hq org adm |
+|----|-------|-----|-------------------------------------|
+| P029 | Employees (accounts) | /admin/users | — — — △ △ — △ ○ |
+| P050 | Admin overview | /admin | — — — — — — ● ○ |
+| P051 | Roles & access | /admin/roles | — — — — — — ● ○ |
+| P052 | Branch configuration | /admin/branches | — — — — — — ● ○ |
+| P053 | Language & localization | /admin/languages | — — — — — — ● ○ |
+| P054 | Integrations | /admin/integrations | — — — — — — ● ○ |
+| P055 | Audit log (business) | /admin/audit | — — — — — — ● △ |
+| P056 | Switch user (support) | /admin/switch-user | — — — — — — ● △ |
+| P058 | Data retention & privacy | /admin/privacy | — — — — — — ● ○ |
+| P059 | Editorial content | /admin/content | — — — — — — ● ○ |
 
-P051 — Ma trận 7 role × quyền, có cột SCOPE (own/branch/global) — chiều
-       mới so với EverLMS, xem roles.txt mục 1.
-P052 — Cấu hình kỹ thuật chi nhánh: quốc gia, timezone, locale mặc định.
-       Nút "Add branch" là hiện thân của nguyên tắc E1 (thêm nước = thêm
-       dữ liệu, không thêm code) — prototype phải cho thấy điều đó.
-P053 — Bật/tắt ngôn ngữ, tiến độ dịch UI, ngôn ngữ mặc định theo chi nhánh.
-P054 — SMTP (đang dùng), SSO/AD + HRIS sync (annotation: OPT-1/OPT-2,
-       hiển thị dạng chưa kết nối — KHÔNG vẽ như đã có).
-P055 — Audit log bất biến: ai làm gì, lúc nào, ở chi nhánh nào. Có bộ lọc
-       theo loại sự kiện (enrollment/quiz/certificate/impersonation).
-       Nhấn mạnh: không có nút xóa/sửa — bản chất bất biến.
-P056 — Impersonation, BẮT BUỘC nhập lý do trước khi switch + banner cảnh
-       báo khi đang impersonate + mọi phiên đều vào P055.
-P058 — NĐ 13/2023 + PIPL: chính sách lưu trữ hồ sơ đào tạo, dữ liệu nhân
-       viên TQ, thời hạn giữ, quyền xóa.
+P051 — Ma trận 8 role × quyền, cột SCOPE (own/branch/global/platform).
+       QUAN TRỌNG: org_admin GÁN được role cho người, nhưng ĐỊNH NGHĨA
+       quyền của role là cấu trúc sản phẩm → chỉ đọc ở đây, muốn đổi phải
+       qua release (P062). Ranh giới assign-vs-define.
+P052 — Cấu hình kỹ thuật chi nhánh: quốc gia, timezone, locale, data region.
+       Nút "Add branch" là hiện thân của E1: thêm nước = thêm DỮ LIỆU,
+       không cần release. Đối lập với cấu trúc (P061) vốn phải qua release.
+P053 — Bật/tắt ngôn ngữ, tiến độ dịch UI, fallback. Ranh giới: bật + dịch
+       là của khách; ship gói locale vào sản phẩm là release (P062).
+P054 — SMTP (đang chạy), SSO/AD + HRIS (vẽ ĐÚNG trạng thái chưa kết nối —
+       OPT-1/OPT-2). Ranh giới: cấu hình credential là của khách; mã tích
+       hợp là module của nền tảng (P062).
+P055 — Audit log NGHIỆP VỤ (enrollment/quiz/certificate/impersonation),
+       bất biến, KHÔNG nút xóa/sửa. Bản rộng hơn là biến thể của platform.
+P056 — Impersonation HỖ TRỢ: bắt buộc lý do + banner khi đang impersonate
+       + mọi phiên vào P055. Khác break-glass của nền tảng.
+P058 — NĐ 13/2023 + PIPL: chính sách lưu trữ, dữ liệu nhân viên TQ, thời
+       hạn giữ, quyền xóa. Chính sách là quyết định pháp lý của khách;
+       job thực thi chạy trên nền tảng.
+P059 — MỚI. Nội dung biên tập NGOÀI đào tạo: câu chữ trang public (P004),
+       thông báo topbar, mẫu email/notification, help/FAQ. Ranh giới kép:
+       nội dung KHÓA HỌC là của hr_hse_central (P038/P045/P046); QUY TẮC
+       bắn email cũng của hr_hse_central (P044). Ở đây chỉ có CÂU CHỮ.
+
+### PLATFORM ADMIN (6) — folder: 08-administrator/ · role key: administrator
+Nền tảng. Tầng CORE. Hiếm dùng, bản chất break-glass. Người của đội nền tảng.
+| ID | Title | URL | anon empl inst site hrhse hq org adm |
+|----|-------|-----|-------------------------------------|
+| P057 | System health & jobs | /platform/health | — — — — — — ○ ● |
+| P060 | Platform overview | /platform | — — — — — — — ● |
+| P061 | Site structure | /platform/structure | — — — — — — — ● |
+| P062 | Modules & updates | /platform/modules | — — — — — — — ● |
+| P063 | Configuration sync | /platform/config | — — — — — — — ● |
+| P055 | Audit log (full) | /platform/audit | — — — — — — △ △ |
+| P056 | Break-glass access | /platform/break-glass | — — — — — — △ △ |
+
+P060 — Tổng quan nền tảng: môi trường (production, khu vực VN), release
+       hiện tại của product core, trạng thái deploy/upgrade, tóm tắt delta
+       của khách này, sự cố mở, lần cuối dùng break-glass.
+P061 — HÀNG RÀO — trang quan trọng nhất folder này. Cấu trúc product core:
+       entity type, field, view, menu, theme (các module lms_*). READ-MOSTLY
+       ở đây và VẮNG MẶT HOÀN TOÀN với khách. Thay đổi cấu trúc đi theo
+       RELEASE (P062), không sửa tay trên production — sửa tay chính là cách
+       sinh drift. Phân biệt rõ CORE (khóa, sản phẩm sở hữu) vs DELTA (của
+       khách: ruleset chi nhánh, nhận diện, bản dịch).
+P062 — Product core dạng module có version: lms_course, lms_quiz,
+       lms_certificate, lms_organization, lms_compliance, lms_analytics,
+       lms_notification, lms_mobile_api... + bản vá bảo mật + luồng apply
+       release qua staging. Đây là kênh DUY NHẤT đưa thay đổi cấu trúc vào.
+P063 — HIỆN THÂN CỦA E4. Diff config giữa CORE và DELTA của khách: cái nào
+       sản phẩm sở hữu (khóa), cái nào của khách (nhận diện, skin, ruleset,
+       ngôn ngữ, mẫu chứng chỉ), và cái nào đã DRIFT (đổi trên production
+       ngoài delta) — prototype phải hiện ít nhất một mục drift, vì đó đúng
+       là kiểu hỏng mà trang này sinh ra để bắt.
+P055 △ — Bản nền tảng: thêm sự kiện config/structure/deploy/module update/
+       break-glass. Vẫn KHÔNG xóa/sửa được.
+P056 △ — BREAK-GLASS: chặt hơn support impersonation của org_admin — bắt
+       buộc lý do + mã ticket + giới hạn thời gian + BÁO cho org_admin, và
+       impersonate được mọi role kể cả org_admin.
 
 --------------------------------------------------------------------------------
 4. TỔNG HỢP FILE DỰNG
@@ -276,8 +322,9 @@ P058 — NĐ 13/2023 + PIPL: chính sách lưu trữ hồ sơ đào tạo, dữ 
 | 04-site-training-manager/ | P021, P022, P027, P028, P029, P030, P031, P032, P033, P034 | 10 |
 | 05-hr-hse-central/ | P029, P030, P031, P032, P033, P034, P035–P046 | 18 |
 | 06-hq-viewer/ | P033, P047, P048, P049 | 4 |
-| 07-administrator/ | P029, P050–P058 | 10 |
-| **TỔNG** | **53 trang logic** | **65 file** |
+| 07-nissei-admin/ | P029, P050–P056, P058, P059 | 10 |
+| 08-administrator/ | P055, P056, P057, P060–P063 | 7 |
+| **TỔNG** | **58 trang logic** | **72 file** |
 
 _shared/ (không phải role folder): BUILD-SPEC.md, css/, js/, img/
 

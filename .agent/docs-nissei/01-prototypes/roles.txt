@@ -16,16 +16,41 @@ EverLMS gốc: nền tảng bán khóa học, 7 role phẳng (administrator, man
 content_editor, instructor, student, authenticated, anonymous), phân quyền
 theo role + quyền sở hữu ("own" vs "all"). Không có khái niệm chi nhánh.
 
-Hệ thống Nissei kế thừa mô hình đó và THÊM MỘT CHIỀU: **branch scope**
-(phạm vi chi nhánh). Mọi quyền giờ có 3 mức phạm vi, không còn 2:
+Hệ thống Nissei kế thừa mô hình đó và THÊM HAI CHIỀU:
 
+CHIỀU 1 — **branch scope** (phạm vi chi nhánh). Quyền có 3 mức, không còn 2:
   own    — chỉ dữ liệu của chính mình (hồ sơ đào tạo cá nhân)
-  branch — dữ liệu trong chi nhánh mình phụ trách  ← CHIỀU MỚI
+  branch — dữ liệu trong chi nhánh mình phụ trách  ← MỚI
   global — toàn bộ hệ thống, mọi chi nhánh
+=> `manager` của EverLMS bị tách đôi thành `site-training-manager` (branch)
+   và `hr-hse-central` (global) — cùng chức năng, khác phạm vi.
 
-Đây là lý do kỹ thuật khiến role của Nissei KHÔNG map 1-1 với EverLMS:
-`manager` của EverLMS bị tách đôi thành `site-training-manager` (branch)
-và `hr-hse-central` (global) — cùng chức năng, khác phạm vi.
+CHIỀU 2 — **layer scope** (tầng sở hữu): ai được đụng vào CÁI GÌ CỦA HỆ THỐNG.
+  data      — dữ liệu nghiệp vụ (nhân viên, khóa, chứng chỉ)
+  delta     — cấu hình riêng của khách (chi nhánh, ngôn ngữ, nhận diện,
+              nội dung biên tập, mẫu chứng chỉ)
+  core      — CẤU TRÚC sản phẩm (entity, field, view, menu, theme, module)
+=> `administrator` (super-role duy nhất) bị TÁCH ĐÔI:
+     org_admin      → data + delta   (khách vận hành hằng ngày)
+     administrator  → core           (nền tảng, break-glass, hiếm dùng)
+
+VÌ SAO PHẢI TÁCH CHIỀU 2 — đây là quyết định kiến trúc, không phải thẩm mỹ:
+strategy-final nguyên tắc E4 cam kết "ba lớp tách bạch CORE / DELTA / DATA:
+khách không sửa lõi, cập nhật lõi không giẫm tùy biến". Nếu admin phía khách
+sửa được cấu trúc site, instance Nissei sẽ DRIFT khỏi product core và mất
+khả năng nhận update — đúng rủi ro đã ghi thành câu hỏi Q1 của strategy.txt
+("instance JFC hiện lệch repo bao xa?"). Tách role chính là CÁCH THỰC THI
+E4 bằng phân quyền. Với vòng security review của công ty Nhật, "khách không
+thể phá cấu trúc hệ thống" là điểm bán được.
+Hệ quả có lợi cho khách: org_admin có ĐỦ mọi thứ IT của Nissei cần hằng ngày
+(tài khoản, gán role, chi nhánh, ngôn ngữ, tích hợp, audit, lưu trữ) mà
+không bao giờ phải xin quyền administrator.
+
+GHI CHÚ ĐẶT TÊN (giữ AD-S1: mọi thứ vào product core, không fork):
+  khóa role trong CORE : `org_admin`  (generic — khách sau dùng lại được)
+  nhãn ở deployment    : "Nissei Administrator"
+  folder prototype     : 07-nissei-admin/  (đặt vậy cho dễ đọc)
+Khách sau (vd JFC) chỉ đổi nhãn thành "JFC Administrator", không đổi code.
 
 Khác biệt thứ hai: hệ thống là NỘI BỘ, login-only. Không có catalog công
 khai, không đăng ký, không thương mại (bỏ toàn bộ checkout/pricing/
@@ -34,17 +59,23 @@ bề mặt, trừ một ngoại lệ quan trọng: TRA CỨU CHỨNG CHỈ công
 thanh tra ATLĐ và auditor ISO (xem mục 5, ghi chú A2).
 
 --------------------------------------------------------------------------------
-2. BẢY VAI TRÒ
+2. TÁM VAI TRÒ
 --------------------------------------------------------------------------------
-| RID | Role (UI EN) | Tên Việt | Nhóm | Scope | Folder prototype |
-|-----|--------------|----------|------|-------|------------------|
-| anonymous | Anonymous | Khách chưa đăng nhập | Public | none | 01-anonymous/ |
-| employee | Employee | Nhân viên / công nhân | Learners | own | 02-employee/ |
-| instructor | Instructor | Giảng viên nội bộ | Authoring | own + branch (dạy) | 03-instructor/ |
-| site_training_manager | Site Training Manager | Quản lý đào tạo nhà máy | Operations | branch | 04-site-training-manager/ |
-| hr_hse_central | HR/HSE Central | HR/HSE trung tâm | Operations | global | 05-hr-hse-central/ |
-| hq_viewer | HQ Viewer | Quản lý trụ sở chính | Oversight | global (read-only) | 06-hq-viewer/ |
-| administrator | Administrator | Quản trị hệ thống | Platform admin | global (+ config) | 07-administrator/ |
+| RID | Role (UI EN) | Tên Việt | Nhóm | Branch scope | Layer | Folder prototype |
+|-----|--------------|----------|------|--------------|-------|------------------|
+| anonymous | Anonymous | Khách chưa đăng nhập | Public | none | — | 01-anonymous/ |
+| employee | Employee | Nhân viên / công nhân | Learners | own | data | 02-employee/ |
+| instructor | Instructor | Giảng viên nội bộ | Authoring | own + branch (dạy) | data | 03-instructor/ |
+| site_training_manager | Site Training Manager | Quản lý đào tạo nhà máy | Operations | branch | data | 04-site-training-manager/ |
+| hr_hse_central | HR/HSE Central | HR/HSE trung tâm | Operations | global | data + delta (nội dung ĐT) | 05-hr-hse-central/ |
+| hq_viewer | HQ Viewer | Quản lý trụ sở chính | Oversight | global (read-only) | — | 06-hq-viewer/ |
+| **org_admin** | **Nissei Administrator** | **Quản trị của Nissei** | **Customer admin** | **global** | **data + delta** | **07-nissei-admin/** |
+| administrator | Platform Administrator | Quản trị nền tảng | Platform | platform | **core** | 08-administrator/ |
+
+Đọc bảng theo hai chiều (mục 1): cột "Branch scope" = thấy được dữ liệu của
+ai; cột "Layer" = đụng được vào tầng nào của hệ thống. Hai role admin có
+CÙNG tầm nhìn dữ liệu (global) nhưng KHÁC tầng: org_admin dừng ở delta,
+administrator mới chạm core.
 
 2.1 anonymous — Khách chưa đăng nhập
   Bề mặt tối thiểu: đăng nhập, đặt lại mật khẩu, và tra cứu chứng chỉ theo
@@ -103,13 +134,39 @@ thanh tra ATLĐ và auditor ISO (xem mục 5, ghi chú A2).
   Ghi chú ngôn ngữ: thực tế role này dùng tiếng Nhật; prototype dựng bản
   tiếng Anh theo quyết định ngôn ngữ chung, có annotation nêu rõ.
 
-2.7 administrator — Quản trị hệ thống
-  Super-role (`is_admin`), kế thừa cảnh báo của EverLMS C02: chỉ cấp khi
-  thật cần, vận hành hằng ngày phải dùng role nghiệp vụ.
-    - Cấu hình chi nhánh (quốc gia, timezone, ngôn ngữ mặc định)
-    - Phân quyền, cấu hình ngôn ngữ, tích hợp (SMTP/SSO/HRIS)
-    - Audit log đầy đủ, switch user (có ghi vết), sức khỏe hệ thống
-    - Chính sách lưu trữ & quyền riêng tư (NĐ 13/2023, PIPL)
+2.7 org_admin — "Nissei Administrator"  ← ROLE MỚI, ADMIN CỦA KHÁCH
+  IT của Nissei. Chủ sở hữu tầng DATA + DELTA. Dùng hằng ngày.
+    - Tài khoản & vòng đời user (tạo, khóa, reset, gán role)  → P029, P051
+    - Cấu hình chi nhánh (timezone, locale, data region)      → P052
+    - Ngôn ngữ (bật/tắt, tiến độ dịch UI, fallback)           → P053
+    - Tích hợp (SMTP đang chạy; SSO/AD + HRIS chưa kết nối)   → P054
+    - Nội dung biên tập (trang public, thông báo, mẫu email)  → P059
+    - Audit log nghiệp vụ                                     → P055
+    - Impersonation hỗ trợ người dùng (bắt buộc nhập lý do)   → P056
+    - Chính sách lưu trữ & quyền riêng tư (NĐ 13/2023, PIPL)  → P058
+  KHÔNG được: sửa cấu trúc site, module, release, config sync — đó là core.
+  RANH GIỚI VỚI hr_hse_central: org_admin quản HỆ THỐNG (ai đăng nhập được,
+  cấu hình gì), hr_hse_central quản CHUẨN ĐÀO TẠO (ma trận, danh mục, dịch).
+  Cả hai đều global, nhưng khác lĩnh vực — không chồng lấn.
+  RANH GIỚI NỘI DUNG: nội dung KHÓA HỌC là của hr_hse_central (P038/P045/
+  P046). Cái org_admin quản ở P059 là CÂU CHỮ ngoài đào tạo: trang public,
+  thông báo, mẫu email. Quy tắc bắn email vẫn của hr_hse_central (P044).
+
+2.8 administrator — "Platform Administrator"  ← THU HẸP LẠI, CHỈ NỀN TẢNG
+  Super-role (`is_admin`) của nền tảng. Chủ sở hữu tầng CORE. HIẾM DÙNG,
+  bản chất là break-glass. Kế thừa đúng cảnh báo của EverLMS C02: chỉ cấp
+  khi thật cần; mọi việc hằng ngày phải dùng role nghiệp vụ hoặc org_admin.
+    - Tổng quan nền tảng, release, môi trường                  → P060
+    - CẤU TRÚC SITE: entity, field, view, menu, theme          → P061 ← HÀNG RÀO
+    - Module & update của product core                         → P062
+    - Config sync CORE ↔ DELTA, phát hiện drift                → P063 ← HIỆN THÂN E4
+    - Sức khỏe hệ thống, job nền, hàng đợi                     → P057
+    - Audit log ĐẦY ĐỦ (thêm sự kiện config/deploy/break-glass)→ P055 (biến thể)
+    - Break-glass access (lý do + mã ticket + giới hạn thời
+      gian + báo cho org_admin)                                → P056 (biến thể)
+  Người giữ: đội nền tảng (vendor), không phải nhân sự Nissei thông thường.
+  P061 CỐ Ý read-mostly: thay đổi cấu trúc đi theo RELEASE (P062), không
+  sửa tay trên production — sửa tay chính là cách sinh ra drift.
 
 --------------------------------------------------------------------------------
 3. MA TRẬN TRUY CẬP THEO ROUTE GROUP
@@ -117,23 +174,31 @@ thanh tra ATLĐ và auditor ISO (xem mục 5, ghi chú A2).
 Ô: full | scoped | read | none.  Route group (kế thừa cách chia của C01/C07,
 thay Public/Commerce bằng Auth/Central/HQ):
 
-| Role | Auth | App (học) | Workspace | Central | HQ | Admin |
-|------|------|-----------|-----------|---------|----|----|
-| anonymous | full | none | none | none | none | none |
-| employee | full | scoped (own) | none | none | none | none |
-| instructor | full | scoped (own) | scoped (lớp mình) | none | none | none |
-| site_training_manager | full | scoped (own) | scoped (branch) | none | none | none |
-| hr_hse_central | full | scoped (own) | full (global) | full | read | none |
-| hq_viewer | full | none | none | none | read | none |
-| administrator | full | scoped (own) | full | full | full | full |
+| Role | Auth | App (học) | Workspace | Central | HQ | Org-admin | Platform |
+|------|------|-----------|-----------|---------|----|-----------|----------|
+| anonymous | full | none | none | none | none | none | none |
+| employee | full | scoped (own) | none | none | none | none | none |
+| instructor | full | scoped (own) | scoped (lớp mình) | none | none | none | none |
+| site_training_manager | full | scoped (own) | scoped (branch) | none | none | none | none |
+| hr_hse_central | full | scoped (own) | full (global) | full | read | none | none |
+| hq_viewer | full | none | none | none | read | none | none |
+| org_admin | full | scoped (own) | read | read | read | **full** | none |
+| administrator | full | none | read | read | read | read | **full** |
 
 Ghi chú:
-  - Mọi role đăng nhập (trừ hq_viewer) đều là NHÂN VIÊN → có bề mặt App
-    cho hồ sơ đào tạo của chính mình. hq_viewer là ngoại lệ: người ở HQ
-    Nhật, không thuộc diện đào tạo ATLĐ của nhà máy VN.
-  - hr_hse_central có `read` ở HQ: xem được báo cáo hợp nhất nhưng không
-    cấu hình lịch xuất báo cáo của HQ.
-  - Không role nghiệp vụ nào chạm được Admin — kể cả hr_hse_central.
+  - Mọi role đăng nhập (trừ hq_viewer và administrator) đều là NHÂN VIÊN
+    Nissei → có bề mặt App cho hồ sơ đào tạo của chính mình. Hai ngoại lệ:
+    hq_viewer ở HQ Nhật (không thuộc diện đào tạo ATLĐ nhà máy VN), và
+    administrator là người của đội nền tảng (không phải nhân sự Nissei).
+  - hr_hse_central có `read` ở HQ: xem báo cáo hợp nhất nhưng không cấu
+    hình lịch xuất báo cáo của HQ.
+  - KHÔNG role nghiệp vụ nào chạm được Org-admin — kể cả hr_hse_central.
+  - org_admin có `read` ở nghiệp vụ (để hỗ trợ khi user báo lỗi) nhưng
+    KHÔNG sửa được ma trận/danh mục — đó là quyền hr_hse_central.
+  - administrator KHÔNG có `full` ở bất kỳ bề mặt nghiệp vụ nào. Nó là
+    super-role kỹ thuật, không phải super-role nghiệp vụ. Đây là điểm khác
+    biệt then chốt so với `administrator` cũ (vốn full mọi thứ) và là lý do
+    tồn tại của lần tách này.
 
 --------------------------------------------------------------------------------
 4. MA TRẬN SỞ HỮU DỮ LIỆU (ai được sửa cái gì)
@@ -149,16 +214,27 @@ mục 3). Mọi bề mặt hiển thị đều phải có một chủ sở hữu
 | Bài thi / câu hỏi | instructor | hr_hse_central | P026 |
 | Vị trí công việc (job role) | hr_hse_central | tất cả staff | P037 |
 | Chi nhánh (dữ liệu nghiệp vụ) | hr_hse_central | tất cả staff | P040 |
-| Chi nhánh (cấu hình kỹ thuật: timezone, locale) | administrator | — | P052 |
+| Chi nhánh (cấu hình kỹ thuật: timezone, locale) | org_admin | — | P052 |
 | Hồ sơ nhân viên | hr_hse_central (global), site_manager (branch) | instructor | P029, P030 |
 | Lớp/ca đào tạo, điểm danh | instructor, site_manager | hr_hse_central | P022, P023 |
 | Gán khóa cho nhân viên | site_manager (branch), hr_hse_central (global) | — | P031 |
 | Mẫu chứng chỉ | hr_hse_central | — | P043 |
 | Chứng chỉ đã cấp (thu hồi/cấp lại) | hr_hse_central | site_manager (branch) | P034 |
 | Quy tắc nhắc hạn | hr_hse_central | — | P044 |
-| Bản dịch nội dung | hr_hse_central | — | P045 |
-| Phân quyền, tích hợp, ngôn ngữ hệ thống | administrator | — | P051, P053, P054 |
-| Audit log | không ai sửa (bất biến) | administrator (đọc) | P055 |
+| Bản dịch nội dung khóa học | hr_hse_central | — | P045 |
+| Nội dung biên tập (trang public, thông báo, mẫu email) | org_admin | — | P059 |
+| Tài khoản & vòng đời user | org_admin | hr_hse_central, site_manager (đọc) | P029 |
+| GÁN role cho người | org_admin | — | P051 |
+| ĐỊNH NGHĨA quyền của role | administrator (đi theo release) | org_admin (đọc) | P061, P062 |
+| Tích hợp: cấu hình (SMTP creds, SSO settings) | org_admin | — | P054 |
+| Tích hợp: mã tích hợp (module) | administrator | — | P062 |
+| Ngôn ngữ: bật/tắt, tiến độ dịch UI | org_admin | — | P053 |
+| Ngôn ngữ: gói locale ship vào sản phẩm | administrator | — | P062 |
+| Chính sách lưu trữ dữ liệu | org_admin (quyết định pháp lý của khách) | — | P058 |
+| CẤU TRÚC SITE (entity/field/view/menu/theme) | administrator (chỉ qua release) | — | P061 |
+| Module & release của product core | administrator | — | P062 |
+| Config sync CORE ↔ DELTA | administrator | — | P063 |
+| Audit log | không ai sửa (bất biến) | org_admin (nghiệp vụ), administrator (đầy đủ) | P055 |
 
 --------------------------------------------------------------------------------
 5. QUY TẮC DỰNG FOLDER PROTOTYPE
@@ -238,7 +314,12 @@ NGƯỜI DÙNG DEMO (tên hư cấu — KHÔNG dùng tên người thật của 
   site manager Le Quoc Bao       · NEH-000377 · Training Manager    · NEH-HAN
   hr/hse       Pham Thu Ha       · NEV-000045 · HSE Manager         · Central
   hq viewer    Sato Kenji        · HQ-000012  · Global HSE          · Hamamatsu
-  administrator Dang Minh Tuan   · NEV-000009 · IT Administrator    · Central
+  org_admin    Dang Minh Tuan    · NEV-000009 · IT Administrator    · Central
+               (avatar-04) — IT của Nissei, dùng hệ thống hằng ngày
+  administrator Vu Hoang Nam     · PLT-000001 · Platform Engineer   · Platform operations
+               (avatar-02) — người của ĐỘI NỀN TẢNG, không phải nhân sự
+               Nissei. Mã PLT-* cố ý khác hệ mã NEV/NEH/NEM của Nissei để
+               thấy ngay đây là tài khoản ngoài tổ chức khách.
 
 KPI CHUẨN (dùng nguyên số này ở mọi dashboard/báo cáo):
   Tổng nhân viên            5,842

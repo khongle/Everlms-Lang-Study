@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin overview · Nissei Training</title>
-<meta name="description" content="System configuration, access control and platform health at a glance.">
+<meta name="description" content="The Nissei deployment at a glance: users by role, sign-in activity, integration health and storage.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,17 +21,26 @@
     <div class="pagehead">
       <div class="pagehead__t">
         <h1>Admin overview</h1>
-        <p class="lede">System configuration, access control and platform health for the Nissei
-          compliance training system &middot; signed in as Dang Minh Tuan, IT Administrator</p>
+        <p class="lede">The deployment at a glance: who has access, whether people can sign in and reach
+          their integrations, and how much storage is used &middot; signed in as Dang Minh Tuan, IT
+          Administrator, Nissei's own IT department</p>
       </div>
       <div class="pagehead__actions">
         <a class="btn btn--ghost" href="P055-audit-log.html">Audit log</a>
-        <a class="btn btn--brand" href="P057-system-health.html">System health</a>
+        <a class="btn btn--brand" href="P056-switch-user.html">Switch user</a>
       </div>
     </div>
   </div></section>
 
   <section class="section"><div class="container">
+
+    <div class="annot"><b>Two administrators, one deployment</b>This account, Nissei Administrator, is
+      Nissei's own IT department: accounts, roles, branches, languages, integrations, editorial content,
+      audit and retention, run day to day. It cannot touch site structure, modules or releases; that
+      surface belongs to the Platform Administrator, a break-glass role at
+      <a href="../08-administrator/P060-platform-overview.html">Platform overview</a>. The fence keeps this
+      deployment upgradable: everything Nissei needs for routine work lives in this folder, so the platform
+      side is opened rarely, not daily.</div>
 
     <!-- top KPIs -->
     <div class="kpis">
@@ -51,10 +60,10 @@
       </div>
       <div class="kpi">
         <span class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/>
-          <rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg></span>
-        <div><div class="stat__n num">4</div><div class="stat__l">Background jobs</div>
-          <div class="kpi__sub">0 failing &middot; cron healthy</div></div>
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z"/></svg></span>
+        <div><div class="stat__n num">8</div><div class="stat__l">Roles configured</div>
+          <div class="kpi__sub">Assigned here &middot; defined at the platform</div></div>
       </div>
       <div class="kpi">
         <span class="kpi__ic" style="background:var(--warning-soft)"><svg viewBox="0 0 24 24" fill="none"
@@ -83,15 +92,18 @@
               <td><span class="badge badge--solid">Global</span></td></tr>
             <tr><td>HQ Viewer</td><td class="num">2</td>
               <td><span class="badge badge--solid">Global &middot; read-only</span></td></tr>
-            <tr><td>Administrator</td><td class="num">2</td>
-              <td><span class="badge badge--solid">Global &middot; + config</span></td></tr>
+            <tr><td>Nissei Administrator</td><td class="num">2</td>
+              <td><span class="badge badge--solid">Global &middot; admin</span></td></tr>
+            <tr><td>Platform Administrator</td><td class="num">1</td>
+              <td><span class="badge" style="background:var(--ink);color:#fff">Platform &middot; break-glass</span></td></tr>
             <tr><td>Anonymous</td><td class="num">Not applicable</td>
               <td><span class="badge" style="background:var(--paper-3);color:var(--muted)">None</span></td></tr>
           </tbody>
         </table>
-        <p class="hint">HQ Viewer accounts (Hamamatsu HQ) sit outside the 5,842-employee VN/CN workforce and
-          carry no training obligations in this system. All other roles are Nissei employees first, with an
-          elevated role layered on top.</p>
+        <p class="hint">HQ Viewer accounts (Hamamatsu HQ) and the Platform Administrator account sit outside
+          the 5,842-employee VN/CN workforce and carry no training obligations in this system. All other
+          roles, including Nissei Administrator, are Nissei employees first, with an elevated role layered
+          on top.</p>
         <a class="text-sm fw-700" href="P051-roles-permissions.html" style="display:inline-block;margin-top:.4rem">
           Full roles &amp; permissions matrix</a>
       </div>
@@ -99,27 +111,30 @@
       <div class="stack">
 
         <div class="card">
-          <h3 style="font-size:var(--text-md);margin:0 0 .8rem">Background jobs</h3>
+          <h3 style="font-size:var(--text-md);margin:0 0 .8rem">Sign-in activity</h3>
           <div class="stack-sm">
             <div class="flex items-center justify-between gap-2">
-              <span class="text-sm">Nightly compliance recalculation</span>
-              <span class="status status--success status--dot">02:00 today</span>
+              <span class="text-sm">Signed in today</span>
+              <span class="status status--success status--dot">3,214 &middot; 55%</span>
             </div>
             <div class="flex items-center justify-between gap-2">
-              <span class="text-sm">Reminder dispatch</span>
-              <span class="status status--success status--dot">14:00 today</span>
+              <span class="text-sm">Unique accounts, last 7 days</span>
+              <span class="status status--success status--dot">5,610</span>
             </div>
             <div class="flex items-center justify-between gap-2">
-              <span class="text-sm">Certificate generation queue</span>
-              <span class="status status--success status--dot">3 pending</span>
+              <span class="text-sm">Failed sign-in attempts, 24h</span>
+              <span class="status status--warning status--dot">14</span>
             </div>
             <div class="flex items-center justify-between gap-2">
-              <span class="text-sm">Import jobs</span>
-              <span class="status status--muted status--dot">idle since 10 Jul</span>
+              <span class="text-sm">Accounts locked</span>
+              <span class="status status--error status--dot">1</span>
             </div>
           </div>
-          <a class="text-sm fw-700" href="P057-system-health.html" style="display:inline-block;margin-top:.8rem">
-            System health &amp; jobs</a>
+          <a class="text-sm fw-700" href="P029-employees.html" style="display:inline-block;margin-top:.8rem">
+            Full sign-in detail per employee</a>
+          <p class="hint" style="margin-top:.6rem">Background jobs and queues that generate this activity
+            (reminder dispatch, certificate generation, nightly recalculation) run on the platform side; see
+            <a href="../08-administrator/P057-system-health.html">System health</a> (platform-owned).</p>
         </div>
 
         <div class="card">
@@ -203,7 +218,7 @@
           <span class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z"/></svg></span>
           <h3 style="font-size:var(--text-md);margin:.8rem 0 .2rem">Roles &amp; permissions</h3>
-          <p class="text-sm text-muted" style="margin:0">7 roles &middot; own / branch / global scope</p>
+          <p class="text-sm text-muted" style="margin:0">8 roles &middot; own / branch / global / platform scope</p>
         </a>
         <a class="card" href="P052-branch-configuration.html">
           <span class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -239,12 +254,12 @@
           <h3 style="font-size:var(--text-md);margin:.8rem 0 .2rem">Switch user</h3>
           <p class="text-sm text-muted" style="margin:0">Impersonation &middot; reason required</p>
         </a>
-        <a class="card" href="P057-system-health.html">
+        <a class="card" href="P059-editorial-content.html">
           <span class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/>
-            <rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg></span>
-          <h3 style="font-size:var(--text-md);margin:.8rem 0 .2rem">System health &amp; jobs</h3>
-          <p class="text-sm text-muted" style="margin:0">4 background jobs &middot; 0 failing</p>
+            stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+          <h3 style="font-size:var(--text-md);margin:.8rem 0 .2rem">Editorial content</h3>
+          <p class="text-sm text-muted" style="margin:0">Home page, notices, notification wording</p>
         </a>
         <a class="card" href="P058-data-retention.html">
           <span class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -253,6 +268,10 @@
           <p class="text-sm text-muted" style="margin:0">Decree 13/2023 &amp; PIPL</p>
         </a>
       </div>
+      <p class="hint" style="margin-top:1rem">Site structure, modules and releases are configured on the
+        platform side, not here; see
+        <a href="../08-administrator/P060-platform-overview.html">Platform overview</a>
+        (platform-owned, break-glass).</p>
     </div>
 
   </div></section>

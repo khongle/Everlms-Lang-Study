@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuration sync · Nissei Training</title>
+<meta name="description" content="Configuration diff between the product core and this customer's delta: locked, owned, and drifted. Import, export and deploy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/css/base.css">
+<link rel="stylesheet" href="../_shared/css/nissei.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-header" data-shell="app" data-role="administrator" data-active="P063"></div>
+
+<main id="main">
+
+  <section class="workhero"><div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="P060-platform-overview.html">Platform</a> <span aria-hidden="true">/</span> <span>Configuration sync</span>
+    </nav>
+    <div class="pagehead">
+      <div class="pagehead__t">
+        <h1>Configuration sync</h1>
+        <p class="lede">The diff between the product core and Nissei&rsquo;s configuration delta: what is
+          locked, what is theirs, and what has drifted outside both.</p>
+      </div>
+      <div class="pagehead__actions">
+        <button class="btn btn--ghost" type="button">Export delta package</button>
+        <button class="btn btn--ghost" type="button">Import delta package</button>
+        <a class="btn btn--brand" href="#drift">Resolve drift</a>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+
+    <div class="kpis">
+      <div class="kpi">
+        <span class="kpi__ic" style="background:var(--paper-3)"><svg viewBox="0 0 24 24" fill="none"
+          stroke="var(--ink-soft)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <div><div class="stat__n num">861</div><div class="stat__l">Core items (locked)</div>
+          <div class="kpi__sub">Entity types, fields, views, permissions</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/>
+          <path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></span>
+        <div><div class="stat__n num">140</div><div class="stat__l">Delta items (Nissei-owned)</div>
+          <div class="kpi__sub">Branding, templates, languages, integrations</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic" style="background:var(--error-soft)"><svg viewBox="0 0 24 24" fill="none"
+          stroke="var(--error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+        <div><div class="stat__n num" style="color:var(--error)">1</div><div class="stat__l">Drifted</div>
+          <div class="kpi__sub">Changed in production outside the delta</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic kpi__ic--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <div><div class="stat__n">12 Jul 2026</div><div class="stat__l">Last synced</div>
+          <div class="kpi__sub">Delta package exported clean</div></div>
+      </div>
+    </div>
+
+    <!-- drift, the failure mode this page exists to catch -->
+    <div id="drift" class="alert alert--error" style="margin-top:2rem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><b>1 item has drifted from the packaged delta.</b> This is exactly the failure mode this page
+        exists to catch: production configuration that no longer matches what was last exported.</div>
+    </div>
+
+    <div class="tablecard" style="margin-top:1rem">
+      <div class="wtable__wrap">
+        <table class="wtable">
+          <caption class="sr-only">Drifted configuration item, its cause and available actions</caption>
+          <thead>
+            <tr><th scope="col">Config item</th><th scope="col">What happened</th><th scope="col">When</th>
+              <th scope="col"><span class="sr-only">Actions</span></th></tr>
+          </thead>
+          <tbody>
+            <tr style="background:var(--error-soft)">
+              <td><b class="codecell">lms_certificate.template.saf_bilingual</b>
+                <div class="text-sm text-muted">SAF-104 bilingual certificate template, signature block position</div></td>
+              <td class="text-sm">Patched directly in production during a break-glass session (ticket
+                PLT-2214) to fix a PDF clipping bug. Never re-exported into the customer delta package.</td>
+              <td class="text-sm text-muted">09 Jul 2026<br>Vu Hoang Nam</td>
+              <td class="rowbtns" style="flex-direction:column;gap:.4rem;align-items:stretch">
+                <button class="btn btn--brand btn--sm" type="button">Export to delta</button>
+                <button class="btn btn--ghost btn--sm" type="button">Revert to packaged delta</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="hint">Full detail on this session is in the <a href="P055-audit-log.html">audit log</a>, event
+      type Break-glass, 09 Jul 2026 14:20.</p>
+
+    <!-- core vs delta -->
+    <div class="grid grid--2" style="margin-top:2.2rem;align-items:start">
+
+      <div class="card">
+        <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Core (locked)</h3>
+        <p class="text-sm text-muted" style="margin:0 0 1rem">Owned by the product. Identical for every
+          customer running this core version. Changes only through a release, see
+          <a href="P062-modules-updates.html">Modules and updates</a>.</p>
+        <table class="dtable">
+          <tbody>
+            <tr><td>Entity type &amp; field definitions</td><td class="num">318</td></tr>
+            <tr><td>Views (query &amp; filter logic)</td><td class="num">46</td></tr>
+            <tr><td>Base permissions &amp; role scaffolding</td><td class="num">84</td></tr>
+            <tr><td>Workflow states (draft, review, published)</td><td class="num">12</td></tr>
+            <tr><td>Menu structure &amp; route access</td><td class="num">401</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Delta (Nissei-owned)</h3>
+        <p class="text-sm text-muted" style="margin:0 0 1rem">Exported in Nissei&rsquo;s delta package.
+          Edited from the Nissei Administrator surface, never from here.</p>
+        <table class="dtable">
+          <tbody>
+            <tr><td><a href="../07-nissei-admin/P059-editorial-content.html">Branding &amp; theme (logo, colors)</a></td><td class="num">18</td></tr>
+            <tr><td><a href="../05-hr-hse-central/P043-certificate-templates.html">Certificate templates, VI/JA</a></td><td class="num">6</td></tr>
+            <tr><td><a href="../07-nissei-admin/P053-language-localization.html">Language &amp; translation config</a></td><td class="num">22</td></tr>
+            <tr><td><a href="../07-nissei-admin/P052-branch-configuration.html">Branch config (timezone, locale)</a></td><td class="num">5</td></tr>
+            <tr><td><a href="../07-nissei-admin/P054-integrations.html">Integrations (SMTP, SSO, HRIS)</a></td><td class="num">9</td></tr>
+            <tr><td><a href="../07-nissei-admin/P058-data-retention.html">Retention &amp; privacy policy</a></td><td class="num">4</td></tr>
+            <tr><td>Everything else exported (view displays, reminder templates, menu labels)</td><td class="num">76</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- import/export/deploy -->
+    <h2 style="font-size:var(--text-lg);margin:2.4rem 0 1rem">Import, export and deploy</h2>
+    <div class="card">
+      <div class="formgrid formgrid--2">
+        <div class="field">
+          <label for="cs-export">Export current delta</label>
+          <p class="hint" style="margin:0 0 .6rem">Packages the 140 healthy delta items above into a
+            portable config set, for backup or promoting to another environment.</p>
+          <button class="btn btn--ghost btn--sm" id="cs-export" type="button">Export delta package</button>
+        </div>
+        <div class="field">
+          <label for="cs-import">Import a delta package</label>
+          <p class="hint" style="margin:0 0 .6rem">Applies an exported delta on top of the current core
+            version. Always run against staging first.</p>
+          <div class="dropzone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
+            <p style="margin:0">Drop a delta package (.tar.gz) or <button type="button" class="btn btn--ghost btn--sm" id="cs-import">browse</button></p>
+          </div>
+        </div>
+      </div>
+      <div class="switchrow" style="margin-top:1.2rem">
+        <span><b class="text-sm">Deploy to production only after staging validation</b>
+          <small class="hint" style="display:block">Matches the release flow on Modules and updates; cannot
+            be turned off.</small></span>
+        <button class="swtoggle is-on" type="button" role="switch" aria-checked="true" disabled
+          aria-label="Deploy to production only after staging validation"></button>
+      </div>
+    </div>
+
+    <div class="annot"><b>Core, delta, data separation</b> Every configuration item on this environment sits
+      in exactly one of three places: CORE (part of the product release, identical for every customer),
+      DELTA (Nissei&rsquo;s own configuration, tracked and exportable), or, when something goes wrong,
+      drifted from both. This separation is what keeps Nissei upgradable: a release can be applied because
+      it only ever touches CORE, Nissei&rsquo;s DELTA reapplies cleanly on top, and DATA (employees, training
+      records) is never part of a release at all. The one drifted item above is the exception that proves
+      why this page has to exist: without it, that hand-patched certificate template would silently diverge
+      further from the next release until something broke in a way nobody could explain.</div>
+
+  </div></section>
+</main>
+
+<div id="site-footer"></div>
+<script src="../_shared/js/shell.js"></script>
+<script src="../_shared/js/app.js"></script>
+</body>
+</html>

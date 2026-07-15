@@ -53,15 +53,32 @@ The public surface is deliberately only two pages. This is an internal system: n
 
 One folder per role. A folder holds the pages that role works with. Where two roles reach the same page id and **see something different**, the page is built twice — once per folder — and the difference on screen is the deliverable. Where the rendering would be identical, the page is built once and reached by cross-link from the account menu (rule and rationale: `../roles.txt` §5).
 
-| Folder | Role | Scope | Pages |
-|---|---|---|---|
-| `01-anonymous/` | Anonymous | none | P001–P003 |
-| `02-employee/` | Employee | own | P010–P020 |
-| `03-instructor/` | Instructor | own + own classes | P021–P027 |
-| `04-site-training-manager/` | Site Training Manager | **one branch** | P021, P022, P027–P034 |
-| `05-hr-hse-central/` | HR/HSE Central | **all branches** | P029–P046 |
-| `06-hq-viewer/` | HQ Viewer | all branches, **read-only** | P033, P047–P049 |
-| `07-administrator/` | Administrator | all + system config | P029, P050–P058 |
+| Folder | Role (`data-role`) | Sees | Can change | Pages |
+|---|---|---|---|---|
+| `01-anonymous/` | `anonymous` | public only | nothing | P001–P004 |
+| `02-employee/` | `employee` | own record | own preferences | P010–P020 |
+| `03-instructor/` | `instructor` | own classes | own courses | P021–P027 |
+| `04-site-training-manager/` | `site-training-manager` | **one branch** | that branch's operations | P021, P022, P027–P034 |
+| `05-hr-hse-central/` | `hr-hse-central` | **all branches** | the training standard | P029–P046 |
+| `06-hq-viewer/` | `hq-viewer` | all branches | **nothing (read-only)** | P033, P047–P049 |
+| `07-nissei-admin/` | `org_admin` | all branches | **data + delta** | P029, P050–P056, P058, P059 |
+| `08-administrator/` | `administrator` | the platform | **core** | P055–P057, P060–P063 |
+
+### Two admins, and why
+
+The roles are scoped along **two** axes, not one:
+
+- **Branch scope** — whose data you see: `own` / `branch` / `global`. This is why `site-training-manager` and `hr-hse-central` are separate roles: same job, different reach.
+- **Layer scope** — what part of the system you may change: `data` (business records) / `delta` (this customer's configuration, branding, content) / `core` (the product's structure: entities, fields, views, modules).
+
+`org_admin` and `administrator` have the *same* data reach and *different* layers:
+
+- **`org_admin` — "Nissei Administrator"** (the customer's IT): accounts, roles, branch config, languages, integrations, editorial wording, audit, retention. Everything Nissei needs daily, and it never needs to ask the platform for routine work.
+- **`administrator` — "Platform Administrator"** (the platform team, break-glass): structure, modules, releases, config sync. Note it has **no `full` on any business surface** — it is a technical superuser, not a business one.
+
+The fence exists because the product ships as **CORE / DELTA / DATA** (`strategy-final.txt`, principle E4). If the customer could edit structure, this deployment would drift away from the product core and stop being upgradable. `08-administrator/P061-site-structure.html` is that fence, `P063-config-sync.html` is where drift gets caught, and `P062-modules-updates.html` is the only channel structure changes travel through.
+
+The role key stays generic (`org_admin`) while the label is Nissei's, so the same core role serves the next customer with only a label change.
 
 `_shared/` is not a role folder — it holds the design system and the page registry.
 

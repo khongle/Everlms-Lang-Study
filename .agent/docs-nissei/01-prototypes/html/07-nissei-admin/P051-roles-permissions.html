@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Roles &amp; permissions · Nissei Training</title>
-<meta name="description" content="The seven system roles, what each can reach, and the scope each holds: own, branch or global.">
+<meta name="description" content="The eight system roles, what each can reach, and the scope each holds: own, branch, global or platform. Assign roles here; the matrix itself is read-only.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,8 +24,9 @@
     <div class="pagehead">
       <div class="pagehead__t">
         <h1>Roles &amp; permissions</h1>
-        <p class="lede">Seven roles, six route groups, and the scope each role holds: the dimension
-          that does not exist in a course-selling LMS.</p>
+        <p class="lede">Eight roles, six route groups, and the scope each role holds: the dimension
+          that does not exist in a course-selling LMS. Assign a role to a person below; the matrix itself
+          is a read-only reference.</p>
       </div>
     </div>
   </div></section>
@@ -40,6 +41,35 @@
         one factory without being handed every factory. That single addition is why
         <code>site_training_manager</code> and <code>hr_hse_central</code> exist as two separate roles
         instead of one &ldquo;manager&rdquo; role. See the note below the matrix.</div>
+    </div>
+
+    <!-- assign a role: the part of this page that is genuinely editable -->
+    <div class="card" style="margin-top:1.4rem">
+      <h3 style="font-size:var(--text-md);margin:0 0 .3rem">Assign a role</h3>
+      <p class="text-sm text-muted" style="margin:0 0 1.2rem">Give an employee one of these roles. This
+        changes <b>who holds</b> a role, not what the role is permitted to do; see the note under the
+        matrix below.</p>
+      <form class="formgrid formgrid--2">
+        <div class="field"><label for="ar-emp">Employee</label>
+          <input type="text" id="ar-emp" placeholder="Name or employee code, e.g. NEH-000377"></div>
+        <div class="field"><label for="ar-role">Role</label>
+          <select class="select" id="ar-role" style="width:100%">
+            <option>Employee</option>
+            <option>Instructor</option>
+            <option>Site Training Manager</option>
+            <option>HR/HSE Central</option>
+            <option>HQ Viewer</option>
+            <option>Nissei Administrator</option>
+            <option disabled>Platform Administrator (provisioned by the platform team)</option>
+          </select></div>
+      </form>
+      <div class="btn-row" style="margin-top:1.2rem">
+        <button class="btn btn--brand btn--sm" type="button">Save assignment</button>
+        <button class="btn btn--ghost btn--sm" type="button">Cancel</button>
+      </div>
+      <p class="hint">Role assignment is also available from an individual's record at
+        <a href="P029-employees.html">Employees</a>. Platform Administrator is granted outside this system,
+        break-glass only, and cannot be self-service assigned here.</p>
     </div>
 
     <!-- legend -->
@@ -57,7 +87,8 @@
     <div class="tablecard">
       <div class="wtable__wrap">
       <table class="wtable">
-        <caption class="sr-only">Seven roles by route group, with scope</caption>
+        <caption class="sr-only">Eight roles by route group, with scope. Read-only: permission definitions
+          are product structure, not edited on this page.</caption>
         <thead>
           <tr>
             <th scope="col">Role</th>
@@ -132,14 +163,24 @@
             <td><span class="status status--muted status--dot">None</span></td>
           </tr>
           <tr>
-            <th scope="row">Administrator</th>
-            <td style="background:var(--paper-2)"><span class="badge badge--solid">Global &middot; + config</span></td>
+            <th scope="row">Nissei Administrator</th>
+            <td style="background:var(--paper-2)"><span class="badge badge--solid">Global &middot; admin</span></td>
             <td><span class="status status--success status--dot">Full</span></td>
             <td><span class="status status--info status--dot">Scoped</span><br><small class="text-muted">own</small></td>
+            <td><span class="status status--info status--dot">Scoped</span><br><small class="text-muted">accounts only</small></td>
+            <td><span class="status status--muted status--dot">None</span></td>
+            <td><span class="status status--muted status--dot">None</span></td>
+            <td><span class="status status--success status--dot">Full</span><br><small class="text-muted">accounts, roles, config, content</small></td>
+          </tr>
+          <tr>
+            <th scope="row">Platform Administrator</th>
+            <td style="background:var(--paper-2)"><span class="badge" style="background:var(--ink);color:#fff">Platform &middot; break-glass</span></td>
             <td><span class="status status--success status--dot">Full</span></td>
-            <td><span class="status status--success status--dot">Full</span></td>
-            <td><span class="status status--success status--dot">Full</span></td>
-            <td><span class="status status--success status--dot">Full</span></td>
+            <td><span class="status status--muted status--dot">None</span></td>
+            <td><span class="status status--muted status--dot">None</span></td>
+            <td><span class="status status--muted status--dot">None</span></td>
+            <td><span class="status status--muted status--dot">None</span></td>
+            <td><span class="status status--success status--dot">Full</span><br><small class="text-muted">structure, modules, releases</small></td>
           </tr>
         </tbody>
       </table>
@@ -152,22 +193,33 @@
       role model both would have been a single &ldquo;manager&rdquo; role. Nissei splits them because the
       branch dimension makes that a meaningfully different grant of access, not a UI preference.</div>
 
+    <div class="annot"><b>Assign the role, do not define it</b>Nissei Administrator can hand this role to a
+      person, using the form above or from an employee's own record. It cannot change what a role is
+      permitted to reach: the rows and columns of the matrix above are product structure, the same as an
+      entity field or a route. Widening a role, for example letting Site Training Manager see a second
+      branch, is a product release, made by the Platform Administrator at
+      <a href="../08-administrator/P062-modules-updates.html">Modules and updates</a>, break-glass only.
+      Nothing on this page edits that matrix.</div>
+
     <div class="grid grid--2" style="margin-top:2rem;align-items:start">
       <div class="card card--soft">
-        <h3 style="font-size:var(--text-md);margin:0 0 .6rem">What administrator does not inherit</h3>
-        <p class="text-sm text-muted" style="margin:0">Administrator reaches every route group, but day-to-day
-          business work still belongs to the business roles. Editing the training matrix, approving content
-          or assigning courses is done as HR/HSE Central, not as Administrator. This account is scoped
-          to configuration and security, and used sparingly, per the EverLMS least-privilege guidance this
-          product inherits.</p>
+        <h3 style="font-size:var(--text-md);margin:0 0 .6rem">What neither administrator inherits</h3>
+        <p class="text-sm text-muted" style="margin:0">Day-to-day business work belongs to the business
+          roles either way. Editing the training matrix, approving content or assigning courses is done as
+          HR/HSE Central, not as either administrator. Nissei Administrator is scoped to accounts, access,
+          configuration, editorial content and the audit trail. Platform Administrator is scoped to
+          structure, modules and releases, and is used sparingly, break-glass only. Per the EverLMS
+          least-privilege guidance this product inherits, no single account does business work, content
+          work and platform work all at once.</p>
       </div>
       <div class="card card--soft">
         <h3 style="font-size:var(--text-md);margin:0 0 .6rem">Where scope is edited</h3>
-        <p class="text-sm text-muted" style="margin:0">This page is a read view of the role model. Branch-level
-          technical scope (timezone, locale, data region) is configured at
-          <a href="P052-branch-configuration.html">Branch configuration</a>. Individual account role
-          assignment is not modelled as a separate prototype screen; it happens through the same
-          employee record used across the system (see <a href="P029-employees.html">Employees</a>).</p>
+        <p class="text-sm text-muted" style="margin:0">This page is a read view of the role model, plus the
+          form above to assign a role to a person. Branch-level technical scope (timezone, locale, data
+          region) is configured at <a href="P052-branch-configuration.html">Branch configuration</a>. An
+          individual's role can also be changed from their own record (see
+          <a href="P029-employees.html">Employees</a>). What a role may reach, the matrix itself, is edited
+          nowhere in this folder.</p>
       </div>
     </div>
 
