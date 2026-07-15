@@ -1,0 +1,3854 @@
+================================================================================
+NISSEI ELECTRIC — MASTER TRAINING CURRICULUM TREE
+Course → Chapter → Lesson
+================================================================================
+
+Trạng thái tài liệu : Đề xuất kiến trúc chương trình độc lập
+Ngày lập            : 2026-07-16
+Phạm vi             : 3 nhà máy Việt Nam + 2 văn phòng thương mại Trung Quốc,
+                      thiết kế sẵn để mở rộng toàn NISSEI Group
+Quy mô cây           : 16 programs · 233 courses · 702 chapters · 2,110 lessons
+Phân loại course     : 13 [BASE] · 197 [REC] · 20 [COND] · 3 [TPL]
+Nguồn nội bộ        : Toàn bộ .agent/docs-nissei-v2/00..03
+Nguồn bị loại trừ   : Không đọc, không tham chiếu .agent/docs-nissei-v2/04-courses
+
+--------------------------------------------------------------------------------
+0. CÁCH ĐỌC VÀ CÁC BẤT BIẾN THIẾT KẾ
+--------------------------------------------------------------------------------
+
+PROGRAM
+  Chỉ là nhóm điều hướng/reporting; không phải đơn vị hoàn thành.
+
+COURSE
+  Là đơn vị nhỏ nhất có thể gán độc lập trong training matrix, có version,
+  completion policy, bằng chứng hoàn thành và chứng chỉ/authorization riêng.
+
+CHAPTER
+  Là cụm mục tiêu học tập trong một course; không cấp chứng chỉ riêng.
+
+LESSON
+  Là đơn vị tiến độ nguyên tử: microlearning, video, reading, scenario,
+  knowledge check, drill briefing hoặc practical observation.
+
+Nhãn mức độ xác nhận:
+  [BASE]  = một trong 13 course/mã đã được hồ sơ hệ thống xác nhận.
+  [REC]   = mở rộng được khuyến nghị cho master catalog.
+  [COND]  = chỉ kích hoạt sau khi xác nhận process, thiết bị, khách hàng,
+            chứng nhận hoặc nghĩa vụ pháp lý thật sự áp dụng.
+  [TPL]   = template phải được tạo instance theo máy/công đoạn/SOP thật.
+
+Nhãn phương thức:
+  [EL]    = e-learning + knowledge checks/final quiz.
+  [BL]    = blended: online/classroom + practical sign-off.
+  [ILT]   = instructor-led/classroom/drill + attendance.
+  [OJT]   = on-the-job demonstration + observation checklist.
+
+Bất biến:
+  1. Course master KHÔNG thuộc chi nhánh; branch/job/mandatory/optional,
+     due date, grace period, access block và chu kỳ tái đào tạo nằm trong
+     matrix_rule. Không nhân bản course chỉ vì khác site hoặc ngôn ngữ.
+  2. EN/VI/JA/ZH là translation của cùng course/version, không phải course mới.
+  3. Site-specific map, contacts, routes, machine IDs và SOP được đóng gói
+     thành [SITE DELTA] có version/approval riêng; không sửa core âm thầm.
+  4. Course qualification chỉ hoàn thành khi TẤT CẢ thành phần yêu cầu đạt.
+     Quiz không thay thế practical đối với máy, điện, LOTO, xe nâng, làm việc
+     trên cao, confined space, rigging, sơ cứu, chữa cháy hoặc process OJT.
+  5. Assessment/session/certificate là component gắn course, không phải
+     chapter giả. Mỗi course phải khai báo rõ policy: EL, ILT, practical,
+     final quiz, pass mark, attempts, assessor và evidence retention.
+  6. 13 mã [BASE] được giữ nguyên để tương thích prototype/import lịch sử.
+     Mọi mã còn lại là proposal và phải qua content governance trước publish.
+  7. Không coi số chu kỳ 12/24/36 tháng trong demo là kết luận pháp lý.
+     HSE/pháp chế Nissei phải phê duyệt group, thời lượng, trainer eligibility,
+     validity và retraining trigger trong matrix trước production.
+
+--------------------------------------------------------------------------------
+PROGRAM 01 — CORPORATE, ONBOARDING & NISSEI CULTURE
+--------------------------------------------------------------------------------
+
+COURSE COR-101 — NISSEI Electric Orientation [REC][EL]
+  CHAPTER 1 — NISSEI là ai
+    LESSON 1.1 — Lịch sử từ năm 1969 và mạng lưới toàn cầu
+    LESSON 1.2 — Trụ sở Hamamatsu, các nhà máy Việt Nam và văn phòng Trung Quốc
+    LESSON 1.3 — Định danh đúng NISSEI Electric và cách dùng thương hiệu
+  CHAPTER 2 — Triết lý, tầm nhìn và giá trị
+    LESSON 2.1 — Do our best. Something only we can do.
+    LESSON 2.2 — Mang niềm vui cho khách hàng và tiến bộ cho xã hội
+    LESSON 2.3 — Challenge, honesty, flexibility, inquiry, ownership, collaboration
+  CHAPTER 3 — Công nghệ và sản phẩm
+    LESSON 3.1 — HIFLON™: fluorocarbon polymer
+    LESSON 3.2 — LIKAL™: silicone rubber
+    LESSON 3.3 — LICOM™: optical fiber
+    LESSON 3.4 — Cable, tubing, roller, heater, optics, antenna và high-speed interface
+  CHAPTER 4 — Khách hàng và trách nhiệm của mỗi người
+    LESSON 4.1 — Thị trường mobility, life science, OA, FA, semiconductor và hạ tầng
+    LESSON 4.2 — Chất lượng, an toàn, môi trường và bảo mật tạo nên niềm tin
+    LESSON 4.3 — Final scenario: hành vi đúng với giá trị NISSEI
+
+COURSE COR-102 — New Employee Onboarding [REC][BL]
+  CHAPTER 1 — Hành trình gia nhập
+    LESSON 1.1 — Cơ cấu tổ chức, phòng ban và tuyến báo cáo
+    LESSON 1.2 — Employee code, hồ sơ nhân sự và kênh hỗ trợ
+    LESSON 1.3 — Kế hoạch 30-60-90 ngày và learning path cá nhân
+  CHAPTER 2 — Chính sách làm việc
+    LESSON 2.1 — Thời giờ, chấm công, nghỉ phép và quy tắc ca
+    LESSON 2.2 — Nội quy, bảo mật, tài sản và sử dụng hệ thống
+    LESSON 2.3 — Kênh phản ánh, grievance và speak-up
+  CHAPTER 3 — Nền tảng làm việc an toàn và đúng chuẩn
+    LESSON 3.1 — Stop–Call–Wait khi có bất thường
+    LESSON 3.2 — Không tự ý thay đổi WI, máy, vật liệu hoặc thông số
+    LESSON 3.3 — Near miss, defect và incident phải được báo như thế nào
+  CHAPTER 4 — Xác nhận hội nhập
+    LESSON 4.1 — Tour site/department và gặp buddy
+    LESSON 4.2 — Knowledge check
+    LESSON 4.3 — Manager onboarding sign-off
+
+COURSE COR-103 — Site & Factory Induction [REC][BL]
+  CHAPTER 1 — Core chung toàn hệ thống
+    LESSON 1.1 — Quy tắc ra vào, ID badge, khu vực hạn chế
+    LESSON 1.2 — Biển báo, PPE tối thiểu và tuyến đi bộ
+    LESSON 1.3 — Stop-work, báo sự cố và hỗ trợ khẩn cấp
+  CHAPTER 2 — [SITE DELTA] Định hướng chi nhánh
+    LESSON 2.1 — Sơ đồ site, cổng, phòng y tế và điểm tập kết
+    LESSON 2.2 — Alarm, lối thoát, số liên lạc và đội ứng cứu
+    LESSON 2.3 — Tuyến xe nâng, loading area, utility và khu vực cấm
+  CHAPTER 3 — [SITE DELTA] Nguy cơ vận hành
+    LESSON 3.1 — Process, hóa chất và thiết bị chính của site
+    LESSON 3.2 — Quy tắc ca, handover, phòng sạch/ESD nếu áp dụng
+    LESSON 3.3 — Environmental controls và waste points
+  CHAPTER 4 — Xác nhận tại hiện trường
+    LESSON 4.1 — Guided site walk
+    LESSON 4.2 — Tình huống tìm lối thoát và báo khẩn cấp
+    LESSON 4.3 — Site induction sign-off
+
+COURSE COR-104 — Integrated EHSQ Mindset [REC][EL]
+  CHAPTER 1 — Safety, quality và environment liên kết thế nào
+    LESSON 1.1 — Một bất thường có thể gây injury, defect và pollution cùng lúc
+    LESSON 1.2 — Hierarchy of controls và prevention at source
+    LESSON 1.3 — Risk-based thinking trong công việc hằng ngày
+  CHAPTER 2 — Hành vi tại điểm làm việc
+    LESSON 2.1 — Chuẩn bị trước khi bắt đầu
+    LESSON 2.2 — Làm đúng chuẩn và xác nhận điểm kiểm soát
+    LESSON 2.3 — Stop–Call–Wait–Record khi vượt giới hạn
+  CHAPTER 3 — Học từ vấn đề
+    LESSON 3.1 — Near miss, nonconformance và environmental abnormality
+    LESSON 3.2 — Containment trước, root cause sau
+    LESSON 3.3 — Scenario assessment đa mục tiêu EHSQ
+
+COURSE COR-105 — Workplace Rules, Rights & Responsibilities [REC][EL]
+  CHAPTER 1 — Quyền và trách nhiệm người lao động
+    LESSON 1.1 — Được thông tin, đào tạo, bảo vệ và báo nguy
+    LESSON 1.2 — Tuân thủ nội quy, dùng PPE và hợp tác điều tra
+    LESSON 1.3 — Stop-work và escalation không trả đũa
+  CHAPTER 2 — Kỷ luật và tính chính trực
+    LESSON 2.1 — Chấm công, vắng mặt và khai báo trung thực
+    LESSON 2.2 — Tài sản, hồ sơ, dữ liệu và xung đột lợi ích
+    LESSON 2.3 — Alcohol, drugs, smoking và fitness for work
+  CHAPTER 3 — Kênh hỗ trợ
+    LESSON 3.1 — Manager, HR, HSE, union/representative và hotline
+    LESSON 3.2 — Khiếu nại, grievance và bảo mật
+    LESSON 3.3 — Final policy acknowledgement
+
+COURSE COR-106 — Cross-cultural Collaboration & Ho-Ren-So [REC][BL]
+  CHAPTER 1 — Làm việc Việt–Nhật–Trung
+    LESSON 1.1 — Khác biệt về ngữ cảnh, hierarchy và cách ra quyết định
+    LESSON 1.2 — Đúng giờ, chuẩn bị, fact-based communication
+    LESSON 1.3 — Tránh giả định và xác nhận hiểu chung
+  CHAPTER 2 — Ho-Ren-So trong vận hành
+    LESSON 2.1 — Hokoku: báo cáo kết quả và bất thường
+    LESSON 2.2 — Renraku: thông tin đúng người, đúng lúc
+    LESSON 2.3 — Sodan: tham vấn trước quyết định rủi ro
+  CHAPTER 3 — Giao tiếp đa ngôn ngữ
+    LESSON 3.1 — Thuật ngữ chuẩn, câu ngắn và visual aid
+    LESSON 3.2 — Closed-loop communication và read-back
+    LESSON 3.3 — Role-play: shift handover/escalation với HQ
+
+COURSE COR-107 — Transfer, Return-to-work & Reorientation [REC][BL]
+  CHAPTER 1 — Xác định thay đổi
+    LESSON 1.1 — Branch, department, job, process hoặc thời gian vắng mặt
+    LESSON 1.2 — So sánh competence hiện có với nghĩa vụ mới
+    LESSON 1.3 — Chứng chỉ còn hạn, gap và restriction tạm thời
+  CHAPTER 2 — Reorientation có mục tiêu
+    LESSON 2.1 — Site delta và emergency changes
+    LESSON 2.2 — SOP, equipment, chemical và quality changes
+    LESSON 2.3 — Human factors sau thời gian nghỉ dài
+  CHAPTER 3 — Trở lại độc lập
+    LESSON 3.1 — Supervised practice
+    LESSON 3.2 — Manager/assessor readiness review
+    LESSON 3.3 — Authorization restore hoặc development plan
+
+COURSE COR-108 — Contractor Induction & Work Control [REC][BL]
+  CHAPTER 1 — Trước khi vào site
+    LESSON 1.1 — Sponsor, scope, competence và qualification evidence
+    LESSON 1.2 — PPE, tools, chemical và equipment declaration
+    LESSON 1.3 — Site hazards, permit và simultaneous operations
+  CHAPTER 2 — Trong khi làm việc
+    LESSON 2.1 — Work boundary, supervision và stop-work
+    LESSON 2.2 — Incident/near-miss, change và emergency reporting
+    LESSON 2.3 — Housekeeping, waste và bảo vệ hoạt động lân cận
+  CHAPTER 3 — Kết thúc
+    LESSON 3.1 — Remove people/tool/material và restore protection
+    LESSON 3.2 — Work handback, permit closure và unresolved issue
+    LESSON 3.3 — Sponsor verification/closeout
+
+COURSE COR-109 — Visitor Induction [REC][EL]
+  CHAPTER 1 — Visit boundary
+    LESSON 1.1 — Sponsor, identity, badge và escort
+    LESSON 1.2 — Restricted area, photo/recording và confidentiality
+    LESSON 1.3 — Minimum PPE và prohibited behavior
+  CHAPTER 2 — [SITE DELTA] Emergency
+    LESSON 2.1 — Alarm, exit và assembly point
+    LESSON 2.2 — Injury, incident và emergency contact
+    LESSON 2.3 — Sponsor accountability
+  CHAPTER 3 — Confirmation
+    LESSON 3.1 — Short scenario check
+    LESSON 3.2 — Visitor acknowledgement
+    LESSON 3.3 — Badge issue/return linkage
+
+COURSE COR-110 — Temporary Worker & Intern Induction [REC][BL]
+  CHAPTER 1 — Employment context
+    LESSON 1.1 — Rights, responsibility, supervisor và support channel
+    LESSON 1.2 — Work scope, restriction và no-unsupervised-task rule
+    LESSON 1.3 — Report concern without retaliation
+  CHAPTER 2 — Required readiness
+    LESSON 2.1 — Core/site induction and job-specific prerequisites
+    LESSON 2.2 — PPE, emergency, incident và defect reporting
+    LESSON 2.3 — Data, asset và conduct obligations
+  CHAPTER 3 — Work authorization
+    LESSON 3.1 — Buddy/supervisor assignment
+    LESSON 3.2 — Supervised task practice
+    LESSON 3.3 — Scope/expiry sign-off
+
+--------------------------------------------------------------------------------
+PROGRAM 02 — VIETNAM STATUTORY OSH & GENERAL SAFETY
+--------------------------------------------------------------------------------
+
+COURSE SAF-108 — ATVSLĐ Việt Nam: Nhóm 1 — Người quản lý [REC][ILT]
+  CHAPTER 1 — Hệ thống pháp luật và trách nhiệm
+    LESSON 1.1 — Phạm vi, đối tượng và nghĩa vụ người sử dụng lao động
+    LESSON 1.2 — Quyền/nghĩa vụ người lao động và cơ chế tham vấn
+    LESSON 1.3 — Trách nhiệm quản lý theo cấp và hồ sơ bằng chứng
+  CHAPTER 2 — Quản trị rủi ro
+    LESSON 2.1 — Chính sách, mục tiêu, kế hoạch và nguồn lực ATVSLĐ
+    LESSON 2.2 — Risk assessment, hierarchy of controls và management of change
+    LESSON 2.3 — Contractor, procurement và thiết bị có yêu cầu nghiêm ngặt
+  CHAPTER 3 — Assurance và cải tiến
+    LESSON 3.1 — KPI leading/lagging và management review
+    LESSON 3.2 — Điều tra sự cố, corrective action và accountability
+    LESSON 3.3 — Case assessment dành cho plant/department manager
+
+COURSE SAF-109 — ATVSLĐ Việt Nam: Nhóm 2 — Người làm công tác ATVSLĐ [REC][BL]
+  CHAPTER 1 — Nghiệp vụ hệ thống
+    LESSON 1.1 — Văn bản, hồ sơ, báo cáo và compliance calendar
+    LESSON 1.2 — Kế hoạch huấn luyện, kiểm định và quan trắc
+    LESSON 1.3 — Tổ chức mạng lưới, truyền thông và tham vấn
+  CHAPTER 2 — Kỹ thuật kiểm soát
+    LESSON 2.1 — HIRA/JSA và hierarchy of controls
+    LESSON 2.2 — Industrial hygiene, health surveillance và PPE program
+    LESSON 2.3 — Emergency preparedness và contractor control
+  CHAPTER 3 — Assurance
+    LESSON 3.1 — Inspection, audit và regulatory interface
+    LESSON 3.2 — Incident investigation/root cause
+    LESSON 3.3 — Practical: đánh giá một khu vực và lập action plan
+
+COURSE SAF-110 — ATVSLĐ Việt Nam: Nhóm 3 — Khung kiến thức chung [REC][BL]
+  CHAPTER 1 — Nền tảng pháp lý và hành vi
+    LESSON 1.1 — Quyền, nghĩa vụ, nội quy và stop-work
+    LESSON 1.2 — Nhận diện yếu tố nguy hiểm/có hại
+    LESSON 1.3 — Biển báo, PPE, báo near miss và emergency
+  CHAPTER 2 — Kiến thức nghề
+    LESSON 2.1 — Energy sources, machine, electrical, chemical và work environment
+    LESSON 2.2 — SOP, permit, isolation và prohibited actions
+    LESSON 2.3 — Incident examples theo nghề/công việc
+  CHAPTER 3 — Qualification framework
+    LESSON 3.1 — Theory assessment
+    LESSON 3.2 — Link tới hazard/equipment course áp dụng
+    LESSON 3.3 — Practical sign-off và authorization record
+
+COURSE SAF-101 — General Occupational Safety [BASE][EL]
+  CHAPTER 1 — Quyền, trách nhiệm và quy tắc nhà máy
+    LESSON 1.1 — Vai trò của người lao động trong ATVSLĐ
+    LESSON 1.2 — Nội quy, stop-work và báo bất thường
+    LESSON 1.3 — Biển báo, khu vực hạn chế và housekeeping
+  CHAPTER 2 — Nguy cơ phổ biến
+    LESSON 2.1 — Slips, trips, falls và manual handling
+    LESSON 2.2 — Machine, electrical, vehicle và hot surface awareness
+    LESSON 2.3 — Chemical, noise, fume, dust và ergonomic awareness
+  CHAPTER 3 — Kiểm soát và ứng phó
+    LESSON 3.1 — Hierarchy of controls và PPE
+    LESSON 3.2 — Near miss/incident reporting
+    LESSON 3.3 — Alarm, evacuation, first response và final quiz
+
+COURSE SAF-111 — ATVSLĐ Việt Nam: Nhóm 5 — Người làm công tác y tế [REC][BL]
+  CHAPTER 1 — Sức khỏe nghề nghiệp
+    LESSON 1.1 — Hazard–exposure–health effect
+    LESSON 1.2 — Bệnh nghề nghiệp và health surveillance
+    LESSON 1.3 — Tư vấn kiểm soát phơi nhiễm
+  CHAPTER 2 — Y tế tại nơi làm việc
+    LESSON 2.1 — Triage, sơ cứu, cấp cứu và chuyển viện
+    LESSON 2.2 — Chemical/eye/burn/electrical exposure protocols
+    LESSON 2.3 — Medical emergency, outbreak và emergency team interface
+  CHAPTER 3 — Dữ liệu và phòng ngừa
+    LESSON 3.1 — Bảo mật hồ sơ sức khỏe
+    LESSON 3.2 — Trend analysis và return-to-work advice
+    LESSON 3.3 — Practical scenario assessment
+
+COURSE SAF-112 — ATVSLĐ Việt Nam: Nhóm 6 — An toàn vệ sinh viên [REC][ILT]
+  CHAPTER 1 — Vai trò và phạm vi
+    LESSON 1.1 — Quyền, trách nhiệm và giới hạn thẩm quyền
+    LESSON 1.2 — Phối hợp người lao động, supervisor và HSE
+    LESSON 1.3 — Confidentiality và non-retaliation
+  CHAPTER 2 — Quan sát và tương tác
+    LESSON 2.1 — Unsafe act/condition và positive observation
+    LESSON 2.2 — Cách phản hồi không đối đầu
+    LESSON 2.3 — Ghi near miss và theo dõi action
+  CHAPTER 3 — Thúc đẩy cải tiến
+    LESSON 3.1 — Toolbox talk và worker consultation
+    LESSON 3.2 — 5S/safety walk
+    LESSON 3.3 — Field observation practical
+
+COURSE SAF-113 — Hazard Identification, Risk Assessment & JSA [REC][BL]
+  CHAPTER 1 — Nhận diện mối nguy
+    LESSON 1.1 — People, equipment, material, method và environment
+    LESSON 1.2 — Routine, non-routine, startup, shutdown và emergency
+    LESSON 1.3 — Human factors và simultaneous operations
+  CHAPTER 2 — Đánh giá và kiểm soát
+    LESSON 2.1 — Severity, likelihood, exposure và risk matrix
+    LESSON 2.2 — Hierarchy of controls
+    LESSON 2.3 — Residual risk, owner và due date
+  CHAPTER 3 — JSA tại công việc
+    LESSON 3.1 — Chia bước, xác định hazard và control
+    LESSON 3.2 — Last-minute risk assessment
+    LESSON 3.3 — Practical: lập và briefing một JSA
+
+COURSE SAF-114 — Incident, Near-miss Reporting & Investigation [REC][BL]
+  CHAPTER 1 — Báo cáo nhanh và bảo toàn hiện trường
+    LESSON 1.1 — Injury, near miss, property, quality và environmental event
+    LESSON 1.2 — Emergency care, containment và escalation
+    LESSON 1.3 — Evidence, witness và không đổ lỗi
+  CHAPTER 2 — Tìm nguyên nhân
+    LESSON 2.1 — Immediate, contributing và systemic causes
+    LESSON 2.2 — 5 Why, fishbone và cause tree
+    LESSON 2.3 — Verify root cause và escape point
+  CHAPTER 3 — Corrective action
+    LESSON 3.1 — Hierarchy-based countermeasure
+    LESSON 3.2 — Owner, deadline, effectiveness check và yokoten
+    LESSON 3.3 — Investigation case exercise
+
+COURSE SAF-115 — PPE Selection, Use & Care [REC][BL]
+  CHAPTER 1 — Chọn PPE
+    LESSON 1.1 — PPE là lớp cuối trong hierarchy
+    LESSON 1.2 — Hazard assessment, certification và compatibility
+    LESSON 1.3 — Fit, size và medical limitation
+  CHAPTER 2 — Sử dụng và bảo quản
+    LESSON 2.1 — Inspection, donning/doffing và user seal check
+    LESSON 2.2 — Cleaning, storage, replacement và disposal
+    LESSON 2.3 — Reporting damage/nonconformance
+  CHAPTER 3 — Practical theo loại PPE
+    LESSON 3.1 — Eye/face, hand, foot và protective clothing
+    LESSON 3.2 — Hearing và respiratory protection
+    LESSON 3.3 — Practical fit/use observation
+
+COURSE SAF-116 — Permit-to-Work & Control of Non-routine Work [REC][BL]
+  CHAPTER 1 — Khi nào cần permit
+    LESSON 1.1 — Hot work, height, confined space, electrical và excavation
+    LESSON 1.2 — Routine versus non-routine và scope boundary
+    LESSON 1.3 — Roles: requester, issuer, performer và area owner
+  CHAPTER 2 — Phát hành và giám sát
+    LESSON 2.1 — JSA, isolation, gas test và simultaneous operations
+    LESSON 2.2 — Toolbox briefing, display, suspension và extension
+    LESSON 2.3 — Field verification
+  CHAPTER 3 — Đóng permit
+    LESSON 3.1 — Worksite inspection và removal of controls
+    LESSON 3.2 — Handover/return-to-service
+    LESSON 3.3 — Practical permit review
+
+--------------------------------------------------------------------------------
+PROGRAM 03 — HAZARD & EQUIPMENT AUTHORIZATION
+--------------------------------------------------------------------------------
+
+COURSE SAF-102 — Working at Height [BASE][BL]
+  CHAPTER 1 — Planning and fall hazards
+    LESSON 1.1 — Edge, opening, ladder, scaffold và elevated platform
+    LESSON 1.2 — Permit, weather, dropped object và exclusion zone
+    LESSON 1.3 — Fall prevention versus fall arrest
+  CHAPTER 2 — Equipment and execution
+    LESSON 2.1 — Ladder/scaffold/MEWP pre-use checks
+    LESSON 2.2 — Harness, lanyard, anchor và 100% tie-off
+    LESSON 2.3 — Tool tethering và communication
+  CHAPTER 3 — Rescue and qualification
+    LESSON 3.1 — Suspension trauma và rescue plan
+    LESSON 3.2 — Equipment inspection practical
+    LESSON 3.3 — Work-at-height practical assessment
+
+COURSE SAF-103 — Electrical Safety on Site [BASE][BL]
+  CHAPTER 1 — Electrical hazards
+    LESSON 1.1 — Shock, arc, short circuit và fire
+    LESSON 1.2 — Voltage, current, path và body effect
+    LESSON 1.3 — Damaged equipment, moisture và temporary power
+  CHAPTER 2 — Safe work boundaries
+    LESSON 2.1 — Authorized versus unqualified person
+    LESSON 2.2 — Isolation, test-before-touch và grounding where applicable
+    LESSON 2.3 — Tools, PPE, approach boundary và permit
+  CHAPTER 3 — Abnormal and emergency
+    LESSON 3.1 — Electrical fault, trip và prohibition on reset
+    LESSON 3.2 — Electric-shock rescue without secondary casualty
+    LESSON 3.3 — Theory + task-specific practical assessment
+
+COURSE SAF-104 — Safe Machine Operation [BASE][BL]
+  CHAPTER 1 — Machine hazards and safeguards
+    LESSON 1.1 — Rotating, nip, cutting, crushing và stored energy
+    LESSON 1.2 — Guard, interlock, light curtain và emergency stop
+    LESSON 1.3 — Why bypassing a safeguard is prohibited
+  CHAPTER 2 — Normal operation
+    LESSON 2.1 — Pre-start inspection và area clearance
+    LESSON 2.2 — Startup, monitoring, quality/safety limits
+    LESSON 2.3 — Shutdown, housekeeping và handover
+  CHAPTER 3 — Abnormal operation
+    LESSON 3.1 — Jam, fault, cleaning và changeover boundaries
+    LESSON 3.2 — Stop–isolate–call; link to LOTO
+    LESSON 3.3 — [SITE DELTA] machine-specific practical authorization
+
+COURSE SAF-106 — Forklift Operation [BASE][BL]
+  CHAPTER 1 — Truck and stability
+    LESSON 1.1 — Components, capacity plate và attachments
+    LESSON 1.2 — Load center, stability triangle và tip-over
+    LESSON 1.3 — Pre-use inspection and defect lockout
+  CHAPTER 2 — Driving safely
+    LESSON 2.1 — Speed, intersection, horn, visibility và pedestrian priority
+    LESSON 2.2 — Ramp, dock, trailer và uneven surface
+    LESSON 2.3 — Parking, battery charging/refueling
+  CHAPTER 3 — Load handling
+    LESSON 3.1 — Pick, travel, stack và de-stack
+    LESSON 3.2 — Oversized/unstable load và spotter
+    LESSON 3.3 — Incident response
+  CHAPTER 4 — Qualification
+    LESSON 4.1 — Written/theory assessment
+    LESSON 4.2 — Driving course assessment
+    LESSON 4.3 — Workplace observation and authorization
+
+COURSE SAF-107 — Chemical Handling & MSDS [BASE][BL]
+  CHAPTER 1 — Chemical Hazard Awareness
+    LESSON 1.1 — Introduction to chemical hazards
+    LESSON 1.2 — Reading Safety Data Sheets
+    LESSON 1.3 — Hazard labels and GHS pictograms
+    LESSON 1.4 — Safe storage and segregation
+  CHAPTER 2 — Safe Handling & Emergency Response
+    LESSON 2.1 — PPE for chemical handling
+    LESSON 2.2 — Safe handling and transfer procedures
+    LESSON 2.3 — Spill response
+    LESSON 2.4 — Chemical waste disposal
+    LESSON 2.5 — [SITE DELTA] Emergency contacts and reporting
+    LESSON 2.6 — [SITE DELTA] Practical assessment
+
+COURSE SAF-117 — Lockout/Tagout (LOTO) [REC][BL]
+  CHAPTER 1 — Hazardous energy
+    LESSON 1.1 — Electrical, mechanical, hydraulic, pneumatic, thermal and gravity
+    LESSON 1.2 — Affected, authorized and responsible persons
+    LESSON 1.3 — Normal stop is not energy isolation
+  CHAPTER 2 — LOTO sequence
+    LESSON 2.1 — Prepare, notify, shut down and isolate
+    LESSON 2.2 — Lock/tag, release stored energy and verify zero energy
+    LESSON 2.3 — Restore, inspect and notify
+  CHAPTER 3 — Special cases
+    LESSON 3.1 — Group LOTO and multiple energy sources
+    LESSON 3.2 — Shift change, contractor and absent lock owner
+    LESSON 3.3 — [SITE DELTA] practical on authorized equipment
+
+COURSE SAF-118 — Hot Work & Fire Watch [REC][BL]
+  CHAPTER 1 — Ignition and exposure hazards
+    LESSON 1.1 — Welding, cutting, grinding and spark-producing work
+    LESSON 1.2 — Combustible, hidden space, gas cylinder and fume
+    LESSON 1.3 — Alternative cold-work methods
+  CHAPTER 2 — Permit controls
+    LESSON 2.1 — Area preparation, isolation and gas testing where applicable
+    LESSON 2.2 — Fire watch, extinguisher and communication
+    LESSON 2.3 — Post-work monitoring and permit closeout
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Equipment/PPE inspection
+    LESSON 3.2 — Set up a safe hot-work area
+    LESSON 3.3 — Scenario drill and sign-off
+
+COURSE SAF-119 — Confined Space Entry [REC][BL]
+  CHAPTER 1 — Recognition and hazards
+    LESSON 1.1 — Confined space definition and permit-required conditions
+    LESSON 1.2 — Atmospheric, engulfment, mechanical and thermal hazards
+    LESSON 1.3 — Unauthorized entry prevention
+  CHAPTER 2 — Entry control
+    LESSON 2.1 — Entrant, attendant, entry supervisor and rescue team
+    LESSON 2.2 — Isolation, testing, ventilation and continuous monitoring
+    LESSON 2.3 — Communication, permit and stop criteria
+  CHAPTER 3 — Rescue and qualification
+    LESSON 3.1 — Why unplanned rescue kills rescuers
+    LESSON 3.2 — Retrieval/non-entry rescue and external response
+    LESSON 3.3 — Role-based drill and practical sign-off
+
+COURSE SAF-120 — Lifting, Crane & Rigging [REC][BL]
+  CHAPTER 1 — Lift planning
+    LESSON 1.1 — Load weight, center of gravity and route
+    LESSON 1.2 — Crane/hoist capacity and lifting plan
+    LESSON 1.3 — Roles, signal and exclusion zone
+  CHAPTER 2 — Rigging equipment
+    LESSON 2.1 — Sling, shackle, hook and inspection criteria
+    LESSON 2.2 — Hitch, sling angle, edge protection and tag line
+    LESSON 2.3 — Rejection, storage and traceability
+  CHAPTER 3 — Practical lift
+    LESSON 3.1 — Pre-lift meeting and trial lift
+    LESSON 3.2 — Rig/communicate/move/place
+    LESSON 3.3 — Practical assessment by appointed assessor
+
+COURSE SAF-121 — Compressed Gas, Pressure Systems & Vacuum [REC][BL]
+  CHAPTER 1 — Pressure hazards
+    LESSON 1.1 — Stored energy, projectile, asphyxiation and cold burn
+    LESSON 1.2 — Cylinder identity, compatibility and segregation
+    LESSON 1.3 — Pressure vessel, hose, fitting and regulator
+  CHAPTER 2 — Safe handling
+    LESSON 2.1 — Transport, securing and cap
+    LESSON 2.2 — Connection, leak test, opening and shutdown
+    LESSON 2.3 — Compressed-air misuse and vacuum implosion
+  CHAPTER 3 — Emergency
+    LESSON 3.1 — Leak, damaged cylinder and overpressure
+    LESSON 3.2 — Isolation/evacuation/escalation
+    LESSON 3.3 — Equipment-specific practical
+
+COURSE SAF-122 — Hand & Portable Power Tool Safety [REC][BL]
+  CHAPTER 1 — Tool selection and inspection
+    LESSON 1.1 — Right tool, rating, guard and accessory
+    LESSON 1.2 — Cable, battery, switch and defect tagging
+    LESSON 1.3 — PPE and work-area setup
+  CHAPTER 2 — Safe use
+    LESSON 2.1 — Cutting, grinding, drilling and torque hazards
+    LESSON 2.2 — Clamp work, body position and spark/fume control
+    LESSON 2.3 — Disconnect before adjustment
+  CHAPTER 3 — Practical
+    LESSON 3.1 — Pre-use inspection
+    LESSON 3.2 — Demonstrate controlled operation
+    LESSON 3.3 — Clean/store/report
+
+COURSE SAF-123 — Pedestrian, Vehicle, Yard & Loading-dock Safety [REC][EL]
+  CHAPTER 1 — Traffic separation
+    LESSON 1.1 — Walkway, crossing, blind corner and right-of-way
+    LESSON 1.2 — High-visibility PPE and no-phone walking
+    LESSON 1.3 — Reversing, spotter and delivery driver controls
+  CHAPTER 2 — Dock and yard hazards
+    LESSON 2.1 — Dock edge, trailer movement and dock plate
+    LESSON 2.2 — Wheel restraint/chock and loading sequence
+    LESSON 2.3 — Weather, lighting and pedestrian exclusion
+  CHAPTER 3 — Incident response
+    LESSON 3.1 — Collision/near miss immediate action
+    LESSON 3.2 — Preserve evidence and report
+    LESSON 3.3 — Site traffic-map scenario
+
+COURSE SAF-124 — Contractor Control & Simultaneous Operations [REC][BL]
+  CHAPTER 1 — Prequalification and scope
+    LESSON 1.1 — Competence, license, method statement and risk evidence
+    LESSON 1.2 — Sponsor/area owner/contractor responsibilities
+    LESSON 1.3 — Change of scope and subcontractor approval
+  CHAPTER 2 — Field control
+    LESSON 2.1 — Induction, permit, LOTO interface and toolbox talk
+    LESSON 2.2 — Multiple contractors and conflicting energy/work
+    LESSON 2.3 — Supervision, inspection and stop-work
+  CHAPTER 3 — Closeout
+    LESSON 3.1 — Test, handover and return-to-service
+    LESSON 3.2 — Waste/housekeeping/document close
+    LESSON 3.3 — Contractor performance review
+
+COURSE SAF-125 — Laser Safety [REC][BL]
+  CHAPTER 1 — Laser hazards
+    LESSON 1.1 — Beam, wavelength, direct/reflected and invisible exposure
+    LESSON 1.2 — Laser class and accessible emission
+    LESSON 1.3 — Eye, skin, fire, electrical and chemical hazards
+  CHAPTER 2 — Controls
+    LESSON 2.1 — Enclosure, interlock, controlled area and signage
+    LESSON 2.2 — Alignment, beam stop, optical tools and eyewear
+    LESSON 2.3 — Authorized person and service boundary
+  CHAPTER 3 — Emergency and qualification
+    LESSON 3.1 — Suspected exposure and medical response
+    LESSON 3.2 — Interlock failure and abnormal condition
+    LESSON 3.3 — Equipment/role-specific practical
+
+COURSE SAF-126 — Thermal Process, Oven & Hot-surface Safety [REC][BL]
+  CHAPTER 1 — Heat hazards
+    LESSON 1.1 — Burn, radiant heat, ignition and thermal decomposition
+    LESSON 1.2 — Hot material, tooling and delayed cooling
+    LESSON 1.3 — Sensor/interlock/over-temperature protection
+  CHAPTER 2 — Safe operation
+    LESSON 2.1 — Load/unload, heat-resistant PPE and tools
+    LESSON 2.2 — Setpoint, timer, ventilation and prohibited materials
+    LESSON 2.3 — Cleaning/maintenance after verified cooldown and isolation
+  CHAPTER 3 — Abnormal event
+    LESSON 3.1 — Overheat, smoke, loss of ventilation and fire
+    LESSON 3.2 — Isolation/evacuation/escalation
+    LESSON 3.3 — Process-specific practical
+
+COURSE SAF-127 — Construction, Excavation & Temporary Work [COND][BL]
+  CHAPTER 1 — Planning
+    LESSON 1.1 — Underground/overhead services and structural risk
+    LESSON 1.2 — Barricade, access, traffic and public interface
+    LESSON 1.3 — Permit, competent person and daily inspection
+  CHAPTER 2 — Execution
+    LESSON 2.1 — Excavation collapse, spoil and water ingress
+    LESSON 2.2 — Temporary electrical, scaffold and lifting interface
+    LESSON 2.3 — Change/weather/stop criteria
+  CHAPTER 3 — Closeout
+    LESSON 3.1 — Restore protection and as-built information
+    LESSON 3.2 — Housekeeping and handback
+    LESSON 3.3 — Field practical/inspection
+
+COURSE SAF-128 — Equipment-specific Safety Authorization Template [TPL][OJT]
+  CHAPTER 1 — Asset and work boundary
+    LESSON 1.1 — [SITE DELTA] Asset ID, purpose, manual and authorized tasks
+    LESSON 1.2 — [SITE DELTA] Hazard map, safeguard and prohibited actions
+    LESSON 1.3 — Prerequisite courses and medical/skill conditions
+  CHAPTER 2 — Safe operation
+    LESSON 2.1 — [SITE DELTA] Pre-use, startup, normal monitoring and stop
+    LESSON 2.2 — [SITE DELTA] Fault, jam, cleaning and isolation
+    LESSON 2.3 — [SITE DELTA] Emergency, reporting and handover
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Trainer demonstration
+    LESSON 3.2 — Supervised practice
+    LESSON 3.3 — Independent observed task + authorization/restrictions
+
+--------------------------------------------------------------------------------
+PROGRAM 04 — FIRE, EMERGENCY RESPONSE & OCCUPATIONAL HEALTH
+--------------------------------------------------------------------------------
+
+COURSE SAF-105 — First Aid & Emergency Response [BASE][ILT]
+  CHAPTER 1 — Emergency Response Fundamentals
+    LESSON 1.1 — Recognising a workplace emergency
+    LESSON 1.2 — Primary survey and scene safety
+    LESSON 1.3 — When and how to call for help
+  CHAPTER 2 — First Aid Skills
+    LESSON 2.1 — CPR and AED use
+    LESSON 2.2 — Controlling bleeding and treating shock
+    LESSON 2.3 — Burns and chemical exposure
+    LESSON 2.4 — Fractures and moving an injured worker safely
+  CHAPTER 3 — [SITE DELTA] Site Emergency Procedures
+    LESSON 3.1 — Evacuation routes, assembly points and practical assessment
+
+COURSE FIR-101 — Fire Prevention & Evacuation [BASE][BL]
+  CHAPTER 1 — Fire awareness and prevention
+    LESSON 1.1 — Fire triangle/tetrahedron and fire classes
+    LESSON 1.2 — Ignition sources, combustible loading and housekeeping
+    LESSON 1.3 — Electrical, chemical, hot-work and smoking controls
+  CHAPTER 2 — Alarm and initial action
+    LESSON 2.1 — Detect, raise alarm and call emergency services
+    LESSON 2.2 — Extinguisher selection and safe-use limits
+    LESSON 2.3 — When to fight and when to evacuate
+  CHAPTER 3 — [SITE DELTA] Evacuation
+    LESSON 3.1 — Routes, exits, assembly points and accountability
+    LESSON 3.2 — Assisting visitors/persons needing support
+    LESSON 3.3 — Branch evacuation drill and debrief
+
+COURSE FIR-102 — Site Firefighting Team Qualification [REC][BL]
+  CHAPTER 1 — Organization and command
+    LESSON 1.1 — Team roles, alarm, incident command and external interface
+    LESSON 1.2 — Scene size-up and responder safety
+    LESSON 1.3 — Accountability and communication
+  CHAPTER 2 — Equipment within authorization
+    LESSON 2.1 — Extinguisher, hose reel/hydrant and PPE
+    LESSON 2.2 — Fire-water/alarm system awareness
+    LESSON 2.3 — Equipment inspection and readiness
+  CHAPTER 3 — Drills
+    LESSON 3.1 — Incipient fire scenario
+    LESSON 3.2 — Rescue/support within approved limits
+    LESSON 3.3 — Practical assessment and after-action review
+
+COURSE FIR-103 — Evacuation Warden & Accountability [REC][ILT]
+  CHAPTER 1 — Warden role
+    LESSON 1.1 — Zone sweep without delaying personal escape
+    LESSON 1.2 — Directing flow and preventing re-entry
+    LESSON 1.3 — Visitor and accessibility assistance
+  CHAPTER 2 — Assembly control
+    LESSON 2.1 — Roster/headcount and missing-person report
+    LESSON 2.2 — Communication with incident command
+    LESSON 2.3 — Crowd, weather and secondary hazard
+  CHAPTER 3 — Drill qualification
+    LESSON 3.1 — Route/zone walkdown
+    LESSON 3.2 — Timed evacuation exercise
+    LESSON 3.3 — Debrief and corrective actions
+
+COURSE EMR-101 — Spill Response Team [REC][BL]
+  CHAPTER 1 — Response levels
+    LESSON 1.1 — Incidental versus emergency spill
+    LESSON 1.2 — Chemical identity/SDS and exposure risk
+    LESSON 1.3 — Alarm, isolate, evacuate and call specialist support
+  CHAPTER 2 — Containment and cleanup
+    LESSON 2.1 — PPE, compatibility and spill-kit selection
+    LESSON 2.2 — Stop source if safe, protect drains and contain
+    LESSON 2.3 — Decontamination, waste and area release
+  CHAPTER 3 — Practical
+    LESSON 3.1 — Spill-kit inspection
+    LESSON 3.2 — Simulated spill response
+    LESSON 3.3 — Reporting, evidence and restocking
+
+COURSE EMR-102 — Emergency Management & Incident Command [REC][ILT]
+  CHAPTER 1 — Command structure
+    LESSON 1.1 — Incident commander, safety, operations and communication roles
+    LESSON 1.2 — Priorities: life, stabilization, environment and property
+    LESSON 1.3 — Trigger, escalation and external agencies
+  CHAPTER 2 — Decision and communication
+    LESSON 2.1 — Common operating picture and action plan
+    LESSON 2.2 — Employee/family/customer/regulator communication boundaries
+    LESSON 2.3 — Shift handover and documentation
+  CHAPTER 3 — Exercise
+    LESSON 3.1 — Tabletop scenario
+    LESSON 3.2 — Functional drill
+    LESSON 3.3 — After-action review and plan update
+
+COURSE EMR-103 — Natural Hazard, Utility Loss & Site Resilience [REC][ILT]
+  CHAPTER 1 — Site risk scenarios
+    LESSON 1.1 — Storm, flood, extreme heat and earthquake where applicable
+    LESSON 1.2 — Power, water, compressed air, HVAC and IT outage
+    LESSON 1.3 — Transport/supply disruption and shelter/evacuation
+  CHAPTER 2 — Immediate response
+    LESSON 2.1 — Safe shutdown and preservation of critical process
+    LESSON 2.2 — Personnel accountability and communication tree
+    LESSON 2.3 — Contamination/product/environment protection
+  CHAPTER 3 — Recovery drill
+    LESSON 3.1 — Alternate process/site and restart criteria
+    LESSON 3.2 — Recovery priorities and customer communication
+    LESSON 3.3 — Tabletop exercise
+
+COURSE OFF-101 — Office Safety & Ergonomics [BASE][EL]
+  CHAPTER 1 — Workstation ergonomics
+    LESSON 1.1 — Chair, monitor, keyboard, lighting and posture
+    LESSON 1.2 — Eye strain, repetition and micro-break
+    LESSON 1.3 — Self-assessment and adjustment
+  CHAPTER 2 — Office hazards
+    LESSON 2.1 — Slips/trips, storage and manual handling
+    LESSON 2.2 — Electrical, fire and portable appliance awareness
+    LESSON 2.3 — Pantry, indoor air and housekeeping
+  CHAPTER 3 — Wellbeing and emergency
+    LESSON 3.1 — Fatigue, travel and lone-working awareness
+    LESSON 3.2 — [SITE DELTA] Alarm, evacuation and contacts
+    LESSON 3.3 — Scenario-based final quiz
+
+COURSE OCC-101 — Factory Ergonomics & Manual Handling [REC][BL]
+  CHAPTER 1 — Musculoskeletal risk
+    LESSON 1.1 — Force, repetition, posture, duration and vibration
+    LESSON 1.2 — Early symptoms and timely reporting
+    LESSON 1.3 — Ergonomic risk screening
+  CHAPTER 2 — Control
+    LESSON 2.1 — Eliminate/reduce lift and improve workstation
+    LESSON 2.2 — Mechanical aid, team lift and load planning
+    LESSON 2.3 — Rotation and recovery without hiding risk
+  CHAPTER 3 — Practical
+    LESSON 3.1 — Adjust a workstation
+    LESSON 3.2 — Demonstrate lift/push/pull
+    LESSON 3.3 — Supervisor observation and action
+
+COURSE OCC-102 — Noise & Hearing Conservation [REC][BL]
+  CHAPTER 1 — Noise exposure
+    LESSON 1.1 — Sound level, duration and hearing damage
+    LESSON 1.2 — Noise map/signage and personal exposure
+    LESSON 1.3 — Audiometry and early signs
+  CHAPTER 2 — Control
+    LESSON 2.1 — Engineering/enclosure/maintenance
+    LESSON 2.2 — Administrative control and restricted area
+    LESSON 2.3 — Earplug/earmuff selection and fit
+  CHAPTER 3 — Practical
+    LESSON 3.1 — Fit and seal check
+    LESSON 3.2 — Care/replacement
+    LESSON 3.3 — Hearing-conservation acknowledgement
+
+COURSE OCC-103 — Respiratory, Dust, Fume & Vapor Protection [REC][BL]
+  CHAPTER 1 — Exposure
+    LESSON 1.1 — Dust, solder fume, polymer fume, solvent vapor and gas
+    LESSON 1.2 — Exposure routes, symptoms and occupational limits
+    LESSON 1.3 — SDS/monitoring and medical evaluation
+  CHAPTER 2 — Control
+    LESSON 2.1 — Substitution, enclosure and local exhaust ventilation
+    LESSON 2.2 — Respirator type/filter and limitations
+    LESSON 2.3 — Facial hair, seal, cartridge life and storage
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Don/doff and user seal check
+    LESSON 3.2 — Fit-testing process
+    LESSON 3.3 — Emergency/defect response
+
+COURSE OCC-104 — Heat Stress & Hot-environment Work [REC][EL]
+  CHAPTER 1 — Heat risk
+    LESSON 1.1 — Temperature, humidity, workload, PPE and acclimatization
+    LESSON 1.2 — Cramps, exhaustion and heat stroke
+    LESSON 1.3 — Vulnerability and fitness for work
+  CHAPTER 2 — Prevention
+    LESSON 2.1 — Engineering, schedule, rest and hydration
+    LESSON 2.2 — Buddy monitoring and supervisor trigger
+    LESSON 2.3 — Work–rest plan
+  CHAPTER 3 — Emergency
+    LESSON 3.1 — Immediate cooling and call for medical help
+    LESSON 3.2 — What not to do
+    LESSON 3.3 — Scenario assessment
+
+COURSE OCC-105 — Fatigue, Shift Work & Fitness for Duty [REC][EL]
+  CHAPTER 1 — Fatigue science
+    LESSON 1.1 — Sleep pressure, circadian rhythm and shift rotation
+    LESSON 1.2 — Signs of impaired attention and microsleep
+    LESSON 1.3 — High-risk tasks and commute risk
+  CHAPTER 2 — Personal controls
+    LESSON 2.1 — Sleep, caffeine, meals and recovery
+    LESSON 2.2 — Medication/alcohol/substance disclosure routes
+    LESSON 2.3 — Self-check and stop-work
+  CHAPTER 3 — Team controls
+    LESSON 3.1 — Schedule, overtime and break management
+    LESSON 3.2 — Peer check and shift handover
+    LESSON 3.3 — Supervisor response scenario
+
+COURSE OCC-106 — Occupational Hygiene & Health Surveillance [REC][BL]
+  CHAPTER 1 — Industrial hygiene cycle
+    LESSON 1.1 — Anticipate, recognize, evaluate and control
+    LESSON 1.2 — Similar exposure group and sampling strategy
+    LESSON 1.3 — Interpreting monitoring results
+  CHAPTER 2 — Health surveillance
+    LESSON 2.1 — Role-based exam and confidentiality
+    LESSON 2.2 — Trend, trigger and work restriction
+    LESSON 2.3 — Worker communication
+  CHAPTER 3 — Control verification
+    LESSON 3.1 — LEV, enclosure and PPE program review
+    LESSON 3.2 — Action after exceedance
+    LESSON 3.3 — Practical exposure assessment
+
+COURSE OCC-107 — Mental Wellbeing & Psychological Safety [REC][EL]
+  CHAPTER 1 — Recognize and prevent
+    LESSON 1.1 — Stress, burnout and warning signs
+    LESSON 1.2 — Workload, control, respect and support
+    LESSON 1.3 — Personal coping and available resources
+  CHAPTER 2 — Support others
+    LESSON 2.1 — Listen, ask, encourage help and protect privacy
+    LESSON 2.2 — Manager boundary: support, not diagnose
+    LESSON 2.3 — Urgent risk escalation
+  CHAPTER 3 — Healthy team
+    LESSON 3.1 — Speak-up and psychological safety
+    LESSON 3.2 — Return-to-work support
+    LESSON 3.3 — Scenario reflection
+
+--------------------------------------------------------------------------------
+PROGRAM 05 — QUALITY MANAGEMENT & CUSTOMER ASSURANCE
+--------------------------------------------------------------------------------
+
+COURSE QMS-201 — ISO 9001 Awareness [BASE][EL]
+  CHAPTER 1 — Quality management system
+    LESSON 1.1 — Customer focus, process approach and risk-based thinking
+    LESSON 1.2 — Context, leadership, planning, support, operation and improvement
+    LESSON 1.3 — NISSEI quality policy/objectives [CUSTOMER CONTENT REQUIRED]
+  CHAPTER 2 — Vai trò mỗi người
+    LESSON 2.1 — Use current WI/specification and approved material
+    LESSON 2.2 — Record evidence, protect traceability and stop defects
+    LESSON 2.3 — Report abnormality, nonconformance and change
+  CHAPTER 3 — Audit and improvement
+    LESSON 3.1 — PDCA and evidence-based decision
+    LESSON 3.2 — How to participate honestly in an audit
+    LESSON 3.3 — Final scenario assessment
+
+COURSE QMS-202 — Quality at Source, CTQ & Defect Prevention [REC][BL]
+  CHAPTER 1 — Build quality into process
+    LESSON 1.1 — Customer requirement, CTQ and acceptance criteria
+    LESSON 1.2 — Operator ownership and no-pass-defect principle
+    LESSON 1.3 — Process control versus final inspection
+  CHAPTER 2 — Execute and react
+    LESSON 2.1 — First-piece check and in-process checkpoint
+    LESSON 2.2 — Control/reaction limit and Stop–Contain–Call
+    LESSON 2.3 — Defect sample/catalogue and boundary sample
+  CHAPTER 3 — Practical
+    LESSON 3.1 — Identify CTQ on a work instruction
+    LESSON 3.2 — Detect/segregate a simulated defect
+    LESSON 3.3 — Job-specific quality sign-off
+
+COURSE QMS-203 — Document & Record Control [REC][EL]
+  CHAPTER 1 — Document hierarchy
+    LESSON 1.1 — Policy, manual, procedure, WI, specification and form
+    LESSON 1.2 — Owner, approval, revision and effective date
+    LESSON 1.3 — Point-of-use copy and obsolete-document prevention
+  CHAPTER 2 — Good records and data integrity
+    LESSON 2.1 — Attributable, legible, contemporaneous, original and accurate
+    LESSON 2.2 — Complete correction without erasing history
+    LESSON 2.3 — Electronic record, access, backup and retention
+  CHAPTER 3 — Change and training impact
+    LESSON 3.1 — Review/approve/release/distribute
+    LESSON 3.2 — Determine affected roles and retraining
+    LESSON 3.3 — Document-control scenario quiz
+
+COURSE QMS-204 — Identification, Lot Traceability & Status Control [REC][BL]
+  CHAPTER 1 — Identification system
+    LESSON 1.1 — Material/part/product identity and revision
+    LESSON 1.2 — Lot, batch, serial and date/shift code
+    LESSON 1.3 — Status: accepted, hold, rejected, rework and released
+  CHAPTER 2 — Traceability chain
+    LESSON 2.1 — Supplier lot → process → equipment → operator → test → shipment
+    LESSON 2.2 — Split/merge/repack and preserving genealogy
+    LESSON 2.3 — Label damage/mismatch and system reconciliation
+  CHAPTER 3 — Trace exercise
+    LESSON 3.1 — Backward trace from customer unit
+    LESSON 3.2 — Forward trace for containment
+    LESSON 3.3 — Practical evidence check
+
+COURSE QMS-205 — Nonconformance, Quarantine, Deviation & Release [REC][BL]
+  CHAPTER 1 — Immediate control
+    LESSON 1.1 — Detect, stop, identify and physically/system-segregate
+    LESSON 1.2 — Suspect window and containment boundary
+    LESSON 1.3 — Preserve evidence and notify
+  CHAPTER 2 — Disposition
+    LESSON 2.1 — Rework, repair, use-as-is, return and scrap
+    LESSON 2.2 — Authority, technical review and customer concession
+    LESSON 2.3 — Reinspection and traceable release
+  CHAPTER 3 — Practical
+    LESSON 3.1 — Create a nonconformance record
+    LESSON 3.2 — Quarantine/label a sample lot
+    LESSON 3.3 — Disposition case assessment
+
+COURSE QMS-206 — Root Cause, CAPA & Effectiveness Verification [REC][BL]
+  CHAPTER 1 — Problem definition and containment
+    LESSON 1.1 — Is/is-not, scope, impact and evidence
+    LESSON 1.2 — Correction versus corrective action
+    LESSON 1.3 — Interim containment
+  CHAPTER 2 — Root cause
+    LESSON 2.1 — 5 Why, fishbone and cause-and-effect logic
+    LESSON 2.2 — Occurrence cause, escape cause and systemic cause
+    LESSON 2.3 — Verify cause with evidence
+  CHAPTER 3 — CAPA
+    LESSON 3.1 — Select action that controls cause
+    LESSON 3.2 — Implement, document, train and control change
+    LESSON 3.3 — Effectiveness criteria, follow-up and horizontal deployment
+
+COURSE QMS-207 — SPC, Variation, Capability & Sampling [REC][BL]
+  CHAPTER 1 — Variation
+    LESSON 1.1 — Common/special cause and stable process
+    LESSON 1.2 — Variable versus attribute data
+    LESSON 1.3 — Distribution and rational subgroup
+  CHAPTER 2 — Statistical control
+    LESSON 2.1 — Select/build/read control chart
+    LESSON 2.2 — Signal and reaction plan
+    LESSON 2.3 — Never adjust a stable process without evidence
+  CHAPTER 3 — Capability and sampling
+    LESSON 3.1 — Cp/Cpk/Pp/Ppk and prerequisites
+    LESSON 3.2 — Sampling risk and approved plan
+    LESSON 3.3 — Data exercise with process dataset
+
+COURSE QMS-208 — Measurement, Calibration & MSA [REC][BL]
+  CHAPTER 1 — Measurement fundamentals
+    LESSON 1.1 — Accuracy, precision, resolution and uncertainty
+    LESSON 1.2 — Traceability and environmental influence
+    LESSON 1.3 — Select an appropriate instrument/method
+  CHAPTER 2 — Equipment control
+    LESSON 2.1 — Calibration status, pre-use check and care
+    LESSON 2.2 — Out-of-calibration impact assessment
+    LESSON 2.3 — Reference standard and record
+  CHAPTER 3 — Measurement system analysis
+    LESSON 3.1 — Bias, linearity and stability
+    LESSON 3.2 — Repeatability/reproducibility and Gauge R&R
+    LESSON 3.3 — Instrument-specific practical qualification
+
+COURSE QMS-209 — PFMEA, Control Plan & Reaction Plan [REC][BL]
+  CHAPTER 1 — Process risk
+    LESSON 1.1 — Function, requirement, failure mode and effect
+    LESSON 1.2 — Cause, prevention and detection control
+    LESSON 1.3 — Risk priority/action priority per approved method
+  CHAPTER 2 — Translate risk into control
+    LESSON 2.1 — Special/critical characteristic
+    LESSON 2.2 — Control plan method, frequency, sample and owner
+    LESSON 2.3 — Reaction plan and escalation
+  CHAPTER 3 — Living documents
+    LESSON 3.1 — Link PFMEA–control plan–WI–inspection
+    LESSON 3.2 — Update after change, complaint or lesson learned
+    LESSON 3.3 — Workshop on one real process
+
+COURSE QMS-210 — Engineering, Process & 4M Change Control [REC][BL]
+  CHAPTER 1 — Recognize change
+    LESSON 1.1 — Man, machine, material, method, measurement and environment
+    LESSON 1.2 — Planned, temporary, emergency and supplier change
+    LESSON 1.3 — Why “small” change can alter product/risk
+  CHAPTER 2 — Review and approval
+    LESSON 2.1 — Impact on safety, quality, environment, customer and compliance
+    LESSON 2.2 — Trial/validation, documentation and approval authority
+    LESSON 2.3 — Customer/regulatory notification before implementation
+  CHAPTER 3 — Implement and verify
+    LESSON 3.1 — Cut-in, inventory, labeling and training
+    LESSON 3.2 — First production/heightened monitoring
+    LESSON 3.3 — Effectiveness and closure
+
+COURSE QMS-211 — Customer Complaint, Containment & 8D Communication [REC][BL]
+  CHAPTER 1 — Intake and immediate response
+    LESSON 1.1 — Capture customer, product, lot, symptom and evidence
+    LESSON 1.2 — Risk/priority and stop-ship escalation
+    LESSON 1.3 — Initial acknowledgement and containment
+  CHAPTER 2 — Investigation and 8D
+    LESSON 2.1 — Team, problem definition and verified root cause
+    LESSON 2.2 — Corrective/preventive action and validation
+    LESSON 2.3 — Clear, factual and timely customer report
+  CHAPTER 3 — Close and learn
+    LESSON 3.1 — Effectiveness, recurrence and escape prevention
+    LESSON 3.2 — Update standards/FMEA/control plan/training
+    LESSON 3.3 — Complaint-response simulation
+
+COURSE QMS-212 — Internal Auditor [REC][BL]
+  CHAPTER 1 — Audit principles and program
+    LESSON 1.1 — Integrity, independence, evidence and risk-based audit
+    LESSON 1.2 — Scope, criteria, process map and audit plan
+    LESSON 1.3 — Sampling and document review
+  CHAPTER 2 — Conduct audit
+    LESSON 2.1 — Opening, interviewing, observing and tracing
+    LESSON 2.2 — Objective evidence and finding classification
+    LESSON 2.3 — Closing meeting and clear reporting
+  CHAPTER 3 — Follow-up and qualification
+    LESSON 3.1 — Corrective-action review and effectiveness
+    LESSON 3.2 — Witnessed audit
+    LESSON 3.3 — Auditor calibration/sign-off
+
+COURSE QMS-213 — Supplier Quality, Audit & SCAR [REC][BL]
+  CHAPTER 1 — Supplier risk and approval
+    LESSON 1.1 — Criticality, capability and compliance screening
+    LESSON 1.2 — Requirement flow-down and sample approval
+    LESSON 1.3 — Audit/readiness evidence
+  CHAPTER 2 — Performance control
+    LESSON 2.1 — Incoming, delivery, complaint and change KPIs
+    LESSON 2.2 — Escalation, controlled shipping and development
+    LESSON 2.3 — Supplier change notification
+  CHAPTER 3 — SCAR
+    LESSON 3.1 — Containment and evidence request
+    LESSON 3.2 — Root cause/action review
+    LESSON 3.3 — Effectiveness and supplier-status decision
+
+COURSE QMS-214 — ESD, FOD & Controlled Cleanliness [REC][BL]
+  CHAPTER 1 — ESD and latent damage
+    LESSON 1.1 — Charge generation, sensitive item and hidden failure
+    LESSON 1.2 — EPA, grounding, wrist strap, footwear and packaging
+    LESSON 1.3 — Daily checks and response to failed control
+  CHAPTER 2 — FOD/contamination
+    LESSON 2.1 — Particle, fiber, oil, ion and foreign-object sources
+    LESSON 2.2 — Gowning, cleaning, tool/part accountability
+    LESSON 2.3 — Contamination excursion and product hold
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — EPA entry/setup practical
+    LESSON 3.2 — ESD tester/cleaning practical
+    LESSON 3.3 — Area-specific sign-off
+
+COURSE QMS-215 — Laboratory, Reliability & Test Data Integrity [REC][BL]
+  CHAPTER 1 — Controlled test
+    LESSON 1.1 — Method, sample, condition, equipment and acceptance criteria
+    LESSON 1.2 — Environmental conditioning and equipment readiness
+    LESSON 1.3 — Deviation and retest authorization
+  CHAPTER 2 — Data integrity
+    LESSON 2.1 — Raw data, calculation, metadata and audit trail
+    LESSON 2.2 — Outlier, invalid test and scientific justification
+    LESSON 2.3 — Review/approval/report
+  CHAPTER 3 — Reliability/failure learning
+    LESSON 3.1 — Stress, life and accelerated testing
+    LESSON 3.2 — Preserve failed sample and chain of custody
+    LESSON 3.3 — Test-equipment practical authorization
+
+COURSE QMS-216 — Automotive Quality Core Tools [COND][BL]
+  CHAPTER 1 — Automotive customer system
+    LESSON 1.1 — Applicable QMS/customer-specific requirements
+    LESSON 1.2 — Product safety and special characteristics
+    LESSON 1.3 — Escalation/traceability/change discipline
+  CHAPTER 2 — APQP/PPAP integration
+    LESSON 2.1 — Planning, design/process development and launch
+    LESSON 2.2 — PFMEA, control plan, MSA and SPC evidence
+    LESSON 2.3 — PPAP package and customer approval
+  CHAPTER 3 — Performance
+    LESSON 3.1 — Warranty/field complaint and 8D
+    LESSON 3.2 — Capacity/contingency and supplier flow-down
+    LESSON 3.3 — Customer-specific case
+
+COURSE QMS-217 — Medical/Life-science Quality Pathway [COND][BL]
+  CHAPTER 1 — Regulated product context
+    LESSON 1.1 — Applicable medical QMS/customer/regulatory scope
+    LESSON 1.2 — Design/process risk and patient impact
+    LESSON 1.3 — Personnel competence and controlled environment
+  CHAPTER 2 — Process evidence
+    LESSON 2.1 — Validation, traceability and device/product history
+    LESSON 2.2 — Cleanliness/contamination and special process
+    LESSON 2.3 — Change and supplier control
+  CHAPTER 3 — Post-market interface
+    LESSON 3.1 — Complaint and vigilance escalation boundary
+    LESSON 3.2 — CAPA and regulatory/customer communication
+    LESSON 3.3 — Role-specific assessment
+
+COURSE QMS-218 — Semiconductor/High-cleanliness Customer Pathway [COND][BL]
+  CHAPTER 1 — Contamination-critical supply
+    LESSON 1.1 — Molecular/particle/ionic contamination and FOD
+    LESSON 1.2 — High-purity handling and controlled packaging
+    LESSON 1.3 — ESD and clean-area behavior
+  CHAPTER 2 — Process assurance
+    LESSON 2.1 — Statistical control and excursion response
+    LESSON 2.2 — Deep traceability and change notification
+    LESSON 2.3 — Supplier/material evidence
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Customer-specific requirements
+    LESSON 3.2 — Clean handling practical
+    LESSON 3.3 — Scenario assessment
+
+COURSE QMS-219 — Electronics Workmanship & Soldering Standards [COND][BL]
+  CHAPTER 1 — Contractual workmanship standard
+    LESSON 1.1 — Product class and acceptance criteria
+    LESSON 1.2 — Component, terminal, wire and solder-joint defects
+    LESSON 1.3 — Visual aid/boundary sample control
+  CHAPTER 2 — Process discipline
+    LESSON 2.1 — Temperature/time/material/tool control
+    LESSON 2.2 — ESD, cleanliness and traceability
+    LESSON 2.3 — Rework/repair authorization
+  CHAPTER 3 — Certification practical
+    LESSON 3.1 — Build sample
+    LESSON 3.2 — Inspect/classify sample
+    LESSON 3.3 — Qualified trainer assessment to current contractual edition
+
+--------------------------------------------------------------------------------
+PROGRAM 06 — ENVIRONMENT, SUSTAINABILITY & PRODUCT CHEMICAL COMPLIANCE
+--------------------------------------------------------------------------------
+
+COURSE ENV-201 — ISO 14001 Awareness [BASE][EL]
+  CHAPTER 1 — Environmental management
+    LESSON 1.1 — ISO 14001:2026 purpose and lifecycle perspective
+    LESSON 1.2 — NISSEI environmental policy and employee responsibility
+    LESSON 1.3 — Leadership, risk/opportunity and continual improvement
+  CHAPTER 2 — Aspects and operational control
+    LESSON 2.1 — Activity → aspect → impact
+    LESSON 2.2 — Waste, resource, emission, water and chemical examples
+    LESSON 2.3 — Follow controls and report abnormality
+  CHAPTER 3 — Performance
+    LESSON 3.1 — Objectives, indicators and evidence
+    LESSON 3.2 — Emergency preparedness and compliance
+    LESSON 3.3 — Final scenario assessment
+
+COURSE ENV-202 — Environmental Aspects, Legal Obligations & Controls [REC][BL]
+  CHAPTER 1 — Aspect/impact evaluation
+    LESSON 1.1 — Normal, abnormal, emergency and lifecycle conditions
+    LESSON 1.2 — Significance method and risk/opportunity
+    LESSON 1.3 — Interested party and value-chain influence
+  CHAPTER 2 — Compliance obligations
+    LESSON 2.1 — Law, permit, agreement and customer requirement
+    LESSON 2.2 — Compliance register, owner and evidence
+    LESSON 2.3 — Evaluation and action after change/noncompliance
+  CHAPTER 3 — Operational control
+    LESSON 3.1 — Translate significant aspect into control
+    LESSON 3.2 — Contractor/supplier communication
+    LESSON 3.3 — Workshop: one process aspect register
+
+COURSE ENV-203 — Waste Segregation, Hazardous Waste & Records [REC][BL]
+  CHAPTER 1 — Waste hierarchy and identification
+    LESSON 1.1 — Prevent, reduce, reuse, recycle, recover and dispose
+    LESSON 1.2 — General, recyclable and hazardous waste
+    LESSON 1.3 — Site waste map and labels
+  CHAPTER 2 — Safe compliant handling
+    LESSON 2.1 — Container, compatibility, closure and secondary containment
+    LESSON 2.2 — Storage time, inventory and authorized access
+    LESSON 2.3 — Manifest/vendor/transfer evidence
+  CHAPTER 3 — Practical
+    LESSON 3.1 — Sort sample waste
+    LESSON 3.2 — Inspect hazardous-waste area
+    LESSON 3.3 — Respond to misclassification/leak
+
+COURSE ENV-204 — Pollution Prevention, Spill, Water & Emissions [REC][BL]
+  CHAPTER 1 — Pathway to environment
+    LESSON 1.1 — Drain, soil, air, wastewater and community receptors
+    LESSON 1.2 — Source, pathway and receptor model
+    LESSON 1.3 — Permit/control-limit awareness
+  CHAPTER 2 — Prevention and monitoring
+    LESSON 2.1 — Containment, closed transfer, LEV and treatment
+    LESSON 2.2 — Inspection, monitoring and abnormal trend
+    LESSON 2.3 — Maintenance/change control
+  CHAPTER 3 — Release response
+    LESSON 3.1 — Stop if safe, contain, protect drain and report
+    LESSON 3.2 — Sampling/cleanup/evidence and notification boundary
+    LESSON 3.3 — Site environmental scenario drill
+
+COURSE ENV-205 — Energy, Water, Compressed Air & Resource Efficiency [REC][BL]
+  CHAPTER 1 — Significant resource users
+    LESSON 1.1 — Process equipment, HVAC, chiller, compressor and lighting
+    LESSON 1.2 — Meter, baseline, demand peak and loss
+    LESSON 1.3 — Water balance and leak
+  CHAPTER 2 — Daily action
+    LESSON 2.1 — Shutdown, standby, setpoint and schedule
+    LESSON 2.2 — Air leak/pressure/heat-loss control
+    LESSON 2.3 — Report and verify improvement
+  CHAPTER 3 — Improvement
+    LESSON 3.1 — Opportunity register and business case
+    LESSON 3.2 — Measurement and verification
+    LESSON 3.3 — Gemba resource-loss hunt
+
+COURSE ENV-206 — Climate, Carbon & Renewable Energy [REC][EL]
+  CHAPTER 1 — Climate and emissions
+    LESSON 1.1 — Climate risk and business relevance
+    LESSON 1.2 — Scope 1, 2 and value-chain awareness
+    LESSON 1.3 — Activity data, factor and evidence
+  CHAPTER 2 — NISSEI decarbonization
+    LESSON 2.1 — Renewable electricity/certificates and solar
+    LESSON 2.2 — Group power-monitoring system
+    LESSON 2.3 — Compressor, heat source and air-conditioning improvement
+  CHAPTER 3 — Role action
+    LESSON 3.1 — Operations, engineering, procurement and office levers
+    LESSON 3.2 — Avoid double counting/unsupported claim
+    LESSON 3.3 — Carbon-literacy quiz
+
+COURSE ENV-207 — Material Loss, Circularity & Sustainable Packaging [REC][BL]
+  CHAPTER 1 — Material efficiency
+    LESSON 1.1 — Yield, scrap, startup loss and overprocessing
+    LESSON 1.2 — Segregated recovery of silicone, fluoropolymer, glass and metal
+    LESSON 1.3 — Quality improvement as environmental improvement
+  CHAPTER 2 — Circular decisions
+    LESSON 2.1 — Reuse/recycle feasibility and contamination
+    LESSON 2.2 — Returnable packaging and right-sizing
+    LESSON 2.3 — Lifecycle trade-offs
+  CHAPTER 3 — Improvement
+    LESSON 3.1 — Material-flow map
+    LESSON 3.2 — Loss-cost/environment calculation
+    LESSON 3.3 — Kaizen proposal
+
+COURSE PCS-101 — NISSEI Group Green Procurement Standard [REC][EL]
+  CHAPTER 1 — Scope and responsibility
+    LESSON 1.1 — Material, part, product, packaging, consumable and contact jig
+    LESSON 1.2 — Prohibited versus controlled substance
+    LESSON 1.3 — Procurement, supplier, engineering, quality and receiving roles
+  CHAPTER 2 — Supplier requirement
+    LESSON 2.1 — Flow-down of current NISSEI standard/version
+    LESSON 2.2 — Non-use warranty, declaration and analysis evidence
+    LESSON 2.3 — Supplier process/change notification
+  CHAPTER 3 — Decision and escalation
+    LESSON 3.1 — Missing/conflicting/expired evidence
+    LESSON 3.2 — Quarantine and approved exception
+    LESSON 3.3 — Green-procurement case assessment
+
+COURSE PCS-102 — RoHS, REACH, POPs, PFAS & Packaging Controls [REC][EL]
+  CHAPTER 1 — Regulatory/customer landscape
+    LESSON 1.1 — Restricted/prohibited/reportable substance concepts
+    LESSON 1.2 — Homogeneous material, threshold, use and exemption
+    LESSON 1.3 — Regulatory watch and effective-date control
+  CHAPTER 2 — High-risk substance families
+    LESSON 2.1 — Heavy metals, flame retardants and phthalates
+    LESSON 2.2 — POPs, chlorinated substances and fluorinated substances/PFAS
+    LESSON 2.3 — Packaging and customer-specific restrictions
+  CHAPTER 3 — Compliance decision
+    LESSON 3.1 — BOM/material/use evaluation
+    LESSON 3.2 — Evidence, exemption and uncertainty escalation
+    LESSON 3.3 — Scenario quiz using current controlled list
+
+COURSE PCS-103 — chemSHERPA, IMDS & Product Substance Evidence [REC][BL]
+  CHAPTER 1 — Data architecture
+    LESSON 1.1 — Product–part–material–substance hierarchy
+    LESSON 1.2 — Declarable substance and application/use
+    LESSON 1.3 — Supplier data/version linkage
+  CHAPTER 2 — Create/review declaration
+    LESSON 2.1 — chemSHERPA entry and validation
+    LESSON 2.2 — IMDS/GADSL workflow when automotive scope applies
+    LESSON 2.3 — Laboratory report, accreditation and chain of evidence
+  CHAPTER 3 — Maintain and submit
+    LESSON 3.1 — Customer format, approval and confidentiality
+    LESSON 3.2 — Change/regulatory update and re-survey
+    LESSON 3.3 — Practical dataset exercise
+
+COURSE PCS-104 — Supplier Chemical Management, Change & Quarantine [REC][BL]
+  CHAPTER 1 — Supplier system assessment
+    LESSON 1.1 — Controlled list, BOM, process and sub-tier flow-down
+    LESSON 1.2 — Contamination/change risk
+    LESSON 1.3 — Audit and evidence sampling
+  CHAPTER 2 — Incoming assurance
+    LESSON 2.1 — Document match, lot identity and risk-based test
+    LESSON 2.2 — Missing/failed evidence and quarantine
+    LESSON 2.3 — Deviation/exception authority
+  CHAPTER 3 — Change/incident
+    LESSON 3.1 — Supplier material/process/site change
+    LESSON 3.2 — Restricted-substance detection and customer impact
+    LESSON 3.3 — Containment, SCAR and effectiveness
+
+COURSE ENV-211 — EMS Internal Auditor [REC][BL]
+  CHAPTER 1 — EMS audit
+    LESSON 1.1 — Aspect, obligation, control and performance evidence
+    LESSON 1.2 — Site walk, interview and compliance sampling
+    LESSON 1.3 — Finding and corrective action
+  CHAPTER 2 — Audit lifecycle
+    LESSON 2.1 — Scope, criteria, risk and sampling plan
+    LESSON 2.2 — Opening/closing and evidence-based communication
+    LESSON 2.3 — Corrective-action follow-up and effectiveness
+  CHAPTER 3 — Auditor qualification
+    LESSON 3.1 — Observed audit participation
+    LESSON 3.2 — Witnessed lead audit
+    LESSON 3.3 — Calibration, authorization scope and maintenance
+
+COURSE ENV-212 — Environmental Emergency Leader [REC][BL]
+  CHAPTER 1 — Scenario and command
+    LESSON 1.1 — Spill, emission, wastewater and waste emergency
+    LESSON 1.2 — Trigger, role, command and safety interface
+    LESSON 1.3 — Internal/external notification boundary
+  CHAPTER 2 — Control/recover
+    LESSON 2.1 — Source isolation, containment and protection
+    LESSON 2.2 — Sampling, evidence, waste and remediation
+    LESSON 2.3 — Recovery, release and stakeholder communication
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — [SITE DELTA] Response-plan knowledge
+    LESSON 3.2 — Environmental incident tabletop
+    LESSON 3.3 — Leader assessment and drill participation
+
+--------------------------------------------------------------------------------
+PROGRAM 07 — MANUFACTURING EXCELLENCE & DAILY OPERATIONS
+--------------------------------------------------------------------------------
+
+COURSE OPS-101 — 5S & Visual Workplace [REC][BL]
+  CHAPTER 1 — Sort and set in order
+    LESSON 1.1 — Red-tag and remove unnecessary items
+    LESSON 1.2 — Point-of-use location and minimum/maximum
+    LESSON 1.3 — Tool/material/status visualization
+  CHAPTER 2 — Shine and standardize
+    LESSON 2.1 — Cleaning as inspection
+    LESSON 2.2 — Standard photo/checklist/ownership
+    LESSON 2.3 — Abnormality becomes visible
+  CHAPTER 3 — Sustain
+    LESSON 3.1 — Daily discipline and audit
+    LESSON 3.2 — Root cause of recurring disorder
+    LESSON 3.3 — Practical 5S zone assessment
+
+COURSE OPS-102 — Standard Work & Job Instruction [REC][BL]
+  CHAPTER 1 — Standard work
+    LESSON 1.1 — Sequence, cycle time, WIP and key point
+    LESSON 1.2 — Safety/quality reason behind each critical step
+    LESSON 1.3 — Current revision and point of use
+  CHAPTER 2 — Follow and improve
+    LESSON 2.1 — No silent workaround
+    LESSON 2.2 — Stop–Call–Wait at abnormality
+    LESSON 2.3 — Approved change versus deviation
+  CHAPTER 3 — Practical
+    LESSON 3.1 — Read-back/demonstrate one job
+    LESSON 3.2 — Observe against checklist
+    LESSON 3.3 — Job qualification record
+
+COURSE OPS-103 — Lean Flow & Eight Wastes [REC][EL]
+  CHAPTER 1 — Value and waste
+    LESSON 1.1 — Customer value and value stream
+    LESSON 1.2 — Defect, overproduction, waiting and non-used talent
+    LESSON 1.3 — Transport, inventory, motion and extra processing
+  CHAPTER 2 — Flow and pull
+    LESSON 2.1 — Takt, cycle time, bottleneck and WIP
+    LESSON 2.2 — One-piece flow, FIFO and Kanban
+    LESSON 2.3 — Quality/safety before speed
+  CHAPTER 3 — Gemba application
+    LESSON 3.1 — Waste observation
+    LESSON 3.2 — Improvement hypothesis
+    LESSON 3.3 — Mini value-stream exercise
+
+COURSE OPS-104 — Kaizen, PDCA & QC Story [REC][BL]
+  CHAPTER 1 — Define
+    LESSON 1.1 — Theme, customer impact and measurable target
+    LESSON 1.2 — Current condition and stratified data
+    LESSON 1.3 — Plan and team
+  CHAPTER 2 — Analyze and improve
+    LESSON 2.1 — Pareto, process map, 5 Why and fishbone
+    LESSON 2.2 — Countermeasure selection and risk review
+    LESSON 2.3 — Trial and check
+  CHAPTER 3 — Sustain/share
+    LESSON 3.1 — Standardize and monitor
+    LESSON 3.2 — A3/QC story presentation
+    LESSON 3.3 — Yokoten/horizontal deployment
+
+COURSE OPS-105 — Visual Daily Management & SQDCP [REC][BL]
+  CHAPTER 1 — Tiered daily management
+    LESSON 1.1 — Safety, quality, delivery, cost and people indicators
+    LESSON 1.2 — Target/actual/gap and abnormality
+    LESSON 1.3 — Tier 1–2–3 escalation
+  CHAPTER 2 — Effective meeting
+    LESSON 2.1 — Standard agenda and fact-based update
+    LESSON 2.2 — Owner/date/action and aging
+    LESSON 2.3 — Do not solve every problem in stand-up
+  CHAPTER 3 — Leader practice
+    LESSON 3.1 — Run a shift-start meeting
+    LESSON 3.2 — Escalate open risk
+    LESSON 3.3 — Coaching feedback
+
+COURSE OPS-106 — Production Planning, Material Flow & Line Balance [REC][BL]
+  CHAPTER 1 — Plan
+    LESSON 1.1 — Demand, capacity, constraint and priority
+    LESSON 1.2 — Staffing/skill/equipment/material readiness
+    LESSON 1.3 — Frozen window and change communication
+  CHAPTER 2 — Control flow
+    LESSON 2.1 — WIP, FIFO, Kanban and shortage
+    LESSON 2.2 — Bottleneck and line balance
+    LESSON 2.3 — Schedule adherence and recovery
+  CHAPTER 3 — Scenario
+    LESSON 3.1 — Material shortage
+    LESSON 3.2 — Equipment downtime/customer priority conflict
+    LESSON 3.3 — Recovery-plan exercise
+
+COURSE OPS-107 — OEE, Loss Analysis & TPM [REC][BL]
+  CHAPTER 1 — Equipment effectiveness
+    LESSON 1.1 — Availability, performance and quality
+    LESSON 1.2 — Planned/unplanned loss and valid data
+    LESSON 1.3 — OEE limitations and behavior risk
+  CHAPTER 2 — Autonomous maintenance
+    LESSON 2.1 — Clean–inspect–lubricate to approved standard
+    LESSON 2.2 — Abnormality tag and escalation
+    LESSON 2.3 — Never cross maintenance/LOTO boundary
+  CHAPTER 3 — Loss elimination
+    LESSON 3.1 — Pareto downtime/speed/defect
+    LESSON 3.2 — Chronic-loss root cause
+    LESSON 3.3 — Gemba equipment-loss exercise
+
+COURSE OPS-108 — Setup, Changeover, Line Clearance & First-off Approval [REC][BL]
+  CHAPTER 1 — Prepare changeover
+    LESSON 1.1 — Correct order, material, tooling, program and document
+    LESSON 1.2 — Last-good/first-good boundary and traceability
+    LESSON 1.3 — External versus internal setup
+  CHAPTER 2 — Execute safely
+    LESSON 2.1 — Shutdown/isolation and tool control
+    LESSON 2.2 — Line clearance and mixed-product prevention
+    LESSON 2.3 — Parameter/program verification
+  CHAPTER 3 — Release
+    LESSON 3.1 — First-off sample and CTQ check
+    LESSON 3.2 — Authorized approval and heightened monitoring
+    LESSON 3.3 — Practical changeover qualification
+
+COURSE OPS-109 — Poka-yoke & Defect-proof Process Design [REC][BL]
+  CHAPTER 1 — Error versus defect
+    LESSON 1.1 — Human fallibility and system design
+    LESSON 1.2 — Prevention, detection and warning
+    LESSON 1.3 — Fail-safe and source inspection
+  CHAPTER 2 — Design/evaluate
+    LESSON 2.1 — Contact, fixed-value, sequence and interlock methods
+    LESSON 2.2 — Bypass/tamper risk and failure mode
+    LESSON 2.3 — Validation and reaction plan
+  CHAPTER 3 — Workshop
+    LESSON 3.1 — Select recurring error
+    LESSON 3.2 — Prototype mistake-proof control
+    LESSON 3.3 — Verify and standardize
+
+COURSE OPS-110 — Shift Handover & Open-issue Control [REC][BL]
+  CHAPTER 1 — What must transfer
+    LESSON 1.1 — Safety/environment status and permits
+    LESSON 1.2 — Quality hold/change/trial and equipment condition
+    LESSON 1.3 — Plan, shortage, staffing and open action
+  CHAPTER 2 — How to transfer
+    LESSON 2.1 — Standard log, visual status and evidence
+    LESSON 2.2 — Face-to-face/read-back at critical process
+    LESSON 2.3 — Escalate unresolved high risk
+  CHAPTER 3 — Practice
+    LESSON 3.1 — Build a handover record
+    LESSON 3.2 — Role-play incoming/outgoing leader
+    LESSON 3.3 — Handover audit
+
+--------------------------------------------------------------------------------
+PROGRAM 08 — MATERIALS, PROCESS TECHNOLOGY & PRODUCT QUALIFICATION
+--------------------------------------------------------------------------------
+
+Ghi chú kiến trúc:
+  Track kỹ thuật này phản ánh ba nền tảng công nghệ HIFLON™ (fluorocarbon
+  polymer), LIKAL™ (silicone rubber) và LICOM™ (optical fiber), cùng các
+  dòng cable/assembly, PCB, laser và sản phẩm ứng dụng. Tên máy, recipe,
+  thông số, CTQ và acceptance criteria thật phải nằm trong [SITE DELTA]/[TPL].
+  Tên công nghệ trong hồ sơ nội bộ có biến thể chính tả; master dùng cách
+  viết hiện hành trên website NISSEI và phải được Brand/Engineering xác nhận.
+
+COURSE MAT-101 — Polymer, Electrical & Optical Fundamentals [REC][BL]
+  CHAPTER 1 — Material behavior
+    LESSON 1.1 — Polymer, elastomer, metal, glass và composite
+    LESSON 1.2 — Thermal, mechanical, chemical và aging behavior
+    LESSON 1.3 — Contamination, moisture, shelf life và compatibility
+  CHAPTER 2 — Electrical/optical behavior
+    LESSON 2.1 — Conductor, resistance, insulation và dielectric
+    LESSON 2.2 — Signal integrity, shielding, attenuation và bandwidth
+    LESSON 2.3 — Reflection, refraction, numerical aperture và optical loss
+  CHAPTER 3 — Apply to NISSEI products
+    LESSON 3.1 — Chọn property theo môi trường sử dụng
+    LESSON 3.2 — Liên hệ material–process–structure–performance
+    LESSON 3.3 — Case study: property drift thành product failure
+
+COURSE MAT-102 — Engineering Drawing, BOM, Specification & Tolerance [REC][BL]
+  CHAPTER 1 — Read controlled requirements
+    LESSON 1.1 — Drawing zones, revisions, notes và referenced standards
+    LESSON 1.2 — BOM, material code, alternate part và effectivity
+    LESSON 1.3 — Customer specification versus internal specification
+  CHAPTER 2 — Interpret dimensions
+    LESSON 2.1 — Units, dimensions, limits, fits và surface requirements
+    LESSON 2.2 — Datum, geometric controls và measurement intent
+    LESSON 2.3 — Cable/optical-specific construction and tolerance callouts
+  CHAPTER 3 — Prevent execution error
+    LESSON 3.1 — Verify current revision and change status
+    LESSON 3.2 — Resolve conflict, ambiguity and impossible tolerance
+    LESSON 3.3 — Drawing/BOM interpretation practical
+
+COURSE MAT-103 — Common Measurement, Test & Data Practice [REC][BL]
+  CHAPTER 1 — Measurement discipline
+    LESSON 1.1 — Measurand, method, resolution and uncertainty
+    LESSON 1.2 — Correct instrument, calibration status and environment
+    LESSON 1.3 — Sampling location, conditioning and repeat measurement
+  CHAPTER 2 — Common methods
+    LESSON 2.1 — Dimensional, mass, force and thermal measurements
+    LESSON 2.2 — Electrical continuity, resistance and withstand testing
+    LESSON 2.3 — Optical power/loss and visual/end-face inspection
+  CHAPTER 3 — Trustworthy result
+    LESSON 3.1 — Raw data, units, rounding and transcription
+    LESSON 3.2 — Outlier, retest, invalid test and escalation
+    LESSON 3.3 — Hands-on instrument/data-record qualification
+
+COURSE HIF-101 — HIFLON™ Fluorocarbon Materials & Applications [REC][BL]
+  CHAPTER 1 — Material families
+    LESSON 1.1 — Fluorocarbon polymer structure and key properties
+    LESSON 1.2 — Heat, chemical, electrical and low-friction performance
+    LESSON 1.3 — Grade selection, limits and safe material identification
+  CHAPTER 2 — NISSEI applications
+    LESSON 2.1 — Wire/cable insulation and high-frequency use
+    LESSON 2.2 — Tubing, profile and thermal/chemical applications
+    LESSON 2.3 — Customer environment and critical failure modes
+  CHAPTER 3 — Material-to-product control
+    LESSON 3.1 — Certificate, lot and formulation traceability
+    LESSON 3.2 — Storage, drying, cleanliness and mix-up prevention
+    LESSON 3.3 — Application selection case assessment
+
+COURSE HIF-201 — HIFLON™ Material Preparation & Contamination Control [REC][OJT]
+  CHAPTER 1 — Prepare material
+    LESSON 1.1 — Verify grade, lot, status, shelf life and quantity
+    LESSON 1.2 — Drying/conditioning requirements and controlled staging
+    LESSON 1.3 — Regrind/reuse restrictions and authorized disposition
+  CHAPTER 2 — Control contamination
+    LESSON 2.1 — Foreign material, color and cross-grade contamination
+    LESSON 2.2 — Tool/container/transfer-line cleanliness
+    LESSON 2.3 — Line clearance and positive material identification
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Execute approved preparation checklist
+    LESSON 3.2 — Detect and contain abnormal material
+    LESSON 3.3 — Assessor observation and authorization
+
+COURSE HIF-202 — HIFLON™ Extrusion: Wire, Cable, Tube & Profile [REC][OJT]
+  CHAPTER 1 — Process architecture
+    LESSON 1.1 — Feed, heat, screw, head/die, cooling and take-up
+    LESSON 1.2 — Conductor/core preparation and concentric flow
+    LESSON 1.3 — Tube/profile sizing, haul-off and winding
+  CHAPTER 2 — Run controlled process
+    LESSON 2.1 — Setup against approved recipe/tooling/WI
+    LESSON 2.2 — Startup purge, first-piece and stabilization
+    LESSON 2.3 — In-process dimensions, spark/visual checks and reaction
+  CHAPTER 3 — Shutdown and qualification
+    LESSON 3.1 — Product change, purge and material reconciliation
+    LESSON 3.2 — Safe shutdown, cleaning and abnormal handover
+    LESSON 3.3 — Supervised run and independent-operation sign-off
+
+COURSE HIF-203 — HIFLON™ Parameter Control & Extrusion Defects [REC][BL]
+  CHAPTER 1 — Parameter relationships
+    LESSON 1.1 — Temperature profile, pressure, screw and line speed
+    LESSON 1.2 — Draw-down, die balance, cooling and tension
+    LESSON 1.3 — Process window, trend and unauthorized adjustment
+  CHAPTER 2 — Defect diagnosis
+    LESSON 2.1 — Diameter/wall/concentricity instability
+    LESSON 2.2 — Surface roughness, gels, burns, bubbles and contamination
+    LESSON 2.3 — Adhesion, cracking, pinhole and electrical failure
+  CHAPTER 3 — Structured response
+    LESSON 3.1 — Stop, contain and preserve evidence
+    LESSON 3.2 — Check material–machine–method–measurement sequence
+    LESSON 3.3 — Defect board and troubleshooting practical
+
+COURSE HIF-204 — HIFLON™ Inspection, Testing & Failure Analysis [REC][BL]
+  CHAPTER 1 — Product verification
+    LESSON 1.1 — Appearance, dimension, wall and concentricity
+    LESSON 1.2 — Spark, resistance, dielectric and insulation tests
+    LESSON 1.3 — Mechanical, thermal and chemical performance tests
+  CHAPTER 2 — Evidence integrity
+    LESSON 2.1 — Sample conditioning and test-method compliance
+    LESSON 2.2 — Lot linkage, raw data and result review
+    LESSON 2.3 — Failure/retest/deviation controls
+  CHAPTER 3 — Learn from failure
+    LESSON 3.1 — Cross-section and defect morphology
+    LESSON 3.2 — Correlate failure to material/process/use condition
+    LESSON 3.3 — Failure-analysis case and report
+
+COURSE LIK-101 — LIKAL™ Silicone Rubber Materials & Applications [REC][BL]
+  CHAPTER 1 — Silicone fundamentals
+    LESSON 1.1 — Silicone chemistry, elastomer behavior and grade families
+    LESSON 1.2 — Temperature, flexibility, compression and insulation
+    LESSON 1.3 — Cure system, additives, color and shelf life
+  CHAPTER 2 — NISSEI applications
+    LESSON 2.1 — Wire/cable, tubing and profile
+    LESSON 2.2 — Molded/foamed components, rollers and heaters
+    LESSON 2.3 — Use-condition limits and failure mechanisms
+  CHAPTER 3 — Material control
+    LESSON 3.1 — Lot, formulation and component traceability
+    LESSON 3.2 — Storage, conditioning and contamination control
+    LESSON 3.3 — Grade/application selection exercise
+
+COURSE LIK-201 — Silicone Compounding, Mixing & Batch Traceability [REC][OJT]
+  CHAPTER 1 — Batch preparation
+    LESSON 1.1 — Verify formula, material status and weighing method
+    LESSON 1.2 — Sequence, time, temperature and addition control
+    LESSON 1.3 — Cross-contamination and allergen-like segregation mindset
+  CHAPTER 2 — Mixing control
+    LESSON 2.1 — Equipment readiness and safe loading/unloading
+    LESSON 2.2 — Dispersion, viscosity/consistency and heat history
+    LESSON 2.3 — Sample, in-process test and acceptance
+  CHAPTER 3 — Batch release
+    LESSON 3.1 — Unique batch identity and genealogy
+    LESSON 3.2 — Hold, rework, scrap and remainder reconciliation
+    LESSON 3.3 — Full-batch practical qualification
+
+COURSE LIK-202 — Silicone Extrusion & Continuous Processing [REC][OJT]
+  CHAPTER 1 — Process setup
+    LESSON 1.1 — Material feed, screw, head/die and support equipment
+    LESSON 1.2 — Tooling, line clearance and approved process recipe
+    LESSON 1.3 — Cure tunnel/bath and downstream control
+  CHAPTER 2 — Stable production
+    LESSON 2.1 — Startup, centering, dimension and first-off release
+    LESSON 2.2 — Speed, temperature, pressure and cure balance
+    LESSON 2.3 — In-process checks and reaction limits
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Product change, cleaning and material accounting
+    LESSON 3.2 — Shutdown and abnormal condition response
+    LESSON 3.3 — Supervised independent run
+
+COURSE LIK-203 — Silicone Molding & Foam Processing [REC][OJT]
+  CHAPTER 1 — Prepare mold/process
+    LESSON 1.1 — Mold identity, condition, release and cavity status
+    LESSON 1.2 — Preform/shot/charge and material time limits
+    LESSON 1.3 — Temperature, pressure, time and foam ratio
+  CHAPTER 2 — Produce and control
+    LESSON 2.1 — Loading, cycle and safe demolding
+    LESSON 2.2 — Flash, short shot, void, density and surface defect
+    LESSON 2.3 — Trim, dimensional check and first-off approval
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Prevent mix-up and cavity-level traceability
+    LESSON 3.2 — Abnormal cycle containment and escalation
+    LESSON 3.3 — Molding/foam practical sign-off
+
+COURSE LIK-204 — Silicone Curing, Post-curing & Property Verification [REC][BL]
+  CHAPTER 1 — Cure science
+    LESSON 1.1 — Crosslinking, time–temperature relationship
+    LESSON 1.2 — Under-cure, over-cure and inhibition
+    LESSON 1.3 — Post-cure purpose and product-specific requirement
+  CHAPTER 2 — Controlled execution
+    LESSON 2.1 — Oven/load arrangement, profile and identification
+    LESSON 2.2 — Timer/temperature evidence and interruption response
+    LESSON 2.3 — Cooling, aging and post-cure segregation
+  CHAPTER 3 — Verify
+    LESSON 3.1 — Hardness, tensile, elongation and compression set
+    LESSON 3.2 — Appearance, dimension and functional result
+    LESSON 3.3 — Cure-record and defect investigation exercise
+
+COURSE LIK-205 — Silicone Defects & Process Troubleshooting [REC][BL]
+  CHAPTER 1 — Defect language
+    LESSON 1.1 — Surface, dimensional and color defects
+    LESSON 1.2 — Void, inclusion, poor dispersion and cure defects
+    LESSON 1.3 — Adhesion, compression and life-test failure
+  CHAPTER 2 — Diagnostic logic
+    LESSON 2.1 — Material age/ratio/contamination
+    LESSON 2.2 — Mixing/extrusion/molding/cure parameters
+    LESSON 2.3 — Tooling, environment and measurement influence
+  CHAPTER 3 — Practical problem solving
+    LESSON 3.1 — Contain lot and preserve samples
+    LESSON 3.2 — Reproduce/verify cause without unauthorized trial
+    LESSON 3.3 — Defect case board and corrective-action review
+
+COURSE WCA-101 — Wire, Cable & Assembly Construction Fundamentals [REC][BL]
+  CHAPTER 1 — Construction
+    LESSON 1.1 — Conductor, strand, insulation, shield, jacket and filler
+    LESSON 1.2 — Pairing, twisting, lay, drain and grounding
+    LESSON 1.3 — Connector, terminal, backshell, boot and overmold
+  CHAPTER 2 — Performance
+    LESSON 2.1 — Current, voltage, resistance and temperature rise
+    LESSON 2.2 — Impedance, capacitance, crosstalk and EMI shielding
+    LESSON 2.3 — Flex, bend, pull, vibration and environmental durability
+  CHAPTER 3 — Product realization
+    LESSON 3.1 — Read cable drawing, cut list and pinout
+    LESSON 3.2 — CTQ and defect/failure chain
+    LESSON 3.3 — Construction identification practical
+
+COURSE WCA-201 — Wire Preparation: Cut, Strip, Twist & Shield [REC][OJT]
+  CHAPTER 1 — Prepare
+    LESSON 1.1 — Verify material, revision, machine and tooling
+    LESSON 1.2 — Cut length, stripping window and conductor protection
+    LESSON 1.3 — Shield braid/foil/drain handling and cleanliness
+  CHAPTER 2 — Execute
+    LESSON 2.1 — Setup, first-off and sample verification
+    LESSON 2.2 — Nicked strand, burr, residue and dimension control
+    LESSON 2.3 — Lot separation and WIP identification
+  CHAPTER 3 — Qualify
+    LESSON 3.1 — Produce samples to drawing
+    LESSON 3.2 — Self-inspect and react to defect
+    LESSON 3.3 — Assessor practical sign-off
+
+COURSE WCA-202 — Crimping & Terminal Integrity [REC][OJT]
+  CHAPTER 1 — Crimp system
+    LESSON 1.1 — Wire, terminal, applicator/tool and specification match
+    LESSON 1.2 — Conductor/insulation crimp geometry
+    LESSON 1.3 — Tool setup, wear, calibration and maintenance boundary
+  CHAPTER 2 — Process control
+    LESSON 2.1 — First-off cross-section/height/width as required
+    LESSON 2.2 — Pull force, visual criteria and periodic check
+    LESSON 2.3 — Bellmouth, brush, flash, strand damage and wrong position
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Execute approved crimp and record evidence
+    LESSON 3.2 — Detect tooling/material/process abnormality
+    LESSON 3.3 — Practical samples and authorization
+
+COURSE WCA-203 — Soldering, Splicing & Thermal Termination [REC][OJT]
+  CHAPTER 1 — Joint fundamentals
+    LESSON 1.1 — Wetting, intermetallic, flux and heat transfer
+    LESSON 1.2 — Wire/terminal preparation and contamination control
+    LESSON 1.3 — Heat-shrink/splice/solder sleeve applications
+  CHAPTER 2 — Workmanship
+    LESSON 2.1 — Temperature, dwell, tip and solder/flux control
+    LESSON 2.2 — Acceptable joint and insulation support
+    LESSON 2.3 — Cold joint, bridging, wicking, damage and residue
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Build representative joints
+    LESSON 3.2 — Inspect, test and document
+    LESSON 3.3 — Periodic workmanship requalification
+
+COURSE WCA-204 — Cable Assembly, Shielding, Overmold & Final Build [REC][OJT]
+  CHAPTER 1 — Controlled assembly
+    LESSON 1.1 — Pinout, sequence, fixture and component verification
+    LESSON 1.2 — Routing, bend radius, strain relief and torque
+    LESSON 1.3 — Shield termination, grounding and coverage
+  CHAPTER 2 — Protection/finish
+    LESSON 2.1 — Potting/seal/adhesive mix and time controls
+    LESSON 2.2 — Overmold setup, interface and cosmetic control
+    LESSON 2.3 — Labeling, serialization and final configuration
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Assemble representative product family
+    LESSON 3.2 — Self-inspection and defect containment
+    LESSON 3.3 — Practical authorization by family/process
+
+COURSE WCA-205 — Cable Electrical, Mechanical & Environmental Testing [REC][BL]
+  CHAPTER 1 — Electrical test
+    LESSON 1.1 — Pin mapping, continuity and resistance
+    LESSON 1.2 — Insulation resistance and dielectric withstand
+    LESSON 1.3 — Shield, impedance and high-frequency parameters
+  CHAPTER 2 — Mechanical/environmental test
+    LESSON 2.1 — Pull, bend, flex and connector retention
+    LESSON 2.2 — Thermal, humidity, chemical and vibration exposure
+    LESSON 2.3 — Test fixture, sample conditioning and safety
+  CHAPTER 3 — Result control
+    LESSON 3.1 — Program/version/product match
+    LESSON 3.2 — Failure confirmation without test-until-pass
+    LESSON 3.3 — Tester operation and data-review practical
+
+COURSE WCA-301 — High-frequency, Coaxial & Signal-integrity Cable [REC][BL]
+  CHAPTER 1 — Transmission behavior
+    LESSON 1.1 — Characteristic impedance and propagation
+    LESSON 1.2 — Return/insertion loss, VSWR and crosstalk
+    LESSON 1.3 — Shield transfer, grounding and discontinuity
+  CHAPTER 2 — Process sensitivities
+    LESSON 2.1 — Geometry, concentricity, dielectric and pair lay
+    LESSON 2.2 — Connector launch, termination and fixture effect
+    LESSON 2.3 — Handling, bend and length matching
+  CHAPTER 3 — Verify/troubleshoot
+    LESSON 3.1 — TDR/network-analyzer concepts and calibration
+    LESSON 3.2 — Read trace and locate discontinuity
+    LESSON 3.3 — Correlate process change to signal result
+
+COURSE WCA-302 — Robot, Flex-life & Motion Cable [REC][BL]
+  CHAPTER 1 — Motion application
+    LESSON 1.1 — Flex, torsion, bending radius and travel cycle
+    LESSON 1.2 — Conductor/insulation/shield choices for motion
+    LESSON 1.3 — Routing, clamp, carrier and installation conditions
+  CHAPTER 2 — Manufacturing controls
+    LESSON 2.1 — Strand and lay integrity
+    LESSON 2.2 — Tension, twist and neutral-axis control
+    LESSON 2.3 — Termination strain relief and damage prevention
+  CHAPTER 3 — Qualification/failure
+    LESSON 3.1 — Flex/torsion test setup and monitoring
+    LESSON 3.2 — Intermittent/open/shield failure analysis
+    LESSON 3.3 — Application review case
+
+COURSE WCA-303 — Automotive & High-voltage Cable Pathway [COND][BL]
+  CHAPTER 1 — Application risk
+    LESSON 1.1 — Vehicle environment, routing and lifetime
+    LESSON 1.2 — High-voltage identification, isolation and interlock
+    LESSON 1.3 — Customer-specific and regulatory requirements
+  CHAPTER 2 — Special controls
+    LESSON 2.1 — Terminal/crimp/seal and conductor integrity
+    LESSON 2.2 — Cleanliness, traceability and special characteristics
+    LESSON 2.3 — Electrical safety, shielding and end-of-line test
+  CHAPTER 3 — Release
+    LESSON 3.1 — Process qualification and capability
+    LESSON 3.2 — Change approval and retained evidence
+    LESSON 3.3 — Product-family practical authorization
+
+COURSE WCA-304 — USB, GigE, Camera Link, CoaXPress & AOC Assemblies [COND][BL]
+  CHAPTER 1 — Interface families
+    LESSON 1.1 — Protocol/use-case overview and non-interchangeability
+    LESSON 1.2 — Copper, optical and active component architecture
+    LESSON 1.3 — Data rate, power, latency and reach requirements
+  CHAPTER 2 — Assembly sensitivities
+    LESSON 2.1 — Pair geometry, connector launch and shielding
+    LESSON 2.2 — Optical engine/fiber handling for AOC
+    LESSON 2.3 — Firmware/configuration/serialization where applicable
+  CHAPTER 3 — Verification
+    LESSON 3.1 — Electrical/optical parameter testing
+    LESSON 3.2 — Link/functional/compliance test
+    LESSON 3.3 — Failure isolation and evidence package
+
+COURSE PCB-101 — PCB & Electronics Assembly Fundamentals [COND][BL]
+  CHAPTER 1 — Board/product architecture
+    LESSON 1.1 — Bare PCB, pad, via, layer, finish and solder mask
+    LESSON 1.2 — Passive, semiconductor, connector and polarity
+    LESSON 1.3 — Schematic, assembly drawing, BOM and reference designator
+  CHAPTER 2 — Process flow
+    LESSON 2.1 — Incoming, storage, SMT, reflow, THT and cleaning
+    LESSON 2.2 — Inspection, programming, test and final assembly
+    LESSON 2.3 — Traceability and configuration across the flow
+  CHAPTER 3 — Quality/safety basics
+    LESSON 3.1 — ESD, moisture, FOD and contamination
+    LESSON 3.2 — Workmanship class/acceptance source
+    LESSON 3.3 — Board/component identification practical
+
+COURSE PCB-201 — ESD & Moisture-sensitive Device Control [COND][BL]
+  CHAPTER 1 — Invisible damage mechanisms
+    LESSON 1.1 — Static generation, discharge and latent damage
+    LESSON 1.2 — Moisture absorption, reflow stress and popcorning
+    LESSON 1.3 — Device sensitivity and controlled-area boundaries
+  CHAPTER 2 — Control system
+    LESSON 2.1 — Grounding, wrist strap, footwear, mat and ionization
+    LESSON 2.2 — MSL label, floor life, dry pack, dry cabinet and baking
+    LESSON 2.3 — Monitoring, records and failed-control reaction
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Enter/work/exit an EPA correctly
+    LESSON 3.2 — Calculate and restore component floor life
+    LESSON 3.3 — Practical sign-off
+
+COURSE PCB-202 — SMT Printing, Placement & Reflow [COND][OJT]
+  CHAPTER 1 — Setup
+    LESSON 1.1 — Program/BOM/feeder/stencil/paste verification
+    LESSON 1.2 — Paste storage, thaw, mix, working life and traceability
+    LESSON 1.3 — First-board setup and line clearance
+  CHAPTER 2 — Process control
+    LESSON 2.1 — Print alignment, volume, support and cleaning
+    LESSON 2.2 — Placement accuracy, polarity and feeder replenishment
+    LESSON 2.3 — Reflow profile, atmosphere and thermal mass
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Detect print/place/reflow defects
+    LESSON 3.2 — Contain program/material/process abnormality
+    LESSON 3.3 — Supervised line-operation sign-off
+
+COURSE PCB-203 — Through-hole, Hand Soldering & Selective Solder [COND][OJT]
+  CHAPTER 1 — Prepare
+    LESSON 1.1 — Component form, polarity, lead and hole condition
+    LESSON 1.2 — Flux/solder/tool/temperature selection
+    LESSON 1.3 — Heat-sensitive components and masking
+  CHAPTER 2 — Build acceptable joint
+    LESSON 2.1 — Manual solder sequence and heat control
+    LESSON 2.2 — Wave/selective parameters and support fixture
+    LESSON 2.3 — Fill, wetting, fillet, bridging and thermal damage
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Produce representative sample board
+    LESSON 3.2 — Inspect to approved workmanship criteria
+    LESSON 3.3 — Initial/periodic practical certification
+
+COURSE PCB-204 — Electronics Visual, AOI & X-ray Inspection [COND][BL]
+  CHAPTER 1 — Acceptance system
+    LESSON 1.1 — Applicable customer/industry workmanship criteria
+    LESSON 1.2 — Defect, process indicator and acceptable variation
+    LESSON 1.3 — Magnification, lighting and inspector consistency
+  CHAPTER 2 — Inspection technologies
+    LESSON 2.1 — Visual and automated optical inspection
+    LESSON 2.2 — X-ray for hidden joints/voids/alignment
+    LESSON 2.3 — Program library, golden sample and false call
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Defect-image library assessment
+    LESSON 3.2 — Disposition/escalation without unauthorized acceptance
+    LESSON 3.3 — Inspector repeatability sign-off
+
+COURSE PCB-205 — Electronics Rework, Repair & Concession Control [COND][OJT]
+  CHAPTER 1 — Authority boundary
+    LESSON 1.1 — Rework versus repair versus use-as-is
+    LESSON 1.2 — Approved instruction, skill and attempt limits
+    LESSON 1.3 — Product/customer restrictions and traceability
+  CHAPTER 2 — Controlled execution
+    LESSON 2.1 — Removal, land protection and thermal profile
+    LESSON 2.2 — Cleaning, replacement, touch-up and inspection
+    LESSON 2.3 — ESD/FOD/MSD controls during rework
+  CHAPTER 3 — Release
+    LESSON 3.1 — Post-rework inspection and full retest
+    LESSON 3.2 — Record defect, action, operator and result
+    LESSON 3.3 — Method-specific practical qualification
+
+COURSE PCB-206 — Electronics Cleaning, Coating, Potting & Cure [COND][OJT]
+  CHAPTER 1 — Material/process selection
+    LESSON 1.1 — Flux residue and cleanliness requirement
+    LESSON 1.2 — Cleaner, conformal coat, potting and adhesive controls
+    LESSON 1.3 — Compatibility, mix ratio, pot life and shelf life
+  CHAPTER 2 — Apply and cure
+    LESSON 2.1 — Masking, cleaning/rinse/dry verification
+    LESSON 2.2 — Coverage, thickness, bubbles and keep-out
+    LESSON 2.3 — Time/temperature/humidity cure evidence
+  CHAPTER 3 — Qualify
+    LESSON 3.1 — Inspect cleanliness/coating/potting result
+    LESSON 3.2 — Handle material/process abnormality
+    LESSON 3.3 — Practical sign-off by approved method
+
+COURSE PCB-207 — ICT, Programming & Functional Test [COND][OJT]
+  CHAPTER 1 — Test readiness
+    LESSON 1.1 — Product/program/revision/fixture match
+    LESSON 1.2 — Fixture self-test, calibration and safe connection
+    LESSON 1.3 — Software/firmware configuration control
+  CHAPTER 2 — Execute test
+    LESSON 2.1 — In-circuit and boundary checks
+    LESSON 2.2 — Programming, serialization and checksum
+    LESSON 2.3 — Functional sequence, limit and data capture
+  CHAPTER 3 — Failed-unit control
+    LESSON 3.1 — No test-until-pass or uncontrolled override
+    LESSON 3.2 — Failure code, segregation and diagnostic handoff
+    LESSON 3.3 — Tester-operator qualification
+
+COURSE PCB-208 — Electronics Defect Analysis & Process Feedback [COND][BL]
+  CHAPTER 1 — Failure evidence
+    LESSON 1.1 — Preserve board, history, logs and environment
+    LESSON 1.2 — Symptom confirmation and non-destructive checks
+    LESSON 1.3 — Cross-section, microscopy and analytical escalation
+  CHAPTER 2 — Process correlation
+    LESSON 2.1 — Paste/placement/reflow signature
+    LESSON 2.2 — Solder/cleanliness/handling/component signature
+    LESSON 2.3 — Design/material/test false-failure possibilities
+  CHAPTER 3 — Close learning loop
+    LESSON 3.1 — Containment and risk-based scope
+    LESSON 3.2 — Cause verification and corrective action
+    LESSON 3.3 — Defect atlas update and case presentation
+
+COURSE OPT-101 — LICOM™ Optical Fiber & Photonics Fundamentals [REC][BL]
+  CHAPTER 1 — Light and fiber
+    LESSON 1.1 — Wavelength, power, decibel and spectrum
+    LESSON 1.2 — Core/cladding, total internal reflection and numerical aperture
+    LESSON 1.3 — Single-mode/multimode/specialty fiber families
+  CHAPTER 2 — Optical link
+    LESSON 2.1 — Source, fiber, connector/splice, detector and budget
+    LESSON 2.2 — Attenuation, reflection, dispersion and bend loss
+    LESSON 2.3 — Cleanliness, geometry and alignment sensitivity
+  CHAPTER 3 — NISSEI applications
+    LESSON 3.1 — Imaging, light guide, sensor and transmission products
+    LESSON 3.2 — Robot/motion and active optical applications
+    LESSON 3.3 — Fiber/product identification practical
+
+COURSE OPT-201 — Fiber Handling, Cleaning, Strip & Cleave [REC][OJT]
+  CHAPTER 1 — Protect fiber and people
+    LESSON 1.1 — Fiber shard, laser/source and chemical hazards
+    LESSON 1.2 — Bend radius, tension, end-face and coating protection
+    LESSON 1.3 — Clean zone, tool and waste container
+  CHAPTER 2 — Prepare fiber
+    LESSON 2.1 — Identify fiber/coating and required length
+    LESSON 2.2 — Strip without nick, clean without residue
+    LESSON 2.3 — Cleave angle, length and end condition
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Prepare representative fibers repeatedly
+    LESSON 3.2 — Inspect and reject damaged preparation
+    LESSON 3.3 — Practical authorization
+
+COURSE OPT-202 — Fiber Splicing, Connectorization & Protection [REC][OJT]
+  CHAPTER 1 — Joint architecture
+    LESSON 1.1 — Fusion/mechanical splice principles
+    LESSON 1.2 — Ferrule/connector/key/polarity construction
+    LESSON 1.3 — Adhesive/cure and protection sleeve controls
+  CHAPTER 2 — Make controlled joint
+    LESSON 2.1 — Program, arc, alignment and environment readiness
+    LESSON 2.2 — Splice loss/appearance and proof protection
+    LESSON 2.3 — Fiber insertion, adhesive, cure and strain relief
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Produce representative splice/connector
+    LESSON 3.2 — Inspect and measure result
+    LESSON 3.3 — Method/fiber-family sign-off
+
+COURSE OPT-203 — Fiber Polish & End-face Inspection [REC][OJT]
+  CHAPTER 1 — Geometry/cleanliness
+    LESSON 1.1 — End-face zones, scratch, pit, chip and contamination
+    LESSON 1.2 — Polish geometry and return-loss implications
+    LESSON 1.3 — Consumable, fixture and process cleanliness
+  CHAPTER 2 — Polish/inspect
+    LESSON 2.1 — Approved sequence, pressure, time and film
+    LESSON 2.2 — Clean and inspect without recontamination
+    LESSON 2.3 — Automated/manual criteria and data retention
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Produce compliant end faces
+    LESSON 3.2 — Classify representative defects
+    LESSON 3.3 — Practical authorization
+
+COURSE OPT-204 — Optical Loss, Return Loss & OTDR Testing [REC][BL]
+  CHAPTER 1 — Test concepts
+    LESSON 1.1 — Reference method, launch condition and directionality
+    LESSON 1.2 — Insertion loss and optical return loss
+    LESSON 1.3 — OTDR event, dead zone and resolution
+  CHAPTER 2 — Execute valid test
+    LESSON 2.1 — Correct source/meter/wavelength/cord setup
+    LESSON 2.2 — Reference, clean-connect-inspect and stability
+    LESSON 2.3 — OTDR configuration and trace capture
+  CHAPTER 3 — Interpret/release
+    LESSON 3.1 — Locate bend, dirty connector, splice or break
+    LESSON 3.2 — Detect invalid setup/result and retest rule
+    LESSON 3.3 — Hands-on test and trace interpretation
+
+COURSE OPT-205 — Optical Sensors, Light Guides & Imaging Bundles [REC][BL]
+  CHAPTER 1 — Application architecture
+    LESSON 1.1 — Illumination, imaging and sensing functions
+    LESSON 1.2 — Fiber/bundle arrangement, aperture and uniformity
+    LESSON 1.3 — Mechanical interface and environmental requirement
+  CHAPTER 2 — Manufacturing sensitivities
+    LESSON 2.1 — Fiber selection, count, packing and orientation
+    LESSON 2.2 — End processing, alignment, fixation and sealing
+    LESSON 2.3 — Cleanliness, bend and micro-damage control
+  CHAPTER 3 — Verification
+    LESSON 3.1 — Throughput, uniformity, image and functional test
+    LESSON 3.2 — Visual/mechanical/environmental acceptance
+    LESSON 3.3 — Product-family case/practical
+
+COURSE OPT-206 — Optical Transmission, AOC & Robot Fiber [REC][BL]
+  CHAPTER 1 — System behavior
+    LESSON 1.1 — Link budget, transmitter/receiver and interface
+    LESSON 1.2 — Active optical cable configuration and power
+    LESSON 1.3 — Motion/torsion application and long-term loss
+  CHAPTER 2 — Build controls
+    LESSON 2.1 — Optical engine/fiber alignment and protection
+    LESSON 2.2 — Connectorization, routing and strain relief
+    LESSON 2.3 — Firmware/serial/configuration where applicable
+  CHAPTER 3 — Test/failure
+    LESSON 3.1 — Optical/electrical/link functional test
+    LESSON 3.2 — Dynamic flex/torsion monitoring
+    LESSON 3.3 — Intermittent-link failure isolation
+
+COURSE LAS-101 — Laser, Laser-diode & Photonic Safety Fundamentals [REC][BL]
+  CHAPTER 1 — Laser behavior
+    LESSON 1.1 — Coherence, wavelength, power and beam path
+    LESSON 1.2 — Laser diode, fiber delivery and optical component roles
+    LESSON 1.3 — Visible/invisible radiation and reflection
+  CHAPTER 2 — Product architecture
+    LESSON 2.1 — Emitter, driver, coupling, fiber and processing head
+    LESSON 2.2 — Alignment, thermal control and feedback
+    LESSON 2.3 — Classification, interlock and labeling boundary
+  CHAPTER 3 — Safe technical work
+    LESSON 3.1 — Prerequisite link to SAF-125
+    LESSON 3.2 — Beam enclosure, authorized mode and viewing tools
+    LESSON 3.3 — Scenario assessment
+
+COURSE LAS-201 — Laser-diode Assembly, Alignment & Thermal Control [REC][OJT]
+  CHAPTER 1 — Component readiness
+    LESSON 1.1 — ESD, cleanliness and sensitive-surface handling
+    LESSON 1.2 — Diode polarity, mount, interface and traceability
+    LESSON 1.3 — Thermal interface and heat-path preparation
+  CHAPTER 2 — Assemble/align
+    LESSON 2.1 — Fixture, torque/attach and controlled energization
+    LESSON 2.2 — Optical alignment, coupling and lock-down
+    LESSON 2.3 — Temperature/current/power monitoring
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Build representative assembly
+    LESSON 3.2 — Verify output, stability and safety functions
+    LESSON 3.3 — Product-family authorization
+
+COURSE LAS-202 — High-power Fiber Assembly & Optical Power Testing [REC][OJT]
+  CHAPTER 1 — High-power failure mechanisms
+    LESSON 1.1 — Power density, absorption and thermal runaway
+    LESSON 1.2 — End-face contamination and catastrophic damage
+    LESSON 1.3 — Bend, splice and back-reflection risk
+  CHAPTER 2 — Controlled build/test
+    LESSON 2.1 — Clean handling and protected optical path
+    LESSON 2.2 — Splice/termination and heat management
+    LESSON 2.3 — Low-power check before staged high-power test
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Interlock, enclosure and measurement setup
+    LESSON 3.2 — Output/stability/burn-in evidence
+    LESSON 3.3 — Witnessed practical authorization
+
+COURSE LAS-203 — Optical Components & Laser-processing Heads [REC][BL]
+  CHAPTER 1 — Component function
+    LESSON 1.1 — Lens, mirror, filter, isolator and beam splitter
+    LESSON 1.2 — Collimation, focusing and beam shaping
+    LESSON 1.3 — Coating, wavelength, orientation and damage threshold
+  CHAPTER 2 — Assembly control
+    LESSON 2.1 — Cleanliness, handling and adhesive/torque
+    LESSON 2.2 — Optical/mechanical alignment and datum chain
+    LESSON 2.3 — Sealing, purge and environmental protection
+  CHAPTER 3 — Verification
+    LESSON 3.1 — Beam quality, focus, transmission and alignment
+    LESSON 3.2 — Visual, leakage and environmental checks
+    LESSON 3.3 — Assembly/test practical
+
+COURSE LAS-204 — Clean Optical Assembly, Burn-in & Failure Analysis [REC][BL]
+  CHAPTER 1 — Controlled assembly environment
+    LESSON 1.1 — Cleanliness zone, gown/tool/material flow
+    LESSON 1.2 — Particle, film and molecular contamination risk
+    LESSON 1.3 — Witness sample and environment record
+  CHAPTER 2 — Burn-in/reliability
+    LESSON 2.1 — Profile, load, monitoring and interruption
+    LESSON 2.2 — Drift, early failure and acceptance
+    LESSON 2.3 — Serialization and raw-data linkage
+  CHAPTER 3 — Failure analysis
+    LESSON 3.1 — Preserve optical/electrical/thermal evidence
+    LESSON 3.2 — Isolate component, assembly, contamination and use cause
+    LESSON 3.3 — Case report and feedback to process/design
+
+COURSE PRD-101 — Conductive/Functional Roller Technology [REC][BL]
+  CHAPTER 1 — Roller construction/application
+    LESSON 1.1 — Core, bonding, silicone layer and surface function
+    LESSON 1.2 — Conductivity/resistance, hardness and geometry
+    LESSON 1.3 — OA/imaging use conditions and life mechanisms
+  CHAPTER 2 — Process controls
+    LESSON 2.1 — Core preparation, molding/coating and cure
+    LESSON 2.2 — Grinding/finishing, cleaning and handling
+    LESSON 2.3 — Resistance, runout, diameter and surface tests
+  CHAPTER 3 — Defects/failure
+    LESSON 3.1 — Bonding, void, hardness and surface defects
+    LESSON 3.2 — Electrical nonuniformity and contamination
+    LESSON 3.3 — Product-family practical/case
+
+COURSE PRD-102 — Silicone Heater Technology [REC][BL]
+  CHAPTER 1 — Heater design/function
+    LESSON 1.1 — Resistive element, insulation and thermal path
+    LESSON 1.2 — Power density, temperature distribution and control
+    LESSON 1.3 — Sensor, lead, termination and over-temperature protection
+  CHAPTER 2 — Manufacturing controls
+    LESSON 2.1 — Element placement and insulation/lamination
+    LESSON 2.2 — Cure/bond/seal and lead strain relief
+    LESSON 2.3 — Resistance, dielectric, leakage and thermal test
+  CHAPTER 3 — Safety/reliability
+    LESSON 3.1 — Hot spot, short/open and insulation breakdown
+    LESSON 3.2 — Thermal cycling and environmental life
+    LESSON 3.3 — Product-family test practical
+
+COURSE PRD-103 — Antenna, MID & RF Product Fundamentals [REC][BL]
+  CHAPTER 1 — RF function
+    LESSON 1.1 — Frequency, wavelength, impedance and radiation
+    LESSON 1.2 — Antenna geometry, ground and feed
+    LESSON 1.3 — MID/substrate/conductor architecture
+  CHAPTER 2 — Manufacturing sensitivities
+    LESSON 2.1 — Pattern dimension, plating/print and material property
+    LESSON 2.2 — Connector/feeding, fixture and assembly location
+    LESSON 2.3 — Contamination, deformation and shielding environment
+  CHAPTER 3 — Verification
+    LESSON 3.1 — Continuity, impedance, return loss and pattern check
+    LESSON 3.2 — Functional/radiation test concept
+    LESSON 3.3 — Defect/failure case
+
+COURSE PRD-104 — Specialty Tubing, Profile & Sealing Products [REC][BL]
+  CHAPTER 1 — Product/application
+    LESSON 1.1 — Tube/profile/seal geometry and material selection
+    LESSON 1.2 — Chemical, thermal, pressure and mechanical environment
+    LESSON 1.3 — Fit, compression, flow and sealing functions
+  CHAPTER 2 — Process controls
+    LESSON 2.1 — Extrusion/molding tooling and dimensional stability
+    LESSON 2.2 — Cure, cut, join and surface/cleanliness control
+    LESSON 2.3 — Packaging and deformation prevention
+  CHAPTER 3 — Verification
+    LESSON 3.1 — Dimension, wall, hardness and appearance
+    LESSON 3.2 — Leak/pressure/compression/chemical tests as specified
+    LESSON 3.3 — Product-family practical
+
+COURSE PRD-105 — Special Extrusion/Molding Product Transfer Template [TPL][BL]
+  CHAPTER 1 — Define product/process
+    LESSON 1.1 — Customer use, CTQ and risk classification
+    LESSON 1.2 — Material, tool, machine, recipe and environment
+    LESSON 1.3 — Required qualification and release evidence
+  CHAPTER 2 — Transfer knowledge
+    LESSON 2.1 — Critical setup and process window
+    LESSON 2.2 — Defect atlas and reaction plan
+    LESSON 2.3 — Inspection/test and traceability
+  CHAPTER 3 — Demonstrate control
+    LESSON 3.1 — Supervised pilot/first production run
+    LESSON 3.2 — Challenge abnormal scenarios
+    LESSON 3.3 — Product/process authorization sign-off
+
+COURSE EQU-201 — Equipment/Process Operator Qualification Template [TPL][OJT]
+  CHAPTER 1 — Knowledge gate
+    LESSON 1.1 — Machine purpose, boundaries, hazards and prerequisites
+    LESSON 1.2 — Controlled WI, recipe, tooling, CTQ and reaction plan
+    LESSON 1.3 — Pre-use inspection and safe-state verification
+  CHAPTER 2 — Demonstration and practice
+    LESSON 2.1 — Trainer demonstrates normal setup/run/shutdown
+    LESSON 2.2 — Learner practices under direct supervision
+    LESSON 2.3 — Learner responds to defined abnormalities
+  CHAPTER 3 — Independent observation
+    LESSON 3.1 — Full-cycle observed job performance
+    LESSON 3.2 — Product/record/housekeeping verification
+    LESSON 3.3 — Authorization scope, restrictions, expiry and revocation
+
+--------------------------------------------------------------------------------
+PROGRAM 09 — MAINTENANCE, FACILITIES & ENGINEERING SERVICES
+--------------------------------------------------------------------------------
+
+COURSE MNT-101 — Autonomous Maintenance & Operator Equipment Care [REC][BL]
+  CHAPTER 1 — Operator versus technician boundary
+    LESSON 1.1 — Daily care, abnormality detection and prohibited repair
+    LESSON 1.2 — Safety guards, utilities, lubrication and housekeeping
+    LESSON 1.3 — Escalation tags and machine-status control
+  CHAPTER 2 — Standard care
+    LESSON 2.1 — Clean–inspect–lubricate–tighten to approved standard
+    LESSON 2.2 — Centerline, gauge and basic-condition visual control
+    LESSON 2.3 — Record condition without hiding deterioration
+  CHAPTER 3 — Practical
+    LESSON 3.1 — Perform machine daily check
+    LESSON 3.2 — Identify representative abnormalities
+    LESSON 3.3 — Handover to maintenance and verify closeout
+
+COURSE MNT-201 — Maintenance Strategy, PM/PdM & CMMS [REC][BL]
+  CHAPTER 1 — Maintenance strategy
+    LESSON 1.1 — Reactive, preventive, predictive and condition-based work
+    LESSON 1.2 — Criticality, failure consequence and task selection
+    LESSON 1.3 — Maintenance plan, interval and legal/OEM requirement
+  CHAPTER 2 — Plan and execute
+    LESSON 2.1 — Work request, priority, permit and job plan
+    LESSON 2.2 — Labor, part, tool, drawing and downtime coordination
+    LESSON 2.3 — CMMS history, failure coding and evidence quality
+  CHAPTER 3 — Improve reliability
+    LESSON 3.1 — PM compliance, backlog and repeat failure
+    LESSON 3.2 — Condition trend and maintenance effectiveness
+    LESSON 3.3 — Optimize a maintenance task from evidence
+
+COURSE MNT-202 — Industrial Electrical Control, Sensors, Drives & PLC [REC][BL]
+  CHAPTER 1 — Prerequisite and architecture
+    LESSON 1.1 — SAF-103/SAF-117 authorization boundary
+    LESSON 1.2 — Power, control, protection, grounding and panel drawings
+    LESSON 1.3 — Sensor, relay, contactor, drive, PLC and HMI roles
+  CHAPTER 2 — Diagnose safely
+    LESSON 2.1 — Establish de-energized state and approved energized test
+    LESSON 2.2 — Signal/path tracing and expected-versus-actual logic
+    LESSON 2.3 — Alarm history, interlock and parameter/version control
+  CHAPTER 3 — Restore control
+    LESSON 3.1 — Component replacement and wiring verification
+    LESSON 3.2 — PLC/drive backup, authorized change and rollback
+    LESSON 3.3 — Functional safety/production test and handback
+
+COURSE MNT-203 — Mechanical, Pneumatic, Hydraulic, Vacuum & Motion Systems [REC][BL]
+  CHAPTER 1 — System fundamentals
+    LESSON 1.1 — Bearing, shaft, coupling, belt, chain and gearbox
+    LESSON 1.2 — Pneumatic/hydraulic pressure, valve, actuator and stored energy
+    LESSON 1.3 — Vacuum, linear motion, guide and alignment
+  CHAPTER 2 — Condition and failure
+    LESSON 2.1 — Wear, looseness, imbalance, misalignment and lubrication
+    LESSON 2.2 — Leak, restriction, contamination and seal failure
+    LESSON 2.3 — Vibration, temperature, sound and performance evidence
+  CHAPTER 3 — Safe repair
+    LESSON 3.1 — Isolate/release/block stored energy
+    LESSON 3.2 — Fit, torque, alignment and cleanliness
+    LESSON 3.3 — Leak/function/guard verification and handback
+
+COURSE MNT-204 — Mixing, Extrusion, Molding & Curing Equipment Maintenance [REC][BL]
+  CHAPTER 1 — Process-equipment architecture
+    LESSON 1.1 — Mixer/feed/extruder/screw/barrel/head/die
+    LESSON 1.2 — Mold/press, heater, oven/cure and cooling
+    LESSON 1.3 — Take-up, motion, tension and downstream inspection
+  CHAPTER 2 — Maintenance sensitivities
+    LESSON 2.1 — Heat, pressure, residue and contamination hazards
+    LESSON 2.2 — Wear/clearance/alignment effect on product CTQ
+    LESSON 2.3 — Sensor/heater/cooling and recipe integrity
+  CHAPTER 3 — Controlled return
+    LESSON 3.1 — Cleanliness and product-contact verification
+    LESSON 3.2 — Dry run, challenge safety functions and first-off support
+    LESSON 3.3 — Maintenance-to-production handback record
+
+COURSE MNT-205 — Systematic Troubleshooting & Equipment RCA [REC][BL]
+  CHAPTER 1 — Make problem safe and specific
+    LESSON 1.1 — Stabilize, isolate and define symptom/boundary
+    LESSON 1.2 — Timeline, last change and operating-condition evidence
+    LESSON 1.3 — Avoid reset/replacement that destroys evidence
+  CHAPTER 2 — Diagnose
+    LESSON 2.1 — Functional block and cause tree
+    LESSON 2.2 — Divide-and-conquer with safe measurements
+    LESSON 2.3 — Verify cause rather than correlation
+  CHAPTER 3 — Prevent recurrence
+    LESSON 3.1 — Corrective repair and collateral-risk check
+    LESSON 3.2 — Update PM, spare, drawing, WI and training
+    LESSON 3.3 — Repeat-failure RCA case
+
+COURSE MNT-206 — Factory Utilities, Energy & Utility Emergency Response [REC][BL]
+  CHAPTER 1 — Utility systems
+    LESSON 1.1 — Electrical distribution and backup power
+    LESSON 1.2 — Compressed air, vacuum, water, cooling and HVAC
+    LESSON 1.3 — Gas/fuel/process utility and monitoring
+  CHAPTER 2 — Efficient/reliable operation
+    LESSON 2.1 — Load, setpoint, leak and loss management
+    LESSON 2.2 — Water/air quality and process-product impact
+    LESSON 2.3 — Inspection, PM and statutory check linkage
+  CHAPTER 3 — Abnormal condition
+    LESSON 3.1 — Utility loss, surge, leak and contamination
+    LESSON 3.2 — Safe shutdown, isolation and emergency escalation
+    LESSON 3.3 — Recovery sequence and product/process disposition
+
+COURSE MNT-207 — Maintenance Planning, Spare Parts & Controlled Handback [REC][BL]
+  CHAPTER 1 — Work package
+    LESSON 1.1 — Scope, risk, drawing, isolation and acceptance criteria
+    LESSON 1.2 — Genuine/approved spare, shelf life and interchangeability
+    LESSON 1.3 — Tool, contractor, downtime and contingency planning
+  CHAPTER 2 — Execute under control
+    LESSON 2.1 — As-found evidence and unexpected-scope escalation
+    LESSON 2.2 — Part removal/install trace and foreign-material control
+    LESSON 2.3 — Redline, setting and change/deviation authorization
+  CHAPTER 3 — Handback
+    LESSON 3.1 — Tool/part/person clear and guards restored
+    LESSON 3.2 — Functional test, calibration and first-product support
+    LESSON 3.3 — Joint operations/maintenance release
+
+COURSE MNT-208 — Machine Guarding & Safety-function Verification [REC][BL]
+  CHAPTER 1 — Protection principles
+    LESSON 1.1 — Fixed/movable guard, distance and access prevention
+    LESSON 1.2 — Interlock, light curtain, emergency stop and reset
+    LESSON 1.3 — Safety function versus normal process control
+  CHAPTER 2 — Inspect/test
+    LESSON 2.1 — Tamper, damage, gap and defeat indicators
+    LESSON 2.2 — Approved functional-test sequence and expected result
+    LESSON 2.3 — Fault response, safe stop and restart prevention
+  CHAPTER 3 — Change/return to service
+    LESSON 3.1 — No bypass without formally controlled exceptional process
+    LESSON 3.2 — Validate after maintenance, relocation or program change
+    LESSON 3.3 — Guarding verification practical
+
+COURSE FAC-201 — Building, Fire & Life-safety System Stewardship [REC][BL]
+  CHAPTER 1 — System ownership
+    LESSON 1.1 — Alarm, detection, suppression, emergency lighting and exits
+    LESSON 1.2 — Building, compartment, egress and occupancy controls
+    LESSON 1.3 — Inspection/test/maintenance calendar and impairments
+  CHAPTER 2 — Impairment control
+    LESSON 2.1 — Approve, compensate, notify and time-limit impairment
+    LESSON 2.2 — Fire watch, temporary protection and contractor interface
+    LESSON 2.3 — Restore/test/document affected systems
+  CHAPTER 3 — Assurance
+    LESSON 3.1 — Audit maps, records and physical condition
+    LESSON 3.2 — Manage authority/insurer/vendor findings
+    LESSON 3.3 — Site life-safety system tabletop
+
+COURSE FAC-202 — Facility Project, Contractor Commissioning & Handover [REC][BL]
+  CHAPTER 1 — Define safe project
+    LESSON 1.1 — Scope, owner, design criteria and affected operations
+    LESSON 1.2 — EHSQ/design review, permits and management of change
+    LESSON 1.3 — Contractor competence and interface plan
+  CHAPTER 2 — Installation/commissioning
+    LESSON 2.1 — Work control, inspection and concealed-work evidence
+    LESSON 2.2 — Pre-startup safety review and punch list
+    LESSON 2.3 — Functional/performance/safety validation
+  CHAPTER 3 — Handover
+    LESSON 3.1 — As-built, manual, spare, warranty and asset register
+    LESSON 3.2 — Operator/maintenance training and authorization
+    LESSON 3.3 — Formal acceptance and post-start review
+
+--------------------------------------------------------------------------------
+PROGRAM 10 — WAREHOUSE, LOGISTICS & SUPPLY CHAIN
+--------------------------------------------------------------------------------
+
+COURSE LOG-101 — Receiving, Inspection & Quarantine Control [REC][BL]
+  CHAPTER 1 — Receive accurately
+    LESSON 1.1 — PO/delivery/part/lot/quantity match
+    LESSON 1.2 — Package condition, seal, damage and transport condition
+    LESSON 1.3 — Chemical, ESD, temperature and dangerous-goods indicators
+  CHAPTER 2 — Status control
+    LESSON 2.1 — Accepted, pending, hold, rejected and unidentified status
+    LESSON 2.2 — Physical/system segregation and label integrity
+    LESSON 2.3 — Sampling/inspection handoff and no premature issue
+  CHAPTER 3 — Exception practical
+    LESSON 3.1 — Wrong material or missing evidence
+    LESSON 3.2 — Damaged/leaking/temperature-excursion shipment
+    LESSON 3.3 — Receive-and-quarantine transaction sign-off
+
+COURSE LOG-102 — Storage, FIFO/FEFO & Special-material Controls [REC][BL]
+  CHAPTER 1 — Storage design
+    LESSON 1.1 — Location, load, stacking, aisle and access
+    LESSON 1.2 — FIFO/FEFO, shelf life and retest status
+    LESSON 1.3 — Temperature, humidity, light and cleanliness
+  CHAPTER 2 — Segregated material
+    LESSON 2.1 — Chemical compatibility and secondary containment
+    LESSON 2.2 — ESD/MSD/dry storage and sensitive components
+    LESSON 2.3 — High-value, controlled, rejected and scrap material
+  CHAPTER 3 — Practical control
+    LESSON 3.1 — Put-away and location confirmation
+    LESSON 3.2 — Cycle age/status inspection
+    LESSON 3.3 — Spill/damage/expired-material response
+
+COURSE LOG-103 — Kitting, Line Feeding & WIP Traceability [REC][OJT]
+  CHAPTER 1 — Pick the right material
+    LESSON 1.1 — Work order, BOM, revision, lot and quantity
+    LESSON 1.2 — Barcode/system verification and substitution boundary
+    LESSON 1.3 — Split lot, remainder and unit-of-measure control
+  CHAPTER 2 — Feed and return
+    LESSON 2.1 — Kit integrity, sequence and route
+    LESSON 2.2 — Point-of-use status and mixed-material prevention
+    LESSON 2.3 — Return, reconciliation and shelf-life restoration
+  CHAPTER 3 — Qualification
+    LESSON 3.1 — Build/verify representative kit
+    LESSON 3.2 — Trace genealogy through split/merge
+    LESSON 3.3 — Exception transaction practical
+
+COURSE LOG-104 — Packaging, Labeling, Preservation & Export Shipment [REC][BL]
+  CHAPTER 1 — Protect product
+    LESSON 1.1 — Cleanliness, ESD, moisture, deformation and corrosion risk
+    LESSON 1.2 — Primary/secondary/transport packaging
+    LESSON 1.3 — Quantity, orientation, seal and tamper control
+  CHAPTER 2 — Identify correctly
+    LESSON 2.1 — Part, lot, serial, date and customer label
+    LESSON 2.2 — Barcode readability and label-system version
+    LESSON 2.3 — Regulatory/chemical/dangerous-goods marks where applicable
+  CHAPTER 3 — Release shipment
+    LESSON 3.1 — Order, certificate and customs/export-document match
+    LESSON 3.2 — Final count/condition and loading integrity
+    LESSON 3.3 — Wrong-label/damage scenario practical
+
+COURSE LOG-105 — Inventory Accuracy, Cycle Count & Material Reconciliation [REC][BL]
+  CHAPTER 1 — Inventory integrity
+    LESSON 1.1 — Physical, system and status/location agreement
+    LESSON 1.2 — Lot/serial/shelf-life genealogy
+    LESSON 1.3 — Transaction timing and negative inventory risk
+  CHAPTER 2 — Count/reconcile
+    LESSON 2.1 — Blind count, freeze and recount discipline
+    LESSON 2.2 — Variance analysis and approved adjustment
+    LESSON 2.3 — Scrap, sample, return and production-consumption linkage
+  CHAPTER 3 — Improve
+    LESSON 3.1 — Accuracy/aging/obsolete metrics
+    LESSON 3.2 — Root cause of recurring variance
+    LESSON 3.3 — Cycle-count practical
+
+COURSE LOG-106 — Dangerous Goods & Regulated Transport [COND][BL]
+  CHAPTER 1 — Applicability
+    LESSON 1.1 — Classify material/product and mode of transport
+    LESSON 1.2 — Shipper/carrier/consignee responsibilities
+    LESSON 1.3 — Required role-specific qualification and local rule
+  CHAPTER 2 — Prepare consignment
+    LESSON 2.1 — Approved package, quantity limit and compatibility
+    LESSON 2.2 — Mark, label, declaration and emergency information
+    LESSON 2.3 — Security, segregation and carrier acceptance
+  CHAPTER 3 — Exceptions
+    LESSON 3.1 — Damaged/leaking/rejected package
+    LESSON 3.2 — Undeclared or misdeclared material
+    LESSON 3.3 — Mode-specific practical/assessment
+
+COURSE SCM-201 — Supplier Qualification, Selection & Performance [REC][BL]
+  CHAPTER 1 — Risk-based qualification
+    LESSON 1.1 — Product/process criticality and supplier type
+    LESSON 1.2 — Technical, quality, EHS, capacity and continuity evidence
+    LESSON 1.3 — Audit/trial/approval and conditional status
+  CHAPTER 2 — Controlled sourcing
+    LESSON 2.1 — Approved supplier/material/site scope
+    LESSON 2.2 — Purchase-spec and change-notification flowdown
+    LESSON 2.3 — Sub-tier and outsourced-process visibility
+  CHAPTER 3 — Performance
+    LESSON 3.1 — Quality, delivery, response and compliance scorecard
+    LESSON 3.2 — Escalation, development, probation and disqualification
+    LESSON 3.3 — Supplier review case
+
+COURSE SCM-202 — Responsible Procurement, Green Flowdown & Procurement Ethics [REC][EL]
+  CHAPTER 1 — Responsible decision
+    LESSON 1.1 — Total risk/value beyond purchase price
+    LESSON 1.2 — Conflict, gift, confidentiality and fair competition
+    LESSON 1.3 — Human rights, labor, environment and business continuity
+  CHAPTER 2 — Requirement flowdown
+    LESSON 2.1 — Drawing/specification/quality clauses
+    LESSON 2.2 — NISSEI Green Procurement and substance evidence
+    LESSON 2.3 — Change, traceability and record-retention requirements
+  CHAPTER 3 — Scenario assessment
+    LESSON 3.1 — Lowest price versus unacceptable risk
+    LESSON 3.2 — Supplier gift/conflict and confidential quotation
+    LESSON 3.3 — Missing compliance evidence before purchase/release
+
+COURSE SCM-203 — Supplier Change, SCAR & Counterfeit Prevention [REC][BL]
+  CHAPTER 1 — Detect/control change
+    LESSON 1.1 — Material, formulation, process, site and sub-tier change
+    LESSON 1.2 — Notification, approval and validation before use
+    LESSON 1.3 — Unannounced change indicators and containment
+  CHAPTER 2 — Supplier corrective action
+    LESSON 2.1 — Defect evidence, risk and immediate containment
+    LESSON 2.2 — Root cause/corrective action and due-date control
+    LESSON 2.3 — Effectiveness and recurrence across parts/sites
+  CHAPTER 3 — Authenticity
+    LESSON 3.1 — Authorized source and chain-of-custody
+    LESSON 3.2 — Suspect/counterfeit/tampered evidence response
+    LESSON 3.3 — Supplier incident case
+
+COURSE SCM-204 — Supply Continuity, Capacity & Supplier Risk [REC][BL]
+  CHAPTER 1 — Map exposure
+    LESSON 1.1 — Critical part, single source, lead time and geographic risk
+    LESSON 1.2 — Sub-tier, tool, capacity and utility dependency
+    LESSON 1.3 — Financial, cyber, climate and geopolitical indicators
+  CHAPTER 2 — Build resilience
+    LESSON 2.1 — Alternate source/material and qualification lead time
+    LESSON 2.2 — Buffer, capacity reservation and recovery agreement
+    LESSON 2.3 — Supplier continuity plan and exercise
+  CHAPTER 3 — Respond
+    LESSON 3.1 — Early warning and cross-functional escalation
+    LESSON 3.2 — Allocation, customer communication and controlled substitution
+    LESSON 3.3 — Supply disruption tabletop
+
+--------------------------------------------------------------------------------
+PROGRAM 11 — ENGINEERING, NPI & PRODUCT LIFECYCLE
+--------------------------------------------------------------------------------
+
+COURSE ENG-101 — Customer Requirement, Product Specification & Design Input [REC][BL]
+  CHAPTER 1 — Capture the real need
+    LESSON 1.1 — Use case, interface, environment, lifetime and misuse
+    LESSON 1.2 — Explicit, implied, statutory and customer-specific requirement
+    LESSON 1.3 — Assumption, ambiguity, conflict and open question
+  CHAPTER 2 — Build controlled inputs
+    LESSON 2.1 — Functional/performance/material/safety/compliance input
+    LESSON 2.2 — CTQ, acceptance method and measurable language
+    LESSON 2.3 — Requirement ID, source, owner and traceability
+  CHAPTER 3 — Review
+    LESSON 3.1 — Cross-functional feasibility and risk
+    LESSON 3.2 — Bid/no-bid, exception and customer clarification
+    LESSON 3.3 — Requirement-review workshop
+
+COURSE ENG-102 — Design Review, Tolerance Stack & Interface Control [REC][BL]
+  CHAPTER 1 — Design maturity
+    LESSON 1.1 — Concept, preliminary, detailed and release reviews
+    LESSON 1.2 — Entry/exit criteria and independent challenge
+    LESSON 1.3 — Action closure and residual risk acceptance
+  CHAPTER 2 — Interface/tolerance
+    LESSON 2.1 — Mechanical/electrical/optical/material interfaces
+    LESSON 2.2 — Datum chain, tolerance stack and process capability
+    LESSON 2.3 — Connector, mating, routing and customer-system boundary
+  CHAPTER 3 — Evidence
+    LESSON 3.1 — Model/drawing/calculation/prototype alignment
+    LESSON 3.2 — Decision, dissent, assumption and action record
+    LESSON 3.3 — Design-review simulation
+
+COURSE ENG-201 — New Product Introduction & Industrialization [REC][BL]
+  CHAPTER 1 — Plan NPI
+    LESSON 1.1 — Phase/gate, roles, deliverables and escalation
+    LESSON 1.2 — Requirement, risk, capacity, cost and launch objective
+    LESSON 1.3 — Supplier/tool/equipment/test/training readiness
+  CHAPTER 2 — Prove the process
+    LESSON 2.1 — Prototype, engineering build, pilot and first production
+    LESSON 2.2 — Process flow, PFMEA, control plan and standardized work
+    LESSON 2.3 — Measurement, capability, traceability and boundary samples
+  CHAPTER 3 — Launch/close
+    LESSON 3.1 — Readiness review and controlled ramp
+    LESSON 3.2 — Safe launch/heightened inspection and issue war room
+    LESSON 3.3 — Handover, lessons learned and post-launch review
+
+COURSE ENG-202 — DOE, Process Window & Optimization [REC][BL]
+  CHAPTER 1 — Experiment correctly
+    LESSON 1.1 — Problem, response, factor, level and nuisance variable
+    LESSON 1.2 — Randomization, replication, blocking and sample size
+    LESSON 1.3 — Safety/quality constraints and approval before trial
+  CHAPTER 2 — Analyze
+    LESSON 2.1 — Main effect, interaction and model limitation
+    LESSON 2.2 — Graphical/statistical significance versus practical effect
+    LESSON 2.3 — Robust region, sensitivity and confirmation run
+  CHAPTER 3 — Control result
+    LESSON 3.1 — Define process window and reaction limit
+    LESSON 3.2 — Update recipe, WI, PFMEA/control plan and training
+    LESSON 3.3 — DOE case workshop
+
+COURSE ENG-203 — Process, Equipment & Test-method Validation [REC][BL]
+  CHAPTER 1 — Validation strategy
+    LESSON 1.1 — Intended use, risk, acceptance and lifecycle approach
+    LESSON 1.2 — Installation/operational/performance qualification concepts
+    LESSON 1.3 — Protocol, sample, worst case and deviation plan
+  CHAPTER 2 — Execute
+    LESSON 2.1 — Equipment/utility/software/material/person readiness
+    LESSON 2.2 — Challenge range, alarm, interlock and repeatability
+    LESSON 2.3 — Raw data, deviation and contemporaneous record
+  CHAPTER 3 — Maintain validated state
+    LESSON 3.1 — Report/release and training linkage
+    LESSON 3.2 — Change, maintenance, drift and revalidation trigger
+    LESSON 3.3 — Protocol/report review exercise
+
+COURSE ENG-204 — Reliability, Life & Environmental Qualification [REC][BL]
+  CHAPTER 1 — Reliability planning
+    LESSON 1.1 — Mission profile, failure definition and reliability target
+    LESSON 1.2 — Stress, mechanism, acceleration and sample strategy
+    LESSON 1.3 — Mechanical/thermal/humidity/chemical/electrical/optical tests
+  CHAPTER 2 — Execute/monitor
+    LESSON 2.1 — Fixture, chamber, profile and specimen traceability
+    LESSON 2.2 — Baseline, interim and final performance
+    LESSON 2.3 — Interruption, invalid test and anomaly handling
+  CHAPTER 3 — Interpret
+    LESSON 3.1 — Failure mode, censored data and extrapolation caution
+    LESSON 3.2 — Margin, limitation and application conclusion
+    LESSON 3.3 — Reliability-report case
+
+COURSE ENG-205 — Failure Analysis, FRACAS & Technical Problem Solving [REC][BL]
+  CHAPTER 1 — Preserve and characterize
+    LESSON 1.1 — Chain-of-custody, configuration and use history
+    LESSON 1.2 — Symptom, failure mode and reproducibility
+    LESSON 1.3 — Non-destructive before destructive examination
+  CHAPTER 2 — Analyze cause
+    LESSON 2.1 — Fault tree and competing hypotheses
+    LESSON 2.2 — Material/process/design/use/test evidence
+    LESSON 2.3 — Confirm mechanism and systemic scope
+  CHAPTER 3 — FRACAS closure
+    LESSON 3.1 — Containment, corrective/preventive action
+    LESSON 3.2 — Effectiveness, recurrence and lessons database
+    LESSON 3.3 — Technical failure-review board simulation
+
+COURSE ENG-206 — Configuration, Engineering Change & Product Lifecycle Control [REC][BL]
+  CHAPTER 1 — Configuration baseline
+    LESSON 1.1 — Part/BOM/drawing/software/tool/process baseline
+    LESSON 1.2 — Revision, variant, option and effectivity
+    LESSON 1.3 — As-designed, as-built and as-maintained agreement
+  CHAPTER 2 — Change control
+    LESSON 2.1 — Reason, scope, risk and affected inventory/customer
+    LESSON 2.2 — Review, validation, approval and notification
+    LESSON 2.3 — Cut-in, old-stock disposition and rollback
+  CHAPTER 3 — Lifecycle
+    LESSON 3.1 — Temporary deviation versus permanent change
+    LESSON 3.2 — Obsolescence, last-time buy and end-of-life
+    LESSON 3.3 — Change-impact workshop
+
+COURSE ENG-207 — DFM/DFA, Process Safety & Sustainable Design [REC][BL]
+  CHAPTER 1 — Design for realization
+    LESSON 1.1 — Simplify assembly, orientation and error prevention
+    LESSON 1.2 — Tolerance matched to process and measurement
+    LESSON 1.3 — Serviceability, testability and traceability
+  CHAPTER 2 — Eliminate lifecycle risk
+    LESSON 2.1 — Hazard elimination and safer material/process
+    LESSON 2.2 — Product chemical, energy, waste and recyclability
+    LESSON 2.3 — Worker/installer/user/end-of-life perspectives
+  CHAPTER 3 — Tradeoff review
+    LESSON 3.1 — Performance, cost, quality, EHS and supply resilience
+    LESSON 3.2 — Evidence-based decision and residual risk
+    LESSON 3.3 — Redesign workshop
+
+COURSE ENG-208 — Technology Transfer, Project & Change Management [REC][BL]
+  CHAPTER 1 — Plan transfer/change
+    LESSON 1.1 — Scope, stakeholder, responsibility and success criteria
+    LESSON 1.2 — Source/receiving-site gap and local constraints
+    LESSON 1.3 — Risk, schedule, resource and communication plan
+  CHAPTER 2 — Transfer knowledge/capability
+    LESSON 2.1 — Document package, tacit knowledge and translation
+    LESSON 2.2 — Trainer/assessor/equipment/material readiness
+    LESSON 2.3 — Trial, comparison and authorization
+  CHAPTER 3 — Stabilize
+    LESSON 3.1 — Issue/risk/change control during ramp
+    LESSON 3.2 — Performance acceptance and ownership handover
+    LESSON 3.3 — Lessons learned and replication to other sites
+
+COURSE ENG-209 — Test Software, Automation & Recipe Configuration Control [REC][BL]
+  CHAPTER 1 — Controlled asset
+    LESSON 1.1 — Program/recipe/script as product-quality configuration
+    LESSON 1.2 — Requirement, version, owner and access
+    LESSON 1.3 — Development/test/production environment separation
+  CHAPTER 2 — Verify change
+    LESSON 2.1 — Review, unit/integration/challenge test
+    LESSON 2.2 — Golden sample, boundary/failure and regression test
+    LESSON 2.3 — Approval, deployment, backup and rollback
+  CHAPTER 3 — Operate securely
+    LESSON 3.1 — Checksum/version at point of use
+    LESSON 3.2 — Log, unauthorized change and data integrity
+    LESSON 3.3 — Configuration-release practical
+
+--------------------------------------------------------------------------------
+PROGRAM 12 — ETHICS, COMPLIANCE, PRIVACY & CYBERSECURITY
+--------------------------------------------------------------------------------
+
+COURSE CMP-101 — Compliance & Code of Conduct [BASE][EL]
+  CHAPTER 1 — NISSEI conduct foundation
+    LESSON 1.1 — Values, lawful behavior and individual accountability
+    LESSON 1.2 — Respect, human rights and safe workplace
+    LESSON 1.3 — Ask before acting when rules or expectations conflict
+  CHAPTER 2 — Ethical business
+    LESSON 2.1 — Conflict of interest, gifts and anti-bribery
+    LESSON 2.2 — Fair dealing, competition and third-party behavior
+    LESSON 2.3 — Accurate records, company assets and no falsification
+  CHAPTER 3 — Information and speak-up
+    LESSON 3.1 — Confidential information, privacy and intellectual property
+    LESSON 3.2 — Reporting channels, non-retaliation and cooperation
+    LESSON 3.3 — Final scenario-based acknowledgement
+
+COURSE CMP-102 — Human Rights, Respect & Anti-harassment [REC][EL]
+  CHAPTER 1 — Respectful workplace
+    LESSON 1.1 — Dignity, equal opportunity and inclusion
+    LESSON 1.2 — Harassment, bullying, discrimination and retaliation
+    LESSON 1.3 — Power imbalance, bystander and online behavior
+  CHAPTER 2 — Human/labor rights
+    LESSON 2.1 — Forced labor, child labor and recruitment fee risk
+    LESSON 2.2 — Working conditions, freedom of voice and vulnerable workers
+    LESSON 2.3 — Supplier/contractor warning signs
+  CHAPTER 3 — Respond
+    LESSON 3.1 — Set boundary and support affected person safely
+    LESSON 3.2 — Manager/HR/speak-up channels and confidentiality
+    LESSON 3.3 — Scenario assessment
+
+COURSE CMP-103 — Anti-bribery, Gifts, Conflicts & Procurement Integrity [REC][EL]
+  CHAPTER 1 — Recognize risk
+    LESSON 1.1 — Bribe, kickback, facilitation and indirect payment
+    LESSON 1.2 — Gift, hospitality, travel, donation and sponsorship
+    LESSON 1.3 — Personal/family/financial conflict of interest
+  CHAPTER 2 — Act under control
+    LESSON 2.1 — Approval, value/occasion and transparent record
+    LESSON 2.2 — Public official and high-risk intermediary
+    LESSON 2.3 — Refuse/escalate without tipping off or concealment
+  CHAPTER 3 — Scenarios
+    LESSON 3.1 — Supplier selection and gift
+    LESSON 3.2 — Customs/permit/payment request
+    LESSON 3.3 — Sales agent commission and conflict disclosure
+
+COURSE CMP-104 — Speak-up, Non-retaliation & Investigation Cooperation [REC][EL]
+  CHAPTER 1 — Raise concern
+    LESSON 1.1 — What, when and where to report
+    LESSON 1.2 — Good-faith report versus knowingly false allegation
+    LESSON 1.3 — Anonymous/confidential channels where available
+  CHAPTER 2 — Protect people/evidence
+    LESSON 2.1 — Non-retaliation and manager duty
+    LESSON 2.2 — Preserve records and avoid independent confrontation
+    LESSON 2.3 — Privacy and need-to-know
+  CHAPTER 3 — Cooperate
+    LESSON 3.1 — Truthful interview and document response
+    LESSON 3.2 — Corrective action without rumor or reprisal
+    LESSON 3.3 — Manager scenario assessment
+
+COURSE CMP-105 — Confidentiality, Intellectual Property & Business Records [REC][EL]
+  CHAPTER 1 — Protect knowledge
+    LESSON 1.1 — NISSEI, customer, supplier and personal information
+    LESSON 1.2 — Patent, trade secret, copyright and know-how
+    LESSON 1.3 — NDA, clean desk, photo and visitor controls
+  CHAPTER 2 — Use/share lawfully
+    LESSON 2.1 — Need-to-know, approved channel and recipient verification
+    LESSON 2.2 — Third-party content, license and open-source boundary
+    LESSON 2.3 — Employment transfer/exit and continuing duty
+  CHAPTER 3 — Accurate records
+    LESSON 3.1 — No fabrication, backdating or hidden side record
+    LESSON 3.2 — Retention, legal hold and secure disposal
+    LESSON 3.3 — Scenario assessment
+
+COURSE CMP-201 — Competition, Trade, Sanctions & Export Control [COND][EL]
+  CHAPTER 1 — Competition law behavior
+    LESSON 1.1 — Competitor contact, price, market and bid information
+    LESSON 1.2 — Distributor/resale and trade-association risk
+    LESSON 1.3 — Dawn raid/inquiry escalation
+  CHAPTER 2 — Trade/export control
+    LESSON 2.1 — Product/technology/destination/end-user/end-use screening
+    LESSON 2.2 — Sanctions, denied parties and diversion indicators
+    LESSON 2.3 — Technical data, hand-carry and deemed transfer concepts
+  CHAPTER 3 — Transaction gate
+    LESSON 3.1 — No ship/share before required classification/approval
+    LESSON 3.2 — Accurate customs origin/value/description
+    LESSON 3.3 — Sales/export scenario assessment
+
+COURSE CMP-202 — Third-party, Distributor & Supplier Due Diligence [REC][BL]
+  CHAPTER 1 — Risk tiering
+    LESSON 1.1 — Role, country, government contact, payment and reputation
+    LESSON 1.2 — Beneficial ownership, conflict and qualification
+    LESSON 1.3 — Red flags and enhanced diligence trigger
+  CHAPTER 2 — Contract/onboarding
+    LESSON 2.1 — Scope, fee, bank/payee and business rationale
+    LESSON 2.2 — Compliance clauses, training, audit and termination
+    LESSON 2.3 — Approval before engagement/payment
+  CHAPTER 3 — Monitor/respond
+    LESSON 3.1 — Invoice, service evidence and change monitoring
+    LESSON 3.2 — Red-flag hold/escalation/investigation
+    LESSON 3.3 — Due-diligence case workshop
+
+COURSE DPR-101 — Personal Data Protection Awareness [REC][EL]
+  CHAPTER 1 — Personal-data lifecycle
+    LESSON 1.1 — Personal/sensitive data and data-subject context
+    LESSON 1.2 — Collect, use, share, retain and delete
+    LESSON 1.3 — Purpose, minimum necessary and transparency
+  CHAPTER 2 — Everyday protection
+    LESSON 2.1 — Access, recipient, device and approved channel
+    LESSON 2.2 — Paper, photo, CCTV, biometrics and employee records
+    LESSON 2.3 — Vendor/cross-border handling and approval boundary
+  CHAPTER 3 — Rights/incidents
+    LESSON 3.1 — Route data-subject request correctly
+    LESSON 3.2 — Report loss, wrong recipient or unauthorized access quickly
+    LESSON 3.3 — Jurisdiction-specific scenario assessment
+
+COURSE DPR-201 — HR, LMS & Administrator Data Stewardship [REC][BL]
+  CHAPTER 1 — High-risk records
+    LESSON 1.1 — Identity, employment, health, discipline and training data
+    LESSON 1.2 — Role-based access and separation of duties
+    LESSON 1.3 — Mandatory versus optional field and source accuracy
+  CHAPTER 2 — Controlled processing
+    LESSON 2.1 — Import/export/report, bulk action and recipient check
+    LESSON 2.2 — Retention, correction, archive and deletion
+    LESSON 2.3 — Vendor/support access and audit trail
+  CHAPTER 3 — Operations
+    LESSON 3.1 — Respond to access/correction/withdrawal request
+    LESSON 3.2 — Investigate training-data or privacy incident
+    LESSON 3.3 — Admin practical and acknowledgement
+
+COURSE DPR-202 — Customer, Product & Cross-border Data Handling [COND][BL]
+  CHAPTER 1 — Classify exchange
+    LESSON 1.1 — Contact, drawing, test, serial and telemetry data
+    LESSON 1.2 — Personal, confidential, export-controlled and customer-owned
+    LESSON 1.3 — Country/recipient/purpose/system mapping
+  CHAPTER 2 — Approve/protect
+    LESSON 2.1 — Contract, consent/legal basis and transfer mechanism
+    LESSON 2.2 — Minimize, encrypt, restrict and time-limit
+    LESSON 2.3 — Vendor/cloud/collaboration workspace control
+  CHAPTER 3 — Scenario
+    LESSON 3.1 — HQ/customer data request
+    LESSON 3.2 — Engineering sample and debug log
+    LESSON 3.3 — Wrong-country/wrong-recipient incident
+
+COURSE CYB-101 — Cybersecurity Awareness [BASE][EL]
+  CHAPTER 1 — Protect identity/device
+    LESSON 1.1 — Strong authentication, MFA and password handling
+    LESSON 1.2 — Screen, workstation, mobile and removable media
+    LESSON 1.3 — Update, malware and unauthorized software/device
+  CHAPTER 2 — Protect communication/data
+    LESSON 2.1 — Phishing, impersonation and business email compromise
+    LESSON 2.2 — Link, attachment, QR, cloud-share and recipient check
+    LESSON 2.3 — Information classification and approved storage
+  CHAPTER 3 — Report/respond
+    LESSON 3.1 — Suspicious message, lost device and data exposure
+    LESSON 3.2 — Disconnect/escalate without destroying evidence
+    LESSON 3.3 — Final scenario-based assessment
+
+COURSE CYB-201 — Phishing, Social Engineering & Payment Fraud [REC][EL]
+  CHAPTER 1 — Attack patterns
+    LESSON 1.1 — Executive/vendor/helpdesk impersonation
+    LESSON 1.2 — Urgency, secrecy, invoice/bank and MFA request
+    LESSON 1.3 — Voice/video/deepfake and physical social engineering
+  CHAPTER 2 — Verify independently
+    LESSON 2.1 — Known contact/channel and callback
+    LESSON 2.2 — Dual approval and change-of-bank procedure
+    LESSON 2.3 — Never share credential/code or approve unexpected prompt
+  CHAPTER 3 — Simulation
+    LESSON 3.1 — Identify representative lures
+    LESSON 3.2 — Report using approved channel
+    LESSON 3.3 — Recover after click/disclosure
+
+COURSE CYB-202 — Secure Data, Remote Work & Collaboration [REC][EL]
+  CHAPTER 1 — Classify/share
+    LESSON 1.1 — Public, internal, confidential and restricted information
+    LESSON 1.2 — Least recipient, least privilege and expiry
+    LESSON 1.3 — Approved email, drive, messaging and removable media
+  CHAPTER 2 — Work outside site
+    LESSON 2.1 — Device, network/VPN and physical viewing
+    LESSON 2.2 — Home, hotel, travel and public-space controls
+    LESSON 2.3 — Printing, disposal and family/shared-device boundary
+  CHAPTER 3 — Scenario
+    LESSON 3.1 — Customer file to external recipient
+    LESSON 3.2 — Overshared cloud folder
+    LESSON 3.3 — Lost/stolen device response
+
+COURSE CYB-203 — Industrial/OT Cybersecurity Awareness [REC][BL]
+  CHAPTER 1 — OT consequence
+    LESSON 1.1 — Safety, quality, availability and recipe/data impact
+    LESSON 1.2 — PLC, HMI, drive, tester, historian and engineering station
+    LESSON 1.3 — IT/OT boundary and legacy constraints
+  CHAPTER 2 — Safe behavior
+    LESSON 2.1 — No unauthorized laptop, USB, network or software
+    LESSON 2.2 — Account, remote vendor and maintenance-session control
+    LESSON 2.3 — Backup, change, patch and approved exception
+  CHAPTER 3 — Detect/respond
+    LESSON 3.1 — Unusual alarm, program, traffic or machine behavior
+    LESSON 3.2 — Safe containment with Operations/IT/HSE
+    LESSON 3.3 — OT incident tabletop
+
+COURSE CYB-301 — Privileged Access, Secure Administration & Cyber Incident Response [REC][BL]
+  CHAPTER 1 — Privileged control
+    LESSON 1.1 — Named account, least privilege and segregation
+    LESSON 1.2 — Vault/MFA/session/log and break-glass account
+    LESSON 1.3 — Joiner–mover–leaver and periodic review
+  CHAPTER 2 — Secure administration
+    LESSON 2.1 — Harden, patch, backup and configuration baseline
+    LESSON 2.2 — Remote support, vendor access and command/change evidence
+    LESSON 2.3 — Secrets, certificates and service accounts
+  CHAPTER 3 — Incident response
+    LESSON 3.1 — Triage, contain, preserve evidence and escalate
+    LESSON 3.2 — Recover, validate and monitor recurrence
+    LESSON 3.3 — Admin incident exercise
+
+COURSE AI-101 — Responsible Use of Generative AI [REC][EL]
+  CHAPTER 1 — Appropriate use
+    LESSON 1.1 — Capability, hallucination and human accountability
+    LESSON 1.2 — Approved tools, permitted use cases and prohibited data
+    LESSON 1.3 — Copyright, privacy, bias and customer restriction
+  CHAPTER 2 — Work safely
+    LESSON 2.1 — Minimize/sanitize prompt and protect confidential data
+    LESSON 2.2 — Verify source, calculation, translation and technical claim
+    LESSON 2.3 — Disclose/review AI-assisted work where required
+  CHAPTER 3 — Scenarios
+    LESSON 3.1 — Training-content draft
+    LESSON 3.2 — Customer drawing or personal data in prompt
+    LESSON 3.3 — Decision-support output requiring expert approval
+
+--------------------------------------------------------------------------------
+PROGRAM 13 — LEADERSHIP, PEOPLE & BUSINESS CAPABILITY
+--------------------------------------------------------------------------------
+
+COURSE LDR-101 — Front-line Leader Foundation [REC][BL]
+  CHAPTER 1 — Role transition
+    LESSON 1.1 — From doing the job to enabling the team
+    LESSON 1.2 — Authority, accountability and escalation boundary
+    LESSON 1.3 — Fair, consistent and fact-based leadership
+  CHAPTER 2 — Run the shift
+    LESSON 2.1 — Readiness: people, skill, machine, material and risk
+    LESSON 2.2 — Set priority and communicate standard
+    LESSON 2.3 — Monitor, respond and hand over
+  CHAPTER 3 — Lead behavior
+    LESSON 3.1 — Ask, listen, coach and recognize
+    LESSON 3.2 — Address unsafe/nonstandard behavior respectfully
+    LESSON 3.3 — Shift-lead simulation
+
+COURSE LDR-201 — Manager Accountability for Safety, Quality, Environment & Training [REC][BL]
+  CHAPTER 1 — Duty of leadership
+    LESSON 1.1 — Visible ownership cannot be delegated to specialist
+    LESSON 1.2 — Resource, competence, control and assurance
+    LESSON 1.3 — Stop-work and production-pressure decisions
+  CHAPTER 2 — Training governance
+    LESSON 2.1 — Matrix assignment, due date and work restriction
+    LESSON 2.2 — Practical assessor, evidence and authorization quality
+    LESSON 2.3 — Transfer/change/incident/retraining triggers
+  CHAPTER 3 — Review performance
+    LESSON 3.1 — Leading/lagging EHSQ and competence signals
+    LESSON 3.2 — Verify action/effectiveness at gemba
+    LESSON 3.3 — Manager accountability case
+
+COURSE LDR-202 — Daily Management, Escalation & Decision Quality [REC][BL]
+  CHAPTER 1 — See reality
+    LESSON 1.1 — Gemba, visual status and data credibility
+    LESSON 1.2 — Normal versus abnormal and weak signals
+    LESSON 1.3 — SQDCP priorities and competing objectives
+  CHAPTER 2 — Decide/escalate
+    LESSON 2.1 — Reversible, irreversible and authorization-bound decision
+    LESSON 2.2 — Containment, time horizon and risk owner
+    LESSON 2.3 — Escalate early with fact/impact/action/request
+  CHAPTER 3 — Learn
+    LESSON 3.1 — Action aging and closure discipline
+    LESSON 3.2 — After-action review without blame
+    LESSON 3.3 — Daily-management simulation
+
+COURSE LDR-203 — Coaching, Feedback & Performance Development [REC][BL]
+  CHAPTER 1 — Set expectation
+    LESSON 1.1 — Role, standard, behavior and outcome
+    LESSON 1.2 — Observe evidence rather than reputation
+    LESSON 1.3 — Individual skill gap and development goal
+  CHAPTER 2 — Coach
+    LESSON 2.1 — Ask–listen–demonstrate–practice–feedback
+    LESSON 2.2 — Reinforce strength and correct gap promptly
+    LESSON 2.3 — Psychological safety with clear accountability
+  CHAPTER 3 — Sustain performance
+    LESSON 3.1 — Development plan and follow-up
+    LESSON 3.2 — When coaching becomes formal performance process
+    LESSON 3.3 — Coaching role-play
+
+COURSE LDR-204 — Grievance, Harassment & Employee-case Handling for Managers [REC][BL]
+  CHAPTER 1 — Receive concern
+    LESSON 1.1 — Listen, thank, clarify immediate safety
+    LESSON 1.2 — Do not promise outcome/secrecy or investigate alone
+    LESSON 1.3 — Urgent escalation and non-retaliation
+  CHAPTER 2 — Manage fairly
+    LESSON 2.1 — Need-to-know confidentiality and evidence preservation
+    LESSON 2.2 — Interim measures without prejudgment
+    LESSON 2.3 — Consistency, conflict and HR/legal partnership
+  CHAPTER 3 — After response
+    LESSON 3.1 — Communicate appropriate closure
+    LESSON 3.2 — Monitor retaliation/team impact
+    LESSON 3.3 — Manager case simulation
+
+COURSE LDR-205 — Structured Problem, Project & Change Leadership [REC][BL]
+  CHAPTER 1 — Frame and sponsor
+    LESSON 1.1 — Problem/opportunity, boundary and success measure
+    LESSON 1.2 — Owner, team, stakeholder and decision rights
+    LESSON 1.3 — Risk, resource and protected problem-solving time
+  CHAPTER 2 — Lead execution
+    LESSON 2.1 — Milestone, dependency, issue and change control
+    LESSON 2.2 — Challenge assumptions and remove barrier
+    LESSON 2.3 — Communicate impact and engage affected people
+  CHAPTER 3 — Close/sustain
+    LESSON 3.1 — Verify result and unintended consequence
+    LESSON 3.2 — Standardize, train and hand over ownership
+    LESSON 3.3 — Sponsor-review simulation
+
+COURSE LDR-206 — Cross-cultural & Remote Team Leadership [REC][BL]
+  CHAPTER 1 — Build shared context
+    LESSON 1.1 — Language, hierarchy, silence and decision norms
+    LESSON 1.2 — HQ/site/office perspectives and local constraints
+    LESSON 1.3 — Team charter, channel and response expectation
+  CHAPTER 2 — Lead across distance
+    LESSON 2.1 — Written pre-read, visual facts and translation support
+    LESSON 2.2 — Closed-loop task/decision confirmation
+    LESSON 2.3 — Time zone, meeting inclusion and asynchronous work
+  CHAPTER 3 — Resolve friction
+    LESSON 3.1 — Separate intent, behavior and impact
+    LESSON 3.2 — Surface disagreement and escalate constructively
+    LESSON 3.3 — Japan–Vietnam–China team scenario
+
+COURSE LDR-301 — Executive Crisis & Business-continuity Leadership [REC][ILT]
+  CHAPTER 1 — Crisis governance
+    LESSON 1.1 — Threshold, command, role and succession
+    LESSON 1.2 — Life safety first, then environment/quality/continuity
+    LESSON 1.3 — Decision log, legal/customer/HQ interface
+  CHAPTER 2 — Decisions under uncertainty
+    LESSON 2.1 — Verified fact, assumption and confidence
+    LESSON 2.2 — Scenario, trigger and reversible action
+    LESSON 2.3 — Employee/family/media/community communication
+  CHAPTER 3 — Exercise
+    LESSON 3.1 — Multi-site disruption tabletop
+    LESSON 3.2 — Recovery-priority conflict
+    LESSON 3.3 — After-action and plan ownership
+
+COURSE BUS-101 — Workplace Communication & Team Collaboration [REC][BL]
+  CHAPTER 1 — Clear exchange
+    LESSON 1.1 — Audience, purpose, context and requested action
+    LESSON 1.2 — Fact, opinion, assumption and emotion
+    LESSON 1.3 — Listen, clarify and confirm
+  CHAPTER 2 — Operational communication
+    LESSON 2.1 — Briefing, handover and escalation
+    LESSON 2.2 — Email/chat/meeting etiquette and record
+    LESSON 2.3 — Disagreement and constructive feedback
+  CHAPTER 3 — Practice
+    LESSON 3.1 — Rewrite unclear message
+    LESSON 3.2 — Deliver concise status/escalation
+    LESSON 3.3 — Team scenario
+
+COURSE BUS-201 — Data Literacy, Spreadsheet & KPI Fundamentals [REC][BL]
+  CHAPTER 1 — Trust the data
+    LESSON 1.1 — Definition, source, unit, time and denominator
+    LESSON 1.2 — Missing, duplicate, outlier and selection bias
+    LESSON 1.3 — Protect source data and audit trail
+  CHAPTER 2 — Work with data
+    LESSON 2.1 — Clean, filter, lookup, summarize and validate
+    LESSON 2.2 — Rate, distribution, trend and comparison
+    LESSON 2.3 — Chart matched to question without distortion
+  CHAPTER 3 — Decide
+    LESSON 3.1 — KPI behavior and unintended incentive
+    LESSON 3.2 — Correlation, causation and uncertainty
+    LESSON 3.3 — Build/review an operational dashboard
+
+COURSE BUS-202 — Business Writing, Reporting & Presentation [REC][BL]
+  CHAPTER 1 — Structure message
+    LESSON 1.1 — Conclusion first, evidence and requested decision
+    LESSON 1.2 — Situation–impact–action–owner–date
+    LESSON 1.3 — Audience/language and translation-ready writing
+  CHAPTER 2 — Visual/report quality
+    LESSON 2.1 — One message per table/chart/slide
+    LESSON 2.2 — Source, unit, definition and limitation
+    LESSON 2.3 — Version, confidentiality and distribution
+  CHAPTER 3 — Deliver
+    LESSON 3.1 — Concise verbal briefing
+    LESSON 3.2 — Handle question, disagreement and unknown
+    LESSON 3.3 — Report/presentation practical
+
+COURSE BUS-203 — Finance & Commercial Awareness for Non-finance Managers [REC][EL]
+  CHAPTER 1 — Business economics
+    LESSON 1.1 — Revenue, cost, margin, cash and working capital
+    LESSON 1.2 — Fixed/variable cost, utilization and break-even
+    LESSON 1.3 — Inventory, scrap, downtime and quality cost
+  CHAPTER 2 — Decision quality
+    LESSON 2.1 — Total cost, lifecycle and opportunity cost
+    LESSON 2.2 — Budget, forecast, variance and assumption
+    LESSON 2.3 — Financial benefit versus EHSQ/compliance boundary
+  CHAPTER 3 — Scenario
+    LESSON 3.1 — Make/buy and capacity investment
+    LESSON 3.2 — Maintenance/quality prevention case
+    LESSON 3.3 — Customer price versus sustainable margin
+
+COURSE LAN-101 — Workplace Japanese for NISSEI Collaboration [REC][BL]
+  CHAPTER 1 — Foundation
+    LESSON 1.1 — Greeting, self-introduction and workplace courtesy
+    LESSON 1.2 — Number, date, time, quantity and status
+    LESSON 1.3 — Safety/quality/production core vocabulary
+  CHAPTER 2 — Operational exchange
+    LESSON 2.1 — Ho-Ren-So sentence patterns
+    LESSON 2.2 — Ask clarification and confirm instruction
+    LESSON 2.3 — Report abnormality, delay and support need
+  CHAPTER 3 — Practice
+    LESSON 3.1 — Shift/meeting mini-dialogue
+    LESSON 3.2 — Read common signs/labels/forms
+    LESSON 3.3 — Role-specific oral practical
+
+COURSE LAN-102 — Technical English for Manufacturing [REC][BL]
+  CHAPTER 1 — Controlled vocabulary
+    LESSON 1.1 — Safety, quality, material, process and measurement terms
+    LESSON 1.2 — Drawing/specification/WI verbs and qualifiers
+    LESSON 1.3 — Defect, location, severity and evidence
+  CHAPTER 2 — Read/write
+    LESSON 2.1 — Understand concise technical instruction
+    LESSON 2.2 — Write shift/incident/test/problem statement
+    LESSON 2.3 — Avoid ambiguous translation and false friends
+  CHAPTER 3 — Communicate
+    LESSON 3.1 — Explain process and risk
+    LESSON 3.2 — Ask/answer customer or HQ technical question
+    LESSON 3.3 — Role-specific practical
+
+COURSE LAN-103 — Practical Chinese for Cross-border Operations [REC][BL]
+  CHAPTER 1 — Foundation
+    LESSON 1.1 — Greeting, role and workplace courtesy
+    LESSON 1.2 — Number, date, shipment, quantity and status
+    LESSON 1.3 — Product/logistics/commercial vocabulary
+  CHAPTER 2 — Operational exchange
+    LESSON 2.1 — Clarify order/specification/lead time
+    LESSON 2.2 — Report issue, hold and requested action
+    LESSON 2.3 — Confirm decision and record in approved language
+  CHAPTER 3 — Practice
+    LESSON 3.1 — Customer/office/site dialogue
+    LESSON 3.2 — Common label/document terms
+    LESSON 3.3 — Role-specific oral practical
+
+--------------------------------------------------------------------------------
+PROGRAM 14 — TRAINER, ASSESSOR, CONTENT GOVERNANCE & LMS OPERATIONS
+--------------------------------------------------------------------------------
+
+COURSE TRN-101 — Train-the-Trainer Foundation [REC][BL]
+  CHAPTER 1 — Design for adults
+    LESSON 1.1 — Job outcome, learner context and prerequisite
+    LESSON 1.2 — Clear objective and evidence of mastery
+    LESSON 1.3 — Explain–demonstrate–practice–feedback
+  CHAPTER 2 — Facilitate
+    LESSON 2.1 — Psychological/physical safety and participation
+    LESSON 2.2 — Check understanding beyond “yes/no”
+    LESSON 2.3 — Manage pace, language and difficult question
+  CHAPTER 3 — Qualify trainer
+    LESSON 3.1 — Prepare lesson plan/material/environment
+    LESSON 3.2 — Deliver observed session
+    LESSON 3.3 — Feedback, authorization scope and renewal
+
+COURSE TRN-201 — TWI Job Instruction & Structured OJT [REC][BL]
+  CHAPTER 1 — Break down the job
+    LESSON 1.1 — Important steps, key points and reasons
+    LESSON 1.2 — Safety/quality critical point and common error
+    LESSON 1.3 — Standard method, prerequisite and tool readiness
+  CHAPTER 2 — Instruct
+    LESSON 2.1 — Prepare learner and explain context
+    LESSON 2.2 — Demonstrate in layers with key point/reason
+    LESSON 2.3 — Learner performs and explains back
+  CHAPTER 3 — Follow up
+    LESSON 3.1 — Reduce supervision only after evidence
+    LESSON 3.2 — Correct method without shortcut normalization
+    LESSON 3.3 — Create/deliver a job breakdown practical
+
+COURSE TRN-202 — Practical Assessor & Authorization Sign-off [REC][BL]
+  CHAPTER 1 — Assessment integrity
+    LESSON 1.1 — Competence standard, evidence and assessor scope
+    LESSON 1.2 — Valid, reliable, fair and sufficient observation
+    LESSON 1.3 — Conflict of interest and production-pressure control
+  CHAPTER 2 — Assess
+    LESSON 2.1 — Observe full cycle and critical points
+    LESSON 2.2 — Ask scenario/why questions and sample records/products
+    LESSON 2.3 — Pass, conditional, fail and development feedback
+  CHAPTER 3 — Authorize
+    LESSON 3.1 — Record person/site/machine/process/product scope
+    LESSON 3.2 — Expiry, restriction, suspension and reassessment trigger
+    LESSON 3.3 — Witnessed assessor calibration
+
+COURSE TRN-203 — Practical, Drill & Classroom Facilitation [REC][BL]
+  CHAPTER 1 — Prepare safe session
+    LESSON 1.1 — Lesson/drill objective, risk and participant readiness
+    LESSON 1.2 — Equipment, PPE, emergency control and observer
+    LESSON 1.3 — Briefing, stop criteria and accessibility
+  CHAPTER 2 — Run
+    LESSON 2.1 — Demonstration, station rotation and coaching
+    LESSON 2.2 — Scenario inject and behavior observation
+    LESSON 2.3 — Attendance versus actual performance evidence
+  CHAPTER 3 — Debrief
+    LESSON 3.1 — What happened, why and impact
+    LESSON 3.2 — Correct misconception and capture system issue
+    LESSON 3.3 — Facilitation practical
+
+COURSE TRN-301 — LMS Course Authoring, Assessment & Version Control [REC][BL]
+  CHAPTER 1 — Architect course
+    LESSON 1.1 — Audience, objective, prerequisite and completion policy
+    LESSON 1.2 — Course–chapter–lesson granularity
+    LESSON 1.3 — Shared core, site delta and no language/site clone
+  CHAPTER 2 — Build valid learning
+    LESSON 2.1 — Content, scenario, practice and accessibility
+    LESSON 2.2 — Question quality, answer rationale and pass rule
+    LESSON 2.3 — Practical/session/certificate components
+  CHAPTER 3 — Govern release
+    LESSON 3.1 — Draft/review/approve/publish/archive workflow
+    LESSON 3.2 — Version impact, migration and retraining decision
+    LESSON 3.3 — Author/release a sample course
+
+COURSE TRN-302 — Translation, Localization & Accessible Learning Content [REC][BL]
+  CHAPTER 1 — Translation architecture
+    LESSON 1.1 — One course/version, multiple EN/VI/JA/ZH translations
+    LESSON 1.2 — Source freeze, terminology base and translation memory
+    LESSON 1.3 — Legal/site localization versus literal translation
+  CHAPTER 2 — Quality/accessibility
+    LESSON 2.1 — Bilingual SME review and in-context QA
+    LESSON 2.2 — Plain language, caption, transcript, contrast and keyboard use
+    LESSON 2.3 — Image/chart/voice and mobile/offline constraints
+  CHAPTER 3 — Release/maintain
+    LESSON 3.1 — Translation completeness and fallback rule
+    LESSON 3.2 — Version synchronization and obsolete text prevention
+    LESSON 3.3 — Localization QA practical
+
+COURSE LMS-101 — Learner: Web/Mobile Learning & Personal Compliance [REC][EL]
+  CHAPTER 1 — Access learning
+    LESSON 1.1 — Sign in, profile language and assigned catalog
+    LESSON 1.2 — Start/resume lesson online or approved offline mode
+    LESSON 1.3 — Accessibility/help and technical issue reporting
+  CHAPTER 2 — Complete correctly
+    LESSON 2.1 — Progress, quiz, retry and due date
+    LESSON 2.2 — Enroll/attend session and submit practical evidence
+    LESSON 2.3 — No proxy completion or shared account
+  CHAPTER 3 — Maintain readiness
+    LESSON 3.1 — Certificate/authorization and expiry
+    LESSON 3.2 — Notification, overdue and work restriction
+    LESSON 3.3 — Learner navigation assessment
+
+COURSE LMS-201 — Instructor: Session, Attendance & Practical Completion [REC][BL]
+  CHAPTER 1 — Prepare delivery
+    LESSON 1.1 — Authorized course/version, session and cohort
+    LESSON 1.2 — Roster, prerequisite, capacity and venue
+    LESSON 1.3 — Material, equipment and assessor readiness
+  CHAPTER 2 — Record evidence
+    LESSON 2.1 — Attendance identity and partial attendance
+    LESSON 2.2 — Quiz/practical result, attempt and assessor comment
+    LESSON 2.3 — Exception/correction with audit trail
+  CHAPTER 3 — Close session
+    LESSON 3.1 — Completion calculation and failed prerequisite
+    LESSON 3.2 — Certificate/authorization trigger
+    LESSON 3.3 — Session-admin practical
+
+COURSE LMS-301 — Site/Department Manager: Matrix, Assignment & Compliance [REC][BL]
+  CHAPTER 1 — Understand scope
+    LESSON 1.1 — Branch, department, job and employee attributes
+    LESSON 1.2 — Global course master versus site assignment rule
+    LESSON 1.3 — Required, optional, conditional and authorization
+  CHAPTER 2 — Operate locally
+    LESSON 2.1 — Review roster/mover/new hire and assignment
+    LESSON 2.2 — Due, overdue, expiring and restricted work
+    LESSON 2.3 — Plan session/assessor and resolve exceptions
+  CHAPTER 3 — Assure
+    LESSON 3.1 — Completion evidence and drill/practical gap
+    LESSON 3.2 — Export/report with privacy control
+    LESSON 3.3 — Site compliance scenario
+
+COURSE LMS-401 — HR/HSE/Functional Admin: Rules, Evidence & Content Control [REC][BL]
+  CHAPTER 1 — Governance responsibility
+    LESSON 1.1 — Job taxonomy, audience, owner and approver
+    LESSON 1.2 — Legal/customer/competence requirement mapping
+    LESSON 1.3 — Separation of course master, rule and employee exception
+  CHAPTER 2 — Configure safely
+    LESSON 2.1 — Prerequisite, due, grace, recurrence and trigger
+    LESSON 2.2 — Completion components, pass/attempt and evidence retention
+    LESSON 2.3 — Certificate/authorization template and revocation
+  CHAPTER 3 — Control change
+    LESSON 3.1 — Test, approve and deploy matrix/content update
+    LESSON 3.2 — Impact analysis, migration and notification
+    LESSON 3.3 — Admin configuration practical
+
+COURSE LMS-402 — Organization Administrator: Identity, Roles & Integration [REC][BL]
+  CHAPTER 1 — Identity/organization
+    LESSON 1.1 — Employee ID, branch, department, job and status
+    LESSON 1.2 — Joiner–mover–leaver synchronization
+    LESSON 1.3 — Duplicate/conflict/source-of-truth resolution
+  CHAPTER 2 — Access control
+    LESSON 2.1 — System role versus job role
+    LESSON 2.2 — Least privilege, delegated scope and separation
+    LESSON 2.3 — Periodic review and emergency access
+  CHAPTER 3 — Integrations/operations
+    LESSON 3.1 — HR/import/API/SSO and validation
+    LESSON 3.2 — Failed job, audit log, backup and support
+    LESSON 3.3 — Privileged-admin practical
+
+COURSE LMS-403 — Auditor & Executive Reporting [REC][EL]
+  CHAPTER 1 — Read compliance correctly
+    LESSON 1.1 — Assigned, due, complete, valid and authorized are different
+    LESSON 1.2 — Denominator, cutoff, transfer and leave population
+    LESSON 1.3 — Awareness completion versus demonstrated competence
+  CHAPTER 2 — Audit trail
+    LESSON 2.1 — Course/rule/version/employee evidence chain
+    LESSON 2.2 — Who changed what, when and why
+    LESSON 2.3 — Privacy, read-only access and export control
+  CHAPTER 3 — Decision reporting
+    LESSON 3.1 — Branch/role/risk trend and overdue aging
+    LESSON 3.2 — Expiring authorization and missing practical
+    LESSON 3.3 — Dashboard interpretation scenario
+
+--------------------------------------------------------------------------------
+PROGRAM 15 — CHINA OFFICE, SALES & CUSTOMER-FACING OPERATIONS
+--------------------------------------------------------------------------------
+
+Ghi chú phạm vi:
+  Baseline đã xác nhận cho hai văn phòng Trung Quốc chỉ gồm OFF-101, CMP-101
+  và CYB-101. Các course dưới đây là đề xuất theo chức năng/địa phương; Legal,
+  HR và Office Manager tại Trung Quốc phải thẩm định trước khi gán. Không áp
+  dụng các bundle ATVSLĐ/NĐ44 của Việt Nam cho nhân sự Trung Quốc.
+
+COURSE OFF-102 — China Office Emergency, Travel & Lone-work Safety [COND][BL]
+  CHAPTER 1 — [SITE DELTA] Office emergency
+    LESSON 1.1 — Local alarm, exit, assembly, fire/medical contact
+    LESSON 1.2 — Building, severe weather, earthquake and utility loss
+    LESSON 1.3 — Headcount, visitor and remote-employee accountability
+  CHAPTER 2 — Travel/customer site
+    LESSON 2.1 — Journey, hotel, transport and situational awareness
+    LESSON 2.2 — Customer factory induction and PPE/authorization boundary
+    LESSON 2.3 — Health, incident, security and check-in escalation
+  CHAPTER 3 — Lone/remote work
+    LESSON 3.1 — Risk screen and communication plan
+    LESSON 3.2 — No solo work beyond authorized conditions
+    LESSON 3.3 — Local tabletop/practical sign-off
+
+COURSE SAL-101 — NISSEI Product Portfolio for Sales & Customer Support [REC][BL]
+  CHAPTER 1 — Technology platforms
+    LESSON 1.1 — HIFLON™, LIKAL™ and LICOM™ value propositions
+    LESSON 1.2 — Wire/cable/tube/profile/roller/heater/optical products
+    LESSON 1.3 — Laser, antenna, high-speed interface and assemblies
+  CHAPTER 2 — Application landscape
+    LESSON 2.1 — Mobility, life science, OA and factory automation
+    LESSON 2.2 — Semiconductor, sensing, imaging and infrastructure
+    LESSON 2.3 — Product fit, limitation and adjacent alternatives
+  CHAPTER 3 — Communicate accurately
+    LESSON 3.1 — Approved claim, datasheet and sample boundary
+    LESSON 3.2 — When to involve engineering/quality/compliance
+    LESSON 3.3 — Portfolio application assessment
+
+COURSE SAL-201 — Application Discovery, Technical Claim & Sample Control [REC][BL]
+  CHAPTER 1 — Discover application
+    LESSON 1.1 — Function, environment, interface, volume and lifetime
+    LESSON 1.2 — Critical requirement, pain point and validation method
+    LESSON 1.3 — Stakeholder, decision process and timeline
+  CHAPTER 2 — Form responsible response
+    LESSON 2.1 — Separate verified capability from assumption/target
+    LESSON 2.2 — Confidentiality, specification and compliance check
+    LESSON 2.3 — Technical review for unusual/high-risk application
+  CHAPTER 3 — Sample/trial
+    LESSON 3.1 — Sample identity, revision, status and permitted use
+    LESSON 3.2 — Trial condition, feedback and no unauthorized production use
+    LESSON 3.3 — Discovery-to-sample case
+
+COURSE SAL-202 — Quotation, Order, Contract & Commercial Change Control [REC][BL]
+  CHAPTER 1 — Quote correctly
+    LESSON 1.1 — Requirement, scope, quantity, lead time and incoterm
+    LESSON 1.2 — Price/currency/tax/payment and validity assumption
+    LESSON 1.3 — Tooling/NRE/sample/validation and excluded scope
+  CHAPTER 2 — Review commitment
+    LESSON 2.1 — Technical/capacity/quality/legal/export feasibility
+    LESSON 2.2 — Customer terms, warranty, liability and data/IP
+    LESSON 2.3 — Deviation/exception approval before acceptance
+  CHAPTER 3 — Control change
+    LESSON 3.1 — PO versus quote/spec mismatch
+    LESSON 3.2 — Forecast, expedite, cancellation and engineering change
+    LESSON 3.3 — Contract-review scenario
+
+COURSE SAL-203 — Customer Complaint, Field Return & Technical Communication [REC][BL]
+  CHAPTER 1 — Receive accurately
+    LESSON 1.1 — Customer, part/lot/serial, symptom and use condition
+    LESSON 1.2 — Severity, safety/business impact and timing
+    LESSON 1.3 — Preserve sample/data and acknowledge without speculation
+  CHAPTER 2 — Coordinate response
+    LESSON 2.1 — Internal escalation, containment and affected scope
+    LESSON 2.2 — Question/evidence request and status cadence
+    LESSON 2.3 — Translation accuracy and single controlled message
+  CHAPTER 3 — Close trust loop
+    LESSON 3.1 — Explain verified cause/action/limitation
+    LESSON 3.2 — Return disposition, replacement and record
+    LESSON 3.3 — Difficult-customer communication role-play
+
+COURSE SAL-204 — Distributor, CRM, Forecast & Opportunity Governance [REC][BL]
+  CHAPTER 1 — Opportunity quality
+    LESSON 1.1 — Account/contact/application/volume/timing evidence
+    LESSON 1.2 — Stage criteria and next customer-validated step
+    LESSON 1.3 — Duplicate/channel/conflict and ownership
+  CHAPTER 2 — Forecast discipline
+    LESSON 2.1 — Demand signal, probability, range and assumption
+    LESSON 2.2 — Commit/best-case/upside without inflation
+    LESSON 2.3 — Change explanation and supply impact
+  CHAPTER 3 — Distributor governance
+    LESSON 3.1 — Territory, authorized claim/price and customer visibility
+    LESSON 3.2 — Due diligence, performance and confidential data
+    LESSON 3.3 — Pipeline review simulation
+
+COURSE SAL-205 — Customer Visit, Trade Show & Demo Equipment Control [REC][BL]
+  CHAPTER 1 — Prepare engagement
+    LESSON 1.1 — Objective, participant, NDA and approved material
+    LESSON 1.2 — Travel/customer-site safety and access
+    LESSON 1.3 — Sample/demo/equipment identity and export/import check
+  CHAPTER 2 — Engage responsibly
+    LESSON 2.1 — No unsupported technical/commercial claim
+    LESSON 2.2 — Photo, recording, competitor and confidential discussion
+    LESSON 2.3 — Safe demo, electrical/laser/mechanical boundary
+  CHAPTER 3 — Close
+    LESSON 3.1 — Return/reconcile sample, device and document
+    LESSON 3.2 — Record commitment, follow-up and customer data
+    LESSON 3.3 — Visit/demo scenario
+
+--------------------------------------------------------------------------------
+PROGRAM 16 — BUSINESS CONTINUITY, RESILIENCE & PHYSICAL SECURITY
+--------------------------------------------------------------------------------
+
+COURSE BCM-101 — Business Continuity Awareness [REC][EL]
+  CHAPTER 1 — Why continuity matters
+    LESSON 1.1 — People, facility, utility, IT/OT, supplier and logistics disruption
+    LESSON 1.2 — Safety response versus business recovery
+    LESSON 1.3 — Critical product/service and customer impact
+  CHAPTER 2 — Employee role
+    LESSON 2.1 — Alert, accountability and reliable contact information
+    LESSON 2.2 — Follow incident leadership and approved communication
+    LESSON 2.3 — Workaround only within quality/security authorization
+  CHAPTER 3 — Scenario
+    LESSON 3.1 — Site closure
+    LESSON 3.2 — System or supplier outage
+    LESSON 3.3 — Personal/family readiness and reporting
+
+COURSE BCM-201 — Business Impact Analysis, Continuity Plan & Exercise [REC][BL]
+  CHAPTER 1 — Analyze
+    LESSON 1.1 — Critical process, dependency and maximum tolerable disruption
+    LESSON 1.2 — Recovery time/point and minimum resource
+    LESSON 1.3 — Upstream/downstream/site/HQ/customer interdependency
+  CHAPTER 2 — Plan recovery
+    LESSON 2.1 — Trigger, role, contact and decision sequence
+    LESSON 2.2 — Alternate people/site/equipment/supplier/system/manual work
+    LESSON 2.3 — Quality, traceability, privacy and safety of workaround
+  CHAPTER 3 — Exercise/improve
+    LESSON 3.1 — Tabletop, simulation and recovery test
+    LESSON 3.2 — Objective evidence, gap and action owner
+    LESSON 3.3 — Update/approve/communicate plan
+
+COURSE BCM-202 — IT/OT Disaster Recovery & Production-system Resilience [REC][BL]
+  CHAPTER 1 — Recovery architecture
+    LESSON 1.1 — Critical service, dependency, RTO and RPO
+    LESSON 1.2 — Backup, immutable/offline copy and restore test
+    LESSON 1.3 — Network, identity, cloud/vendor and OT dependencies
+  CHAPTER 2 — Recover safely
+    LESSON 2.1 — Incident containment versus recovery decision
+    LESSON 2.2 — Clean environment, prioritized restore and access
+    LESSON 2.3 — Data/configuration integrity before business use
+  CHAPTER 3 — Exercise
+    LESSON 3.1 — Restore representative system/data
+    LESSON 3.2 — Production manual-mode/reconciliation scenario
+    LESSON 3.3 — Recovery evidence and improvement
+
+COURSE SEC-101 — Physical Access, Badge, Key & Restricted-area Security [REC][EL]
+  CHAPTER 1 — Access principles
+    LESSON 1.1 — Named access, least area/time and no tailgating
+    LESSON 1.2 — Badge/key/token custody and lost-item reporting
+    LESSON 1.3 — Production, lab, server, chemical and high-value zones
+  CHAPTER 2 — Everyday behavior
+    LESSON 2.1 — Challenge/report safely and never lend credential
+    LESSON 2.2 — Door, cabinet, after-hours and unattended asset
+    LESSON 2.3 — Photo/recording/device and clean-desk controls
+  CHAPTER 3 — Incident
+    LESSON 3.1 — Forced/unauthorized access
+    LESSON 3.2 — Lost badge/key or access anomaly
+    LESSON 3.3 — Scenario assessment
+
+COURSE SEC-102 — Visitor, Cargo, Mail & Site-security Control [REC][BL]
+  CHAPTER 1 — Visitor lifecycle
+    LESSON 1.1 — Sponsor, identity, purpose and pre-approval
+    LESSON 1.2 — Induction, badge, escort and restricted information
+    LESSON 1.3 — Sign-out, badge return and after-visit record
+  CHAPTER 2 — Goods/vehicle/mail
+    LESSON 2.1 — Authorized gate, document, seal and loading area
+    LESSON 2.2 — Suspicious package, tamper and unplanned delivery
+    LESSON 2.3 — Driver/vehicle/contractor boundaries
+  CHAPTER 3 — Practical
+    LESSON 3.1 — Process representative visitor
+    LESSON 3.2 — Handle access/document exception
+    LESSON 3.3 — Gate/security escalation drill
+
+COURSE SEC-103 — Suspicious Behavior, Threat & Workplace Violence Response [REC][ILT]
+  CHAPTER 1 — Recognize/escalate
+    LESSON 1.1 — Concerning behavior, threat and unauthorized surveillance
+    LESSON 1.2 — Domestic/personal issue that may enter workplace
+    LESSON 1.3 — Report early without profiling or confrontation
+  CHAPTER 2 — Immediate response
+    LESSON 2.1 — Follow local run/hide/evacuate/secure instruction
+    LESSON 2.2 — Call security/emergency services and share verified facts
+    LESSON 2.3 — Preserve life; do not pursue or improvise heroics
+  CHAPTER 3 — Recovery/drill
+    LESSON 3.1 — Accountability, medical and employee support
+    LESSON 3.2 — Investigation confidentiality and business recovery
+    LESSON 3.3 — [SITE DELTA] Scenario drill
+
+================================================================================
+APPENDIX A — COURSE MASTER METADATA BẮT BUỘC
+================================================================================
+
+Tree phía trên định nghĩa WHAT TO LEARN. Mỗi course chỉ được publish khi record
+course_master có đủ tối thiểu các trường sau; không suy ra các trường này chỉ từ
+tên course hoặc nhãn [EL]/[BL]/[ILT]/[OJT].
+
+A1. Identity & ownership
+  - course_code; canonical_title; program; catalog_status.
+  - content_version; effective_date; review_date; superseded_version.
+  - business_owner; content_owner; author; technical reviewer.
+  - approver(s): Function + HSE/Quality/Legal/HR/IT/Brand khi liên quan.
+  - applicable country/site/process/product/customer/standard edition.
+
+A2. Audience & matrix behavior
+  - branch/jurisdiction; employee type; department; job_role; sub-role.
+  - task/equipment/process/product-family/hazard/customer-program attributes.
+  - mandatory/optional/conditional; assignment trigger; prerequisite.
+  - equivalence/exemption; mutually-exclusive rule; prior-learning policy.
+  - assign-by date; due offset; grace; recurrence; expiry warning.
+  - overdue consequence: reminder, supervisor escalation, access/work block.
+
+A3. Learning package
+  - source_language; available translations EN/VI/JA/ZH and QA status.
+  - delivery mode; estimated seat time; class/practical capacity.
+  - measurable learning objectives and lesson/content-object IDs.
+  - required SITE DELTA; attachment/SOP/standard links; offline eligibility.
+  - accessibility: caption, transcript, alt text, keyboard and mobile behavior.
+
+A4. Completion & assessment
+  - required components: lessons, knowledge checks, final quiz, attendance,
+    practical, assignment, drill role, observed OJT or witnessed audit.
+  - pass mark; attempt limit; cooldown/remediation; manual override authority.
+  - approved trainer/assessor scope and independence/conflict rule.
+  - practical checklist version; critical-fail items; sample size/full cycle.
+  - evidence: score, answers, attendance, assessor, checklist, attachment,
+    session, site/equipment scope, timestamps and correction audit trail.
+
+A5. Credential & lifecycle
+  - no credential / completion certificate / role qualification / task or
+    machine authorization; credential template and issuing authority.
+  - authorization scope, restriction, validity, suspension and revocation.
+  - evidence-retention rule based on law/customer/company requirement.
+  - retraining triggers: expiry, role/site/process/equipment/version change,
+    extended absence, incident, failed observation or performance concern.
+  - version-impact decision: carry forward / delta-only / full reassignment.
+
+Không hard-code duration, pass mark, cycle hoặc retention ở lesson text. Những
+giá trị đó phải là dữ liệu có approval/effective date để đổi mà không sửa cây.
+
+================================================================================
+APPENDIX B — COMPLETION POLICY THEO LOẠI COURSE
+================================================================================
+
+B1. Awareness / policy [EL]
+  Required = all required lessons + final scenario/quiz + acknowledgement nếu có.
+  Default đề xuất = pass 80%, 2 attempts; owner có thể thay đổi có lý do/approval.
+  Kết quả = completion; không tự tạo task/equipment authorization.
+
+B2. Statutory instructor-led [ILT]/[BL]
+  Required = eligibility + đúng thời lượng/nội dung được phê duyệt + attendance
+  + theory assessment + practical/medical component nếu pháp luật yêu cầu.
+  Trainer, thời lượng, group, chu kỳ, mẫu hồ sơ và credential do HSE/Legal duyệt.
+
+B3. Hazard/equipment/process qualification [BL]/[OJT]
+  Required = prerequisite còn hiệu lực + knowledge gate + trainer demonstration
+  + supervised practice + full-cycle observation + critical-fail = 0.
+  Quiz pass nhưng practical fail = NOT COMPLETE / NOT AUTHORIZED.
+  Authorization phải ghi site + machine/process/product scope, không chỉ tên role.
+
+B4. Emergency-response role
+  Required = classroom + kỹ năng thực hành + site plan + drill participation.
+  Attendance một mình không chứng minh CPR, firefighting, spill hoặc command skill.
+
+B5. Auditor / trainer / assessor
+  Required = knowledge + observed participation + witnessed lead/delivery/assessment
+  + calibration. Credential scope theo standard/method/course, có maintenance rule.
+
+B6. Manager/system administrator
+  Required = scenario/configuration practical có audit trail; privileged role chỉ
+  cấp sau khi manager/data owner phê duyệt và hoàn tất CYB/DPR prerequisites.
+
+B7. Completion state machine đề xuất
+  NOT_ASSIGNED → ASSIGNED → IN_PROGRESS → THEORY_PASSED → PRACTICAL_PENDING
+  → COMPLETE → VALID → EXPIRING → EXPIRED/SUSPENDED/REVOKED.
+  Các course awareness có thể bỏ qua PRACTICAL_PENDING; qualification thì không.
+
+================================================================================
+APPENDIX C — SITE DELTA, TRANSLATION & VERSION DEPENDENCY
+================================================================================
+
+C1. Site Delta không phải course clone
+  - Core course có một code/version toàn hệ thống.
+  - Site delta là required content package, ví dụ:
+      NEV-HCM: map, contact, alarm, process/chemical/equipment/SOP references.
+      NEH-HAN: dữ liệu tương ứng của Hà Nội.
+      NEM-MTO: dữ liệu tương ứng của Mỹ Tho sau khi xác minh thực địa.
+      NES-SHA/NES-SZN: office emergency/contact package được local Legal duyệt.
+  - Assignment hoàn thành khi core + đúng delta của branch đều hoàn thành.
+  - Branch Manager chịu nội dung địa phương; Central owner duyệt template/control.
+
+C2. Transfer rule
+  - Core version còn hiệu lực và tương đương: carry forward.
+  - Learner phải hoàn thành delta của site mới trước khi làm việc độc lập.
+  - Nếu process/machine/product scope khác: chạy gap assessment và qualification
+    mới; không chuyển authorization chỉ vì course code giống nhau.
+
+C3. Change impact
+  - Editorial/translation-only: không retrain nếu meaning không đổi.
+  - Site contact/map/control change: gán delta update cho population bị ảnh hưởng.
+  - Hazard, legal duty, critical method hoặc acceptance change: owner quyết định
+    delta/full reassignment với justification và effective date.
+  - Obsolete version vẫn immutable trong lịch sử; không sửa record đã hoàn thành.
+
+C4. Translation
+  - EN/VI/JA/ZH cùng một content_version và cùng objective/assessment intent.
+  - Thuật ngữ Brand/Product/Legal có controlled glossary.
+  - Machine label/SOP local được review in-context; không tin machine translation
+    một mình cho nội dung safety, legal, medical hoặc critical quality.
+
+================================================================================
+APPENDIX D — PROPOSED TRAINING MATRIX / LEARNING PATH
+================================================================================
+
+Đây là candidate matrix để workshop, KHÔNG phải kết luận pháp lý. Ký hiệu:
+  CORE = ứng viên bắt buộc theo population; ROLE = bắt buộc theo job;
+  ATTR = chỉ gán khi employee/task attribute đúng; DEV = phát triển/optional.
+
+D0. Core theo quốc gia
+  Việt Nam — all employees (candidate CORE):
+    COR-101, COR-102 hoặc COR-107, COR-103, COR-104, COR-105,
+    CMP-101, CYB-101, DPR-101, QMS-201, ENV-201, FIR-101,
+    và đúng statutory ATVSLĐ bundle do HSE/Legal xác định.
+  Trung Quốc — baseline đã xác nhận trong hồ sơ:
+    OFF-101, CMP-101, CYB-101.
+    Candidate bổ sung sau local validation: COR-101, DPR-101, OFF-102,
+    SAL track theo nhiệm vụ; không gán NĐ44 Việt Nam.
+
+D1. Production Operator
+  ROLE: SAF-104, SAF-115, OPS-101, OPS-102, OPS-108, OPS-110,
+        QMS-202, QMS-203, QMS-204, QMS-205.
+  ATTR: SAF-107/117/121/125/126; OCC-102/103/104; QMS-214;
+        MAT-101/102/103; EQU-201 + đúng HIF/LIK/WCA/PCB/OPT/LAS/PRD path.
+  Rule: không gán mọi course kỹ thuật cho mọi operator; qualification theo
+        process + machine family + product family + shift/site.
+
+D2. Line Leader
+  ROLE: path Production Operator phù hợp khu vực + LDR-101, LDR-201,
+        SAF-113, SAF-114, OPS-105, OPS-106, OPS-108, OPS-110,
+        QMS-206, QMS-209, QMS-210.
+  ATTR: SAF-116/124; practical assessor TRN-202 nếu được giao ký authorization.
+  DEV: LDR-202, LDR-203, BUS-201, COR-106.
+
+D3. Forklift Operator
+  ROLE: SAF-106, SAF-123, LOG-101, LOG-102, LOG-103, LOG-105.
+  ATTR: SAF-107 khi xử lý chemical; LOG-106 khi dangerous goods áp dụng.
+  Rule: SAF-106 phải có practical/site-equipment authorization và medical/legal
+        conditions được phê duyệt; không dùng quiz-only completion.
+
+D4. Electrical Technician
+  ROLE: SAF-103, SAF-116, SAF-117, SAF-121, MNT-201, MNT-202,
+        MNT-205, MNT-207, MNT-208, MAT-102, MAT-103.
+  ATTR: SAF-102/118/119/120/125; MNT-204/206; CYB-203; EQU-201.
+  Rule: authorization xác định voltage/system/task/test condition và site.
+
+D5. Maintenance Technician
+  ROLE: SAF-104, SAF-116, SAF-117, SAF-121, MNT-201, MNT-203,
+        MNT-205, MNT-207, MNT-208, MAT-102, MAT-103.
+  ATTR: SAF-103/102/118/119/120/125/126; MNT-202/204/206;
+        CYB-203; FAC-201/202; EQU-201 theo máy.
+
+D6. Warehouse Staff
+  ROLE: SAF-123, LOG-101, LOG-102, LOG-103, LOG-104, LOG-105,
+        QMS-204, QMS-205.
+  ATTR: SAF-106 cho driver; SAF-107 cho chemical; LOG-106 dangerous goods;
+        QMS-214 cho ESD/MSD; ENV-203 cho hazardous waste.
+
+D7. QA Inspector
+  ROLE: QMS-202, QMS-203, QMS-204, QMS-205, QMS-207, QMS-208,
+        MAT-102, MAT-103, QMS-215.
+  ATTR: QMS-214/219; HIF-204, WCA-205, PCB-204/207, OPT-203/204,
+        LAS-204 hoặc PRD path; QMS-216/217/218 theo customer program.
+  DEV: QMS-206, QMS-212, ENG-205, BUS-201.
+
+D8. Supervisor
+  ROLE: LDR-101, LDR-201, LDR-202, LDR-203, SAF-113, SAF-114,
+        OPS-105, OPS-106, QMS-206, QMS-210.
+  ATTR: statutory manager/group assignment; SAF-116/124; LDR-204;
+        applicable process/product qualification awareness.
+  DEV: LDR-205/206, BUS-201/202/203, BCM-201.
+
+D9. Office Staff
+  ROLE: OFF-101, CMP-101, CYB-101, DPR-101.
+  ATTR: COR-103 for factory access; CYB-201/202; SCM/SAL/HR/Finance-specific
+        paths; OFF-102 for China office after local validation.
+  DEV: BUS-101/201/202, COR-106, LAN-101/102/103.
+
+D10. HSE Officer
+  ROLE: correct statutory HSE group, SAF-113, SAF-114, SAF-115, SAF-116,
+        FIR-101, EMR-102, OCC-106, ENV-202, ENV-211.
+  ATTR: SAF-102/103/104/106/107/117/118/119/120/121/125/126 trainer or
+        assessor paths only where technically competent; FIR-102/103,
+        EMR-101/103, ENV-212, FAC-201.
+  DEV: QMS-212, TRN-101/202/203/301, LDR-201/301, BCM-201.
+
+D11. Các chức năng cần bổ sung vào job taxonomy trước production
+  Engineering/NPI:
+    ENG-101..209 + MAT/common technology + QMS-207..210 + applicable product path.
+  Procurement/Supplier Quality:
+    SCM-201..204 + QMS-213 + PCS-101..104 + CMP-103/202.
+  Sales/Customer Support:
+    SAL-101..205 + CMP-201/202 + DPR-202 + applicable product awareness.
+  HR/Medical:
+    DPR-201 + CMP-102/104 + LDR-204; SAF-111 only for eligible medical role.
+  IT/OT:
+    CYB-202/203/301 + DPR-201/202 + BCM-202 + LMS-402 where applicable.
+  Facilities/Security/Emergency:
+    FAC, SEC, FIR, EMR and BCM role qualifications theo assignment thật.
+  Trainers/Assessors/Admins:
+    TRN/LMS path theo system role; system role không đồng nghĩa job title.
+
+D12. Attribute model tối thiểu để matrix không over-assign
+  - legal_safety_group and jurisdiction (approved, effective-dated).
+  - process_family: HIF/LIK/WCA/PCB/OPT/LAS/PRD/other.
+  - equipment_family + machine IDs + operation/maintenance/test privilege.
+  - task_hazards: height/electrical/LOTO/hot-work/confined/lift/chemical/laser...
+  - product/customer_program: automotive/medical/semiconductor/electronics...
+  - emergency_role; trainer_scope; assessor_scope; system_role.
+  - site/department/shift/employment type and transfer/return-to-work status.
+
+D13. ATVSLĐ assignment guardrail
+  - Group 1–6 được HSE/Legal phân loại từ chức trách thật, không từ title tiếng Anh.
+  - Không mặc định mọi người vừa Nhóm 4 vừa tất cả nhóm chuyên biệt.
+  - SAF-110 là khung kiến thức Nhóm 3; các course SAF-102/103/104/106/107...
+    là task modules, không tự động chứng minh toàn bộ nghĩa vụ Nhóm 3.
+  - Medical, trainer eligibility, thời lượng, recurrence và certificate template
+    phải nằm trong approved ruleset của từng effective period.
+
+================================================================================
+APPENDIX E — PREREQUISITE & AUTHORIZATION INTERLOCKS
+================================================================================
+
+E1. Core safety
+  COR-103 + statutory/general safety hợp lệ
+    → hazard-specific theory
+    → site delta
+    → supervised practical
+    → assessor sign-off
+    → scoped authorization.
+
+E2. High-risk work
+  SAF-116 Permit-to-Work là governance prerequisite khi site áp dụng.
+  SAF-117 LOTO là prerequisite cho maintenance/intervention exposing energy.
+  SAF-103 không tự cấp quyền sửa điện; SAF-102 không tự cấp quyền vào mọi roof;
+  SAF-120 không tự cấp crane operator nếu mới học rigger awareness.
+
+E3. Production technology
+  MAT-101 + MAT-102 + MAT-103 (điều chỉnh theo role)
+    → technology/product fundamentals
+    → process method
+    → EQU-201 instance theo machine/WI/product
+    → periodic observation / retraining trigger.
+
+E4. Quality special roles
+  QMS-201/202/203
+    → method knowledge
+    → representative sample/practical
+    → inspector/tester/auditor authorization.
+  QMS-212 cần witnessed audit; QMS-219/PCB skills cần workmanship practical.
+
+E5. Trainer/assessor
+  Technical competence + current role authorization
+    → TRN-101/201 hoặc TRN-202
+    → witnessed performance
+    → course/method-scoped trainer/assessor authorization.
+  Trainer không mặc nhiên là assessor; content author không mặc nhiên là approver.
+
+E6. LMS/system privilege
+  CYB-101 + DPR-101
+    → role-specific LMS course
+    → manager/data-owner approval
+    → least-privilege grant + audit + periodic review.
+
+================================================================================
+APPENDIX F — CONDITIONAL INDUSTRY / CUSTOMER PACKS
+================================================================================
+
+Chỉ kích hoạt sau khi Sales/Engineering/Quality xác nhận hợp đồng, chứng nhận,
+customer-specific requirement và process scope thực tế:
+
+F1. Automotive pack
+  QMS-216, WCA-303, applicable APQP/PPAP/FMEA/MSA/SPC, special characteristics,
+  product safety, traceability, warranty/field issue, customer/VDA/CQI modules.
+
+F2. Medical / life-science pack
+  QMS-217, risk/contamination/validation/traceability/change/complaint controls;
+  thêm ISO 13485/ISO 14971/customer/regulatory content chỉ khi scope xác nhận.
+
+F3. Semiconductor/high-cleanliness pack
+  QMS-218, QMS-214, controlled environment, contamination, special packaging,
+  change notification và customer-specific qualification.
+
+F4. Electronics/PCB pack
+  QMS-219 + PCB-101..208; thay generic acceptance bằng đúng IPC/customer edition,
+  class, J-STD/inspection/rework/test certification thực tế.
+
+F5. Laboratory pack
+  QMS-208/QMS-215; bổ sung ISO/IEC 17025 method validation, uncertainty,
+  proficiency testing và authorized signatory nếu laboratory scope yêu cầu.
+
+F6. Management-system pack
+  Thêm ISO 45001, ISO 50001 hoặc standard khác chỉ nếu NISSEI site/group đã chọn
+  implement/certify; không ghi “certified” chỉ vì catalog có awareness course.
+
+F7. Regulated equipment/process pack
+  Thiết bị có yêu cầu nghiêm ngặt, pressure/lift/electrical/laser/dangerous goods,
+  inspection/license/medical rules phải được inventory theo site và pháp luật.
+
+================================================================================
+APPENDIX G — DISCOVERY CHECKLIST TRƯỚC KHI BUILD CONTENT
+================================================================================
+
+P0 — phải có trước khi publish/gán bắt buộc
+  1. Danh sách pháp nhân/site chính thức, headcount và local contacts; số Mỹ Tho
+     trong prototype hiện là demo, không được coi là master data đã xác minh.
+  2. Job architecture thật: department → job family → sub-role → task privilege.
+  3. Inventory process, line, machine/model/ID, tooling và authorization hiện hữu.
+  4. Chemical register/SDS, exposure assessment, PPE và emergency equipment/site.
+  5. Legal register: statutory group, trainer, hours, cycles, medical, certificates.
+  6. Certification/customer list và exact standard/CSR/workmanship editions.
+  7. Current SOP/WI/form owners, effective versions và approved source language.
+  8. Existing training records/certificates/equivalence/import quality.
+
+P1 — cần trước qualification rollout
+  9. Competence standard and practical checklist cho từng machine/process/product.
+ 10. Trainer/assessor inventory, scope, conflict và requalification rule.
+ 11. Defect atlas, boundary sample, critical fail và reaction plan.
+ 12. Site maps, alarm/contact/route/assembly point và drill scenario.
+ 13. LMS/HR identity fields, transfer, leave, contractor/temp rules.
+ 14. Access-control integration: máy/khu vực nào thật sự block khi expired.
+
+P2 — tối ưu hóa
+ 15. Skill gap/career path, cross-training và succession requirements.
+ 16. Language/literacy/accessibility/device/offline constraints by cohort.
+ 17. KPI baseline: overdue, practical pending, expiry, incident/defect correlation.
+ 18. Content reuse, translation memory, legacy-course retirement and archive plan.
+
+================================================================================
+APPENDIX H — ROLLOUT WAVES ĐỀ XUẤT
+================================================================================
+
+WAVE 0 — Governance & truth (4–8 weeks, phụ thuộc data readiness)
+  - Chốt owner/approver, job/task attributes, legal register và site inventory.
+  - Freeze 13 [BASE] records; map legacy completion/equivalence/version.
+  - Thiết lập metadata, completion state, authorization và SITE DELTA model.
+
+WAVE 1 — Minimum compliant launch
+  - Core onboarding/conduct/cyber/EHSQ; 13 [BASE] được content review.
+  - ATVSLĐ Group 1–6 ruleset do HSE/Legal phê duyệt.
+  - Site induction, fire/emergency và due/expiry/escalation dashboards.
+
+WAVE 2 — Work authorization
+  - High-risk hazards, SAF-128/EQU-201 templates và practical evidence.
+  - Pilot theo một site + một process family; test block/suspend/transfer logic.
+  - Qualify trainers/assessors trước khi scale.
+
+WAVE 3 — Operational excellence
+  - QMS, EMS/product chemical, OPS, Maintenance, Logistics và Engineering/NPI.
+  - Link incident/defect/audit/change trigger với targeted retraining.
+
+WAVE 4 — Technical academies & career paths
+  - HIF/LIK/WCA/OPT/LAS/PRD; PCB và industry packs khi scope thật xác nhận.
+  - Skill levels, multi-skill, leader/engineering/sales development.
+  - Review effectiveness bằng field performance, không chỉ completion rate.
+
+Exit gate mỗi wave:
+  owner + approved content/version + translation QA + matrix UAT + evidence test
+  + privacy/security review + pilot feedback + rollback/support plan.
+
+================================================================================
+APPENDIX I — SOURCE, ASSUMPTION & EDITION CONTROL
+================================================================================
+
+I1. Internal source boundary
+  Đã phân tích độc lập toàn bộ nội dung liên quan trong:
+    .agent/docs-nissei-v2/00-project-input
+    .agent/docs-nissei-v2/01-requirements
+    .agent/docs-nissei-v2/02-design
+    .agent/docs-nissei-v2/03-prototypes
+  Chủ động KHÔNG đọc/không tham chiếu:
+    .agent/docs-nissei-v2/04-courses
+
+I2. NISSEI primary sources checked 2026-07-16
+  Corporate philosophy:
+    https://www.nissei-el.co.jp/english/company/philosophy/
+  Current product portfolio and official spellings HIFLON™, LIKAL™, LICOM™:
+    https://www.nissei-el.co.jp/english/products/
+  Green Procurement Standard Ver.29:
+    https://www.nissei-el.co.jp/english/environment/green/file/2091/green%20procurement%20standard%20ver%2029.pdf
+
+I3. Standards edition watch
+  - ISO 14001:2026 được ISO công bố tháng 04/2026 và thay ISO 14001:2015.
+    ENV content/version phải dùng đúng transition plan của NISSEI.
+    https://www.iso.org/cms/live/live/en/sites/isoorg/contents/data/standard/09/23/92300.html?browse=tc
+  - ISO 9001:2015 vẫn là current published edition tại ngày lập; bản revision
+    mới đang trong giai đoạn publication, ISO dự kiến tháng 09/2026. Không hard-code
+    edition vào title/course code; tạo version transition sau khi chính thức.
+    https://www.iso.org/standard/88464.html
+
+I4. Vietnam legal watch — chỉ là nguồn khởi tạo review, không phải legal advice
+  - Decree 44/2016/NĐ-CP và văn bản sửa đổi/liên quan về huấn luyện ATVSLĐ:
+    https://vanban.chinhphu.vn/default.aspx?docid=185117&pageid=27160
+  - Fire Prevention, Firefighting and Rescue Law 55/2024/QH15 cùng văn bản
+    hướng dẫn hiện hành cần được Legal/HSE map vào FIR/EMR/site drill.
+    https://vanban.chinhphu.vn/?classid=1&docid=212483&pageid=27160&typegroupid=3
+  - Chemical Law 69/2025/QH15 có hiệu lực từ 2026 cần được map vào chemical
+    register, handler/response và product chemical governance.
+    https://vanban.chinhphu.vn/?classid=1&docid=214610&orggroupid=1&pageid=27160
+  - Personal Data Protection Law 91/2025/QH15 và implementing rules hiện hành
+    cần Legal/DPO map vào DPR/LMS/HR/data flows.
+    https://vanban.chinhphu.vn/?docid=214590&pageid=27160
+
+I5. Control statement
+  - Tất cả [REC]/[COND]/[TPL] là kiến trúc đề xuất, chưa khẳng định NISSEI đang
+    vận hành/certified theo từng process, product, customer hoặc standard đó.
+  - Course tree không thay thế legal register, risk assessment, SOP, work permit,
+    OEM manual, medical fitness, license, inspection hoặc competent supervision.
+  - Content owner phải xác minh edition/effective date tại thời điểm publish và
+    theo dõi thay đổi sau đó; ngày kiểm tra nguồn của tài liệu này là 2026-07-16.
+
+================================================================================
+END OF MASTER TRAINING CURRICULUM TREE
+================================================================================

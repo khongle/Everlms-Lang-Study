@@ -1,0 +1,1080 @@
+================================================================================
+COURSE TREE — CHƯƠNG TRÌNH ĐÀO TẠO (Nissei Training System)
+================================================================================
+Loại tài liệu : Thiết kế chương trình — cây Course → Chapter → Lesson đầy đủ,
+                là NGUỒN cho danh mục master (P038), ma trận đào tạo (P036) và
+                quy trình soạn/duyệt nội dung (P046/P039).
+Ngày lập      : 2026-07-16
+Nguồn         : 00-project-input/company-info.txt (sản phẩm, vật liệu, khách
+                hàng, thị trường của Nissei) · consulting.txt (D1–D6) ·
+                02-design/roles.txt §6 (10 vị trí, 13 khóa demo) ·
+                01-requirements/requirements.txt (F-03, F-05, F-10) ·
+                02-design/data-model.txt (3 tầng course/chapter/lesson)
+                + kiến thức ngành: NĐ 44/2016, NĐ 136/2020, ISO 9001/14001,
+                IATF 16949, ISO 13485, an toàn fluoropolymer/silicone/quang học.
+
+--------------------------------------------------------------------------------
+0. ĐỌC TRƯỚC — TẠI SAO CÂY NÀY KHÔNG PHẢI KHUNG AN TOÀN CHUNG CHUNG
+--------------------------------------------------------------------------------
+13 khóa trong content bible (roles.txt §6) là BỘ DEMO: chúng đủ để dựng
+prototype, nhưng chúng là an toàn công nghiệp TỔNG QUÁT và KHÔNG chạm tới rủi
+ro thật của Nissei. Nissei không phải nhà máy cơ khí bình thường — hồ sơ công
+ty cho biết ba nền tảng công nghệ lõi và chúng sinh ra ba nhóm rủi ro riêng:
+
+  1. NHỰA FLUORIDE / PTFE (HYFLON)  → gia nhiệt quá ngưỡng (~400°C) sinh khí
+     HF và PFIB cực độc; "sốt khói polymer"; bụi PTFE dính thuốc lá là đường
+     phơi nhiễm kinh điển. KHÔNG khóa nào trong 13 khóa demo nói về việc này.
+  2. CAO SU SILICONE (LICAL)        → lưu hóa bằng peroxide hữu cơ (nguy cơ
+     cháy/nổ khi bảo quản sai), xúc tác platinum, lò lưu hóa nhiệt cao.
+  3. CÁP QUANG (LYCOM)              → mảnh sợi thủy tinh nhỏ, vô hình, xuyên
+     da và không cản quang khi chụp X-quang; nhựa UV; laser gia công Class 4.
+
+Cộng thêm từ thị trường & khách hàng (company-info):
+  - Bán dẫn + điện tử (Canon, Panasonic, Kyocera) → PHÒNG SẠCH và KIỂM SOÁT
+    TĨNH ĐIỆN (ESD) là yêu cầu sản xuất, không phải tùy chọn.
+  - Ô tô (Denso)                → IATF 16949.
+  - Thiết bị y tế (Olympus, GE) → ISO 13485. (company-info: "cáp quang dùng
+    cho thiết bị y tế")
+  => Ba chuẩn chất lượng, không phải một.
+
+Nguyên tắc "đủ, không thừa" áp ở đây bằng ba nhãn:
+  [LUẬT]     bắt buộc theo pháp luật VN — không được bỏ, không được rút gọn
+  [VỊ TRÍ]   bắt buộc theo vị trí công việc/khách hàng — ma trận quyết định
+  [TÙY CHỌN] phát triển năng lực — không sinh nghĩa vụ tuân thủ
+Và một nhãn nguồn:
+  ✓DEMO      đã có trong 13 khóa của prototype
+  MỚI        đề xuất mới từ tài liệu này
+
+--------------------------------------------------------------------------------
+1. NGUYÊN TẮC THIẾT KẾ
+--------------------------------------------------------------------------------
+1.1 BA TẦNG (khớp data-model.txt)
+    COURSE   đơn vị của ma trận và của CHỨNG CHỈ. Chu kỳ tái đào tạo gắn ở
+             đây. Một khóa = một nghĩa vụ = một chứng chỉ có hạn.
+    CHAPTER  nhóm nội dung theo mạch học. Không mang trạng thái tuân thủ.
+    LESSON   đơn vị học nhỏ nhất, có thời lượng và LOẠI (xem 1.4). Tiến độ
+             theo dõi ở tầng này (lms_user_lesson).
+    QUIZ     gắn ở tầng COURSE, không phải lesson: đạt quiz = đủ điều kiện
+             cấp chứng chỉ (F-06, WF-01). Quiz cuối khóa, ngưỡng đạt 80%.
+
+1.2 MÃ KHÓA
+    SAF-1xx  an toàn lao động theo NĐ 44/2016
+    SAF-2xx  an toàn cho vai trò chuyên trách (nhóm 1, 2, 5, 6)
+    FIR-1xx  phòng cháy chữa cháy (NĐ 136/2020)
+    PRD-1xx  an toàn QUÁ TRÌNH & SẢN PHẨM — đặc thù Nissei  ← không copy được
+    QMS-2xx  chất lượng
+    ENV-2xx  môi trường
+    CMP-1xx  tuân thủ, đạo đức, bảo mật thông tin
+    CYB-1xx  an ninh mạng
+    OFF-1xx  văn phòng
+    IND-1xx  hội nhập
+
+1.3 CHU KỲ TÁI ĐÀO TẠO
+    Nhóm 4 (NĐ 44)          12 tháng
+    Nhóm 1,2,3,5,6 (NĐ 44)  24 tháng — khớp thời hạn 2 năm của thẻ an toàn
+    PCCC                    24 tháng
+    Quá trình/sản phẩm      24 tháng (12 tháng với PRD-101 — xem lý do ở đó)
+    Chất lượng ISO          36 tháng
+    Đạo đức/an ninh mạng    12 tháng
+    [!] CHỜ XÁC NHẬN: chu kỳ và số giờ pháp định phải do HSE + luật sư của
+    Nissei chốt (câu hỏi Q7 của hồ sơ chiến lược). Số ở đây là THIẾT KẾ theo
+    hiểu biết hiện hành, chưa phải căn cứ pháp lý.
+
+1.4 LOẠI BÀI HỌC
+    [video]     bài giảng quay sẵn, xem trên app/web
+    [đọc]       tài liệu, SOP, checklist
+    [thực hành] BẮT BUỘC có mặt tại chỗ, instructor điểm danh (WF-05) — không
+                thể thay bằng online. Đây là lý do hệ thống có session/điểm danh.
+    [lớp]       giảng trên lớp có giảng viên
+    [quiz]      bài kiểm tra cuối khóa (tầng course)
+
+1.5 SONG NGỮ (D6)
+    Mỗi lesson là một đơn vị dịch, gắn version bản gốc (P045). Bản gốc soạn
+    tiếng Việt cho nhà máy VN; tiếng Trung cho VP TQ; tiếng Nhật chỉ dùng ở
+    chứng chỉ và báo cáo HQ — KHÔNG dịch toàn bộ lesson sang Nhật.
+
+1.6 AI SỞ HỮU
+    Danh mục + ma trận + phát hành : hr_hse_central (P036/P038/P039/P046)
+    Soạn/sửa nội dung khóa được giao: instructor (P025)
+    Bài thi                        : instructor (P026)
+    => Cây này là đầu vào cho hr_hse_central, không phải cho site tự sửa.
+
+1.7 NISSEI TỰ HUẤN LUYỆN VÀ TỰ QUẢN HỒ SƠ — VÀ ĐIỀU ĐÓ ĐỔI BẢN CHẤT HỆ THỐNG
+    ĐÃ XÁC NHẬN (2026-07-16): Nissei có đầy đủ ban bệ và quy trình — bộ phận
+    HSE, bộ phận y tế, giảng viên nội bộ — và KHÔNG thuê ngoài việc quản lý
+    hồ sơ. Họ tự huấn luyện, tự soạn, tự lưu hồ sơ.
+    HỆ QUẢ, và đây là hệ quả lớn:
+      (a) Hệ thống CHỨA NỘI DUNG THẬT, không phải một sổ ghi hạn. Cả 342 bài
+          học đều là tài sản nội dung phải soạn, duyệt, phát hành, dịch
+          (P025 → P046 → P039 → P045). Nếu ngược lại — thuê ngoài huấn luyện
+          — thì hệ thống chỉ cần course + chứng chỉ + hạn, và toàn bộ tầng
+          lesson gần như biến mất. Đó là hai sản phẩm khác nhau.
+      (b) Không có khóa nào là "hộp đen của bên thứ ba". Mọi khóa đều đi qua
+          cùng một quy trình nội dung (D6) và cùng một vòng tuân thủ (WF-01).
+      (c) Khối lượng sản xuất nội dung là 530 giờ — thuộc về Nissei theo
+          ranh giới đã chốt (requirements.txt P5: khách tự soạn/duyệt nội
+          dung). Vai trò của mình là nền tảng + quy trình, không phải xưởng
+          sản xuất giáo trình.
+    ĐIỀU KIỆN PHÁP LÝ CÒN PHẢI KIỂM: NĐ 44/2016 cho phép người sử dụng lao
+    động TỰ huấn luyện, nhưng phải đáp ứng điều kiện của tổ chức huấn luyện
+    hạng tương ứng (giảng viên đủ tiêu chuẩn, cơ sở vật chất, và tự công bố/
+    đăng ký đủ điều kiện). Với nhóm 2 và nhóm 3 điều kiện chặt hơn nhóm 1/4/6.
+    => Không phải câu hỏi "có tự làm không" (đã trả lời: có), mà là "đã có
+       giấy chứng nhận đủ điều kiện tự huấn luyện cho từng nhóm chưa". Câu
+       này thuộc HSE + luật sư của Nissei, gộp vào Q6 ở §5.3.
+
+================================================================================
+2. BẢN ĐỒ CHƯƠNG TRÌNH
+================================================================================
+  TRACK A  An toàn lao động theo luật (NĐ 44/2016)      11 khóa   [LUẬT]
+  TRACK B  Vai trò an toàn chuyên trách (nhóm 1,2,5,6)   4 khóa   [LUẬT]
+  TRACK C  Phòng cháy chữa cháy (NĐ 136/2020)            2 khóa   [LUẬT]
+  TRACK D  An toàn quá trình & sản phẩm — ĐẶC THÙ NISSEI 8 khóa   [VỊ TRÍ]
+  TRACK E  Chất lượng                                    6 khóa   [VỊ TRÍ]
+  TRACK F  Môi trường                                    4 khóa   [VỊ TRÍ]
+  TRACK G  Tuân thủ, bảo mật, dữ liệu                    7 khóa   [LUẬT/VỊ TRÍ]
+  TRACK H  Văn phòng (VP Trung Quốc + khối gián tiếp)    1 khóa
+  TRACK I  Hội nhập                                      1 khóa
+  ────────────────────────────────────────────────────────────────────────────
+  TỔNG 44 khóa · trong đó 13 ✓DEMO đã có · 31 MỚI
+
+================================================================================
+3. CÂY ĐẦY ĐỦ  COURSE → CHAPTER → LESSON
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+TRACK A — AN TOÀN LAO ĐỘNG THEO LUẬT (NĐ 44/2016)
+────────────────────────────────────────────────────────────────────────────────
+
+SAF-101  An toàn lao động chung                ✓DEMO [LUẬT] Nhóm 4 · 12th · 16h
+  Ai học: TẤT CẢ nhân viên nhà máy (nền của mọi vị trí)
+  C1 Khung pháp lý và trách nhiệm                                (3 bài · 2h)
+     L1 Luật ATVSLĐ 84/2015 và NĐ 44/2016: ai phải học gì        40m [video]
+     L2 Quyền, nghĩa vụ của người lao động; quyền từ chối việc
+        nguy hiểm                                                30m [video]
+     L3 Nội quy an toàn Nissei và đường báo cáo sự cố            30m [đọc]
+  C2 Nhận diện mối nguy tại xưởng Nissei                         (4 bài · 4h)
+     L1 Mối nguy cơ khí: điểm kẹp, bộ phận chuyển động           45m [video]
+     L2 Mối nguy nhiệt: lò lưu hóa, đầu đùn, khuôn nóng          45m [video]
+     L3 Mối nguy hóa chất và bụi trong xưởng                     45m [video]
+     L4 Mối nguy điện và tĩnh điện: vì sao xưởng này khác        45m [video]
+  C3 Phương tiện bảo vệ cá nhân (PPE)                            (3 bài · 3h)
+     L1 PPE theo khu vực: bản đồ PPE của từng nhà máy            40m [đọc]
+     L2 Đeo, kiểm tra, bảo quản, thay thế                        40m [video]
+     L3 Thực hành đeo PPE đúng cách                              60m [thực hành]
+  C4 Ứng phó và báo cáo                                          (3 bài · 3h)
+     L1 Báo cáo suýt-xảy-ra (near-miss): vì sao báo cái chưa
+        gây thương tích mới là cái cứu người                     40m [video]
+     L2 Quy trình khi có tai nạn: dừng, gọi, giữ hiện trường     40m [video]
+     L3 Điểm tập kết, lối thoát, sơ đồ của xưởng bạn             40m [thực hành]
+  C5 Tổng kết trên lớp                                           (1 bài · 4h)
+     L1 Thảo luận tình huống thực tế tại site + hỏi đáp         240m [lớp]
+  QUIZ 20 câu · đạt 80% · 2 lần thi
+
+SAF-102  Làm việc trên cao                     ✓DEMO [LUẬT] Nhóm 3 · 24th · 24h
+  Ai học: Maintenance Technician, Electrical Technician (bảo trì trần/giá cao)
+  C1 Pháp lý và nguyên lý chống rơi                              (3 bài · 3h)
+     L1 Nhóm 3 là gì, thẻ an toàn 2 năm, hệ quả khi hết hạn      40m [video]
+     L2 Ngã cao: cơ chế chấn thương và ngưỡng độ cao             40m [video]
+     L3 Thứ tự ưu tiên kiểm soát: loại bỏ → thay thế → kỹ
+        thuật → hành chính → PPE                                 40m [video]
+  C2 Thiết bị                                                    (4 bài · 5h)
+     L1 Thang, giàn giáo, sàn thao tác: chọn đúng loại           50m [video]
+     L2 Dây đai toàn thân, dây cứu sinh, điểm neo                50m [video]
+     L3 Kiểm tra thiết bị trước ca — checklist                   40m [đọc]
+     L4 Thực hành kiểm tra và đeo dây đai                        90m [thực hành]
+  C3 Kế hoạch công việc trên cao                                 (3 bài · 4h)
+     L1 Giấy phép làm việc trên cao tại Nissei                   50m [đọc]
+     L2 Rào chắn, cảnh báo, bảo vệ người bên dưới                40m [video]
+     L3 Kế hoạch cứu hộ treo lơ lửng (suspension trauma)         60m [video]
+  C4 Thực hành và đánh giá                                       (2 bài · 12h)
+     L1 Thực hành hiện trường có giám sát                       600m [thực hành]
+     L2 Đánh giá thực hành cá nhân                              120m [thực hành]
+  QUIZ 25 câu · đạt 80% · 2 lần thi
+
+SAF-103  An toàn điện                          ✓DEMO [LUẬT] Nhóm 3 · 24th · 24h
+  Ai học: Electrical Technician, Maintenance Technician
+  C1 Cơ sở về điện và rủi ro                                     (3 bài · 3h)
+     L1 Điện giật, hồ quang điện (arc flash), bỏng              50m [video]
+     L2 Hệ thống điện của nhà máy: hạ thế, tủ phân phối          50m [video]
+     L3 Phân định công việc: ai được làm gì, cấp phép            40m [đọc]
+  C2 Làm việc an toàn với điện                                   (4 bài · 6h)
+     L1 Cắt điện, thử nghiệm, nối đất trước khi làm              60m [video]
+     L2 Dụng cụ cách điện và PPE điện (găng, ủng, tấm che)       50m [video]
+     L3 Đo kiểm an toàn: đồng hồ, kìm ampe, quy tắc một tay      50m [video]
+     L4 Thực hành cắt điện và thử nghiệm                        120m [thực hành]
+  C3 Đặc thù Nissei                                              (3 bài · 3h)
+     L1 Thiết bị gia nhiệt và bộ điều khiển nhiệt trên dây
+        chuyền đùn                                               50m [video]
+     L2 Máy laser và nguồn cao áp: ai KHÔNG được mở              50m [video]
+     L3 Tĩnh điện vs điện giật: hai thứ khác nhau, đừng lẫn      40m [video]
+  C4 Ứng phó sự cố điện                                          (2 bài · 2h)
+     L1 Tách nạn nhân khỏi nguồn điện an toàn                    50m [video]
+     L2 Cháy do điện: dùng bình gì, tuyệt đối không dùng gì      40m [video]
+  C5 Thực hành và đánh giá                                       (2 bài · 10h)
+     L1 Thực hành có giám sát trên thiết bị thật                480m [thực hành]
+     L2 Đánh giá thực hành cá nhân                              120m [thực hành]
+  QUIZ 25 câu · đạt 80% · 2 lần thi
+
+SAF-104  Vận hành máy an toàn                  ✓DEMO [LUẬT] Nhóm 3 · 24th · 24h
+  Ai học: Production Operator, Line Leader, Maintenance Technician
+  C1 Máy móc và cơ chế gây thương tích                           (3 bài · 3h)
+     L1 Điểm kẹp, cuốn, cắt, nghiền — nhận diện trên máy của bạn 50m [video]
+     L2 Che chắn và thiết bị bảo vệ: vì sao không được tháo      50m [video]
+     L3 Nút dừng khẩn cấp và dây giật: vị trí trên từng máy      40m [đọc]
+  C2 Vận hành đúng quy trình                                     (4 bài · 5h)
+     L1 Kiểm tra trước khi khởi động                             50m [video]
+     L2 Nạp liệu, xử lý kẹt, làm sạch — khi nào PHẢI dừng máy    60m [video]
+     L3 Không bao giờ vươn tay vào máy đang chạy: các ca thật    40m [video]
+     L4 Bàn giao ca và ghi chép bất thường                       40m [đọc]
+  C3 Máy đặc thù của Nissei                                      (3 bài · 4h)
+     L1 Máy đùn (extruder): nhiệt, áp, đầu khuôn                 60m [video]
+     L2 Máy bện/tết dây (braider): con suốt và điểm cuốn         60m [video]
+     L3 Máy quấn/rewinder và trục lô: kẹp cuốn tay áo            60m [video]
+  C4 Thực hành và đánh giá                                       (2 bài · 12h)
+     L1 Thực hành trên máy được phân công, có giám sát          600m [thực hành]
+     L2 Đánh giá thực hành cá nhân                              120m [thực hành]
+  QUIZ 25 câu · đạt 80% · 2 lần thi
+
+SAF-105  Sơ cứu & ứng phó khẩn cấp             ✓DEMO [LUẬT] —      · 12th · 16h
+  Ai học: TẤT CẢ (mỗi ca phải có người sơ cứu được)
+  C1 Nguyên tắc sơ cứu                                           (3 bài · 3h)
+     L1 An toàn hiện trường trước, nạn nhân sau                  40m [video]
+     L2 Đánh giá ban đầu: tỉnh táo, đường thở, thở, tuần hoàn    50m [video]
+     L3 Gọi cấp cứu: gọi ai, nói gì, dẫn xe vào cổng nào         30m [đọc]
+  C2 Kỹ năng sơ cứu cốt lõi                                      (4 bài · 6h)
+     L1 CPR và dùng máy AED                                      60m [video]
+     L2 Cầm máu, chống sốc                                       50m [video]
+     L3 Bỏng nhiệt và bỏng hóa chất — KHÁC NHAU ở cách xử lý     60m [video]
+     L4 Gãy xương, di chuyển nạn nhân an toàn                    50m [video]
+  C3 Tình huống đặc thù Nissei                                   (3 bài · 3h)
+     L1 Phơi nhiễm khí HF từ nhựa fluoride: sơ cứu bằng gel
+        calcium gluconate — vì sao khác mọi loại bỏng khác       60m [video]
+     L2 Mảnh sợi quang đâm vào da hoặc mắt                       50m [video]
+     L3 Tổn thương mắt do laser                                  40m [video]
+  C4 Thực hành                                                   (2 bài · 4h)
+     L1 Thực hành CPR/AED trên mannequin                        180m [thực hành]
+     L2 Đánh giá thực hành                                       60m [thực hành]
+  QUIZ 20 câu · đạt 80% · 2 lần thi
+  [!] C3.L1 là nội dung SỐNG CÒN và đặc thù: bỏng HF xử lý sai sẽ hoại tử sâu
+      dù vết ngoài trông nhẹ. Không có trong bất kỳ giáo trình sơ cứu chung nào.
+
+SAF-106  Vận hành xe nâng                      ✓DEMO [LUẬT] Nhóm 3 · 24th · 24h
+  Ai học: Forklift Operator (và Warehouse Staff nếu vận hành)
+  C1 Pháp lý và thiết bị                                         (3 bài · 3h)
+     L1 Yêu cầu chứng chỉ vận hành, thẻ an toàn                  40m [đọc]
+     L2 Cấu tạo xe nâng, tam giác ổn định, tải trọng theo tầm    60m [video]
+     L3 Kiểm tra xe trước ca — checklist                         40m [đọc]
+  C2 Vận hành an toàn                                            (4 bài · 5h)
+     L1 Nâng, hạ, di chuyển, quay đầu                            60m [video]
+     L2 Tầm nhìn, còi, giao cắt, người đi bộ                     60m [video]
+     L3 Dốc, sàn ướt, bậc cửa kho                                50m [video]
+     L4 Xếp/dỡ pallet và chất tải lên xe tải                     50m [video]
+  C3 Sạc và bảo quản                                             (2 bài · 2h)
+     L1 Sạc ắc quy: khí hydro, thông gió, cấm lửa                60m [video]
+     L2 Đỗ xe, hạ càng, rút chìa, ghi nhật ký                    30m [đọc]
+  C4 Thực hành và đánh giá                                       (2 bài · 14h)
+     L1 Thực hành trong khu vực kiểm soát, có giám sát          720m [thực hành]
+     L2 Đánh giá thực hành cá nhân (đường chạy chuẩn)           120m [thực hành]
+  QUIZ 25 câu · đạt 80% · 2 lần thi
+
+SAF-107  Hóa chất & MSDS                       ✓DEMO [LUẬT] Nhóm 3 · 24th · 24h
+  Ai học: Production Operator, Maintenance Technician, QA Inspector, Warehouse
+  C1 Đọc hiểu thông tin hóa chất                                 (3 bài · 3h)
+     L1 GHS: hình đồ cảnh báo, từ tín hiệu, câu H/P              50m [video]
+     L2 Đọc MSDS/SDS 16 mục — mục nào đọc trước khi dùng         50m [video]
+     L3 Nhãn thùng chứa và nhãn bình chiết                       40m [đọc]
+  C2 Hóa chất tại Nissei                                         (4 bài · 5h)
+     L1 Dung môi làm sạch: bay hơi, cháy, ngấm qua da            60m [video]
+     L2 Peroxide hữu cơ lưu hóa silicone: nhiệt độ bảo quản và
+        nguy cơ phân hủy tự xúc tiến                             60m [video]
+     L3 Nhựa UV và keo quang học: nhạy da, nhạy mắt              50m [video]
+     L4 Khí công nghiệp và bình nén                              50m [video]
+  C3 Cất giữ, dùng, thải bỏ                                      (4 bài · 5h)
+     L1 Tương kỵ hóa chất: cái gì không được để cạnh cái gì      50m [video]
+     L2 Chiết rót, thông gió cục bộ, tủ hút                      50m [video]
+     L3 Tràn đổ nhỏ: bộ kit, cách quây, khi nào phải rút lui     60m [video]
+     L4 Thải bỏ và chứng từ chất thải nguy hại                   40m [đọc]
+  C4 Thực hành và đánh giá                                       (2 bài · 11h)
+     L1 Thực hành ứng phó tràn đổ + dùng PPE hóa chất           540m [thực hành]
+     L2 Đánh giá thực hành                                      120m [thực hành]
+  QUIZ 25 câu · đạt 80% · 2 lần thi
+
+SAF-108  Khóa & treo thẻ (LOTO)                  MỚI [LUẬT] Nhóm 3 · 24th · 24h
+  Ai học: Maintenance Technician, Electrical Technician, Line Leader
+  Vì sao MỚI: bảo trì máy đùn/lò lưu hóa mà không cô lập năng lượng là một
+  trong những cách chết người phổ biến nhất trong ngành nhựa. 13 khóa demo
+  không có khóa nào về cô lập năng lượng. C1.L4 được thêm sau khi khảo sát
+  xác nhận dây chuyền nối mạng — đây là hệ quả an toàn của việc đó, không
+  chỉ là chuyện an ninh mạng (xem CYB-102).
+  C1 Vì sao cần LOTO                                             (4 bài · 4h)
+     L1 Khởi động bất ngờ và năng lượng tồn dư                   50m [video]
+     L2 Sáu dạng năng lượng trong xưởng Nissei: điện, nhiệt,
+        khí nén, thủy lực, lò xo, trọng lực                      60m [video]
+     L3 Ai được khóa, ai được mở — quy tắc một khóa một người    40m [đọc]
+     L4 MÁY NỐI MẠNG: lệnh khởi động có thể đến từ HMI khác, từ
+        SCADA hoặc từ hãng máy truy cập từ xa — vì sao tắt trên
+        màn hình KHÔNG phải là cô lập, chỉ khóa vật lý mới đủ    50m [video]
+  C2 Quy trình LOTO                                              (4 bài · 5h)
+     L1 Sáu bước: chuẩn bị, tắt, cô lập, khóa/thẻ, xả tồn dư,
+        kiểm chứng zero                                          60m [video]
+     L2 Khóa nhóm và hộp khóa khi nhiều người cùng làm           50m [video]
+     L3 Bàn giao ca khi công việc chưa xong                      50m [video]
+     L4 Tháo khóa khẩn cấp khi người khóa vắng mặt               50m [đọc]
+  C3 Áp dụng trên thiết bị Nissei                                (3 bài · 4h)
+     L1 Máy đùn: điện + nhiệt tồn dư trong khuôn                 60m [video]
+     L2 Lò lưu hóa silicone: nhiệt + khí                         60m [video]
+     L3 Máy bện và máy quấn: cơ + lò xo căng                     60m [video]
+  C4 Thực hành và đánh giá                                       (2 bài · 12h)
+     L1 Thực hành LOTO trên thiết bị thật, có giám sát          600m [thực hành]
+     L2 Đánh giá thực hành cá nhân                              120m [thực hành]
+  QUIZ 25 câu · đạt 80%
+
+SAF-109  Không gian hạn chế                      MỚI [LUẬT] Nhóm 3 · 24th · 24h
+  Ai học: Maintenance Technician (bồn trộn, lò, hầm kỹ thuật, bể xử lý)
+  [!] CHỜ KHẢO SÁT: chỉ kích hoạt nếu site có không gian hạn chế thực sự.
+      Nếu 3 nhà máy không có, BỎ khóa này — đây là ví dụ của "không thừa".
+  C1 Nhận diện và pháp lý                                        (3 bài · 3h)
+     L1 Thế nào là không gian hạn chế; danh mục tại site         50m [video]
+     L2 Vì sao chết: thiếu oxy, khí độc, ngập vùi                60m [video]
+     L3 Giấy phép vào không gian hạn chế                         40m [đọc]
+  C2 Kiểm soát trước khi vào                                     (3 bài · 4h)
+     L1 Đo khí: oxy, cháy nổ, khí độc — thứ tự đo                60m [video]
+     L2 Thông gió cưỡng bức và cô lập đường ống                  60m [video]
+     L3 Người canh gác (attendant) và liên lạc liên tục          50m [video]
+  C3 Cứu hộ                                                      (2 bài · 3h)
+     L1 Vì sao 60% người chết là người vào cứu                   60m [video]
+     L2 Cứu hộ không vào (non-entry rescue): tam chân, tời      100m [video]
+  C4 Thực hành và đánh giá                                       (2 bài · 14h)
+     L1 Thực hành đo khí, cấp phép, cứu hộ                      720m [thực hành]
+     L2 Đánh giá thực hành                                      120m [thực hành]
+  QUIZ 25 câu · đạt 80%
+
+SAF-110  Nâng chuyển thủ công & ergonomics       MỚI [LUẬT] Nhóm 4 · 12th · 8h
+  Ai học: TẤT CẢ nhân viên xưởng + Warehouse Staff
+  Vì sao MỚI: sản xuất cáp/ống là công việc lặp lại, tư thế tĩnh, nâng cuộn
+  nặng — bệnh cơ xương khớp là tổn thương phổ biến nhất và tốn kém nhất, mà
+  13 khóa demo không đụng tới.
+  C1 Cơ thể và tổn thương tích lũy                               (3 bài · 2h)
+     L1 Cột sống, đĩa đệm, cơ chế chấn thương khi nâng           40m [video]
+     L2 Tổn thương lặp lại (RSI) ở tay, cổ tay, vai              40m [video]
+     L3 Dấu hiệu sớm: đừng chịu đựng, hãy báo                    30m [video]
+  C2 Nâng và mang đúng cách                                      (3 bài · 3h)
+     L1 Đánh giá tải trước khi nâng; giới hạn khuyến nghị        40m [video]
+     L2 Kỹ thuật nâng, xoay, đặt xuống                           40m [video]
+     L3 Thực hành nâng cuộn dây và thùng liệu                    90m [thực hành]
+  C3 Trạm làm việc                                               (3 bài · 3h)
+     L1 Chiều cao bàn, tầm với, ghế ngồi đứng luân phiên         40m [video]
+     L2 Dụng cụ trợ lực: xe đẩy, bàn nâng, palăng                40m [video]
+     L3 Giãn cơ tại chỗ và luân phiên công việc                  60m [thực hành]
+  QUIZ 15 câu · đạt 80%
+
+SAF-111  Tiếng ồn & bảo vệ thính lực             MỚI [LUẬT] Nhóm 4 · 12th · 6h
+  Ai học: Production Operator, Line Leader, Maintenance (khu vực máy đùn/bện)
+  C1 Tiếng ồn và mất thính lực                                   (3 bài · 2h)
+     L1 Mất thính lực nghề nghiệp: âm thầm và KHÔNG hồi phục     40m [video]
+     L2 Bản đồ tiếng ồn tại site: khu nào bao nhiêu dB           30m [đọc]
+     L3 Đo và giám sát tiếng ồn                                  30m [video]
+  C2 Kiểm soát                                                   (3 bài · 3h)
+     L2 Kiểm soát tại nguồn trước, PPE là cuối cùng              40m [video]
+     L2 Nút tai và chụp tai: chọn, đeo, độ giảm ồn thực tế       40m [video]
+     L3 Thực hành đeo nút tai đúng (kiểm tra độ khít)            60m [thực hành]
+  C3 Khám thính lực định kỳ                                      (1 bài · 1h)
+     L1 Đo thính lực: khi nào, hiểu kết quả thế nào              40m [video]
+  QUIZ 12 câu · đạt 80%
+
+────────────────────────────────────────────────────────────────────────────────
+TRACK B — VAI TRÒ AN TOÀN CHUYÊN TRÁCH (NĐ 44/2016 nhóm 1, 2, 5, 6)
+────────────────────────────────────────────────────────────────────────────────
+Vì sao track này MỚI hoàn toàn: 13 khóa demo chỉ phục vụ NGƯỜI LAO ĐỘNG (nhóm
+3, 4). NĐ 44 còn bắt buộc huấn luyện cho NGƯỜI QUẢN LÝ (nhóm 1), CÁN BỘ HSE
+(nhóm 2), NHÂN VIÊN Y TẾ (nhóm 5) và AN TOÀN VỆ SINH VIÊN (nhóm 6). Thiếu
+track này là thiếu tuân thủ ở đúng cấp mà thanh tra hỏi đầu tiên.
+
+SAF-201  An toàn cho cán bộ quản lý               MỚI [LUẬT] Nhóm 1 · 24th · 16h
+  Ai học: Supervisor, Line Leader (cấp quản lý), trưởng bộ phận
+  C1 Trách nhiệm pháp lý của người quản lý                       (3 bài · 4h)
+     L1 Nghĩa vụ của người sử dụng lao động theo Luật 84/2015    60m [video]
+     L2 Trách nhiệm hình sự/hành chính khi để xảy ra tai nạn     60m [video]
+     L3 Phân công trách nhiệm ATVSLĐ trong tổ chức Nissei        60m [đọc]
+  C2 Tổ chức công tác ATVSLĐ                                     (3 bài · 5h)
+     L1 Đánh giá rủi ro và kế hoạch ATVSLĐ hằng năm              80m [video]
+     L2 Chế độ báo cáo, thống kê tai nạn, khai báo               60m [video]
+     L3 Quản lý nhà thầu và khách vào xưởng                      60m [video]
+  C3 Văn hóa an toàn                                             (2 bài · 3h)
+     L1 Vì sao chỉ tiêu "không tai nạn" có thể phản tác dụng     60m [video]
+     L2 Đối thoại an toàn (safety talk) và quan sát hành vi     120m [lớp]
+  C4 Tổng kết trên lớp                                           (1 bài · 4h)
+     L1 Tình huống quản lý và hỏi đáp với luật sư/HSE           240m [lớp]
+  QUIZ 20 câu · đạt 80%
+
+SAF-202  Nghiệp vụ HSE                            MỚI [LUẬT] Nhóm 2 · 24th · 48h
+  Ai học: HSE Officer
+  C1 Hệ thống pháp luật ATVSLĐ                                   (4 bài · 8h)
+     L1 Luật 84/2015, NĐ 44/2016, NĐ 39/2016, TT 06/2020        120m [lớp]
+     L2 Danh mục công việc yêu cầu nghiêm ngặt (nhóm 3)          90m [đọc]
+     L3 Chế độ với người lao động: bồi dưỡng, khám sức khỏe     100m [video]
+     L4 Thanh tra ATVSLĐ: chuẩn bị hồ sơ gì                      90m [đọc]
+  C2 Kỹ thuật an toàn                                            (4 bài · 12h)
+     L1 Đánh giá rủi ro: HIRA, JSA, ma trận rủi ro              180m [lớp]
+     L2 Điều tra tai nạn: 5 Why, cây nguyên nhân                180m [lớp]
+     L3 An toàn máy, điện, hóa chất, PCCC — tổng hợp            180m [lớp]
+     L4 Vệ sinh lao động: đo môi trường, giới hạn tiếp xúc      180m [lớp]
+  C3 Quản lý hệ thống                                            (3 bài · 12h)
+     L1 ISO 45001 và tích hợp với 9001/14001                    240m [lớp]
+     L2 Quản lý huấn luyện: ma trận, hồ sơ, chứng chỉ — chính
+        là hệ thống này                                         240m [lớp]
+     L3 Quản lý thay đổi (MOC) khi đổi máy, đổi hóa chất        240m [lớp]
+  C4 Đặc thù Nissei                                              (3 bài · 8h)
+     L1 Hồ sơ rủi ro fluoropolymer, silicone, quang học         180m [lớp]
+     L2 Yêu cầu HSE từ khách hàng (Denso, Canon, Olympus)       150m [lớp]
+     L3 So sánh yêu cầu VN và kỳ vọng của HQ Nhật               150m [lớp]
+  C5 Thực hành                                                   (2 bài · 8h)
+     L1 Tự đánh giá một khu vực và viết báo cáo                 360m [thực hành]
+     L2 Bảo vệ báo cáo trước hội đồng                           120m [thực hành]
+  QUIZ 40 câu · đạt 80%
+
+SAF-203  An toàn vệ sinh viên                     MỚI [LUẬT] Nhóm 6 · 24th · 4h
+  Ai học: An toàn vệ sinh viên của mỗi tổ (kiêm nhiệm; học THÊM sau SAF-101)
+  C1 Vai trò và quyền hạn                                        (2 bài · 2h)
+     L1 An toàn vệ sinh viên làm gì, được quyền gì               60m [video]
+     L2 Kiểm tra an toàn hằng ngày tại tổ — checklist            60m [đọc]
+  C2 Kỹ năng                                                     (2 bài · 2h)
+     L1 Nhắc nhở đồng nghiệp mà không gây xung đột               60m [video]
+     L2 Ghi nhận và chuyển vấn đề lên tổ trưởng/HSE              60m [thực hành]
+  QUIZ 10 câu · đạt 80%
+
+SAF-204  Y tế lao động                            MỚI [LUẬT] Nhóm 5 · 24th · 56h
+  Ai học: Nhân viên phòng y tế nhà máy
+  ĐÃ XÁC NHẬN (2026-07-16): Nissei có bộ phận y tế tại chỗ và tự tổ chức
+  huấn luyện. Khóa này KÍCH HOẠT.
+  C1 Pháp lý y tế lao động                                       (3 bài · 12h)
+  C2 Sơ cấp cứu nâng cao tại nhà máy                             (3 bài · 16h)
+  C3 Bệnh nghề nghiệp và khám định kỳ                            (3 bài · 12h)
+  C4 Phơi nhiễm đặc thù Nissei: HF, dung môi, sợi quang, laser   (3 bài · 8h)
+  C5 Thực hành và đánh giá                                       (2 bài · 8h)
+  QUIZ 40 câu · đạt 80%
+  [!] Nội dung do bộ phận y tế của Nissei soạn và duyệt như mọi khóa khác
+      (P046). Điều kiện pháp lý: xem §1.7.
+
+────────────────────────────────────────────────────────────────────────────────
+TRACK C — PHÒNG CHÁY CHỮA CHÁY (NĐ 136/2020)
+────────────────────────────────────────────────────────────────────────────────
+
+FIR-101  Phòng cháy & thoát hiểm               ✓DEMO [LUẬT] —      · 12th · 8h
+  Ai học: TẤT CẢ
+  C1 Cháy và rủi ro cháy tại Nissei                              (3 bài · 3h)
+     L1 Tam giác cháy; các loại đám cháy A/B/C/D/E               40m [video]
+     L2 Nguồn cháy trong xưởng: nhiệt, điện, dung môi, bụi       50m [video]
+     L3 Nguy cơ riêng: peroxide, dung môi, cuộn nhựa/cáp         50m [video]
+  C2 Ngăn ngừa                                                   (3 bài · 2h)
+     L1 Giữ lối thoát và tủ chữa cháy thông thoáng               40m [đọc]
+     L2 Giấy phép làm việc phát sinh nhiệt (hot work)            40m [video]
+     L3 Kiểm tra PCCC hằng ngày tại tổ                           30m [đọc]
+  C3 Khi có cháy                                                 (3 bài · 3h)
+     L1 Báo động, gọi, ai chỉ huy                                40m [video]
+     L2 Bình chữa cháy: chọn đúng loại, thao tác PASS            50m [video]
+     L3 Diễn tập thoát hiểm và điểm tập kết                      90m [thực hành]
+  QUIZ 15 câu · đạt 80%
+
+FIR-102  Đội PCCC cơ sở                           MỚI [LUẬT] —      · 24th · 16h
+  Ai học: Thành viên đội PCCC cơ sở của từng nhà máy
+  Vì sao MỚI: NĐ 136/2020 buộc cơ sở sản xuất phải có đội PCCC cơ sở được
+  huấn luyện và cấp chứng nhận. 13 khóa demo chỉ có FIR-101 cho người thường.
+  C1 Tổ chức đội PCCC cơ sở                                      (3 bài · 4h)
+     L1 Quy định NĐ 136/2020: biên chế, nhiệm vụ, chứng nhận     60m [video]
+     L2 Phương án chữa cháy của cơ sở                            90m [đọc]
+     L3 Phối hợp với Cảnh sát PCCC                               60m [video]
+  C2 Phương tiện                                                 (3 bài · 4h)
+     L1 Hệ thống báo cháy, chữa cháy vách tường, sprinkler       80m [video]
+     L2 Máy bơm, lăng, vòi, trụ nước                             80m [video]
+     L3 Thiết bị bảo hộ chữa cháy và bình khí thở                80m [video]
+  C3 Chiến thuật                                                 (2 bài · 4h)
+     L1 Trinh sát, cứu người trước, khoanh vùng                 120m [video]
+     L2 Cháy hóa chất và cháy điện: cấm dùng nước khi nào       120m [video]
+  C4 Thực hành                                                   (2 bài · 4h)
+     L1 Diễn tập chữa cháy có lửa thật                          180m [thực hành]
+     L2 Đánh giá                                                 60m [thực hành]
+  QUIZ 20 câu · đạt 80%
+
+────────────────────────────────────────────────────────────────────────────────
+TRACK D — AN TOÀN QUÁ TRÌNH & SẢN PHẨM — ĐẶC THÙ NISSEI     ★ TRACK QUAN TRỌNG
+────────────────────────────────────────────────────────────────────────────────
+Đây là track KHÔNG THỂ mua sẵn hay copy từ nhà máy khác: nó bám đúng ba nền
+tảng công nghệ của Nissei (fluoropolymer / silicone / cáp quang) và hai yêu
+cầu thị trường (bán dẫn → phòng sạch + ESD). Toàn bộ track này MỚI.
+
+PRD-101  An toàn gia công nhựa fluoride (PTFE)    MỚI [VỊ TRÍ] —   · 12th · 12h
+  Ai học: Production Operator, Line Leader, Maintenance Tech ở khu vực HYFLON
+  Vì sao 12 THÁNG (ngắn hơn các khóa quá trình khác): hậu quả sai sót là ngộ
+  độc khí không hồi phục, và dấu hiệu ban đầu giống cảm cúm nên dễ bỏ qua.
+  C1 Vật liệu và ngưỡng nguy hiểm                                (3 bài · 3h)
+     L1 PTFE/fluoropolymer là gì, dùng ở đâu trong sản phẩm      40m [video]
+     L2 Phân hủy nhiệt: ngưỡng ~400°C, sinh HF và PFIB           60m [video]
+     L3 "Sốt khói polymer": triệu chứng giống cúm, xuất hiện
+        muộn vài giờ — vì sao phải báo ngay dù thấy nhẹ          50m [video]
+  C2 Kiểm soát quá trình                                         (4 bài · 4h)
+     L1 Giám sát nhiệt độ đầu đùn và lò; cảnh báo vượt ngưỡng    60m [video]
+     L2 Thông gió cục bộ (LEV): kiểm tra trước ca                50m [video]
+     L3 CẤM HÚT THUỐC và cấm mang thuốc lá vào khu PTFE — bụi
+        PTFE dính thuốc lá là đường phơi nhiễm kinh điển         40m [video]
+     L4 Vệ sinh khu vực, kiểm soát bụi, không dùng khí nén thổi  50m [video]
+  C3 Sự cố và phơi nhiễm                                         (3 bài · 3h)
+     L1 Khi nghi quá nhiệt: dừng, rút lui, không hít, báo ai     50m [video]
+     L2 Bỏng HF: gel calcium gluconate, vì sao KHÁC mọi bỏng
+        hóa chất khác, tuyệt đối không chỉ rửa nước rồi thôi     60m [video]
+     L3 Điều tra và báo cáo sự cố quá nhiệt                      40m [đọc]
+  C4 Thực hành                                                   (2 bài · 2h)
+     L1 Thực hành kiểm tra LEV + kịch bản quá nhiệt              90m [thực hành]
+     L2 Đánh giá                                                 30m [thực hành]
+  QUIZ 20 câu · đạt 80%
+
+PRD-102  Cao su silicone: phối trộn & lưu hóa     MỚI [VỊ TRÍ] —   · 24th · 10h
+  Ai học: Production Operator, Line Leader ở khu vực LICAL
+  C1 Vật liệu                                                    (3 bài · 3h)
+     L1 Silicone (LICAL) trong sản phẩm Nissei                   40m [video]
+     L2 Peroxide hữu cơ: nguy cơ phân hủy tự xúc tiến, nhiệt độ
+        bảo quản tối đa, không để cùng chất khử                  70m [video]
+     L3 Xúc tác platinum và chất ức chế; nhiễm bẩn gây hỏng mẻ   50m [video]
+  C2 Phối trộn an toàn                                           (3 bài · 3h)
+     L1 Cân, trộn, kiểm soát bụi bột độn                         60m [video]
+     L2 Máy trộn kín và máy cán: điểm cuốn nguy hiểm nhất xưởng  60m [video]
+     L3 Vệ sinh máy khi đã DỪNG và ĐÃ KHÓA (liên kết SAF-108)    60m [video]
+  C3 Lưu hóa                                                     (3 bài · 3h)
+     L1 Lò lưu hóa: nhiệt, hơi, bỏng tiếp xúc                    60m [video]
+     L2 Khí thải lưu hóa và thông gió                            50m [video]
+     L3 Lưu hóa hai giai đoạn (post-cure) và thao tác lấy hàng   60m [video]
+  C4 Thực hành                                                   (1 bài · 1h)
+     L1 Thực hành thao tác an toàn tại máy                       60m [thực hành]
+  QUIZ 18 câu · đạt 80%
+
+PRD-103  Thao tác cáp quang & sợi thủy tinh       MỚI [VỊ TRÍ] —   · 24th · 8h
+  Ai học: Production Operator, QA Inspector ở khu vực LYCOM
+  C1 Rủi ro riêng của sợi quang                                  (3 bài · 3h)
+     L1 Mảnh sợi: nhỏ, trong suốt, xuyên da, KHÔNG hiện trên
+        X-quang — vì sao mất mảnh là chuyện nghiêm trọng         60m [video]
+     L2 Cấm ăn uống tại khu vực cắt sợi; đường vào cơ thể        40m [video]
+     L3 Bảo vệ mắt khi cắt/tuốt sợi                              40m [video]
+  C2 Thao tác đúng                                               (3 bài · 3h)
+     L1 Cắt (cleaving) và thu gom mảnh vào hộp chuyên dụng       60m [video]
+     L2 Dung môi tuốt vỏ và keo/gel quang học                    50m [video]
+     L3 Nhựa UV: che chắn nguồn UV, không để hở da               50m [video]
+  C3 Vệ sinh và sự cố                                            (2 bài · 2h)
+     L1 Vệ sinh bàn thao tác: dính, không thổi, không quét khô   60m [video]
+     L2 Khi mảnh đâm vào da/mắt: xử lý và báo cáo                50m [video]
+  QUIZ 15 câu · đạt 80%
+
+PRD-104  An toàn dây chuyền đùn (extrusion)       MỚI [VỊ TRÍ] —   · 24th · 8h
+  Ai học: Production Operator, Line Leader, Maintenance Tech
+  C1 Dây chuyền đùn tại Nissei                                   (3 bài · 3h)
+     L1 Sơ đồ dây chuyền: nạp liệu → đùn → làm nguội → kéo → thu 50m [video]
+     L2 Nhiệt độ và áp suất: điểm nào bỏng, điểm nào nổ khuôn    60m [video]
+     L3 Điểm cuốn ở bánh kéo và bàn thu                          50m [video]
+  C2 Vận hành                                                    (3 bài · 3h)
+     L1 Khởi động, xả liệu (purge) an toàn                       60m [video]
+     L2 Xử lý tắc khuôn: KHÔNG bao giờ nhìn thẳng vào đầu khuôn  60m [video]
+     L3 Đổi màu/đổi liệu và nguy cơ trộn nhầm nhựa fluoride      60m [video]
+  C3 Thực hành                                                   (2 bài · 2h)
+     L1 Thực hành tại dây chuyền có giám sát                     90m [thực hành]
+     L2 Đánh giá                                                 30m [thực hành]
+  QUIZ 15 câu · đạt 80%
+
+PRD-105  Quy trình phòng sạch                     MỚI [VỊ TRÍ] —   · 24th · 6h
+  Ai học: Production Operator, QA Inspector (khu quang học/y tế/bán dẫn)
+  C1 Vì sao có phòng sạch                                        (2 bài · 2h)
+     L1 Hạt bụi và lỗi sản phẩm quang học/y tế                   50m [video]
+     L2 Cấp sạch ISO 14644 và ý nghĩa với sản phẩm Nissei        50m [video]
+  C2 Ra vào và trang phục                                        (3 bài · 3h)
+     L1 Trình tự mặc đồ phòng sạch (gowning) theo thứ tự         60m [video]
+     L2 Airlock, chênh áp, không mở hai cửa cùng lúc             40m [video]
+     L3 Thực hành gowning có kiểm tra                            80m [thực hành]
+  C3 Hành vi trong phòng sạch                                    (2 bài · 1h)
+     L1 Vật liệu được/không được mang vào; giấy, bút, thùng      40m [đọc]
+     L2 Thao tác chậm, không tạo bụi, vệ sinh định kỳ            30m [video]
+  QUIZ 12 câu · đạt 80%
+
+PRD-106  Kiểm soát tĩnh điện (ESD)                MỚI [VỊ TRÍ] —   · 24th · 6h
+  Ai học: Production Operator, QA Inspector, Line Leader (khu điện tử/bán dẫn)
+  Vì sao MỚI: Nissei bán cho bán dẫn và điện tử (Canon, Kyocera, Panasonic).
+  Hỏng do ESD thường là hỏng NGẦM — sản phẩm qua kiểm nhưng chết tại khách.
+  Đây là rủi ro CHẤT LƯỢNG lớn, và không khóa demo nào chạm tới.
+  C1 Tĩnh điện và linh kiện                                      (3 bài · 2h)
+     L1 ESD là gì; vì sao người không cảm nhận được mà linh kiện
+        đã chết                                                  50m [video]
+     L2 Hỏng thảm khốc vs hỏng ngầm (latent): cái thứ hai đắt
+        hơn nhiều vì đến tay khách mới lộ                        40m [video]
+     L3 Khu vực EPA (ESD Protected Area) tại nhà máy             30m [đọc]
+  C2 Biện pháp kiểm soát                                         (3 bài · 3h)
+     L1 Vòng đeo tay, thảm, giày, sàn dẫn điện                   50m [video]
+     L2 Kiểm tra vòng đeo tay hằng ngày — vì sao phải mỗi ngày   40m [video]
+     L3 Bao bì chống tĩnh điện và cách vận chuyển                50m [video]
+  C3 Thực hành                                                   (1 bài · 1h)
+     L1 Thực hành kiểm tra vòng đeo và thao tác trong EPA        60m [thực hành]
+  QUIZ 12 câu · đạt 80%
+
+PRD-107  An toàn laser                            MỚI [VỊ TRÍ] —   · 24th · 8h
+  Ai học: Production Operator, Maintenance Tech ở khu gia công laser
+  Vì sao MỚI: company-info ghi rõ Nissei có "gia công laser" và "linh kiện
+  laser". Laser gia công là Class 4 — nguy hiểm nhất, gây mù tức thì và cháy.
+  C1 Laser và tổn thương                                         (3 bài · 3h)
+     L1 Phân loại laser; vì sao Class 4 khác hẳn                 50m [video]
+     L2 Tổn thương mắt: tức thì, không đau, không hồi phục       60m [video]
+     L3 Tổn thương da và nguy cơ cháy                            40m [video]
+  C2 Kiểm soát                                                   (3 bài · 3h)
+     L1 Vỏ che, khóa liên động (interlock), biển cảnh báo        50m [video]
+     L2 Kính bảo hộ laser: chọn theo bước sóng và OD, không
+        phải kính nào cũng được                                  60m [video]
+     L3 Khói gia công (laser fume) và hút khói                   50m [video]
+  C3 Vận hành và bảo trì                                         (2 bài · 2h)
+     L1 Ai được mở vỏ máy; quy trình căn chỉnh (alignment)       60m [video]
+     L2 Kiểm soát khu vực laser, người ra vào                    50m [video]
+  QUIZ 15 câu · đạt 80%
+
+PRD-108  Hàn thiếc & hút khói                     MỚI [VỊ TRÍ] —   · 24th · 5h
+  Ai học: Production Operator (lắp ráp cáp/đầu nối), Maintenance Tech
+  C1 Rủi ro khi hàn                                              (2 bài · 2h)
+     L1 Khói nhựa thông (colophony): hen nghề nghiệp             50m [video]
+     L2 Chì và vệ sinh tay; hàn không chì và nhiệt cao hơn       50m [video]
+  C2 Thao tác an toàn                                            (3 bài · 3h)
+     L1 Hút khói tại nguồn: đặt vòi đúng chỗ                     40m [video]
+     L2 Mỏ hàn: giá đỡ, bỏng, cháy                               40m [video]
+     L3 Thực hành hàn có hút khói                                90m [thực hành]
+  QUIZ 10 câu · đạt 80%
+
+────────────────────────────────────────────────────────────────────────────────
+TRACK E — CHẤT LƯỢNG
+────────────────────────────────────────────────────────────────────────────────
+Nissei phục vụ BA thị trường có ba chuẩn khác nhau (company-info): ô tô
+(Denso) → IATF 16949; thiết bị y tế (Olympus, GE) → ISO 13485; nền chung →
+ISO 9001. Một khóa QMS-201 như bộ demo là KHÔNG ĐỦ.
+
+QMS-201  ISO 9001 — nhận thức                  ✓DEMO [VỊ TRÍ] —   · 36th · 6h
+  Ai học: Line Leader, QA Inspector, Supervisor, HSE Officer, Office Staff
+  C1 Hệ thống quản lý chất lượng                                 (3 bài · 3h)
+     L1 ISO 9001 là gì, vì sao khách hàng đòi                    50m [video]
+     L2 Tiếp cận theo quá trình và tư duy rủi ro                 50m [video]
+     L3 Chính sách và mục tiêu chất lượng của Nissei             40m [đọc]
+  C2 Áp dụng hằng ngày                                           (3 bài · 3h)
+     L1 Kiểm soát tài liệu và hồ sơ: vì sao bản in cũ là lỗi     50m [video]
+     L2 Sản phẩm không phù hợp: cách ly, ghi nhận, xử lý         50m [video]
+     L3 Chuẩn bị cho audit: hỏi gì, trả lời thế nào             60m [video]
+  QUIZ 15 câu · đạt 80%
+
+QMS-202  IATF 16949 — nhận thức (ô tô)            MỚI [VỊ TRÍ] —   · 36th · 8h
+  Ai học: Line Leader, QA Inspector, Supervisor ở dây chuyền hàng ô tô (Denso)
+  C1 Vì sao ô tô khắt khe hơn                                    (3 bài · 3h)
+     L1 IATF 16949 trên nền ISO 9001: khác gì                    60m [video]
+     L2 Không lỗi (zero defect) và PPM: kỳ vọng của khách ô tô   50m [video]
+     L3 Yêu cầu riêng của khách hàng (CSR)                       50m [đọc]
+  C2 Công cụ cốt lõi                                             (4 bài · 4h)
+     L1 APQP và PPAP: phê duyệt sản phẩm trước khi giao          70m [video]
+     L2 FMEA: dự đoán lỗi trước khi xảy ra                       70m [video]
+     L3 SPC: đọc biểu đồ kiểm soát                               60m [video]
+     L4 MSA: đo lường có tin được không                          60m [video]
+  C3 Truy xuất                                                   (1 bài · 1h)
+     L1 Truy xuất lô và thu hồi: 4 giờ phải truy được nguồn      60m [video]
+  QUIZ 20 câu · đạt 80%
+
+QMS-203  ISO 13485 — nhận thức (thiết bị y tế)    MỚI [VỊ TRÍ] —   · 36th · 8h
+  Ai học: Line Leader, QA Inspector ở dây chuyền cáp quang y tế (Olympus, GE)
+  C1 Vì sao y tế khác                                            (3 bài · 3h)
+     L1 ISO 13485 và tư duy an toàn bệnh nhân                    60m [video]
+     L2 Hồ sơ lô (DHR): ghi chép là một phần của sản phẩm        60m [video]
+     L3 Kiểm soát thay đổi: không "cải tiến" âm thầm             60m [video]
+  C2 Thực hành                                                   (3 bài · 4h)
+     L1 Kiểm soát nhiễm bẩn và sinh học                          70m [video]
+     L2 Truy xuất đến từng thiết bị đến tay bệnh nhân            70m [video]
+     L3 Khiếu nại và báo cáo sự cố y tế                          70m [video]
+  C3 Tổng kết trên lớp                                           (1 bài · 1h)
+     L1 Hỏi đáp với QA                                           60m [lớp]
+  QUIZ 20 câu · đạt 80%
+
+QMS-204  5S & Kaizen                              MỚI [TÙY CHỌN] — · 24th · 5h
+  Ai học: TẤT CẢ nhân viên xưởng (nền văn hóa sản xuất Nhật)
+  C1 5S                                                          (3 bài · 3h)
+     L1 Sàng lọc, sắp xếp, sạch sẽ, săn sóc, sẵn sàng            60m [video]
+     L2 5S không phải tổng vệ sinh: nó là công cụ an toàn        50m [video]
+     L3 Thực hành 5S tại tổ mình                                 70m [thực hành]
+  C2 Kaizen                                                      (2 bài · 2h)
+     L1 Đề xuất cải tiến: ai cũng đề xuất được                   60m [video]
+     L2 Viết một đề xuất Kaizen                                  60m [thực hành]
+  QUIZ 10 câu · đạt 80%
+
+QMS-205  Giải quyết vấn đề (8D · QC 7 tools)      MỚI [VỊ TRÍ] —   · 36th · 8h
+  Ai học: Line Leader, QA Inspector, Supervisor, Maintenance Tech
+  C1 Bảy công cụ QC                                              (3 bài · 4h)
+     L1 Biểu đồ Pareto, nhân quả (xương cá), kiểm tra           80m [video]
+     L2 Histogram, biểu đồ phân tán, phân tầng                   80m [video]
+     L3 Biểu đồ kiểm soát                                        80m [video]
+  C2 8D                                                          (3 bài · 4h)
+     L1 D1–D4: đội, mô tả, ngăn chặn tạm, nguyên nhân gốc        80m [video]
+     L2 D5–D8: khắc phục, xác nhận, phòng ngừa, ghi nhận         80m [video]
+     L3 Thực hành: chạy một 8D trên ca lỗi thật                  80m [thực hành]
+  QUIZ 18 câu · đạt 80%
+
+QMS-206  Đo lường & kiểm tra                      MỚI [VỊ TRÍ] —   · 24th · 8h
+  Ai học: QA Inspector
+  C1 Dụng cụ đo                                                  (3 bài · 4h)
+     L1 Thước cặp, panme, đồng hồ so: đọc và bảo quản            80m [video]
+     L2 Đo đường kính/độ đồng tâm cáp và ống                     80m [video]
+     L3 Đo quang học: suy hao, phản xạ                           80m [video]
+  C2 Hệ thống đo                                                 (3 bài · 4h)
+     L1 Hiệu chuẩn và tem hiệu chuẩn: dùng dụng cụ hết hạn là
+        hỏng cả lô hồ sơ                                         70m [video]
+     L2 R&R: hai người đo ra hai số thì tin ai                   80m [video]
+     L3 Thực hành đo và ghi hồ sơ                                90m [thực hành]
+  QUIZ 18 câu · đạt 80%
+
+────────────────────────────────────────────────────────────────────────────────
+TRACK F — MÔI TRƯỜNG
+────────────────────────────────────────────────────────────────────────────────
+
+ENV-201  ISO 14001 — nhận thức                 ✓DEMO [VỊ TRÍ] —   · 36th · 6h
+  Ai học: Line Leader, QA Inspector, Supervisor, HSE Officer, Office Staff
+  C1 Hệ thống quản lý môi trường                                 (3 bài · 3h)
+     L1 ISO 14001 và cam kết môi trường của Nissei               50m [video]
+     L2 Khía cạnh và tác động môi trường của xưởng bạn           50m [video]
+     L3 Tuân thủ pháp luật môi trường VN                         50m [đọc]
+  C2 Áp dụng hằng ngày                                           (3 bài · 3h)
+     L1 Tiết kiệm nước, điện, khí nén tại tổ                     50m [video]
+     L2 Ngăn ngừa ô nhiễm tại nguồn                              50m [video]
+     L3 Ứng phó tình huống môi trường khẩn cấp                   60m [video]
+  QUIZ 15 câu · đạt 80%
+
+ENV-202  Phân loại & chất thải nguy hại           MỚI [LUẬT] —     · 24th · 6h
+  Ai học: Production Operator, Warehouse Staff, Maintenance Tech, HSE Officer
+  Vì sao MỚI: dung môi thải, giẻ dính hóa chất, nhựa fluoride phế, đèn huỳnh
+  quang, ắc quy xe nâng — đều là chất thải nguy hại có nghĩa vụ pháp lý
+  (Luật BVMT 2020). Sai phân loại là vi phạm hành chính, không phải nội quy.
+  C1 Phân loại                                                   (3 bài · 3h)
+     L1 Chất thải thường / tái chế / nguy hại — ranh giới        50m [video]
+     L2 Danh mục chất thải nguy hại tại Nissei và mã CTNH        60m [đọc]
+     L3 Nhựa fluoride phế: KHÔNG được đốt tự do                  50m [video]
+  C2 Lưu giữ và bàn giao                                         (3 bài · 3h)
+     L1 Khu lưu giữ, thùng, nhãn, thời hạn lưu                   50m [video]
+     L2 Chứng từ chất thải nguy hại và đơn vị có giấy phép       50m [đọc]
+     L3 Thực hành phân loại tại tổ                               70m [thực hành]
+  QUIZ 12 câu · đạt 80%
+
+ENV-203  Ứng phó tràn đổ hóa chất                 MỚI [VỊ TRÍ] —   · 12th · 5h
+  Ai học: Production Operator, Warehouse Staff, Maintenance Tech, đội ứng phó
+  C1 Đánh giá và quyết định                                      (2 bài · 2h)
+     L1 Tràn nhỏ tự xử lý vs tràn lớn phải rút lui và gọi        60m [video]
+     L2 Bộ kit ứng phó: ở đâu, có gì, dùng thế nào               50m [video]
+  C2 Thao tác                                                    (3 bài · 3h)
+     L1 Quây, thấm, thu gom, thải bỏ                             50m [video]
+     L2 Bảo vệ hố ga và nguồn nước — tràn ra cống là sự cố
+        môi trường phải khai báo                                 50m [video]
+     L3 Thực hành ứng phó tràn đổ                                80m [thực hành]
+  QUIZ 10 câu · đạt 80%
+
+ENV-204  Quản lý năng lượng                       MỚI [TÙY CHỌN] — · 36th · 4h
+  Ai học: Line Leader, Maintenance Tech, Supervisor
+  C1 Năng lượng trong nhà máy                                    (2 bài · 2h)
+     L1 Nơi tiêu thụ lớn: lò, đùn, khí nén, điều hòa             60m [video]
+     L2 Rò rỉ khí nén: chi phí ẩn lớn nhất                       60m [video]
+  C2 Cải tiến                                                    (2 bài · 2h)
+     L1 Đo và theo dõi tiêu thụ                                  60m [video]
+     L2 Đề xuất tiết kiệm năng lượng (nối với Kaizen)            60m [thực hành]
+  QUIZ 8 câu · đạt 80%
+
+────────────────────────────────────────────────────────────────────────────────
+TRACK G — TUÂN THỦ, BẢO MẬT, DỮ LIỆU
+────────────────────────────────────────────────────────────────────────────────
+
+CMP-101  Đạo đức & quy tắc ứng xử               ✓DEMO [LUẬT] —     · 12th · 4h
+  Ai học: TẤT CẢ
+  C1 Quy tắc ứng xử Nissei                                       (3 bài · 2h)
+     L1 Giá trị và quy tắc ứng xử của công ty                    40m [video]
+     L2 Xung đột lợi ích                                         40m [video]
+     L3 Trung thực trong hồ sơ và báo cáo — vì sao sửa số liệu
+        là sa thải, không phải nhắc nhở                          40m [video]
+  C2 Nói ra                                                      (2 bài · 2h)
+     L1 Kênh báo cáo vi phạm và cam kết không trả đũa            60m [video]
+     L2 Tình huống: bạn thấy gì thì làm gì                       60m [video]
+  QUIZ 10 câu · đạt 80%
+
+CMP-102  Chống hối lộ & quà tặng                  MỚI [LUẬT] —     · 24th · 3h
+  Ai học: Supervisor, Office Staff, HSE Officer, mua hàng, kinh doanh
+  C1 Khung pháp lý                                               (2 bài · 2h)
+     L1 Luật phòng chống tham nhũng VN; kỳ vọng của công ty Nhật 60m [video]
+     L2 Hối lộ, bôi trơn, quà tặng, tiếp khách — ranh giới       60m [video]
+  C2 Áp dụng                                                     (2 bài · 1h)
+     L1 Ngưỡng quà tặng và quy trình khai báo                    30m [đọc]
+     L2 Rủi ro qua bên thứ ba, đại lý, nhà cung cấp              40m [video]
+  QUIZ 10 câu · đạt 80%
+
+CMP-103  Phòng chống quấy rối nơi làm việc        MỚI [LUẬT] —     · 24th · 3h
+  Ai học: TẤT CẢ (Supervisor có thêm chương C3)
+  Vì sao MỚI: Bộ luật Lao động 2019 + NĐ 145/2020 buộc doanh nghiệp có quy
+  định phòng chống quấy rối tình dục tại nơi làm việc trong nội quy lao động.
+  C1 Nhận diện                                                   (2 bài · 2h)
+     L1 Quấy rối là gì theo luật VN; các hình thức               60m [video]
+     L2 Ranh giới hành vi tại xưởng và trong ca đêm              50m [video]
+  C2 Xử lý                                                       (2 bài · 1h)
+     L1 Kênh khiếu nại, bảo mật, không trả đũa                   30m [đọc]
+     L2 Người chứng kiến nên làm gì                              30m [video]
+  C3 Dành cho quản lý (chỉ Supervisor)                           (1 bài · 1h)
+     L1 Nhận khiếu nại và xử lý bước đầu đúng cách               60m [video]
+  QUIZ 10 câu · đạt 80%
+
+CMP-104  Bí mật kinh doanh & bảo mật khách hàng   MỚI [VỊ TRÍ] —   · 12th · 4h
+  Ai học: TẤT CẢ nhân viên tiếp xúc bản vẽ/thông số khách hàng
+  Vì sao MỚI: Nissei làm hàng theo thiết kế của Canon, Panasonic, Denso,
+  Olympus — vi phạm NDA với một khách có thể mất cả quan hệ. Không khóa demo
+  nào chạm tới.
+  C1 Thông tin cần bảo vệ                                        (3 bài · 2h)
+     L1 Bí mật của Nissei vs bí mật của KHÁCH HÀNG               50m [video]
+     L2 Bản vẽ, thông số, mẫu, khuôn — quy tắc xử lý             50m [video]
+     L3 Tường ngăn giữa các khách hàng cạnh tranh nhau           40m [video]
+  C2 Hành vi hằng ngày                                           (3 bài · 2h)
+     L1 Chụp ảnh trong xưởng: vì sao cấm và cấm ở đâu            40m [video]
+     L2 Khách tham quan, nhà thầu, thực tập sinh                 40m [video]
+     L3 Mạng xã hội và nói chuyện ngoài công ty                  40m [video]
+  QUIZ 12 câu · đạt 80%
+
+CMP-105  Bảo vệ dữ liệu cá nhân                   MỚI [LUẬT] —     · 24th · 4h
+  Ai học: Office Staff, HSE Officer, Supervisor, HR, IT
+  Vì sao MỚI: NĐ 13/2023 (VN) và PIPL (nhân viên VP Trung Quốc) — chính hệ
+  thống này xử lý dữ liệu cá nhân của 5.842 người (xem P058).
+  C1 Khung pháp lý                                               (3 bài · 2h)
+     L1 NĐ 13/2023: dữ liệu cá nhân, dữ liệu nhạy cảm           50m [video]
+     L2 PIPL và nhân viên VP Trung Quốc: chuyển dữ liệu
+        xuyên biên giới trong quản lý lao động                   50m [video]
+     L3 Quyền của người lao động với dữ liệu của mình            40m [video]
+  C2 Thực hành                                                   (2 bài · 2h)
+     L1 Thu thập tối thiểu; không chia sẻ ngoài nhu cầu công việc 50m [video]
+     L2 Yêu cầu truy cập/xóa dữ liệu: chuyển cho ai              40m [đọc]
+  QUIZ 10 câu · đạt 80%
+
+CYB-101  An ninh mạng                          ✓DEMO [VỊ TRÍ] —    · 12th · 4h
+  Ai học: Office Staff, Supervisor, Line Leader, QA, HSE, IT (mọi tài khoản)
+  C1 Mối đe dọa                                                  (3 bài · 2h)
+     L1 Lừa đảo qua email (phishing) và giả mạo lãnh đạo         50m [video]
+     L2 Mã độc tống tiền: một cú click dừng cả nhà máy           40m [video]
+     L3 USB và thiết bị lạ trong xưởng                           40m [video]
+  C2 Thói quen an toàn                                           (3 bài · 2h)
+     L1 Mật khẩu, xác thực nhiều lớp                             40m [video]
+     L2 Khóa máy, bàn sạch, in ấn                                30m [video]
+     L3 Báo sự cố: báo sớm luôn tốt hơn giấu                     40m [video]
+  QUIZ 12 câu · đạt 80%
+
+CYB-102  An ninh mạng công nghiệp (OT/ICS)       MỚI [VỊ TRÍ] —   · 12th · 8h
+  Ai học: Electrical Technician, Maintenance Technician, IT; Line Leader và
+          Supervisor học mức nhận biết
+  Vì sao MỚI (2026-07-16): khảo sát xác nhận DÂY CHUYỀN CÓ KẾT NỐI MẠNG. Khi
+  máy sản xuất nối mạng, an ninh mạng thôi không đủ: mạng công nghệ vận hành
+  (OT) có luật chơi ngược với mạng văn phòng (IT) — ưu tiên là TÍNH SẴN SÀNG
+  chứ không phải bảo mật, và không thể vá lỗi giữa ca. Đây cũng là lý do phải
+  bổ sung một bài vào SAF-108 (LOTO): máy nối mạng có thể nhận lệnh khởi động
+  từ xa.
+  C1 OT khác IT ở đâu                                            (3 bài · 3h)
+     L1 Mạng văn phòng vs mạng dây chuyền: vì sao không thể áp
+        cùng một cách làm                                        60m [video]
+     L2 Hậu quả là VẬT LÝ: máy chạy sai có thể gây thương tích,
+        không chỉ mất dữ liệu                                    60m [video]
+     L3 Bản đồ hệ thống OT tại nhà máy: PLC, HMI, SCADA, máy
+        gia công laser, lò lưu hóa nối mạng                      60m [đọc]
+  C2 Đường tấn công thực tế                                      (4 bài · 3h)
+     L1 Mã độc tống tiền lan từ mạng văn phòng sang dây chuyền   50m [video]
+     L2 Laptop nhà cung cấp máy cắm thẳng vào PLC                50m [video]
+     L3 Truy cập từ xa của hãng máy để bảo hành: ai cho phép,
+        ai giám sát, khi nào cắt                                 50m [video]
+     L4 USB nạp chương trình và file công thức (recipe)          40m [video]
+  C3 Kiểm soát                                                   (4 bài · 2h)
+     L1 Phân vùng mạng: vì sao dây chuyền phải tách khỏi văn phòng 40m [video]
+     L2 Sao lưu chương trình PLC và công thức — phục hồi sau sự
+        cố tính bằng giờ hay bằng tuần là do việc này            40m [video]
+     L3 Quản lý thay đổi trên thiết bị điều khiển                30m [đọc]
+     L4 Máy chạy lạ: là hỏng hóc hay là bị tấn công? Báo ai      30m [video]
+  QUIZ 18 câu · đạt 80%
+  [!] Khóa này là NHẬN THỨC + quy trình cho người vận hành/bảo trì. Cấu hình
+      firewall, phân vùng mạng, giám sát OT là việc KỸ THUẬT của đội IT/nền
+      tảng, không phải nội dung đào tạo đại trà.
+
+────────────────────────────────────────────────────────────────────────────────
+TRACK H — VĂN PHÒNG
+────────────────────────────────────────────────────────────────────────────────
+
+OFF-101  An toàn văn phòng & ergonomics        ✓DEMO [VỊ TRÍ] —    · 24th · 3h
+  Ai học: Office Staff (gồm toàn bộ VP Thượng Hải và Thâm Quyến)
+  C1 An toàn văn phòng                                           (2 bài · 1h)
+     L1 Nguy cơ trong văn phòng: trượt ngã, điện, thoát hiểm     40m [video]
+     L2 Sơ đồ thoát hiểm và điểm tập kết của văn phòng bạn       30m [đọc]
+  C2 Ergonomics bàn giấy                                         (3 bài · 2h)
+     L1 Bố trí màn hình, ghế, bàn phím                           40m [video]
+     L2 Mỏi mắt và quy tắc 20-20-20                              30m [video]
+     L3 Giãn cơ và nghỉ ngắn                                     40m [video]
+  QUIZ 8 câu · đạt 80%
+  [!] Đây là 1 trong 3 khóa của ruleset VP Trung Quốc (cùng CMP-101, CYB-101)
+      — xem P036: VP TQ KHÔNG áp NĐ 44 vì không phải nhà máy VN.
+
+────────────────────────────────────────────────────────────────────────────────
+TRACK I — HỘI NHẬP
+────────────────────────────────────────────────────────────────────────────────
+
+IND-101  Hội nhập nhân viên mới                   MỚI [LUẬT] —  một lần · 8h
+  Ai học: MỌI nhân viên mới, ngày đầu tiên, TRƯỚC khi vào xưởng
+  Vì sao MỚI: NĐ 44 buộc huấn luyện TRƯỚC khi bố trí công việc. Với nhà máy
+  5.800 người và tỷ lệ biến động lao động cao, đây là khóa chạy nhiều nhất.
+  Nó KHÔNG có chu kỳ (một lần), nhưng là điều kiện tiên quyết của mọi khóa
+  nhóm 3.
+  C1 Nissei và bạn                                               (3 bài · 2h)
+     L1 Nissei Electric: sản phẩm, khách hàng, nhà máy           40m [video]
+     L2 Nội quy lao động, giờ giấc, ca kíp                       40m [đọc]
+     L3 Tổ chức, ai là quản lý của bạn, ai là HSE                30m [đọc]
+  C2 An toàn ngày đầu                                            (3 bài · 3h)
+     L1 Năm quy tắc sống còn tại xưởng Nissei                    50m [video]
+     L2 Đi bộ trong xưởng: lối đi, xe nâng, khu cấm              50m [video]
+     L3 Thoát hiểm và điểm tập kết — đi thực tế                  80m [thực hành]
+  C3 Bước tiếp theo                                              (2 bài · 3h)
+     L1 Nghĩa vụ đào tạo của bạn đến từ đâu (giới thiệu ma
+        trận và hệ thống này)                                    40m [video]
+     L2 Dùng app: đăng nhập bằng mã nhân viên, xem khóa bắt buộc 60m [thực hành]
+  QUIZ 15 câu · đạt 80%
+  [!] C3.L2 là bài học "dùng chính hệ thống" — nên có, vì nhóm dùng đông nhất
+      là công nhân lần đầu chạm app (mobile.txt §6: tỷ lệ kích hoạt app là KPI
+      adoption của pilot).
+
+================================================================================
+4. MA TRẬN GÁN THEO VỊ TRÍ (bản thiết kế — nguồn cho P036)
+================================================================================
+M = bắt buộc · O = tùy chọn · (trống) = không áp dụng
+Vị trí: PO=Production Operator · LL=Line Leader · FO=Forklift Operator
+        ET=Electrical Tech · MT=Maintenance Tech · WS=Warehouse Staff
+        QA=QA Inspector · SV=Supervisor · OS=Office Staff · HS=HSE Officer
+
+Khóa       PO  LL  FO  ET  MT  WS  QA  SV  OS  HS
+─────────  ──  ──  ──  ──  ──  ──  ──  ──  ──  ──
+IND-101     M   M   M   M   M   M   M   M   M   M
+SAF-101     M   M   M   M   M   M   M   M   O   M
+SAF-102                 M   M               O   M
+SAF-103                 M   M                   M
+SAF-104     M   M           M       O           M
+SAF-105     M   M   M   M   M   M   M   M   O   M
+SAF-106             M           O               M
+SAF-107     M   M       O   M   M   M           M
+SAF-108             O   M   M                   M
+SAF-109                     M                   M   ← chờ khảo sát
+SAF-110     M   M   M   M   M   M   M   O   O   M
+SAF-111     M   M       O   M   O   O           M
+SAF-201             .   .   .   .   .   M   .   M   ← nhóm 1 (LL nếu quản lý)
+SAF-202                                         M   ← nhóm 2
+SAF-203     O   O   O   O   O   O   O   O       M   ← nhóm 6, kiêm nhiệm
+SAF-204                                             ← nhóm 5, chỉ y tế
+FIR-101     M   M   M   M   M   M   M   M   M   M
+FIR-102     O   O   O   O   O   O   O   O       M   ← đội PCCC cơ sở
+PRD-101     M   M           M                   M   ← khu HYFLON
+PRD-102     M   M           M                   M   ← khu LICAL
+PRD-103     M   M                   M           M   ← khu LYCOM
+PRD-104     M   M           M                   M
+PRD-105     M                       M           O   ← phòng sạch
+PRD-106     M   M                   M           O   ← EPA
+PRD-107     M               M                   M   ← khu laser
+PRD-108     M               M                   O
+QMS-201     O   M           O   O   M   M   M   M
+QMS-202         M                   M   M       O   ← dây chuyền ô tô
+QMS-203         M                   M   M       O   ← dây chuyền y tế
+QMS-204     M   M   M   M   M   M   M   M   O   M
+QMS-205         M           M       M   M       M
+QMS-206                             M           O
+ENV-201     O   M           O   O   M   M   M   M
+ENV-202     M   M   O       M   M   O   O       M
+ENV-203     M   M           M   M   O           M
+ENV-204     O   O           O           O       O
+CMP-101     M   M   M   M   M   M   M   M   M   M
+CMP-102                                 M   M   M
+CMP-103     M   M   M   M   M   M   M   M   M   M
+CMP-104     M   M           M       M   M   M   M
+CMP-105                                 M   M   M
+CYB-101     O   M           M       M   M   M   M
+CYB-102             .   M   M       .   O   M   O   ← dây chuyền nối mạng
+OFF-101                                         M   M   ← OS + HSE
+
+[!] Ma trận này là THIẾT KẾ theo vị trí. Ma trận THẬT còn phụ thuộc KHU VỰC
+    (một Production Operator ở khu LICAL không cần PRD-101 của khu HYFLON).
+    => Xem mục 5, câu hỏi mở số 1: có cần thêm chiều "khu vực/dây chuyền"
+    vào matrix_rule không, hay tách vị trí công việc chi tiết hơn.
+
+================================================================================
+5. TỔNG HỢP & CÂU HỎI MỞ
+================================================================================
+5.1 QUY MÔ (đếm từ chính cây ở mục 3, không phải ước lượng)
+    44 khóa · 135 chapter · 354 lesson · 530 giờ nội dung
+    Trong đó: 13 ✓DEMO (đã có trong prototype) · 31 MỚI
+    Loại bài: 253 video · 40 đọc · 46 THỰC HÀNH · 15 lớp
+    => 46 bài thực hành + 15 bài trên lớp là con số quan trọng nhất ở đây:
+       chúng KHÔNG thể học online, buộc phải có session + điểm danh. Đó là
+       lý do hệ thống có training_session/attendance (WF-05), và là phần
+       chi phí vận hành thật của khách (phòng, giảng viên, dừng ca).
+
+    Khối lượng của MỘT Production Operator khu HYFLON (đọc từ ma trận mục 4):
+      lần đầu  ~150h  (IND-101 + SAF nhóm 3/4 + PRD của khu)
+      duy trì  ~40h/năm
+    => 5.800 lao động × ~40h/năm ≈ 230.000 giờ-người/năm. Con số này PHẢI
+       đối chiếu với năng lực dừng ca của nhà máy ở khảo sát GĐ 0 — nếu
+       không khả thi thì phải cắt phạm vi hoặc giãn chu kỳ, và đó là quyết
+       định của khách chứ không phải của hệ thống.
+
+5.2 KHÁC BIỆT SO VỚI BỘ DEMO 13 KHÓA
+    Bộ demo phủ: an toàn chung, cao, điện, máy, sơ cứu, xe nâng, hóa chất,
+    PCCC, ISO 9001, ISO 14001, văn phòng, đạo đức, an ninh mạng.
+    Bộ demo THIẾU (và cây này bổ sung):
+      - Toàn bộ nhóm 1/2/5/6 của NĐ 44 (quản lý, HSE, y tế, ATVSV)
+      - Đội PCCC cơ sở theo NĐ 136/2020
+      - TOÀN BỘ track an toàn quá trình đặc thù Nissei (8 khóa) — đây là
+        khoảng trống lớn nhất: hệ thống đào tạo của một nhà máy fluoropolymer
+        mà không có bài nào về phân hủy nhiệt PTFE thì không phản ánh rủi ro
+        thật của họ
+      - IATF 16949 và ISO 13485 (khách ô tô và y tế)
+      - LOTO, ergonomics, tiếng ồn, chất thải nguy hại
+      - Bí mật khách hàng (NDA với Canon/Panasonic/Denso)
+      - An ninh mạng công nghiệp OT/ICS cho dây chuyền nối mạng
+      - Hội nhập nhân viên mới
+
+5.3 CÂU HỎI MỞ — CẦN KHẢO SÁT GĐ 0 TRẢ LỜI
+    Q1. Ma trận có cần chiều KHU VỰC/DÂY CHUYỀN không? (PRD-101..108 chỉ áp
+        cho người làm ở khu đó). Hai lựa chọn: (a) thêm trường area vào
+        matrix_rule; (b) tách job_role chi tiết hơn ("Production Operator —
+        HYFLON"). Ảnh hưởng data-model.txt.
+    Q2. Ba nhà máy có cùng công nghệ không? Nếu Mỹ Tho không có laser thì
+        PRD-107 không áp cho site đó — ruleset theo chi nhánh xử lý được
+        (E2), nhưng cần biết để cấu hình.
+    Q4. Có không gian hạn chế thật không → SAF-109. Không có thì BỎ. (Đây là
+        dữ kiện VẬT LÝ của nhà xưởng, không phải năng lực tổ chức — nên vẫn
+        mở dù Nissei "làm được mọi thứ".)
+    Q6. Chu kỳ và số giờ pháp định + giấy chứng nhận đủ điều kiện TỰ HUẤN
+        LUYỆN cho từng nhóm (xem §1.7): HSE + luật sư Nissei xác nhận. Đây
+        là Q7 của hồ sơ chiến lược, vẫn mở.
+    Q7. Nissei đã có sẵn giáo trình nào? Cây này giả định soạn mới. Vì họ tự
+        làm mọi thứ (§1.7), gần như chắc chắn ĐÃ CÓ tài liệu giấy/PPT/SOP —
+        khi đó công việc là SỐ HÓA + chuẩn hóa theo cây này, rẻ hơn nhiều so
+        với soạn mới. Cần kiểm kê ở GĐ 0.
+    Q9. MỚI: "IT Administrator" KHÔNG nằm trong 10 vị trí công việc của
+        content bible, nhưng persona org_admin (Dang Minh Tuan) lại có chức
+        danh đó, và CYB-102 cần gán cho IT. Hai cách: (a) thêm vị trí thứ 11
+        "IT Administrator"; (b) coi IT là Office Staff và gán CYB-102 cho OS.
+        Tạm dùng (b) trong ma trận; cần chốt vì nó đụng roles.txt §6.
+
+    ĐÃ TRẢ LỜI (2026-07-16):
+    Q3. Có bộ phận y tế tại chỗ? → CÓ. SAF-204 kích hoạt, Nissei tự huấn
+        luyện (§1.7).
+    Q5. Dây chuyền có kết nối mạng? → CÓ. Thêm CYB-102, VÀ thêm SAF-108 C1.L4
+        về khởi động từ xa — hệ quả AN TOÀN của việc nối mạng, không chỉ hệ
+        quả an ninh.
+    Q8. Tự huấn luyện hay thuê ngoài? → TỰ LÀM TẤT CẢ, tự quản hồ sơ. Hệ quả
+        đầy đủ ghi ở §1.7: hệ thống chứa nội dung thật, không phải sổ ghi hạn.
+
+5.4 ĐƯA VÀO HỆ THỐNG NHƯ THẾ NÀO
+    Cây này → danh mục master (P038) → ma trận (P036) → nghĩa vụ (P011).
+    Thứ tự triển khai đề xuất, bám pilot của consulting.txt GĐ 2:
+      Đợt 1 (pilot):  IND-101, SAF-101, SAF-105, FIR-101, CMP-101
+                      + 1 khóa nhóm 3 của site pilot + 1 khóa PRD của khu
+                      đông người nhất → đủ để chạy trọn vòng WF-01
+      Đợt 2:          các khóa nhóm 3 còn lại + track PRD
+                      + SAF-108 (LOTO) và CYB-102 ĐI CÙNG NHAU: dây chuyền
+                        nối mạng nghĩa là rủi ro khởi động từ xa đang tồn
+                        tại NGAY BÂY GIỜ, không chờ được tới đợt sau
+      Đợt 3:          track B (nhóm 1/2/6), QMS, ENV
+      Đợt 4:          CMP mở rộng, ENV-204, QMS-204/205
+================================================================================

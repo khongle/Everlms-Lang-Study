@@ -294,10 +294,26 @@ var LANG_ALT = {
   'P012-course-catalog.zh.html': {EN:'P012-course-catalog.html', VI:'P012-course-catalog.html'}
 };
 function currentFile(){ var s = location.pathname.split('/'); return s[s.length-1] || ''; }
-function langChips(activeLang) {
+
+/* The highlighted chip means "this is what you are reading right now", so it
+   is read off the page itself. Do NOT drive it from the persona's language
+   preference: every page here renders in English (the .zh catalog aside), so
+   highlighting VI for a Vietnamese operator would mark a language the page is
+   not actually in. The persona's real language lives in ROLES[].lang and is
+   documentation, not UI state. */
+function pageLang() {
+  var l = (document.documentElement.getAttribute('lang') || 'en').toLowerCase();
+  if (l.indexOf('zh') === 0) return 'ZH';
+  if (l.indexOf('vi') === 0) return 'VI';
+  if (l.indexOf('ja') === 0) return 'JA';
+  return 'EN';
+}
+
+function langChips() {
+  var active = pageLang();
   var alts = LANG_ALT[currentFile()] || {};
   return LANGS.map(function (l) {
-    var cls = 'langchip' + (l[0] === activeLang ? ' langchip--live' : '');
+    var cls = 'langchip' + (l[0] === active ? ' langchip--live' : '');
     return alts[l[0]]
       ? '<a class="' + cls + '" href="' + alts[l[0]] + '" title="' + l[1] + '">' + l[0] + '</a>'
       : '<span class="' + cls + '">' + l[0] + '</span>';
@@ -361,7 +377,7 @@ function acctMega(roleKey, from, active) {
       '<span class="spacer"></span>' +
       '<span class="flex items-center gap-2 text-sm text-muted">' + svg('globe', 16) +
         '<span class="langgrid">' +
-          langChips(/\.zh\.html$/.test(currentFile()) ? 'ZH' : R.lang) +
+          langChips() +
         '</span></span>' +
       '<a class="footlink footlink--switch" href="' + href('P001', from) + '">' + svg('swap', 18) +
         '<span><b>Switch account</b><small>Sign in as another user</small></span></a>' +
@@ -406,7 +422,7 @@ function identity(roleKey, from, active, hideAuth) {
   var out = [];
   if (hideAuth) {
     return '<span class="topbar__actions"><span class="langgrid">' +
-      langChips('EN') + '</span></span>';
+      langChips() + '</span></span>';
   }
   if (roleKey) {
     var R = ROLES[roleKey];
@@ -415,10 +431,10 @@ function identity(roleKey, from, active, hideAuth) {
     }
     out.push(notifBell(roleKey, from));
     out.push('<span class="langgrid">' +
-      langChips(/\.zh\.html$/.test(currentFile()) ? 'ZH' : R.lang) + '</span>');
+      langChips() + '</span>');
     out.push(acctPill(roleKey, from, active));
   } else {
-    out.push('<span class="langgrid">' + langChips('EN') + '</span>');
+    out.push('<span class="langgrid">' + langChips() + '</span>');
     out.push('<a class="btn btn--white btn--sm" href="' + href('P001', from) + '">Sign in</a>');
   }
   return '<span class="topbar__actions">' + out.join('') + '</span>';
