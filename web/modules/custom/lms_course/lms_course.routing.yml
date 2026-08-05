@@ -3,7 +3,7 @@ lms_course.homepage:
   path: '/homepage'
   defaults:
     _controller: '\Drupal\lms_course\Controller\CoursePublicController::homepage'
-    _title: 'EverLMS — Transform Your Future'
+    _title: 'Be Fit Gym Academy — Tập luyện bền vững'
   requirements:
     _permission: 'access content'
 
@@ -11,7 +11,7 @@ lms_course.catalog:
   path: '/courses'
   defaults:
     _controller: '\Drupal\lms_course\Controller\CoursePublicController::catalog'
-    _title: 'Browse Courses'
+    _title: 'Khóa học Be Fit'
   requirements:
     _permission: 'access content'
 

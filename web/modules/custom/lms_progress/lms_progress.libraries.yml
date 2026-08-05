@@ -1,0 +1,33 @@
+instructor_students:
+  version: 1.x
+  css:
+    theme:
+      css/instructor-students.css: {}
+  js:
+    js/instructor-students.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+instructor_course_stats:
+  version: 1.x
+  css:
+    theme:
+      css/instructor-course-stats.css: {}
+  js:
+    js/instructor-course-stats.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+instructor_student_activity:
+  version: 1.x
+  css:
+    theme:
+      css/instructor-student-activity.css: {}
+
+instructor_student_detail:
+  version: 1.x
+  css:
+    theme:
+      css/instructor-student-detail.css: {}

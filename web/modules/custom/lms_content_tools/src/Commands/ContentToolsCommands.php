@@ -16,6 +16,11 @@ class ContentToolsCommands extends DrushCommands {
 
   protected ContentToolsManager $manager;
 
+  /**
+   * Force imported generated content to a specific language for this run.
+   */
+  protected ?string $importLangcode = NULL;
+
   public function __construct(
     protected EntityTypeManagerInterface $entityTypeManager,
     protected FileSystemInterface $fileSystem,
@@ -264,6 +269,8 @@ class ContentToolsCommands extends DrushCommands {
    *   Import only a specific type (courses, users, quizzes, etc).
    * @option file
    *   Import a specific generated file.
+   * @option lang
+   *   Import only generated content for one language (vi or en).
    * @option dry-run
    *   Validate files without importing.
    *
@@ -275,14 +282,18 @@ class ContentToolsCommands extends DrushCommands {
    *   Import only courses.
    * @usage everlms:import --dry-run
    *   Validate generated files.
+   * @usage everlms:import --from-manifest --lang=vi
+   *   Import only Vietnamese generated content.
    */
   public function import(array $options = [
     'from-manifest' => FALSE,
     'type' => NULL,
     'file' => NULL,
+    'lang' => NULL,
     'dry-run' => FALSE,
   ]): void {
     $generatedPath = $this->manager->getGeneratedPath();
+    $this->importLangcode = NULL;
 
     if (!is_dir($generatedPath)) {
       $this->logger()->error(dt('Generated content directory not found at @path. Run AI content generation first.', [
@@ -315,6 +326,16 @@ class ContentToolsCommands extends DrushCommands {
       $importOrder = array_filter($importOrder, function ($file) use ($options) {
         return str_starts_with($file, $options['type'] . '/');
       });
+    }
+
+    if (!empty($options['lang'])) {
+      $this->importLangcode = $this->normalizeGeneratedLangcode($options['lang']);
+      $importOrder = array_values(array_filter($importOrder, function ($file) {
+        return $this->shouldImportFileForLang($file, $this->importLangcode);
+      }));
+      $this->logger()->notice(dt('Language filter enabled: @lang', [
+        '@lang' => $this->importLangcode,
+      ]));
     }
 
     if (empty($importOrder)) {
@@ -398,23 +419,23 @@ class ContentToolsCommands extends DrushCommands {
         break;
 
       case 'courses':
-        $count = $this->importCourse($data);
+        $count = $this->importCourse($data, $filename);
         break;
 
       case 'quizzes':
-        $count = $this->importQuiz($data);
+        $count = $this->importQuiz($data, $filename);
         break;
 
       case 'certificates':
-        $count = $this->importCertificates($data);
+        $count = $this->importCertificates($data, $filename);
         break;
 
       case 'commerce':
-        $count = $this->importCommerce($data);
+        $count = $this->importCommerce($data, $filename);
         break;
 
       case 'community':
-        $count = $this->importCommunity($data);
+        $count = $this->importCommunity($data, $filename);
         break;
 
       case 'user_data':
@@ -422,27 +443,27 @@ class ContentToolsCommands extends DrushCommands {
         break;
 
       case 'slideshows':
-        $count = $this->importSlideshows($data);
+        $count = $this->importSlideshows($data, $filename);
         break;
 
       case 'introductions':
-        $count = $this->importIntroductions($data);
+        $count = $this->importIntroductions($data, $filename);
         break;
 
       case 'glossaries':
-        $count = $this->importGlossaries($data);
+        $count = $this->importGlossaries($data, $filename);
         break;
 
       case 'blogs':
-        $count = $this->importBlogs($data);
+        $count = $this->importBlogs($data, $filename);
         break;
 
       case 'faqs':
-        $count = $this->importFaqs($data);
+        $count = $this->importFaqs($data, $filename);
         break;
 
       case 'category':
-        $count = $this->importCategories($data);
+        $count = $this->importCategories($data, $filename);
         break;
 
       default:
@@ -582,15 +603,58 @@ class ContentToolsCommands extends DrushCommands {
     return $count;
   }
 
+
+  /**
+   * Infer the Drupal langcode for one generated import file.
+   */
+  protected function inferLangcodeFromImport(string $filename = '', array $data = []): string {
+    if ($this->importLangcode !== NULL) {
+      return $this->importLangcode;
+    }
+
+    if (preg_match('/-(vi|en)(?:-|\.json$)/', basename($filename), $matches)) {
+      return $matches[1];
+    }
+
+    $language = $data['course']['language'] ?? $data['language'] ?? '';
+    return $this->normalizeGeneratedLangcode($language);
+  }
+
+  /**
+   * Normalize generated language labels to installed Drupal langcodes.
+   */
+  protected function normalizeGeneratedLangcode(?string $language): string {
+    $value = strtolower(trim((string) $language));
+    return match ($value) {
+      'vi', 'vn', 'vietnamese', 'tieng viet', 'tiếng việt' => 'vi',
+      'en', 'eng', 'english' => 'en',
+      default => \Drupal::languageManager()->getDefaultLanguage()->getId(),
+    };
+  }
+
+  /**
+   * Determine whether a generated file belongs to the requested import language.
+   */
+  protected function shouldImportFileForLang(string $filename, string $langcode): bool {
+    $basename = basename($filename);
+    if (preg_match('/-(vi|en)(?:-|\.json$)/', $basename, $matches)) {
+      return $matches[1] === $langcode;
+    }
+
+    // Shared seed data such as users and the single category file has no
+    // language suffix; import it and force langcode via inferLangcodeFromImport.
+    return !preg_match('/-(vi|en)(?:-|\.json$)/', $basename);
+  }
   /**
    * Import a course with chapters and lessons.
    *
    * Relationship: Course --field_chapters--> Chapter --field_lessons--> Lesson
    * (parent references children, not the other way around)
    */
-  protected function importCourse(array $data): int {
+  protected function importCourse(array $data, string $filename = ''): int {
     $count = 0;
     $courseData = $data['course'] ?? [];
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
     if (empty($courseData['title'])) {
       return 0;
     }
@@ -636,6 +700,7 @@ class ContentToolsCommands extends DrushCommands {
       foreach ($chapterData['lessons'] ?? [] as $lessonWeight => $lessonData) {
         $lessonFields = [
           'name' => $lessonData['title'],
+          'langcode' => $langcode,
           'status' => 1,
           'field_type' => $lessonData['type'] ?? 'text',
           'field_content' => [
@@ -680,6 +745,7 @@ class ContentToolsCommands extends DrushCommands {
       // Create chapter and link lessons.
       $chapter = $chapterStorage->create([
         'name' => $chapterData['title'],
+        'langcode' => $langcode,
         'status' => 1,
         'field_description' => [
           'value' => $chapterData['description'] ?? '',
@@ -696,6 +762,7 @@ class ContentToolsCommands extends DrushCommands {
     // Create course and link chapters.
     $courseFields = [
       'name' => $courseData['title'],
+      'langcode' => $langcode,
       'status' => ($courseData['status'] ?? 'published') === 'published' ? 1 : 0,
       'field_description' => [
         'value' => $courseData['description'] ?? '',
@@ -719,7 +786,7 @@ class ContentToolsCommands extends DrushCommands {
 
     // Map Category, Level, and Language to taxonomy terms
     if (!empty($courseData['category'])) {
-      $term_id = $this->getOrCreateTerm('course_category', $courseData['category']);
+      $term_id = $this->getOrCreateTerm('course_category', $courseData['category'], NULL, '', $langcode);
       if ($term_id) {
         $courseFields['field_category'] = ['target_id' => $term_id];
       }
@@ -727,14 +794,14 @@ class ContentToolsCommands extends DrushCommands {
 
     if (!empty($courseData['level'])) {
       $levelName = ucfirst($courseData['level']);
-      $term_id = $this->getOrCreateTerm('course_level', $levelName);
+      $term_id = $this->getOrCreateTerm('course_level', $levelName, NULL, '', $langcode);
       if ($term_id) {
         $courseFields['field_level'] = ['target_id' => $term_id];
       }
     }
 
     if (!empty($courseData['language'])) {
-      $term_id = $this->getOrCreateTerm('course_language', $courseData['language']);
+      $term_id = $this->getOrCreateTerm('course_language', $courseData['language'], NULL, '', $langcode);
       if ($term_id) {
         $courseFields['field_language'] = ['target_id' => $term_id];
       }
@@ -807,9 +874,10 @@ class ContentToolsCommands extends DrushCommands {
    * Relationship: Quiz --field_questions--> Question --field_choices--> Answer
    * (parent references children)
    */
-  protected function importQuiz(array $data): int {
+  protected function importQuiz(array $data, string $filename = ''): int {
     $count = 0;
     $quizData = $data['quiz'] ?? [];
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
     if (empty($quizData['title'])) {
       return 0;
     }
@@ -820,8 +888,14 @@ class ContentToolsCommands extends DrushCommands {
 
     // Create questions first.
     foreach ($data['questions'] ?? [] as $qWeight => $qData) {
+      $questionText = $qData['text'] ?? $qData['question'] ?? '';
+      if ($questionText === '') {
+        $this->logger()->warning(dt('Skipping quiz question without text in @quiz', ['@quiz' => $quizData['title']]));
+        continue;
+      }
       $questionFields = [
-        'name' => $qData['text'],
+        'name' => $questionText,
+        'langcode' => $langcode,
         'type' => $qData['type'],
         'field_points' => $qData['points'] ?? 5,
       ];
@@ -902,6 +976,7 @@ class ContentToolsCommands extends DrushCommands {
     $quizStorage = $this->entityTypeManager->getStorage('lms_quiz');
     $quiz = $quizStorage->create([
       'name' => $quizData['title'],
+      'langcode' => $langcode,
       'field_body' => [
         'value' => $quizData['instructions'] ?? '',
         'format' => 'full_html',
@@ -919,8 +994,9 @@ class ContentToolsCommands extends DrushCommands {
 
     // AUTO-LINK TO COURSE
     $course = NULL;
-    if (!empty($data['target_course'])) {
-      $course = $this->lookupCourseByTitle($data['target_course']);
+    $targetCourse = $data['target_course'] ?? $quizData['target_course'] ?? '';
+    if (!empty($targetCourse)) {
+      $course = $this->lookupCourseByTitle($targetCourse);
     } else {
       // Fallback to old behavior if target_course is missing
       $cleanTitle = str_replace(['Final Assessment: ', 'Final Quiz: ', 'Quiz: '], '', $quizData['title']);
@@ -934,6 +1010,7 @@ class ContentToolsCommands extends DrushCommands {
       // Create new Quiz Lesson
       $lesson = $lessonStorage->create([
         'name' => $quizData['title'],
+        'langcode' => $langcode,
         'status' => 1,
         'field_type' => 'quiz',
         'field_quiz' => $quiz->id(),
@@ -957,6 +1034,7 @@ class ContentToolsCommands extends DrushCommands {
         // If course has no chapters, create one
         $chapter = $chapterStorage->create([
           'name' => 'Final Assessment',
+          'langcode' => $langcode,
           'status' => 1,
           'field_lessons' => [$lesson->id()],
           'weight' => 99,
@@ -979,7 +1057,8 @@ class ContentToolsCommands extends DrushCommands {
   /**
    * Import certificates from generated data.
    */
-  protected function importCertificates(array $data): int {
+  protected function importCertificates(array $data, string $filename = ''): int {
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
     $count = 0;
     $storage = $this->entityTypeManager->getStorage('lms_certificate_template');
 
@@ -1006,14 +1085,6 @@ class ContentToolsCommands extends DrushCommands {
 
     foreach ($data['templates'] ?? [] as $templateData) {
       $design = strtolower($templateData['design'] ?? 'modern');
-      
-      // Load respective blueprint html
-      $blueprint_path = __DIR__ . '/../Blueprints/' . $design . '.html';
-      if (!file_exists($blueprint_path)) {
-        // Fallback to modern if specific design file doesn't exist
-        $blueprint_path = __DIR__ . '/../Blueprints/modern_certificate.html';
-      }
-      $blueprint_html = file_exists($blueprint_path) ? file_get_contents($blueprint_path) : '';
 
       // Fix placeholder brackets according to the actual tokens supported
       $body_text = $templateData['body_text'] ?? '';
@@ -1023,17 +1094,32 @@ class ContentToolsCommands extends DrushCommands {
         $body_text
       );
 
-      // Inject JSON data into blueprint
-      // We ONLY replace text variables. We leave [logo], [background] and standard tokens intact.
-      $injected_html = str_replace(
-        ['%body_text%', '%issuer%', '%signature_label%'],
-        [
-          $body_text,
-          $templateData['issuer'] ?? '',
-          $templateData['signature_label'] ?? ''
-        ],
-        $blueprint_html
-      );
+      if (!empty($templateData['layout_html'])) {
+        // Prefer restored full certificate layouts. These preserve legacy
+        // background/logo/seal/signature positioning and only change text.
+        $injected_html = $templateData['layout_html'];
+      }
+      else {
+        // Load respective blueprint html
+        $blueprint_path = __DIR__ . '/../Blueprints/' . $design . '.html';
+        if (!file_exists($blueprint_path)) {
+          // Fallback to modern if specific design file doesn't exist
+          $blueprint_path = __DIR__ . '/../Blueprints/modern_certificate.html';
+        }
+        $blueprint_html = file_exists($blueprint_path) ? file_get_contents($blueprint_path) : '';
+
+        // Inject JSON data into blueprint. We leave [logo], [background] and
+        // standard tokens intact for certificate_pdf replacement.
+        $injected_html = str_replace(
+          ['%body_text%', '%issuer%', '%signature_label%'],
+          [
+            $body_text,
+            $templateData['issuer'] ?? '',
+            $templateData['signature_label'] ?? ''
+          ],
+          $blueprint_html
+        );
+      }
 
       $bg_file = $load_image($templateData['background_filename'] ?? NULL, 'background');
       $logo_file = $load_image($templateData['logo_filename'] ?? NULL, 'logo');
@@ -1079,7 +1165,8 @@ class ContentToolsCommands extends DrushCommands {
   /**
    * Import commerce data (membership plans).
    */
-  protected function importCommerce(array $data): int {
+  protected function importCommerce(array $data, string $filename = ''): int {
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
     $count = 0;
 
     if (!empty($data['membership_plans'])) {
@@ -1158,7 +1245,8 @@ class ContentToolsCommands extends DrushCommands {
   /**
    * Import community data (forums, ratings, badges).
    */
-  protected function importCommunity(array $data): int {
+  protected function importCommunity(array $data, string $filename = ''): int {
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
     $count = 0;
 
     // Forum topics.
@@ -1183,7 +1271,6 @@ class ContentToolsCommands extends DrushCommands {
             'format' => 'full_html',
           ]);
           $topic->set('uid', $topicAuthorUid);
-          
           // Delete existing replies so they don't duplicate on re-import
           $oldReplies = $replyStorage->loadByProperties(['field_topic' => $topic->id()]);
           if (!empty($oldReplies)) {
@@ -1309,7 +1396,8 @@ class ContentToolsCommands extends DrushCommands {
   /**
    * Import slideshows (node:slideshow).
    */
-  protected function importSlideshows(array $data): int {
+  protected function importSlideshows(array $data, string $filename = ''): int {
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
     $count = 0;
     $nodeStorage = $this->entityTypeManager->getStorage('node');
 
@@ -1320,6 +1408,7 @@ class ContentToolsCommands extends DrushCommands {
 
       $fields = [
         'type'   => 'slideshow',
+        'langcode' => $langcode,
         'title'  => $item['title'],
         'status' => (isset($item['status']) && $item['status'] === 'published') ? 1 : 0,
         'uid'    => 1,
@@ -1368,7 +1457,8 @@ class ContentToolsCommands extends DrushCommands {
   /**
    * Import introductions (node:introduction).
    */
-  protected function importIntroductions(array $data): int {
+  protected function importIntroductions(array $data, string $filename = ''): int {
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
     $count = 0;
     $nodeStorage = $this->entityTypeManager->getStorage('node');
 
@@ -1379,6 +1469,7 @@ class ContentToolsCommands extends DrushCommands {
 
       $fields = [
         'type'   => 'introduction',
+        'langcode' => $langcode,
         'title'  => $item['title'],
         'status' => (isset($item['status']) && $item['status'] === 'published') ? 1 : 0,
         'uid'    => 1,
@@ -1424,7 +1515,8 @@ class ContentToolsCommands extends DrushCommands {
     return $count;
   }
 
-  protected function importGlossaries(array $data): int {
+  protected function importGlossaries(array $data, string $filename = ''): int {
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
     $count = 0;
     $nodeStorage = $this->entityTypeManager->getStorage('node');
 
@@ -1437,6 +1529,7 @@ class ContentToolsCommands extends DrushCommands {
 
       $fields = [
         'type'   => 'glossary',
+        'langcode' => $langcode,
         'title'  => $title,
         'status' => 1,
         'uid'    => 1,
@@ -1488,7 +1581,8 @@ class ContentToolsCommands extends DrushCommands {
   /**
    * Import blog articles (node:blog).
    */
-  protected function importBlogs(array $data): int {
+  protected function importBlogs(array $data, string $filename = ''): int {
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
     $count = 0;
     $nodeStorage = $this->entityTypeManager->getStorage('node');
 
@@ -1499,6 +1593,7 @@ class ContentToolsCommands extends DrushCommands {
 
       $fields = [
         'type'   => 'blog',
+        'langcode' => $langcode,
         'title'  => $item['title'],
         'status' => 1,
         'uid'    => 1,
@@ -1525,7 +1620,7 @@ class ContentToolsCommands extends DrushCommands {
             $termIds[] = reset($existing)->id();
           }
           else {
-            $term = $termStorage->create(['vid' => 'blog_tags', 'name' => $tagName]);
+            $term = $termStorage->create(['vid' => 'blog_tags', 'name' => $tagName, 'langcode' => $langcode]);
             $term->save();
             $termIds[] = $term->id();
           }
@@ -1627,7 +1722,8 @@ class ContentToolsCommands extends DrushCommands {
    * field_scope: 'global' | 'course'
    * field_course: entity reference to lms_course (required when scope=course)
    */
-  protected function importFaqs(array $data): int {
+  protected function importFaqs(array $data, string $filename = ''): int {
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
 
     $count = 0;
     $faqStorage = $this->entityTypeManager->getStorage('lms_faq');
@@ -1640,6 +1736,7 @@ class ContentToolsCommands extends DrushCommands {
 
       $fields = [
         'question'       => $question,
+        'langcode'       => $langcode,
         'field_answer'   => [
           'value'  => $item['answer'] ?? '',
           'format' => 'full_html',
@@ -1677,7 +1774,8 @@ class ContentToolsCommands extends DrushCommands {
   /**
    * Import course categories (taxonomy:course_category).
    */
-  protected function importCategories(array $data): int {
+  protected function importCategories(array $data, string $filename = ''): int {
+    $langcode = $this->inferLangcodeFromImport($filename, $data);
     $count = 0;
     foreach ($data['categories'] ?? [] as $item) {
       if (empty($item['name'])) {
@@ -1686,7 +1784,7 @@ class ContentToolsCommands extends DrushCommands {
       $imageFilename = $item['image_filename'] ?? NULL;
       $description = $item['description'] ?? '';
 
-      $termId = $this->getOrCreateTerm('course_category', $item['name'], $imageFilename, $description);
+      $termId = $this->getOrCreateTerm('course_category', $item['name'], $imageFilename, $description, $langcode);
       if ($termId) {
         // Extra logic to handle the new icon_filename field
         $iconFilename = $item['icon_filename'] ?? NULL;
@@ -1728,7 +1826,7 @@ class ContentToolsCommands extends DrushCommands {
   /**
    * Helper function to find or create a taxonomy term.
    */
-  protected function getOrCreateTerm(string $vid, string $name, ?string $imageFilename = NULL, string $description = ''): ?int {
+  protected function getOrCreateTerm(string $vid, string $name, ?string $imageFilename = NULL, string $description = '', string $langcode = ''): ?int {
     $termStorage = $this->entityTypeManager->getStorage('taxonomy_term');
     $terms = $termStorage->loadByProperties([
       'vid' => $vid,
@@ -1737,12 +1835,18 @@ class ContentToolsCommands extends DrushCommands {
 
     if (!empty($terms)) {
       $term = reset($terms);
+      if ($langcode !== '' && $term->hasField('langcode')) {
+        $term->set('langcode', $langcode);
+      }
     }
     else {
       $termFields = [
         'vid' => $vid,
         'name' => $name,
       ];
+      if ($langcode !== '') {
+        $termFields['langcode'] = $langcode;
+      }
       if (!empty($description)) {
         $termFields['description'] = [
           'value' => $description,
@@ -1894,7 +1998,7 @@ class ContentToolsCommands extends DrushCommands {
    */
   protected function importUserData(string $filename, array $data): int {
     $count = 0;
-    $basename = basename($filename);
+    $basename = preg_replace('/-(vi|en)(\.json)$/', '$2', basename($filename));
 
     switch ($basename) {
       case 'notes.json':

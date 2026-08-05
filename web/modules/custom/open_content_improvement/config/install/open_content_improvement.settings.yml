@@ -1,0 +1,55 @@
+export_root: 'public://open_content_improvement'
+export_root_hardening: htaccess_only
+random_segment: ''
+pii_guard: strict
+probe_export_root_over_http: false
+acknowledge_public_export: false
+entity_type_denylist: {  }
+field_denylist_patterns: {  }
+field_surface_overrides: {  }
+sensitive_field_types:
+  - password
+  - email
+  - telephone
+frozen_constraint_patterns:
+  - '*Unique*'
+sidecar_threshold: 200
+pretty_print_html: false
+emit_markdown_preview: false
+include_binaries: true
+exportable_schemes:
+  - public
+max_export_filesize: 20971520
+max_import_filesize: 20971520
+max_total_export_size: 2147483648
+max_sidecar_size: 5242880
+importable_entity_types: {  }
+immutable_entity_types: {  }
+writable_text_formats: {  }
+create_new_revision: true
+allow_supersede_pending_revision: false
+missing_reference_policy: strict
+on_drift: refuse
+allow_delta_removal: false
+allow_translation_removal: false
+max_refused_ratio: 0.0
+change_cap: 100
+max_tree_age: 604800
+lock_ttl: 3600
+environment_label: dev
+require_confirmation_on:
+  - prod
+export_config_text: false
+export_interface_text: false
+config_deny_paths:
+  - '*:*key*'
+  - '*:*secret*'
+  - '*:*token*'
+  - '*:*password*'
+  - '*:*dsn*'
+  - 'core.date_format.*:pattern'
+config_require_paths:
+  - '!block.block.*:settings.label_display=0'
+chunk_size: 50
+use_queue: false
+delete_export_on_uninstall: false

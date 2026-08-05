@@ -1,0 +1,21 @@
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-instructor-page lms-instructor-form-page">
+  <div class="container">
+    <div class="lms-dashboard-page__hero lms-instructor-form-page__hero" style="grid-template-columns: 1fr auto; gap: 1.5rem; align-items: stretch;">
+      <div class="lms-dashboard-page__hero-copy">
+        <span class="lms-dashboard-page__eyebrow">{{ 'Instructor workspace'|t }}</span>
+        <h1 class="lms-dashboard-page__title">{{ title }}</h1>
+        <p class="lms-dashboard-page__subtitle">{{ subtitle }}</p>
+        <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.25rem;">
+          <a href="{{ back_url }}" class="btn-lms-primary is-secondary">{{ 'Back to My Courses'|t }}</a>
+          <a href="{{ public_url }}" class="btn-lms-primary">{{ 'View Public Page'|t }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-glass lms-instructor-form-page__body">
+      {{ form }}
+    </div>
+  </div>
+</section>

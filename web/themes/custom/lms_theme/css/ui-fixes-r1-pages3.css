@@ -905,6 +905,15 @@ body.route--lms-course-contact .lms-contact-action-list__item:focus-visible stro
   }
 }
 
+/* [P011] E00-public round-1: desktop full-page screenshot had a 42px white
+   strip on the right. Root cause: the decorative ::after on
+   .lms-contact-hero__copy was absolutely positioned against the hero grid
+   because the copy card was not positioned, so it expanded scrollWidth outside
+   the viewport. Position the card so its overflow:hidden clips the decoration. */
+body.route--lms-course-contact .lms-contact-hero__copy {
+  position: relative;
+}
+
 /* ===== P012.css ===== */
 /* [P012] ISSUE 1-0320: Consistent vertical rhythm between glossary card title and body regardless of title length (mobile).
    ROOT CAUSE OF PRIOR FAILURE: the title h3 carried only `mb-0` and no reserved height, so a single-line

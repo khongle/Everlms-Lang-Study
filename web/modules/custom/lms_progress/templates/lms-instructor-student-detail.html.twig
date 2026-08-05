@@ -1,0 +1,274 @@
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-dashboard-page lms-instructor-page lms-instructor-student-detail-page">
+  <div class="container">
+    <div class="lms-dashboard-page__hero" style="grid-template-columns: 1fr auto; gap: 1.5rem; align-items: stretch;">
+      <div class="lms-dashboard-page__hero-copy">
+        <span class="lms-dashboard-page__eyebrow">{{ 'Learner detail'|t }}</span>
+        <h1 class="lms-dashboard-page__title">{{ student.name }}</h1>
+        <p class="lms-dashboard-page__subtitle">
+          {{ student.email }}
+          {% if student.joined_at %}
+            <span class="lms-instructor-student-detail__meta-separator">•</span>
+            {{ 'Joined'|t }} {{ student.joined_at }}
+          {% endif %}
+          {% if student.last_access %}
+            <span class="lms-instructor-student-detail__meta-separator">•</span>
+            {{ 'Last active'|t }} {{ student.last_access }}
+          {% endif %}
+        </p>
+        <div class="lms-instructor-student-detail__meta-row">
+          <span class="lms-learning-card__badge{% if student.status == 'active' %} is-completed{% else %} is-idle{% endif %}">
+            {{ student.status == 'active' ? 'Active account'|t : 'Blocked account'|t }}
+          </span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.25rem;">
+          <a href="{{ students_url }}" class="btn-lms-primary is-secondary">{{ 'Back to Students'|t }}</a>
+          <a href="{{ courses_url }}" class="btn-lms-primary is-secondary">{{ 'My Courses'|t }}</a>
+          {% if mail_url %}
+            <a href="{{ mail_url }}" class="btn-lms-primary">{{ 'Email Learner'|t }}</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="lms-my-courses-page__summary" style="align-self:start;">
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.courses }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Courses With You'|t }}</span>
+        </div>
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.completed_courses }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Completed'|t }}</span>
+        </div>
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.average_progress|number_format(1) }}%</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Average Progress'|t }}</span>
+        </div>
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.certificates }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Certificates'|t }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lms-instructor-detail-grid">
+      <section class="card-glass lms-instructor-detail-section lms-instructor-detail-section--wide">
+        <div class="lms-instructor-detail-section__head">
+          <div>
+            <h2>{{ 'Learning Across Your Courses'|t }}</h2>
+            <p>{{ 'These enrollments are limited to courses currently assigned to you.'|t }}</p>
+          </div>
+        </div>
+        {% if courses %}
+          <div class="lms-table-responsive">
+            <table class="lms-table lms-instructor-detail-table">
+              <thead>
+                <tr>
+                  <th>{{ 'Course'|t }}</th>
+                  <th>{{ 'Status'|t }}</th>
+                  <th>{{ 'Progress'|t }}</th>
+                  <th>{{ 'Enrolled'|t }}</th>
+                  <th>{{ 'Completed'|t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in courses %}
+                  <tr>
+                    <td>
+                      <div class="lms-instructor-student-detail__course-cell">
+                        <a href="{{ item.course_url }}" class="lms-instructor-student-detail__course-thumb-link" aria-hidden="true" tabindex="-1">
+                          {% if item.thumbnail_url %}
+                            <img src="{{ item.thumbnail_url }}" alt="{{ item.course_title }}" class="lms-instructor-student-detail__course-thumb" loading="lazy">
+                          {% else %}
+                            <span class="lms-instructor-student-detail__course-thumb lms-instructor-student-detail__course-thumb--placeholder">
+                              <i class="fas fa-book-open" aria-hidden="true"></i>
+                            </span>
+                          {% endif %}
+                        </a>
+                        <div class="lms-instructor-student-detail__course-copy">
+                          <a href="{{ item.course_url }}">{{ item.course_title }}</a>
+                          {% if item.activity_url %}
+                            <div class="lms-instructor-student-detail__course-action">
+                              <a href="{{ item.activity_url }}">{{ 'View learner activity'|t }}</a>
+                            </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="lms-learning-card__badge{% if item.status == 'completed' %} is-completed{% elseif item.status == 'not_started' %} is-idle{% endif %}">
+                        {% if item.status == 'completed' %}
+                          {{ 'Completed'|t }}
+                        {% elseif item.status == 'in_progress' %}
+                          {{ 'In Progress'|t }}
+                        {% else %}
+                          {{ 'Not Started'|t }}
+                        {% endif %}
+                      </span>
+                    </td>
+                    <td>{{ item.progress|number_format(1) }}%</td>
+                    <td>{{ item.enrolled_at ?: 'N/A'|t }}</td>
+                    <td>{{ item.completed_at ?: 'N/A'|t }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="lms-learning-empty">
+            <i class="fas fa-book-reader"></i>
+            <h3>{{ 'No course activity is available for this learner inside your teaching scope yet.'|t }}</h3>
+          </div>
+        {% endif %}
+      </section>
+
+      <section class="card-glass lms-instructor-detail-section">
+        <div class="lms-instructor-detail-section__head">
+          <div>
+            <h2>{{ 'Quiz Results'|t }}</h2>
+            <p>{{ 'Quiz attempts tied to lessons inside your assigned courses.'|t }}</p>
+          </div>
+          <span class="lms-learning-card__badge{% if summary.quiz_attempts > 0 %} is-completed{% else %} is-idle{% endif %}">{{ summary.quiz_attempts }} {{ 'attempts'|t }}</span>
+        </div>
+        {% if quiz_results %}
+          <div class="lms-table-responsive">
+            <table class="lms-table lms-instructor-detail-table">
+              <thead>
+                <tr>
+                  <th>{{ 'Quiz'|t }}</th>
+                  <th>{{ 'Course'|t }}</th>
+                  <th>{{ 'Score'|t }}</th>
+                  <th>{{ 'State'|t }}</th>
+                  <th>{{ 'Attempted'|t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in quiz_results %}
+                  <tr>
+                    <td>{{ item.quiz_name }}</td>
+                    <td>{{ item.course_title }}</td>
+                    <td>{{ item.score|number_format(1) }}% / {{ item.threshold|number_format(1) }}%</td>
+                    <td>
+                      <span class="lms-learning-card__badge{% if item.state == 'passed' %} is-completed{% elseif item.state == 'review' %} is-review{% else %} is-idle{% endif %}">
+                        {% if item.state == 'passed' %}
+                          {{ 'Passed'|t }}
+                        {% elseif item.state == 'review' %}
+                          {{ 'Review'|t }}
+                        {% else %}
+                          {{ 'Retry'|t }}
+                        {% endif %}
+                      </span>
+                    </td>
+                    <td>{{ item.attempted_at ?: 'N/A'|t }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="lms-learning-empty">
+            <i class="fas fa-tasks"></i>
+            <h3>{{ 'No quiz attempts have been recorded for your courses yet.'|t }}</h3>
+          </div>
+        {% endif %}
+      </section>
+
+      <section class="card-glass lms-instructor-detail-section">
+        <div class="lms-instructor-detail-section__head">
+          <div>
+            <h2>{{ 'Certificates'|t }}</h2>
+            <p>{{ 'Issued certificates linked to courses you currently teach.'|t }}</p>
+          </div>
+        </div>
+        {% if certificates %}
+          <div class="lms-table-responsive">
+            <table class="lms-table lms-instructor-detail-table">
+              <thead>
+                <tr>
+                  <th>{{ 'Course'|t }}</th>
+                  <th>{{ 'Certificate Code'|t }}</th>
+                  <th>{{ 'Issued'|t }}</th>
+                  <th>{{ 'Expiry'|t }}</th>
+                  <th>{{ 'Status'|t }}</th>
+                  <th>{{ 'File'|t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in certificates %}
+                  <tr>
+                    <td>{{ item.course_title }}</td>
+                    <td>{{ item.code ?: 'N/A'|t }}</td>
+                    <td>{{ item.issued_at ?: 'N/A'|t }}</td>
+                    <td>{{ item.expiry_at ?: 'N/A'|t }}</td>
+                    <td>
+                      <span class="lms-learning-card__badge{% if item.revoked %} is-idle{% else %} is-completed{% endif %}">
+                        {{ item.revoked ? 'Revoked'|t : 'Active'|t }}
+                      </span>
+                    </td>
+                    <td>
+                      {% if item.download_url %}
+                        <a href="{{ item.download_url }}" target="_blank" rel="noopener">{{ 'Download PDF'|t }}</a>
+                      {% else %}
+                        {{ 'N/A'|t }}
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="lms-learning-empty">
+            <i class="fas fa-award"></i>
+            <h3>{{ 'No certificates have been issued for this learner in your courses yet.'|t }}</h3>
+          </div>
+        {% endif %}
+      </section>
+
+      <section class="card-glass lms-instructor-detail-section">
+        <div class="lms-instructor-detail-section__head">
+          <div>
+            <h2>{{ 'Notifications'|t }}</h2>
+            <p>{{ 'Send a direct in-app notification and review the latest learner-facing messages.'|t }}</p>
+          </div>
+        </div>
+
+        {% if notification_form %}
+          <div class="lms-instructor-detail-form">
+            {{ notification_form }}
+          </div>
+        {% endif %}
+
+        {% if notifications %}
+          <div class="lms-instructor-notification-list">
+            {% for item in notifications %}
+              <article class="lms-instructor-notification-item{% if not item.is_read %} is-unread{% endif %}">
+                <div class="lms-instructor-notification-item__head">
+                  <div>
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.created_at ?: 'N/A'|t }}</p>
+                  </div>
+                  <div class="lms-instructor-notification-item__badges">
+                    <span class="lms-learning-card__badge{% if item.is_read %} is-completed{% else %} is-review{% endif %}">{{ item.is_read ? 'Read'|t : 'Unread'|t }}</span>
+                    <span class="lms-learning-card__badge">{{ item.type_label }}</span>
+                  </div>
+                </div>
+                {% if item.message %}
+                  <p class="lms-instructor-notification-item__message">{{ item.message }}</p>
+                {% endif %}
+                {% if item.link %}
+                  <a href="{{ item.link }}">{{ 'Open linked item'|t }}</a>
+                {% endif %}
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="lms-learning-empty">
+            <i class="fas fa-bell"></i>
+            <h3>{{ 'No recent learner notifications are available yet.'|t }}</h3>
+          </div>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+</section>

@@ -15,7 +15,8 @@
                 btn.addEventListener('click', function () {
                     var nav = document.querySelector('.lms-navbar__nav');
                     if (nav) {
-                        nav.classList.toggle('lms-navbar__nav--open');
+                        var isOpen = nav.classList.toggle('lms-navbar__nav--open');
+                        this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
                     }
                 });
             });

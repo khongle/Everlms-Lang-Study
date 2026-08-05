@@ -1,0 +1,15 @@
+{
+    "name": "drupal/open_content_improvement",
+    "description": "Exports all admin-editable content entity values and files to an editable tree and imports the edited tree back over the original entities.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://www.drupal.org/project/open_content_improvement",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/open_content_improvement",
+        "source": "https://git.drupalcode.org/project/open_content_improvement"
+    },
+    "require": {},
+    "conflict": {
+        "drush/drush": "<12.5"
+    }
+}

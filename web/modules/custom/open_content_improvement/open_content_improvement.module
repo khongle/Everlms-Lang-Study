@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * @file
+ * Open Content Improvement — procedural hooks only, no logic.
+ *
+ * Core requirement ^10.3 || ^11 forbids the #[Hook] attribute (11.1+), so hooks
+ * are procedural. Plugin discovery uses attributes (available since 10.2).
+ * \Drupal:: may appear here and in .install only — never in src/.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function open_content_improvement_help($route_name, RouteMatchInterface $route_match): string {
+  if ($route_name === 'help.page.open_content_improvement') {
+    return '<p>' . t('Export every admin-editable content entity value and file to an editable tree, improve it (by hand or with AI), and import the edited tree back over the original entities in place. Import is dry-run by default and never creates or deletes entities.') . '</p>';
+  }
+  return '';
+}
+
+/**
+ * Implements hook_file_download().
+ *
+ * No-op under public:// (returns NULL). When the export root is private://,
+ * only users with the export permission may read exported binaries.
+ */
+function open_content_improvement_file_download($uri) {
+  $resolver = \Drupal::service('open_content_improvement.export_root');
+  $root = $resolver->root();
+  if (strpos($uri, 'private://') !== 0) {
+    // hook_file_download only fires for private:// managed downloads; anything
+    // under a public:// root is served directly by the web server.
+    return NULL;
+  }
+  if (str_starts_with($uri, rtrim($root, '/') . '/')) {
+    if (\Drupal::currentUser()->hasPermission('export open content improvement')) {
+      return ['Content-Type' => 'application/octet-stream'];
+    }
+    return -1;
+  }
+  return NULL;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function open_content_improvement_theme($existing, $type, $theme, $path): array {
+  return [];
+}

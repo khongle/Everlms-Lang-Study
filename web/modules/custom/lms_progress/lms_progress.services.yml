@@ -1,0 +1,7 @@
+services:
+  lms_progress.instructor_workspace_content_builder:
+    class: Drupal\lms_progress\Service\InstructorWorkspaceContentBuilder
+    arguments:
+      - '@string_translation'
+      - '@current_user'
+      - '@config.factory'

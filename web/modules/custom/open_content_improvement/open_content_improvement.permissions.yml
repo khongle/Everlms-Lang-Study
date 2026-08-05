@@ -1,0 +1,19 @@
+'administer open content improvement':
+  title: 'Administer Open Content Improvement'
+  description: 'Configure the export root, entity/field classification and safety limits.'
+  restrict access: true
+
+'export open content improvement':
+  title: 'Export content for improvement'
+  description: 'Write the full entity tree, including unpublished content, to the export directory. Export deliberately bypasses entity access checks.'
+  restrict access: true
+
+'import open content improvement':
+  title: 'Import improved content (overwrites entities in place)'
+  description: 'Read the export tree back and overwrite the original entities. Effectively equivalent to editing any entity in the importable allowlist.'
+  restrict access: true
+
+'bypass open content improvement access':
+  title: 'Bypass entity and field access during import'
+  description: 'Write fields the acting user could not otherwise edit. Grant only to a service account. Every use is recorded in the audit log.'
+  restrict access: true

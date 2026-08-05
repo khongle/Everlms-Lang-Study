@@ -1,0 +1,6 @@
+lms_progress.instructor_workspace_settings:
+  title: 'Instructor Workspace Content'
+  description: 'Manage scenario-based content overrides for the instructor dashboard.'
+  parent: system.admin_config
+  route_name: lms_progress.instructor_workspace_settings
+  weight: 110

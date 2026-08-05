@@ -12,37 +12,37 @@ use Drupal\Core\Form\FormStateInterface;
  */
 function lms_theme_form_system_theme_settings_alter(&$form, FormStateInterface $form_state) {
   $homepage_style = theme_get_setting('homepage_style') ?? 'glassmorphism';
-  $site_name = trim((string) (\Drupal::config('system.site')->get('name') ?? '')) ?: 'EverLMS';
+  $site_name = trim((string) (\Drupal::config('system.site')->get('name') ?? '')) ?: 'Be Fit Gym Academy';
   $copy_defaults = lms_theme_get_homepage_copy_defaults($homepage_style, $site_name);
   $pricing_copy_defaults = lms_theme_get_pricing_page_copy_defaults();
 
   $form['lms_theme_settings'] = [
     '#type' => 'details',
-    '#title' => t('EverLMS Global Settings'),
+    '#title' => t('Thiết lập chung Be Fit Gym Academy'),
     '#open' => TRUE,
   ];
 
   $form['lms_theme_settings']['homepage_style'] = [
     '#type' => 'select',
-    '#title' => t('Homepage Style'),
-    '#description' => t('Select the visual design style for the LMS Homepage.'),
+    '#title' => t('Phong cách trang chủ'),
+    '#description' => t('Chọn phong cách hiển thị cho trang chủ LMS.'),
     '#default_value' => theme_get_setting('homepage_style') ?? 'glassmorphism',
     '#options' => [
-      'glassmorphism' => t('Style 1: Modern Glassmorphism (Dark)'),
-      'minimalist' => t('Style 2: Minimalist Clean (Light)'),
-      'playful' => t('Style 3: Playful & Colorful (Kids/Teens)'),
-      'corporate' => t('Style 4: Corporate B2B'),
-      'government' => t('Style 5: Government'),
-      'academy' => t('Style 6: Academy'),
-      'editorial' => t('Style 7: Editorial'),
-      'nature' => t('Style 8: Nature (Organic & Green)'),
-      'neon' => t('Style 9: Neon (Dark & Electric)'),
-      'luxury' => t('Style 10: Luxury (Premium Dark Gold)'),
-      'creative' => t('Style 11: Creative (Expressive Studio)'),
-      'gradient' => t('Style 12: Gradient (Vibrant Light)'),
-      'community' => t('Style 13: Community (Friendly & Social)'),
-      'retro' => t('Style 14: Retro (Vintage Paper)'),
-      'medical' => t('Style 15: Medical (Clean & Clinical)'),
+      'glassmorphism' => t('Mẫu 1: Kính hiện đại (tối)'),
+      'minimalist' => t('Mẫu 2: Tối giản sạch (sáng)'),
+      'playful' => t('Mẫu 3: Vui nhộn & nhiều màu'),
+      'corporate' => t('Mẫu 4: Doanh nghiệp B2B'),
+      'government' => t('Mẫu 5: Hành chính'),
+      'academy' => t('Mẫu 6: Học viện'),
+      'editorial' => t('Mẫu 7: Biên tập'),
+      'nature' => t('Mẫu 8: Tự nhiên'),
+      'neon' => t('Mẫu 9: Neon'),
+      'luxury' => t('Mẫu 10: Cao cấp'),
+      'creative' => t('Mẫu 11: Sáng tạo'),
+      'gradient' => t('Mẫu 12: Gradient'),
+      'community' => t('Mẫu 13: Cộng đồng'),
+      'retro' => t('Mẫu 14: Hoài cổ'),
+      'medical' => t('Mẫu 15: Y tế'),
     ],
   ];
 
@@ -64,145 +64,145 @@ function lms_theme_form_system_theme_settings_alter(&$form, FormStateInterface $
 
   $form['lms_theme_settings']['homepage_sections'] = [
     '#type' => 'details',
-    '#title' => t('Homepage Section Visibility'),
+    '#title' => t('Ẩn/hiện các khối trang chủ'),
     '#open' => FALSE,
   ];
 
   $form['lms_theme_settings']['homepage_sections']['homepage_sections_enabled'] = [
     '#type' => 'checkboxes',
-    '#title' => t('Visible homepage sections'),
-    '#description' => t('Toggle homepage sections on or off without removing their source content.'),
+    '#title' => t('Các khối đang hiển thị trên trang chủ'),
+    '#description' => t('Bật hoặc tắt từng khối trên trang chủ mà không xóa dữ liệu nguồn.'),
     '#default_value' => theme_get_setting('homepage_sections_enabled') ?? $default_sections,
     '#options' => [
-      'hero' => t('Hero slideshow'),
-      'stats' => t('Stats highlights'),
-      'continue_learning' => t('Continue learning'),
-      'featured' => t('Featured courses'),
-      'categories' => t('Categories'),
-      'introductions' => t('Introduction blocks'),
-      'bundles' => t('Learning bundles'),
-      'testimonials' => t('Testimonials'),
-      'faqs' => t('FAQs'),
-      'news' => t('Latest news'),
-      'membership' => t('Membership plans'),
-      'training_process' => t('Training process'),
-      'cta_guest' => t('CTA banner'),
+      'hero' => t('Slideshow nổi bật'),
+      'stats' => t('Chỉ số nổi bật'),
+      'continue_learning' => t('Tiếp tục học'),
+      'featured' => t('Khóa học nổi bật'),
+      'categories' => t('Danh mục'),
+      'introductions' => t('Khối giới thiệu'),
+      'bundles' => t('Gói học tập'),
+      'testimonials' => t('Cảm nhận học viên'),
+      'faqs' => t('Câu hỏi thường gặp'),
+      'news' => t('Tin tức mới nhất'),
+      'membership' => t('Gói thành viên'),
+      'training_process' => t('Quy trình học'),
+      'cta_guest' => t('Banner kêu gọi hành động'),
     ],
   ];
 
   $form['lms_theme_settings']['site_identity'] = [
     '#type' => 'details',
-    '#title' => t('Site Identity'),
+    '#title' => t('Nhận diện website'),
     '#open' => FALSE,
   ];
 
   $form['lms_theme_settings']['site_identity']['site_tagline'] = [
     '#type' => 'textfield',
-    '#title' => t('Site tagline'),
+    '#title' => t('Khẩu hiệu website'),
     '#default_value' => theme_get_setting('site_tagline') ?? '',
   ];
 
   $form['lms_theme_settings']['site_identity']['site_logo_alt'] = [
     '#type' => 'textfield',
-    '#title' => t('Site logo alt text'),
-    '#description' => t('Header and footer use the logo image from the standard Logo image settings on this page. You can point that setting to an SVG file.'),
-    '#default_value' => theme_get_setting('site_logo_alt') ?? 'EverLMS logo',
+    '#title' => t('Văn bản thay thế logo'),
+    '#description' => t('Header và footer dùng logo từ phần thiết lập Logo chuẩn trên trang này. Có thể trỏ thiết lập đó tới file SVG.'),
+    '#default_value' => theme_get_setting('site_logo_alt') ?? 'Logo Be Fit Gym',
   ];
 
   $form['lms_theme_settings']['homepage_stats'] = [
     '#type' => 'details',
-    '#title' => t('Homepage Stats'),
+    '#title' => t('Chỉ số trang chủ'),
     '#open' => FALSE,
   ];
 
   $form['lms_theme_settings']['homepage_stats']['stats_students_label'] = [
     '#type' => 'textfield',
-    '#title' => t('Students label'),
-    '#default_value' => theme_get_setting('stats_students_label') ?? 'Students',
+    '#title' => t('Nhãn học viên'),
+    '#default_value' => theme_get_setting('stats_students_label') ?? 'Học viên',
   ];
 
   $form['lms_theme_settings']['homepage_stats']['stats_students_value'] = [
     '#type' => 'textfield',
-    '#title' => t('Students value'),
+    '#title' => t('Giá trị học viên'),
     '#default_value' => theme_get_setting('stats_students_value') ?? '5,000+',
   ];
 
   $form['lms_theme_settings']['homepage_stats']['stats_satisfaction_label'] = [
     '#type' => 'textfield',
-    '#title' => t('Satisfaction label'),
-    '#default_value' => theme_get_setting('stats_satisfaction_label') ?? 'Satisfaction',
+    '#title' => t('Nhãn mức hài lòng'),
+    '#default_value' => theme_get_setting('stats_satisfaction_label') ?? 'Mức hài lòng',
   ];
 
   $form['lms_theme_settings']['homepage_stats']['stats_satisfaction_value'] = [
     '#type' => 'textfield',
-    '#title' => t('Satisfaction value'),
+    '#title' => t('Giá trị mức hài lòng'),
     '#default_value' => theme_get_setting('stats_satisfaction_value') ?? '98%',
   ];
 
   $form['lms_theme_settings']['homepage_stats']['stats_courses_label'] = [
     '#type' => 'textfield',
-    '#title' => t('Courses label'),
-    '#default_value' => theme_get_setting('stats_courses_label') ?? 'Courses',
+    '#title' => t('Nhãn khóa học'),
+    '#default_value' => theme_get_setting('stats_courses_label') ?? 'Khóa học',
   ];
 
   $form['lms_theme_settings']['homepage_stats']['stats_certs_label'] = [
     '#type' => 'textfield',
-    '#title' => t('Certificates label'),
-    '#default_value' => theme_get_setting('stats_certs_label') ?? 'Certificates',
+    '#title' => t('Nhãn chứng chỉ'),
+    '#default_value' => theme_get_setting('stats_certs_label') ?? 'Chứng chỉ',
   ];
 
   $form['lms_theme_settings']['hero_fallback'] = [
     '#type' => 'details',
-    '#title' => t('Hero Fallback'),
+    '#title' => t('Nội dung hero dự phòng'),
     '#open' => FALSE,
   ];
 
   $form['lms_theme_settings']['hero_fallback']['hero_fallback_heading'] = [
     '#type' => 'textfield',
-    '#title' => t('Hero fallback heading'),
-    '#default_value' => theme_get_setting('hero_fallback_heading') ?? 'Welcome to EverLMS',
+    '#title' => t('Tiêu đề hero dự phòng'),
+    '#default_value' => theme_get_setting('hero_fallback_heading') ?? 'Be Fit Gym Academy',
   ];
 
   $form['lms_theme_settings']['hero_fallback']['hero_fallback_subtext'] = [
     '#type' => 'textarea',
-    '#title' => t('Hero fallback subtext'),
-    '#default_value' => theme_get_setting('hero_fallback_subtext') ?? 'Start your learning journey with our premium courses today.',
+    '#title' => t('Mô tả hero dự phòng'),
+    '#default_value' => theme_get_setting('hero_fallback_subtext') ?? 'Học gym, dinh dưỡng, mobility và phục hồi với lộ trình tiếng Việt dành cho hội viên Be Fit.',
     '#rows' => 3,
   ];
 
   $form['lms_theme_settings']['hero_fallback']['hero_fallback_cta_text'] = [
     '#type' => 'textfield',
-    '#title' => t('Hero fallback CTA text'),
-    '#default_value' => theme_get_setting('hero_fallback_cta_text') ?? 'Explore Courses',
+    '#title' => t('Nút hero dự phòng'),
+    '#default_value' => theme_get_setting('hero_fallback_cta_text') ?? 'Khám phá khóa học',
   ];
 
   $form['lms_theme_settings']['hero_fallback']['hero_fallback_cta_url'] = [
     '#type' => 'textfield',
-    '#title' => t('Hero fallback CTA URL'),
+    '#title' => t('Đường dẫn nút hero dự phòng'),
     '#default_value' => theme_get_setting('hero_fallback_cta_url') ?? '/courses',
   ];
 
   $form['lms_theme_settings']['cta_fallbacks'] = [
     '#type' => 'details',
-    '#title' => t('CTA Fallbacks'),
+    '#title' => t('Nút kêu gọi hành động dự phòng'),
     '#open' => FALSE,
   ];
 
   $form['lms_theme_settings']['cta_fallbacks']['default_slide_cta_text'] = [
     '#type' => 'textfield',
-    '#title' => t('Default slide CTA text'),
-    '#default_value' => theme_get_setting('default_slide_cta_text') ?? 'Explore Now',
+    '#title' => t('Nút mặc định của slide'),
+    '#default_value' => theme_get_setting('default_slide_cta_text') ?? 'Khám phá ngay',
   ];
 
   $form['lms_theme_settings']['cta_fallbacks']['default_intro_cta_text'] = [
     '#type' => 'textfield',
-    '#title' => t('Default introduction CTA text'),
-    '#default_value' => theme_get_setting('default_intro_cta_text') ?? 'Learn More',
+    '#title' => t('Nút mặc định của khối giới thiệu'),
+    '#default_value' => theme_get_setting('default_intro_cta_text') ?? 'Tìm hiểu thêm',
   ];
 
   $form['lms_theme_settings']['homepage_copy'] = [
     '#type' => 'details',
-    '#title' => t('Homepage Copy'),
+    '#title' => t('Nội dung chữ trên trang chủ'),
     '#open' => FALSE,
   ];
 
@@ -325,20 +325,20 @@ function lms_theme_form_system_theme_settings_alter(&$form, FormStateInterface $
   $form['lms_theme_settings']['footer_contact']['footer_address'] = [
     '#type' => 'textarea',
     '#title' => t('Footer address'),
-    '#default_value' => theme_get_setting('footer_address') ?? 'Company Headquarters, District',
+    '#default_value' => theme_get_setting('footer_address') ?? '102 Phổ Quang, Phường 2, Quận Tân Bình, TP.HCM',
     '#rows' => 3,
   ];
 
   $form['lms_theme_settings']['footer_contact']['footer_phone'] = [
     '#type' => 'textfield',
     '#title' => t('Footer phone'),
-    '#default_value' => theme_get_setting('footer_phone') ?? '+01 00 200 0000',
+    '#default_value' => theme_get_setting('footer_phone') ?? '0352.86.00.88',
   ];
 
   $form['lms_theme_settings']['footer_contact']['footer_email'] = [
     '#type' => 'textfield',
     '#title' => t('Footer email'),
-    '#default_value' => theme_get_setting('footer_email') ?? 'everlms@gmail.com',
+    '#default_value' => theme_get_setting('footer_email') ?? '',
   ];
 
   $form['lms_theme_settings']['footer_contact']['footer_working_hours'] = [
@@ -351,7 +351,7 @@ function lms_theme_form_system_theme_settings_alter(&$form, FormStateInterface $
     '#type' => 'textarea',
     '#title' => t('Footer copyright text'),
     '#description' => t('Supports line breaks and safe HTML such as @a, @strong, and @br. Unsafe tags are removed.', ['@a' => '<a>', '@strong' => '<strong>', '@br' => '<br>']),
-    '#default_value' => theme_get_setting('footer_copyright') ?? "Copyright © 2025 EverLMS. Product by WeebPal (since 2012). All rights reserved.\nAuthored by Hai Nguyen, Maintained by the Phat Le & WeebPal Team, Developed by Claude.",
+    '#default_value' => theme_get_setting('footer_copyright') ?? "Copyright © 2026 Be Fit Gym & Trị Liệu.\nPowered by EverLMS.",
     '#rows' => 3,
   ];
 

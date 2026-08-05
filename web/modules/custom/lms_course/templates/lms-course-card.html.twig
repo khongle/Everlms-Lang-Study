@@ -12,7 +12,7 @@
         {% endif %}
       </div>
       <a href="{{ target_link }}" style="display: block; color: inherit; text-decoration: none; height: 100%;">
-        <img src="{{ card.thumbnail_url }}" alt="{{ card.name }}" loading="lazy">
+        <img src="{{ card.thumbnail_url }}" alt="{{ card.name }}" loading="eager" decoding="async">
       </a>
       
       <button class="lms-wishlist-toggle lms-btn-icon" data-course-id="{{ card.id }}" style="position: absolute; top: 12px; right: 12px; z-index: 10; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; padding: 0;" aria-label="Toggle Wishlist">

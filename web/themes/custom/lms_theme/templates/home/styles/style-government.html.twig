@@ -26,37 +26,40 @@
         {% for slide in slideshows %}
         <div class="carousel-item {% if loop.first %}active{% endif %}">
           <div class="gov-hero-slide">
-            {# Left content panel — solid navy, never obscures image #}
-            <div class="gov-hero-content">
-              <div class="gov-hero-inner">
-                <span class="gov-hero-badge">{{ site_name|default('Training Portal') }}</span>
-                <h1 class="gov-hero-title">{{ slide.heading|striptags }}</h1>
-                <p class="gov-hero-desc">{{ slide.subheading|striptags }}</p>
-                <div class="gov-hero-actions">
-                  {% if slide.link_url %}
-                    <a href="{{ slide.link_url }}" class="gov-hero-btn-primary">
-                      {{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}
-                      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </a>
-                  {% endif %}
-                  <a href="{{ path('lms_course.catalog') }}" class="gov-hero-btn-outline">{{ homepage_settings.hero_secondary_cta_text }}</a>
-                </div>
-                <div class="gov-hero-trust">
-                  <span><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Certified Programs</span>
-                  <span><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Mobile Accessible</span>
-                  <span><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Instant Certificates</span>
+            <div class="gov-hero-frame gov-container">
+              {# Left content panel — solid navy, never obscures image #}
+              <div class="gov-hero-content">
+                <div class="gov-hero-inner">
+                  <span class="gov-hero-badge">{{ site_name|default('Cổng đào tạo') }}</span>
+                  <h1 class="gov-hero-title">{{ slide.heading|striptags }}</h1>
+                  <p class="gov-hero-desc">{{ slide.subheading|striptags }}</p>
+                  <div class="gov-hero-actions">
+                    {% if slide.link_url %}
+                      <a href="{{ slide.link_url }}" class="gov-hero-btn-primary">
+                        {{ slide.link_title|default(homepage_settings.default_slide_cta_text) }}
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      </a>
+                    {% endif %}
+                    <a href="{{ path('lms_course.catalog') }}" class="gov-hero-btn-outline">{{ homepage_settings.hero_secondary_cta_text }}</a>
+                  </div>
+                  <div class="gov-hero-trust">
+                    <span><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Chương trình chứng nhận</span>
+                    <span><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Học mọi thiết bị</span>
+                    <span><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Cấp chứng chỉ nhanh</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            {# Right image panel — full bleed, no dark overlay #}
-            <div class="gov-hero-image">
-              {% if slide.image_url %}
-                <img src="{{ slide.image_url }}" alt="{{ slide.heading|striptags }}" />
-              {% else %}
-                <div class="gov-hero-image-placeholder">
-                  <svg width="80" height="80" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.2)" stroke-width="1"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                </div>
-              {% endif %}
+              {# Right image panel — bleeds to the viewport edge, no dark overlay #}
+              <div class="gov-hero-image">
+                {% set gov_hero_image = slide.image_url|default(gov_hero_fallback_image|default('')) %}
+                {% if gov_hero_image %}
+                  <img src="{{ gov_hero_image }}" alt="{{ slide.heading|striptags }}" />
+                {% else %}
+                  <div class="gov-hero-image-placeholder">
+                    <svg width="80" height="80" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.2)" stroke-width="1"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                  </div>
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
@@ -95,7 +98,7 @@
           </div>
           <div class="gov-hero-stat-item">
             <span class="gov-hero-stat-value">{{ categories|length|default('8') }}</span>
-            <span class="gov-hero-stat-label">Training Areas</span>
+            <span class="gov-hero-stat-label">Nhóm đào tạo</span>
           </div>
         </div>
       </div>
@@ -134,7 +137,7 @@
         <a href="{{ course.url }}" class="gov-course-card">
           <div class="gov-course-thumb">
             {% if course.thumbnail_url %}
-              <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" loading="lazy" />
+              <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" loading="eager" decoding="async" />
             {% endif %}
             {% if course.price_raw is defined and course.price_raw > 0 %}
               <span class="gov-course-price-badge">{{ course.price }}</span>
@@ -189,17 +192,30 @@
       {% endif %}
 
       <div class="gov-categories-grid">
+        {% set gov_category_fallback_icons = [
+          'fa-person-running',
+          'fa-award',
+          'fa-bowl-food',
+          'fa-spa',
+          'fa-dumbbell',
+          'fa-heart-pulse',
+          'fa-weight-hanging',
+          'fa-clipboard-list'
+        ] %}
         {% for category in categories|slice(0,8) %}
-        <a href="{{ path('lms_course.catalog') ~ '?category=' ~ category.entity.id() }}" class="gov-category-card">
-          <div class="gov-category-icon">
-            {% if category.entity.field_icon.entity and category.entity.field_icon.entity.uri.value %}
-              <img src="{{ file_url(category.entity.field_icon.entity.uri.value) }}" alt="{{ category.name }}" />
+        {% set category_image = category.thumbnail_url|default(category.image_url|default('')) %}
+        <a href="{{ path('lms_course.catalog') ~ '?category=' ~ category.entity.id() }}" class="gov-category-card{% if category_image %} gov-category-card--has-image{% else %} gov-category-card--has-symbol{% endif %}">
+          <div class="gov-category-media" aria-hidden="true">
+            {% if category_image %}
+              <img src="{{ category_image }}" alt="" loading="eager" />
             {% else %}
-              <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#1a4b8c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+              <span class="gov-category-symbol">
+                <i class="fas {{ gov_category_fallback_icons[loop.index0 % gov_category_fallback_icons|length] }}"></i>
+              </span>
             {% endif %}
           </div>
           <div class="gov-category-title">{{ category.name }}</div>
-          <div class="gov-category-count">{{ category.course_count|default(0) }} {{ 'Courses'|t }}</div>
+          <div class="gov-category-count">{{ category.course_count|default(0) }} {{ 'khóa học'|t }}</div>
         </a>
         {% endfor %}
       </div>
@@ -292,7 +308,7 @@
         <a href="{{ news.url }}" class="gov-news-card">
           {% if news.thumbnail_url %}
           <div class="gov-news-thumb">
-            <img src="{{ news.thumbnail_url }}" alt="{{ news.title }}" loading="lazy" />
+            <img src="{{ news.thumbnail_url }}" alt="{{ news.title }}" loading="eager" decoding="async" />
           </div>
           {% endif %}
           <div class="gov-news-content">
@@ -324,7 +340,7 @@
         <div class="gov-intro-card {% if intro.background_color == 'dark' %}gov-intro-dark{% endif %}">
           {% if intro.image_url %}
           <div class="gov-intro-image">
-            <img src="{{ intro.image_url }}" alt="{{ intro.title }}" loading="lazy" />
+            <img src="{{ intro.image_url }}" alt="{{ intro.title }}" loading="eager" decoding="async" />
           </div>
           {% endif %}
           <div class="gov-intro-content">

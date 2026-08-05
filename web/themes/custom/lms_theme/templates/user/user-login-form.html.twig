@@ -6,31 +6,31 @@
     <div class="lms-auth__card">
       <div class="lms-auth__header">
         <a href="{{ path('<front>') }}" class="lms-auth__logo">
-          <i class="fas fa-graduation-cap"></i> {{ 'EverLMS'|t }}
+          <i class="fas fa-graduation-cap"></i> {{ 'Be Fit Gym Academy'|t }}
         </a>
-        <h1>{{ 'Welcome Back'|t }}</h1>
-        <p>{{ 'Sign in to continue your learning journey'|t }}</p>
+        <h1>{{ 'Chào mừng trở lại'|t }}</h1>
+        <p>{{ 'Đăng nhập để tiếp tục lộ trình tập luyện của bạn.'|t }}</p>
       </div>
 
       {# Social login buttons #}
       <div class="lms-auth__social">
         <a href="#" class="lms-btn lms-btn--social lms-btn--google">
-          <i class="fab fa-google"></i> {{ 'Continue with Google'|t }}
+          <i class="fab fa-google"></i> {{ 'Tiếp tục với Google'|t }}
         </a>
         <a href="#" class="lms-btn lms-btn--social lms-btn--facebook">
-          <i class="fab fa-facebook-f"></i> {{ 'Continue with Facebook'|t }}
+          <i class="fab fa-facebook-f"></i> {{ 'Tiếp tục với Facebook'|t }}
         </a>
       </div>
 
       <div class="lms-auth__divider">
-        <span>{{ 'or sign in with email'|t }}</span>
+        <span>{{ 'hoặc đăng nhập bằng email'|t }}</span>
       </div>
 
       {# Drupal login form #}
       {{ form }}
 
       <div class="lms-auth__footer">
-        <p>{{ "Don't have an account?"|t }} <a href="{{ path('user.register') }}">{{ 'Sign Up'|t }}</a></p>
+        <p>{{ 'Chưa có tài khoản?'|t }} <a href="{{ path('user.register') }}">{{ 'Đăng ký'|t }}</a></p>
       </div>
     </div>
   </div>

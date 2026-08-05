@@ -53,8 +53,12 @@ class ContentToolsManager {
       'types' => ['lms_user_badge', 'lms_badge'],
     ],
     'certificates' => [
-      'label' => 'Certificates',
-      'types' => ['lms_user_certificate', 'lms_certificate_template'],
+      'label' => 'Issued Certificates',
+      'types' => ['lms_user_certificate'],
+    ],
+    'certificate_templates' => [
+      'label' => 'Certificate Templates',
+      'types' => ['lms_certificate_template'],
     ],
     'results' => [
       'label' => 'Quiz Results & Responses',

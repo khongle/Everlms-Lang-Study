@@ -1,0 +1,6 @@
+open_content_improvement.settings:
+  title: 'Open Content Improvement'
+  description: 'Export content to an editable tree and import it back over the original entities.'
+  parent: system.admin_config_development
+  route_name: open_content_improvement.settings
+  weight: 10

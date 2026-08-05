@@ -11,6 +11,8 @@ global:
       css/ui-fixes-r1-pages2.css: { weight: 1002 }
       css/ui-fixes-r1-pages3.css: { weight: 1003 }
       css/ui-fixes-r2.css: { weight: 1004 }
+      css/header-two-tier.css: { weight: 1100 }
+      css/bootstrap-breakpoints.css: { weight: 1110 }
   js:
     js/main.js: { attributes: { defer: true } }
   dependencies:

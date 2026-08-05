@@ -1,0 +1,87 @@
+/* Bootstrap 5 container alignment for public pages.
+   This file loads after the skin CSS and QA fix layers so public chrome and
+   section shells follow Twitter Bootstrap's xs/sm/md/lg/xl/xxl rhythm. */
+:root {
+  --lms-bs-container-max: 100%;
+  --lms-bs-container-gutter: 1.5rem;
+  --lms-bs-container-edge: 0px;
+}
+
+@media (min-width: 576px) {
+  :root {
+    --lms-bs-container-max: 540px;
+    --lms-bs-container-edge: calc((100vw - 540px) * 0.5);
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --lms-bs-container-max: 720px;
+    --lms-bs-container-edge: calc((100vw - 720px) * 0.5);
+  }
+}
+
+@media (min-width: 992px) {
+  :root {
+    --lms-bs-container-max: 960px;
+    --lms-bs-container-edge: calc((100vw - 960px) * 0.5);
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --lms-bs-container-max: 1140px;
+    --lms-bs-container-edge: calc((100vw - 1140px) * 0.5);
+  }
+}
+
+@media (min-width: 1400px) {
+  :root {
+    --lms-bs-container-max: 1320px;
+    --lms-bs-container-edge: calc((100vw - 1320px) * 0.5);
+  }
+}
+
+body:not(.is-workspace) .lms-navbar--two-tier .lms-navbar__container,
+body:not(.is-workspace) .lms-footer__container,
+body.layout-government:not(.is-workspace) .gov-container,
+body.layout-medical:not(.is-workspace) .medical-shell,
+body.layout-medical:not(.is-workspace) .medical-shell--full,
+body.layout-medical:not(.is-workspace) .medical-hero__frame,
+body.layout-medical:not(.is-workspace) .medical-stats,
+body.layout-medical.is-front-page:not(.is-workspace) .medical-home > .medical-section.medical-shell,
+body.layout-medical.is-front-page:not(.is-workspace) .medical-home > .medical-cta .medical-shell {
+  width: 100%;
+  max-width: var(--lms-bs-container-max) !important;
+  padding-left: calc(var(--lms-bs-container-gutter) * 0.5);
+  padding-right: calc(var(--lms-bs-container-gutter) * 0.5);
+}
+
+body:not(.is-front-page):not(.is-workspace):not(.route--user-login):not(.route--user-register):not(.route--user-pass) .lms-page__content {
+  width: 100%;
+  max-width: var(--lms-bs-container-max) !important;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: calc(var(--lms-bs-container-gutter) * 0.5);
+  padding-right: calc(var(--lms-bs-container-gutter) * 0.5);
+}
+
+body.route--lms-course-contact .lms-contact-hero__pills span {
+  min-width: 0;
+  max-width: 100%;
+}
+
+body.route--lms-course-contact .lms-contact-hero__pills span strong {
+  min-width: 0;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 575.98px) {
+  body.route--lms-course-contact .lms-contact-hero__pills span {
+    width: 100%;
+    align-items: flex-start;
+    border-radius: 1rem;
+    line-height: 1.45;
+  }
+}

@@ -1,0 +1,59 @@
+lms_progress.settings:
+  type: config_object
+  label: 'LMS Progress settings'
+  mapping:
+    scenario_overrides:
+      type: mapping
+      label: 'Instructor workspace scenario overrides'
+      mapping:
+        no_courses_assigned:
+          type: lms_progress.scenario_override
+          label: 'No courses assigned'
+        courses_no_enrollments:
+          type: lms_progress.scenario_override
+          label: 'Courses assigned but no enrollments'
+        attention_needed:
+          type: lms_progress.scenario_override
+          label: 'Attention needed'
+        multi_course_operator:
+          type: lms_progress.scenario_override
+          label: 'Multi-course operator'
+        healthy_teaching:
+          type: lms_progress.scenario_override
+          label: 'Healthy teaching'
+
+lms_progress.scenario_override:
+  type: mapping
+  label: 'Instructor workspace scenario override'
+  mapping:
+    hero:
+      type: lms_progress.scenario_section
+      label: 'Hero section'
+    spotlight:
+      type: lms_progress.scenario_section
+      label: 'Spotlight section'
+    queue:
+      type: lms_progress.scenario_queue_section
+      label: 'Queue section'
+
+lms_progress.scenario_section:
+  type: mapping
+  label: 'Scenario section'
+  mapping:
+    title:
+      type: text
+      label: 'Title'
+    subtitle:
+      type: text
+      label: 'Subtitle'
+    copy:
+      type: text
+      label: 'Copy'
+
+lms_progress.scenario_queue_section:
+  type: mapping
+  label: 'Queue section'
+  mapping:
+    subtitle:
+      type: text
+      label: 'Subtitle'

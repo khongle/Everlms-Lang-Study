@@ -1,0 +1,265 @@
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-dashboard-page lms-course-stats-page">
+  <div class="container">
+    <div class="lms-course-stats-page__hero">
+      <div class="lms-course-stats-page__hero-surface">
+        <div class="lms-course-stats-page__hero-copy">
+          <div class="lms-course-stats-page__eyebrow-row">
+            <span class="lms-dashboard-page__eyebrow">{{ 'Instructor workspace'|t }}</span>
+            {% if courses_url %}
+              <a href="{{ courses_url }}" class="btn-lms-primary btn-lms-sm is-secondary">{{ 'Back to courses'|t }}</a>
+            {% endif %}
+          </div>
+          <h1 class="lms-dashboard-page__title">{{ course.title }}</h1>
+          <p class="lms-dashboard-page__subtitle">
+            {{ 'This analytics view stays inside the instructor workspace and only surfaces learners, quiz activity, lesson discussion, and question-bank signals for the current course.'|t }}
+          </p>
+          <div class="lms-course-stats-page__hero-links">
+            <a href="{{ course.public_url }}" class="btn-lms-primary is-secondary">{{ 'Public Page'|t }}</a>
+            {% if course.edit_url %}
+              <a href="{{ course.edit_url }}" class="btn-lms-primary">{{ 'Edit Course'|t }}</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="lms-course-stats-page__hero-card">
+        <div class="lms-course-stats-page__hero-media">
+          {% if course.thumbnail_url %}
+            <img src="{{ course.thumbnail_url }}" alt="{{ course.title }}" loading="lazy">
+          {% else %}
+            <div class="lms-course-stats-page__hero-placeholder">
+              <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+          {% endif %}
+        </div>
+        <div class="lms-course-stats-page__hero-card-body">
+          <div class="lms-course-stats-page__hero-tags">
+            {% if course.category %}
+              <span class="lms-course-stats-page__tag">{{ course.category }}</span>
+            {% endif %}
+            <span class="lms-course-stats-page__tag">{{ course.state == 'published' ? 'Published'|t : 'Draft'|t }}</span>
+          </div>
+          <h2 class="lms-course-stats-page__hero-card-title">{{ 'Course analytics at a glance'|t }}</h2>
+          <p class="lms-course-stats-page__hero-card-copy">{{ 'Keep the teaching workflow focused with one place for learner momentum, quiz activity, and discussion health.'|t }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lms-course-stats-page__summary-grid">
+      {% for item in summary %}
+        <div class="lms-course-stats-page__summary-card">
+          <span class="lms-course-stats-page__summary-value">{{ item.value }}</span>
+          <span class="lms-course-stats-page__summary-label">{{ item.label }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="lms-course-stats-page__stack">
+      <section class="lms-course-stats-page__panel">
+        <div class="lms-course-stats-page__panel-head">
+          <div>
+            <span class="lms-course-stats-page__panel-kicker">{{ 'Learners'|t }}</span>
+            <h2>{{ 'Course roster'|t }}</h2>
+            <p class="lms-course-stats-page__panel-copy">{{ 'See who is active, who is stalled, and who already completed the learning path.'|t }}</p>
+          </div>
+        </div>
+        {% if learners %}
+          <div class="lms-course-stats-page__table-wrap">
+            <table class="lms-course-stats-page__table">
+              <thead>
+                <tr>
+                  <th>{{ 'Learner'|t }}</th>
+                  <th>{{ 'Email'|t }}</th>
+                  <th>{{ 'Progress'|t }}</th>
+                  <th>{{ 'Status'|t }}</th>
+                  <th>{{ 'Enrolled'|t }}</th>
+                  <th>{{ 'Completed'|t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for learner in learners %}
+                  <tr>
+                    <td class="lms-course-stats-page__person-cell">
+                      <span class="lms-course-stats-page__avatar">{{ learner.student_name|slice(0, 1)|upper }}</span>
+                      <div class="lms-course-stats-page__person-copy">
+                      {% if learner.detail_url %}
+                          <a href="{{ learner.detail_url }}">{{ learner.student_name }}</a>
+                      {% else %}
+                          {{ learner.student_name }}
+                      {% endif %}
+                      </div>
+                    </td>
+                    <td>{{ learner.email }}</td>
+                    <td class="lms-course-stats-page__progress-cell">
+                      <strong>{{ learner.progress|number_format(1) }}%</strong>
+                      <span class="lms-course-stats-page__progress-track">
+                        <span class="lms-course-stats-page__progress-fill" style="width: {{ learner.progress|number_format(1, '.', '') }}%;"></span>
+                      </span>
+                    </td>
+                    <td>
+                      <span class="lms-course-stats-page__status-badge is-{{ learner.status|replace({'_': '-'}) }}">
+                        {{ learner.status|replace({'_': ' '})|title }}
+                      </span>
+                    </td>
+                    <td>{{ learner.enrolled_at ?: '-' }}</td>
+                    <td>{{ learner.completed_at ?: '-' }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="lms-course-stats-page__empty">{{ 'No learners are enrolled in this course yet.'|t }}</p>
+        {% endif %}
+      </section>
+
+      <section class="lms-course-stats-page__panel">
+        <div class="lms-course-stats-page__panel-head">
+          <div>
+            <span class="lms-course-stats-page__panel-kicker">{{ 'Knowledge checks'|t }}</span>
+            <h2>{{ 'Quiz attempts'|t }}</h2>
+            <p class="lms-course-stats-page__panel-copy">{{ 'Review who passed comfortably, who needs attention, and open the full quiz result for answer-level detail.'|t }}</p>
+          </div>
+        </div>
+        {% if quiz_results %}
+          <div class="lms-course-stats-page__table-wrap">
+            <table class="lms-course-stats-page__table">
+              <thead>
+                <tr>
+                  <th>{{ 'Learner'|t }}</th>
+                  <th>{{ 'Quiz'|t }}</th>
+                  <th>{{ 'Lesson'|t }}</th>
+                  <th>{{ 'Score'|t }}</th>
+                  <th>{{ 'Threshold'|t }}</th>
+                  <th>{{ 'Attempted'|t }}</th>
+                  <th>{{ 'Review'|t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for result in quiz_results %}
+                  <tr>
+                    <td class="lms-course-stats-page__person-cell">
+                      <span class="lms-course-stats-page__avatar">{{ result.student_name|slice(0, 1)|upper }}</span>
+                      <div class="lms-course-stats-page__person-copy">
+                      {% if result.student_url %}
+                          <a href="{{ result.student_url }}">{{ result.student_name }}</a>
+                      {% else %}
+                          {{ result.student_name }}
+                      {% endif %}
+                      </div>
+                    </td>
+                    <td class="lms-course-stats-page__title-cell">{{ result.quiz_name }}</td>
+                    <td class="lms-course-stats-page__title-cell">{{ result.lesson_title ?: '-' }}</td>
+                    <td>
+                      <div class="lms-course-stats-page__score-block">
+                        <strong>{{ result.score|number_format(1) }}%</strong>
+                        <span class="lms-course-stats-page__status-badge is-{{ result.state }}">{{ result.state|title }}</span>
+                      </div>
+                    </td>
+                    <td>{{ result.threshold|number_format(1) }}%</td>
+                    <td>{{ result.attempted_at ?: '-' }}</td>
+                    <td>
+                      {% if result.result_url %}
+                        <a href="{{ result.result_url }}" class="lms-course-stats-page__table-link">{{ 'View result'|t }}</a>
+                      {% else %}
+                        -
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="lms-course-stats-page__empty">{{ 'No quiz attempts have been recorded for this course yet.'|t }}</p>
+        {% endif %}
+      </section>
+
+      <section class="lms-course-stats-page__panel">
+        <div class="lms-course-stats-page__panel-head">
+          <div>
+            <span class="lms-course-stats-page__panel-kicker">{{ 'Discussion'|t }}</span>
+            <h2>{{ 'Lesson comments and questions'|t }}</h2>
+            <p class="lms-course-stats-page__panel-copy">{{ 'Track learner conversation signals and spot lessons that may need instructor intervention.'|t }}</p>
+          </div>
+        </div>
+        {% if comments %}
+          <div class="lms-course-stats-page__table-wrap">
+            <table class="lms-course-stats-page__table">
+              <thead>
+                <tr>
+                  <th>{{ 'Author'|t }}</th>
+                  <th>{{ 'Lesson'|t }}</th>
+                  <th>{{ 'Chapter'|t }}</th>
+                  <th>{{ 'Comment'|t }}</th>
+                  <th>{{ 'Created'|t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for comment in comments %}
+                  <tr>
+                    <td>{{ comment.author }}</td>
+                    <td>
+                      <a href="{{ comment.lesson_url }}">{{ comment.lesson_title }}</a>
+                    </td>
+                    <td>{{ comment.chapter_title }}</td>
+                    <td>{{ comment.message ?: '-' }}</td>
+                    <td>{{ comment.created_at ?: '-' }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="lms-course-stats-page__empty-state">
+            <i class="fas fa-comments"></i>
+            <p class="lms-course-stats-page__empty">{{ 'No lesson comments or learner questions are available for this course yet.'|t }}</p>
+          </div>
+        {% endif %}
+      </section>
+
+      <section class="lms-course-stats-page__panel">
+        <div class="lms-course-stats-page__panel-head">
+          <div>
+            <span class="lms-course-stats-page__panel-kicker">{{ 'Question bank'|t }}</span>
+            <h2>{{ 'Quiz questions used in this course'|t }}</h2>
+            <p class="lms-course-stats-page__panel-copy">{{ 'Scan the assessment coverage quickly and review how each lesson is being evaluated.'|t }}</p>
+          </div>
+        </div>
+        {% if questions %}
+          <div class="lms-course-stats-page__table-wrap">
+            <table class="lms-course-stats-page__table">
+              <thead>
+                <tr>
+                  <th>{{ 'Quiz'|t }}</th>
+                  <th>{{ 'Lesson'|t }}</th>
+                  <th>{{ 'Question'|t }}</th>
+                  <th>{{ 'Type'|t }}</th>
+                  <th>{{ 'Points'|t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for question in questions %}
+                  <tr>
+                    <td class="lms-course-stats-page__title-cell">{{ question.quiz_name }}</td>
+                    <td class="lms-course-stats-page__title-cell">{{ question.lesson_title ?: '-' }}</td>
+                    <td class="lms-course-stats-page__question-cell">{{ question.question_name }}</td>
+                    <td><span class="lms-course-stats-page__type-badge">{{ question.type }}</span></td>
+                    <td>{{ question.points|number_format(1) }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="lms-course-stats-page__empty-state">
+            <i class="fas fa-list-check"></i>
+            <p class="lms-course-stats-page__empty">{{ 'No quiz questions are mapped to this course yet.'|t }}</p>
+          </div>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+</section>

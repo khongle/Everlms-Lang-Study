@@ -1,58 +1,59 @@
 {# EverLMS — Page template — matches mockup navbar + footer #}
 <div class="lms-page">
-  {# Navbar — matches mockup: Logo | Nav | Login/Register #}
-  <header class="lms-navbar">
+  {# Navbar — two-tier header: brand | utility row + main menu #}
+  <header class="lms-navbar lms-navbar--two-tier">
     <div class="lms-navbar__container">
-      <a href="{{ path('<front>') }}" class="lms-navbar__brand" title="{{ site_logo_alt }}" aria-label="{{ site_name }}">
-        {% if site_logo_url %}
-          <img src="{{ site_logo_url }}" alt="{{ site_logo_alt }}" class="lms-brand-mark lms-brand-mark--header">
-        {% else %}
-          <i class="fas fa-graduation-cap" aria-hidden="true"></i>
-          <span>{{ site_name }}</span>
-        {% endif %}
-      </a>
+      <div class="lms-navbar__brand-cluster">
+        <a href="{{ path('<front>') }}" class="lms-navbar__brand" title="{{ site_logo_alt }}" aria-label="{{ site_name }}">
+          {% if site_logo_url %}
+            <img src="{{ site_logo_url }}" alt="{{ site_logo_alt }}" class="lms-brand-mark lms-brand-mark--header">
+          {% else %}
+            <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+            <span>{{ site_name }}</span>
+          {% endif %}
+        </a>
 
-      <button class="lms-navbar__toggle" aria-label="Toggle navigation">
-        <i class="fas fa-bars"></i>
-      </button>
+        <button class="lms-navbar__toggle" aria-label="{{ 'Toggle navigation'|t }}" aria-expanded="false" type="button">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
 
-      <nav class="lms-navbar__nav" role="navigation">
-        <a href="{{ path('lms_course.catalog') }}" class="lms-navbar__link {{ current_route in ['lms_course.catalog', 'lms_course.detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Courses'|t }}</a>
-        <a href="{{ path('lms_course.category') }}" class="lms-navbar__link {{ current_route in ['lms_course.category', 'lms_course.category_detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Categories'|t }}</a>
-        <a href="{{ path('lms_forum.index') }}" class="lms-navbar__link {{ current_route in ['lms_forum.index', 'entity.lms_forum_topic.canonical'] ? 'lms-navbar__link--active' : '' }}">{{ 'Community'|t }}</a>
-        <a href="{{ path('lms_course.pricing') }}" class="lms-navbar__link {{ current_route == 'lms_course.pricing' ? 'lms-navbar__link--active' : '' }}">{{ 'Pricing'|t }}</a>
-        <a href="{{ path('lms_blog.frontend.collection') }}" class="lms-navbar__link {{ current_route == 'lms_blog.frontend.collection' or current_route == 'lms_blog.frontend.canonical' ? 'lms-navbar__link--active' : '' }}">{{ 'News'|t }}</a>
-        <a href="{{ path('lms_course.glossary') }}" class="lms-navbar__link {{ current_route == 'lms_course.glossary' ? 'lms-navbar__link--active' : '' }}">{{ 'Glossary'|t }}</a>
-        {# <a href="#" class="lms-navbar__link">{{ 'Blog'|t }}</a> #}
-        {# <a href="#" class="lms-navbar__link">{{ 'Contact'|t }}</a> #}
-      </nav>
+      <div class="lms-navbar__panel">
+        <nav class="lms-navbar__nav" role="navigation" aria-label="{{ 'Main menu'|t }}">
+          <a href="{{ path('lms_course.catalog') }}" class="lms-navbar__link {{ current_route in ['lms_course.catalog', 'lms_course.detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Khóa học'|t }}</a>
+          <a href="{{ path('lms_course.category') }}" class="lms-navbar__link {{ current_route in ['lms_course.category', 'lms_course.category_detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Danh mục'|t }}</a>
+          <a href="{{ path('lms_forum.index') }}" class="lms-navbar__link {{ current_route in ['lms_forum.index', 'entity.lms_forum_topic.canonical'] ? 'lms-navbar__link--active' : '' }}">{{ 'Cộng đồng'|t }}</a>
+          <a href="{{ path('lms_course.pricing') }}" class="lms-navbar__link {{ current_route == 'lms_course.pricing' ? 'lms-navbar__link--active' : '' }}">{{ 'Bảng giá'|t }}</a>
+          <a href="{{ path('lms_blog.frontend.collection') }}" class="lms-navbar__link {{ current_route == 'lms_blog.frontend.collection' or current_route == 'lms_blog.frontend.canonical' ? 'lms-navbar__link--active' : '' }}">{{ 'Tin tức'|t }}</a>
+          <a href="{{ path('lms_course.glossary') }}" class="lms-navbar__link {{ current_route == 'lms_course.glossary' ? 'lms-navbar__link--active' : '' }}">{{ 'Thuật ngữ'|t }}</a>
+        </nav>
 
-      <div class="lms-navbar__actions">
-        {% if logged_in %}
-          <div style="display: flex; align-items: center; gap: 1rem;">
+        <div class="lms-navbar__actions" aria-label="{{ 'Utility navigation'|t }}">
+          {% if logged_in %}
+          <div class="lms-navbar__utility-list">
             {{ notification_bell }}
             
-            <a href="{{ path('lms_wishlist.my_wishlist') }}" class="lms-navbar__link" style="position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; margin-right: 0.5rem; transition: all 0.2s ease;" title="{{ 'My Wishlist'|t }}" onmouseover="this.style.background='rgba(255,255,255,0.05)';" onmouseout="this.style.background='transparent';">
-              <i class="far fa-heart" id="lms-wishlist-icon" style="font-size: 1.15rem; color: #8b949e; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);"></i>
-              <span id="lms-wishlist-counter" style="position: absolute; top: -3px; right: -4px; background: linear-gradient(135deg, #0077b6 0%, #0096c7 100%); color: white; border-radius: 999px; font-size: 0.65rem; font-weight: bold; min-width: 18px; height: 18px; display: none; align-items: center; justify-content: center; border: 0; box-sizing: border-box; z-index: 2; box-shadow: 0 8px 18px rgba(0, 119, 182, 0.24); padding: 0 0.4rem;">0</span>
+            <a href="{{ path('lms_wishlist.my_wishlist') }}" class="lms-navbar__icon-button lms-navbar__wishlist-link" title="{{ 'My Wishlist'|t }}" aria-label="{{ 'My Wishlist'|t }}">
+              <i class="far fa-heart" id="lms-wishlist-icon"></i>
+              <span id="lms-wishlist-counter" class="lms-navbar__counter" style="display: none;">0</span>
             </a>
             
-            <div class="lms-mega-menu-wrapper" style="position: relative;">
-              <a href="{{ path('user.page') }}" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;" class="lms-user-profile-link">
+            <div class="lms-mega-menu-wrapper lms-mega-menu-wrapper--profile">
+              <a href="{{ path('user.page') }}" class="lms-user-profile-link lms-navbar__account-trigger">
                 {% if current_user_picture %}
-                  <img src="{{ current_user_picture }}" alt="{{ current_user_name }}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
+                  <img src="{{ current_user_picture }}" alt="{{ current_user_name }}" class="lms-navbar__avatar">
                 {% else %}
-                  <div style="width: 32px; height: 32px; border-radius: 50%; background: #21262d; display: flex; align-items: center; justify-content: center; color: #8b949e; font-size: 14px; border: 1px solid hsla(0,0%,100%,.1);">
-                    <i class="fas fa-user"></i>
+                  <div class="lms-navbar__avatar lms-navbar__avatar--fallback">
+                    <i class="fas fa-user" aria-hidden="true"></i>
                   </div>
                 {% endif %}
-                <span style="color: #1f2a37; font-weight: 600; font-size: 0.9375rem; white-space: nowrap;">{{ current_user_name }}</span>
-                <i class="fas fa-chevron-down ms-1" style="font-size: 0.75rem; color: #8b949e;"></i>
+                <span class="lms-navbar__user-name">{{ current_user_name }}</span>
+                <i class="fas fa-chevron-down lms-navbar__account-caret" aria-hidden="true"></i>
               </a>
 
               {# Mega Menu Dropdown #}
               {% if 'administrator' in user.roles or 'manager' in user.roles %}
-              <div class="lms-mega-dropdown" style="width: max-content;">
+              <div class="lms-mega-dropdown lms-mega-dropdown--profile">
                 <div class="lms-mega-grid" {% if 'administrator' not in user.roles %}style="grid-template-columns: repeat(3, 1fr);"{% endif %}>
                   <!-- Col 1: PERSONAL -->
                   <div class="lms-mega-col">
@@ -117,18 +118,21 @@
                 <i class="fas fa-user-secret" style="font-size: 0.875rem;"></i> {{ 'Exit Impersonation'|t }}
               </a>
             {% elseif is_manager %}
-              <a href="{{ path('lms_course.admin_dashboard') }}" class="lms-btn lms-btn--sm lms-btn--outline"><i class="fas fa-briefcase"></i> {{ 'Workspace'|t }}</a>
+              <a href="{{ path('lms_course.admin_dashboard') }}" class="lms-navbar__workspace-link"><i class="fas fa-briefcase" aria-hidden="true"></i> {{ 'Workspace'|t }}</a>
             {% else %}
-              <a href="{{ path('lms_progress.dashboard') }}" class="lms-btn lms-btn--sm lms-btn--outline">{{ 'Dashboard'|t }}</a>
+              <a href="{{ path('lms_progress.dashboard') }}" class="lms-navbar__workspace-link"><i class="fas fa-gauge-high" aria-hidden="true"></i> {{ 'Dashboard'|t }}</a>
             {% endif %}
-            <a href="{{ path('user.logout') }}" class="lms-navbar__link" style="margin-left: 0.5rem;" title="{{ 'Logout'|t }}">
-              <i class="fas fa-sign-out-alt"></i>
+            <a href="{{ path('user.logout') }}" class="lms-navbar__icon-button lms-navbar__logout-link" title="{{ 'Logout'|t }}" aria-label="{{ 'Logout'|t }}">
+              <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
             </a>
           </div>
-        {% else %}
-          <a href="{{ path('user.login') }}" class="lms-navbar__link">{{ 'Login'|t }}</a>
-          <a href="{{ path('user.register') }}" class="lms-btn lms-btn--sm lms-btn--primary">{{ 'Register'|t }}</a>
-        {% endif %}
+          {% else %}
+            <div class="lms-navbar__utility-list">
+              <a href="{{ path('user.login') }}" class="lms-navbar__utility-link">{{ 'Login'|t }}</a>
+              <a href="{{ path('user.register') }}" class="lms-navbar__register-link">{{ 'Register'|t }}</a>
+            </div>
+          {% endif %}
+        </div>
       </div>
     </div>
   </header>
@@ -162,35 +166,35 @@
           {% if site_tagline %}
             <p class="lms-footer__description">{{ site_tagline }}</p>
           {% endif %}
-          <h4>{{ 'Quick Links'|t }}</h4>
+          <h4>{{ 'Liên kết nhanh'|t }}</h4>
           <ul>
-            <li><a href="{{ path('<front>') }}">{{ 'Home'|t }}</a></li>
-            <li><a href="{{ path('lms_course.catalog') }}">{{ 'Courses'|t }}</a></li>
-            <li><a href="{{ path('lms_course.category') }}">{{ 'Categories'|t }}</a></li>
-            <li><a href="{{ path('lms_forum.index') }}">{{ 'Community'|t }}</a></li>
-            <li><a href="{{ path('lms_course.glossary') }}">{{ 'Glossary'|t }}</a></li>
+            <li><a href="{{ path('<front>') }}">{{ 'Trang chủ'|t }}</a></li>
+            <li><a href="{{ path('lms_course.catalog') }}">{{ 'Khóa học'|t }}</a></li>
+            <li><a href="{{ path('lms_course.category') }}">{{ 'Danh mục'|t }}</a></li>
+            <li><a href="{{ path('lms_forum.index') }}">{{ 'Cộng đồng'|t }}</a></li>
+            <li><a href="{{ path('lms_course.glossary') }}">{{ 'Thuật ngữ'|t }}</a></li>
           </ul>
         </div>
         <div class="lms-footer__col">
-          <h4>{{ 'Course'|t }}</h4>
+          <h4>{{ 'Học tập'|t }}</h4>
           <ul>
-            <li><a href="#">{{ 'News & Notices'|t }}</a></li>
+            <li><a href="#">{{ 'Tin tức & thông báo'|t }}</a></li>
 
-            <li><a href="{{ path('lms_blog.frontend.collection') }}">{{ 'News'|t }}</a></li>
-            <li><a href="#">{{ 'Course Guides'|t }}</a></li>
+            <li><a href="{{ path('lms_blog.frontend.collection') }}">{{ 'Tin tức'|t }}</a></li>
+            <li><a href="#">{{ 'Hướng dẫn khóa học'|t }}</a></li>
           </ul>
         </div>
         <div class="lms-footer__col">
-          <h4>{{ 'Supports'|t }}</h4>
+          <h4>{{ 'Hỗ trợ'|t }}</h4>
           <ul>
-            <li><a href="{{ path('lms_course.about') }}">{{ 'About Us'|t }}</a></li>
-            <li><a href="{{ path('lms_course.contact') }}">{{ 'Supports'|t }}</a></li>
+            <li><a href="{{ path('lms_course.about') }}">{{ 'Giới thiệu'|t }}</a></li>
+            <li><a href="{{ path('lms_course.contact') }}">{{ 'Hỗ trợ'|t }}</a></li>
             <li><a href="#">{{ 'FAQ'|t }}</a></li>
-            <li><a href="{{ path('lms_course.contact') }}">{{ 'Contact Us'|t }}</a></li>
+            <li><a href="{{ path('lms_course.contact') }}">{{ 'Liên hệ'|t }}</a></li>
           </ul>
         </div>
         <div class="lms-footer__col">
-          <h4>{{ 'Contact Info'|t }}</h4>
+          <h4>{{ 'Thông tin liên hệ'|t }}</h4>
           <ul>
             {% if footer_phone %}
               <li><i class="fas fa-phone"></i> <a href="tel:{{ footer_phone|replace({' ': ''}) }}">{{ footer_phone }}</a></li>

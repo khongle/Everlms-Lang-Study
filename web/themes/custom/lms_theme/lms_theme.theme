@@ -41,7 +41,7 @@ function lms_theme_get_site_logo_url(): string {
  * Returns shared theme variables used by page and homepage templates.
  */
 function lms_theme_get_footer_copyright_markup(): \Drupal\Component\Render\MarkupInterface {
-  $footer_copyright = trim((string) (theme_get_setting('footer_copyright', 'lms_theme') ?: "Copyright © 2025 EverLMS. Product by WeebPal (since 2012). All rights reserved.\nAuthored by Hai Nguyen, Maintained by the Phat Le & WeebPal Team, Developed by Claude."));
+  $footer_copyright = trim((string) (theme_get_setting('footer_copyright', 'lms_theme') ?: "Copyright © 2026 Be Fit Gym & Trị Liệu.\nPowered by EverLMS."));
   if ($footer_copyright === '') {
     return \Drupal\Core\Render\Markup::create('');
   }
@@ -57,16 +57,16 @@ function lms_theme_get_shared_site_variables(): array {
   $site_config = \Drupal::config('system.site');
   $site_name = trim((string) ($site_config->get('name') ?? ''));
   $site_slogan = trim((string) (theme_get_setting('site_tagline', 'lms_theme') ?: $site_config->get('slogan') ?: ''));
-  $site_logo_alt = trim((string) (theme_get_setting('site_logo_alt', 'lms_theme') ?: ($site_name ?: 'EverLMS')));
+  $site_logo_alt = trim((string) (theme_get_setting('site_logo_alt', 'lms_theme') ?: ($site_name ?: 'Be Fit Gym Academy')));
 
   $shared_variables = [
-    'site_name' => $site_name ?: 'EverLMS',
+    'site_name' => $site_name ?: 'Be Fit Gym Academy',
     'site_tagline' => $site_slogan,
     'site_logo_alt' => $site_logo_alt,
     'site_logo_url' => lms_theme_get_site_logo_url(),
-    'footer_address' => trim((string) (theme_get_setting('footer_address', 'lms_theme') ?: 'Company Headquarters, District')),
-    'footer_phone' => trim((string) (theme_get_setting('footer_phone', 'lms_theme') ?: '+01 00 200 0000')),
-    'footer_email' => trim((string) (theme_get_setting('footer_email', 'lms_theme') ?: ($site_config->get('mail') ?? 'everlms@gmail.com'))),
+    'footer_address' => trim((string) (theme_get_setting('footer_address', 'lms_theme') ?: '102 Phổ Quang, Phường 2, Quận Tân Bình, TP.HCM')),
+    'footer_phone' => trim((string) (theme_get_setting('footer_phone', 'lms_theme') ?: '0352.86.00.88')),
+    'footer_email' => trim((string) (theme_get_setting('footer_email', 'lms_theme') ?: ($site_config->get('mail') ?? ''))),
     'footer_working_hours' => trim((string) theme_get_setting('footer_working_hours', 'lms_theme')),
     'footer_copyright' => lms_theme_get_footer_copyright_markup(),
     'footer_map_embed_url' => trim((string) theme_get_setting('footer_map_embed_url', 'lms_theme')),
@@ -149,6 +149,39 @@ function lms_theme_preprocess_page(&$variables) {
  */
 function lms_theme_preprocess_lms_homepage(&$variables) {
   $variables += lms_theme_get_shared_site_variables();
+  $variables['gov_hero_fallback_image'] = '';
+
+  if (($variables['homepage_style'] ?? '') === 'government') {
+    $preferred_category_names = [
+      'Nền tảng tập gym',
+      'Chứng chỉ Huấn luyện viên cá nhân',
+      'Tập luyện sức mạnh',
+    ];
+    $categories = is_array($variables['categories'] ?? NULL) ? $variables['categories'] : [];
+
+    foreach ($preferred_category_names as $preferred_category_name) {
+      foreach ($categories as $category) {
+        if (!is_array($category)) {
+          continue;
+        }
+        $category_name = (string) ($category['name'] ?? '');
+        $thumbnail_url = (string) ($category['thumbnail_url'] ?? '');
+        if ($category_name === $preferred_category_name && $thumbnail_url !== '') {
+          $variables['gov_hero_fallback_image'] = $thumbnail_url;
+          break 2;
+        }
+      }
+    }
+
+    if ($variables['gov_hero_fallback_image'] === '') {
+      $fallback_course = is_array($variables['featured_courses'] ?? NULL) ? reset($variables['featured_courses']) : NULL;
+      $fallback_category = reset($categories);
+      $variables['gov_hero_fallback_image'] = (string) (
+        ($fallback_course['thumbnail_url'] ?? '')
+        ?: ($fallback_category['thumbnail_url'] ?? '')
+      );
+    }
+  }
 }
 
 /**

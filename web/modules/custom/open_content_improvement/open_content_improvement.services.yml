@@ -1,0 +1,184 @@
+services:
+  logger.channel.open_content_improvement:
+    parent: logger.channel_base
+    arguments: ['open_content_improvement']
+
+  plugin.manager.oci_field_value_handler:
+    class: Drupal\open_content_improvement\FieldValueHandlerManager
+    parent: default_plugin_manager
+
+  plugin.manager.oci_entity_handler:
+    class: Drupal\open_content_improvement\EntityHandlerManager
+    parent: default_plugin_manager
+
+  open_content_improvement.discovery:
+    class: Drupal\open_content_improvement\Service\EntityTypeDiscovery
+    arguments:
+      - '@entity_type.manager'
+      - '@entity_field.manager'
+      - '@entity_type.bundle.info'
+      - '@config.factory'
+
+  open_content_improvement.classifier:
+    class: Drupal\open_content_improvement\Service\FieldClassifier
+    arguments:
+      - '@plugin.manager.oci_field_value_handler'
+      - '@config.factory'
+      - '@module_handler'
+      - '@entity_type.manager'
+      - '@entity_field.manager'
+      - '@logger.channel.open_content_improvement'
+
+  open_content_improvement.hasher:
+    class: Drupal\open_content_improvement\Service\CanonicalHasher
+    arguments: ['@state']
+
+  open_content_improvement.export_root:
+    class: Drupal\open_content_improvement\Service\ExportRootResolver
+    arguments:
+      - '@config.factory'
+      - '@file_system'
+      - '@stream_wrapper_manager'
+      - '@state'
+
+  open_content_improvement.path_guard:
+    class: Drupal\open_content_improvement\Service\PathGuard
+    arguments: ['@file_system', '@stream_wrapper_manager']
+
+  open_content_improvement.yaml_writer:
+    class: Drupal\open_content_improvement\Service\AnnotatedYamlWriter
+    arguments: ['@open_content_improvement.path_guard']
+
+  open_content_improvement.sidecar_store:
+    class: Drupal\open_content_improvement\Service\SidecarStore
+    arguments: ['@file_system', '@open_content_improvement.path_guard', '@config.factory']
+
+  open_content_improvement.binary_store:
+    class: Drupal\open_content_improvement\Service\BinaryStore
+    arguments:
+      - '@file_system'
+      - '@stream_wrapper_manager'
+      - '@?file.repository'
+      - '@?file.validator'
+      - '@module_handler'
+      - '@entity_type.manager'
+      - '@open_content_improvement.path_guard'
+      - '@config.factory'
+      - '@logger.channel.open_content_improvement'
+
+  open_content_improvement.manifest:
+    class: Drupal\open_content_improvement\Service\ManifestBuilder
+    arguments:
+      - '@config.factory'
+      - '@database'
+      - '@request_stack'
+      - '@extension.list.module'
+      - '@open_content_improvement.discovery'
+
+  open_content_improvement.doc_generator:
+    class: Drupal\open_content_improvement\Service\DocGenerator
+    arguments:
+      - '@open_content_improvement.discovery'
+      - '@open_content_improvement.classifier'
+      - '@entity_type.manager'
+      - '@language_manager'
+
+  open_content_improvement.batch_planner:
+    class: Drupal\open_content_improvement\Service\BatchPlanner
+    arguments: ['@file_system', '@open_content_improvement.doc_generator']
+
+  open_content_improvement.reference_resolver:
+    class: Drupal\open_content_improvement\Service\ReferenceResolver
+    arguments: ['@entity.repository', '@entity_type.manager']
+
+  open_content_improvement.exporter:
+    class: Drupal\open_content_improvement\Service\Exporter
+    arguments:
+      - '@open_content_improvement.discovery'
+      - '@open_content_improvement.classifier'
+      - '@plugin.manager.oci_entity_handler'
+      - '@plugin.manager.oci_field_value_handler'
+      - '@open_content_improvement.hasher'
+      - '@open_content_improvement.yaml_writer'
+      - '@open_content_improvement.sidecar_store'
+      - '@open_content_improvement.binary_store'
+      - '@open_content_improvement.manifest'
+      - '@open_content_improvement.doc_generator'
+      - '@open_content_improvement.export_root'
+      - '@entity_type.manager'
+      - '@language_manager'
+      - '@transliteration'
+      - '@config.factory'
+      - '@logger.channel.open_content_improvement'
+
+  open_content_improvement.scanner:
+    class: Drupal\open_content_improvement\Service\TreeScanner
+    arguments:
+      - '@entity_type.manager'
+      - '@open_content_improvement.path_guard'
+      - '@open_content_improvement.manifest'
+      - '@file_system'
+
+  open_content_improvement.validator:
+    class: Drupal\open_content_improvement\Service\ImportValidator
+    arguments:
+      - '@open_content_improvement.classifier'
+      - '@plugin.manager.oci_field_value_handler'
+      - '@open_content_improvement.reference_resolver'
+      - '@open_content_improvement.hasher'
+      - '@open_content_improvement.sidecar_store'
+      - '@entity_field.manager'
+      - '@entity_type.manager'
+      - '@config.factory'
+
+  open_content_improvement.differ:
+    class: Drupal\open_content_improvement\Service\Differ
+    arguments: ['@open_content_improvement.sidecar_store']
+
+  open_content_improvement.journal:
+    class: Drupal\open_content_improvement\Service\RunJournal
+    arguments: ['@database', '@state', '@datetime.time']
+
+  open_content_improvement.audit:
+    class: Drupal\open_content_improvement\Service\AuditLogger
+    arguments: ['@database', '@datetime.time']
+
+  open_content_improvement.importer:
+    class: Drupal\open_content_improvement\Service\ImportWriter
+    arguments:
+      - '@open_content_improvement.exporter'
+      - '@open_content_improvement.validator'
+      - '@open_content_improvement.differ'
+      - '@open_content_improvement.scanner'
+      - '@plugin.manager.oci_field_value_handler'
+      - '@plugin.manager.oci_entity_handler'
+      - '@open_content_improvement.hasher'
+      - '@open_content_improvement.binary_store'
+      - '@open_content_improvement.journal'
+      - '@open_content_improvement.audit'
+      - '@open_content_improvement.export_root'
+      - '@entity.repository'
+      - '@entity_type.manager'
+      - '@module_handler'
+      - '@database'
+      - '@current_user'
+      - '@datetime.time'
+      - '@config.factory'
+      - '@logger.channel.open_content_improvement'
+      - '@account_switcher'
+
+  open_content_improvement.suggester:
+    class: Drupal\open_content_improvement\Service\ImportabilitySuggester
+    arguments:
+      - '@open_content_improvement.discovery'
+      - '@open_content_improvement.classifier'
+      - '@entity_type.manager'
+      - '@module_handler'
+
+  open_content_improvement.config_text_exporter:
+    class: Drupal\open_content_improvement\Service\ConfigTextExporter
+    arguments: ['@config.factory', '@config.typed', '@config.storage']
+
+  open_content_improvement.interface_text_exporter:
+    class: Drupal\open_content_improvement\Service\InterfaceTextExporter
+    arguments: ['@?locale.storage', '@module_handler', '@language_manager']

@@ -18,7 +18,7 @@ class RevokeCertificateForm extends ConfirmFormBase {
     return 'lms_certificate_revoke_form';
   }
 
-  public function buildForm(array $form, FormStateInterface $form_state, EntityInterface $lms_user_certificate = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, ?EntityInterface $lms_user_certificate = NULL) {
     $this->certificate = $lms_user_certificate;
     
     $form['revoke_reason'] = [

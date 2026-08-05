@@ -1,0 +1,119 @@
+{{ attach_library('lms_theme/global') }}
+{{ attach_library('lms_progress/instructor_course_stats') }}
+
+<section class="lms-section lms-my-courses-page lms-instructor-page">
+  <div class="container">
+    <div class="lms-my-courses-page__hero">
+      <div class="lms-my-courses-page__hero-copy">
+        <span class="lms-my-courses-page__eyebrow">{{ 'Instructor workspace'|t }}</span>
+        <h1 class="lms-my-courses-page__title">{{ 'Courses I Teach'|t }}</h1>
+        <p class="lms-my-courses-page__subtitle">{{ 'This list is scoped to your instructor assignments, with owner fallback only for older courses that have not been assigned yet.'|t }}</p>
+        <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.25rem;">
+          <a href="{{ dashboard_url }}" class="btn-lms-primary is-secondary">{{ 'Dashboard'|t }}</a>
+          <a href="{{ students_url }}" class="btn-lms-primary">{{ 'Student Roster'|t }}</a>
+        </div>
+      </div>
+
+      <div class="lms-my-courses-page__summary">
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.total }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Total Courses'|t }}</span>
+        </div>
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.published }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Published'|t }}</span>
+        </div>
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.draft }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Draft'|t }}</span>
+        </div>
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.students }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Students'|t }}</span>
+        </div>
+      </div>
+    </div>
+
+    {% if courses %}
+      <div class="grid-courses lms-learning-grid">
+        {% for item in courses %}
+          <article
+            class="card-lms lms-learning-card lms-learning-card--instructor"
+            data-course-stats-card
+            data-stats-summary-url="{{ item.stats_summary_url }}"
+          >
+            <a class="lms-learning-card__media" href="{{ item.public_url }}">
+              {% if item.thumbnail_url %}
+                <img src="{{ item.thumbnail_url }}" alt="{{ item.title }}" loading="lazy">
+              {% else %}
+                <span class="lms-learning-card__placeholder"><i class="fas fa-book-reader"></i></span>
+              {% endif %}
+            </a>
+
+            <div class="lms-course-stats-popover" data-course-stats-popup>
+              <div class="lms-course-stats-popover__head">
+                <span class="lms-course-stats-popover__eyebrow">{{ 'Course insights'|t }}</span>
+                {% if item.stats_url %}
+                  <a href="{{ item.stats_url }}" class="lms-course-stats-popover__link">{{ 'Open stats'|t }}</a>
+                {% endif %}
+              </div>
+              <h4 class="lms-course-stats-popover__title">{{ item.title }}</h4>
+              {% if item.short_description %}
+                <p class="lms-course-stats-popover__copy">{{ item.short_description }}</p>
+              {% endif %}
+              <div class="lms-course-stats-popover__status">
+                <span data-course-stats-state>{{ item.state == 'published' ? 'Published'|t : 'Draft'|t }}</span>
+                {% if item.category %}
+                  <span class="lms-course-stats-popover__dot"></span>
+                  <span data-course-stats-category>{{ item.category }}</span>
+                {% endif %}
+              </div>
+              <div class="lms-course-stats-popover__grid">
+                <div class="lms-course-stats-popover__metric">
+                  <span class="lms-course-stats-popover__label">{{ 'Learners'|t }}</span>
+                  <strong data-stat-value="enrollments">{{ item.enrollments }}</strong>
+                </div>
+                <div class="lms-course-stats-popover__metric">
+                  <span class="lms-course-stats-popover__label">{{ 'Active'|t }}</span>
+                  <strong data-stat-value="active_students">{{ item.active_students }}</strong>
+                </div>
+                <div class="lms-course-stats-popover__metric">
+                  <span class="lms-course-stats-popover__label">{{ 'Avg progress'|t }}</span>
+                  <strong data-stat-value="average_progress">{{ item.average_progress|number_format(1) }}%</strong>
+                </div>
+                <div class="lms-course-stats-popover__metric">
+                  <span class="lms-course-stats-popover__label">{{ 'Completion'|t }}</span>
+                  <strong data-stat-value="completion_rate">{{ item.completion_rate|number_format(1) }}%</strong>
+                </div>
+              </div>
+              <div class="lms-course-stats-popover__meta-strip">
+                <span class="lms-course-stats-popover__meta-chip">{{ 'Quiz'|t }} <strong data-stat-value="quiz_attempts">--</strong></span>
+                <span class="lms-course-stats-popover__meta-chip">{{ 'Comments'|t }} <strong data-stat-value="comment_count">--</strong></span>
+                <span class="lms-course-stats-popover__meta-chip">{{ 'Questions'|t }} <strong data-stat-value="question_count">--</strong></span>
+              </div>
+              <p class="lms-course-stats-popover__hint" data-course-stats-hint>{{ 'Hover to load fresh instructor stats.'|t }}</p>
+            </div>
+
+            <div class="lms-learning-card__body">
+              <h3 class="lms-learning-card__title"><a href="{{ item.public_url }}">{{ item.title }}</a></h3>
+              {% if item.short_description %}
+                <p class="lms-learning-card__summary">{{ item.short_description }}</p>
+              {% endif %}
+              <div class="lms-learning-card__surface-meta">
+                {% if item.category %}
+                  <span class="lms-learning-card__surface-chip">{{ item.category }}</span>
+                {% endif %}
+                <span class="lms-learning-card__surface-chip">{{ item.state == 'published' ? 'Published'|t : 'Draft'|t }}</span>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="lms-learning-empty">
+        <i class="fas fa-book-reader"></i>
+        <h3>{{ 'No assigned courses found'|t }}</h3>
+      </div>
+    {% endif %}
+  </div>
+</section>

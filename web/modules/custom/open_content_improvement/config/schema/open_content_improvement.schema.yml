@@ -1,0 +1,173 @@
+open_content_improvement.settings:
+  type: config_object
+  label: 'Open Content Improvement settings'
+  mapping:
+    export_root:
+      type: string
+      label: 'Export root URI (stream wrapper)'
+    export_root_hardening:
+      type: string
+      label: 'Export root hardening mode'
+    random_segment:
+      type: string
+      label: 'Random path segment (generated at install)'
+    pii_guard:
+      type: string
+      label: 'PII guard mode'
+    probe_export_root_over_http:
+      type: boolean
+      label: 'Probe the export root over HTTP at runtime (opt-in)'
+    acknowledge_public_export:
+      type: boolean
+      label: 'Operator has acknowledged export to a public:// root'
+    entity_type_denylist:
+      type: sequence
+      label: 'Entity types never exported'
+      sequence:
+        type: string
+        label: 'Entity type ID'
+    field_denylist_patterns:
+      type: sequence
+      label: 'Field deny patterns'
+      sequence:
+        type: string
+        label: 'Pattern'
+    field_surface_overrides:
+      type: sequence
+      label: 'Per-field surface overrides'
+      sequence:
+        type: mapping
+        label: 'Override'
+        mapping:
+          pattern:
+            type: string
+            label: 'Glob over entity_type.bundle.field_name'
+          surface:
+            type: string
+            label: 'Forced surface: content | system | skip'
+    sensitive_field_types:
+      type: sequence
+      label: 'Field types never exported'
+      sequence:
+        type: string
+        label: 'Field type plugin ID'
+    frozen_constraint_patterns:
+      type: sequence
+      label: 'Constraint plugin ID globs that freeze a field'
+      sequence:
+        type: string
+        label: 'Pattern'
+    sidecar_threshold:
+      type: integer
+      label: 'Characters above which a string moves to a sidecar file'
+    pretty_print_html:
+      type: boolean
+      label: 'Pretty-print HTML sidecars'
+    emit_markdown_preview:
+      type: boolean
+      label: 'Emit read-only *.preview.md alongside HTML sidecars'
+    include_binaries:
+      type: boolean
+      label: 'Copy binary files into the tree'
+    exportable_schemes:
+      type: sequence
+      label: 'Stream wrapper schemes whose binaries may be copied'
+      sequence:
+        type: string
+        label: 'Scheme'
+    max_export_filesize:
+      type: integer
+      label: 'Maximum bytes per exported binary'
+    max_import_filesize:
+      type: integer
+      label: 'Maximum bytes per imported binary'
+    max_total_export_size:
+      type: integer
+      label: 'Maximum total bytes of the export tree'
+    max_sidecar_size:
+      type: integer
+      label: 'Maximum bytes per text sidecar'
+    importable_entity_types:
+      type: sequence
+      label: 'Entity types the importer may write'
+      sequence:
+        type: string
+        label: 'Entity type ID'
+    immutable_entity_types:
+      type: sequence
+      label: 'Entity types never written'
+      sequence:
+        type: string
+        label: 'Entity type ID'
+    writable_text_formats:
+      type: sequence
+      label: 'Text-format ids an import may switch a field to'
+      sequence:
+        type: string
+        label: 'Text format id'
+    create_new_revision:
+      type: boolean
+      label: 'Create a new revision where the entity type supports it'
+    allow_supersede_pending_revision:
+      type: boolean
+      label: 'Allow writing over an entity that has a newer pending revision'
+    missing_reference_policy:
+      type: string
+      label: 'Policy when a reference target is missing'
+    on_drift:
+      type: string
+      label: 'Policy on field-inventory drift'
+    allow_delta_removal:
+      type: boolean
+      label: 'Allow _remove_deltas in import payloads'
+    allow_translation_removal:
+      type: boolean
+      label: 'Allow explicit translation removal markers'
+    max_refused_ratio:
+      type: float
+      label: 'Fraction of refused units tolerated before phase 2 is blocked'
+    change_cap:
+      type: integer
+      label: 'Changed-entity count above which explicit confirmation is required'
+    max_tree_age:
+      type: integer
+      label: 'Seconds after which an export tree is considered stale'
+    lock_ttl:
+      type: integer
+      label: 'Seconds after which a run lock is considered abandoned'
+    environment_label:
+      type: string
+      label: 'Environment label'
+    require_confirmation_on:
+      type: sequence
+      label: 'Environment labels requiring unconditional confirmation'
+      sequence:
+        type: string
+        label: 'Environment label'
+    export_config_text:
+      type: boolean
+      label: 'Export config-held display text (read-only, tier 3)'
+    export_interface_text:
+      type: boolean
+      label: 'Export interface translation inventory (read-only, tier 4)'
+    config_deny_paths:
+      type: sequence
+      label: 'Globs over config that are never exported'
+      sequence:
+        type: string
+        label: 'Pattern'
+    config_require_paths:
+      type: sequence
+      label: 'Globs a config object must match to be exported'
+      sequence:
+        type: string
+        label: 'Pattern'
+    chunk_size:
+      type: integer
+      label: 'Entities loaded per chunk'
+    use_queue:
+      type: boolean
+      label: 'Route work through the Queue API instead of Batch'
+    delete_export_on_uninstall:
+      type: boolean
+      label: 'Delete the export tree on uninstall'

@@ -567,7 +567,8 @@ final class UserPortalController extends ControllerBase {
     $scorm_url = '';
     if ($lesson_type === 'scorm') {
       $scorm_path = 'public://scorm_extracted/' . $lms_lesson->id() . '/index.html';
-      if (is_string($scorm_path) && file_exists($scorm_path)) {
+      $scorm_realpath = \Drupal::service('file_system')->realpath($scorm_path);
+      if ($scorm_realpath && file_exists($scorm_realpath)) {
         $scorm_url = \Drupal::service('file_url_generator')->generateString($scorm_path);
       }
     }
@@ -622,13 +623,14 @@ final class UserPortalController extends ControllerBase {
     
     $build['#comments'] = $comments_build;
     
-    $build['#cache'] = [
-      'tags' => array_merge(
-        ['lms_note:' . $lms_lesson->id() . ':' . $uid],
-        $lms_lesson->getCacheTags()
-      ),
-      'contexts' => ['user', 'url.query_args'],
-    ];
+  $build['#cache'] = [
+    'tags' => array_merge(
+      ['lms_note:' . $lms_lesson->id() . ':' . $uid],
+      $lms_lesson->getCacheTags()
+    ),
+    'contexts' => ['user', 'url.query_args'],
+    'max-age' => 0,
+  ];
 
     if ($lesson_type === 'zoom') {
       $build['#attached']['library'][] = 'lms_zoom/countdown';

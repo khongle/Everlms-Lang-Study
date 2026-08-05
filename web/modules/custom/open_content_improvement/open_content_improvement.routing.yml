@@ -1,0 +1,59 @@
+open_content_improvement.settings:
+  path: '/admin/config/development/content-improvement'
+  defaults:
+    _form: '\Drupal\open_content_improvement\Form\SettingsForm'
+    _title: 'Open Content Improvement'
+  requirements:
+    _permission: 'administer open content improvement'
+  options:
+    _admin_route: TRUE
+
+open_content_improvement.importability:
+  path: '/admin/config/development/content-improvement/importability'
+  defaults:
+    _form: '\Drupal\open_content_improvement\Form\ImportabilityForm'
+    _title: 'Importable entity types'
+  requirements:
+    _permission: 'administer open content improvement'
+  options:
+    _admin_route: TRUE
+
+open_content_improvement.export:
+  path: '/admin/config/development/content-improvement/export'
+  defaults:
+    _form: '\Drupal\open_content_improvement\Form\ExportForm'
+    _title: 'Export content'
+  requirements:
+    _permission: 'export open content improvement'
+  options:
+    _admin_route: TRUE
+
+open_content_improvement.import:
+  path: '/admin/config/development/content-improvement/import'
+  defaults:
+    _form: '\Drupal\open_content_improvement\Form\ImportForm'
+    _title: 'Import improved content'
+  requirements:
+    _permission: 'import open content improvement'
+  options:
+    _admin_route: TRUE
+
+open_content_improvement.status:
+  path: '/admin/config/development/content-improvement/status'
+  defaults:
+    _controller: '\Drupal\open_content_improvement\Controller\StatusController::overview'
+    _title: 'Status'
+  requirements:
+    _permission: 'export open content improvement'
+  options:
+    _admin_route: TRUE
+
+open_content_improvement.report:
+  path: '/admin/config/development/content-improvement/report/{run_id}'
+  defaults:
+    _controller: '\Drupal\open_content_improvement\Controller\StatusController::report'
+    _title: 'Run report'
+  requirements:
+    _permission: 'export open content improvement'
+  options:
+    _admin_route: TRUE

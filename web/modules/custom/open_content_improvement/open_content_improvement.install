@@ -1,0 +1,133 @@
+<?php
+
+/**
+ * @file
+ * Install, uninstall, requirements and schema for Open Content Improvement.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Component\Utility\Crypt;
+
+/**
+ * Implements hook_schema().
+ *
+ * Two module-owned tables. No raw SQL is ever run against another module's
+ * tables (portability contract §4.1).
+ */
+function open_content_improvement_schema(): array {
+  $schema['oci_journal'] = [
+    'description' => 'Per-entity import journal; one row per (run_id, uuid, langcode).',
+    'fields' => [
+      'id' => ['type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE],
+      'run_id' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+      'entity_uuid' => ['type' => 'varchar', 'length' => 128, 'not null' => TRUE],
+      'langcode' => ['type' => 'varchar', 'length' => 12, 'not null' => TRUE, 'default' => ''],
+      'state' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'pending'],
+      'source_hash' => ['type' => 'varchar', 'length' => 80, 'not null' => FALSE],
+      'created' => ['type' => 'int', 'not null' => TRUE, 'default' => 0],
+      'changed' => ['type' => 'int', 'not null' => TRUE, 'default' => 0],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'run' => ['run_id'],
+      'run_unit' => ['run_id', 'entity_uuid', 'langcode'],
+    ],
+  ];
+  $schema['oci_audit'] = [
+    'description' => 'Append-only audit log; one row per changed field-delta.',
+    'fields' => [
+      'id' => ['type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE],
+      'run_id' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+      'entity_type' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+      'entity_id' => ['type' => 'varchar', 'length' => 64, 'not null' => FALSE],
+      'entity_uuid' => ['type' => 'varchar', 'length' => 128, 'not null' => TRUE],
+      'langcode' => ['type' => 'varchar', 'length' => 12, 'not null' => TRUE, 'default' => ''],
+      'field_name' => ['type' => 'varchar', 'length' => 128, 'not null' => TRUE],
+      'delta' => ['type' => 'int', 'not null' => TRUE, 'default' => 0],
+      'action' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE],
+      'actor' => ['type' => 'varchar', 'length' => 128, 'not null' => FALSE],
+      'reason' => ['type' => 'text', 'not null' => FALSE],
+      'created' => ['type' => 'int', 'not null' => TRUE, 'default' => 0],
+    ],
+    'primary key' => ['id'],
+    'indexes' => ['run' => ['run_id']],
+  ];
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ *
+ * Generates the HMAC key used to seal the _meta block, and (when configured)
+ * the random path segment. Prepares and hardens the export root.
+ */
+function open_content_improvement_install(): void {
+  $state = \Drupal::state();
+  if (!$state->get('open_content_improvement.meta_key')) {
+    $state->set('open_content_improvement.meta_key', Crypt::randomBytesBase64(48));
+    $state->set('open_content_improvement.meta_key_id', 1);
+  }
+  $config = \Drupal::configFactory()->getEditable('open_content_improvement.settings');
+  if ($config->get('export_root_hardening') === 'random_segment' && !$config->get('random_segment')) {
+    $config->set('random_segment', substr(Crypt::randomBytesBase64(12), 0, 12))->save();
+  }
+  try {
+    \Drupal::service('open_content_improvement.export_root')->prepare();
+  }
+  catch (\Throwable $e) {
+    \Drupal::logger('open_content_improvement')->warning('Could not prepare export root at install: @m', ['@m' => $e->getMessage()]);
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function open_content_improvement_uninstall(): void {
+  $state = \Drupal::state();
+  $state->delete('open_content_improvement.meta_key');
+  $state->delete('open_content_improvement.meta_key_id');
+  $config = \Drupal::config('open_content_improvement.settings');
+  if ($config->get('delete_export_on_uninstall')) {
+    try {
+      $root = \Drupal::service('open_content_improvement.export_root')->root();
+      \Drupal::service('file_system')->deleteRecursive($root);
+    }
+    catch (\Throwable $e) {
+      // Never fail an uninstall on cleanup.
+    }
+  }
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function open_content_improvement_requirements($phase): array {
+  $requirements = [];
+  if ($phase === 'runtime') {
+    $moduleHandler = \Drupal::moduleHandler();
+    if (!$moduleHandler->moduleExists('file')) {
+      $requirements['oci_file'] = [
+        'title' => t('Open Content Improvement: file module'),
+        'value' => t('Not enabled'),
+        'description' => t('The core "file" module is not enabled — binary files (images, attachments) will not be copied. Text and structured values still round-trip.'),
+        'severity' => REQUIREMENT_INFO,
+      ];
+    }
+    try {
+      $verdict = \Drupal::service('open_content_improvement.export_root')->securityVerdict();
+      if (($verdict['scheme'] ?? '') === 'public') {
+        $requirements['oci_export_root'] = [
+          'title' => t('Open Content Improvement: export root'),
+          'value' => t('Public (@root)', ['@root' => $verdict['root'] ?? '']),
+          'description' => t('The export tree, including unpublished content, is written under a public:// root. This is obscured by an .htaccess deny rule but is not true access control. Switch export_root to private:// on any site that has a private filesystem.'),
+          'severity' => REQUIREMENT_WARNING,
+        ];
+      }
+    }
+    catch (\Throwable $e) {
+      // Ignore verdict failures at requirements time.
+    }
+  }
+  return $requirements;
+}

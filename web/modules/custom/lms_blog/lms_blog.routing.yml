@@ -34,7 +34,7 @@ lms_blog.frontend.collection:
   path: '/news'
   defaults:
     _controller: '\Drupal\lms_blog\Controller\LmsBlogController::index'
-    _title: 'Latest News & Insights'
+    _title: 'Tin tức & kiến thức mới'
   requirements:
     _access: 'TRUE'
 

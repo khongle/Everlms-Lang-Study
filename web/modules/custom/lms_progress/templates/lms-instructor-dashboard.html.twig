@@ -1,0 +1,178 @@
+{{ attach_library('lms_theme/global') }}
+{{ attach_library('lms_progress/instructor_course_stats') }}
+
+<section class="lms-section lms-dashboard-page lms-instructor-page">
+  <div class="container">
+    <div class="lms-dashboard-page__hero" style="grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem; align-items: stretch;">
+      <div class="lms-dashboard-page__hero-copy">
+        <span class="lms-dashboard-page__eyebrow">{{ hero.eyebrow }}</span>
+        <h1 class="lms-dashboard-page__title">{{ hero.title }}</h1>
+        <p class="lms-dashboard-page__subtitle">{{ hero.subtitle }}</p>
+
+        <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.5rem;">
+          <a href="{{ courses_url }}" class="btn-lms-primary">{{ 'My Courses'|t }}</a>
+          <a href="{{ students_url }}" class="btn-lms-primary is-secondary">{{ 'Student Roster'|t }}</a>
+          {% if has_learner_portal %}
+            <a href="{{ learner_dashboard_url }}" class="btn-lms-primary is-secondary">{{ 'Learner View'|t }}</a>
+          {% endif %}
+          <a href="{{ profile_url }}" class="btn-lms-primary is-secondary">{{ 'My Profile'|t }}</a>
+        </div>
+      </div>
+
+      <article class="lms-learning-spotlight lms-learning-spotlight--compact">
+        <div class="lms-learning-spotlight__body">
+          <div class="lms-learning-spotlight__meta">
+            <span class="lms-learning-spotlight__category">{{ spotlight.category }}</span>
+            <span class="lms-learning-spotlight__status">{{ spotlight.status }}</span>
+          </div>
+
+          <h2 class="lms-learning-spotlight__title">{{ spotlight.title }}</h2>
+          <p class="lms-learning-spotlight__copy">{{ spotlight.copy }}</p>
+
+          <div class="lms-learning-progress lms-learning-progress--hero">
+            <div class="lms-learning-progress__meta">
+              <span>{{ 'Average progress'|t }}</span>
+              <strong>{{ stats.average_progress|number_format(1) }}%</strong>
+            </div>
+            <div class="lms-learning-progress__track">
+              <span class="lms-learning-progress__fill" data-progress="{{ stats.average_progress|number_format(2, '.', '') }}"></span>
+            </div>
+          </div>
+
+          <div class="lms-learning-progress lms-learning-progress--hero" style="margin-top:1rem;">
+            <div class="lms-learning-progress__meta">
+              <span>{{ 'Completion rate'|t }}</span>
+              <strong>{{ stats.completion_rate|number_format(1) }}%</strong>
+            </div>
+            <div class="lms-learning-progress__track">
+              <span class="lms-learning-progress__fill is-completed" data-progress="{{ stats.completion_rate|number_format(2, '.', '') }}"></span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="lms-kpi-grid">
+      <div class="card-glass lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--primary"><i class="fas fa-book-open"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__value">{{ stats.courses }}</span>
+          <span class="lms-kpi-card__label">{{ 'Courses Taught'|t }}</span>
+        </div>
+      </div>
+      <div class="card-glass lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--info"><i class="fas fa-users"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__value">{{ stats.students }}</span>
+          <span class="lms-kpi-card__label">{{ 'Unique Students'|t }}</span>
+        </div>
+      </div>
+      <div class="card-glass lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--warning"><i class="fas fa-chart-line"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__value">{{ stats.active_students }}</span>
+          <span class="lms-kpi-card__label">{{ 'Active Students'|t }}</span>
+        </div>
+      </div>
+      <div class="card-glass lms-kpi-card">
+        <div class="lms-kpi-card__icon lms-kpi-card__icon--success"><i class="fas fa-check-circle"></i></div>
+        <div class="lms-kpi-card__content">
+          <span class="lms-kpi-card__value">{{ stats.completion_rate|number_format(1) }}%</span>
+          <span class="lms-kpi-card__label">{{ 'Completion Rate'|t }}</span>
+        </div>
+      </div>
+    </div>
+
+    {% if courses %}
+      <div class="lms-dashboard-page__section">
+        <div class="lms-learning-toolbar">
+          <div>
+            <h2 class="lms-learning-toolbar__title">{{ queue.title }}</h2>
+            <p class="lms-learning-toolbar__subtitle">{{ queue.subtitle }}</p>
+          </div>
+          <a href="{{ courses_url }}" class="btn-lms-primary is-secondary">{{ 'View all courses'|t }}</a>
+        </div>
+
+        <div class="grid-courses lms-learning-grid">
+          {% for item in courses %}
+            <article
+              class="card-lms lms-learning-card lms-learning-card--instructor"
+              data-course-stats-card
+              data-stats-summary-url="{{ item.stats_summary_url }}"
+            >
+              <a class="lms-learning-card__media" href="{{ item.public_url }}">
+                {% if item.thumbnail_url %}
+                  <img src="{{ item.thumbnail_url }}" alt="{{ item.title }}" loading="lazy">
+                {% else %}
+                  <span class="lms-learning-card__placeholder"><i class="fas fa-chalkboard-teacher"></i></span>
+                {% endif %}
+              </a>
+
+              <div class="lms-course-stats-popover" data-course-stats-popup>
+                <div class="lms-course-stats-popover__head">
+                  <span class="lms-course-stats-popover__eyebrow">{{ 'Course insights'|t }}</span>
+                  {% if item.stats_url %}
+                    <a href="{{ item.stats_url }}" class="lms-course-stats-popover__link">{{ 'Open stats'|t }}</a>
+                  {% endif %}
+                </div>
+                <h4 class="lms-course-stats-popover__title">{{ item.title }}</h4>
+                {% if item.short_description %}
+                  <p class="lms-course-stats-popover__copy">{{ item.short_description }}</p>
+                {% endif %}
+                <div class="lms-course-stats-popover__status">
+                  <span data-course-stats-state>{{ item.state == 'published' ? 'Published'|t : 'Draft'|t }}</span>
+                  {% if item.category %}
+                    <span class="lms-course-stats-popover__dot"></span>
+                    <span data-course-stats-category>{{ item.category }}</span>
+                  {% endif %}
+                </div>
+                <div class="lms-course-stats-popover__grid">
+                  <div class="lms-course-stats-popover__metric">
+                    <span class="lms-course-stats-popover__label">{{ 'Learners'|t }}</span>
+                    <strong data-stat-value="enrollments">{{ item.enrollments }}</strong>
+                  </div>
+                  <div class="lms-course-stats-popover__metric">
+                    <span class="lms-course-stats-popover__label">{{ 'Active'|t }}</span>
+                    <strong data-stat-value="active_students">{{ item.active_students }}</strong>
+                  </div>
+                  <div class="lms-course-stats-popover__metric">
+                    <span class="lms-course-stats-popover__label">{{ 'Avg progress'|t }}</span>
+                    <strong data-stat-value="average_progress">{{ item.average_progress|number_format(1) }}%</strong>
+                  </div>
+                  <div class="lms-course-stats-popover__metric">
+                    <span class="lms-course-stats-popover__label">{{ 'Completion'|t }}</span>
+                    <strong data-stat-value="completion_rate">{{ item.completion_rate|number_format(1) }}%</strong>
+                  </div>
+                </div>
+                <div class="lms-course-stats-popover__meta-strip">
+                  <span class="lms-course-stats-popover__meta-chip">{{ 'Quiz'|t }} <strong data-stat-value="quiz_attempts">--</strong></span>
+                  <span class="lms-course-stats-popover__meta-chip">{{ 'Comments'|t }} <strong data-stat-value="comment_count">--</strong></span>
+                  <span class="lms-course-stats-popover__meta-chip">{{ 'Questions'|t }} <strong data-stat-value="question_count">--</strong></span>
+                </div>
+                <p class="lms-course-stats-popover__hint" data-course-stats-hint>{{ 'Hover to load fresh instructor stats.'|t }}</p>
+              </div>
+
+              <div class="lms-learning-card__body">
+                <h3 class="lms-learning-card__title"><a href="{{ item.public_url }}">{{ item.title }}</a></h3>
+                {% if item.short_description %}
+                  <p class="lms-learning-card__summary">{{ item.short_description }}</p>
+                {% endif %}
+                <div class="lms-learning-card__surface-meta">
+                  {% if item.category %}
+                    <span class="lms-learning-card__surface-chip">{{ item.category }}</span>
+                  {% endif %}
+                  <span class="lms-learning-card__surface-chip">{{ item.state == 'published' ? 'Published'|t : 'Draft'|t }}</span>
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="lms-learning-empty">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <h3>{{ 'No courses are assigned to this instructor yet'|t }}</h3>
+      </div>
+    {% endif %}
+  </div>
+</section>

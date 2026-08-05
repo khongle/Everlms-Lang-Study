@@ -1,0 +1,145 @@
+{{ attach_library('lms_theme/global') }}
+{{ attach_library('lms_progress/instructor_students') }}
+
+<section class="lms-section lms-dashboard-page lms-instructor-page">
+  <div class="container">
+    <div class="lms-dashboard-page__hero" style="grid-template-columns: 1fr auto; gap: 1.5rem; align-items: stretch;">
+      <div class="lms-dashboard-page__hero-copy">
+        <span class="lms-dashboard-page__eyebrow">{{ 'Instructor workspace'|t }}</span>
+        <h1 class="lms-dashboard-page__title">{{ 'Students I Teach'|t }}</h1>
+        <p class="lms-dashboard-page__subtitle">{{ 'A single roster across every course currently assigned to you, including progress and completion state for each learner-course enrollment.'|t }}</p>
+        <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.25rem;">
+          <a href="{{ dashboard_url }}" class="btn-lms-primary is-secondary">{{ 'Dashboard'|t }}</a>
+          <a href="{{ courses_url }}" class="btn-lms-primary">{{ 'My Courses'|t }}</a>
+        </div>
+      </div>
+
+      <div class="lms-my-courses-page__summary" style="align-self:start;">
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.students }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Students'|t }}</span>
+        </div>
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.enrollments }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Enrollments'|t }}</span>
+        </div>
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.in_progress }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'In Progress'|t }}</span>
+        </div>
+        <div class="lms-my-courses-page__summary-card">
+          <span class="lms-my-courses-page__summary-value">{{ summary.completed }}</span>
+          <span class="lms-my-courses-page__summary-label">{{ 'Completed'|t }}</span>
+        </div>
+      </div>
+    </div>
+
+    {% if students %}
+      <section class="card-glass lms-instructor-roster" data-instructor-roster-root data-page-size="{{ page_size }}">
+        <div class="lms-instructor-roster__toolbar">
+          <div class="lms-instructor-roster__filter">
+            <label for="lms-instructor-student-filter">{{ 'Student'|t }}</label>
+            <input id="lms-instructor-student-filter" class="lms-instructor-roster__input" type="search" list="lms-instructor-student-options" autocomplete="off" placeholder="{{ 'Filter by student name or email'|t }}" data-instructor-filter="student">
+            <datalist id="lms-instructor-student-options">
+              {% for suggestion in student_suggestions %}
+                <option value="{{ suggestion }}"></option>
+              {% endfor %}
+            </datalist>
+          </div>
+          <div class="lms-instructor-roster__filter">
+            <label for="lms-instructor-course-filter">{{ 'Course'|t }}</label>
+            <input id="lms-instructor-course-filter" class="lms-instructor-roster__input" type="search" list="lms-instructor-course-options" autocomplete="off" placeholder="{{ 'Filter by course title'|t }}" data-instructor-filter="course">
+            <datalist id="lms-instructor-course-options">
+              {% for suggestion in course_suggestions %}
+                <option value="{{ suggestion }}"></option>
+              {% endfor %}
+            </datalist>
+          </div>
+          <div class="lms-instructor-roster__filter">
+            <label for="lms-instructor-status-filter">{{ 'Status'|t }}</label>
+            <select id="lms-instructor-status-filter" class="lms-instructor-roster__select" data-instructor-filter="status">
+              <option value="">{{ 'All statuses'|t }}</option>
+              <option value="in_progress">{{ 'In Progress'|t }}</option>
+              <option value="completed">{{ 'Completed'|t }}</option>
+              <option value="not_started">{{ 'Not Started'|t }}</option>
+            </select>
+          </div>
+          <div class="lms-instructor-roster__actions">
+            <div class="lms-instructor-roster__results" aria-live="polite">
+              <strong data-instructor-filter-count>{{ students|length }}</strong>
+              <span>{{ 'results'|t }}</span>
+            </div>
+            <button type="button" class="lms-instructor-roster__clear" data-instructor-filter-reset>{{ 'Clear filters'|t }}</button>
+          </div>
+        </div>
+
+        <div class="lms-table-responsive lms-instructor-roster__table-wrap">
+          <table class="lms-table lms-instructor-roster__table" data-instructor-roster>
+            <thead>
+              <tr>
+                <th>{{ 'Student'|t }}</th>
+                <th>{{ 'Course'|t }}</th>
+                <th>{{ 'Status'|t }}</th>
+                <th>{{ 'Progress'|t }}</th>
+                <th>{{ 'Enrolled'|t }}</th>
+                <th>{{ 'Completed At'|t }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in students %}
+                {% set status_label = item.status == 'completed' ? 'Completed'|t : (item.status == 'in_progress' ? 'In Progress'|t : 'Not Started'|t) %}
+                <tr data-instructor-roster-row data-student="{{ (item.student_name ~ ' ' ~ (item.email ?: ''))|lower|e('html_attr') }}" data-course="{{ item.course_title|lower|e('html_attr') }}" data-status="{{ item.status|e('html_attr') }}">
+                  <td>
+                    <div class="lms-instructor-roster__student">
+                      <strong><a href="{{ item.detail_url }}">{{ item.student_name }}</a></strong>
+                      {% if item.email %}
+                        <span>{{ item.email }}</span>
+                      {% endif %}
+                      <a href="{{ item.detail_url }}" class="lms-instructor-roster__detail-link">{{ 'View learner detail'|t }}</a>
+                    </div>
+                  </td>
+                  <td class="lms-instructor-roster__course">
+                    <a href="{{ item.course_url }}">{{ item.course_title }}</a>
+                  </td>
+                  <td>
+                    <span class="lms-learning-card__badge lms-instructor-roster__status{% if item.status == 'completed' %} is-completed{% elseif item.status == 'not_started' %} is-idle{% endif %}">{{ status_label }}</span>
+                  </td>
+                  <td>
+                    <div class="lms-instructor-roster__progress">
+                      <strong>{{ item.progress|number_format(1) }}%</strong>
+                      <div class="lms-learning-progress__track">
+                        <span class="lms-learning-progress__fill{% if item.status == 'completed' %} is-completed{% endif %}" data-progress="{{ item.progress|number_format(2, '.', '') }}"></span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ item.enrolled_at ?: 'N/A'|t }}</td>
+                  <td>{{ item.completed_at ?: 'N/A'|t }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="lms-instructor-roster__footer">
+          <div class="lms-instructor-roster__page-summary" data-instructor-page-summary></div>
+          <nav class="lms-instructor-roster__pagination" aria-label="{{ 'Student roster pagination'|t }}" data-instructor-pagination hidden>
+            <button type="button" class="lms-instructor-roster__page-button" data-instructor-page-prev>{{ 'Previous'|t }}</button>
+            <div class="lms-instructor-roster__page-list" data-instructor-pagination-pages></div>
+            <button type="button" class="lms-instructor-roster__page-button" data-instructor-page-next>{{ 'Next'|t }}</button>
+          </nav>
+        </div>
+
+        <div class="lms-instructor-roster__empty" data-instructor-empty hidden>
+          <i class="fas fa-search"></i>
+          <h3>{{ 'No students match the current filters'|t }}</h3>
+          <p>{{ 'Try a different student name, course title, or status.'|t }}</p>
+        </div>
+      </section>
+    {% else %}
+      <div class="lms-learning-empty">
+        <i class="fas fa-users"></i>
+        <h3>{{ 'No learner enrollments are visible for your assigned courses yet'|t }}</h3>
+      </div>
+    {% endif %}
+  </div>
+</section>

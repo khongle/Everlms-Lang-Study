@@ -1,0 +1,7 @@
+name: 'Open Content Improvement'
+type: module
+description: 'Exports every admin-editable content entity value and file to an editable tree under public://open_content_improvement/, and imports the edited tree back over the original entities in place.'
+core_version_requirement: ^10.3 || ^11
+package: Open Platform
+configure: open_content_improvement.settings
+# dependencies: intentionally absent — core-only, project-agnostic.

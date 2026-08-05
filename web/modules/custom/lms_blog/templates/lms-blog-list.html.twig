@@ -9,8 +9,8 @@
 <div class="blog-container container py-5 lms-news-list">
   <div class="row mb-5">
     <div class="col-12 text-center">
-      <h1 class="display-4 fw-bold">{{ 'Latest News & Insights'|t }}</h1>
-      <p class="lead text-muted">{{ 'Stay up to date with EverLMS tips, updates, and educational resources.'|t }}</p>
+      <h1 class="display-4 fw-bold">{{ 'Tin tức & kiến thức mới'|t }}</h1>
+      <p class="lead text-muted">{{ 'Cập nhật mẹo tập luyện, dinh dưỡng, phục hồi và hướng dẫn học hiệu quả.'|t }}</p>
     </div>
   </div>
 
@@ -20,7 +20,7 @@
       {% set article_summary = article.body.summary|default(article.body.value|striptags|slice(0, 180)) %}
       <div class="col-md-4">
         <article class="card h-100 rounded-4 overflow-hidden lms-news-list__card">
-          <a href="{{ article_url }}" class="lms-news-list__media" aria-label="{{ 'Open article'|t ~ ': ' ~ article.title.value }}">
+          <a href="{{ article_url }}" class="lms-news-list__media" aria-label="{{ 'Mở bài viết'|t ~ ': ' ~ article.title.value }}">
           {% if article.field_thumb.entity %}
             <img src="{{ file_url(article.field_thumb.entity.uri.value) }}" class="card-img-top" alt="{{ article.title.value }}">
           {% else %}
@@ -29,7 +29,7 @@
             </div>
           {% endif %}
             <span class="lms-news-list__hover" aria-hidden="true">
-              <span class="lms-news-list__hover-label">{{ 'Open article'|t }}</span>
+              <span class="lms-news-list__hover-label">{{ 'Mở bài viết'|t }}</span>
               <span class="lms-news-list__hover-copy">{{ article_summary|striptags|slice(0, 105) }}{% if article_summary|striptags|length > 105 %}...{% endif %}</span>
             </span>
           </a>
@@ -45,7 +45,7 @@
             </p>
             <div class="mt-auto d-flex justify-content-between align-items-center">
               <small class="text-muted"><i class="far fa-calendar-alt me-2"></i>{{ article.created.value|date('M d, Y') }}</small>
-              <a href="{{ article_url }}" class="lms-news-list__read-more">{{ 'Read more'|t }} <i class="fas fa-arrow-right ms-1"></i></a>
+              <a href="{{ article_url }}" class="lms-news-list__read-more">{{ 'Đọc thêm'|t }} <i class="fas fa-arrow-right ms-1"></i></a>
             </div>
           </div>
         </article>
@@ -54,8 +54,8 @@
       <div class="col-12 text-center py-5">
         <div class="p-5 rounded-4 shadow-sm lms-news-list__empty">
           <i class="far fa-newspaper fa-4x text-muted mb-3"></i>
-          <h4>{{ 'No articles published yet'|t }}</h4>
-          <p class="text-muted">{{ 'Check back later for exciting news from EverLMS.'|t }}</p>
+          <h4>{{ 'Chưa có bài viết nào được đăng'|t }}</h4>
+          <p class="text-muted">{{ 'Vui lòng quay lại sau để xem các cập nhật mới từ SilverCare.'|t }}</p>
         </div>
       </div>
     {% endfor %}

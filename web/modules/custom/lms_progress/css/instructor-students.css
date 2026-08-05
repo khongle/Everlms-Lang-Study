@@ -1,0 +1,256 @@
+.lms-instructor-roster {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.lms-instructor-roster__toolbar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+  align-items: end;
+}
+
+.lms-instructor-roster__filter {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.lms-instructor-roster__filter label {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.lms-instructor-roster__input,
+.lms-instructor-roster__select {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.8rem 0.95rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.lms-instructor-roster__input:focus,
+.lms-instructor-roster__select:focus {
+  outline: none;
+  border-color: rgba(14, 116, 144, 0.45);
+  box-shadow: 0 0 0 3px rgba(14, 116, 144, 0.12);
+}
+
+.lms-instructor-roster__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2.9rem;
+  flex-wrap: wrap;
+}
+
+.lms-instructor-roster__results {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+}
+
+.lms-instructor-roster__results strong {
+  font-size: 1.05rem;
+}
+
+.lms-instructor-roster__clear {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.lms-instructor-roster__clear:hover {
+  transform: translateY(-1px);
+}
+
+.lms-instructor-roster__table-wrap {
+  overflow-x: auto;
+}
+
+.lms-instructor-roster__table {
+  min-width: 960px;
+}
+
+.lms-instructor-roster__table th,
+.lms-instructor-roster__table td {
+  vertical-align: top;
+}
+
+.lms-instructor-roster__table tbody tr[hidden] {
+  display: none;
+}
+
+.lms-instructor-roster__student {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.lms-instructor-roster__student strong {
+  font-size: 0.96rem;
+  line-height: 1.3;
+}
+
+.lms-instructor-roster__student span {
+  font-size: 0.84rem;
+}
+
+.lms-instructor-roster__student a {
+  text-decoration: none;
+}
+
+.lms-instructor-roster__detail-link {
+  width: fit-content;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.lms-instructor-roster__course {
+  min-width: 15rem;
+}
+
+.lms-instructor-roster__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.lms-instructor-roster__progress {
+  min-width: 10rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.lms-instructor-roster__progress strong {
+  font-size: 0.84rem;
+}
+
+.lms-instructor-roster__empty {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+  padding: 1.4rem 1rem 0.5rem;
+  text-align: center;
+}
+
+.lms-instructor-roster__empty[hidden] {
+  display: none;
+}
+
+.lms-instructor-roster__empty i {
+  font-size: 1.25rem;
+}
+
+.lms-instructor-roster__empty h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.lms-instructor-roster__empty p {
+  margin: 0;
+}
+
+.lms-instructor-roster__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.lms-instructor-roster__page-summary {
+  font-size: 0.9rem;
+}
+
+.lms-instructor-roster__pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.lms-instructor-roster__pagination[hidden] {
+  display: none;
+}
+
+.lms-instructor-roster__page-list {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.lms-instructor-roster__page-button {
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.lms-instructor-roster__page-button:hover:not([disabled]) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+}
+
+.lms-instructor-roster__page-button.is-active {
+  color: #ffffff;
+  background: linear-gradient(120deg, #0e7490 0%, #0284c7 100%);
+  border-color: transparent;
+}
+
+.lms-instructor-roster__page-button[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.lms-instructor-roster__page-gap {
+  padding: 0 0.2rem;
+  font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .lms-instructor-roster__toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .lms-instructor-roster {
+    padding: 1rem;
+  }
+
+  .lms-instructor-roster__toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .lms-instructor-roster__actions {
+    align-items: stretch;
+  }
+
+  .lms-instructor-roster__clear {
+    width: 100%;
+  }
+
+  .lms-instructor-roster__footer {
+    align-items: stretch;
+  }
+}

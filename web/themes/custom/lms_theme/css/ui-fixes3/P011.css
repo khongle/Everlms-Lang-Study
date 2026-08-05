@@ -80,3 +80,12 @@ body.route--lms-course-contact .lms-contact-action-list__item:focus-visible stro
     padding: 1rem 1.125rem;
   }
 }
+
+/* [P011] E00-public round-1: desktop full-page screenshot had a 42px white
+   strip on the right. Root cause: the decorative ::after on
+   .lms-contact-hero__copy was absolutely positioned against the hero grid
+   because the copy card was not positioned, so it expanded scrollWidth outside
+   the viewport. Position the card so its overflow:hidden clips the decoration. */
+body.route--lms-course-contact .lms-contact-hero__copy {
+  position: relative;
+}

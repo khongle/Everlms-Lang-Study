@@ -45,6 +45,16 @@ class CertificateAdminController extends ControllerBase {
       $user = $cert->get('uid')->entity;
       $course = $cert->get('field_course')->entity;
       $is_revoked = (bool) $cert->get('field_revoked')->value;
+      $pdf_file = $cert->get('field_pdf_file')->entity;
+      $pdf_available = FALSE;
+      $pdf_url = '#';
+      if ($pdf_file) {
+        $pdf_path = \Drupal::service('file_system')->realpath($pdf_file->getFileUri());
+        if ($pdf_path && file_exists($pdf_path)) {
+          $pdf_available = TRUE;
+          $pdf_url = \Drupal::service('file_url_generator')->generateAbsoluteString($pdf_file->getFileUri());
+        }
+      }
       
       $items[] = [
         'id' => $cert->id(),
@@ -53,7 +63,8 @@ class CertificateAdminController extends ControllerBase {
         'issue_date' => \Drupal::service('date.formatter')->format($cert->get('field_issued_at')->value, 'custom', 'M j, Y'),
         'code' => $cert->get('field_certificate_number')->value,
         'status' => $is_revoked ? 'Revoked' : 'Valid',
-        'pdf_url' => $cert->get('field_pdf_file')->entity ? \Drupal::service('file_url_generator')->generateAbsoluteString($cert->get('field_pdf_file')->entity->getFileUri()) : '#',
+        'pdf_available' => $pdf_available,
+        'pdf_url' => $pdf_url,
         'revoke_url' => \Drupal\Core\Url::fromRoute('lms_certificate.revoke', ['lms_user_certificate' => $cert->id()])->toString(),
         'regenerate_url' => \Drupal\Core\Url::fromRoute('lms_certificate.regenerate', ['lms_user_certificate' => $cert->id()])->toString(),
       ];
@@ -155,8 +166,10 @@ class CertificateAdminController extends ControllerBase {
     if ($user && $course && $template && $code) {
       /** @var \Drupal\lms_certificate\Service\CertificateGenerator $generator */
       $generator = \Drupal::service('lms_certificate.generator');
-      $success = $generator->generate($template, $user, $course, $code);
-      if ($success) {
+      $file = $generator->generate($template, $user, $course, $code);
+      if ($file) {
+        $lms_user_certificate->set('field_pdf_file', ['target_id' => $file->id()]);
+        $lms_user_certificate->save();
         $this->messenger()->addStatus($this->t('Certificate PDF regenerated successfully for @name.', ['@name' => $user->getDisplayName()]));
       } else {
         $this->messenger()->addError($this->t('Failed to regenerate certificate PDF.'));

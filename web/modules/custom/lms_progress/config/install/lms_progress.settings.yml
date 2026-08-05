@@ -1,0 +1,46 @@
+scenario_overrides:
+  no_courses_assigned:
+    hero:
+      title: 'Your teaching space is ready, @name'
+      subtitle: 'You do not have any assigned courses yet. Once a course is linked to you, this workspace will start surfacing learner momentum, roster visibility, and course operations in one place.'
+    spotlight:
+      title: 'Ready for your first course'
+      copy: 'No assigned courses are visible yet. As soon as a manager or administrator assigns one to you, this snapshot will start tracking learner progress and completion.'
+    queue:
+      subtitle: 'Assigned courses will appear here once your teaching roster is connected.'
+  courses_no_enrollments:
+    hero:
+      title: 'Your courses are set up, @name'
+      subtitle: 'You are currently guiding @courses courses, but learner activity has not started flowing yet. This is a good moment to review your course setup and publishing status.'
+    spotlight:
+      title: 'Setup is complete'
+      copy: 'Your assigned courses are connected, but learner enrollments have not started flowing into this workspace yet. Once students enroll, progress and completion metrics will appear here automatically.'
+    queue:
+      subtitle: 'Open your course queue to review setup, public pages, and course content before learners start arriving.'
+  attention_needed:
+    hero:
+      title: 'Your learners may need attention, @name'
+      subtitle: 'You are currently guiding @courses courses and @students unique learners. Start with the roster and course queue to see where progress is slowing down.'
+    spotlight:
+      title: 'Teaching health needs attention'
+      copy: 'This view is calculated only from courses currently assigned to you. Average learner progress is @average_progress% and the current completion rate is @completion_rate%, so it is a good moment to review your roster and course queue.'
+    queue:
+      subtitle: 'Start with the courses where learners may need extra support, then jump into the roster or course editing flow as needed.'
+  multi_course_operator:
+    hero:
+      title: 'Run your teaching portfolio, @name'
+      subtitle: 'You are currently guiding @courses courses and @students unique learners. Use this workspace as your operating layer for monitoring, prioritising, and course actions.'
+    spotlight:
+      title: 'Teaching portfolio snapshot'
+      copy: 'You are operating across multiple assigned courses with @enrollments enrollments in view. Average learner progress is @average_progress% and the completion rate is @completion_rate%, giving you a quick view of where to focus next.'
+    queue:
+      subtitle: 'Use the queue to prioritise the courses that need updates, learner follow-up, or quick teaching actions.'
+  healthy_teaching:
+    hero:
+      title: 'Run your teaching space, @name'
+      subtitle: 'You are currently guiding @courses courses and @students unique learners. Review momentum, open your roster, and jump into course operations without dropping back into the learner portal.'
+    spotlight:
+      title: 'Teaching health snapshot'
+      copy: 'This view is calculated only from courses currently assigned to you. Average learner progress is @average_progress% and the current completion rate is @completion_rate%.'
+    queue:
+      subtitle: 'You currently have @courses courses in scope. Open the public page, inspect learner momentum, or jump straight into editing when your role allows it.'

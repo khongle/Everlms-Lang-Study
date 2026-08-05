@@ -1,0 +1,4 @@
+name: 'OCI test entity'
+type: module
+description: 'A minimal, core-only content entity type used to exercise open_content_improvement export/import round-trips without depending on node/field/taxonomy.'
+package: Testing

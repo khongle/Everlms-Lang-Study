@@ -12,8 +12,8 @@
         {% endif %}
       </a>
       <div class="lms-navbar__actions">
-        <a href="{{ path('user.login') }}" class="lms-navbar__link">{{ 'Login'|t }}</a>
-        <a href="{{ path('<front>') }}" class="lms-btn lms-btn--sm lms-btn--outline">{{ 'Back to Home'|t }}</a>
+        <a href="{{ path('user.login') }}" class="lms-navbar__link">{{ 'Đăng nhập'|t }}</a>
+        <a href="{{ path('<front>') }}" class="lms-btn lms-btn--sm lms-btn--outline">{{ 'Về trang chủ'|t }}</a>
       </div>
     </div>
   </header>
@@ -26,23 +26,23 @@
           <div class="lms-auth__logo mb-3">
             <i class="fas fa-user-plus"></i>
           </div>
-          <h1 class="h3 fw-bold mb-2">{{ 'Create Account'|t }}</h1>
-          <p class="text-muted">{{ 'Join EverLMS and start your learning journey.'|t }}</p>
+          <h1 class="h3 fw-bold mb-2">{{ 'Tạo tài khoản'|t }}</h1>
+          <p class="text-muted">{{ 'Tham gia Be Fit Gym Academy và bắt đầu lộ trình học tập luyện.'|t }}</p>
         </div>
         
         {# Social Auth Buttons #}
         <div class="lms-auth__social mb-4">
           <a href="/user/login/google" class="lms-btn lms-btn--outline w-100 lms-auth__social-btn">
-            <i class="fab fa-google text-danger me-2"></i> {{ 'Sign up with Google'|t }}
+            <i class="fab fa-google text-danger me-2"></i> {{ 'Đăng ký với Google'|t }}
           </a>
           <a href="/user/login/facebook" class="lms-btn lms-btn--outline w-100 lms-auth__social-btn">
-            <i class="fab fa-facebook text-primary me-2"></i> {{ 'Sign up with Facebook'|t }}
+            <i class="fab fa-facebook text-primary me-2"></i> {{ 'Đăng ký với Facebook'|t }}
           </a>
         </div>
         
         <div class="text-center my-3 position-relative">
           <hr class="text-muted lms-auth__divider-line">
-          <span class="position-absolute top-50 start-50 translate-middle px-3 text-muted lms-auth__divider-label">{{ 'or'|t }}</span>
+          <span class="position-absolute top-50 start-50 translate-middle px-3 text-muted lms-auth__divider-label">{{ 'hoặc'|t }}</span>
         </div>
 
         <div class="lms-auth__form-wrapper mt-4">
@@ -50,7 +50,7 @@
         </div>
         
         <div class="lms-auth__footer mt-4 text-center">
-          <p class="mb-0">{{ "Already have an account?"|t }} <a href="{{ path('user.login') }}">{{ 'Log in here'|t }}</a></p>
+          <p class="mb-0">{{ 'Đã có tài khoản?'|t }} <a href="{{ path('user.login') }}">{{ 'Đăng nhập tại đây'|t }}</a></p>
         </div>
       </div>
     </div>

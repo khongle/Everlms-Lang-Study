@@ -6,31 +6,31 @@
     <div class="lms-auth__card">
       <div class="lms-auth__header">
         <a href="{{ path('<front>') }}" class="lms-auth__logo">
-          <i class="fas fa-graduation-cap"></i> {{ 'EverLMS'|t }}
+          <i class="fas fa-graduation-cap"></i> {{ 'Be Fit Gym Academy'|t }}
         </a>
-        <h1>{{ 'Create Account'|t }}</h1>
-        <p>{{ 'Start your learning journey today'|t }}</p>
+        <h1>{{ 'Tạo tài khoản'|t }}</h1>
+        <p>{{ 'Bắt đầu lộ trình học và tập luyện cùng Be Fit.'|t }}</p>
       </div>
 
       {# Social login buttons #}
       <div class="lms-auth__social">
         <a href="#" class="lms-btn lms-btn--social lms-btn--google">
-          <i class="fab fa-google"></i> {{ 'Sign up with Google'|t }}
+          <i class="fab fa-google"></i> {{ 'Đăng ký với Google'|t }}
         </a>
         <a href="#" class="lms-btn lms-btn--social lms-btn--facebook">
-          <i class="fab fa-facebook-f"></i> {{ 'Sign up with Facebook'|t }}
+          <i class="fab fa-facebook-f"></i> {{ 'Đăng ký với Facebook'|t }}
         </a>
       </div>
 
       <div class="lms-auth__divider">
-        <span>{{ 'or sign up with email'|t }}</span>
+        <span>{{ 'hoặc đăng ký bằng email'|t }}</span>
       </div>
 
       {# Drupal register form #}
       {{ form }}
 
       <div class="lms-auth__footer">
-        <p>{{ 'Already have an account?'|t }} <a href="{{ path('user.login') }}">{{ 'Sign In'|t }}</a></p>
+        <p>{{ 'Đã có tài khoản?'|t }} <a href="{{ path('user.login') }}">{{ 'Đăng nhập'|t }}</a></p>
       </div>
     </div>
   </div>

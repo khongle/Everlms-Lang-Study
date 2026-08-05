@@ -43,6 +43,7 @@
   }
 
   &__copy {
+    position: relative;
     overflow: hidden;
 
     &::after {

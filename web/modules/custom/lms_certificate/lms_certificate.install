@@ -121,3 +121,42 @@ HTML;
     $template->save();
   }
 }
+
+/**
+ * Repair demo certificate course references after the Be Fit course reimport.
+ */
+function lms_certificate_update_10004(): string {
+  $connection = \Drupal::database();
+
+  $query = $connection->select('lms_user_certificate', 'c')
+    ->fields('c', ['id', 'field_course', 'field_certificate_number'])
+    ->condition('c.field_course', [436, 462], 'BETWEEN')
+    ->condition('c.field_certificate_number', 'IP-VI-%', 'LIKE');
+  $query->leftJoin('lms_course_field_data', 'current_course', 'current_course.id = c.field_course AND current_course.default_langcode = 1');
+  $query->isNull('current_course.id');
+
+  $repaired = 0;
+  foreach ($query->execute() as $record) {
+    $candidate_course_id = (int) $record->field_course + 27;
+    $course_exists = (bool) $connection->select('lms_course_field_data', 'course')
+      ->condition('course.id', $candidate_course_id)
+      ->condition('course.default_langcode', 1)
+      ->countQuery()
+      ->execute()
+      ->fetchField();
+
+    if (!$course_exists) {
+      continue;
+    }
+
+    $connection->update('lms_user_certificate')
+      ->fields(['field_course' => $candidate_course_id])
+      ->condition('id', (int) $record->id)
+      ->execute();
+    $repaired++;
+  }
+
+  return (string) t('Repaired @count orphan Be Fit demo certificate course references.', [
+    '@count' => $repaired,
+  ]);
+}
