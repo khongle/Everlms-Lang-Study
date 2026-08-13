@@ -1,3 +1,0 @@
-- [/user/register] - create object - visitor creates a web account - module: user - actors: Visitor - expected: user entity created with role student
-- [/api/v1/user/register] - register mobile - create mobile account, blocked, with OTP - module: lms_mobile_api - process: user-registration-and-onboarding - expected: user blocked, OTP session saved in expirable keyvalue store
-- [/user/login] - login - authenticate with an active account - module: user - actors: Student - expected: authenticated session established

@@ -1,3 +1,0 @@
-- [/checkout/{course_id}] - create object - create "Order" at checkout - module: lms_order - actors: Student - expected: draft lms_order created for buyer
-- [/checkout/{course_id}] - register lines - add order items, course/bundle/membership - module: lms_order - process: order-checkout-and-payment - expected: lms_order_item rows saved under order
-- [/checkout/{course_id}] - apply coupon - optional discount - module: lms_order - process: coupon-discount-redemption - expected: field_discount/field_total adjusted, or code rejected

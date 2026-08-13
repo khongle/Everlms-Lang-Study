@@ -1,3 +1,0 @@
-- [internal] - verify - state pending_verify while email/OTP unconfirmed - module: user - process: user-registration-and-onboarding - evidence: states submitted/pending_verify/active/blocked_or_archived - expected: account moves to active once verified
-- [/api/v1/user/register/verify-otp] - activate mobile - valid OTP activates account, issues bearer token - module: lms_mobile_api - actors: System - expected: account active, bearer token returned
-- [/workspace/users] - block or assign role - manager blocks or assigns role - module: user - actors: Manager - expected: user role/status updated

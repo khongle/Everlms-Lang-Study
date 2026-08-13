@@ -1,3 +1,0 @@
-- [/checkout/{course_id}] - submit - transition draft to submitted, pending - module: lms_payment - process: order-checkout-and-payment - evidence: states draft/submitted/approved_or_completed/rejected_or_returned/archived - expected: order pending, awaiting payment
-- [/checkout/bank-transfer/{order}] - pay - capture via gateway to approved_or_completed, paid - module: lms_payment - actors: Student, Manager - expected: entitlement granted once captured/approved
-- [/workspace/orders/{id}/edit] - reconcile - confirm/cancel/refund - module: lms_order - actors: Manager - expected: order status updated to completed, cancelled, or refunded

@@ -1,3 +1,0 @@
-- [/workspace/courses/{id}/edit] - draft - course in draft state - module: lms_course - process: course-authoring-and-publishing - evidence: states draft/in_review/approved_or_completed/archived - expected: course hidden from public catalog while status=0
-- [/workspace/courses/{id}/edit] - publish - transition draft to approved_or_completed, published - module: lms_course - actors: Instructor, Manager - expected: status=1, course visible in /courses
-- [/workspace/courses/{id}/edit] - archive - transition to archived, unpublish - module: lms_course - actors: Manager - expected: course removed from catalog discovery

@@ -1,3 +1,0 @@
-- [/quiz/{quiz}/take] - create object - learner starts a quiz attempt - module: lms_quiz - actors: Student - expected: attempt started, questions rendered
-- [/quiz/{quiz}/submit] - register answers - submit answers, question responses - module: lms_quiz - process: quiz-attempt-and-grading - expected: lms_question_response rows saved
-- [internal] - grade - GradingStrategyFactory scores objective items - module: lms_quiz - actors: System - expected: objective responses scored automatically

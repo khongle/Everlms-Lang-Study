@@ -1,3 +1,0 @@
-- [internal] - issue - state approved_or_completed, issued, idempotent - module: lms_certificate - process: certificate-issuance - evidence: states approved_or_completed/rejected_or_returned(revoked)/archived(expired) - expected: certificate marked approved_or_completed, verifiable at /certificate/verify
-- [/admin/lms/certificates/{cert}/revoke] - revoke - transition to revoked with reason - module: lms_certificate - actors: Manager - expected: field_revoked set, public verifier shows invalid
-- [/workspace/certificates/{cert}/regenerate] - regenerate - re-render PDF after template change - module: lms_certificate - actors: Manager - expected: field_pdf_file replaced with new render

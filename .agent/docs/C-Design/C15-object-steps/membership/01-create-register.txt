@@ -1,3 +1,0 @@
-- [/checkout/membership/{plan_id}] - create object - create "User membership" on plan purchase - module: lms_membership - actors: Student - expected: lms_user_membership row created after payment
-- [internal] - register dates - set start/end, plan, status - module: lms_membership - process: membership-subscription - expected: field_start_date/field_end_date/field_status saved
-- [/workspace/pricing] - plan - manager maintains plans - module: lms_membership - actors: Manager - expected: plan saved, available at checkout

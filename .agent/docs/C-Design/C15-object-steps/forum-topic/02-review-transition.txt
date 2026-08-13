@@ -1,3 +1,0 @@
-- [internal] - open - state submitted when the topic is posted - module: lms_forum - process: forum-discussion - evidence: states submitted/in_review/approved_or_completed/archived - expected: topic open, accepting replies
-- [/forum/{topic}] - resolve - owner marks a reply best answer, transition to approved_or_completed - module: lms_forum - actors: Student - expected: field_resolved=1, reply field_best_answer=1
-- [/forum/{topic}] - lock - moderator locks/archives the topic - module: lms_forum - actors: Manager - expected: topic archived, no new replies accepted

@@ -1,3 +1,0 @@
-- [/workspace/reports] - monitor - track enrollments/completions/rating - module: lms_analytics - actors: Manager, Instructor - expected: report widgets render aggregated course counts
-- [/admin/lms/reports/courses/export] - export - export course report CSV - module: lms_analytics - expected: CSV file downloaded with report rows
-- [/workspace/courses/{id}/edit] - archive - retire course from catalog - module: lms_course - process: course-authoring-and-publishing - expected: course archived, no longer discoverable

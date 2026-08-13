@@ -1,3 +1,0 @@
-- [/forum/new] - create object - student or instructor creates a topic - module: lms_forum - actors: Student, Instructor - expected: lms_forum_topic created with a category
-- [internal] - register category - assign forum_category to the topic - module: lms_forum - process: forum-discussion - expected: topic listed under its category
-- [/forum/{topic}] - reply - another user posts a reply - module: lms_forum - actors: Student - expected: lms_forum_reply saved under the topic

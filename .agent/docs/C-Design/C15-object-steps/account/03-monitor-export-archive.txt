@@ -1,3 +1,0 @@
-- [/workspace/users] - monitor - manager reviews user list - module: user - actors: Manager - expected: user list with role/status renders
-- [/admin/switch-user] - impersonate - admin switches to a user to debug - module: open_switcher - actors: Administrator - process: user-registration-and-onboarding - expected: session temporarily impersonates target user
-- [internal] - archive - account blocked/removed per policy - module: user - expected: account can no longer authenticate

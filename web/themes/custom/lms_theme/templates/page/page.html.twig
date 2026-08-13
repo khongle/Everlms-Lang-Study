@@ -20,12 +20,12 @@
 
       <div class="lms-navbar__panel">
         <nav class="lms-navbar__nav" role="navigation" aria-label="{{ 'Main menu'|t }}">
-          <a href="{{ path('lms_course.catalog') }}" class="lms-navbar__link {{ current_route in ['lms_course.catalog', 'lms_course.detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Khóa học'|t }}</a>
-          <a href="{{ path('lms_course.category') }}" class="lms-navbar__link {{ current_route in ['lms_course.category', 'lms_course.category_detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Danh mục'|t }}</a>
-          <a href="{{ path('lms_forum.index') }}" class="lms-navbar__link {{ current_route in ['lms_forum.index', 'entity.lms_forum_topic.canonical'] ? 'lms-navbar__link--active' : '' }}">{{ 'Cộng đồng'|t }}</a>
-          <a href="{{ path('lms_course.pricing') }}" class="lms-navbar__link {{ current_route == 'lms_course.pricing' ? 'lms-navbar__link--active' : '' }}">{{ 'Bảng giá'|t }}</a>
-          <a href="{{ path('lms_blog.frontend.collection') }}" class="lms-navbar__link {{ current_route == 'lms_blog.frontend.collection' or current_route == 'lms_blog.frontend.canonical' ? 'lms-navbar__link--active' : '' }}">{{ 'Tin tức'|t }}</a>
-          <a href="{{ path('lms_course.glossary') }}" class="lms-navbar__link {{ current_route == 'lms_course.glossary' ? 'lms-navbar__link--active' : '' }}">{{ 'Thuật ngữ'|t }}</a>
+          <a href="{{ path('lms_course.catalog') }}" class="lms-navbar__link {{ current_route in ['lms_course.catalog', 'lms_course.detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Courses'|t }}</a>
+          <a href="{{ path('lms_course.category') }}" class="lms-navbar__link {{ current_route in ['lms_course.category', 'lms_course.category_detail'] ? 'lms-navbar__link--active' : '' }}">{{ 'Categories'|t }}</a>
+          <a href="{{ path('lms_forum.index') }}" class="lms-navbar__link {{ current_route in ['lms_forum.index', 'entity.lms_forum_topic.canonical'] ? 'lms-navbar__link--active' : '' }}">{{ 'Community'|t }}</a>
+          <a href="{{ path('lms_course.pricing') }}" class="lms-navbar__link {{ current_route == 'lms_course.pricing' ? 'lms-navbar__link--active' : '' }}">{{ 'Pricing'|t }}</a>
+          <a href="{{ path('lms_blog.frontend.collection') }}" class="lms-navbar__link {{ current_route == 'lms_blog.frontend.collection' or current_route == 'lms_blog.frontend.canonical' ? 'lms-navbar__link--active' : '' }}">{{ 'News'|t }}</a>
+          <a href="{{ path('lms_course.glossary') }}" class="lms-navbar__link {{ current_route == 'lms_course.glossary' ? 'lms-navbar__link--active' : '' }}">{{ 'Glossary'|t }}</a>
         </nav>
 
         <div class="lms-navbar__actions" aria-label="{{ 'Utility navigation'|t }}">
@@ -166,35 +166,35 @@
           {% if site_tagline %}
             <p class="lms-footer__description">{{ site_tagline }}</p>
           {% endif %}
-          <h4>{{ 'Liên kết nhanh'|t }}</h4>
+          <h4>{{ 'Quick Links'|t }}</h4>
           <ul>
-            <li><a href="{{ path('<front>') }}">{{ 'Trang chủ'|t }}</a></li>
-            <li><a href="{{ path('lms_course.catalog') }}">{{ 'Khóa học'|t }}</a></li>
-            <li><a href="{{ path('lms_course.category') }}">{{ 'Danh mục'|t }}</a></li>
-            <li><a href="{{ path('lms_forum.index') }}">{{ 'Cộng đồng'|t }}</a></li>
-            <li><a href="{{ path('lms_course.glossary') }}">{{ 'Thuật ngữ'|t }}</a></li>
+            <li><a href="{{ path('<front>') }}">{{ 'Home'|t }}</a></li>
+            <li><a href="{{ path('lms_course.catalog') }}">{{ 'Courses'|t }}</a></li>
+            <li><a href="{{ path('lms_course.category') }}">{{ 'Categories'|t }}</a></li>
+            <li><a href="{{ path('lms_forum.index') }}">{{ 'Community'|t }}</a></li>
+            <li><a href="{{ path('lms_course.glossary') }}">{{ 'Glossary'|t }}</a></li>
           </ul>
         </div>
         <div class="lms-footer__col">
-          <h4>{{ 'Học tập'|t }}</h4>
+          <h4>{{ 'Learning'|t }}</h4>
           <ul>
-            <li><a href="#">{{ 'Tin tức & thông báo'|t }}</a></li>
+            <li><a href="#">{{ 'News & Announcements'|t }}</a></li>
 
-            <li><a href="{{ path('lms_blog.frontend.collection') }}">{{ 'Tin tức'|t }}</a></li>
-            <li><a href="#">{{ 'Hướng dẫn khóa học'|t }}</a></li>
+            <li><a href="{{ path('lms_blog.frontend.collection') }}">{{ 'News'|t }}</a></li>
+            <li><a href="#">{{ 'Course Guide'|t }}</a></li>
           </ul>
         </div>
         <div class="lms-footer__col">
-          <h4>{{ 'Hỗ trợ'|t }}</h4>
+          <h4>{{ 'Support'|t }}</h4>
           <ul>
-            <li><a href="{{ path('lms_course.about') }}">{{ 'Giới thiệu'|t }}</a></li>
-            <li><a href="{{ path('lms_course.contact') }}">{{ 'Hỗ trợ'|t }}</a></li>
+            <li><a href="{{ path('lms_course.about') }}">{{ 'About'|t }}</a></li>
+            <li><a href="{{ path('lms_course.contact') }}">{{ 'Support'|t }}</a></li>
             <li><a href="#">{{ 'FAQ'|t }}</a></li>
-            <li><a href="{{ path('lms_course.contact') }}">{{ 'Liên hệ'|t }}</a></li>
+            <li><a href="{{ path('lms_course.contact') }}">{{ 'Contact'|t }}</a></li>
           </ul>
         </div>
         <div class="lms-footer__col">
-          <h4>{{ 'Thông tin liên hệ'|t }}</h4>
+          <h4>{{ 'Contact Information'|t }}</h4>
           <ul>
             {% if footer_phone %}
               <li><i class="fas fa-phone"></i> <a href="tel:{{ footer_phone|replace({' ': ''}) }}">{{ footer_phone }}</a></li>
