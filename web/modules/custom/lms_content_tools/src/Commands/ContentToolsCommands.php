@@ -330,12 +330,6 @@ class ContentToolsCommands extends DrushCommands {
 
     if (!empty($options['lang'])) {
       $this->importLangcode = $this->normalizeGeneratedLangcode($options['lang']);
-      $importOrder = array_values(array_filter($importOrder, function ($file) {
-        return $this->shouldImportFileForLang($file, $this->importLangcode);
-      }));
-      $this->logger()->notice(dt('Language filter enabled: @lang', [
-        '@lang' => $this->importLangcode,
-      ]));
     }
 
     if (empty($importOrder)) {
@@ -343,7 +337,10 @@ class ContentToolsCommands extends DrushCommands {
       return;
     }
 
-    // Validate files exist.
+    // Validate files exist and parse their JSON first: the --lang filter
+    // below needs each file's actual content (or at minimum its path) to
+    // decide whether it matches, since real generated filenames carry no
+    // language suffix to key off of.
     $validFiles = [];
     foreach ($importOrder as $file) {
       $fullPath = $generatedPath . '/' . $file;
@@ -361,6 +358,20 @@ class ContentToolsCommands extends DrushCommands {
       else {
         $this->logger()->warning(dt('File not found: @file', ['@file' => $file]));
       }
+    }
+
+    if ($this->importLangcode !== NULL) {
+      $beforeCount = count($validFiles);
+      $validFiles = array_filter(
+        $validFiles,
+        fn(array $fileData, string $file) => $this->shouldImportFileForLang($file, $fileData, $this->importLangcode),
+        ARRAY_FILTER_USE_BOTH
+      );
+      $this->logger()->notice(dt('Language filter enabled: @lang (@matched/@total files match)', [
+        '@lang' => $this->importLangcode,
+        '@matched' => count($validFiles),
+        '@total' => $beforeCount,
+      ]));
     }
 
     if ($options['dry-run']) {
@@ -611,7 +622,18 @@ class ContentToolsCommands extends DrushCommands {
     if ($this->importLangcode !== NULL) {
       return $this->importLangcode;
     }
+    return $this->detectContentLangcode($filename, $data);
+  }
 
+  /**
+   * Detect a generated file's own language, ignoring any --lang override.
+   *
+   * Used both as the fallback branch of inferLangcodeFromImport() and, on
+   * its own, by shouldImportFileForLang() to decide whether a file matches
+   * a requested --lang filter (that decision must not be short-circuited by
+   * the override it's helping to apply).
+   */
+  protected function detectContentLangcode(string $filename, array $data = []): string {
     if (preg_match('/-(vi|en)(?:-|\.json$)/', basename($filename), $matches)) {
       return $matches[1];
     }
@@ -624,7 +646,7 @@ class ContentToolsCommands extends DrushCommands {
    * Normalize generated language labels to installed Drupal langcodes.
    */
   protected function normalizeGeneratedLangcode(?string $language): string {
-    $value = strtolower(trim((string) $language));
+    $value = mb_strtolower(trim((string) $language));
     return match ($value) {
       'vi', 'vn', 'vietnamese', 'tieng viet', 'tiếng việt' => 'vi',
       'en', 'eng', 'english' => 'en',
@@ -634,16 +656,22 @@ class ContentToolsCommands extends DrushCommands {
 
   /**
    * Determine whether a generated file belongs to the requested import language.
+   *
+   * Filename-suffix detection (course-x-en.json / course-x-vi.json) is
+   * supported for bundles that follow that convention, but none of this
+   * app's shipped generated content does — every real course/quiz file
+   * name carries no language suffix at all. Falling back to "import
+   * everything whose filename doesn't match" would defeat --lang entirely,
+   * so the real fallback is content-based: shared, language-agnostic seed
+   * data (users, category) always passes; everything else is compared
+   * against its own detected language.
    */
-  protected function shouldImportFileForLang(string $filename, string $langcode): bool {
-    $basename = basename($filename);
-    if (preg_match('/-(vi|en)(?:-|\.json$)/', $basename, $matches)) {
-      return $matches[1] === $langcode;
+  protected function shouldImportFileForLang(string $filename, array $data, string $langcode): bool {
+    $type = explode('/', $filename)[0] ?? '';
+    if (in_array($type, ['users', 'category'], TRUE)) {
+      return TRUE;
     }
-
-    // Shared seed data such as users and the single category file has no
-    // language suffix; import it and force langcode via inferLangcodeFromImport.
-    return !preg_match('/-(vi|en)(?:-|\.json$)/', $basename);
+    return $this->detectContentLangcode($filename, $data) === $langcode;
   }
   /**
    * Import a course with chapters and lessons.
@@ -1128,6 +1156,7 @@ class ContentToolsCommands extends DrushCommands {
 
       $fields = [
         'name' => $templateData['name'] ?? 'Certificate Template',
+        'langcode' => $langcode,
         'status' => 1,
         'field_orientation' => $templateData['layout'] ?? 'landscape',
         'field_design' => $design,
@@ -1184,6 +1213,11 @@ class ContentToolsCommands extends DrushCommands {
 
         // Core fields.
         $plan->set('status', 1);
+        // lms_membership_plan is not a translatable entity type (no
+        // langcode base field), unlike certificates/forum/badges/ratings.
+        if ($plan->hasField('langcode')) {
+          $plan->set('langcode', $langcode);
+        }
         $plan->set('field_price', $planData['price'] ?? 0);
 
         // field_description is text_long → needs value + format.
@@ -1279,6 +1313,7 @@ class ContentToolsCommands extends DrushCommands {
         } else {
           $topic = $topicStorage->create([
             'name' => $topicData['title'],
+            'langcode' => $langcode,
             'status' => 1,
             'field_body' => [
               'value' => $topicData['body'] ?? '',
@@ -1300,6 +1335,7 @@ class ContentToolsCommands extends DrushCommands {
 
           $reply = $replyStorage->create([
             'field_topic' => $topic->id(),
+            'langcode' => $langcode,
             'field_body' => [
               'value' => $replyData['body'] ?? '',
               'format' => 'full_html',
@@ -1321,6 +1357,7 @@ class ContentToolsCommands extends DrushCommands {
         ]);
         $badge = $badgeStorage->create([
           'name' => $badgeData['name'],
+          'langcode' => $langcode,
           'field_xp_reward' => $badgeData['points'] ?? 10,
           'field_criteria' => $criteriaJson,
         ]);
@@ -1374,9 +1411,14 @@ class ContentToolsCommands extends DrushCommands {
           if (empty($existingRating)) {
             $rating = $ratingStorage->create([
               'field_course' => $course->id(),
+              'langcode' => $langcode,
               'field_score' => $ratingData['score'] ?? 5,
               'field_review' => [
-                'value' => $ratingData['review'] ?? '',
+                // Accept both 'review' and the legacy/documented 'text' key
+                // (the shipped generated-old bundle and CONTENT_GENERATION.md
+                // examples both use 'text'; 'review' alone silently dropped
+                // every review body on import).
+                'value' => $ratingData['review'] ?? $ratingData['text'] ?? '',
                 'format' => 'plain_text',
               ],
               'field_is_featured' => $ratingData['is_featured'] ?? FALSE,
@@ -1834,10 +1876,13 @@ class ContentToolsCommands extends DrushCommands {
     ]);
 
     if (!empty($terms)) {
+      // Reuse the existing shared term as-is. Do NOT overwrite its langcode
+      // here: this term may be referenced by courses in multiple languages
+      // (e.g. "Beginner" from an English course and a Vietnamese course both
+      // resolve to the same term by name), and flipping the langcode on
+      // every import would leave it permanently set to whichever language
+      // happened to import last, disagreeing with earlier imports.
       $term = reset($terms);
-      if ($langcode !== '' && $term->hasField('langcode')) {
-        $term->set('langcode', $langcode);
-      }
     }
     else {
       $termFields = [
