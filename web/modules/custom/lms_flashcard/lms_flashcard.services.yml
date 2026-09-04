@@ -1,0 +1,22 @@
+services:
+  lms_flashcard.sm2_scheduler:
+    class: Drupal\lms_flashcard\Service\Sm2SchedulerService
+    arguments:
+      - '@config.factory'
+
+  lms_flashcard.import_validator:
+    class: Drupal\lms_flashcard\Service\ImportValidator
+    arguments:
+      - '@entity_type.manager'
+
+  lms_flashcard.import_batch:
+    class: Drupal\lms_flashcard\Service\ImportBatchService
+    arguments:
+      - '@entity_type.manager'
+
+  lms_flashcard.study_queue_builder:
+    class: Drupal\lms_flashcard\Service\StudyQueueBuilder
+    arguments:
+      - '@entity_type.manager'
+      - '@config.factory'
+      - '@datetime.time'

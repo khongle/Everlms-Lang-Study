@@ -46,6 +46,15 @@ class Note extends ContentEntityBase implements EntityOwnerInterface {
       ->setDescription(new TranslatableMarkup('Seconds into the video.'))
       ->setDefaultValue(0);
 
+    $fields['field_attachments'] = BaseFieldDefinition::create('file')
+      ->setLabel(new TranslatableMarkup('Attachments'))
+      ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)
+      ->setSetting('file_directory', 'notes/attachments/[current-user:uid]')
+      ->setSetting('file_extensions', 'mp3 wav pdf jpg jpeg png gif')
+      ->setSetting('max_filesize', '10 MB')
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Created'));
 

@@ -9,24 +9,20 @@
   <div class="lms-learn__main">
     {# Content area #}
     <div class="lms-learn__content">
-      {# Moved Lesson Title to Top #}
+      {# Lesson title, with compact icon-only utility actions on the same row.
+         "Back to Course" now lives on the sidebar course title (see below);
+         removing the separate breadcrumb/toolbar row reclaims that vertical
+         space for the actual lesson content. #}
       <div class="lms-learn__title-wrap">
         <h1 class="lms-learn__title">{{ lesson.label }}</h1>
-      </div>
-
-      {# Back Button & Theater Mode #}
-      <div class="lms-learn__top-bar">
-        <a href="{{ path('lms_course.detail', {'lms_course': course.id()}) }}" class="btn-lms-outline btn-lms-sm lms-learn__top-btn">
-          <i class="fas fa-arrow-left"></i> {{ 'Back to Course'|t }}
-        </a>
-        <div class="lms-learn__top-actions">
+        <div class="lms-learn__title-actions">
           {% if is_admin %}
-            <a href="{{ path('entity.lms_lesson.edit_form', {'lms_lesson': lesson.id()}) }}" class="btn-lms-primary btn-lms-sm lms-learn__top-btn">
-              <i class="fas fa-pencil-alt"></i> {{ 'Edit Lesson'|t }}
+            <a href="{{ path('entity.lms_lesson.edit_form', {'lms_lesson': lesson.id()}) }}" class="lms-learn__icon-btn" title="{{ 'Edit Lesson'|t }}" aria-label="{{ 'Edit Lesson'|t }}">
+              <i class="fas fa-pencil-alt"></i>
             </a>
           {% endif %}
-          <button id="lms-sidebar-toggle" class="btn-lms-outline btn-lms-sm lms-learn__top-btn" title="{{ 'Toggle Sidebar'|t }}">
-            <i class="fas fa-expand-arrows-alt"></i> Theater Mode
+          <button id="lms-sidebar-toggle" class="lms-learn__icon-btn" title="{{ 'Theater Mode'|t }}" aria-label="{{ 'Theater Mode'|t }}">
+            <i class="fas fa-expand-arrows-alt"></i>
           </button>
         </div>
       </div>
@@ -51,8 +47,8 @@
           {% else %}
             <div class="lms-learn__placeholder lms-learn__placeholder--compact">
               <i class="fas fa-video-slash lms-learn__placeholder-icon"></i>
-              <h3 class="lms-learn__placeholder-title">Chưa có Video tĩnh được tải lên</h3>
-              <p class="lms-learn__placeholder-copy">Vui lòng upload tệp .mp4 trong phần chỉnh sửa bài học.</p>
+              <h3 class="lms-learn__placeholder-title">{{ 'No video uploaded yet'|t }}</h3>
+              <p class="lms-learn__placeholder-copy">{{ 'Please upload an .mp4 file in the lesson edit screen.'|t }}</p>
             </div>
           {% endif %}
         {% elseif type == 'text' %}
@@ -135,8 +131,8 @@
             {% else %}
               <div class="lms-learn__placeholder lms-learn__placeholder--compact">
                 <i class="fas fa-video-slash lms-learn__placeholder-icon lms-learn__placeholder-icon--error"></i>
-                <h3 class="lms-learn__placeholder-title">Phòng Zoom chưa sẵn sàng</h3>
-                <p class="lms-learn__placeholder-copy">Cấu hình Zoom có thể đang lỗi hoặc chưa sinh ra Meeting ID.</p>
+                <h3 class="lms-learn__placeholder-title">{{ 'Zoom room not ready'|t }}</h3>
+                <p class="lms-learn__placeholder-copy">{{ 'The Zoom configuration may have an error, or a Meeting ID has not been generated yet.'|t }}</p>
               </div>
             {% endif %}
           </div>
@@ -148,41 +144,42 @@
         {% endif %}
       </div>
 
-      {# Lesson Action Logic #}
-      <div class="lms-learn__info">
-        <div class="lms-learn__actions">
-          {% set current_lesson_completed = false %}
-          {% for item in curriculum %}
-            {% for l in item.lessons %}
-              {% if l.entity.id() == lesson.id() and l.is_completed %}
-                {% set current_lesson_completed = true %}
-              {% endif %}
-            {% endfor %}
-          {% endfor %}
-
-          {% if current_lesson_completed %}
-            <button class="btn-lms-outline lms-learn__action-completed" disabled>
-              <i class="fas fa-check-double"></i> <span>{{ 'Completed!'|t }}</span>
-            </button>
-          {% else %}
-            <button id="lms-mark-complete" 
-                    class="btn-lms-success lms-learn__action-mark"
-                    data-course-id="{{ course.id() }}"
-                    data-lesson-id="{{ lesson.id() }}">
-              <i class="fas fa-check"></i> <span>{{ 'Mark Complete'|t }}</span>
-            </button>
-          {% endif %}
-        </div>
-      </div>
-
-      {# Lesson Tabs Section #}
+      {# Lesson Tabs Section, with the completion action inline on the same
+         row — it used to sit alone in its own full-width block, which read
+         as a lot of empty space for a single button. #}
       <div class="lms-learn__tabs-container">
-        <ul class="lms-nav-tabs">
-          <li class="lms-tab-item active" data-tab="overview">{{ 'Overview'|t }}</li>
-          <li class="lms-tab-item" data-tab="resources">{{ 'Resources'|t }}</li>
-          <li class="lms-tab-item" data-tab="notes">{{ 'My Notes'|t }}</li>
-          <li class="lms-tab-item" data-tab="qna">{{ 'Q&A Discussion'|t }}</li>
-        </ul>
+        <div class="lms-learn__tabs-row">
+          <ul class="lms-nav-tabs">
+            <li class="lms-tab-item active" data-tab="overview">{{ 'Overview'|t }}</li>
+            <li class="lms-tab-item" data-tab="resources">{{ 'Resources'|t }}</li>
+            <li class="lms-tab-item" data-tab="notes">{{ 'My Notes'|t }}</li>
+            <li class="lms-tab-item" data-tab="qna">{{ 'Q&A Discussion'|t }}</li>
+          </ul>
+
+          <div class="lms-learn__actions">
+            {% set current_lesson_completed = false %}
+            {% for item in curriculum %}
+              {% for l in item.lessons %}
+                {% if l.entity.id() == lesson.id() and l.is_completed %}
+                  {% set current_lesson_completed = true %}
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+
+            {% if current_lesson_completed %}
+              <button class="btn-lms-outline lms-learn__action-completed" disabled>
+                <i class="fas fa-check-double"></i> <span>{{ 'Completed!'|t }}</span>
+              </button>
+            {% else %}
+              <button id="lms-mark-complete"
+                      class="btn-lms-success lms-learn__action-mark"
+                      data-course-id="{{ course.id() }}"
+                      data-lesson-id="{{ lesson.id() }}">
+                <i class="fas fa-check"></i> <span>{{ 'Mark Complete'|t }}</span>
+              </button>
+            {% endif %}
+          </div>
+        </div>
 
         <div class="lms-tab-content">
           {# Tab 1: Overview #}
@@ -238,7 +235,17 @@
                 <span id="lms-note-status" class="lms-learn__notes-status"></span>
               </div>
               <textarea id="lms-note-textarea" class="lms-form-control lms-learn__notes-textarea" rows="8" placeholder="{{ 'Loading...'|t }}" disabled></textarea>
-              
+
+              <div class="lms-learn__notes-attachments">
+                <ul id="lms-note-attachment-list" class="lms-learn__notes-attachment-list"></ul>
+
+                <label class="lms-learn__notes-attach-btn" for="lms-note-attachment-input">
+                  <i class="fas fa-paperclip"></i> {{ 'Attach a file'|t }}
+                  <input type="file" id="lms-note-attachment-input" accept=".mp3,.wav,.pdf,.jpg,.jpeg,.png,.gif" multiple hidden disabled>
+                </label>
+                <span class="lms-learn__notes-attach-hint">{{ 'mp3, wav, pdf, jpg, png, gif — up to 10 MB each'|t }}</span>
+              </div>
+
               <div class="lms-learn__notes-actions">
                 <button id="lms-note-delete-btn" class="lms-btn lms-learn__notes-btn lms-learn__notes-btn--delete">
                   <i class="fas fa-trash-alt"></i> {{ 'Delete Note'|t }}
@@ -278,8 +285,11 @@
     </button>
     
     <div class="lms-learn__sidebar-header">
-      <h2 class="lms-learn__course-title">{{ course.label }}</h2>
-      
+      <a href="{{ path('lms_course.detail', {'lms_course': course.id()}) }}" class="lms-learn__course-title-link" title="{{ 'Back to Course'|t }}">
+        <i class="fas fa-arrow-left lms-learn__course-title-back-icon"></i>
+        <h2 class="lms-learn__course-title">{{ course.label }}</h2>
+      </a>
+
       {% set total_lessons = 0 %}
       {% set completed_lessons = 0 %}
       {% for item in curriculum %}

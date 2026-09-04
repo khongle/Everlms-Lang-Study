@@ -1,0 +1,92 @@
+lms_flashcard.import:
+  path: '/manage/flashcard-decks/import'
+  defaults:
+    _form: '\Drupal\lms_flashcard\Form\ImportForm'
+    _title: 'Import Flashcards'
+  requirements:
+    # Open to any authenticated user (not just admins/instructors) — a
+    # student importing their own vocabulary becomes the deck's owner (see
+    # ImportBatchService::createDeck()) and can manage it afterwards via the
+    # owner exception in FlashcardAccessControlHandler. Drupal's admin theme
+    # negotiator only switches to Claro for users who additionally have
+    # "view the administration theme" (staff roles), so students still see
+    # this page in the regular site theme despite _admin_route below.
+    _user_is_logged_in: 'TRUE'
+  options:
+    _admin_route: TRUE
+
+lms_flashcard.settings:
+  path: '/admin/config/lms/flashcard'
+  defaults:
+    _form: '\Drupal\lms_flashcard\Form\FlashcardSettingsForm'
+    _title: 'Flashcard Settings'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_flashcard.admin_decks:
+  path: '/workspace/flashcards'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\FlashcardAdminController::decks'
+    _title: 'Flashcard Management'
+  requirements:
+    _permission: 'administer lms_course'
+  options:
+    _admin_route: TRUE
+
+lms_flashcard.my_decks:
+  path: '/learn/flashcards'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\StudyController::myDecks'
+    _title: 'My Flashcards'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+lms_flashcard.study:
+  path: '/learn/flashcards/{lms_flashcard_deck}/study'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\StudyController::study'
+    _title: 'Study'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_flashcard_deck:
+        type: entity:lms_flashcard_deck
+
+lms_flashcard.session_summary:
+  path: '/learn/flashcards/{lms_flashcard_deck}/summary'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\StudyController::summary'
+    _title: 'Session Summary'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_flashcard_deck:
+        type: entity:lms_flashcard_deck
+
+lms_flashcard.api_next_card:
+  path: '/api/lms/flashcard/next'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\FlashcardApiController::nextCard'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [GET]
+
+lms_flashcard.api_submit_review:
+  path: '/api/lms/flashcard/review'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\FlashcardApiController::submitReview'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_flashcard.api_session_stats:
+  path: '/api/lms/flashcard/session-stats'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\FlashcardApiController::sessionStats'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [GET]

@@ -1,0 +1,63 @@
+{# Flashcard study session: JS-driven, fetches cards from the AJAX API #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-flashcard-study" data-deck-id="{{ deck.id() }}">
+  <div class="container" style="max-width: 640px;">
+    <div class="lms-flashcard-study__header">
+      <h1 class="lms-manage__title">{{ deck.label() }}</h1>
+      <p class="lms-flashcard-study__progress-text" data-flashcard-progress-text></p>
+      <div class="lms-flashcard-study__progress-bar" data-flashcard-progress-bar hidden>
+        <div class="lms-flashcard-study__progress-fill" data-flashcard-progress-fill></div>
+      </div>
+    </div>
+
+    <div data-flashcard-empty hidden class="lms-flashcard-study__empty">
+      <i class="fas fa-check-circle"></i>
+      <h3>{{ 'All caught up!'|t }}</h3>
+      <p>{{ 'No cards are due right now. Come back later.'|t }}</p>
+      <a href="{{ path('lms_flashcard.my_decks') }}" class="lms-flashcard-study__back-btn">{{ 'Back to My Flashcards'|t }}</a>
+    </div>
+
+    <div data-flashcard-stage>
+      <div class="lms-flashcard" data-flashcard-card tabindex="0" role="button" aria-label="{{ 'Flip card'|t }}">
+        <div class="lms-flashcard__inner">
+          <div class="lms-flashcard__face lms-flashcard__face--front">
+            <span class="lms-flashcard__pos" data-flashcard-pos></span>
+            <div class="lms-flashcard__term-row" data-flashcard-front-term-row>
+              <div class="lms-flashcard__term" data-flashcard-term></div>
+              <button type="button" class="lms-flashcard__speak" data-flashcard-speak-front aria-label="{{ 'Play pronunciation'|t }}" title="{{ 'Play pronunciation'|t }}">
+                <i class="fas fa-volume-up"></i>
+              </button>
+            </div>
+            <div class="lms-flashcard__pronunciation" data-flashcard-pronunciation></div>
+            <div class="lms-flashcard__prompt" data-flashcard-prompt hidden></div>
+            <div class="lms-flashcard__answer-input" data-flashcard-answer-row>
+              <input type="text" class="lms-flashcard__answer-field" data-flashcard-answer-input placeholder="{{ 'Type your answer… (optional)'|t }}" autocomplete="off" autocapitalize="off" spellcheck="false">
+              <button type="button" class="lms-flashcard__answer-check" data-flashcard-check>{{ 'Check'|t }}</button>
+            </div>
+            <p class="lms-flashcard__hint">{{ 'Click, tap or press space to reveal'|t }}</p>
+          </div>
+          <div class="lms-flashcard__face lms-flashcard__face--back">
+            <div class="lms-flashcard__term-row" data-flashcard-back-term-row hidden>
+              <div class="lms-flashcard__term" data-flashcard-back-term></div>
+              <button type="button" class="lms-flashcard__speak" data-flashcard-speak-back aria-label="{{ 'Play pronunciation'|t }}" title="{{ 'Play pronunciation'|t }}">
+                <i class="fas fa-volume-up"></i>
+              </button>
+            </div>
+            <div class="lms-flashcard__pronunciation" data-flashcard-back-pronunciation hidden></div>
+            <div class="lms-flashcard__your-answer" data-flashcard-your-answer hidden></div>
+            <div class="lms-flashcard__definition" data-flashcard-definition></div>
+            <div class="lms-flashcard__examples" data-flashcard-examples></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lms-flashcard__grades" data-flashcard-grades hidden>
+        <button type="button" class="lms-flashcard__grade lms-flashcard__grade--again" data-quality="0">{{ 'Again'|t }} <small>1 · <span data-flashcard-preview="again"></span></small></button>
+        <button type="button" class="lms-flashcard__grade lms-flashcard__grade--hard" data-quality="1">{{ 'Hard'|t }} <small>2 · <span data-flashcard-preview="hard"></span></small></button>
+        <button type="button" class="lms-flashcard__grade lms-flashcard__grade--good" data-quality="2">{{ 'Good'|t }} <small>3 · <span data-flashcard-preview="good"></span></small></button>
+        <button type="button" class="lms-flashcard__grade lms-flashcard__grade--easy" data-quality="3">{{ 'Easy'|t }} <small>4 · <span data-flashcard-preview="easy"></span></small></button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,333 @@
+/**
+ * Student-facing flashcard pages (My Flashcards list, etc).
+ *
+ * Uses a neutral light palette by default so it reads fine under any of
+ * this theme's homepage skins, then a `body.layout-academy` refinement
+ * below matches the exact warm/cream palette of the currently active
+ * "academy" skin (see css/academy.css's own `body.layout-academy .academy-*`
+ * scoping for the same pattern). Add another such block if a different
+ * skin becomes the site default and this still looks off under it.
+ */
+
+.lms-flashcard-page__header {
+  margin-bottom: 2rem;
+}
+
+.lms-flashcard-page__title {
+  margin: 0 0 0.35rem;
+  font-size: 2rem;
+}
+
+.lms-flashcard-page__subtitle {
+  margin: 0;
+  color: #6b7280;
+}
+
+.lms-flashcard-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border: 1px dashed #d1d5db;
+  border-radius: 0.75rem;
+  color: #6b7280;
+}
+
+.lms-flashcard-empty i {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: #9ca3af;
+}
+
+.lms-flashcard-decks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.lms-flashcard-deck-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.lms-flashcard-deck-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.lms-flashcard-deck-card__title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.lms-flashcard-deck-card__badges {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.lms-flashcard-deck-card__badge {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 1rem;
+  padding: 0.15rem 0.5rem;
+  white-space: nowrap;
+}
+
+.lms-flashcard-deck-card__badge--mine {
+  color: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.lms-flashcard-deck-card__desc {
+  color: #6b7280;
+  font-size: 0.875rem;
+  flex: 1;
+  margin: 0 0 1rem;
+}
+
+.lms-flashcard-deck-card__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0 0 1rem;
+  font-size: 0.8rem;
+  color: #374151;
+}
+
+.lms-flashcard-deck-card__stat--due {
+  color: #d97706;
+}
+
+.lms-flashcard-deck-card__stat--new {
+  color: #4f46e5;
+}
+
+.lms-flashcard-deck-card__cta {
+  display: block;
+  text-align: center;
+  padding: 0.65rem 1rem;
+  border-radius: 0.5rem;
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.lms-flashcard-deck-card__cta:hover {
+  background: #4338ca;
+  color: #fff;
+}
+
+/* Direction-selector links (forward/reverse/mixed) under the main "Study
+   Now" CTA — see StudyController::study() and FlashcardApiController's
+   session-level "direction" tempstore key. */
+.lms-flashcard-deck-card__directions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.lms-flashcard-deck-card__directions-label {
+  color: #9ca3af;
+}
+
+.lms-flashcard-deck-card__directions a {
+  color: #4f46e5;
+  text-decoration: none;
+}
+
+.lms-flashcard-deck-card__directions a:hover {
+  text-decoration: underline;
+}
+
+.lms-flashcard-deck-card__manage {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+}
+
+.lms-flashcard-deck-card__manage a {
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.lms-flashcard-deck-card__manage a:hover {
+  text-decoration: underline;
+}
+
+.lms-flashcard-deck-card__manage-link--danger {
+  color: #dc2626 !important;
+}
+
+/* --- Academy skin refinement (currently the active homepage_style) --- */
+body.layout-academy .lms-flashcard-page__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #302117;
+}
+
+body.layout-academy .lms-flashcard-page__subtitle {
+  color: #7a6248;
+}
+
+body.layout-academy .lms-flashcard-empty {
+  border-color: rgba(104, 74, 36, 0.25);
+  background: #fffaf2;
+  color: #6d5a44;
+}
+
+body.layout-academy .lms-flashcard-empty i {
+  color: #b39254;
+}
+
+body.layout-academy .lms-flashcard-deck-card {
+  background: #fffaf2;
+  border-color: rgba(104, 74, 36, 0.15);
+  box-shadow: 0 10px 28px rgba(71, 48, 27, 0.08);
+}
+
+body.layout-academy .lms-flashcard-deck-card__title {
+  color: #302117;
+}
+
+body.layout-academy .lms-flashcard-deck-card__badge {
+  color: #7a6248;
+  border-color: rgba(104, 74, 36, 0.3);
+}
+
+body.layout-academy .lms-flashcard-deck-card__badge--mine {
+  color: #8d1f2d;
+  border-color: #8d1f2d;
+}
+
+body.layout-academy .lms-flashcard-deck-card__desc,
+body.layout-academy .lms-flashcard-deck-card__stats {
+  color: #6d5a44;
+}
+
+body.layout-academy .lms-flashcard-deck-card__stat--due {
+  color: #a1662a;
+}
+
+body.layout-academy .lms-flashcard-deck-card__stat--new {
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-flashcard-deck-card__cta {
+  background: linear-gradient(135deg, #ba8b38, #d5b46d);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-flashcard-deck-card__cta:hover {
+  background: linear-gradient(135deg, #a97c2f, #c9a45e);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-flashcard-deck-card__manage a {
+  color: #81694a;
+}
+
+body.layout-academy .lms-flashcard-deck-card__directions-label {
+  color: #b39254;
+}
+
+body.layout-academy .lms-flashcard-deck-card__directions a {
+  color: #8d1f2d;
+}
+
+/* --- Session summary page --- */
+.lms-flashcard-summary {
+  display: flex;
+  justify-content: center;
+}
+
+.lms-flashcard-summary__box {
+  max-width: 480px;
+  text-align: center;
+}
+
+.lms-flashcard-summary__icon {
+  font-size: 3rem;
+  color: #22c55e;
+}
+
+.lms-flashcard-summary__title {
+  margin-top: 1rem;
+}
+
+.lms-flashcard-summary__text {
+  color: #6b7280;
+}
+
+.lms-flashcard-summary__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.lms-flashcard-summary__btn {
+  display: inline-block;
+  padding: 0.65rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.lms-flashcard-summary__btn--primary {
+  background: #4f46e5;
+  color: #fff;
+}
+
+.lms-flashcard-summary__btn--primary:hover {
+  background: #4338ca;
+  color: #fff;
+}
+
+.lms-flashcard-summary__btn--outline {
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.lms-flashcard-summary__btn--outline:hover {
+  border-color: #9ca3af;
+}
+
+body.layout-academy .lms-flashcard-summary__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #302117;
+}
+
+body.layout-academy .lms-flashcard-summary__text {
+  color: #6d5a44;
+}
+
+body.layout-academy .lms-flashcard-summary__btn--primary {
+  background: linear-gradient(135deg, #ba8b38, #d5b46d);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-flashcard-summary__btn--primary:hover {
+  background: linear-gradient(135deg, #a97c2f, #c9a45e);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-flashcard-summary__btn--outline {
+  border-color: rgba(104, 74, 36, 0.3);
+  color: #6d5a44;
+}

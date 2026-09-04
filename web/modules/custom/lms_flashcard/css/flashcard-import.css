@@ -1,0 +1,270 @@
+/**
+ * Polish for the flashcard JSON import form (Drupal's default form ID
+ * class, e.g. `lms-flashcard-import-form`, is auto-added to the <form>).
+ */
+.lms-flashcard-import-form {
+  max-width: 46rem;
+  background: #fff;
+  border: 1px solid #dedede;
+  border-radius: 0.75rem;
+  padding: 1.75rem 2rem 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* --- "Import into" mode picker: two selectable cards instead of bare radios --- */
+.lms-flashcard-import-form #edit-mode--wrapper {
+  border: 0;
+  margin: 0 0 1.5rem;
+  padding: 0;
+}
+
+.lms-flashcard-import-form #edit-mode--wrapper > legend {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #55606c;
+  margin-bottom: 0.6rem;
+  padding: 0;
+}
+
+.lms-flashcard-import-form #edit-mode {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.lms-flashcard-import-form .form-item-mode {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border: 2px solid #dfe3e8;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.lms-flashcard-import-form .form-item-mode:hover {
+  border-color: #b7bfea;
+}
+
+.lms-flashcard-import-form .form-item-mode:has(input:checked) {
+  border-color: #667eea;
+  background: #f4f5ff;
+}
+
+.lms-flashcard-import-form .form-item-mode input[type="radio"] {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  accent-color: #667eea;
+}
+
+.lms-flashcard-import-form .form-item-mode label {
+  font-weight: 500;
+  color: #1d2532;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* --- Shared field spacing/labels --- */
+.lms-flashcard-import-form .form-item {
+  margin-bottom: 1.4rem;
+}
+
+.lms-flashcard-import-form label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #1d2532;
+  margin-bottom: 0.35rem;
+}
+
+.lms-flashcard-import-form .description {
+  font-size: 0.8125rem;
+  color: #7c8591;
+  margin-top: 0.35rem;
+}
+
+.lms-flashcard-import-form select.form-select {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #cfd4da;
+  border-radius: 0.4rem;
+  background-color: #fff;
+  font-size: 0.9375rem;
+}
+
+/* --- File upload box --- */
+.lms-flashcard-import-form .form-managed-file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem;
+  border: 1.5px dashed #c6cbd2;
+  border-radius: 0.5rem;
+  background: #fafbfc;
+}
+
+.lms-flashcard-import-form .form-managed-file:focus-within {
+  border-color: #667eea;
+}
+
+.lms-flashcard-import-form input[type="file"] {
+  font-size: 0.875rem;
+}
+
+.lms-flashcard-import-form input[data-drupal-selector$="-upload-button"] {
+  background: #eef0fe;
+  color: #4453c9;
+  border: 1px solid #c9cff6;
+  border-radius: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lms-flashcard-import-form input[data-drupal-selector$="-upload-button"]:hover {
+  background: #e0e3fd;
+}
+
+/* --- Example JSON tip block --- */
+.lms-flashcard-import-form .lms-flashcard-import__tip {
+  margin: 0 0 1.4rem;
+  border: 1px solid #e4d9c2;
+  border-radius: 0.5rem;
+  background: #fffaf0;
+  padding: 0.9rem 1.1rem;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__tip summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #6b4f1d;
+  list-style: none;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__tip summary::-webkit-details-marker {
+  display: none;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__tip summary i {
+  color: #d4a017;
+  margin-right: 0.4rem;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__tip-hint {
+  margin: 0.6rem 0 0.75rem;
+  font-size: 0.8125rem;
+  color: #6b6055;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__tip-hint code {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__tip-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__tip-btn {
+  background: #fff;
+  border: 1px solid #d8c9a3;
+  color: #6b4f1d;
+  border-radius: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__tip-btn:hover {
+  background: #fbf0d9;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__tip-code {
+  margin: 0;
+  max-height: 16rem;
+  overflow: auto;
+  background: #2b2416;
+  color: #f0e6cc;
+  border-radius: 0.4rem;
+  padding: 0.85rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+/* --- "or paste JSON" divider between the file box and the textarea --- */
+.lms-flashcard-import-form .lms-flashcard-import__divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.2rem 0;
+  color: #9aa2ab;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__divider::before,
+.lms-flashcard-import-form .lms-flashcard-import__divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e4e7eb;
+}
+
+/* --- JSON textarea, styled like a code editor --- */
+.lms-flashcard-import-form textarea.form-textarea {
+  width: 100%;
+  min-height: 16rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  padding: 0.9rem;
+  border: 1px solid #cfd4da;
+  border-radius: 0.5rem;
+  background: #f8f9fb;
+  color: #1d2532;
+}
+
+.lms-flashcard-import-form textarea.form-textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  background: #fff;
+}
+
+/* --- Submit --- */
+.lms-flashcard-import-form .form-actions {
+  margin-top: 0.5rem;
+}
+
+.lms-flashcard-import-form .form-actions .button--primary {
+  background: #667eea;
+  border-color: #667eea;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.65rem 1.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.lms-flashcard-import-form .form-actions .button--primary:hover,
+.lms-flashcard-import-form .form-actions .button--primary:focus {
+  background: #5568d3;
+  border-color: #5568d3;
+}

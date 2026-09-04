@@ -1,14 +1,7 @@
-.lms-navbar {
-  height: 80px;
-}
-
-.lms-navbar__container {
-  min-height: 80px;
-}
-
-body {
-  padding-top: 80px;
-}
+/* Legacy height/padding rules removed — header-two-tier.css (loaded later,
+   with !important) is the authoritative source for header height and body
+   offset now; keeping conflicting unitless values here just to lose the
+   cascade was confusing. */
 
 .lms-footer__brand-link {
   display: inline-flex;

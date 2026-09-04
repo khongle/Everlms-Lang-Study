@@ -1,0 +1,68 @@
+{# My Flashcards page: every published deck with due/new counts #}
+{{ attach_library('lms_theme/global') }}
+{{ attach_library('lms_flashcard/flashcard_pages') }}
+
+<section class="lms-section lms-flashcard-page">
+  <div class="container">
+    <div class="lms-flashcard-page__header">
+      <h1 class="lms-flashcard-page__title">{{ 'My Flashcards'|t }}</h1>
+      <p class="lms-flashcard-page__subtitle">{{ 'Study vocabulary decks with spaced repetition.'|t }}</p>
+    </div>
+
+    {% if decks is empty %}
+      <div class="lms-flashcard-empty">
+        <i class="fas fa-layer-group"></i>
+        <h3>{{ 'No flashcard decks available yet.'|t }}</h3>
+        <p>{{ 'Check back once your instructor publishes a vocabulary deck.'|t }}</p>
+      </div>
+    {% else %}
+      <div class="lms-flashcard-decks">
+        {% for deck in decks %}
+          <div class="lms-flashcard-deck-card">
+            <div class="lms-flashcard-deck-card__top">
+              <h3 class="lms-flashcard-deck-card__title">{{ deck.name }}</h3>
+              <div class="lms-flashcard-deck-card__badges">
+                {% if deck.is_mine %}
+                  <span class="lms-flashcard-deck-card__badge lms-flashcard-deck-card__badge--mine">{{ 'Mine'|t }}</span>
+                {% endif %}
+                <span class="lms-flashcard-deck-card__badge">{{ deck.language }}</span>
+              </div>
+            </div>
+
+            {% if deck.description %}
+              <p class="lms-flashcard-deck-card__desc">{{ deck.description|striptags|slice(0, 140) }}</p>
+            {% endif %}
+
+            <div class="lms-flashcard-deck-card__stats">
+              <span class="lms-flashcard-deck-card__stat"><i class="fas fa-clone"></i> {{ deck.card_count }} {{ 'cards'|t }}</span>
+              {% if deck.due_count > 0 %}
+                <span class="lms-flashcard-deck-card__stat lms-flashcard-deck-card__stat--due"><i class="fas fa-clock"></i> {{ deck.due_count }} {{ 'due'|t }}</span>
+              {% endif %}
+              {% if deck.new_count > 0 %}
+                <span class="lms-flashcard-deck-card__stat lms-flashcard-deck-card__stat--new"><i class="fas fa-star"></i> {{ deck.new_count }} {{ 'new'|t }}</span>
+              {% endif %}
+            </div>
+
+            <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__cta">
+              {{ 'Study Now'|t }}
+            </a>
+
+            <div class="lms-flashcard-deck-card__directions">
+              <span class="lms-flashcard-deck-card__directions-label">{{ 'Or study:'|t }}</span>
+              <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?direction=reverse">{{ 'Meaning → word'|t }}</a>
+              <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?direction=mixed">{{ 'Mixed'|t }}</a>
+            </div>
+
+            {% if deck.is_mine %}
+              <div class="lms-flashcard-deck-card__manage">
+                <a href="{{ path('entity.lms_flashcard_deck.edit_form', {'lms_flashcard_deck': deck.entity.id()}) }}">{{ 'Edit'|t }}</a>
+                <a href="{{ path('lms_flashcard.import') }}">{{ 'Add cards'|t }}</a>
+                <a href="{{ path('entity.lms_flashcard_deck.delete_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link--danger">{{ 'Delete'|t }}</a>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>

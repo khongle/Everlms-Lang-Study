@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for lms_flashcard module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function lms_flashcard_theme($existing, $type, $theme, $path) {
+  return [
+    'lms_flashcard_my_decks' => [
+      'variables' => [
+        'decks' => [],
+      ],
+      'template' => 'lms-flashcard-my-decks',
+    ],
+    'lms_flashcard_study_session' => [
+      'variables' => [
+        'deck' => NULL,
+      ],
+      'template' => 'lms-flashcard-study-session',
+    ],
+    'lms_flashcard_session_summary' => [
+      'variables' => [
+        'deck' => NULL,
+        'remaining_due' => 0,
+        'remaining_new' => 0,
+      ],
+      'template' => 'lms-flashcard-session-summary',
+    ],
+    'lms_flashcard_admin_decks' => [
+      'variables' => [
+        'decks' => [],
+        'pager' => NULL,
+        'stats' => [],
+        'filters' => [],
+        'owner_options' => [],
+        'add_url' => '',
+        'import_url' => '',
+      ],
+      'template' => 'lms-flashcard-admin-decks',
+    ],
+  ];
+}

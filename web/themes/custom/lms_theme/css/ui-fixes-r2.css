@@ -158,3 +158,121 @@
   background: rgba(245, 87, 108, 0.18);
   border-color: rgba(245, 87, 108, 0.62);
 }
+
+/* [P019] FIX: lesson tabs (Overview/Resources/My Notes/Q&A) had no pointer
+   cursor at all — they're clickable <li> elements, and browsers don't give
+   list items an interactive cursor by default. */
+body.route--lms-progress-lesson-view .lms-tab-item {
+  cursor: pointer !important;
+}
+
+/* [P019] FIX: sidebar "current lesson" indicator used a flat teal-blue
+   (#0077b6) that doesn't belong to the site's actual accent palette
+   (the indigo/purple gradient used everywhere else — buttons, SCORM
+   player, etc. — is #667eea -> #764ba2). Re-tint to match. */
+body.route--lms-progress-lesson-view .lms-learn__lesson-item--active {
+  background: rgba(102, 126, 234, 0.08) !important;
+  border-left-color: #667eea !important;
+}
+
+/* [P019] FIX (round 2): the separate back/edit/theater row still felt like
+   wasted space above the actual lesson content, even slimmed down. Removed
+   entirely (see lms-lesson-view.html.twig): "Back to Course" now lives on
+   the sidebar course title instead (students look for it there first),
+   and Edit Lesson / Theater Mode are compact icon-only buttons sitting
+   inline with the title itself — a single row, not a whole extra block. */
+body.route--lms-progress-lesson-view .lms-learn__title-wrap {
+  padding: 0.25rem 0 0.75rem !important;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+body.route--lms-progress-lesson-view .lms-learn__title {
+  font-size: 1.625rem !important;
+}
+body.route--lms-progress-lesson-view .lms-learn__title-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  padding-top: 0.2rem;
+}
+body.route--lms-progress-lesson-view .lms-learn__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: transparent;
+  color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+body.route--lms-progress-lesson-view .lms-learn__icon-btn:hover {
+  color: #667eea;
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.08);
+}
+
+/* Sidebar course title, now doubling as the "back to course" link. */
+body.route--lms-progress-lesson-view .lms-learn__course-title-link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+body.route--lms-progress-lesson-view .lms-learn__course-title-back-icon {
+  font-size: 0.8125rem;
+  color: rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+body.route--lms-progress-lesson-view .lms-learn__course-title-link:hover .lms-learn__course-title-back-icon {
+  color: #667eea;
+  transform: translateX(-3px);
+}
+body.route--lms-progress-lesson-view .lms-learn__course-title-link:hover .lms-learn__course-title {
+  color: #667eea;
+}
+body.route--lms-progress-lesson-view .lms-learn__course-title {
+  transition: color 0.2s ease;
+}
+
+/* [P019] FIX: "Mark Complete" used to sit alone in its own full-width
+   block below the player — a lot of visible empty space for one button.
+   Markup was moved (see lms-lesson-view.html.twig) to share the same row
+   as the Overview/Resources/My Notes/Q&A tabs instead, tabs on the left
+   and the completion action pinned to the right. */
+body.route--lms-progress-lesson-view .lms-learn__tabs-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+body.route--lms-progress-lesson-view .lms-learn__tabs-row .lms-nav-tabs {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+body.route--lms-progress-lesson-view .lms-learn__tabs-row .lms-learn__actions {
+  flex-shrink: 0;
+}
+body.route--lms-progress-lesson-view .lms-learn__action-mark,
+body.route--lms-progress-lesson-view .lms-learn__action-completed {
+  padding: 0.5rem 1.1rem !important;
+  font-size: 0.875rem !important;
+}
+@media (max-width: 640px) {
+  body.route--lms-progress-lesson-view .lms-learn__tabs-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  body.route--lms-progress-lesson-view .lms-learn__tabs-row .lms-learn__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

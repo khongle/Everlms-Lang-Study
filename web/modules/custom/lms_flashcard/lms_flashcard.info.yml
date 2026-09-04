@@ -1,0 +1,11 @@
+name: 'LMS Flashcard'
+type: module
+description: 'Vocabulary flashcard decks with SM-2 spaced repetition study sessions.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+  - lms_course:lms_course
+  - lms_lesson:lms_lesson
+  - taxonomy:taxonomy
+lifecycle: stable

@@ -1,7 +1,11 @@
-/* Two-tier global header.
-   Loaded after the historical UI-fix layers so it owns the final navbar cascade. */
+/* Global header. Originally a two-tier design (utility row stacked on top of
+   the main menu row, 112px tall total). Collapsed to a single row — the
+   utility icons/account controls now sit inline with the main menu instead
+   of on their own row — to match the compact single-row header used by
+   mainstream course platforms. Loaded after the historical UI-fix layers so
+   it owns the final navbar cascade. */
 :root {
-  --lms-header-height: 112px;
+  --lms-header-height: 72px;
   --lms-header-bg: #162746;
   --lms-header-bg-deep: #101d36;
   --lms-header-line: rgba(248, 196, 79, 0.78);
@@ -73,17 +77,19 @@ body {
   min-width: 0;
   height: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(0.75rem, 1.6vw, 1.75rem);
 }
 
 .lms-navbar--two-tier .lms-navbar__actions {
-  order: 1;
-  min-height: 48px;
+  order: 2;
+  flex: 0 0 auto;
+  min-height: 0;
   display: flex !important;
   justify-content: flex-end;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 0;
 }
 
 .lms-navbar--two-tier .lms-navbar__utility-list {
@@ -95,9 +101,10 @@ body {
 }
 
 .lms-navbar--two-tier .lms-navbar__nav {
-  order: 2;
-  width: 100%;
-  min-height: 54px;
+  order: 1;
+  width: auto;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex !important;
   align-items: center;
   justify-content: flex-end;
@@ -329,6 +336,29 @@ body {
 .lms-navbar--two-tier .lms-nav__exit-impersonation {
   min-height: 38px !important;
   border-radius: 999px !important;
+}
+
+/* ============================================================
+   Fix: `.lms-navbar__actions a { color: #1f2a37; }` in
+   ui-fixes-r1.css is a broad descendant selector meant for the
+   navbar bar's own icon/text links (dark text, e.g. readable on the
+   gold Workspace/Dashboard pill). Its specificity (one class + one
+   tag) accidentally beats `.lms-mega-link`'s (one class alone), so
+   it also darkens the text *inside* the account dropdown — which
+   sits on the dropdown's own dark background (#161b22), not the
+   navbar bar. Result: near-invisible dark-on-dark menu items in
+   both the small (student) and mega (staff) dropdowns. Restore the
+   dropdown's intended light text with a selector specific enough
+   (two classes) to win regardless of stylesheet load order.
+   ============================================================ */
+.lms-navbar__actions .lms-mega-dropdown .lms-mega-link,
+.lms-navbar__actions .lms-mega-dropdown--small .lms-mega-link {
+  color: #c9d1d9;
+}
+
+.lms-navbar__actions .lms-mega-dropdown .lms-mega-link-logout,
+.lms-navbar__actions .lms-mega-dropdown--small .lms-mega-link-logout {
+  color: #ff7b72;
 }
 
 .lms-navbar--two-tier .lms-navbar__toggle {

@@ -1,0 +1,40 @@
+flashcard_study:
+  version: 1.x
+  css:
+    theme:
+      css/flashcard-study.css: {}
+  js:
+    js/flashcard-study.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/drupalSettings
+
+flashcard_import:
+  version: 1.x
+  css:
+    theme:
+      css/flashcard-import.css: {}
+  js:
+    js/flashcard-import.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+flashcard_pages:
+  version: 1.x
+  css:
+    theme:
+      css/flashcard-pages.css: {}
+
+flashcard_entity_form:
+  version: 1.x
+  css:
+    theme:
+      css/flashcard-entity-form.css: {}
+
+flashcard_admin:
+  version: 1.x
+  css:
+    theme:
+      css/flashcard-admin.css: {}

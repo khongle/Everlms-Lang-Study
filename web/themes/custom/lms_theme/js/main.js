@@ -293,6 +293,8 @@
                 var noteSaveBtn = container.querySelector('#lms-note-save-btn');
                 var noteDeleteBtn = container.querySelector('#lms-note-delete-btn');
                 var noteStatus = container.querySelector('#lms-note-status');
+                var noteAttachmentList = container.querySelector('#lms-note-attachment-list');
+                var noteAttachmentInput = container.querySelector('#lms-note-attachment-input');
 
                 if (noteTextarea && noteSaveBtn && noteDeleteBtn && noteStatus) {
                     var originalNoteText = '';
@@ -319,6 +321,135 @@
                         noteStatus.classList.remove('is-visible', 'is-muted', 'is-success', 'is-error');
                     };
 
+                    var attachmentIcon = function (mime) {
+                        if (mime && mime.indexOf('audio') === 0) return 'fa-file-audio';
+                        if (mime && mime.indexOf('image') === 0) return 'fa-file-image';
+                        if (mime === 'application/pdf') return 'fa-file-pdf';
+                        return 'fa-file';
+                    };
+
+                    var formatFileSize = function (bytes) {
+                        if (!bytes) return '0 KB';
+                        var kb = bytes / 1024;
+                        if (kb < 1024) return Math.round(kb) + ' KB';
+                        return (kb / 1024).toFixed(1) + ' MB';
+                    };
+
+                    var renderAttachments = function (attachments) {
+                        if (!noteAttachmentList) return;
+                        noteAttachmentList.innerHTML = '';
+                        (attachments || []).forEach(function (att) {
+                            var li = document.createElement('li');
+                            li.className = 'lms-learn__notes-attachment-item';
+                            li.setAttribute('data-file-id', att.file_id);
+                            li.innerHTML =
+                                '<i class="fas ' + attachmentIcon(att.mime) + ' lms-learn__notes-attachment-icon"></i>' +
+                                '<a href="' + att.url + '" target="_blank" rel="noopener noreferrer" class="lms-learn__notes-attachment-name">' + att.filename + '</a>' +
+                                '<span class="lms-learn__notes-attachment-size">' + formatFileSize(att.size) + '</span>' +
+                                '<button type="button" class="lms-learn__notes-attachment-remove" title="' + Drupal.t('Remove attachment') + '"><i class="fas fa-times"></i></button>';
+                            noteAttachmentList.appendChild(li);
+                        });
+                    };
+
+                    if (noteAttachmentList) {
+                        noteAttachmentList.addEventListener('click', async function (e) {
+                            var removeBtn = e.target.closest('.lms-learn__notes-attachment-remove');
+                            if (!removeBtn) return;
+
+                            var li = removeBtn.closest('.lms-learn__notes-attachment-item');
+                            var fileId = li ? li.getAttribute('data-file-id') : null;
+                            if (!fileId) return;
+
+                            if (!window.confirm(Drupal.t('Remove this attachment?'))) return;
+
+                            removeBtn.disabled = true;
+                            try {
+                                var response = await fetch('/api/lms/note/remove-attachment', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json'
+                                    },
+                                    body: JSON.stringify({ lesson_id: lessonId, file_id: fileId })
+                                });
+
+                                if (response.ok) {
+                                    li.remove();
+                                    setDeleteVisible(true);
+                                } else {
+                                    showStatus('<i class="fas fa-exclamation-triangle lms-note-status-icon is-error"></i> ' + Drupal.t('Error removing attachment'), 'error');
+                                    removeBtn.disabled = false;
+                                }
+                            } catch (err) {
+                                showStatus('<i class="fas fa-exclamation-triangle lms-note-status-icon is-error"></i> ' + Drupal.t('Network error'), 'error');
+                                removeBtn.disabled = false;
+                                console.error(err);
+                            }
+                        });
+                    }
+
+                    if (noteAttachmentInput) {
+                        noteAttachmentInput.addEventListener('change', async function () {
+                            var files = Array.prototype.slice.call(noteAttachmentInput.files || []);
+                            noteAttachmentInput.value = '';
+                            if (!files.length) return;
+
+                            var allowedExt = ['mp3', 'wav', 'pdf', 'jpg', 'jpeg', 'png', 'gif'];
+                            var maxSize = 10 * 1024 * 1024;
+
+                            for (var i = 0; i < files.length; i++) {
+                                var file = files[i];
+                                var ext = (file.name.split('.').pop() || '').toLowerCase();
+
+                                if (allowedExt.indexOf(ext) === -1) {
+                                    showStatus('<i class="fas fa-exclamation-triangle lms-note-status-icon is-error"></i> ' + Drupal.t('File type not allowed: @name', { '@name': file.name }), 'error');
+                                    continue;
+                                }
+                                if (file.size > maxSize) {
+                                    showStatus('<i class="fas fa-exclamation-triangle lms-note-status-icon is-error"></i> ' + Drupal.t('File too large (max 10 MB): @name', { '@name': file.name }), 'error');
+                                    continue;
+                                }
+
+                                showStatus('<i class="fas fa-spinner fa-spin"></i> ' + Drupal.t('Uploading @name...', { '@name': file.name }), 'muted');
+
+                                try {
+                                    var formData = new FormData();
+                                    formData.append('file', file);
+                                    formData.append('lesson_id', lessonId);
+                                    formData.append('course_id', courseId);
+
+                                    var response = await fetch('/api/lms/note/upload-attachment', {
+                                        method: 'POST',
+                                        headers: { 'Accept': 'application/json' },
+                                        body: formData
+                                    });
+                                    var result = await response.json();
+
+                                    if (response.ok && result.status === 'uploaded') {
+                                        var li = document.createElement('li');
+                                        li.className = 'lms-learn__notes-attachment-item';
+                                        li.setAttribute('data-file-id', result.file_id);
+                                        li.innerHTML =
+                                            '<i class="fas ' + attachmentIcon(result.mime) + ' lms-learn__notes-attachment-icon"></i>' +
+                                            '<a href="' + result.url + '" target="_blank" rel="noopener noreferrer" class="lms-learn__notes-attachment-name">' + result.filename + '</a>' +
+                                            '<span class="lms-learn__notes-attachment-size">' + formatFileSize(result.size) + '</span>' +
+                                            '<button type="button" class="lms-learn__notes-attachment-remove" title="' + Drupal.t('Remove attachment') + '"><i class="fas fa-times"></i></button>';
+                                        if (noteAttachmentList) noteAttachmentList.appendChild(li);
+
+                                        setDeleteVisible(true);
+                                        showStatus('<i class="fas fa-check-circle lms-note-status-icon is-success"></i> ' + Drupal.t('Attached @name', { '@name': file.name }), 'success');
+                                        setTimeout(hideStatus, 2000);
+                                    } else {
+                                        showStatus('<i class="fas fa-exclamation-triangle lms-note-status-icon is-error"></i> ' + (result.error || Drupal.t('Error uploading file')), 'error');
+                                    }
+                                } catch (err) {
+                                    showStatus('<i class="fas fa-exclamation-triangle lms-note-status-icon is-error"></i> ' + Drupal.t('Network error'), 'error');
+                                    console.error(err);
+                                }
+                            }
+                        });
+                    }
+
                     window.addEventListener('beforeunload', function (e) {
                         if (hasUnsavedChanges) {
                             e.preventDefault();
@@ -336,6 +467,7 @@
                         .then(function (data) {
                             noteTextarea.disabled = false;
                             noteTextarea.placeholder = Drupal.t('Type your notes here...');
+                            if (noteAttachmentInput) noteAttachmentInput.disabled = false;
 
                             if (data && data.status === 'found') {
                                 noteTextarea.value = data.note_text || '';
@@ -345,6 +477,7 @@
                                 originalNoteText = '';
                                 setDeleteVisible(false);
                             }
+                            renderAttachments(data && data.attachments);
 
                             hasUnsavedChanges = false;
                             setSaveEnabled(false);
@@ -352,6 +485,7 @@
                         .catch(function () {
                             noteTextarea.disabled = false;
                             noteTextarea.placeholder = Drupal.t('Type your notes here...');
+                            if (noteAttachmentInput) noteAttachmentInput.disabled = false;
                             setDeleteVisible(false);
                             setSaveEnabled(false);
                         });
@@ -422,6 +556,7 @@
 
                                 setDeleteVisible(false);
                                 setSaveEnabled(false);
+                                renderAttachments([]);
                                 showStatus('<i class="fas fa-trash-alt lms-note-status-icon is-error"></i> ' + Drupal.t('Deleted successfully!'), 'success');
                                 setTimeout(hideStatus, 2000);
                             } else {

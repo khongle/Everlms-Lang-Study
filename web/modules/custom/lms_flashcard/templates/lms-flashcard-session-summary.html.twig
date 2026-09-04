@@ -1,0 +1,25 @@
+{# End-of-session recap #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-flashcard-summary">
+  <div class="lms-flashcard-summary__box">
+    <i class="fas fa-check-circle lms-flashcard-summary__icon"></i>
+    <h1 class="lms-flashcard-summary__title">{{ 'Session complete'|t }}</h1>
+    <p class="lms-flashcard-summary__text">{{ 'Nice work studying @deck.'|t({'@deck': deck.label()}) }}</p>
+
+    {% if remaining_due > 0 or remaining_new > 0 %}
+      <p class="lms-flashcard-summary__text">
+        {{ 'Still remaining: @due due for review, @new new.'|t({'@due': remaining_due, '@new': remaining_new}) }}
+      </p>
+    {% else %}
+      <p class="lms-flashcard-summary__text">{{ "You're all caught up on this deck!"|t }}</p>
+    {% endif %}
+
+    <div class="lms-flashcard-summary__actions">
+      {% if remaining_due > 0 or remaining_new > 0 %}
+        <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.id()}) }}" class="lms-flashcard-summary__btn lms-flashcard-summary__btn--primary">{{ 'Keep Studying'|t }}</a>
+      {% endif %}
+      <a href="{{ path('lms_flashcard.my_decks') }}" class="lms-flashcard-summary__btn lms-flashcard-summary__btn--outline">{{ 'Back to My Flashcards'|t }}</a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * @file
+ * Install/update hooks for lms_flashcard module.
+ */
+
+use Drupal\lms_flashcard\Entity\Card;
+use Drupal\lms_flashcard\Entity\Deck;
+use Drupal\taxonomy\Entity\Vocabulary;
+
+/**
+ * Adds field_machine_name and field_topic to the Deck entity.
+ *
+ * machine_name gives the JSON importer a stable, unique key to tell decks
+ * apart (see ImportValidator's duplicate check on "create new deck"
+ * imports); topic classifies decks by category using a new "Flashcard
+ * Topic" taxonomy vocabulary.
+ */
+function lms_flashcard_update_10001(): void {
+  if (!Vocabulary::load('flashcard_topic')) {
+    Vocabulary::create([
+      'vid' => 'flashcard_topic',
+      'name' => 'Flashcard Topic',
+      'description' => 'Topics/categories used to organize flashcard decks (e.g. Family, Travel, Business).',
+    ])->save();
+  }
+
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = $update_manager->getEntityType('lms_flashcard_deck');
+  $storage_definitions = Deck::baseFieldDefinitions($entity_type);
+
+  foreach (['field_machine_name', 'field_topic'] as $field_name) {
+    if (!$update_manager->getFieldStorageDefinition($field_name, 'lms_flashcard_deck')) {
+      $update_manager->installFieldStorageDefinition(
+        $field_name,
+        'lms_flashcard_deck',
+        'lms_flashcard',
+        $storage_definitions[$field_name],
+      );
+    }
+  }
+}
+
+/**
+ * Adds multi-value example fields and preserves each card's existing example.
+ */
+function lms_flashcard_update_10002(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = $update_manager->getEntityType('lms_flashcard_card');
+  $storage_definitions = Card::baseFieldDefinitions($entity_type);
+
+  foreach (['field_example_sentences', 'field_example_translations'] as $field_name) {
+    if (!$update_manager->getFieldStorageDefinition($field_name, 'lms_flashcard_card')) {
+      $update_manager->installFieldStorageDefinition(
+        $field_name,
+        'lms_flashcard_card',
+        'lms_flashcard',
+        $storage_definitions[$field_name],
+      );
+    }
+  }
+
+  $storage = \Drupal::entityTypeManager()->getStorage('lms_flashcard_card');
+  $ids = $storage->getQuery()->accessCheck(FALSE)->execute();
+  foreach ($storage->loadMultiple($ids) as $card) {
+    $changed = FALSE;
+    if ($card->get('field_example_sentences')->isEmpty()) {
+      $sentence = trim(strip_tags((string) $card->get('field_example_sentence')->value));
+      if ($sentence !== '') {
+        $card->set('field_example_sentences', [$sentence]);
+        $changed = TRUE;
+      }
+    }
+    if ($card->get('field_example_translations')->isEmpty()) {
+      $translation = trim(strip_tags((string) $card->get('field_example_translation')->value));
+      if ($translation !== '') {
+        $card->set('field_example_translations', [$translation]);
+        $changed = TRUE;
+      }
+    }
+    if ($changed) {
+      $card->save();
+    }
+  }
+
+  return 'Added multi-value flashcard examples and migrated existing examples.';
+}

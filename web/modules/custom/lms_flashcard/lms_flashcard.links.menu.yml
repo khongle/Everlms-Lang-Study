@@ -1,0 +1,13 @@
+entity.lms_flashcard_deck.collection:
+  title: 'Flashcard Decks'
+  description: 'Manage vocabulary flashcard decks and cards.'
+  route_name: entity.lms_flashcard_deck.collection
+  parent: system.admin_content
+  weight: 15
+
+lms_flashcard.import:
+  title: 'Import Flashcards'
+  description: 'Import a JSON list of vocabulary into a new or existing deck.'
+  route_name: lms_flashcard.import
+  parent: system.admin_content
+  weight: 16

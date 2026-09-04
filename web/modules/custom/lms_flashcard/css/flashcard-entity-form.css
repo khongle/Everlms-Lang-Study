@@ -1,0 +1,499 @@
+/**
+ * Deck/Card add & edit forms.
+ */
+
+.lms-flashcard-entity-form {
+  --flashcard-surface: #fffaf2;
+  --flashcard-surface-strong: #fffdf9;
+  --flashcard-panel: #f9f1e2;
+  --flashcard-border: rgba(104, 74, 36, 0.2);
+  --flashcard-border-strong: rgba(104, 74, 36, 0.32);
+  --flashcard-text: #302117;
+  --flashcard-muted: #7a6248;
+  --flashcard-accent: #8d1f2d;
+  --flashcard-accent-soft: rgba(141, 31, 45, 0.12);
+  --flashcard-highlight: #cda24f;
+  max-width: min(76rem, calc(100vw - 2rem));
+  margin: 0 auto;
+  background:
+    radial-gradient(circle at top right, rgba(205, 162, 79, 0.12), transparent 22rem),
+    linear-gradient(180deg, #fffdf8, var(--flashcard-surface));
+  border: 1px solid var(--flashcard-border);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  box-shadow: 0 18px 46px rgba(71, 48, 27, 0.1);
+}
+
+.lms-flashcard-entity-form .form-item,
+.lms-flashcard-entity-form .field--type-text-long,
+.lms-flashcard-entity-form .field--type-entity-reference,
+.lms-flashcard-entity-form .field--type-string,
+.lms-flashcard-entity-form .field--type-boolean,
+.lms-flashcard-entity-form .field--type-list-string,
+.lms-flashcard-entity-form .field--type-file,
+.lms-flashcard-entity-form .field--type-image {
+  margin-bottom: 1.25rem;
+}
+
+.lms-flashcard-entity-form label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--flashcard-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.lms-flashcard-entity-form .form-type-checkbox,
+.lms-flashcard-entity-form .form-type-boolean {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 0.65rem;
+  row-gap: 0.25rem;
+  align-items: start;
+  padding: 1rem 1.1rem;
+  background: var(--flashcard-surface-strong);
+  border: 1px solid var(--flashcard-border);
+  border-radius: 0.95rem;
+}
+
+.lms-flashcard-entity-form .form-type-checkbox input,
+.lms-flashcard-entity-form .form-type-boolean input {
+  margin-top: 0.2rem;
+}
+
+.lms-flashcard-entity-form .form-type-checkbox label,
+.lms-flashcard-entity-form .form-type-boolean label {
+  display: inline;
+  grid-column: 2;
+  margin-bottom: 0;
+}
+
+.lms-flashcard-entity-form .form-type-checkbox .description,
+.lms-flashcard-entity-form .form-type-boolean .description {
+  grid-column: 2;
+  margin-top: 0;
+}
+
+.lms-flashcard-entity-form .description {
+  margin-top: 0.45rem;
+  color: var(--flashcard-muted);
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+
+.lms-flashcard-entity-form input.form-text,
+.lms-flashcard-entity-form input.form-autocomplete,
+.lms-flashcard-entity-form input.form-email,
+.lms-flashcard-entity-form input.form-number,
+.lms-flashcard-entity-form textarea.form-textarea,
+.lms-flashcard-entity-form select.form-select {
+  width: 100%;
+  max-width: 100%;
+  min-height: 3.35rem;
+  padding: 0.8rem 0.95rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--flashcard-border-strong);
+  border-radius: 0.95rem;
+  color: var(--flashcard-text);
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.lms-flashcard-entity-form textarea.form-textarea {
+  min-height: 9rem;
+}
+
+.lms-flashcard-entity-form input.form-text:focus,
+.lms-flashcard-entity-form input.form-autocomplete:focus,
+.lms-flashcard-entity-form textarea.form-textarea:focus,
+.lms-flashcard-entity-form select.form-select:focus {
+  outline: none;
+  background: #fff;
+  border-color: var(--flashcard-accent);
+  box-shadow: 0 0 0 0.25rem var(--flashcard-accent-soft);
+}
+
+.lms-flashcard-entity-form .js-text-format-wrapper {
+  overflow: hidden;
+  padding-top: 0.85rem;
+  border: 1px solid var(--flashcard-border-strong);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.lms-flashcard-entity-form .js-text-format-wrapper > .form-item {
+  margin-bottom: 0;
+}
+
+.lms-flashcard-entity-form .js-text-format-wrapper > .form-item > label {
+  padding: 0 1rem;
+}
+
+.lms-flashcard-entity-form .js-text-format-wrapper .form-textarea-wrapper textarea {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.lms-flashcard-entity-form .filter-wrapper {
+  margin: 0 !important;
+  padding: 1rem 1.1rem 1.1rem !important;
+  background: rgba(249, 241, 226, 0.55);
+  border-top: 1px solid var(--flashcard-border);
+}
+
+.lms-flashcard-entity-form .filter-wrapper .filter-help,
+.lms-flashcard-entity-form .filter-wrapper .form-item {
+  margin: 0;
+}
+
+.lms-flashcard-entity-form .filter-wrapper .filter-help {
+  margin-bottom: 0.75rem;
+}
+
+.lms-flashcard-entity-form .js-text-format-wrapper > .form-item > .description,
+.lms-flashcard-entity-form .js-text-format-wrapper > .description {
+  margin: 0 !important;
+  padding: 0.85rem 1rem 1rem;
+  border-top: 1px solid var(--flashcard-border);
+}
+
+.lms-flashcard-entity-form__breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 1.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(249, 241, 226, 0.72);
+  border: 1px solid var(--flashcard-border);
+  border-radius: 0.85rem;
+  color: var(--flashcard-muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.lms-flashcard-entity-form__breadcrumb > * {
+  min-width: 0;
+}
+
+.lms-flashcard-entity-form__breadcrumb > * + *::before {
+  content: "/";
+  margin-right: 0.45rem;
+  color: rgba(122, 98, 72, 0.55);
+}
+
+.lms-flashcard-entity-form__breadcrumb a {
+  color: var(--flashcard-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.lms-flashcard-entity-form__breadcrumb a:hover,
+.lms-flashcard-entity-form__breadcrumb a:focus {
+  text-decoration: underline;
+}
+
+.lms-flashcard-entity-form__breadcrumb [aria-current="page"] {
+  overflow: hidden;
+  color: var(--flashcard-text);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lms-flashcard-entity-form .form-managed-file {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1.5px dashed var(--flashcard-border-strong);
+  border-radius: 0.95rem;
+}
+
+.lms-flashcard-entity-form__examples {
+  padding: 1rem;
+  background: rgba(249, 241, 226, 0.42);
+  border: 1px solid var(--flashcard-border);
+  border-radius: 1rem;
+}
+
+.lms-flashcard-entity-form__examples-heading {
+  margin: 0;
+  color: var(--flashcard-text);
+  font-size: 1.05rem;
+}
+
+.lms-flashcard-entity-form__examples-help {
+  margin: 0.35rem 0 1rem;
+  color: var(--flashcard-muted);
+  font-size: 0.85rem;
+}
+
+.lms-flashcard-entity-form__examples-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.lms-flashcard-entity-form__example-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: end;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(104, 74, 36, 0.14);
+  border-radius: 0.9rem;
+}
+
+.lms-flashcard-entity-form__example-number {
+  grid-column: 1 / -1;
+  color: var(--flashcard-accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lms-flashcard-entity-form__example-row .form-item {
+  margin: 0;
+}
+
+.lms-flashcard-entity-form__example-row textarea.form-textarea {
+  min-height: 5.5rem;
+  background: #fff;
+}
+
+.lms-flashcard-entity-form__example-add,
+.lms-flashcard-entity-form__example-remove {
+  width: auto;
+  border: 1px solid var(--flashcard-border-strong);
+  background: #fff;
+  color: var(--flashcard-accent);
+}
+
+.lms-flashcard-entity-form__example-add {
+  margin-top: 1rem;
+}
+
+.lms-flashcard-entity-form__example-remove {
+  margin-bottom: 1.25rem;
+  white-space: nowrap;
+}
+
+.lms-flashcard-entity-form .button,
+.lms-flashcard-entity-form .button.form-submit {
+  min-height: 2.9rem;
+  padding: 0.72rem 1.45rem;
+  border-radius: 0.85rem;
+  font-weight: 700;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.lms-flashcard-entity-form .button:hover,
+.lms-flashcard-entity-form .button:focus {
+  transform: translateY(-1px);
+}
+
+.lms-flashcard-entity-form .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--flashcard-border);
+}
+
+.lms-flashcard-entity-form .form-actions .button--primary {
+  background: linear-gradient(135deg, #ba8b38, #d5b46d);
+  border: 0;
+  color: #2f241a;
+  box-shadow: 0 12px 24px rgba(186, 139, 56, 0.2);
+}
+
+.lms-flashcard-entity-form .form-actions .button--primary:hover,
+.lms-flashcard-entity-form .form-actions .button--primary:focus {
+  background: linear-gradient(135deg, #b07f2e, #cca65c);
+}
+
+.lms-flashcard-entity-form .form-actions .button:not(.button--primary) {
+  border: 1px solid var(--flashcard-border-strong);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--flashcard-text);
+}
+
+.lms-flashcard-entity-form--deck {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 0.9fr);
+  column-gap: 2rem;
+  row-gap: 0;
+  align-items: start;
+}
+
+.lms-flashcard-entity-form--deck > :not(.lms-flashcard-entity-form__cards-panel):not(.form-actions) {
+  grid-column: 1;
+  min-width: 0;
+}
+
+.lms-flashcard-entity-form--deck > .lms-flashcard-entity-form__cards-panel {
+  grid-column: 2;
+  grid-row: 1 / span 40;
+  position: sticky;
+  top: 1.5rem;
+  align-self: start;
+  margin-top: 0;
+}
+
+.lms-flashcard-entity-form--deck > .form-actions {
+  grid-column: 1 / -1;
+}
+
+.lms-flashcard-entity-form__cards-panel {
+  padding: 1.2rem;
+  background: linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(249, 241, 226, 0.92));
+  border: 1px solid var(--flashcard-border);
+  border-radius: 1rem;
+  box-shadow: 0 10px 26px rgba(71, 48, 27, 0.08);
+}
+
+.lms-flashcard-entity-form__cards-heading {
+  margin: 0 0 0.35rem;
+  color: var(--flashcard-text);
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.lms-flashcard-entity-form__cards-heading::after {
+  content: "";
+  display: block;
+  width: 3.25rem;
+  height: 0.2rem;
+  margin-top: 0.7rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--flashcard-highlight), rgba(205, 162, 79, 0.15));
+}
+
+.lms-flashcard-entity-form__cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-height: min(62vh, 40rem);
+  margin: 1rem 0 1.15rem;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+}
+
+.lms-flashcard-entity-form__cards-list::-webkit-scrollbar {
+  width: 0.55rem;
+}
+
+.lms-flashcard-entity-form__cards-list::-webkit-scrollbar-thumb {
+  background: rgba(104, 74, 36, 0.3);
+  border-radius: 999px;
+}
+
+.lms-flashcard-entity-form__card-item {
+  padding: 0.95rem 0.95rem 0.85rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(104, 74, 36, 0.12);
+  border-radius: 0.9rem;
+}
+
+.lms-flashcard-entity-form__card-term {
+  display: inline-block;
+  color: var(--flashcard-text);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.lms-flashcard-entity-form__card-term:hover,
+.lms-flashcard-entity-form__card-term:focus {
+  color: var(--flashcard-accent);
+}
+
+.lms-flashcard-entity-form__card-def {
+  display: block;
+  margin: 0.45rem 0 0.7rem;
+  color: var(--flashcard-muted);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.lms-flashcard-entity-form__card-delete,
+.lms-flashcard-entity-form__cards-add-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--flashcard-accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.lms-flashcard-entity-form__card-delete:hover,
+.lms-flashcard-entity-form__cards-add-link:hover,
+.lms-flashcard-entity-form__card-delete:focus,
+.lms-flashcard-entity-form__cards-add-link:focus {
+  text-decoration: underline;
+}
+
+.lms-flashcard-entity-form__cards-empty {
+  margin: 1rem 0;
+  color: var(--flashcard-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 1100px) {
+  .lms-flashcard-entity-form {
+    max-width: min(72rem, calc(100vw - 1.5rem));
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .lms-flashcard-entity-form--deck {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    column-gap: 1.4rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .lms-flashcard-entity-form {
+    max-width: calc(100vw - 1rem);
+    padding: 1.15rem;
+  }
+
+  .lms-flashcard-entity-form--deck {
+    display: block;
+  }
+
+  .lms-flashcard-entity-form--deck > .lms-flashcard-entity-form__cards-panel {
+    position: static;
+    margin-top: 1.4rem;
+  }
+
+  .lms-flashcard-entity-form__example-row {
+    grid-template-columns: 1fr;
+  }
+
+  .lms-flashcard-entity-form__example-remove {
+    margin-bottom: 0;
+  }
+
+  .lms-flashcard-entity-form .form-actions {
+    position: sticky;
+    bottom: 0.75rem;
+    padding: 1rem;
+    margin: 1.5rem -0.2rem 0;
+    border: 1px solid var(--flashcard-border);
+    border-radius: 1rem;
+    background: rgba(255, 250, 242, 0.96);
+    backdrop-filter: blur(10px);
+  }
+}

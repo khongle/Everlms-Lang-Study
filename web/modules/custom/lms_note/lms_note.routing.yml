@@ -22,6 +22,22 @@ lms_note.get:
     _user_is_logged_in: 'TRUE'
   methods: [GET]
 
+lms_note.upload_attachment:
+  path: '/api/lms/note/upload-attachment'
+  defaults:
+    _controller: '\Drupal\lms_note\Controller\NoteController::uploadAttachment'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_note.remove_attachment:
+  path: '/api/lms/note/remove-attachment'
+  defaults:
+    _controller: '\Drupal\lms_note\Controller\NoteController::removeAttachment'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
 lms_note.my_notes:
   path: '/my-notes'
   defaults:
