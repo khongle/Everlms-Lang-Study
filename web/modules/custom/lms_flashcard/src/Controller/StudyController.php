@@ -94,6 +94,11 @@ final class StudyController extends ControllerBase {
    * which sends it back on the *first* /api/lms/flashcard/next call of the
    * session; FlashcardApiController::nextCard() is what actually persists
    * it for the rest of the session.
+   *
+   * Also accepts an optional ?mode=practice, from the "Practice all cards"
+   * link on the same page — drills every card in the deck regardless of SRS
+   * due dates, without touching the student's real review schedule (see
+   * StudyQueueBuilder::buildQueue() and FlashcardApiController::submitReview()).
    */
   public function study(Deck $lms_flashcard_deck, Request $request): array {
     $this->assertVisible($lms_flashcard_deck);
@@ -102,10 +107,12 @@ final class StudyController extends ControllerBase {
     if (!in_array($direction, ['forward', 'reverse', 'mixed'], TRUE)) {
       $direction = 'forward';
     }
+    $practice = $request->query->get('mode') === 'practice';
 
     return [
       '#theme' => 'lms_flashcard_study_session',
       '#deck' => $lms_flashcard_deck,
+      '#practice' => $practice,
       '#attached' => [
         'library' => ['lms_flashcard/flashcard_study'],
         'drupalSettings' => [
@@ -116,9 +123,10 @@ final class StudyController extends ControllerBase {
             // js/flashcard-study.js speakCard()).
             'language' => $lms_flashcard_deck->get('field_language')->value ?: 'en',
             'direction' => $direction,
+            'practice' => $practice,
             'nextUrl' => '/api/lms/flashcard/next',
             'reviewUrl' => '/api/lms/flashcard/review',
-            'summaryUrl' => '/learn/flashcards/' . $lms_flashcard_deck->id() . '/summary',
+            'summaryUrl' => '/learn/flashcards/' . $lms_flashcard_deck->id() . '/summary' . ($practice ? '?mode=practice' : ''),
           ],
         ],
       ],
@@ -128,8 +136,14 @@ final class StudyController extends ControllerBase {
 
   /**
    * Page: /learn/flashcards/{deck}/summary — end-of-session recap.
+   *
+   * The optional ?mode=practice (carried over from the study page's
+   * drupalSettings.lmsFlashcard.summaryUrl, see study() above) just
+   * controls the recap copy/CTA below — it never affects #remaining_due /
+   * #remaining_new, which always reflect the real SRS schedule regardless
+   * of how the session that just ended was studied.
    */
-  public function summary(Deck $lms_flashcard_deck): array {
+  public function summary(Deck $lms_flashcard_deck, Request $request): array {
     $this->assertVisible($lms_flashcard_deck);
 
     $uid = (int) $this->currentUser->id();
@@ -140,6 +154,7 @@ final class StudyController extends ControllerBase {
       '#deck' => $lms_flashcard_deck,
       '#remaining_due' => $counts['due'],
       '#remaining_new' => $counts['new'],
+      '#practice' => $request->query->get('mode') === 'practice',
       '#attached' => ['library' => ['lms_flashcard/flashcard_pages']],
     ];
   }

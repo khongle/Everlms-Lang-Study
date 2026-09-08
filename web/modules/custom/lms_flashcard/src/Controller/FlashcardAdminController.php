@@ -95,9 +95,6 @@ final class FlashcardAdminController extends ControllerBase {
         'card_count' => $deck->get('field_cards')->count(),
         'status' => $deck->get('status')->value ? 'published' : 'draft',
         'changed' => $this->dateFormatter->format((int) $deck->get('changed')->value, 'short'),
-        'study_url' => Url::fromRoute('lms_flashcard.study', [
-          'lms_flashcard_deck' => $deck->id(),
-        ])->toString(),
         'edit_url' => $deck->toUrl('edit-form', [
           'query' => ['destination' => '/workspace/flashcards'],
         ])->toString(),

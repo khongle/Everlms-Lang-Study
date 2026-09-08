@@ -75,22 +75,26 @@ final class FlashcardApiController extends ControllerBase {
     $queueKey = "queue:{$uid}:{$deckId}";
     $currentKey = "current:{$uid}:{$deckId}";
     $directionKey = "direction:{$uid}:{$deckId}";
+    $practiceKey = "practice:{$uid}:{$deckId}";
 
     $queue = $store->get($queueKey);
     if ($queue === NULL) {
-      $queue = $this->queueBuilder->buildQueue($uid, [$deckId]);
-      // The session's learning direction is only ever read from the
-      // request on the first fetch (the one that (re)builds the queue) —
-      // every later nextCard()/submitReview() call in the same session
-      // reuses what was picked here, so the front-end doesn't need to keep
-      // re-sending it once the session is under way.
+      // The session's learning direction and practice/SRS mode are only
+      // ever read from the request on the first fetch (the one that
+      // (re)builds the queue) — every later nextCard()/submitReview() call
+      // in the same session reuses what was picked here, so the front-end
+      // doesn't need to keep re-sending it once the session is under way.
       $direction = $request->query->get('direction', 'forward');
       if (!in_array($direction, ['forward', 'reverse', 'mixed'], TRUE)) {
         $direction = 'forward';
       }
+      $practice = $request->query->get('mode') === 'practice';
+      $queue = $this->queueBuilder->buildQueue($uid, [$deckId], $practice);
       $store->set($directionKey, $direction);
+      $store->set($practiceKey, $practice);
     }
     $sessionDirection = $store->get($directionKey) ?? 'forward';
+    $sessionPractice = (bool) $store->get($practiceKey);
 
     $cardStorage = $this->entityTypeManager->getStorage('lms_flashcard_card');
     $card = NULL;
@@ -111,6 +115,7 @@ final class FlashcardApiController extends ControllerBase {
       $store->delete($queueKey);
       $store->delete($currentKey);
       $store->delete($directionKey);
+      $store->delete($practiceKey);
       return new JsonResponse(['status' => 'empty']);
     }
 
@@ -149,6 +154,7 @@ final class FlashcardApiController extends ControllerBase {
       'status' => 'ok',
       'source' => $item['source'],
       'remaining' => count($queue),
+      'practice' => $sessionPractice,
       'card' => [
         'id' => $cardId,
         'direction' => $direction,
@@ -162,7 +168,10 @@ final class FlashcardApiController extends ControllerBase {
         'example_translation' => $examples[0]['translation'] ?? '',
         'audio_url' => $audio ? \Drupal::service('file_url_generator')->generateString($audio->getFileUri()) : NULL,
         'image_url' => $image ? \Drupal::service('file_url_generator')->generateString($image->getFileUri()) : NULL,
-        'previews' => $this->buildGradePreviews($cardId, $uid),
+        // In practice mode grading is a no-op (see submitReview()), so the
+        // day-interval previews would be misleading — suppress them rather
+        // than showing what *would* happen if this were a real review.
+        'previews' => $sessionPractice ? [] : $this->buildGradePreviews($cardId, $uid),
       ],
     ]);
   }
@@ -244,11 +253,17 @@ final class FlashcardApiController extends ControllerBase {
 
     $store = $this->tempStoreFactory->get(self::TEMPSTORE_COLLECTION);
     $currentKey = "current:{$uid}:{$deckId}";
+    $practiceKey = "practice:{$uid}:{$deckId}";
     $item = $store->get($currentKey);
     $cardId = $item['card_id'] ?? (int) ($data['card_id'] ?? 0);
     if (!$cardId) {
       return new JsonResponse(['error' => 'No card currently in session for this deck'], 400);
     }
+    // A "Practice all cards" session (see StudyQueueBuilder::buildQueue())
+    // grades for feedback only — the SM-2 schedule underneath is never
+    // touched, so cramming a deck doesn't disturb the student's real due
+    // dates.
+    $practice = (bool) $store->get($practiceKey);
 
     $reviewStorage = $this->entityTypeManager->getStorage('lms_flashcard_review');
     $reviewIds = $reviewStorage->getQuery()
@@ -269,19 +284,21 @@ final class FlashcardApiController extends ControllerBase {
     $now = $this->time->getRequestTime();
     $result = $this->scheduler->grade($currentState, $quality, $now);
 
-    if (!$review) {
-      $review = $reviewStorage->create(['uid' => $uid, 'field_card' => $cardId]);
+    if (!$practice) {
+      if (!$review) {
+        $review = $reviewStorage->create(['uid' => $uid, 'field_card' => $cardId]);
+      }
+      $review->set('field_ease_factor', $result['ease_factor']);
+      $review->set('field_interval_days', $result['interval_days']);
+      $review->set('field_repetitions', $result['repetitions']);
+      $review->set('field_status', $result['status']);
+      $review->set('field_next_review_at', $result['next_review_at']);
+      $review->set('field_last_reviewed_at', $result['last_reviewed_at']);
+      if ($result['lapses_delta']) {
+        $review->set('field_lapses', ((int) ($review->get('field_lapses')->value ?? 0)) + $result['lapses_delta']);
+      }
+      $review->save();
     }
-    $review->set('field_ease_factor', $result['ease_factor']);
-    $review->set('field_interval_days', $result['interval_days']);
-    $review->set('field_repetitions', $result['repetitions']);
-    $review->set('field_status', $result['status']);
-    $review->set('field_next_review_at', $result['next_review_at']);
-    $review->set('field_last_reviewed_at', $result['last_reviewed_at']);
-    if ($result['lapses_delta']) {
-      $review->set('field_lapses', ((int) ($review->get('field_lapses')->value ?? 0)) + $result['lapses_delta']);
-    }
-    $review->save();
 
     // "Again": the card isn't done for this session — bring it back a few
     // cards ahead instead of letting it disappear until tomorrow.

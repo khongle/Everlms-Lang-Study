@@ -33,6 +33,7 @@
         // every call anyway since that's harmless and simpler than tracking
         // "is this the first call" here too.
         var direction = settings.direction || 'forward';
+        var mode = settings.practice ? 'practice' : 'srs';
 
         var section = stage.closest('.lms-flashcard-study');
         var emptyState = section.querySelector('[data-flashcard-empty]');
@@ -289,7 +290,7 @@
         function loadNext() {
           loading = true;
           cardEl.setAttribute('aria-busy', 'true');
-          fetch(nextUrl + '?deck=' + encodeURIComponent(deckId) + '&direction=' + encodeURIComponent(direction), { headers: { Accept: 'application/json' } })
+          fetch(nextUrl + '?deck=' + encodeURIComponent(deckId) + '&direction=' + encodeURIComponent(direction) + '&mode=' + encodeURIComponent(mode), { headers: { Accept: 'application/json' } })
             .then(function (response) { return response.json(); })
             .then(function (data) {
               loading = false;

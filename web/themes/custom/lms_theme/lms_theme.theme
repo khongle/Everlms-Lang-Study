@@ -111,6 +111,13 @@ function lms_theme_preprocess_page(&$variables) {
     $variables['switch_back_url'] = \Drupal\Core\Url::fromRoute('open_switcher.switch_back')->toString();
   }
 
+  // Guards the "My Flashcards" / "Import Flashcards" links in the mega
+  // menu (page.html.twig): lms_flashcard is an optional module, and
+  // path('lms_flashcard.my_decks') throws a RouteNotFoundException that
+  // takes down every page — including this one, rendered on every
+  // request — if it isn't installed on a given environment.
+  $variables['lms_flashcard_enabled'] = \Drupal::moduleHandler()->moduleExists('lms_flashcard');
+
   $variables['logged_in'] = \Drupal::currentUser()->isAuthenticated();
   if ($variables['logged_in']) {
     // Inject Notification Bell built array.

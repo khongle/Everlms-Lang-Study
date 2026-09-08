@@ -27,6 +27,7 @@ function lms_flashcard_theme($existing, $type, $theme, $path) {
         'deck' => NULL,
         'remaining_due' => 0,
         'remaining_new' => 0,
+        'practice' => FALSE,
       ],
       'template' => 'lms-flashcard-session-summary',
     ],

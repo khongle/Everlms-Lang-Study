@@ -13,11 +13,16 @@
       </p>
     {% else %}
       <p class="lms-flashcard-summary__text">{{ "You're all caught up on this deck!"|t }}</p>
+      {% if practice %}
+        <p class="lms-flashcard-summary__text">{{ 'Want to keep drilling? You can practice this deck again anytime — it won\'t affect your review schedule.'|t }}</p>
+      {% endif %}
     {% endif %}
 
     <div class="lms-flashcard-summary__actions">
       {% if remaining_due > 0 or remaining_new > 0 %}
         <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.id()}) }}" class="lms-flashcard-summary__btn lms-flashcard-summary__btn--primary">{{ 'Keep Studying'|t }}</a>
+      {% else %}
+        <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.id()}) }}?mode=practice" class="lms-flashcard-summary__btn lms-flashcard-summary__btn--primary">{{ 'Practice Again'|t }}</a>
       {% endif %}
       <a href="{{ path('lms_flashcard.my_decks') }}" class="lms-flashcard-summary__btn lms-flashcard-summary__btn--outline">{{ 'Back to My Flashcards'|t }}</a>
     </div>

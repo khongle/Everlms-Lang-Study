@@ -46,18 +46,23 @@ final class StudyQueueBuilder {
    *   The studying user.
    * @param int[] $deckIds
    *   One or more deck IDs in scope for this session.
+   * @param bool $practice
+   *   TRUE for a free "practice" session that drills every card in the deck
+   *   regardless of SRS due dates or the daily new-card cap — used by the
+   *   "Practice all cards" link so a student can re-study a deck they've
+   *   already cleared for the day without disturbing their real review
+   *   schedule (see FlashcardApiController::submitReview(), which skips
+   *   persisting grades for a 'practice'-sourced card).
    *
    * @return array
    *   List of ['card_id' => int, 'source' => string], in study order.
    */
-  public function buildQueue(int $uid, array $deckIds): array {
+  public function buildQueue(int $uid, array $deckIds, bool $practice = FALSE): array {
     if (!$deckIds) {
       return [];
     }
 
-    $now = $this->time->getRequestTime();
     $cardStorage = $this->entityTypeManager->getStorage('lms_flashcard_card');
-    $reviewStorage = $this->entityTypeManager->getStorage('lms_flashcard_review');
 
     $cardIds = $cardStorage->getQuery()
       ->condition('field_deck', $deckIds, 'IN')
@@ -67,6 +72,14 @@ final class StudyQueueBuilder {
       return [];
     }
     $cardIds = array_values(array_map('intval', $cardIds));
+
+    if ($practice) {
+      shuffle($cardIds);
+      return array_map(static fn (int $cardId) => ['card_id' => $cardId, 'source' => 'practice'], $cardIds);
+    }
+
+    $now = $this->time->getRequestTime();
+    $reviewStorage = $this->entityTypeManager->getStorage('lms_flashcard_review');
 
     $reviewIds = $reviewStorage->getQuery()
       ->condition('uid', $uid)
