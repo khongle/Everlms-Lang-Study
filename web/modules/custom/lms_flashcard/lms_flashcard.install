@@ -10,6 +10,28 @@ use Drupal\lms_flashcard\Entity\Deck;
 use Drupal\taxonomy\Entity\Vocabulary;
 
 /**
+ * Ensures a code-defined Flashcard entity type has installed storage.
+ *
+ * This also refreshes discovery for deployments where the module was enabled
+ * before a newly added entity class reached the server.
+ */
+function _lms_flashcard_ensure_entity_type_installed(string $entity_type_id): \Drupal\Core\Entity\EntityTypeInterface {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $entity_type_manager->clearCachedDefinitions();
+  $entity_type = $entity_type_manager->getDefinition($entity_type_id, FALSE);
+  if (!$entity_type) {
+    throw new \RuntimeException(sprintf('The "%s" entity type could not be discovered.', $entity_type_id));
+  }
+
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  if (!$update_manager->getEntityType($entity_type_id)) {
+    $update_manager->installEntityType($entity_type);
+  }
+
+  return $entity_type;
+}
+
+/**
  * Adds field_machine_name and field_topic to the Deck entity.
  *
  * machine_name gives the JSON importer a stable, unique key to tell decks
@@ -27,7 +49,7 @@ function lms_flashcard_update_10001(): void {
   }
 
   $update_manager = \Drupal::entityDefinitionUpdateManager();
-  $entity_type = $update_manager->getEntityType('lms_flashcard_deck');
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_deck');
   $storage_definitions = Deck::baseFieldDefinitions($entity_type);
 
   foreach (['field_machine_name', 'field_topic'] as $field_name) {
@@ -47,7 +69,7 @@ function lms_flashcard_update_10001(): void {
  */
 function lms_flashcard_update_10002(): string {
   $update_manager = \Drupal::entityDefinitionUpdateManager();
-  $entity_type = $update_manager->getEntityType('lms_flashcard_card');
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card');
   $storage_definitions = Card::baseFieldDefinitions($entity_type);
 
   foreach (['field_example_sentences', 'field_example_translations'] as $field_name) {
@@ -85,4 +107,24 @@ function lms_flashcard_update_10002(): string {
   }
 
   return 'Added multi-value flashcard examples and migrated existing examples.';
+}
+
+/**
+ * Repairs entity storage on sites upgraded from an early Flashcard build.
+ */
+function lms_flashcard_update_10003(): string {
+  $installed = [];
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  foreach (['lms_flashcard_deck', 'lms_flashcard_card', 'lms_flashcard_review'] as $entity_type_id) {
+    $was_installed = (bool) $update_manager->getEntityType($entity_type_id);
+    _lms_flashcard_ensure_entity_type_installed($entity_type_id);
+    if (!$was_installed) {
+      $installed[] = $entity_type_id;
+    }
+  }
+
+  return $installed
+    ? 'Installed missing Flashcard entity storage: ' . implode(', ', $installed) . '.'
+    : 'Verified all Flashcard entity storage definitions.';
 }

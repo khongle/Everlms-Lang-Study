@@ -277,6 +277,11 @@ function lms_course_theme(): array {
  */
 function lms_course_preprocess(&$variables, $hook) {
   if (strpos($hook, 'lms_admin_') === 0) {
+    $entity_type_manager = \Drupal::entityTypeManager();
+    $variables['lms_flashcard_enabled'] = \Drupal::moduleHandler()->moduleExists('lms_flashcard')
+      && $entity_type_manager->hasDefinition('lms_flashcard_deck')
+      && $entity_type_manager->hasDefinition('lms_flashcard_card');
+
     $uid = \Drupal::currentUser()->id();
     if ($uid) {
       $user = \Drupal\user\Entity\User::load($uid);
@@ -403,5 +408,4 @@ function lms_course_entity_create_access(\Drupal\Core\Session\AccountInterface $
   }
   return \Drupal\Core\Access\AccessResult::neutral();
 }
-
 

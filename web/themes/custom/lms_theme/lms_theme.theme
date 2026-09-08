@@ -116,7 +116,11 @@ function lms_theme_preprocess_page(&$variables) {
   // path('lms_flashcard.my_decks') throws a RouteNotFoundException that
   // takes down every page — including this one, rendered on every
   // request — if it isn't installed on a given environment.
-  $variables['lms_flashcard_enabled'] = \Drupal::moduleHandler()->moduleExists('lms_flashcard');
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $variables['lms_flashcard_enabled'] = \Drupal::moduleHandler()->moduleExists('lms_flashcard')
+    && $entity_type_manager->hasDefinition('lms_flashcard_deck')
+    && $entity_type_manager->hasDefinition('lms_flashcard_card')
+    && $entity_type_manager->hasDefinition('lms_flashcard_review');
 
   $variables['logged_in'] = \Drupal::currentUser()->isAuthenticated();
   if ($variables['logged_in']) {

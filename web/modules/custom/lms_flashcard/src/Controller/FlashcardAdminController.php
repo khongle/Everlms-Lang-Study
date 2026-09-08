@@ -9,6 +9,7 @@ use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -36,7 +37,14 @@ final class FlashcardAdminController extends ControllerBase {
   /**
    * Lists every flashcard deck, including student-owned private decks.
    */
-  public function decks(Request $request): array {
+  public function decks(Request $request): array|RedirectResponse {
+    if (!$this->entityTypeManager->hasDefinition('lms_flashcard_deck')
+      || !$this->entityTypeManager->hasDefinition('lms_flashcard_card')) {
+      $this->getLogger('lms_flashcard')->warning('Flashcard management was requested before its entity definitions were available.');
+      $this->messenger()->addWarning($this->t('Flashcard management is temporarily unavailable while deployment finishes.'));
+      return $this->redirect('lms_course.admin_dashboard');
+    }
+
     $search = trim((string) $request->query->get('search', ''));
     $owner = (int) $request->query->get('owner', 0);
     $status = (string) $request->query->get('status', 'all');

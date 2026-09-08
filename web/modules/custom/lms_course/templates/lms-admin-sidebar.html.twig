@@ -436,9 +436,11 @@
     <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-admin__nav-item {{ active == 'quizzes' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-clipboard-check"></i> {{ 'Quiz Management'|t }}
     </a>
-    <a href="/workspace/flashcards" class="lms-admin__nav-item {{ active == 'flashcards' ? 'lms-admin__nav-item--active' }}">
-      <i class="fas fa-clone"></i> {{ 'Flashcard Management'|t }}
-    </a>
+    {% if lms_flashcard_enabled|default(false) %}
+      <a href="{{ path('lms_flashcard.admin_decks') }}" class="lms-admin__nav-item {{ active == 'flashcards' ? 'lms-admin__nav-item--active' }}">
+        <i class="fas fa-clone"></i> {{ 'Flashcard Management'|t }}
+      </a>
+    {% endif %}
     <!-- Manage Content Dropdown -->
     {% set content_active = (active in ['content_slideshows', 'content_introductions', 'content_faqs', 'content_glossaries', 'content_news', 'content_ratings']) %}
     <div class="lms-admin__nav-dropdown" style="display: flex; flex-direction: column;">
