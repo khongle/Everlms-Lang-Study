@@ -404,12 +404,31 @@
   border-radius: 0.9rem;
 }
 
+.lms-flashcard-entity-form__card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
 .lms-flashcard-entity-form__card-term {
   display: inline-block;
+  min-width: 0;
   color: var(--flashcard-text);
   font-size: 0.95rem;
   font-weight: 700;
   text-decoration: none;
+}
+
+.lms-flashcard-entity-form__card-seen {
+  flex-shrink: 0;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--flashcard-panel);
+  color: var(--flashcard-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .lms-flashcard-entity-form__card-term:hover,

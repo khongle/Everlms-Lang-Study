@@ -128,30 +128,25 @@
   color: #fff;
 }
 
-/* Direction-selector links (forward/reverse/mixed) under the main "Study
-   Now" CTA — see StudyController::study() and FlashcardApiController's
-   session-level "direction" tempstore key. */
-.lms-flashcard-deck-card__directions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  justify-content: center;
+/* Secondary CTA: same review queue as "Study Now" (due + new cards, real
+   SRS), just shown with the definition-first spelling puzzle instead of a
+   flip card — see StudyController::study(). */
+.lms-flashcard-deck-card__spell-link {
+  display: block;
+  text-align: center;
+  padding: 0.5rem 1rem;
   margin-top: 0.5rem;
-  font-size: 0.75rem;
-}
-
-.lms-flashcard-deck-card__directions-label {
-  color: #9ca3af;
-}
-
-.lms-flashcard-deck-card__directions a {
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
   color: #4f46e5;
+  font-size: 0.8rem;
+  font-weight: 600;
   text-decoration: none;
 }
 
-.lms-flashcard-deck-card__directions a:hover {
-  text-decoration: underline;
+.lms-flashcard-deck-card__spell-link:hover {
+  background: #eef2ff;
+  color: #4f46e5;
 }
 
 .lms-flashcard-deck-card__manage {
@@ -242,11 +237,13 @@ body.layout-academy .lms-flashcard-deck-card__manage a {
   color: #81694a;
 }
 
-body.layout-academy .lms-flashcard-deck-card__directions-label {
-  color: #b39254;
+body.layout-academy .lms-flashcard-deck-card__spell-link {
+  border-color: rgba(141, 31, 45, 0.3);
+  color: #8d1f2d;
 }
 
-body.layout-academy .lms-flashcard-deck-card__directions a {
+body.layout-academy .lms-flashcard-deck-card__spell-link:hover {
+  background: rgba(141, 31, 45, 0.08);
   color: #8d1f2d;
 }
 

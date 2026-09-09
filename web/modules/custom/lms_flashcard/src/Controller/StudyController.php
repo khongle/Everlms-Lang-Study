@@ -88,22 +88,48 @@ final class StudyController extends ControllerBase {
   /**
    * Page: /learn/flashcards/{deck}/study — the flip-card study session.
    *
-   * Accepts an optional ?direction=forward|reverse|mixed, chosen by the
-   * student on the My Flashcards page (see the 3 links in
-   * lms-flashcard-my-decks.html.twig) — passed through to the front end,
-   * which sends it back on the *first* /api/lms/flashcard/next call of the
-   * session; FlashcardApiController::nextCard() is what actually persists
-   * it for the rest of the session.
+   * Accepts an optional ?direction=forward|reverse|mixed (no UI link
+   * currently sets this directly — only ?style=spell does, by forcing it to
+   * "reverse" below) — passed through to the front end, which sends it back
+   * on the *first* /api/lms/flashcard/next call of the session;
+   * FlashcardApiController::nextCard() is what actually persists it for the
+   * rest of the session.
    *
    * Also accepts an optional ?mode=practice, from the "Practice all cards"
    * link on the same page — drills every card in the deck regardless of SRS
    * due dates, without touching the student's real review schedule (see
    * StudyQueueBuilder::buildQueue() and FlashcardApiController::submitReview()).
+   *
+   * Also accepts an optional ?style=spell, from the "Spelling Practice" link
+   * — shows the definition first (like direction=reverse, which this forces
+   * regardless of any ?direction also present) with the term read aloud
+   * immediately, and adds a fill-in-the-missing-letters puzzle for the term
+   * below it (see buildSpellPuzzle() in flashcard-study.js). Mostly a
+   * front-end rendering choice, but flashcard-study.js also forwards it to
+   * nextCard() so that endpoint's $drillAll can queue every card in the
+   * deck like ?mode=practice does — unlike that flag, style=spell still
+   * writes real SM-2 grades in the background (see submitReview()'s
+   * spell_correct handling), so it's tracked as its own thing there rather
+   * than folded into $practice.
+   *
+   * Also accepts an optional ?style=quiz, from the "Quiz Practice" link —
+   * also forces direction=reverse (the term/pronunciation stay hidden until
+   * answered) and, like style=spell, is forwarded to nextCard() for
+   * $drillAll and still writes real SM-2 grades in the background. Its 3
+   * exercises (see buildQuizExercise() in flashcard-study.js) are built
+   * entirely from the deck's own example sentences, so this also attaches a
+   * lightweight pool of every OTHER card's term/definition/examples in the
+   * deck (see buildQuizPool() below) — used client-side as the wrong-answer
+   * pool for multiple-choice, so nextCard() doesn't need a round trip per
+   * card just to fetch distractors.
    */
   public function study(Deck $lms_flashcard_deck, Request $request): array {
     $this->assertVisible($lms_flashcard_deck);
 
-    $direction = $request->query->get('direction', 'forward');
+    $style = $request->query->get('style');
+    $style = in_array($style, ['spell', 'quiz'], TRUE) ? $style : 'flip';
+
+    $direction = in_array($style, ['spell', 'quiz'], TRUE) ? 'reverse' : $request->query->get('direction', 'forward');
     if (!in_array($direction, ['forward', 'reverse', 'mixed'], TRUE)) {
       $direction = 'forward';
     }
@@ -124,6 +150,8 @@ final class StudyController extends ControllerBase {
             'language' => $lms_flashcard_deck->get('field_language')->value ?: 'en',
             'direction' => $direction,
             'practice' => $practice,
+            'style' => $style,
+            'quizPool' => $style === 'quiz' ? $this->buildQuizPool($lms_flashcard_deck) : [],
             'nextUrl' => '/api/lms/flashcard/next',
             'reviewUrl' => '/api/lms/flashcard/review',
             'summaryUrl' => '/learn/flashcards/' . $lms_flashcard_deck->id() . '/summary' . ($practice ? '?mode=practice' : ''),
@@ -132,6 +160,43 @@ final class StudyController extends ControllerBase {
       ],
       '#cache' => ['max-age' => 0],
     ];
+  }
+
+  /**
+   * Builds the deck-wide pool of {id, term, definition, examples[]} that
+   * Quiz Practice draws wrong-answer choices from — see buildQuizExercise()
+   * in flashcard-study.js. `examples` is just the plain English sentences
+   * (no translations — only needed for the *current* card's own example,
+   * which nextCard() already provides); `definition` and multi-word terms
+   * are stripped of HTML/whitespace the same way FlashcardApiController
+   * does for the legacy single-example fields.
+   */
+  private function buildQuizPool(Deck $deck): array {
+    $storage = $this->entityTypeManager->getStorage('lms_flashcard_card');
+    $cardIds = $storage->getQuery()
+      ->condition('field_deck', $deck->id())
+      ->accessCheck(FALSE)
+      ->execute();
+    if (!$cardIds) {
+      return [];
+    }
+
+    $pool = [];
+    foreach ($storage->loadMultiple($cardIds) as $card) {
+      $sentences = array_column($card->get('field_example_sentences')->getValue(), 'value');
+      $sentences = array_values(array_filter(array_map(
+        static fn ($sentence) => trim(strip_tags((string) $sentence)),
+        $sentences,
+      ), static fn ($sentence) => $sentence !== ''));
+
+      $pool[] = [
+        'id' => (int) $card->id(),
+        'term' => $card->label(),
+        'definition' => trim(strip_tags((string) $card->get('field_definition')->value)),
+        'examples' => $sentences,
+      ];
+    }
+    return $pool;
   }
 
   /**

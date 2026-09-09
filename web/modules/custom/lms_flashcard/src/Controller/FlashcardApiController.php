@@ -9,6 +9,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
+use Drupal\lms_flashcard\Entity\CardStat;
 use Drupal\lms_flashcard\Entity\Deck;
 use Drupal\lms_flashcard\Service\Sm2SchedulerService;
 use Drupal\lms_flashcard\Service\StudyQueueBuilder;
@@ -27,6 +28,20 @@ use Symfony\Component\HttpFoundation\Request;
 final class FlashcardApiController extends ControllerBase {
 
   private const TEMPSTORE_COLLECTION = 'lms_flashcard_study';
+
+  /**
+   * CardStat.field_spell_level bounds — see buildSpellPuzzle() in
+   * flashcard-study.js for what each level means difficulty-wise.
+   */
+  private const SPELL_LEVEL_MIN = 1;
+  private const SPELL_LEVEL_MAX = 5;
+
+  /**
+   * CardStat.field_quiz_level bounds — see buildQuizExercise() in
+   * flashcard-study.js for what each level means difficulty-wise.
+   */
+  private const QUIZ_LEVEL_MIN = 1;
+  private const QUIZ_LEVEL_MAX = 3;
 
   public function __construct(
     EntityTypeManagerInterface $entity_type_manager,
@@ -76,22 +91,47 @@ final class FlashcardApiController extends ControllerBase {
     $currentKey = "current:{$uid}:{$deckId}";
     $directionKey = "direction:{$uid}:{$deckId}";
     $practiceKey = "practice:{$uid}:{$deckId}";
+    $drillAllKey = "drillall:{$uid}:{$deckId}";
+
+    $direction = $request->query->get('direction', 'forward');
+    if (!in_array($direction, ['forward', 'reverse', 'mixed'], TRUE)) {
+      $direction = 'forward';
+    }
+    // $practice controls whether a grade gets persisted to the real SM-2
+    // schedule at all (see submitReview()) — "Practice all cards" only.
+    $practice = $request->query->get('mode') === 'practice';
+    // $drillAll controls only the *shape* of the queue passed to
+    // StudyQueueBuilder::buildQueue() — due/new vs. every card in the deck
+    // shuffled. Spelling and Quiz Practice (style=spell / style=quiz) also
+    // drill every card (so neither is blocked by "nothing due right now"
+    // like Study Now would be) but, unlike $practice, both keep writing
+    // real SM-2 grades in the background — see submitSpellResult() /
+    // submitQuizResult() in flashcard-study.js, which is why this is
+    // tracked as its own flag instead of just reusing $practice here.
+    $drillAll = $practice || in_array($request->query->get('style'), ['spell', 'quiz'], TRUE);
 
     $queue = $store->get($queueKey);
+    // The front-end always sends direction/mode/style (see
+    // flashcard-study.js), even on calls after the first — normally
+    // redundant since the session already has its own stored values, but it
+    // also means a student clicking a *different* "Or study" link (e.g.
+    // "Spelling Practice" while a "Study Now" session for the same deck is
+    // still unfinished) is deliberately asking to switch modes. Detect that
+    // and discard the stale queue so it rebuilds under the newly requested
+    // direction/mode/style instead of silently continuing the old,
+    // unfinished one.
+    if ($queue !== NULL && (
+      $store->get($directionKey) !== $direction
+      || (bool) $store->get($practiceKey) !== $practice
+      || (bool) $store->get($drillAllKey) !== $drillAll
+    )) {
+      $queue = NULL;
+    }
     if ($queue === NULL) {
-      // The session's learning direction and practice/SRS mode are only
-      // ever read from the request on the first fetch (the one that
-      // (re)builds the queue) — every later nextCard()/submitReview() call
-      // in the same session reuses what was picked here, so the front-end
-      // doesn't need to keep re-sending it once the session is under way.
-      $direction = $request->query->get('direction', 'forward');
-      if (!in_array($direction, ['forward', 'reverse', 'mixed'], TRUE)) {
-        $direction = 'forward';
-      }
-      $practice = $request->query->get('mode') === 'practice';
-      $queue = $this->queueBuilder->buildQueue($uid, [$deckId], $practice);
+      $queue = $this->queueBuilder->buildQueue($uid, [$deckId], $drillAll);
       $store->set($directionKey, $direction);
       $store->set($practiceKey, $practice);
+      $store->set($drillAllKey, $drillAll);
     }
     $sessionDirection = $store->get($directionKey) ?? 'forward';
     $sessionPractice = (bool) $store->get($practiceKey);
@@ -116,11 +156,14 @@ final class FlashcardApiController extends ControllerBase {
       $store->delete($currentKey);
       $store->delete($directionKey);
       $store->delete($practiceKey);
+      $store->delete($drillAllKey);
       return new JsonResponse(['status' => 'empty']);
     }
 
     $store->set($queueKey, $queue);
     $store->set($currentKey, $item);
+
+    $seenInfo = $this->recordCardSeen((int) $card->id(), $uid);
 
     $audio = $card->get('field_audio')->entity;
     $image = $card->get('field_image')->entity;
@@ -168,12 +211,60 @@ final class FlashcardApiController extends ControllerBase {
         'example_translation' => $examples[0]['translation'] ?? '',
         'audio_url' => $audio ? \Drupal::service('file_url_generator')->generateString($audio->getFileUri()) : NULL,
         'image_url' => $image ? \Drupal::service('file_url_generator')->generateString($image->getFileUri()) : NULL,
+        'times_seen' => $seenInfo['times_seen'],
+        'spell_level' => $seenInfo['spell_level'],
+        'quiz_level' => $seenInfo['quiz_level'],
         // In practice mode grading is a no-op (see submitReview()), so the
         // day-interval previews would be misleading — suppress them rather
         // than showing what *would* happen if this were a real review.
         'previews' => $sessionPractice ? [] : $this->buildGradePreviews($cardId, $uid),
       ],
     ]);
+  }
+
+  /**
+   * Loads a user's CardStat row for a card, creating an unsaved one if none
+   * exists yet — shared by recordCardSeen() and submitReview()'s spelling-
+   * level update so both work off the same lazy-create pattern as Review.
+   */
+  private function loadOrCreateCardStat(int $cardId, int $uid): CardStat {
+    $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
+    $statIds = $statStorage->getQuery()
+      ->condition('uid', $uid)
+      ->condition('field_card', $cardId)
+      ->range(0, 1)
+      ->accessCheck(FALSE)
+      ->execute();
+
+    $stat = $statIds ? $statStorage->load(reset($statIds)) : NULL;
+    return $stat ?: $statStorage->create(['uid' => $uid, 'field_card' => $cardId]);
+  }
+
+  /**
+   * Records that a card was shown to a user; returns ['times_seen' => int,
+   * 'spell_level' => int, 'quiz_level' => int] for the JSON payload.
+   *
+   * Deliberately writes to the separate CardStat entity rather than Review
+   * — Review's mere existence marks a card as "not new" for
+   * StudyQueueBuilder (see its class docblock), so touching it here would
+   * corrupt real SRS scheduling on every practice-mode view. CardStat is
+   * counted in both practice and SRS sessions since it's purely a "how many
+   * times has the student seen this word" display stat, never consulted for
+   * scheduling.
+   */
+  private function recordCardSeen(int $cardId, int $uid): array {
+    $stat = $this->loadOrCreateCardStat($cardId, $uid);
+
+    $timesSeen = ((int) ($stat->get('field_times_seen')->value ?? 0)) + 1;
+    $stat->set('field_times_seen', $timesSeen);
+    $stat->set('field_last_seen_at', $this->time->getRequestTime());
+    $stat->save();
+
+    return [
+      'times_seen' => $timesSeen,
+      'spell_level' => (int) ($stat->get('field_spell_level')->value ?: self::SPELL_LEVEL_MIN),
+      'quiz_level' => (int) ($stat->get('field_quiz_level')->value ?: self::QUIZ_LEVEL_MIN),
+    ];
   }
 
   /**
@@ -230,6 +321,17 @@ final class FlashcardApiController extends ControllerBase {
    * POST /api/lms/flashcard/review — grade the card currently being shown.
    *
    * Body: {"deck_id": int, "quality": 0-3} (0=Again, 1=Hard, 2=Good, 3=Easy).
+   * Also accepts an optional "spell_correct": bool, sent only from Spelling
+   * Practice (see checkSpelling() in flashcard-study.js, which auto-derives
+   * `quality` from it too since that style hides the 4 grade buttons) —
+   * bumps CardStat.field_spell_level up or down a notch, independent of the
+   * `quality`-driven SM-2 update above. See FlashcardApiController::
+   * loadOrCreateCardStat() and the SPELL_LEVEL_MIN/MAX constants.
+   *
+   * Also accepts an optional "quiz_correct": bool, sent only from Quiz
+   * Practice (submitQuizResult() in flashcard-study.js, same idea as
+   * spell_correct) — bumps CardStat.field_quiz_level instead, via the
+   * QUIZ_LEVEL_MIN/MAX constants.
    */
   public function submitReview(Request $request): JsonResponse {
     $uid = (int) $this->currentUser->id();
@@ -300,6 +402,37 @@ final class FlashcardApiController extends ControllerBase {
       $review->save();
     }
 
+    // Spelling Practice (style=spell): the 4 grade buttons are hidden there
+    // in favor of auto-grading the typed answer as $quality above (see
+    // checkSpelling() in flashcard-study.js, which is what sends this
+    // request at all in that mode) — spell_correct additionally drives a
+    // second, independent difficulty-level counter on CardStat. Absent for
+    // a manual button click in the plain flip/reverse styles.
+    $spellLevel = NULL;
+    if (array_key_exists('spell_correct', $data)) {
+      $stat = $this->loadOrCreateCardStat($cardId, $uid);
+      $spellLevel = (int) ($stat->get('field_spell_level')->value ?: self::SPELL_LEVEL_MIN);
+      $spellLevel = !empty($data['spell_correct'])
+        ? min(self::SPELL_LEVEL_MAX, $spellLevel + 1)
+        : max(self::SPELL_LEVEL_MIN, $spellLevel - 1);
+      $stat->set('field_spell_level', $spellLevel);
+      $stat->save();
+    }
+
+    // Quiz Practice (style=quiz): same idea as spell_correct above but for
+    // its own independent level — see FlashcardApiController::
+    // buildQuizPool() and buildQuizExercise() in flashcard-study.js.
+    $quizLevel = NULL;
+    if (array_key_exists('quiz_correct', $data)) {
+      $stat = $this->loadOrCreateCardStat($cardId, $uid);
+      $quizLevel = (int) ($stat->get('field_quiz_level')->value ?: self::QUIZ_LEVEL_MIN);
+      $quizLevel = !empty($data['quiz_correct'])
+        ? min(self::QUIZ_LEVEL_MAX, $quizLevel + 1)
+        : max(self::QUIZ_LEVEL_MIN, $quizLevel - 1);
+      $stat->set('field_quiz_level', $quizLevel);
+      $stat->save();
+    }
+
     // "Again": the card isn't done for this session — bring it back a few
     // cards ahead instead of letting it disappear until tomorrow.
     if ($quality === 0 && $item) {
@@ -317,6 +450,8 @@ final class FlashcardApiController extends ControllerBase {
         'next_review_at' => $result['next_review_at'],
         'status' => $result['status'],
       ],
+      'spell_level' => $spellLevel,
+      'quiz_level' => $quizLevel,
     ]);
   }
 

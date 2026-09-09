@@ -6,6 +6,7 @@
  */
 
 use Drupal\lms_flashcard\Entity\Card;
+use Drupal\lms_flashcard\Entity\CardStat;
 use Drupal\lms_flashcard\Entity\Deck;
 use Drupal\taxonomy\Entity\Vocabulary;
 
@@ -127,4 +128,52 @@ function lms_flashcard_update_10003(): string {
   return $installed
     ? 'Installed missing Flashcard entity storage: ' . implode(', ', $installed) . '.'
     : 'Verified all Flashcard entity storage definitions.';
+}
+
+/**
+ * Installs the CardStat entity type (per-user "times seen" view counter).
+ */
+function lms_flashcard_update_10004(): string {
+  _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card_stat');
+  return 'Installed Flashcard Card Stat entity storage.';
+}
+
+/**
+ * Adds field_spell_level to CardStat (Spelling Practice difficulty level).
+ */
+function lms_flashcard_update_10005(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card_stat');
+  $storage_definitions = CardStat::baseFieldDefinitions($entity_type);
+
+  if (!$update_manager->getFieldStorageDefinition('field_spell_level', 'lms_flashcard_card_stat')) {
+    $update_manager->installFieldStorageDefinition(
+      'field_spell_level',
+      'lms_flashcard_card_stat',
+      'lms_flashcard',
+      $storage_definitions['field_spell_level'],
+    );
+  }
+
+  return 'Added field_spell_level to Flashcard Card Stat.';
+}
+
+/**
+ * Adds field_quiz_level to CardStat (Quiz Practice difficulty level).
+ */
+function lms_flashcard_update_10006(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card_stat');
+  $storage_definitions = CardStat::baseFieldDefinitions($entity_type);
+
+  if (!$update_manager->getFieldStorageDefinition('field_quiz_level', 'lms_flashcard_card_stat')) {
+    $update_manager->installFieldStorageDefinition(
+      'field_quiz_level',
+      'lms_flashcard_card_stat',
+      'lms_flashcard',
+      $storage_definitions['field_quiz_level'],
+    );
+  }
+
+  return 'Added field_quiz_level to Flashcard Card Stat.';
 }

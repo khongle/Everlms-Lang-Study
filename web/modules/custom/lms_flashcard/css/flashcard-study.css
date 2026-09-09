@@ -108,8 +108,34 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
   transform-style: preserve-3d;
 }
 
+/* Spelling mode packs in more than a plain flip card (definition + puzzle +
+   Check button), so it gets a taller fixed height — set via JS on cardEl
+   (see showCard() in flashcard-study.js) rather than unconditionally, so
+   the plain flip/reverse card keeps its original compact size. */
+.lms-flashcard--spell,
+.lms-flashcard--spell .lms-flashcard__inner {
+  height: 420px;
+  min-height: 420px;
+}
+
+/* Quiz mode's sentence prompt + up to 4 stacked answer choices need more
+   room still than Spelling's puzzle — see .lms-flashcard--spell above for
+   why this is a modifier rather than the unconditional card height. */
+.lms-flashcard--quiz,
+.lms-flashcard--quiz .lms-flashcard__inner {
+  height: 480px;
+  min-height: 480px;
+}
+
 .lms-flashcard.is-flipped .lms-flashcard__inner {
   transform: rotateY(180deg);
+}
+
+/* Applied briefly by showCard() when resetting to front face for a new
+   card, so that reset snaps instantly instead of animating through the
+   normal 0.5s rotate — see the comment there for why. */
+.lms-flashcard--no-transition .lms-flashcard__inner {
+  transition: none;
 }
 
 .lms-flashcard__face {
@@ -182,6 +208,40 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
   font-family: monospace;
 }
 
+/* Small pill badges for the "Seen N times" / "Level X of 5" meta line —
+   sits below the pronunciation, above the definition/puzzle. Both spans
+   are conditionally hidden per-card (see showCard() in flashcard-study.js);
+   the row itself just collapses its gap when only one is visible. */
+.lms-flashcard__meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 0.4rem 0 0;
+}
+
+.lms-flashcard__seen-count,
+.lms-flashcard__spell-level {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+.lms-flashcard__seen-count {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.lms-flashcard__spell-level {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+  border: 1px solid rgba(79, 70, 229, 0.2);
+}
+
 .lms-flashcard__hint {
   position: absolute;
   bottom: 1rem;
@@ -190,42 +250,95 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
   margin: 0;
 }
 
-/* Reverse-mode ("meaning → word") prompt shown on the front face instead
-   of the term — see flashcard-study.js showCard(). */
-.lms-flashcard__prompt {
-  font-size: 1.25rem;
-  color: #111827;
-  margin: 0.5rem 0;
-}
-
-/* Optional typed-answer input, additive to click-to-flip. Kept small and
-   secondary (not a full form field) so the card still reads as
-   click/tap-to-flip first. */
-.lms-flashcard__answer-input {
+/* Spelling-mode fill-in-the-missing-letters puzzle — see buildSpellPuzzle()
+   in flashcard-study.js. */
+.lms-flashcard__spell {
   display: flex;
-  gap: 0.5rem;
-  width: 100%;
-  max-width: 20rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
   margin: 0.75rem 0;
 }
 
-.lms-flashcard__answer-field {
-  flex: 1;
-  min-width: 0;
-  padding: 0.4rem 0.65rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.4rem;
-  font-size: 0.875rem;
+.lms-flashcard__spell-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
 }
 
-.lms-flashcard__answer-field:focus {
+/* Level-5 puzzles blank the word out inside one of the card's own example
+   sentences (see findTermInExamples() in flashcard-study.js) — these carry
+   the surrounding plain-text portions of that sentence. */
+.lms-flashcard__spell-context {
+  font-size: 1rem;
+  color: #374151;
+  white-space: pre-wrap;
+}
+
+/* Selectors are nested under .lms-flashcard__spell-boxes (rather than just
+   .lms-flashcard__spell-box) to out-specificity the theme's global
+   `input[type="text"]` form-control rule (_forms.scss's `.form-lms__input`,
+   extended onto every text input) — a bare single class loses to that
+   element+attribute selector, which is what made the blanks render
+   full-width instead of small square boxes. */
+.lms-flashcard__spell-boxes .lms-flashcard__spell-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.5rem;
+  padding: 0;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: normal;
+  text-align: center;
+  text-transform: lowercase;
+  background: transparent;
+  border: none;
+  border-radius: 0.4rem;
+  box-sizing: border-box;
+}
+
+.lms-flashcard__spell-boxes .lms-flashcard__spell-box--filled {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* A literal space between words in a multi-word term ("pay by card") —
+   deliberately NOT box-sized like a letter, so it can't be mistaken for
+   another (non-typable) blank box next to the real ones. */
+.lms-flashcard__spell-space {
+  width: 0.5rem;
+}
+
+.lms-flashcard__spell-boxes .lms-flashcard__spell-box--blank {
+  border: 1px solid #d1d5db;
+  color: #111827;
+}
+
+.lms-flashcard__spell-boxes .lms-flashcard__spell-box--blank:focus {
   outline: none;
   border-color: #4f46e5;
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
 }
 
-.lms-flashcard__answer-check {
-  padding: 0.4rem 0.75rem;
+.lms-flashcard__spell-boxes .lms-flashcard__spell-box--blank.is-correct {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+}
+
+.lms-flashcard__spell-boxes .lms-flashcard__spell-box--blank.is-incorrect {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
+
+.lms-flashcard__spell-check {
+  padding: 0.4rem 1rem;
   border: none;
   border-radius: 0.4rem;
   background: #eef2ff;
@@ -235,17 +348,150 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
   cursor: pointer;
 }
 
-.lms-flashcard__answer-check:hover {
+.lms-flashcard__spell-check:hover {
   background: #e0e7ff;
 }
 
-/* "Your answer" row on the back face — only shown when the student typed
-   something before revealing (see submitTypedAnswer()). */
-.lms-flashcard__your-answer {
-  font-size: 0.875rem;
+.lms-flashcard__spell-check:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.lms-flashcard__spell-next {
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 0.4rem;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lms-flashcard__spell-next:hover {
+  background: #4338ca;
+}
+
+/* Quiz Practice — see buildQuizExercise() in flashcard-study.js. */
+.lms-flashcard__quiz {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 26rem;
+  margin: 0.75rem auto 0;
+}
+
+.lms-flashcard__quiz-sentence {
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: #111827;
+  text-align: center;
+}
+
+.lms-flashcard__quiz-blank {
+  display: inline-block;
+  margin: 0 0.15rem;
+  color: #4f46e5;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.lms-flashcard__quiz-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lms-flashcard__quiz-choice {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.6rem;
+  background: #fff;
+  color: #111827;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.lms-flashcard__quiz-choice:hover:not(:disabled) {
+  border-color: #4f46e5;
+  background: #eef2ff;
+}
+
+.lms-flashcard__quiz-choice:disabled {
+  cursor: default;
+}
+
+.lms-flashcard__quiz-choice.is-correct {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+  font-weight: 600;
+}
+
+.lms-flashcard__quiz-choice.is-incorrect {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
+
+.lms-flashcard__quiz-write {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Nested under .lms-flashcard__quiz-write (rather than a bare class) for
+   the same reason as the spelling boxes: out-specificity the theme's
+   global `input[type="text"]` form-control rule — see the comment on
+   .lms-flashcard__spell-boxes .lms-flashcard__spell-box above. */
+.lms-flashcard__quiz-write .lms-flashcard__quiz-write-input {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.6rem;
+  background: #fff;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.lms-flashcard__quiz-write .lms-flashcard__quiz-write-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+}
+
+.lms-flashcard__quiz-write .lms-flashcard__quiz-write-input.is-correct {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.lms-flashcard__quiz-write .lms-flashcard__quiz-write-input.is-incorrect {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.lms-flashcard__quiz-answer {
+  max-height: 4.5rem;
+  margin: 0;
+  overflow-y: auto;
   color: #6b7280;
+  font-size: 0.82rem;
   font-style: italic;
-  margin-bottom: 0.5rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+/* Reverse-mode ("meaning → word") prompt shown on the front face instead
+   of the term — see flashcard-study.js showCard(). */
+.lms-flashcard__prompt {
+  font-size: 1.25rem;
+  color: #111827;
+  margin: 0.5rem 0;
 }
 
 .lms-flashcard__definition {
@@ -257,6 +503,33 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
 .lms-flashcard__example {
   color: #374151;
   font-style: italic;
+}
+
+.lms-flashcard__example-row {
+  display: grid;
+  grid-template-columns: 1.9rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.55rem;
+}
+
+.lms-flashcard__example-speak {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  border: 1px solid rgba(79, 70, 229, 0.22);
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.08);
+  color: #4f46e5;
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.lms-flashcard__example-speak:hover {
+  background: rgba(79, 70, 229, 0.16);
 }
 
 .lms-flashcard__examples {
@@ -306,6 +579,17 @@ body.layout-academy .lms-flashcard__hint {
   color: #b39254;
 }
 
+body.layout-academy .lms-flashcard__seen-count {
+  background: rgba(104, 74, 36, 0.1);
+  color: #7a6248;
+}
+
+body.layout-academy .lms-flashcard__spell-level {
+  background: rgba(141, 31, 45, 0.08);
+  color: #8d1f2d;
+  border-color: rgba(141, 31, 45, 0.2);
+}
+
 body.layout-academy .lms-flashcard__term,
 body.layout-academy .lms-flashcard__definition,
 body.layout-academy .lms-flashcard__prompt {
@@ -313,27 +597,83 @@ body.layout-academy .lms-flashcard__prompt {
   font-family: 'Playfair Display', Georgia, serif;
 }
 
-body.layout-academy .lms-flashcard__answer-field {
+body.layout-academy .lms-flashcard__spell-box--filled {
+  background: rgba(104, 74, 36, 0.1);
+  color: #7a6248;
+}
+
+body.layout-academy .lms-flashcard__spell-box--blank {
   border-color: rgba(104, 74, 36, 0.3);
   background: #fffaf2;
 }
 
-body.layout-academy .lms-flashcard__answer-field:focus {
+body.layout-academy .lms-flashcard__spell-box--blank:focus {
   border-color: #8d1f2d;
   box-shadow: 0 0 0 2px rgba(141, 31, 45, 0.12);
 }
 
-body.layout-academy .lms-flashcard__answer-check {
+body.layout-academy .lms-flashcard__spell-check {
   background: rgba(141, 31, 45, 0.08);
   color: #8d1f2d;
 }
 
-body.layout-academy .lms-flashcard__answer-check:hover {
+body.layout-academy .lms-flashcard__spell-check:hover {
   background: rgba(141, 31, 45, 0.16);
 }
 
-body.layout-academy .lms-flashcard__your-answer {
-  color: #81694a;
+body.layout-academy .lms-flashcard__spell-next {
+  background: linear-gradient(135deg, #ba8b38, #d5b46d);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-flashcard__spell-next:hover {
+  background: linear-gradient(135deg, #a97c2f, #c9a45e);
+}
+
+body.layout-academy .lms-flashcard__spell-level {
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-flashcard__spell-context {
+  color: #6d5a44;
+}
+
+body.layout-academy .lms-flashcard__quiz-blank {
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-flashcard__quiz-choice {
+  border-color: rgba(104, 74, 36, 0.25);
+  background: #fffaf2;
+  color: #302117;
+}
+
+body.layout-academy .lms-flashcard__quiz-choice:hover:not(:disabled) {
+  border-color: #8d1f2d;
+  background: rgba(141, 31, 45, 0.08);
+}
+
+body.layout-academy .lms-flashcard__quiz-choice.is-correct {
+  border-color: #15803d;
+  background: rgba(34, 197, 94, 0.16);
+  color: #14532d;
+  font-weight: 700;
+}
+
+body.layout-academy .lms-flashcard__quiz-choice.is-incorrect {
+  border-color: #dc2626;
+  background: rgba(239, 68, 68, 0.14);
+  color: #991b1b;
+}
+
+body.layout-academy .lms-flashcard__quiz-write .lms-flashcard__quiz-write-input {
+  border-color: rgba(104, 74, 36, 0.3);
+  background: #fffaf2;
+}
+
+body.layout-academy .lms-flashcard__quiz-write .lms-flashcard__quiz-write-input:focus {
+  border-color: #8d1f2d;
+  box-shadow: 0 0 0 2px rgba(141, 31, 45, 0.12);
 }
 
 body.layout-academy .lms-flashcard__speak {
@@ -342,8 +682,15 @@ body.layout-academy .lms-flashcard__speak {
   color: #8d1f2d;
 }
 
-body.layout-academy .lms-flashcard__speak:hover {
+body.layout-academy .lms-flashcard__speak:hover,
+body.layout-academy .lms-flashcard__example-speak:hover {
   background: rgba(141, 31, 45, 0.16);
+}
+
+body.layout-academy .lms-flashcard__example-speak {
+  background: rgba(141, 31, 45, 0.08);
+  border-color: rgba(141, 31, 45, 0.35);
+  color: #8d1f2d;
 }
 
 body.layout-academy .lms-flashcard__pronunciation {

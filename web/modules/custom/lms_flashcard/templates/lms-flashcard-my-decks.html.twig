@@ -47,13 +47,22 @@
               {{ 'Study Now'|t }}
             </a>
 
-            <div class="lms-flashcard-deck-card__directions">
-              <span class="lms-flashcard-deck-card__directions-label">{{ 'Or study:'|t }}</span>
-              <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?direction=reverse">{{ 'Meaning → word'|t }}</a>
-              <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?direction=mixed">{{ 'Mixed'|t }}</a>
-              {# Drills every card regardless of SRS due dates, without touching the real review schedule — see StudyQueueBuilder::buildQueue(). #}
-              <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?mode=practice" title="{{ 'Review every card in this deck, even ones not due yet — won\'t affect your review schedule.'|t }}">{{ 'Practice all cards'|t }}</a>
-            </div>
+            {# Definition-first + fill-in-the-missing-letters spelling puzzle,
+               with the term read aloud right away — see StudyController::study()
+               and buildSpellPuzzle() in flashcard-study.js. Still a real SRS
+               session (same due/new cards as Study Now), just a different
+               way of reviewing them. #}
+            <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?style=spell" class="lms-flashcard-deck-card__spell-link">
+              <i class="fas fa-spell-check"></i> {{ 'Spelling Practice'|t }}
+            </a>
+
+            {# 3-level example-sentence quiz (cloze MCQ → listen-and-match →
+               listen-and-type) — see StudyController::buildQuizPool() and
+               buildQuizExercise() in flashcard-study.js. Same real-SRS +
+               independent-level pattern as Spelling Practice above. #}
+            <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?style=quiz" class="lms-flashcard-deck-card__spell-link">
+              <i class="fas fa-list-check"></i> {{ 'Quiz Practice'|t }}
+            </a>
 
             {% if deck.is_mine %}
               <div class="lms-flashcard-deck-card__manage">
