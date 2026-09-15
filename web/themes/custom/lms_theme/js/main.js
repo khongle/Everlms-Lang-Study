@@ -49,16 +49,11 @@
                         // Has a real pointer — :hover already handles this normally.
                         return;
                     }
-                    if (!wrapper.classList.contains('is-open')) {
-                        // First tap: reveal the dropdown instead of
-                        // following the trigger's own href. The dropdown
-                        // has its own "My Profile" link for anyone who
-                        // actually wants that destination.
-                        event.preventDefault();
-                        wrapper.classList.add('is-open');
-                    }
-                    // Already open: let this tap follow the href through, same
-                    // as clicking any other already-visible link.
+                    // Touch/mobile: the account chip is only a menu trigger.
+                    // Never follow its href here; the dropdown already has a
+                    // dedicated "My Profile" link for actual navigation.
+                    event.preventDefault();
+                    wrapper.classList.toggle('is-open');
                 });
 
                 document.addEventListener('click', function (event) {

@@ -25,18 +25,28 @@
        vocab term spoken afterward, overriding Dialogue's own per-speaker
        alternation. #}
     <div class="lms-listening-passive__voice-bar" data-listening-passive-voice-bar hidden>
-      <label class="lms-listening-passive__voice">
-        {{ 'Voice'|t }}
-        <select data-listening-passive-voice hidden></select>
-      </label>
-      <label class="lms-listening-passive__speed">
-        {{ 'Speed'|t }}
-        <select data-listening-passive-speed>
-          <option value="0.75">0.75&times;</option>
-          <option value="1" selected>1&times;</option>
-          <option value="1.25">1.25&times;</option>
-        </select>
-      </label>
+      <div class="lms-listening-passive__voice-controls">
+        <label class="lms-listening-passive__voice">
+          {{ 'Voice'|t }}
+          <select data-listening-passive-voice hidden></select>
+        </label>
+        <label class="lms-listening-passive__speed">
+          {{ 'Speed'|t }}
+          <select data-listening-passive-speed>
+            <option value="0.75">0.75&times;</option>
+            <option value="1" selected>1&times;</option>
+            <option value="1.25">1.25&times;</option>
+          </select>
+        </label>
+      </div>
+      <div class="lms-listening-passive__controls">
+        <button type="button" class="lms-listening-passive__start-btn" data-listening-passive-start>
+          <i class="fas fa-play"></i> <span data-listening-passive-start-label>{{ 'Start passive listening'|t }}</span>
+        </button>
+        <button type="button" class="lms-listening-passive__stop-btn" data-listening-passive-stop hidden>
+          <i class="fas fa-stop"></i> {{ 'Stop'|t }}
+        </button>
+      </div>
     </div>
 
     <div class="lms-listening-passive__card">
@@ -91,16 +101,6 @@
         <button type="button" class="lms-note-widget__delete" data-note-delete hidden>{{ 'Delete'|t }}</button>
       </div>
     </div>
-
-    <div class="lms-listening-passive__controls">
-      <button type="button" class="lms-listening-passive__start-btn" data-listening-passive-start>
-        <i class="fas fa-play"></i> <span data-listening-passive-start-label>{{ 'Start passive listening'|t }}</span>
-      </button>
-      <button type="button" class="lms-listening-passive__stop-btn" data-listening-passive-stop hidden>
-        <i class="fas fa-stop"></i> {{ 'Stop'|t }}
-      </button>
-    </div>
-
     {# Passive Listening repeats indefinitely until Stop is pressed (see
        PASSIVE_LISTENING_PLAN.md) — this only ever appears if the session
        expired server-side (e.g. left running a very long time), not as
