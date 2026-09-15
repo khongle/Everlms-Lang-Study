@@ -188,7 +188,6 @@ final class ListeningController extends ControllerBase {
           'lmsListeningPassive' => [
             'deckId' => $deck ? (int) $deck->id() : NULL,
             'nextUrl' => '/api/lms/listening/passive-next',
-            'exitUrl' => '/learn/flashcards',
             'language' => $deck?->get('field_language')->value ?: 'en',
             'passage' => [
               'id' => (int) $lms_listening_passage->id(),

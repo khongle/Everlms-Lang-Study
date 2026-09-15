@@ -85,7 +85,6 @@
 
         var deckId = settings.deckId;
         var nextUrl = settings.nextUrl;
-        var exitUrl = settings.exitUrl || '/learn/flashcards';
         var speechLang = SPEECH_LANG_MAP[settings.language] || 'en-US';
 
         var titleEl = section.querySelector('[data-listening-passive-title]');
@@ -96,6 +95,7 @@
         var vocabWrapEl = section.querySelector('[data-listening-passive-vocab]');
         var vocabListEl = section.querySelector('[data-listening-passive-vocab-list]');
         var stopBtn = section.querySelector('[data-listening-passive-stop]');
+        var startLabelEl = section.querySelector('[data-listening-passive-start-label]');
         var doneEl = section.querySelector('[data-listening-passive-done]');
         var voiceBarEl = section.querySelector('[data-listening-passive-voice-bar]');
         var voiceSelectEl = section.querySelector('[data-listening-passive-voice]');
@@ -443,11 +443,27 @@
 
         if (stopBtn) {
           stopBtn.addEventListener('click', function () {
+            // Pauses right here — does NOT navigate away (the "My
+            // Flashcards" link already in the page header still does
+            // that if the student actually wants to leave). Pressing
+            // Start again (now labeled "Resume") continues the loop from
+            // this same passage: currentPassage already tracks it, so
+            // playCurrentThenAdvance() just re-enters its own Promise
+            // chain from there instead of restarting from the first
+            // passage.
             stopped = true;
+            running = false;
             if (window.speechSynthesis) {
               window.speechSynthesis.cancel();
             }
-            window.location.href = exitUrl;
+            stopBtn.hidden = true;
+            startBtn.hidden = false;
+            if (startLabelEl) {
+              startLabelEl.textContent = Drupal.t('Resume passive listening');
+            }
+            if (statusEl) {
+              statusEl.textContent = Drupal.t('Paused — press Resume to continue.');
+            }
           });
         }
 
