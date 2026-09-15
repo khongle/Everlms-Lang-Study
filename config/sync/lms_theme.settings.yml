@@ -5,10 +5,10 @@ features:
   favicon: 1
 logo:
   use_default: 0
-  path: 'public://logo LMS_0_5.svg'
+  path: ''
 favicon:
   use_default: 1
-homepage_style: medical
+homepage_style: academy
 homepage_sections_enabled:
   hero: hero
   stats: stats
@@ -24,7 +24,7 @@ homepage_sections_enabled:
   cta_guest: cta_guest
   training_process: 0
 site_tagline: ''
-site_logo_alt: 'EverLMS logo'
+site_logo_alt: 'GrammarHub logo'
 stats_students_label: Students
 stats_students_value: '5,000+'
 stats_satisfaction_label: Satisfaction
@@ -111,7 +111,7 @@ footer_address: 'Ho Chi Minh City, Vietnam'
 footer_phone: (+84)938.893.995
 footer_email: ' contact@weebpal.com'
 footer_working_hours: 'Mon–Fri, 8:00 AM – 5:00 PM'
-footer_copyright: 'Copyright © 2025 SilverCare. Product by WeebPal (since 2012). All rights reserved.'
+footer_copyright: 'Copyright © 2026 GrammarHub. All rights reserved.'
 footer_map_embed_url: ''
 social_facebook: ''
 social_youtube: ''

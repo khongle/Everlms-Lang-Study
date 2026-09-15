@@ -45,8 +45,10 @@ module:
   lms_content_tools: 0
   lms_course: 0
   lms_faq: 0
+  lms_flashcard: 0
   lms_forum: 0
   lms_lesson: 0
+  lms_listening: 0
   lms_membership: 0
   lms_mobile_api: 0
   lms_note: 0
@@ -58,6 +60,7 @@ module:
   lms_question: 0
   lms_quiz: 0
   lms_rating: 0
+  lms_reading: 0
   lms_stripe: 0
   lms_wishlist: 0
   lms_zoom: 0

@@ -1,0 +1,9 @@
+uuid: 7ec69085-f592-4409-bf3f-cbe59947868e
+langcode: en
+status: true
+dependencies: {  }
+name: 'Flashcard Topic'
+vid: flashcard_topic
+description: 'Topics/categories used to organize flashcard decks (e.g. Family, Travel, Business).'
+weight: 0
+new_revision: false

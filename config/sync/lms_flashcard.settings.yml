@@ -1,0 +1,5 @@
+_core:
+  default_config_hash: c7Nf46Coccx7JbLWaNFRuDWy5U0ZU0daJaeGpXi2cFw
+new_cards_per_day: 20
+hard_interval_factor: 1.2
+easy_bonus: 1.3
