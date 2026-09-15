@@ -27,12 +27,15 @@ final class CardForm extends ContentEntityForm {
 
     // A custom paired widget below keeps each sentence and translation at
     // the same delta. Separate unlimited widgets can drift when one side is
-    // added, removed, or reordered independently.
+    // added, removed, or reordered independently. Same reasoning for
+    // collocations/collocation_translations further below.
     unset(
       $form['field_example_sentence'],
       $form['field_example_translation'],
       $form['field_example_sentences'],
       $form['field_example_translations'],
+      $form['field_collocations'],
+      $form['field_collocation_translations'],
     );
 
     // Convenience: allow "Add card" to be linked from a deck's page with
@@ -50,6 +53,7 @@ final class CardForm extends ContentEntityForm {
 
     $form['navigation'] = $this->buildNavigation($deck);
     $form['examples'] = $this->buildExamplesElement($form_state);
+    $form['collocations'] = $this->buildCollocationsElement($form_state);
 
     return $form;
   }
@@ -216,6 +220,167 @@ final class CardForm extends ContentEntityForm {
   }
 
   /**
+   * Builds phrase/translation rows that can only be added or removed as
+   * pairs — same reasoning and shape as buildExamplesElement() above, just
+   * for field_collocations/field_collocation_translations instead.
+   */
+  private function buildCollocationsElement(FormStateInterface $form_state): array {
+    $items = $form_state->get('flashcard_collocation_items');
+    if ($items === NULL) {
+      $phrases = array_column($this->entity->get('field_collocations')->getValue(), 'value');
+      $translations = array_column($this->entity->get('field_collocation_translations')->getValue(), 'value');
+      $items = [];
+      for ($delta = 0; $delta < max(count($phrases), count($translations)); $delta++) {
+        $items[] = [
+          'phrase' => (string) ($phrases[$delta] ?? ''),
+          'translation' => (string) ($translations[$delta] ?? ''),
+        ];
+      }
+      $items = $items ?: [['phrase' => '', 'translation' => '']];
+    }
+
+    $element = [
+      '#type' => 'container',
+      '#tree' => TRUE,
+      '#weight' => -3,
+      '#attributes' => [
+        'id' => 'lms-flashcard-collocations',
+        'class' => ['lms-flashcard-entity-form__examples', 'lms-flashcard-entity-form__collocations'],
+      ],
+      'heading' => [
+        '#type' => 'html_tag',
+        '#tag' => 'h3',
+        '#value' => $this->t('Collocations'),
+        '#attributes' => ['class' => ['lms-flashcard-entity-form__examples-heading']],
+      ],
+      'help' => [
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#value' => $this->t('Common word combinations this term appears in (e.g. "make a decision"). Each collocation stays paired with the translation in the same row.'),
+        '#attributes' => ['class' => ['lms-flashcard-entity-form__examples-help']],
+      ],
+      'items' => [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['lms-flashcard-entity-form__examples-list']],
+      ],
+    ];
+
+    foreach (array_values($items) as $delta => $item) {
+      $element['items'][$delta] = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['lms-flashcard-entity-form__example-row']],
+        'number' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => $this->t('Collocation @number', ['@number' => $delta + 1]),
+          '#attributes' => ['class' => ['lms-flashcard-entity-form__example-number']],
+        ],
+        'phrase' => [
+          '#type' => 'textfield',
+          '#title' => $this->t('Collocation'),
+          '#default_value' => $item['phrase'] ?? '',
+          '#required' => FALSE,
+        ],
+        'translation' => [
+          '#type' => 'textfield',
+          '#title' => $this->t('Translation'),
+          '#default_value' => $item['translation'] ?? '',
+          '#required' => FALSE,
+        ],
+        'remove' => [
+          '#type' => 'submit',
+          '#value' => $this->t('Remove collocation'),
+          '#name' => 'remove_collocation_' . $delta,
+          '#collocation_index' => $delta,
+          '#submit' => ['::removeCollocation'],
+          '#limit_validation_errors' => [],
+          '#ajax' => [
+            'callback' => '::ajaxCollocations',
+            'wrapper' => 'lms-flashcard-collocations',
+          ],
+          '#attributes' => ['class' => ['lms-flashcard-entity-form__example-remove']],
+        ],
+      ];
+    }
+
+    $element['add'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('+ Add collocation'),
+      '#submit' => ['::addCollocation'],
+      '#limit_validation_errors' => [],
+      '#ajax' => [
+        'callback' => '::ajaxCollocations',
+        'wrapper' => 'lms-flashcard-collocations',
+      ],
+      '#attributes' => ['class' => ['lms-flashcard-entity-form__example-add']],
+    ];
+
+    return $element;
+  }
+
+  /**
+   * AJAX callback for the paired collocations widget.
+   */
+  public function ajaxCollocations(array &$form, FormStateInterface $form_state): array {
+    return $form['collocations'];
+  }
+
+  /**
+   * Adds one empty phrase/translation pair.
+   */
+  public function addCollocation(array &$form, FormStateInterface $form_state): void {
+    $items = $this->submittedCollocations($form_state);
+    $items[] = ['phrase' => '', 'translation' => ''];
+    $this->storeCollocations($form_state, $items);
+    $form_state->setRebuild();
+  }
+
+  /**
+   * Removes a collocation and its translation together.
+   */
+  public function removeCollocation(array &$form, FormStateInterface $form_state): void {
+    $items = $this->submittedCollocations($form_state);
+    $index = (int) ($form_state->getTriggeringElement()['#collocation_index'] ?? -1);
+    if (isset($items[$index])) {
+      unset($items[$index]);
+    }
+    $this->storeCollocations($form_state, array_values($items) ?: [
+      ['phrase' => '', 'translation' => ''],
+    ]);
+    $form_state->setRebuild();
+  }
+
+  /**
+   * Returns only the editable values from submitted collocation rows.
+   */
+  private function submittedCollocations(FormStateInterface $form_state): array {
+    $submitted = $form_state->getValue(['collocations', 'items']);
+    $user_input = $form_state->getUserInput();
+    $raw_items = $user_input['collocations']['items'] ?? [];
+    if ((!is_array($submitted) || $submitted === []) && is_array($raw_items)) {
+      $submitted = $raw_items;
+    }
+    $items = [];
+    foreach (is_array($submitted) ? $submitted : [] as $item) {
+      $items[] = [
+        'phrase' => trim((string) ($item['phrase'] ?? '')),
+        'translation' => trim((string) ($item['translation'] ?? '')),
+      ];
+    }
+    return $items;
+  }
+
+  /**
+   * Keeps rebuilt AJAX elements and submitted input on the same row indexes.
+   */
+  private function storeCollocations(FormStateInterface $form_state, array $items): void {
+    $form_state->set('flashcard_collocation_items', $items);
+    $user_input = $form_state->getUserInput();
+    $user_input['collocations']['items'] = $items;
+    $form_state->setUserInput($user_input);
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state): void {
@@ -231,6 +396,20 @@ final class CardForm extends ContentEntityForm {
         $form_state->setError(
           $form['examples']['items'][$delta]['translation'],
           $this->t('Enter the translation for example @number.', ['@number' => $delta + 1]),
+        );
+      }
+    }
+    foreach ($this->submittedCollocations($form_state) as $delta => $item) {
+      if ($item['phrase'] === '' && $item['translation'] !== '') {
+        $form_state->setError(
+          $form['collocations']['items'][$delta]['phrase'],
+          $this->t('Enter the collocation for row @number.', ['@number' => $delta + 1]),
+        );
+      }
+      if ($item['phrase'] !== '' && $item['translation'] === '') {
+        $form_state->setError(
+          $form['collocations']['items'][$delta]['translation'],
+          $this->t('Enter the translation for collocation @number.', ['@number' => $delta + 1]),
         );
       }
     }
@@ -252,6 +431,17 @@ final class CardForm extends ContentEntityForm {
     }
     $this->entity->set('field_example_sentences', $sentences);
     $this->entity->set('field_example_translations', $translations);
+
+    $phrases = [];
+    $collocationTranslations = [];
+    foreach ($this->submittedCollocations($form_state) as $item) {
+      if ($item['phrase'] !== '' && $item['translation'] !== '') {
+        $phrases[] = $item['phrase'];
+        $collocationTranslations[] = $item['translation'];
+      }
+    }
+    $this->entity->set('field_collocations', $phrases);
+    $this->entity->set('field_collocation_translations', $collocationTranslations);
   }
 
   /**

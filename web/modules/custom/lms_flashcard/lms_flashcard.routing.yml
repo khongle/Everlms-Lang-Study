@@ -15,6 +15,31 @@ lms_flashcard.import:
   options:
     _admin_route: TRUE
 
+lms_flashcard.deck_export:
+  path: '/manage/flashcard-decks/{lms_flashcard_deck}/export'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\DeckExportController::export'
+    _title: 'Export Flashcards'
+  requirements:
+    # Same rule as the deck's own edit-form: the owner, or staff with
+    # "edit lms_course" — see FlashcardAccessControlHandler::checkAccess().
+    _entity_access: 'lms_flashcard_deck.update'
+  options:
+    parameters:
+      lms_flashcard_deck:
+        type: entity:lms_flashcard_deck
+
+lms_flashcard.deck_export_download:
+  path: '/manage/flashcard-decks/{lms_flashcard_deck}/export/download'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\DeckExportController::download'
+  requirements:
+    _entity_access: 'lms_flashcard_deck.update'
+  options:
+    parameters:
+      lms_flashcard_deck:
+        type: entity:lms_flashcard_deck
+
 lms_flashcard.settings:
   path: '/admin/config/lms/flashcard'
   defaults:
@@ -83,6 +108,22 @@ lms_flashcard.api_submit_review:
     _user_is_logged_in: 'TRUE'
   methods: [POST]
 
+lms_flashcard.api_submit_mastery:
+  path: '/api/lms/flashcard/mastery'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\FlashcardApiController::submitMastery'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_flashcard.api_reset_mastery:
+  path: '/api/lms/flashcard/reset-mastery'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\FlashcardApiController::resetMastery'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
 lms_flashcard.api_session_stats:
   path: '/api/lms/flashcard/session-stats'
   defaults:
@@ -90,3 +131,35 @@ lms_flashcard.api_session_stats:
   requirements:
     _user_is_logged_in: 'TRUE'
   methods: [GET]
+
+# Quick Edit (see QUICK_EDIT_STUDY_CARD_PLAN.md): lets a card's owner (or
+# staff with "edit lms_course") edit it in a sidebar without leaving the
+# study session. Gated by _user_is_logged_in only, like every other route in
+# this file — FlashcardApiController::canQuickEditCard() does the real
+# per-card access check ($card->access('update')), matching the "own
+# content" convention used everywhere else in this controller rather than
+# _entity_access, so a non-owner gets a clean 403 JSON response instead of
+# Drupal's default access-denied page.
+lms_flashcard.api_quick_edit_get:
+  path: '/api/lms/flashcard/card/{lms_flashcard_card}/quick-edit'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\FlashcardApiController::quickEditFormData'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [GET]
+  options:
+    parameters:
+      lms_flashcard_card:
+        type: entity:lms_flashcard_card
+
+lms_flashcard.api_quick_edit_save:
+  path: '/api/lms/flashcard/card/{lms_flashcard_card}/quick-edit'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\FlashcardApiController::quickEditSave'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+  options:
+    parameters:
+      lms_flashcard_card:
+        type: entity:lms_flashcard_card

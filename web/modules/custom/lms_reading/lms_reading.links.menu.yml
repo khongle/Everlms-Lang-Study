@@ -1,0 +1,13 @@
+entity.lms_reading_passage.collection:
+  title: 'Reading Passages'
+  description: 'Manage reading passages built from Flashcard vocabulary decks.'
+  route_name: entity.lms_reading_passage.collection
+  parent: system.admin_content
+  weight: 17
+
+lms_reading.import:
+  title: 'Import Reading Passage'
+  description: 'Import a JSON reading passage (with comprehension questions) built on an existing Flashcard deck.'
+  route_name: lms_reading.import
+  parent: system.admin_content
+  weight: 18

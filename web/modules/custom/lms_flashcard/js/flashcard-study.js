@@ -37,6 +37,26 @@
   var QUIZ_LEVEL_MAX = 3;
   var QUIZ_PASS_SIMILARITY = 0.8;
 
+  // Pronunciation Practice — must mirror FlashcardApiController::
+  // PRONUNCIATION_LEVEL_MIN/MAX. Unlike SPELL/QUIZ_LEVEL_MAX this never
+  // changes what the exercise looks like (see buildPronunciationExercise()),
+  // it's shown purely as a "Level X of 5" badge like Spelling Practice's.
+  var PRONOUNCE_LEVEL_MAX = 5;
+  // A recording is graded by how closely its transcript matches the term
+  // (see textSimilarity()) rather than requiring an exact match, since
+  // Web Speech API transcription itself is imperfect even for a correctly
+  // pronounced word. Below CLOSE it's a clear miss; between CLOSE and
+  // CORRECT it's "close, try again" rather than an outright fail — see
+  // handlePronounceResult(). Thresholds are a starting point, per the plan
+  // doc — expect to tune after trying this with real users/accents.
+  var PRONOUNCE_CORRECT_SIMILARITY = 0.75;
+  var PRONOUNCE_CLOSE_SIMILARITY = 0.5;
+  // How many recording attempts a student gets on one card before it's
+  // force-graded as incorrect and moved past — mirrors the bounded-retry
+  // feel of Quiz Practice's 3 exercises rather than letting a card block
+  // the session forever on a transcript that just won't match.
+  var PRONOUNCE_MAX_ATTEMPTS = 3;
+
   /**
    * Levenshtein edit distance between two strings — the number of single-
    * character insertions/deletions/substitutions to turn `a` into `b`.
@@ -82,6 +102,72 @@
   }
 
   /**
+   * Strips punctuation and collapses whitespace/case for comparing a Web
+   * Speech API transcript against a card's term — "don't" vs "dont",
+   * trailing periods the recognizer sometimes appends, etc. shouldn't count
+   * against the student. textSimilarity() does its own lowercase/trim/
+   * whitespace-collapse too, so this only adds the punctuation strip on top
+   * before handing both strings to it — see handlePronounceResult().
+   */
+  function normalizeForCompare(text) {
+    return String(text || '')
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s]/gu, '')
+      .trim()
+      .replace(/\s+/g, ' ');
+  }
+
+  /**
+   * Renders a list of {[textKey]: string, translation: string} pairs (an
+   * example sentence, or a collocation phrase) into `containerEl` as
+   * speaker-button + text + blurred-translation rows — shared by the back
+   * face's Examples and Collocations sections in showCard(), which only
+   * differ in which property holds the text, what the speaker button's
+   * label says, and how `speak` reads the text aloud (each study session
+   * instance has its own speakText() closed over its deck's speechLang, so
+   * that's passed in rather than assumed global).
+   */
+  function renderPairList(containerEl, items, textKey, speakLabel, speak) {
+    containerEl.replaceChildren();
+    items.forEach(function (item) {
+      var text = item[textKey] || '';
+      var pair = document.createElement('div');
+      pair.className = 'lms-flashcard__example-pair';
+
+      var textRow = document.createElement('div');
+      textRow.className = 'lms-flashcard__example-row';
+
+      var speakBtn = document.createElement('button');
+      speakBtn.type = 'button';
+      speakBtn.className = 'lms-flashcard__example-speak';
+      speakBtn.setAttribute('aria-label', speakLabel);
+      speakBtn.title = speakLabel;
+      speakBtn.innerHTML = '<i class="fas fa-volume-up" aria-hidden="true"></i>';
+      speakBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        speak(text);
+      });
+      textRow.appendChild(speakBtn);
+
+      var textEl = document.createElement('div');
+      textEl.className = 'lms-flashcard__example';
+      textEl.textContent = text;
+      textRow.appendChild(textEl);
+      pair.appendChild(textRow);
+
+      if (item.translation) {
+        var translation = document.createElement('button');
+        translation.type = 'button';
+        translation.className = 'lms-flashcard__example-translation';
+        translation.textContent = item.translation;
+        translation.title = Drupal.t('Click to reveal the translation');
+        pair.appendChild(translation);
+      }
+      containerEl.appendChild(pair);
+    });
+  }
+
+  /**
    * Fisher-Yates shuffle, in place — shared by the spelling-puzzle letter
    * order and Quiz Practice's answer-choice order.
    */
@@ -103,6 +189,7 @@
         var speechLang = SPEECH_LANG_MAP[settings.language] || 'en-US';
         var nextUrl = settings.nextUrl || '/api/lms/flashcard/next';
         var reviewUrl = settings.reviewUrl || '/api/lms/flashcard/review';
+        var masteryUrl = settings.masteryUrl || '/api/lms/flashcard/mastery';
         var summaryUrl = settings.summaryUrl;
         // Only actually consulted server-side on the call that (re)builds
         // the queue (see FlashcardApiController::nextCard()) — sent on
@@ -112,14 +199,16 @@
         var mode = settings.practice ? 'practice' : 'srs';
         // 'spell' = Spelling Practice (fill in the missing letters of the
         // term); 'quiz' = Quiz Practice (3 example-sentence exercises —
-        // see buildQuizExercise()). Mainly a front-end rendering choice,
-        // but also sent to nextCard() (see loadNext() below) so it can
-        // queue every card in the deck instead of just what's due — see
-        // FlashcardApiController::nextCard()'s $drillAll. It never affects
-        // whether a grade gets persisted to the real SM-2 schedule, though
-        // — that's $practice (mode=practice) alone, still driven only by
-        // settings.practice.
-        var style = ['spell', 'quiz'].indexOf(settings.style) !== -1 ? settings.style : 'flip';
+        // see buildQuizExercise()); 'pronounce' = Pronunciation Practice
+        // (record yourself saying the term, graded via the Web Speech API
+        // — see buildPronunciationExercise()). Mainly a front-end rendering
+        // choice, but also sent to nextCard() (see loadNext() below) so it
+        // can queue every card in the deck instead of just what's due —
+        // see FlashcardApiController::nextCard()'s $drillAll. It never
+        // affects whether a grade gets persisted to the real SM-2 schedule,
+        // though — that's $practice (mode=practice) alone, still driven
+        // only by settings.practice.
+        var style = ['spell', 'quiz', 'pronounce'].indexOf(settings.style) !== -1 ? settings.style : 'flip';
         // Deck-wide {id, term, definition, examples[]} pool Quiz Practice
         // draws wrong-answer choices from — see StudyController::
         // buildQuizPool(). Empty/unused for the other styles.
@@ -138,19 +227,25 @@
         // setting once here.
         cardEl.classList.toggle('lms-flashcard--spell', style === 'spell');
         cardEl.classList.toggle('lms-flashcard--quiz', style === 'quiz');
+        cardEl.classList.toggle('lms-flashcard--pronounce', style === 'pronounce');
         var gradesEl = section.querySelector('[data-flashcard-grades]');
 
-        // Spelling/Quiz mode's hint differs from the shared default in two
-        // ways: clicking/tapping the card no longer flips it early (see
-        // flip()'s guard below — the exercise must be answered first), and
-        // Space replays the pronunciation instead of flipping. Set once
-        // here since `style` never changes mid-session.
+        // Spelling/Quiz/Pronunciation mode's hint differs from the shared
+        // default: Space replays the pronunciation instead of flipping (and
+        // for spell/quiz, clicking/tapping the card no longer flips it
+        // early — see flip()'s guard below, the exercise must be answered
+        // first; Pronunciation doesn't need that guard since nothing about
+        // the card is hidden to begin with). Set once here since `style`
+        // never changes mid-session.
         var hintEl = section.querySelector('[data-flashcard-hint]');
         if (hintEl && style === 'spell') {
           hintEl.textContent = Drupal.t('Fill in the blanks, then check · Press space to hear pronunciation');
         }
         else if (hintEl && style === 'quiz') {
           hintEl.textContent = Drupal.t('Choose or type an answer · Press space to hear pronunciation');
+        }
+        else if (hintEl && style === 'pronounce') {
+          hintEl.textContent = Drupal.t('Press the mic and say the word · Press space to hear pronunciation');
         }
 
         var termEl = section.querySelector('[data-flashcard-term]');
@@ -159,6 +254,14 @@
         var seenCountEl = section.querySelector('[data-flashcard-seen-count]');
         var definitionEl = section.querySelector('[data-flashcard-definition]');
         var examplesEl = section.querySelector('[data-flashcard-examples]');
+        var examplesSectionEl = section.querySelector('[data-flashcard-examples-section]');
+        // Collocations (e.g. "start a family") sit in their own labeled
+        // section below the examples, on the back face — see showCard() and
+        // renderPairList() below. The section itself is hidden whenever a
+        // card has none, rather than showing an empty "Collocations"
+        // heading.
+        var collocationsSectionEl = section.querySelector('[data-flashcard-collocations-section]');
+        var collocationsEl = section.querySelector('[data-flashcard-collocations]');
 
         // Reverse-mode ("meaning → word") elements: the prompt shown on the
         // front face instead of the term, and the term/pronunciation/speaker
@@ -203,12 +306,138 @@
         var quizExpectedText = '';
         var quizChoiceEntries = [];
 
+        // Pronunciation-mode elements (style === 'pronounce') — see
+        // buildPronunciationExercise() and submitPronunciationResult()
+        // below.
+        var pronounceEl = section.querySelector('[data-flashcard-pronounce]');
+        var pronounceDefinitionEl = section.querySelector('[data-flashcard-pronounce-definition]');
+        var micBtnEl = section.querySelector('[data-flashcard-mic-btn]');
+        var pronounceStatusEl = section.querySelector('[data-flashcard-pronounce-status]');
+        var pronounceFallbackEl = section.querySelector('[data-flashcard-pronounce-fallback]');
+        var pronounceFallbackNoteEl = section.querySelector('[data-flashcard-pronounce-fallback-note]');
+        var pronounceFallbackCorrectEl = section.querySelector('[data-flashcard-pronounce-fallback-correct]');
+        var pronounceFallbackIncorrectEl = section.querySelector('[data-flashcard-pronounce-fallback-incorrect]');
+        var pronounceNextEl = section.querySelector('[data-flashcard-pronounce-next]');
+        var pronounceLevelEl = section.querySelector('[data-flashcard-pronounce-level]');
+        var currentPronounceLevel = 1;
+        var pronounceAttempts = 0;
+        // True once this card's attempt has been graded and sent to the
+        // server (a correct recording, the last of PRONOUNCE_MAX_ATTEMPTS,
+        // or a fallback button click) — blocks further recordings/fallback
+        // clicks until buildPronunciationExercise() resets it for the next
+        // card.
+        var pronounceResolved = false;
+        var pronounceListening = false;
+        // Web Speech API support is checked once for the whole session
+        // (not per card) — see the SpeechRecognition constructor lookup
+        // below. Also treated as unsupported outside a secure context
+        // (plain http://), since Chrome/Edge refuse to start recognition
+        // there anyway — see risk notes on secure-context requirements.
+        // Tracked separately from the constructor check so the fallback
+        // note can tell a student *why* the mic is missing (open via
+        // https:// vs. "this browser doesn't support it") instead of a
+        // single generic message either way.
+        var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+        var pronounceInsecureContext = !!SpeechRecognitionCtor && window.isSecureContext === false;
+        var pronounceSpeechSupported = !!SpeechRecognitionCtor && !pronounceInsecureContext;
+
+        // "Study Now" (style === 'flip') mastery-mode elements — an
+        // isolated set of variables/DOM (never quizChoicesEl/quizAnswered/
+        // etc. above), by the student's own request not to touch Quiz
+        // Practice's own code at all. See buildMasteryExercise() and
+        // handleMasteryContinue() below, and FlashcardApiController::
+        // submitMastery()'s docblock for the server side of this flow.
+        var masteryEl = section.querySelector('[data-flashcard-mastery]');
+        var masteryDefinitionEl = section.querySelector('[data-flashcard-mastery-definition]');
+        // Bonus "guess it from the picture" round — see
+        // startMasteryImageRound() below.
+        var masteryImageEl = section.querySelector('[data-flashcard-mastery-image]');
+        var masteryImageImgEl = section.querySelector('[data-flashcard-mastery-image-img]');
+        var masteryChoicesEl = section.querySelector('[data-flashcard-mastery-choices]');
+        var masteryContinueEl = section.querySelector('[data-flashcard-mastery-continue]');
+        var currentMasteryLevel = 1;
+        var masteryAnswered = false;
+        var masteryChoiceEntries = [];
+        // Whether the current card has an image at all (decided once per
+        // card, in buildMasteryExercise()) and whether the bonus image
+        // round is the one currently showing (flips true partway through a
+        // single level-2 visit — see renderMasteryChoices()'s click
+        // handler and startMasteryImageRound()).
+        var masteryHasImageRound = false;
+        var masteryImageRoundActive = false;
+        // True only during the brief window.setTimeout() gap between
+        // answering the meaning round correctly and startMasteryImageRound()
+        // actually swapping the exercise to the image round — masteryAnswered
+        // is already true by then (needed so a second click on the meaning
+        // round's own buttons is ignored), which would otherwise satisfy
+        // flip()'s normal "already answered" guard and let a stray click/
+        // Space/Enter flip the card early, right as the front face is about
+        // to change under it. See flip()'s own guard below.
+        var masteryTransitionPending = false;
+
         // Interval-preview <span>s inside each grade button, keyed by
         // again/hard/good/easy — populated from card.previews in showCard().
         var previewEls = {};
         section.querySelectorAll('[data-flashcard-preview]').forEach(function (el) {
           previewEls[el.getAttribute('data-flashcard-preview')] = el;
         });
+
+        // Quick Edit sidebar elements & state (see
+        // QUICK_EDIT_STUDY_CARD_PLAN.md) — deliberately outside
+        // [data-flashcard-card] in the template, so clicks inside the
+        // drawer/toolbar button can never bubble into flip()/cardEl's own
+        // handlers to begin with; see openQuickEdit()/saveQuickEdit() etc.
+        // below for the rest.
+        var quickEditBtnEl = section.querySelector('[data-flashcard-quick-edit]');
+        var editOverlayEl = section.querySelector('[data-flashcard-edit-overlay]');
+        var editDrawerEl = section.querySelector('[data-flashcard-edit-drawer]');
+        var editTitleEl = section.querySelector('[data-flashcard-edit-title]');
+        var editStatusEl = section.querySelector('[data-flashcard-edit-status]');
+        var editTermEl = section.querySelector('[data-flashcard-edit-term]');
+        var editDefinitionEl = section.querySelector('[data-flashcard-edit-definition]');
+        var editTranslationEl = section.querySelector('[data-flashcard-edit-translation]');
+        var editPosEl = section.querySelector('[data-flashcard-edit-pos]');
+        var editPronunciationEl = section.querySelector('[data-flashcard-edit-pronunciation]');
+        var editDifficultyEl = section.querySelector('[data-flashcard-edit-difficulty]');
+        var editAudioCurrentEl = section.querySelector('[data-flashcard-edit-audio-current]');
+        var editAudioPreviewEl = section.querySelector('[data-flashcard-edit-audio-preview]');
+        var editAudioRemoveBtnEl = section.querySelector('[data-flashcard-edit-audio-remove]');
+        var editAudioInputEl = section.querySelector('[data-flashcard-edit-audio-input]');
+        var editImageCurrentEl = section.querySelector('[data-flashcard-edit-image-current]');
+        var editImagePreviewEl = section.querySelector('[data-flashcard-edit-image-preview]');
+        var editImageRemoveBtnEl = section.querySelector('[data-flashcard-edit-image-remove]');
+        var editImageInputEl = section.querySelector('[data-flashcard-edit-image-input]');
+        var editExamplesRowsEl = section.querySelector('[data-flashcard-edit-examples-rows]');
+        var editExamplesAddBtnEl = section.querySelector('[data-flashcard-edit-examples-add]');
+        var editCollocationsRowsEl = section.querySelector('[data-flashcard-edit-collocations-rows]');
+        var editCollocationsAddBtnEl = section.querySelector('[data-flashcard-edit-collocations-add]');
+        var editCancelBtnEl = section.querySelector('[data-flashcard-edit-cancel]');
+        var editSaveBtnEl = section.querySelector('[data-flashcard-edit-save]');
+        var editCloseBtnEl = section.querySelector('[data-flashcard-edit-close]');
+
+        // Card image (see "Image Display" in the plan) — shown only for the
+        // plain flip view; see showCard()'s showImage computation.
+        var imageFrontEl = section.querySelector('[data-flashcard-image-front]');
+        var imageFrontImgEl = section.querySelector('[data-flashcard-image-front-img]');
+        var imageBackEl = section.querySelector('[data-flashcard-image-back]');
+        var imageBackImgEl = section.querySelector('[data-flashcard-image-back-img]');
+
+        var quickEditOpen = false;
+        var quickEditSaving = false;
+        // Pending hideEditDrawer() timeout — lets the closing slide
+        // transition finish playing before the drawer is actually hidden
+        // (display:none) and removed from the tab order; cleared if the
+        // drawer is reopened before that fires.
+        var editDrawerCloseTimer = null;
+        // Captured when the drawer opens and checked against every response
+        // that comes back (GET prefetch, POST save) before applying it —
+        // guards against the drawer somehow still being open for a card
+        // that isn't the one currently on screen any more.
+        var quickEditCardId = null;
+        var quickEditGetUrl = null;
+        var quickEditSaveUrl = null;
+        var editAudioRemoveFlag = false;
+        var editImageRemoveFlag = false;
 
         var audioEl = new Audio();
         var currentCard = null;
@@ -867,17 +1096,27 @@
         }
 
         /**
-         * Shared tail for every Quiz Practice answer path (MCQ click or
-         * the level-3 Check button): reveal the back face for full
-         * confirmation (term, pronunciation, examples) and submit the
-         * result.
+         * Shared tail for every Quiz Practice exercise's answer path (MCQ
+         * click or the level-3 Check button) — reveal the back face for
+         * full confirmation (term, pronunciation, examples) and submit the
+         * result. Also the answer path for "Study Now" (style=flip)
+         * mastery level 3, which reuses this exact exercise (see the quiz
+         * block in showCard()) — routed to finishMasteryLevel3() instead
+         * of submitQuizResult() there so it never touches the real SM-2
+         * schedule, matching level 1/2's own no-SM-2-impact promise (see
+         * FlashcardApiController::submitMastery()'s docblock).
          */
         function finishQuizAnswer(correct) {
           cardEl.focus();
           if (!revealed) {
             flip();
           }
-          submitQuizResult(correct);
+          if (style === 'flip' && currentMasteryLevel === 3) {
+            finishMasteryLevel3(correct);
+          }
+          else {
+            submitQuizResult(correct);
+          }
         }
 
         /**
@@ -912,9 +1151,787 @@
             });
         }
 
+        function updatePronounceLevelBadge() {
+          if (!pronounceLevelEl) {
+            return;
+          }
+          pronounceLevelEl.hidden = false;
+          pronounceLevelEl.textContent = Drupal.t('Level @level of @max', {
+            '@level': currentPronounceLevel,
+            '@max': PRONOUNCE_LEVEL_MAX,
+          });
+        }
+
+        /** Sets the feedback line under the mic button; `tone` is '', 'is-correct', 'is-close' or 'is-incorrect'. */
+        function setPronounceStatus(text, tone) {
+          if (!pronounceStatusEl) {
+            return;
+          }
+          pronounceStatusEl.hidden = !text;
+          pronounceStatusEl.textContent = text || '';
+          pronounceStatusEl.className = 'lms-flashcard__pronounce-status' + (tone ? ' ' + tone : '');
+        }
+
+        /**
+         * Switches from the mic button to the manual self-grade buttons for
+         * the rest of the session — used both when the browser never had
+         * Web Speech API support (checked once above) and when the student
+         * denies the mic permission prompt (checked per attempt, since a
+         * browser only reports that once start() is actually called).
+         */
+        function switchToPronounceFallback(message) {
+          pronounceSpeechSupported = false;
+          if (micBtnEl) {
+            micBtnEl.hidden = true;
+          }
+          if (pronounceFallbackEl) {
+            pronounceFallbackEl.hidden = false;
+          }
+          if (message) {
+            setPronounceStatus(message, 'is-incorrect');
+          }
+        }
+
+        /**
+         * Sends the pronunciation result to the same endpoint the 4 grade
+         * buttons use — mirrors submitSpellResult()/submitQuizResult()
+         * exactly (see their docblocks), just with `pronunciation_correct`
+         * driving CardStat.field_pronunciation_level instead.
+         */
+        function submitPronunciationResult(correct) {
+          loading = true;
+          fetch(reviewUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ deck_id: deckId, quality: correct ? 2 : 0, pronunciation_correct: correct }),
+          })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+              loading = false;
+              if (data && typeof data.pronunciation_level === 'number') {
+                currentPronounceLevel = data.pronunciation_level;
+                updatePronounceLevelBadge();
+              }
+              if (pronounceNextEl) {
+                pronounceNextEl.hidden = false;
+              }
+            })
+            .catch(function () {
+              loading = false;
+              if (pronounceNextEl) {
+                pronounceNextEl.hidden = false;
+              }
+            });
+        }
+
+        /**
+         * Grades one recognized transcript against the current card's term
+         * (see normalizeForCompare()/textSimilarity()) into 3 tiers. A
+         * "correct" match — or running out of retries — ends the attempt
+         * and submits the result; a "close" or outright miss with retries
+         * left just gives feedback and leaves the mic ready to go again.
+         */
+        function handlePronounceResult(transcript) {
+          if (pronounceResolved) {
+            return;
+          }
+          pronounceAttempts++;
+          var similarity = textSimilarity(normalizeForCompare(transcript), normalizeForCompare(currentCard.term));
+          var attemptsLeft = PRONOUNCE_MAX_ATTEMPTS - pronounceAttempts;
+          var heard = transcript || Drupal.t('(nothing)');
+
+          if (similarity >= PRONOUNCE_CORRECT_SIMILARITY) {
+            pronounceResolved = true;
+            if (micBtnEl) {
+              micBtnEl.disabled = true;
+            }
+            setPronounceStatus(Drupal.t('Nice pronunciation! Heard: "@text"', { '@text': heard }), 'is-correct');
+            submitPronunciationResult(true);
+          }
+          else if (attemptsLeft <= 0) {
+            pronounceResolved = true;
+            if (micBtnEl) {
+              micBtnEl.disabled = true;
+            }
+            setPronounceStatus(Drupal.t('Not quite — heard: "@text". The word is "@term".', { '@text': heard, '@term': currentCard.term }), 'is-incorrect');
+            submitPronunciationResult(false);
+          }
+          else if (similarity >= PRONOUNCE_CLOSE_SIMILARITY) {
+            setPronounceStatus(Drupal.t('Close — try again (@n left). Heard: "@text"', { '@n': attemptsLeft, '@text': heard }), 'is-close');
+          }
+          else {
+            setPronounceStatus(Drupal.t('Not quite — try again (@n left). Heard: "@text"', { '@n': attemptsLeft, '@text': heard }), 'is-incorrect');
+          }
+        }
+
+        /**
+         * Starts one Web Speech API recording attempt. A fresh recognizer
+         * is created per attempt rather than reused — simpler than tracking
+         * whether a previous instance is still mid-request, and this is
+         * cheap to construct.
+         */
+        function startPronounceRecording() {
+          if (!pronounceSpeechSupported || pronounceListening || pronounceResolved) {
+            return;
+          }
+          var recognition = new SpeechRecognitionCtor();
+          recognition.lang = speechLang;
+          recognition.continuous = false;
+          recognition.interimResults = false;
+          recognition.maxAlternatives = 1;
+
+          pronounceListening = true;
+          if (micBtnEl) {
+            micBtnEl.classList.add('is-recording');
+          }
+          setPronounceStatus(Drupal.t('Listening…'), '');
+
+          recognition.addEventListener('result', function (e) {
+            var transcript = e.results && e.results[0] && e.results[0][0] ? e.results[0][0].transcript : '';
+            handlePronounceResult(transcript);
+          });
+          recognition.addEventListener('error', function (e) {
+            pronounceListening = false;
+            if (micBtnEl) {
+              micBtnEl.classList.remove('is-recording');
+            }
+            if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+              switchToPronounceFallback(Drupal.t('Microphone access was denied — grade yourself instead:'));
+              return;
+            }
+            if (!pronounceResolved) {
+              setPronounceStatus(Drupal.t("Didn't catch that — try again."), 'is-incorrect');
+            }
+          });
+          recognition.addEventListener('end', function () {
+            pronounceListening = false;
+            if (micBtnEl) {
+              micBtnEl.classList.remove('is-recording');
+            }
+          });
+
+          try {
+            recognition.start();
+          }
+          catch (err) {
+            pronounceListening = false;
+            if (micBtnEl) {
+              micBtnEl.classList.remove('is-recording');
+            }
+          }
+        }
+
+        /**
+         * Resets all Pronunciation Practice state for a new card — mirrors
+         * buildSpellPuzzle()/buildQuizExercise()'s role for their styles.
+         * `level` is purely for the informational badge (see
+         * PRONOUNCE_LEVEL_MAX above); it never changes the exercise itself.
+         */
+        function buildPronunciationExercise(card, level) {
+          pronounceAttempts = 0;
+          pronounceResolved = false;
+          pronounceListening = false;
+          currentPronounceLevel = level || 1;
+          updatePronounceLevelBadge();
+
+          if (pronounceDefinitionEl) {
+            pronounceDefinitionEl.textContent = card.definition || '';
+          }
+          setPronounceStatus('', '');
+          if (pronounceNextEl) {
+            pronounceNextEl.hidden = true;
+          }
+          if (micBtnEl) {
+            micBtnEl.hidden = !pronounceSpeechSupported;
+            micBtnEl.disabled = false;
+            micBtnEl.classList.remove('is-recording');
+          }
+          if (pronounceFallbackEl) {
+            pronounceFallbackEl.hidden = pronounceSpeechSupported;
+          }
+          // Tell the student *why* they're seeing the fallback instead of a
+          // mic, when it's known ahead of time (unsupported browser or an
+          // insecure http:// origin) — a permission denial overwrites this
+          // with its own message instead, via switchToPronounceFallback().
+          if (pronounceFallbackNoteEl && !pronounceSpeechSupported) {
+            pronounceFallbackNoteEl.textContent = pronounceInsecureContext
+              ? Drupal.t('Microphone grading needs a secure connection — reopen this page with https:// to use it. For now, grade yourself:')
+              : (SpeechRecognitionCtor
+                ? Drupal.t('Say the word aloud yourself, then grade it:')
+                : Drupal.t("This browser doesn't support speech recognition (try Chrome or Edge). For now, say the word aloud yourself, then grade it:"));
+          }
+        }
+
+        /**
+         * Picks up to n other cards' terms from quizPool as wrong answers
+         * for the mastery level-2 recall check — same shape/purpose as
+         * pickDistractorTerms() above, kept as an independent copy (own
+         * name, own closure state) rather than calling that one directly,
+         * so this mode never shares code paths with Quiz Practice.
+         */
+        function pickMasteryDistractorTerms(excludeTerm, n) {
+          var pool = [];
+          quizPool.forEach(function (entry) {
+            if (entry.term && entry.term !== excludeTerm) {
+              pool.push(entry.term);
+            }
+          });
+          return sampleArray(pool, n);
+        }
+
+        /**
+         * Renders the level-2 "which word matches this meaning?" choices —
+         * definition shown, 4 term buttons. Reuses the same
+         * .lms-flashcard__quiz-choice CSS class as Quiz Practice purely for
+         * visual consistency (a shared style, not shared code/state); every
+         * DOM element and JS variable here is this mode's own.
+         */
+        function renderMasteryChoices(choices) {
+          masteryChoicesEl.replaceChildren();
+          masteryChoiceEntries = shuffleInPlace(choices.slice()).map(function (choice) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'lms-flashcard__quiz-choice';
+            btn.textContent = choice.text;
+            btn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              if (masteryAnswered) {
+                return;
+              }
+              masteryAnswered = true;
+              masteryChoiceEntries.forEach(function (entry) {
+                entry.btn.disabled = true;
+                if (entry.choice.correct) {
+                  entry.btn.classList.add('is-correct');
+                }
+              });
+              if (!choice.correct) {
+                btn.classList.add('is-incorrect');
+              }
+
+              // A correct answer on the meaning round advances into the
+              // bonus image round instead of finishing right away, for any
+              // card with an uploaded image (see startMasteryImageRound())
+              // — a brief pause first so the "correct" highlight above is
+              // actually seen before the exercise swaps under it. A wrong
+              // answer on either round, or a correct answer on the image
+              // round itself (masteryImageRoundActive already true by
+              // then), falls through to finish the check right away same
+              // as before this bonus round existed.
+              if (choice.correct && !masteryImageRoundActive && masteryHasImageRound) {
+                masteryTransitionPending = true;
+                window.setTimeout(startMasteryImageRound, 550);
+                return;
+              }
+
+              // Same shape as Quiz Practice's own finishQuizAnswer(): submit
+              // right away (own endpoint/state, see finishMasteryLevel2())
+              // and flip to the back face for full confirmation — the
+              // "Next word →" button afterward just loads the next card,
+              // nothing further to send.
+              cardEl.focus();
+              if (!revealed) {
+                flip();
+              }
+              finishMasteryLevel2(choice.correct);
+              masteryContinueEl.textContent = Drupal.t('Next word →');
+              masteryContinueEl.hidden = false;
+              masteryContinueEl.focus();
+            });
+            masteryChoicesEl.appendChild(btn);
+            return { btn: btn, choice: choice };
+          });
+        }
+
+        /**
+         * The bonus "guess the term from its picture" round — only reached
+         * after a correct answer on the translation/definition round, and
+         * only for a card with an uploaded image (card.image_url). Not a
+         * new SM-2 mastery level of its own: finishMasteryLevel2() (see
+         * renderMasteryChoices() above) still fires exactly once per card,
+         * either right after this round or, for a card with no image,
+         * right after the first round — same server call either way, so
+         * FlashcardApiController::submitMastery() needed no changes for
+         * this.
+         */
+        function startMasteryImageRound() {
+          masteryTransitionPending = false;
+          masteryImageRoundActive = true;
+          masteryAnswered = false;
+          masteryDefinitionEl.hidden = true;
+          if (masteryImageEl && masteryImageImgEl && currentCard && currentCard.image_url) {
+            masteryImageImgEl.src = currentCard.image_url;
+            masteryImageImgEl.alt = currentCard.term || '';
+            masteryImageEl.hidden = false;
+          }
+          var choices = pickMasteryDistractorTerms(currentCard.term, 3).map(function (text) {
+            return { text: text, correct: false };
+          });
+          choices.push({ text: currentCard.term, correct: true });
+          renderMasteryChoices(choices);
+        }
+
+        /**
+         * Keyboard shortcut (1-4) for the level-2 recall check — mirrors
+         * chooseQuizChoice() above, own state.
+         */
+        function chooseMasteryChoice(index) {
+          if (masteryAnswered) {
+            return;
+          }
+          var entry = masteryChoiceEntries[index];
+          if (!entry || entry.btn.disabled) {
+            return;
+          }
+          entry.btn.click();
+        }
+
+        /**
+         * Builds the level-2 exercise for `card` — always meaning→term,
+         * regardless of the session's own ?direction (level 1 still
+         * respects it as always; the recall check is a fixed shape).
+         *
+         * Prefers the native-language card.translation (e.g. "đậu" for
+         * "beans" — see Card::field_translation / the Quick Edit drawer's
+         * "Translation" field) over the English card.definition, since
+         * recognizing the term from its native-language meaning is the
+         * more useful recall check for a learner — falls back to the
+         * definition for any card that hasn't had a translation filled in
+         * yet, so this never shows a blank prompt.
+         */
+        function buildMasteryExercise(card) {
+          masteryAnswered = false;
+          masteryImageRoundActive = false;
+          masteryTransitionPending = false;
+          masteryHasImageRound = !!card.image_url;
+          if (masteryImageEl) {
+            masteryImageEl.hidden = true;
+          }
+          masteryDefinitionEl.hidden = false;
+          masteryDefinitionEl.textContent = card.translation || card.definition || '';
+          var choices = pickMasteryDistractorTerms(card.term, 3).map(function (text) {
+            return { text: text, correct: false };
+          });
+          choices.push({ text: card.term, correct: true });
+          renderMasteryChoices(choices);
+        }
+
+        /**
+         * Shows/hides the toolbar's Quick Edit button for whichever card is
+         * currently on screen, and remembers that card's own GET/POST URLs
+         * (each card gets its own endpoint) — called from showCard().
+         */
+        function toggleQuickEditButton(card) {
+          quickEditGetUrl = card.quick_edit_get_url || null;
+          quickEditSaveUrl = card.quick_edit_save_url || null;
+          if (quickEditBtnEl) {
+            quickEditBtnEl.hidden = !card.can_quick_edit;
+          }
+        }
+
+        // Drawer slide-in/out uses the same "clear hidden, force a layout,
+        // then add the class that actually animates" trick showCard() uses
+        // for the flip-reset transition — the CSS transitions on
+        // transform/opacity live on .is-open, so removing `hidden`
+        // instantly (display:none -> flex, still off-screen) before adding
+        // it a frame later is what makes the transition play instead of
+        // jumping straight to its open state.
+        function showEditDrawer() {
+          if (editDrawerCloseTimer) {
+            window.clearTimeout(editDrawerCloseTimer);
+            editDrawerCloseTimer = null;
+          }
+          if (editOverlayEl) {
+            editOverlayEl.hidden = false;
+          }
+          if (editDrawerEl) {
+            editDrawerEl.hidden = false;
+          }
+          window.requestAnimationFrame(function () {
+            if (editOverlayEl) {
+              editOverlayEl.classList.add('is-open');
+            }
+            if (editDrawerEl) {
+              editDrawerEl.classList.add('is-open');
+              editDrawerEl.setAttribute('aria-hidden', 'false');
+            }
+          });
+        }
+
+        function hideEditDrawer() {
+          if (editOverlayEl) {
+            editOverlayEl.classList.remove('is-open');
+          }
+          if (editDrawerEl) {
+            editDrawerEl.classList.remove('is-open');
+            editDrawerEl.setAttribute('aria-hidden', 'true');
+          }
+          // Actually hide (display:none) only once the closing transition
+          // has had time to finish — matches the 0.3s transform transition
+          // on .lms-flashcard-edit-drawer in flashcard-study.css.
+          editDrawerCloseTimer = window.setTimeout(function () {
+            if (editOverlayEl) {
+              editOverlayEl.hidden = true;
+            }
+            if (editDrawerEl) {
+              editDrawerEl.hidden = true;
+            }
+            editDrawerCloseTimer = null;
+          }, 300);
+        }
+
+        function setEditStatus(message, isError) {
+          if (!editStatusEl) {
+            return;
+          }
+          editStatusEl.hidden = !message;
+          editStatusEl.textContent = message || '';
+          editStatusEl.classList.toggle('is-error', !!isError);
+          editStatusEl.classList.toggle('is-success', !isError && !!message);
+        }
+
+        function setEditSaving(saving) {
+          quickEditSaving = saving;
+          if (editSaveBtnEl) {
+            editSaveBtnEl.disabled = saving;
+          }
+          if (editCancelBtnEl) {
+            editCancelBtnEl.disabled = saving;
+          }
+        }
+
+        /**
+         * Builds one example/collocation editable row (two text inputs +
+         * remove button) and appends it to containerEl — shared by
+         * populateQuickEditForm() (existing rows) and the "+ Add" buttons
+         * (one new blank row).
+         */
+        function addEditableRow(containerEl, textValue, translationValue, textPlaceholder, translationPlaceholder) {
+          if (!containerEl) {
+            return;
+          }
+          var row = document.createElement('div');
+          row.className = 'lms-flashcard-edit-drawer__pair-row';
+
+          var textInput = document.createElement('input');
+          textInput.type = 'text';
+          textInput.className = 'lms-flashcard-edit-drawer__pair-input';
+          textInput.value = textValue || '';
+          textInput.placeholder = textPlaceholder || '';
+          textInput.setAttribute('data-pair-text', '1');
+
+          var translationInput = document.createElement('input');
+          translationInput.type = 'text';
+          translationInput.className = 'lms-flashcard-edit-drawer__pair-input';
+          translationInput.value = translationValue || '';
+          translationInput.placeholder = translationPlaceholder || '';
+          translationInput.setAttribute('data-pair-translation', '1');
+
+          var removeBtn = document.createElement('button');
+          removeBtn.type = 'button';
+          removeBtn.className = 'lms-flashcard-edit-drawer__pair-remove';
+          removeBtn.setAttribute('aria-label', Drupal.t('Remove row'));
+          removeBtn.innerHTML = '<i class="fas fa-times" aria-hidden="true"></i>';
+          removeBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            row.remove();
+          });
+
+          row.appendChild(textInput);
+          row.appendChild(translationInput);
+          row.appendChild(removeBtn);
+          containerEl.appendChild(row);
+        }
+
+        function buildEditableRows(containerEl, items, textKey, textPlaceholder, translationPlaceholder) {
+          if (!containerEl) {
+            return;
+          }
+          containerEl.replaceChildren();
+          var rows = (Array.isArray(items) && items.length) ? items : [{}];
+          rows.forEach(function (item) {
+            addEditableRow(containerEl, item && item[textKey], item && item.translation, textPlaceholder, translationPlaceholder);
+          });
+        }
+
+        /**
+         * Reads every non-empty row back out of an examples/collocations
+         * container — a row where the student left both sides blank (e.g.
+         * the one default empty row) is simply skipped, matching
+         * FlashcardApiController::normalizePairsJson()'s own "skip if both
+         * blank" rule. `textKey` becomes the property name the server
+         * expects (`sentence` for examples, `phrase` for collocations).
+         */
+        function collectPairsPayload(containerEl, textKey) {
+          var pairs = [];
+          if (!containerEl) {
+            return pairs;
+          }
+          containerEl.querySelectorAll('.lms-flashcard-edit-drawer__pair-row').forEach(function (row) {
+            var textInput = row.querySelector('[data-pair-text]');
+            var translationInput = row.querySelector('[data-pair-translation]');
+            var text = textInput ? textInput.value.trim() : '';
+            var translation = translationInput ? translationInput.value.trim() : '';
+            if (text === '' && translation === '') {
+              return;
+            }
+            var pair = { translation: translation };
+            pair[textKey] = text;
+            pairs.push(pair);
+          });
+          return pairs;
+        }
+
+        /**
+         * Fills the drawer's fields from a {term, definition, ...} payload
+         * — either quickEditFormData()'s response or, while that request is
+         * still in flight, whatever's already in currentCard so the drawer
+         * isn't blank for a moment.
+         */
+        function populateQuickEditForm(card) {
+          if (editTitleEl) {
+            editTitleEl.textContent = card.term || Drupal.t('Quick edit');
+          }
+          if (editTermEl) {
+            editTermEl.value = card.term || '';
+          }
+          if (editDefinitionEl) {
+            editDefinitionEl.value = card.definition || '';
+          }
+          if (editTranslationEl) {
+            editTranslationEl.value = card.translation || '';
+          }
+          if (editPosEl) {
+            editPosEl.value = card.part_of_speech || '';
+          }
+          if (editPronunciationEl) {
+            editPronunciationEl.value = card.pronunciation || '';
+          }
+          if (editDifficultyEl) {
+            editDifficultyEl.value = card.difficulty || 'medium';
+          }
+
+          editAudioRemoveFlag = false;
+          editImageRemoveFlag = false;
+          if (editAudioInputEl) {
+            editAudioInputEl.value = '';
+          }
+          if (editImageInputEl) {
+            editImageInputEl.value = '';
+          }
+          if (editAudioCurrentEl) {
+            editAudioCurrentEl.hidden = !card.audio_url;
+          }
+          if (editAudioPreviewEl && card.audio_url) {
+            editAudioPreviewEl.src = card.audio_url;
+          }
+          if (editImageCurrentEl) {
+            editImageCurrentEl.hidden = !card.image_url;
+          }
+          if (editImagePreviewEl && card.image_url) {
+            editImagePreviewEl.src = card.image_url;
+          }
+
+          buildEditableRows(editExamplesRowsEl, card.examples, 'sentence', Drupal.t('Example sentence'), Drupal.t('Translation'));
+          buildEditableRows(editCollocationsRowsEl, card.collocations, 'phrase', Drupal.t('Collocation'), Drupal.t('Translation'));
+        }
+
+        /**
+         * Opens the drawer for the card currently on screen. Populates
+         * immediately from currentCard (already in memory) so the drawer
+         * never looks empty, then quietly refetches via GET in the
+         * background and re-populates once that lands — guards against the
+         * on-screen copy being stale (e.g. edited from another tab).
+         */
+        function openQuickEdit() {
+          if (!currentCard || !quickEditGetUrl || quickEditOpen) {
+            return;
+          }
+          quickEditCardId = currentCard.id;
+          quickEditOpen = true;
+          setEditStatus('', false);
+          setEditSaving(false);
+          populateQuickEditForm(currentCard);
+          showEditDrawer();
+          window.setTimeout(function () {
+            if (editTermEl) {
+              editTermEl.focus();
+            }
+          }, 0);
+
+          var openedForCardId = quickEditCardId;
+          fetch(quickEditGetUrl, { headers: { Accept: 'application/json' } })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+              if (!quickEditOpen || quickEditCardId !== openedForCardId || !data || data.status !== 'ok' || !data.card || data.card.id !== openedForCardId) {
+                return;
+              }
+              populateQuickEditForm(data.card);
+            })
+            .catch(function () {
+              // Keep showing the currentCard-populated form — nothing to
+              // recover from here, a stale-but-present form beats none.
+            });
+        }
+
+        function closeQuickEdit() {
+          quickEditOpen = false;
+          quickEditCardId = null;
+          hideEditDrawer();
+          if (quickEditBtnEl && !quickEditBtnEl.hidden) {
+            quickEditBtnEl.focus();
+          }
+        }
+
+        /**
+         * Patches the currently-shown card in place with a Quick Edit save
+         * response — deliberately NOT a call to showCard(card) again: that
+         * resets flip state, re-speaks the term, and rebuilds whichever
+         * Spelling/Quiz/Pronunciation/Study-Now exercise is in progress,
+         * any of which would be disruptive mid-session (see the plan's note
+         * on showCard()'s side effects). This only touches the handful of
+         * elements that are always on screen regardless of style/exercise
+         * step — term/definition/pronunciation/part-of-speech/examples/
+         * collocations/image — leaving an in-progress spell/quiz/mastery/
+         * pronounce exercise's own markup untouched.
+         */
+        function applyQuickEditToDisplay(updated) {
+          if (!currentCard) {
+            return;
+          }
+          currentCard.term = updated.term;
+          currentCard.definition = updated.definition;
+          currentCard.translation = updated.translation;
+          currentCard.part_of_speech = updated.part_of_speech;
+          currentCard.pronunciation = updated.pronunciation;
+          currentCard.difficulty = updated.difficulty;
+          currentCard.examples = updated.examples || [];
+          currentCard.example_sentence = currentCard.examples[0] ? currentCard.examples[0].sentence : '';
+          currentCard.example_translation = currentCard.examples[0] ? currentCard.examples[0].translation : '';
+          currentCard.collocations = updated.collocations || [];
+          currentCard.audio_url = updated.audio_url;
+          currentCard.image_url = updated.image_url;
+
+          posEl.textContent = currentCard.part_of_speech || '';
+          var direction = currentCard.direction || 'forward';
+          if (direction === 'reverse') {
+            promptEl.textContent = currentCard.definition;
+            backTermEl.textContent = currentCard.term;
+            backPronunciationEl.textContent = currentCard.pronunciation || '';
+          }
+          else {
+            termEl.textContent = currentCard.term;
+            pronunciationEl.textContent = currentCard.pronunciation || '';
+            definitionEl.textContent = currentCard.definition;
+          }
+          // Spelling Practice shows the pronunciation hint up front despite
+          // forcing direction=reverse (see showCard()) — the branch above
+          // wrote it onto backPronunciationEl instead in that case, so also
+          // refresh the front-facing copy spell mode actually displays.
+          if (style === 'spell') {
+            pronunciationEl.textContent = currentCard.pronunciation || '';
+          }
+
+          if (examplesSectionEl) {
+            examplesSectionEl.hidden = currentCard.examples.length === 0;
+          }
+          renderPairList(examplesEl, currentCard.examples, 'sentence', Drupal.t('Play example sentence'), speakText);
+          if (collocationsSectionEl) {
+            collocationsSectionEl.hidden = currentCard.collocations.length === 0;
+          }
+          renderPairList(collocationsEl, currentCard.collocations, 'phrase', Drupal.t('Play collocation'), speakText);
+
+          var showImage = !!currentCard.image_url && style === 'flip' && currentMasteryLevel === 1;
+          if (imageFrontEl) {
+            imageFrontEl.hidden = !(showImage && direction !== 'reverse');
+          }
+          if (imageBackEl) {
+            imageBackEl.hidden = !(showImage && direction === 'reverse');
+          }
+          if (showImage && imageFrontImgEl) {
+            imageFrontImgEl.src = currentCard.image_url;
+            imageFrontImgEl.alt = currentCard.term || '';
+          }
+          if (showImage && imageBackImgEl) {
+            imageBackImgEl.src = currentCard.image_url;
+            imageBackImgEl.alt = currentCard.term || '';
+          }
+        }
+
+        function saveQuickEdit() {
+          if (quickEditSaving || !quickEditCardId || !quickEditSaveUrl) {
+            return;
+          }
+          var term = editTermEl ? editTermEl.value.trim() : '';
+          var definition = editDefinitionEl ? editDefinitionEl.value.trim() : '';
+          if (!term || !definition) {
+            setEditStatus(Drupal.t('Term and definition are required.'), true);
+            return;
+          }
+
+          setEditSaving(true);
+          setEditStatus('', false);
+
+          var formData = new FormData();
+          formData.append('deck_id', deckId);
+          formData.append('term', term);
+          formData.append('definition', definition);
+          formData.append('translation', editTranslationEl ? editTranslationEl.value.trim() : '');
+          formData.append('part_of_speech', editPosEl ? editPosEl.value : '');
+          formData.append('pronunciation', editPronunciationEl ? editPronunciationEl.value.trim() : '');
+          formData.append('difficulty', editDifficultyEl ? editDifficultyEl.value : 'medium');
+          formData.append('examples_json', JSON.stringify(collectPairsPayload(editExamplesRowsEl, 'sentence')));
+          formData.append('collocations_json', JSON.stringify(collectPairsPayload(editCollocationsRowsEl, 'phrase')));
+          if (editAudioInputEl && editAudioInputEl.files && editAudioInputEl.files[0]) {
+            formData.append('audio', editAudioInputEl.files[0]);
+          }
+          else if (editAudioRemoveFlag) {
+            formData.append('remove_audio', '1');
+          }
+          if (editImageInputEl && editImageInputEl.files && editImageInputEl.files[0]) {
+            formData.append('image', editImageInputEl.files[0]);
+          }
+          else if (editImageRemoveFlag) {
+            formData.append('remove_image', '1');
+          }
+
+          var savingForCardId = quickEditCardId;
+          var saveUrl = quickEditSaveUrl;
+          fetch(saveUrl, { method: 'POST', body: formData, headers: { Accept: 'application/json' } })
+            .then(function (response) {
+              return response.json().then(function (data) { return { ok: response.ok, data: data }; });
+            })
+            .then(function (result) {
+              setEditSaving(false);
+              if (!result.ok || !result.data || result.data.status !== 'ok') {
+                setEditStatus((result.data && result.data.error) || Drupal.t('Could not save. Please try again.'), true);
+                return;
+              }
+              // The study queue never advances on its own while the drawer
+              // is open, but guard anyway against a closed-then-reopened
+              // drawer landing this (slow) response on the wrong card.
+              if (!currentCard || currentCard.id !== savingForCardId || !result.data.card || result.data.card.id !== savingForCardId) {
+                return;
+              }
+              applyQuickEditToDisplay(result.data.card);
+              setEditStatus(Drupal.t('Saved.'), false);
+              window.setTimeout(function () {
+                if (quickEditOpen && quickEditCardId === savingForCardId) {
+                  closeQuickEdit();
+                }
+              }, 900);
+            })
+            .catch(function () {
+              setEditSaving(false);
+              setEditStatus(Drupal.t('Network error. Please try again.'), true);
+            });
+        }
+
         function showCard(card) {
           currentCard = card;
           var direction = card.direction || 'forward';
+
+          toggleQuickEditButton(card);
 
           posEl.textContent = card.part_of_speech || '';
 
@@ -972,8 +1989,18 @@
             spellLevelEl.hidden = true;
           }
 
-          quizEl.hidden = style !== 'quiz';
-          if (style === 'quiz') {
+          // "Study Now" (style === 'flip') level 3 is Quiz Practice's own
+          // 3 exercises (cloze / listen-match / listen-type), reused as-is
+          // — same quizEl markup, same buildQuizExercise()/quiz_level
+          // progression a direct Quiz Practice session would show for this
+          // card. Only where the *answer* goes differs: finishQuizAnswer()
+          // below branches to finishMasteryLevel3() instead of
+          // submitQuizResult() here, so this never touches the real SM-2
+          // schedule — matching level 1/2's own no-SM-2-impact promise.
+          currentMasteryLevel = style === 'flip' ? (card.mastery_level || 1) : 1;
+          var showQuiz = style === 'quiz' || (style === 'flip' && currentMasteryLevel === 3);
+          quizEl.hidden = !showQuiz;
+          if (showQuiz) {
             // Quiz mode also forces direction='reverse' above, which shows
             // promptEl (the definition) on the front by default — but Quiz
             // builds its own prompt text inside quizSentenceEl instead (a
@@ -990,6 +2017,51 @@
             quizLevelEl.hidden = true;
           }
 
+          pronounceEl.hidden = style !== 'pronounce';
+          if (style === 'pronounce') {
+            currentPronounceLevel = card.pronunciation_level || 1;
+            buildPronunciationExercise(card, currentPronounceLevel);
+          }
+          else if (pronounceLevelEl) {
+            pronounceLevelEl.hidden = true;
+          }
+
+          // "Study Now" (style === 'flip') level-2 recall check — replaces
+          // the normal front face (term hidden, prompt suppressed) with
+          // masteryEl's own definition + 4 term choices; level 1 is just
+          // the ordinary flip, level 3 is the Quiz-reuse block above —
+          // both untouched here. See buildMasteryExercise() and showCard()'s
+          // caller-side handling of masteryContinueEl for the rest of this
+          // flow. currentMasteryLevel itself is computed earlier, above the
+          // quiz block, since that needs it too.
+          masteryEl.hidden = !(style === 'flip' && currentMasteryLevel === 2);
+          masteryContinueEl.hidden = true;
+          // Reset from whatever the previous card (possibly a level-2
+          // recall check) left this reading as — see the "Next word →"
+          // override in renderMasteryChoices()'s click handler.
+          masteryContinueEl.textContent = Drupal.t('Continue →');
+          if (style === 'flip' && currentMasteryLevel === 2) {
+            frontTermRowEl.hidden = true;
+            pronunciationEl.hidden = true;
+            promptEl.hidden = true;
+            buildMasteryExercise(card);
+          }
+          if (style === 'flip' && currentMasteryLevel === 3) {
+            // The quiz block above already builds the exercise and hides
+            // promptEl; still need to hide the front term/pronunciation
+            // ourselves the way Quiz's own forced direction='reverse'
+            // otherwise would — style=flip keeps whatever direction the
+            // session started with, so nothing else hides these here.
+            frontTermRowEl.hidden = true;
+            pronunciationEl.hidden = true;
+          }
+          if (hintEl && style === 'flip') {
+            // Level 1 is still the ordinary flip, same hint as ever; levels
+            // 2-3 have nothing to "reveal" — the exercise is right there on
+            // the front — so the hint would just be confusing/wrong.
+            hintEl.hidden = currentMasteryLevel !== 1;
+          }
+
           // Interval preview under each grade button (again/hard/good/easy);
           // computed server-side as a dry run through the same SM-2 code
           // that grading uses, never saved — see buildGradePreviews().
@@ -998,7 +2070,6 @@
             previewEls[key].textContent = previews[key] || '';
           });
 
-          examplesEl.replaceChildren();
           var examples = Array.isArray(card.examples) ? card.examples : [];
           if (!examples.length && card.example_sentence) {
             examples = [{
@@ -1006,41 +2077,38 @@
               translation: card.example_translation || '',
             }];
           }
-          examples.forEach(function (example) {
-            var pair = document.createElement('div');
-            pair.className = 'lms-flashcard__example-pair';
+          if (examplesSectionEl) {
+            examplesSectionEl.hidden = examples.length === 0;
+          }
+          renderPairList(examplesEl, examples, 'sentence', Drupal.t('Play example sentence'), speakText);
 
-            var sentenceRow = document.createElement('div');
-            sentenceRow.className = 'lms-flashcard__example-row';
+          var collocations = Array.isArray(card.collocations) ? card.collocations : [];
+          if (collocationsSectionEl) {
+            collocationsSectionEl.hidden = collocations.length === 0;
+          }
+          renderPairList(collocationsEl, collocations, 'phrase', Drupal.t('Play collocation'), speakText);
 
-            var speakExample = document.createElement('button');
-            speakExample.type = 'button';
-            speakExample.className = 'lms-flashcard__example-speak';
-            speakExample.setAttribute('aria-label', Drupal.t('Play example sentence'));
-            speakExample.title = Drupal.t('Play example sentence');
-            speakExample.innerHTML = '<i class="fas fa-volume-up" aria-hidden="true"></i>';
-            speakExample.addEventListener('click', function (e) {
-              e.stopPropagation();
-              speakText(example.sentence || '');
-            });
-            sentenceRow.appendChild(speakExample);
+          // Card image (see "Image Display" in the plan): only for the
+          // plain flip view (both directions), same reasoning as
+          // applyQuickEditToDisplay()'s identical computation — Spelling/
+          // Quiz/Pronunciation Practice and Study Now's level 2/3 exercises
+          // already fill this space with their own markup.
+          var showImage = !!card.image_url && style === 'flip' && currentMasteryLevel === 1;
+          if (imageFrontEl) {
+            imageFrontEl.hidden = !(showImage && direction !== 'reverse');
+          }
+          if (imageBackEl) {
+            imageBackEl.hidden = !(showImage && direction === 'reverse');
+          }
+          if (showImage && imageFrontImgEl) {
+            imageFrontImgEl.src = card.image_url;
+            imageFrontImgEl.alt = card.term || '';
+          }
+          if (showImage && imageBackImgEl) {
+            imageBackImgEl.src = card.image_url;
+            imageBackImgEl.alt = card.term || '';
+          }
 
-            var sentence = document.createElement('div');
-            sentence.className = 'lms-flashcard__example';
-            sentence.textContent = example.sentence || '';
-            sentenceRow.appendChild(sentence);
-            pair.appendChild(sentenceRow);
-
-            if (example.translation) {
-              var translation = document.createElement('button');
-              translation.type = 'button';
-              translation.className = 'lms-flashcard__example-translation';
-              translation.textContent = example.translation;
-              translation.title = Drupal.t('Click to reveal the translation');
-              pair.appendChild(translation);
-            }
-            examplesEl.appendChild(pair);
-          });
           revealed = false;
           // Suppress the flip transition for this specific reset. If the
           // previous card was left flipped (revealed=true — routine in
@@ -1057,33 +2125,46 @@
           window.requestAnimationFrame(function () {
             cardEl.classList.remove('lms-flashcard--no-transition');
           });
-          // Grading is allowed from either side — sometimes a student
-          // already knows the word and wants to grade it without flipping
-          // — so the buttons just need to be visible once a real card has
-          // loaded, not toggled per flip state. Spelling Practice has no
-          // manual grade buttons at all (see checkSpelling()/
-          // submitSpellResult()/submitQuizResult()), so they stay hidden
-          // for either.
-          gradesEl.hidden = style === 'spell' || style === 'quiz';
+          // The 4 manual grade buttons are never shown any more — Spelling/
+          // Quiz/Pronunciation Practice never used them to begin with (see
+          // checkSpelling()/submitSpellResult()/submitQuizResult()/
+          // submitPronunciationResult(), which auto-grade instead), and
+          // Study Now (style=flip) no longer does either, replaced by
+          // masteryContinueEl's own flow — see buildMasteryExercise()/
+          // handleMasteryContinue() and FlashcardApiController::
+          // submitMastery()'s docblock for why. The markup/submitGrade()
+          // stay in place, unused, rather than ripping out the (still
+          // functionally correct) SM-2 grading plumbing entirely.
+          gradesEl.hidden = true;
           // Best-effort: browsers usually allow this since it follows a user
           // gesture (Study Now click, or a grading button click that led
           // here) — if a stricter autoplay policy blocks it, the visible
           // speaker button still lets the student trigger it manually.
           // Quiz levels 2-3 are explicitly a listening exercise, so the
           // term is read immediately there too; level 1 (a reading/cloze
-          // task) leaves it to the speaker button instead.
-          if (style === 'quiz') {
+          // task) leaves it to the speaker button instead — same for
+          // mastery level 3, which reuses this exact exercise. Mastery
+          // level 2 must stay silent here — speakCard() would read the
+          // term straight out, giving away the very answer it's testing.
+          if (showQuiz) {
             if (currentQuizLevel >= 2) {
               speakTerm();
             }
           }
-          else {
+          else if (!(style === 'flip' && currentMasteryLevel === 2)) {
             speakCard();
           }
         }
 
         function flip() {
           if (loading) {
+            return;
+          }
+          // Blocks a stray click/Space/Enter from flipping the card mid-way
+          // through the pause between answering the mastery meaning round
+          // and startMasteryImageRound() actually swapping in the image
+          // round — see masteryTransitionPending's own docblock above.
+          if (masteryTransitionPending) {
             return;
           }
           // In Spelling/Quiz Practice, a plain click/tap/Enter on the card
@@ -1098,7 +2179,14 @@
           if (style === 'spell' && !revealed && spellCheckEl && !spellCheckEl.disabled) {
             return;
           }
-          if (style === 'quiz' && !revealed && !quizAnswered) {
+          if ((style === 'quiz' || (style === 'flip' && currentMasteryLevel === 3)) && !revealed && !quizAnswered) {
+            return;
+          }
+          // Mastery level 2 (the recall check): same reasoning as Quiz
+          // above, own state — a raw click can't jump to the back (which
+          // would reveal the term/definition, the very answer) before the
+          // check is answered.
+          if (style === 'flip' && currentMasteryLevel === 2 && !revealed && !masteryAnswered) {
             return;
           }
           revealed = !revealed;
@@ -1106,6 +2194,14 @@
           // Read the term aloud on every click, not just the first time the
           // card appears — flipping front→back or back→front both count.
           speakCard();
+
+          // Mastery level 1: once flipped (the definition has been seen),
+          // show the button that sends this card on to its level-2 recall
+          // check — see advanceFromLevel1(). Flipping back and forth
+          // doesn't re-hide it; only a new card (showCard()) does.
+          if (style === 'flip' && currentMasteryLevel === 1 && revealed) {
+            masteryContinueEl.hidden = false;
+          }
         }
 
         function loadNext() {
@@ -1149,6 +2245,109 @@
             .catch(function () {
               loading = false;
             });
+        }
+
+        /**
+         * Level 1 (the flip) is done — queue this card again a few cards
+         * ahead, now at level 2, then load the next card. The only "Study
+         * Now" mastery step with nothing to review first, so submit and
+         * advance happen together (unlike finishMasteryLevel2() below).
+         */
+        function advanceFromLevel1() {
+          if (loading) {
+            return;
+          }
+          loading = true;
+          fetch(masteryUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ deck_id: deckId, action: 'level1_done' }),
+          })
+            .then(function () {
+              loadNext();
+            })
+            .catch(function () {
+              loading = false;
+            });
+        }
+
+        /**
+         * Level 2 (the recall check) was just answered — sent immediately
+         * from the choice click (see renderMasteryChoices()), same moment
+         * Quiz Practice's own finishQuizAnswer()/submitQuizResult() send
+         * theirs, rather than waiting for the "Next word →" click that
+         * follows: that button only needs to call loadNext() once this
+         * has already landed, so the student can review the flipped-back
+         * card first without holding up the actual write. Pass moves the
+         * card on to level 3 (Quiz Practice's own exercises, reused — see
+         * the quiz block in showCard()); fail sends it back to level 1.
+         */
+        function finishMasteryLevel2(correct) {
+          fetch(masteryUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ deck_id: deckId, action: correct ? 'level2_pass' : 'level2_fail' }),
+          }).catch(function () {
+            // Best-effort — worst case this card's mastery step is retried
+            // (still shown again later, same as if it had failed) rather
+            // than the student getting stuck on a network hiccup.
+          });
+        }
+
+        /**
+         * Level 3 (Quiz Practice's own exercises, reused) was just
+         * answered — sent from finishQuizAnswer() the same moment
+         * submitQuizResult() would send for a real Quiz Practice session,
+         * for the same reason finishMasteryLevel2() explains. Pass removes
+         * the card from the session for good — the highest level, nothing
+         * further to clear; fail sends it all the way back to level 1.
+         * Also bumps CardStat.field_quiz_level up/down a notch exactly
+         * like submitQuizResult() does (via FlashcardApiController::
+         * submitMastery()'s own quiz_correct handling), so the next time
+         * this card reaches level 3 — here or in a real Quiz Practice
+         * session — buildQuizExercise() picks from the same progression
+         * either way.
+         */
+        function finishMasteryLevel3(correct) {
+          fetch(masteryUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ deck_id: deckId, action: correct ? 'level3_pass' : 'level3_fail', quiz_correct: correct }),
+          })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+              if (data && typeof data.quiz_level === 'number') {
+                currentQuizLevel = data.quiz_level;
+                updateQuizLevelBadge();
+              }
+              if (quizNextEl) {
+                quizNextEl.hidden = false;
+              }
+            })
+            .catch(function () {
+              if (quizNextEl) {
+                quizNextEl.hidden = false;
+              }
+            });
+        }
+
+        /**
+         * masteryContinueEl's click handler — what it does depends on
+         * which step is currently showing (see showCard()'s
+         * currentMasteryLevel). Level 2's own write already happened in
+         * renderMasteryChoices() the moment it was answered, so this is
+         * just "go to the next card" there. (Level 3 doesn't use
+         * masteryContinueEl at all — its own quizNextEl plays that role,
+         * already wired to loadNext() same as a real Quiz Practice
+         * session's Next button.)
+         */
+        function handleMasteryContinue() {
+          if (currentMasteryLevel === 2) {
+            loadNext();
+          }
+          else {
+            advanceFromLevel1();
+          }
         }
 
         [speakFrontEl, speakBackEl, speakSpellEl].forEach(function (speakEl) {
@@ -1251,16 +2450,75 @@
           });
         }
 
+        // Card click/keydown listeners flip the card — stop propagation on
+        // every control inside .lms-flashcard__pronounce for the same
+        // reason as the spell/quiz controls above.
+        if (micBtnEl) {
+          micBtnEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            startPronounceRecording();
+          });
+          micBtnEl.addEventListener('keydown', function (e) {
+            e.stopPropagation();
+          });
+        }
+
+        if (pronounceFallbackCorrectEl) {
+          pronounceFallbackCorrectEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (pronounceResolved) {
+              return;
+            }
+            pronounceResolved = true;
+            submitPronunciationResult(true);
+          });
+          pronounceFallbackCorrectEl.addEventListener('keydown', function (e) {
+            e.stopPropagation();
+          });
+        }
+
+        if (pronounceFallbackIncorrectEl) {
+          pronounceFallbackIncorrectEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (pronounceResolved) {
+              return;
+            }
+            pronounceResolved = true;
+            submitPronunciationResult(false);
+          });
+          pronounceFallbackIncorrectEl.addEventListener('keydown', function (e) {
+            e.stopPropagation();
+          });
+        }
+
+        if (pronounceNextEl) {
+          pronounceNextEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (!loading) {
+              loadNext();
+            }
+          });
+          pronounceNextEl.addEventListener('keydown', function (e) {
+            e.stopPropagation();
+            if (e.key === 'ArrowRight' && !loading) {
+              e.preventDefault();
+              loadNext();
+            }
+          });
+        }
+
         // The translation is blurred by default (CSS :hover un-blurs it);
         // a click/tap toggles it too so it's reachable on touch devices,
         // which have no hover, without also flipping the card.
-        examplesEl.addEventListener('click', function (e) {
-          var translation = e.target.closest('.lms-flashcard__example-translation');
-          if (!translation) {
-            return;
-          }
-          e.stopPropagation();
-          translation.classList.toggle('is-revealed');
+        [examplesEl, collocationsEl].forEach(function (listEl) {
+          listEl.addEventListener('click', function (e) {
+            var translation = e.target.closest('.lms-flashcard__example-translation');
+            if (!translation) {
+              return;
+            }
+            e.stopPropagation();
+            translation.classList.toggle('is-revealed');
+          });
         });
 
         cardEl.addEventListener('click', flip);
@@ -1270,10 +2528,10 @@
             // Stop it here so it doesn't also reach the document-level
             // fallback below and call speakCard() a second time.
             e.stopPropagation();
-            if (style === 'spell') {
+            if (style === 'spell' || style === 'pronounce') {
               speakCard();
             }
-            else if (style === 'quiz') {
+            else if (style === 'quiz' || (style === 'flip' && currentMasteryLevel === 3)) {
               speakTerm();
             }
             else {
@@ -1294,16 +2552,26 @@
           });
         });
 
+        masteryContinueEl.addEventListener('click', function (e) {
+          e.stopPropagation();
+          handleMasteryContinue();
+        });
+
         document.addEventListener('keydown', function (e) {
-          if (loading) {
+          // Belt-and-suspenders alongside editDrawerEl's own
+          // stopPropagation() below: if the drawer is open, none of the
+          // study session's keyboard shortcuts (space/1-4/arrows) should
+          // fire, no matter what currently has focus.
+          if (loading || quickEditOpen) {
             return;
           }
-          // Spelling/Quiz Practice have no manual grading — 1-4 do nothing
-          // there, and → (only once the Next button has appeared, i.e.
-          // after an answer has been submitted and saved) advances instead.
-          // Space replays the pronunciation — normally handled by cardEl's
-          // or an input's own keydown listener, but neither fires when
-          // nothing on the card has focus at all, hence the fallback.
+          // Spelling/Quiz/Pronunciation Practice have no manual grading —
+          // 1-4 do nothing there, and → (only once the Next button has
+          // appeared, i.e. after an answer has been submitted and saved)
+          // advances instead. Space replays the pronunciation — normally
+          // handled by cardEl's or an input's own keydown listener, but
+          // neither fires when nothing on the card has focus at all, hence
+          // the fallback.
           if (style === 'spell') {
             if (e.key === 'ArrowRight' && spellNextEl && !spellNextEl.hidden) {
               e.preventDefault();
@@ -1315,7 +2583,7 @@
             }
             return;
           }
-          if (style === 'quiz') {
+          if (style === 'quiz' || (style === 'flip' && currentMasteryLevel === 3)) {
             var quizChoiceMap = { '1': 0, '2': 1, '3': 2, '4': 3 };
             if (quizChoiceMap.hasOwnProperty(e.key) && quizNextEl && quizNextEl.hidden) {
               e.preventDefault();
@@ -1331,11 +2599,140 @@
             }
             return;
           }
-          var map = { '1': 0, '2': 1, '3': 2, '4': 3 };
-          if (map.hasOwnProperty(e.key)) {
-            submitGrade(map[e.key]);
+          if (style === 'pronounce') {
+            if (e.key === 'ArrowRight' && pronounceNextEl && !pronounceNextEl.hidden) {
+              e.preventDefault();
+              loadNext();
+            }
+            else if (e.key === ' ') {
+              e.preventDefault();
+              speakCard();
+            }
+            return;
+          }
+          if (style === 'flip') {
+            // Level 1: Enter/click flips as normal (handled by cardEl's own
+            // keydown listener above), then ArrowRight advances once
+            // masteryContinueEl has appeared. Level 2: 1-4 picks a recall
+            // choice while unanswered, then ArrowRight (relabeled "Next
+            // word →" by then) moves on — no manual grading shortcuts (1-4
+            // as Again/Hard/Good/Easy) any more for this style.
+            var masteryChoiceMap = { '1': 0, '2': 1, '3': 2, '4': 3 };
+            if (currentMasteryLevel === 2 && masteryChoiceMap.hasOwnProperty(e.key) && !masteryAnswered) {
+              e.preventDefault();
+              chooseMasteryChoice(masteryChoiceMap[e.key]);
+            }
+            else if (e.key === 'ArrowRight' && !masteryContinueEl.hidden) {
+              e.preventDefault();
+              handleMasteryContinue();
+            }
+            else if (e.key === ' ' && currentMasteryLevel === 1) {
+              e.preventDefault();
+              speakCard();
+            }
           }
         });
+
+        // Quick Edit wiring (see QUICK_EDIT_STUDY_CARD_PLAN.md). The drawer/
+        // overlay listeners' stopPropagation() (click + keydown) is what
+        // actually keeps typing/clicking inside the sidebar from reaching
+        // cardEl's or document's own shortcut handlers — the toolbar
+        // button and drawer being DOM siblings of the card, not ancestors/
+        // descendants of it, is what makes that a plain stopPropagation()
+        // rather than needing anything cleverer.
+        if (quickEditBtnEl) {
+          quickEditBtnEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            openQuickEdit();
+          });
+        }
+        if (editCloseBtnEl) {
+          editCloseBtnEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeQuickEdit();
+          });
+        }
+        if (editCancelBtnEl) {
+          editCancelBtnEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeQuickEdit();
+          });
+        }
+        if (editOverlayEl) {
+          editOverlayEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (!quickEditSaving) {
+              closeQuickEdit();
+            }
+          });
+        }
+        if (editSaveBtnEl) {
+          editSaveBtnEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            saveQuickEdit();
+          });
+        }
+        if (editDrawerEl) {
+          editDrawerEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+          });
+          editDrawerEl.addEventListener('keydown', function (e) {
+            e.stopPropagation();
+            if (e.key === 'Escape' && !quickEditSaving) {
+              closeQuickEdit();
+            }
+          });
+        }
+        if (editAudioRemoveBtnEl) {
+          editAudioRemoveBtnEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            editAudioRemoveFlag = true;
+            if (editAudioInputEl) {
+              editAudioInputEl.value = '';
+            }
+            if (editAudioCurrentEl) {
+              editAudioCurrentEl.hidden = true;
+            }
+          });
+        }
+        if (editImageRemoveBtnEl) {
+          editImageRemoveBtnEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            editImageRemoveFlag = true;
+            if (editImageInputEl) {
+              editImageInputEl.value = '';
+            }
+            if (editImageCurrentEl) {
+              editImageCurrentEl.hidden = true;
+            }
+          });
+        }
+        if (editAudioInputEl) {
+          editAudioInputEl.addEventListener('change', function () {
+            if (editAudioInputEl.files && editAudioInputEl.files[0]) {
+              editAudioRemoveFlag = false;
+            }
+          });
+        }
+        if (editImageInputEl) {
+          editImageInputEl.addEventListener('change', function () {
+            if (editImageInputEl.files && editImageInputEl.files[0]) {
+              editImageRemoveFlag = false;
+            }
+          });
+        }
+        if (editExamplesAddBtnEl) {
+          editExamplesAddBtnEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            addEditableRow(editExamplesRowsEl, '', '', Drupal.t('Example sentence'), Drupal.t('Translation'));
+          });
+        }
+        if (editCollocationsAddBtnEl) {
+          editCollocationsAddBtnEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            addEditableRow(editCollocationsRowsEl, '', '', Drupal.t('Collocation'), Drupal.t('Translation'));
+          });
+        }
 
         loadNext();
       });

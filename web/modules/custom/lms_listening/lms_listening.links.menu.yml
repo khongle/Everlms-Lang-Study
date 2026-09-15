@@ -1,0 +1,13 @@
+entity.lms_listening_passage.collection:
+  title: 'Listening Passages'
+  description: 'Manage listening passages built from Flashcard vocabulary decks.'
+  route_name: entity.lms_listening_passage.collection
+  parent: system.admin_content
+  weight: 19
+
+lms_listening.import:
+  title: 'Import Listening Passage'
+  description: 'Import a JSON listening passage (sentence, narrative or dialogue, with comprehension questions) built on an existing Flashcard deck.'
+  route_name: lms_listening.import
+  parent: system.admin_content
+  weight: 20

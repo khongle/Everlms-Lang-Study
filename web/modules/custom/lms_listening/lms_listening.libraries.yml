@@ -1,0 +1,69 @@
+# No explicit `version:` on any of these first-party assets — same reasoning
+# as lms_reading.libraries.yml: leaving it unset means every cache rebuild
+# forces browsers to refetch instead of serving a stale cached copy.
+listening_pages:
+  css:
+    theme:
+      css/listening-pages.css: {}
+
+listening_my_passages:
+  js:
+    js/listening-my-passages.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+listening_passage:
+  css:
+    theme:
+      css/listening-pages.css: {}
+  js:
+    js/listening-passage.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/drupalSettings
+
+listening_import:
+  css:
+    theme:
+      css/listening-import.css: {}
+  js:
+    js/listening-import.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+# Attached only from lms_listening_preprocess_lms_flashcard_my_decks() — see
+# that function's docblock in lms_listening.module for why this is safe to
+# have a library that only ever renders on an lms_flashcard page.
+listening_deck_badge:
+  css:
+    theme:
+      css/listening-deck-badge.css: {}
+
+# Same attach point as listening_deck_badge above (lms_flashcard's My Decks
+# page) — turns the plain "Listening" link into an in-page level-picker
+# popup. See js/listening-start-modal.js's docblock.
+listening_start_modal:
+  css:
+    theme:
+      css/listening-start-modal.css: {}
+  js:
+    js/listening-start-modal.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+# Passive Listening session shell (see PASSIVE_LISTENING_PLAN.md) — attached
+# only from ListeningController::listenPassive().
+listening_passive:
+  css:
+    theme:
+      css/listening-passive.css: {}
+  js:
+    js/listening-passive.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/drupalSettings

@@ -1,0 +1,178 @@
+/**
+ * Shared "My Note" widget (see js/note-widget.js) — deliberately neutral
+ * colors here since this same markup is embedded on 3 different pages,
+ * each with its own accent (Listening's teal, Reading's own palette).
+ * A consuming page adds its own small override block scoped to
+ * `.lms-note-widget` for the accent color instead of this file growing a
+ * per-page variant.
+ */
+
+.lms-note-widget {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  background: #fff;
+}
+
+.lms-note-widget__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.lms-note-widget__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.lms-note-widget__title i {
+  margin-right: 0.4rem;
+  opacity: 0.7;
+}
+
+.lms-note-widget__status {
+  font-size: 0.82rem;
+  color: #6b7280;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.lms-note-widget__status.is-visible {
+  opacity: 1;
+}
+
+.lms-note-widget__status.is-success {
+  color: #15803d;
+}
+
+.lms-note-widget__status.is-error {
+  color: #b91c1c;
+}
+
+/* --- Toolbar (Bold/Italic/Underline/bullet+numbered lists) --- */
+.lms-note-widget__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+  background: #f9fafb;
+}
+
+.lms-note-widget__toolbar.is-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.lms-note-widget__tool {
+  width: 1.9rem;
+  height: 1.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: #374151;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.lms-note-widget__tool:hover {
+  background: #e5e7eb;
+}
+
+.lms-note-widget__tool-sep {
+  width: 1px;
+  height: 1.2rem;
+  margin: 0 0.15rem;
+  background: #e5e7eb;
+}
+
+/* --- The editor itself: a contenteditable div, not a <textarea> — see
+   js/note-widget.js's docblock for why (rich text via document.execCommand
+   instead of a third-party editor). --- */
+.lms-note-widget__textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 6rem;
+  max-height: 22rem;
+  overflow-y: auto;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0 0 0.5rem 0.5rem;
+  font: inherit;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #111827;
+  background: #f9fafb;
+}
+
+.lms-note-widget__textarea ul,
+.lms-note-widget__textarea ol {
+  margin: 0.4rem 0;
+  padding-left: 1.4rem;
+}
+
+.lms-note-widget__textarea p {
+  margin: 0 0 0.6rem;
+}
+
+.lms-note-widget__textarea:empty::before {
+  content: attr(data-empty-text);
+  color: #9ca3af;
+}
+
+.lms-note-widget__textarea.is-disabled {
+  opacity: 0.6;
+}
+
+.lms-note-widget__textarea:focus {
+  outline: none;
+  border-color: #0f766e;
+  background: #fff;
+}
+
+.lms-note-widget__actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.lms-note-widget__save,
+.lms-note-widget__delete {
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.lms-note-widget__save {
+  background: #0f766e;
+  color: #fff;
+}
+
+.lms-note-widget__save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.lms-note-widget__delete {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #b91c1c;
+}
+
+.lms-note-widget__delete:hover {
+  background: #fef2f2;
+}

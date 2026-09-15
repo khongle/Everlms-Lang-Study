@@ -1,0 +1,104 @@
+{# Passive Listening session shell (see PASSIVE_LISTENING_PLAN.md). Renders
+   only the first passage — js/listening-passive.js fetches every one after
+   it as JSON and updates this same page in place, so the whole session
+   (however many passages were picked, looping back to the first one
+   indefinitely once it reaches the last — only Stop ends it) plays inside
+   one continuous browser tab, never a fresh page load per passage (see
+   that plan doc for why that matters for speechSynthesis). Everything the
+   student sees is filled in by that script from
+   drupalSettings.lmsListeningPassive — this template is mostly empty
+   containers with data-* hooks. #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-listening-passive">
+  <div class="container">
+    <div class="lms-listening-passive__header">
+      <a class="lms-listening-passive__back" href="{{ path('lms_flashcard.my_decks') }}"><i class="fas fa-arrow-left"></i> {{ 'My Flashcards'|t }}</a>
+      <span class="lms-listening-passive__progress" data-listening-passive-progress></span>
+    </div>
+
+    {# Same Voice/Speed idea as Active mode's own bar
+       (lms-listening-passage-view.html.twig) — populated from
+       speechSynthesis.getVoices() client-side, so it starts hidden until
+       js/listening-passive.js knows whether TTS (and more than one voice)
+       is actually available. A picked voice applies to every passage/
+       vocab term spoken afterward, overriding Dialogue's own per-speaker
+       alternation. #}
+    <div class="lms-listening-passive__voice-bar" data-listening-passive-voice-bar hidden>
+      <label class="lms-listening-passive__voice">
+        {{ 'Voice'|t }}
+        <select data-listening-passive-voice hidden></select>
+      </label>
+      <label class="lms-listening-passive__speed">
+        {{ 'Speed'|t }}
+        <select data-listening-passive-speed>
+          <option value="0.75">0.75&times;</option>
+          <option value="1" selected>1&times;</option>
+          <option value="1.25">1.25&times;</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="lms-listening-passive__card">
+      <p class="lms-listening-passive__level-badge" data-listening-passive-level></p>
+      <h1 class="lms-listening-passive__title" data-listening-passive-title></h1>
+      <p class="lms-listening-passive__status" data-listening-passive-status>{{ 'Press Start to begin — passages play back to back on repeat, no questions to answer. Press Stop whenever you\'re done.'|t }}</p>
+
+      {# Shown as plain read-only text from the start (not gated behind a
+         reveal step like Active mode's transcript) — Passive mode has
+         nothing to hide, the whole point is just listening/following
+         along. #}
+      <div class="lms-listening-passive__transcript" data-listening-passive-transcript hidden></div>
+
+      <div class="lms-listening-passive__vocab" data-listening-passive-vocab hidden>
+        <h2 class="lms-listening-passive__vocab-heading">{{ 'Vocabulary'|t }}</h2>
+        <ul class="lms-listening-passive__vocab-list" data-listening-passive-vocab-list></ul>
+      </div>
+    </div>
+
+    {# Shared "My Note" widget (lms_note module) — see
+       NOTE_EXPANSION_PLAN.md. Stays mounted across the whole looping
+       session; js/listening-passive.js points it at each new passage as
+       renderPassage() swaps the content above, instead of a fresh widget
+       per passage. #}
+    <div class="lms-note-widget" data-lms-note-widget data-note-context-type="listening_passage" data-note-context-id="{{ passage.id() }}">
+      <div class="lms-note-widget__head">
+        <h3 class="lms-note-widget__title"><i class="fas fa-note-sticky"></i> {{ 'My Note'|t }}</h3>
+        <span class="lms-note-widget__status" data-note-status></span>
+      </div>
+      <div class="lms-note-widget__toolbar" data-note-toolbar>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="bold" title="{{ 'Bold'|t }}"><i class="fas fa-bold"></i></button>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="italic" title="{{ 'Italic'|t }}"><i class="fas fa-italic"></i></button>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="underline" title="{{ 'Underline'|t }}"><i class="fas fa-underline"></i></button>
+        <span class="lms-note-widget__tool-sep"></span>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="insertUnorderedList" title="{{ 'Bullet list'|t }}"><i class="fas fa-list-ul"></i></button>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="insertOrderedList" title="{{ 'Numbered list'|t }}"><i class="fas fa-list-ol"></i></button>
+      </div>
+      <div class="lms-note-widget__textarea" data-note-textarea contenteditable="false" data-empty-text="{{ 'Loading…'|t }}"></div>
+      <div class="lms-note-widget__actions">
+        <button type="button" class="lms-note-widget__save" data-note-save disabled>{{ 'Save'|t }}</button>
+        <button type="button" class="lms-note-widget__delete" data-note-delete hidden>{{ 'Delete'|t }}</button>
+      </div>
+    </div>
+
+    <div class="lms-listening-passive__controls">
+      <button type="button" class="lms-listening-passive__start-btn" data-listening-passive-start>
+        <i class="fas fa-play"></i> {{ 'Start passive listening'|t }}
+      </button>
+      <button type="button" class="lms-listening-passive__stop-btn" data-listening-passive-stop hidden>
+        <i class="fas fa-stop"></i> {{ 'Stop'|t }}
+      </button>
+    </div>
+
+    {# Passive Listening repeats indefinitely until Stop is pressed (see
+       PASSIVE_LISTENING_PLAN.md) — this only ever appears if the session
+       expired server-side (e.g. left running a very long time), not as
+       the normal way a session ends. #}
+    <div class="lms-listening-passive__done" data-listening-passive-done hidden>
+      <i class="fas fa-check-circle"></i>
+      <h2>{{ 'Session ended'|t }}</h2>
+      <p>{{ 'This listening session timed out. Start a new one from the deck to keep going.'|t }}</p>
+      <a class="lms-listening-passive__done-link" href="{{ path('lms_flashcard.my_decks') }}">{{ 'Back to My Flashcards'|t }}</a>
+    </div>
+  </div>
+</section>

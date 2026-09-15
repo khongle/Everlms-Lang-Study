@@ -1,0 +1,199 @@
+/* In-page popup for the level-picker before a Listening practice session
+ * (js/listening-start-modal.js). Same overlay/card shape as
+ * open_switcher/css/impersonation-dialog.css, kept as an independent copy
+ * — this module doesn't depend on open_switcher's code, only follows its
+ * established visual pattern for a centered modal card. */
+
+.lms-listening-start-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.38);
+  z-index: 1200;
+}
+
+.lms-listening-start-modal {
+  width: min(100%, 420px);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 32px 80px rgba(15, 23, 42, 0.22);
+  padding: 24px;
+  color: #1f2937;
+}
+
+.lms-listening-start-modal h2 {
+  margin: 0 0 8px;
+  font-size: 1.3rem;
+}
+
+.lms-listening-start-modal__mode {
+  display: flex;
+  gap: 16px;
+  margin: 0 0 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.lms-listening-start-modal__mode label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+}
+
+.lms-listening-start-modal__mode label:has(input:disabled) {
+  color: #9ca3af;
+  cursor: default;
+}
+
+.lms-listening-start-modal__intro {
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.lms-listening-start-modal__intro--passive {
+  padding: 10px 12px;
+  border-radius: 0.5rem;
+  background: #f0fdfa;
+}
+
+body.layout-academy .lms-listening-start-modal__intro--passive {
+  background: #fdf3e7;
+}
+
+.lms-listening-start-modal__levels {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.lms-listening-start-modal__levels label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.lms-listening-start-modal__levels label.is-disabled {
+  color: #9ca3af;
+  cursor: default;
+}
+
+.lms-listening-start-modal__per-level {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+.lms-listening-start-modal__per-level input {
+  box-sizing: border-box;
+  width: 4.5rem;
+  height: 2.1rem;
+  padding: 0 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.lms-listening-start-modal__specific {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+.lms-listening-start-modal__specific summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.lms-listening-start-modal__specific-hint {
+  margin: 8px 0 10px;
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.lms-listening-start-modal__specific-list {
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.lms-listening-start-modal__specific-level-heading {
+  margin: 10px 0 4px;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #0f766e;
+}
+
+.lms-listening-start-modal__specific-level-heading:first-child {
+  margin-top: 0;
+}
+
+.lms-listening-start-modal__specific-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+body.layout-academy .lms-listening-start-modal__specific-level-heading {
+  color: #8d1f2d;
+}
+
+.lms-listening-start-modal__error {
+  margin: 0 0 12px;
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
+
+.lms-listening-start-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.lms-listening-start-modal__cancel {
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  cursor: pointer;
+}
+
+.lms-listening-start-modal__start {
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  background: #0f766e;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lms-listening-start-modal__start:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+body.layout-academy .lms-listening-start-modal__start {
+  background: #8d1f2d;
+}

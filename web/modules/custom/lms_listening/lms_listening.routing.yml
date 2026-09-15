@@ -1,0 +1,115 @@
+lms_listening.import:
+  path: '/manage/listening-passages/import'
+  defaults:
+    _form: '\Drupal\lms_listening\Form\ListeningImportForm'
+    _title: 'Import Listening Passage'
+  requirements:
+    # Open to any authenticated user, matching lms_reading.import — see
+    # ListeningImportForm's docblock.
+    _user_is_logged_in: 'TRUE'
+  options:
+    _admin_route: TRUE
+
+lms_listening.my_passages:
+  path: '/learn/listening'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningController::myPassages'
+    _title: 'Listening'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+lms_listening.start:
+  # A distinct path (not nested under /learn/listening/) so it can never be
+  # swallowed by lms_listening.listen's '/learn/listening/{lms_listening_passage}'
+  # pattern — see ListeningStartForm's docblock for what this does.
+  path: '/learn/listening-start'
+  defaults:
+    _form: '\Drupal\lms_listening\Form\ListeningStartForm'
+    _title: 'Start Listening'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+lms_listening.listen:
+  path: '/learn/listening/{lms_listening_passage}'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningController::listen'
+    _title: 'Listen'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_listening_passage:
+        type: entity:lms_listening_passage
+
+lms_listening.listen_passive:
+  # Passive Listening's session shell (see PASSIVE_LISTENING_PLAN.md) —
+  # renders only the first passage; js/listening-passive.js fetches the
+  # rest from lms_listening.api_passive_next and updates this same page in
+  # place, so a distinct path (not nested under /learn/listening/, same
+  # reasoning as lms_listening.start above) isn't strictly required here,
+  # but keeps it visually/structurally separate from lms_listening.listen.
+  path: '/learn/listening-passive/{lms_listening_passage}'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningController::listenPassive'
+    _title: 'Passive Listening'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_listening_passage:
+        type: entity:lms_listening_passage
+
+lms_listening.questions:
+  path: '/learn/listening/{lms_listening_passage}/questions'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningController::questions'
+    _title: 'Comprehension'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_listening_passage:
+        type: entity:lms_listening_passage
+
+lms_listening.review:
+  path: '/learn/listening/{lms_listening_passage}/review/{lms_listening_attempt}'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningController::review'
+    _title: 'Review'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_listening_passage:
+        type: entity:lms_listening_passage
+      lms_listening_attempt:
+        type: entity:lms_listening_attempt
+
+lms_listening.api_submit_attempt:
+  path: '/api/lms/listening/attempt'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningApiController::submitAttempt'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_listening.api_start:
+  # AJAX counterpart to lms_listening.start (ListeningStartForm) — see
+  # ListeningApiController::start()'s docblock. Also handles mode=passive
+  # (see PASSIVE_LISTENING_PLAN.md), branching internally rather than a
+  # separate route, since it's the same "build a queue, return where to go
+  # next" shape either way.
+  path: '/api/lms/listening/start'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningApiController::start'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_listening.api_passive_next:
+  path: '/api/lms/listening/passive-next'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningApiController::passiveNext'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]

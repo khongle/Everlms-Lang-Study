@@ -29,13 +29,33 @@ class Note extends ContentEntityBase implements EntityOwnerInterface {
     $fields = parent::baseFieldDefinitions($entity_type);
     $fields += static::ownerBaseFieldDefinitions($entity_type);
 
+    // Course/Lesson stay specific to the original course-video note flow —
+    // NOT required any more (a Listening/Reading note has neither) now
+    // that field_context_type/field_context_id below cover every kind of
+    // note generically. See NOTE_EXPANSION_PLAN.md.
     $fields['field_course'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(new TranslatableMarkup('Course'))
-      ->setRequired(TRUE)->setSetting('target_type', 'lms_course');
+      ->setRequired(FALSE)->setSetting('target_type', 'lms_course');
 
     $fields['field_lesson'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(new TranslatableMarkup('Lesson'))
-      ->setRequired(TRUE)->setSetting('target_type', 'lms_lesson');
+      ->setRequired(FALSE)->setSetting('target_type', 'lms_lesson');
+
+    // Generic "what is this note about" pair, covering every note this
+    // module handles — a course lesson (field_context_type = 'lesson',
+    // still paired with field_course/field_lesson above for that one
+    // case so the existing course-grouped My Notes view keeps working
+    // unchanged) plus the newer content types (see
+    // NoteController::CONTEXT_TYPES). One note per (uid, context_type,
+    // context_id) — same "load existing or create" pattern
+    // NoteController already used for field_lesson, generalized.
+    $fields['field_context_type'] = BaseFieldDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Context type'))
+      ->setSetting('max_length', 32);
+
+    $fields['field_context_id'] = BaseFieldDefinition::create('integer')
+      ->setLabel(new TranslatableMarkup('Context ID'))
+      ->setSetting('unsigned', TRUE);
 
     $fields['field_body'] = BaseFieldDefinition::create('text_long')
       ->setLabel(new TranslatableMarkup('Note'))

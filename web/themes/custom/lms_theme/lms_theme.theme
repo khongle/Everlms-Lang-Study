@@ -122,6 +122,23 @@ function lms_theme_preprocess_page(&$variables) {
     && $entity_type_manager->hasDefinition('lms_flashcard_card')
     && $entity_type_manager->hasDefinition('lms_flashcard_review');
 
+  // Same guard, same reason, for the "Reading" / "Import Reading" links —
+  // lms_reading is likewise optional and depends on lms_flashcard itself,
+  // so this also protects against lms_reading being enabled on a site
+  // where lms_flashcard (and therefore the deck/card data Reading builds
+  // on) is not.
+  $variables['lms_reading_enabled'] = $variables['lms_flashcard_enabled']
+    && \Drupal::moduleHandler()->moduleExists('lms_reading')
+    && $entity_type_manager->hasDefinition('lms_reading_passage');
+
+  // Same guard, same reason, for the "Listening" / "Import Listening"
+  // links — lms_listening is likewise optional and depends on
+  // lms_flashcard itself, so this also protects against lms_listening
+  // being enabled on a site where lms_flashcard is not.
+  $variables['lms_listening_enabled'] = $variables['lms_flashcard_enabled']
+    && \Drupal::moduleHandler()->moduleExists('lms_listening')
+    && $entity_type_manager->hasDefinition('lms_listening_passage');
+
   $variables['logged_in'] = \Drupal::currentUser()->isAuthenticated();
   if ($variables['logged_in']) {
     // Inject Notification Bell built array.

@@ -43,5 +43,13 @@ function lms_flashcard_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'lms-flashcard-admin-decks',
     ],
+    'lms_flashcard_deck_export' => [
+      'variables' => [
+        'deck' => NULL,
+        'json' => '',
+        'card_count' => 0,
+      ],
+      'template' => 'lms-flashcard-deck-export',
+    ],
   ];
 }

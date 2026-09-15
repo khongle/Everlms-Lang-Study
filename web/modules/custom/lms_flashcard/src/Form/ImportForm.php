@@ -67,6 +67,21 @@ final class ImportForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state): array {
     $form['#attached']['library'][] = 'lms_flashcard/flashcard_import';
 
+    // Convenience: arriving here from a deck's own edit page (its
+    // "+ Import cards (JSON)" link — see DeckForm::buildCardsPanel()) with
+    // ?deck=<id> pre-selects "Append to an existing deck" + that deck, so
+    // the editor doesn't have to find it again in the dropdown below.
+    // Mirrors the same ?deck= convenience CardForm's own "Add card" link
+    // already has. Re-validated server-side regardless (currentUserCanAppendTo()
+    // is the same check validateForm() applies to a submitted deck_id), so
+    // a tampered query string can't be used to see decks the deck_options
+    // list below wouldn't otherwise include.
+    $prefillDeckId = NULL;
+    $requestDeckId = $this->getRequest()->query->get('deck');
+    if ($requestDeckId && ctype_digit((string) $requestDeckId) && $this->currentUserCanAppendTo((int) $requestDeckId)) {
+      $prefillDeckId = (int) $requestDeckId;
+    }
+
     $form['mode'] = [
       '#type' => 'radios',
       '#title' => $this->t('Import into'),
@@ -74,7 +89,7 @@ final class ImportForm extends FormBase {
         'new' => $this->t('Create a new deck'),
         'existing' => $this->t('Append to an existing deck'),
       ],
-      '#default_value' => 'new',
+      '#default_value' => $prefillDeckId ? 'existing' : 'new',
       '#required' => TRUE,
     ];
 
@@ -97,6 +112,7 @@ final class ImportForm extends FormBase {
       '#title' => $this->t('Target deck'),
       '#options' => $deck_options,
       '#empty_option' => $this->t('- Select a deck -'),
+      '#default_value' => $prefillDeckId,
       '#description' => $canManageAnyDeck ? NULL : $this->t('Only decks you created are listed here.'),
       '#states' => [
         'visible' => [':input[name="mode"]' => ['value' => 'existing']],
@@ -278,6 +294,7 @@ final class ImportForm extends FormBase {
         [
           'term' => 'family',
           'definition' => 'A group of people related by blood or marriage, such as parents and children.',
+          'translation' => 'gia đình',
           'part_of_speech' => 'noun',
           'pronunciation' => '/ˈfæməli/',
           'examples' => [
@@ -290,11 +307,22 @@ final class ImportForm extends FormBase {
               'translation' => 'Gia đình cô ấy sống gần trung tâm thành phố.',
             ],
           ],
+          'collocations' => [
+            [
+              'phrase' => 'immediate family',
+              'translation' => 'gia đình gần (bố mẹ, con cái, anh chị em ruột)',
+            ],
+            [
+              'phrase' => 'start a family',
+              'translation' => 'lập gia đình, sinh con',
+            ],
+          ],
           'difficulty' => 'easy',
         ],
         [
           'term' => 'neighbor',
           'definition' => 'A person who lives next door or nearby.',
+          'translation' => 'hàng xóm',
           'part_of_speech' => 'noun',
           'pronunciation' => '/ˈneɪbər/',
           'examples' => [
@@ -314,6 +342,11 @@ final class ImportForm extends FormBase {
     $html .= '<i class="fas fa-lightbulb"></i> ' . $this->t('Example JSON (tip: ask ChatGPT to generate a list in this exact shape)');
     $html .= '</summary>';
     $html .= '<p class="lms-flashcard-import__tip-hint">' . $this->t('Only <code>term</code> and <code>definition</code> are required per card — everything else is optional. For "Append to an existing deck", drop the top-level <code>"deck"</code> object and keep just <code>"cards"</code>.') . '</p>';
+    $html .= '<p class="lms-flashcard-import__tip-hint">' . $this->t('<code>translation</code> is the term itself translated into the deck\'s native language (e.g. "pineapple" → "quả dứa") — a short word/phrase, not the fuller English <code>definition</code>. Shown in the study page\'s "Which word matches this meaning?" recall check and editable later from Quick Edit while studying.') . '</p>';
+    $html .= '<p class="lms-flashcard-import__tip-hint">' . $this->t('<code>collocations</code> are common word combinations this term appears in (e.g. "start a family" for "family") — separate from <code>examples</code>, which are full sentences. Each entry needs both <code>phrase</code> and <code>translation</code>.') . '</p>';
+    $html .= '<p class="lms-flashcard-import__tip-hint">' . $this->t('Updating existing cards instead of duplicating them: use a deck\'s "Export JSON" link (on <a href="@my_decks">My Flashcards</a>) to get its current content with each card\'s <code>id</code> included, edit it (an LLM works well for this), then re-import here with "Append to an existing deck". A card whose <code>id</code> matches one already in the deck is updated in place; a card with no <code>id</code> is added as new.', [
+      '@my_decks' => '/learn/flashcards',
+    ]) . '</p>';
     $html .= '<p class="lms-flashcard-import__tip-hint">' . $this->t('<code>deck.machine_name</code> is a stable ID for the deck (auto-generated from the name if you leave it out). Re-importing with the same machine_name is blocked instead of silently creating a duplicate deck — this is what keeps repeated imports from "nhầm" (mixing up which deck gets which words). <code>deck.topic</code> is just a category label (e.g. "Family", "Travel") for browsing decks; a new topic is created automatically the first time it\'s used.') . '</p>';
     $html .= '<p class="lms-flashcard-import__tip-hint">' . $this->t('Pronunciation audio (MP3) can\'t be set from JSON — upload it per card afterwards by editing the card. Cards without an uploaded MP3 still get read aloud during study using the browser\'s built-in voice.') . '</p>';
     $html .= '<div class="lms-flashcard-import__tip-actions">';

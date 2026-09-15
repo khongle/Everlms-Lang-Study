@@ -1,0 +1,81 @@
+lms_reading.import:
+  path: '/manage/reading-passages/import'
+  defaults:
+    _form: '\Drupal\lms_reading\Form\ReadingImportForm'
+    _title: 'Import Reading Passage'
+  requirements:
+    # Open to any authenticated user, matching lms_flashcard.import — see
+    # ReadingImportForm's docblock.
+    _user_is_logged_in: 'TRUE'
+  options:
+    _admin_route: TRUE
+
+lms_reading.my_passages:
+  path: '/learn/reading'
+  defaults:
+    _controller: '\Drupal\lms_reading\Controller\ReadingController::myPassages'
+    _title: 'Reading'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+lms_reading.read:
+  path: '/learn/reading/{lms_reading_passage}'
+  defaults:
+    _controller: '\Drupal\lms_reading\Controller\ReadingController::read'
+    _title: 'Read'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_reading_passage:
+        type: entity:lms_reading_passage
+
+lms_reading.questions:
+  path: '/learn/reading/{lms_reading_passage}/questions'
+  defaults:
+    _controller: '\Drupal\lms_reading\Controller\ReadingController::questions'
+    _title: 'Understand'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_reading_passage:
+        type: entity:lms_reading_passage
+
+lms_reading.review:
+  path: '/learn/reading/{lms_reading_passage}/review/{lms_reading_attempt}'
+  defaults:
+    _controller: '\Drupal\lms_reading\Controller\ReadingController::review'
+    _title: 'Review'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_reading_passage:
+        type: entity:lms_reading_passage
+      lms_reading_attempt:
+        type: entity:lms_reading_attempt
+
+lms_reading.api_word_info:
+  path: '/api/lms/reading/word-info'
+  defaults:
+    _controller: '\Drupal\lms_reading\Controller\ReadingApiController::wordInfo'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [GET]
+
+lms_reading.api_submit_attempt:
+  path: '/api/lms/reading/attempt'
+  defaults:
+    _controller: '\Drupal\lms_reading\Controller\ReadingApiController::submitAttempt'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_reading.api_add_unknown_words:
+  path: '/api/lms/reading/add-unknown-words'
+  defaults:
+    _controller: '\Drupal\lms_reading\Controller\ReadingApiController::addUnknownWords'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]

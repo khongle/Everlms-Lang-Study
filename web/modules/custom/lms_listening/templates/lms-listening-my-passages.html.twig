@@ -1,0 +1,95 @@
+{# Listening passage list: every passage visible to the current user #}
+{{ attach_library('lms_theme/global') }}
+{{ attach_library('lms_listening/listening_pages') }}
+{{ attach_library('lms_listening/listening_my_passages') }}
+
+{# Client-side filter: search text + deck + level + format. Mirrors
+   lms_reading's My Passages filter toolbar (see
+   lms-reading-my-passages.html.twig / reading-my-passages.js), kept as an
+   independent copy rather than a shared import. #}
+{% set deck_names = [] %}
+{% for passage in passages %}
+  {% if passage.deck_name and passage.deck_name not in deck_names %}
+    {% set deck_names = deck_names|merge([passage.deck_name]) %}
+  {% endif %}
+{% endfor %}
+
+<section class="lms-section lms-listening-page">
+  <div class="container">
+    <div class="lms-listening-page__header">
+      <h1 class="lms-listening-page__title">{{ 'Listening'|t }}</h1>
+      <p class="lms-listening-page__subtitle">{{ 'Practice listening comprehension with audio built from your Flashcard decks — listen first, read later.'|t }}</p>
+    </div>
+
+    {% if passages is empty %}
+      <div class="lms-listening-empty">
+        <i class="fas fa-headphones"></i>
+        <h3>{{ 'No listening passages available yet.'|t }}</h3>
+        <p>{{ 'Study a Flashcard deck first, then check back once a passage has been imported for it.'|t }}</p>
+      </div>
+    {% else %}
+      <div class="lms-listening-toolbar" data-listening-filters>
+        <div class="lms-listening-filters__search">
+          <i class="fas fa-search"></i>
+          <input type="search" class="lms-listening-filters__input" data-filter-search placeholder="{{ 'Search passages or decks…'|t }}" aria-label="{{ 'Search listening passages'|t }}">
+        </div>
+
+        <select class="lms-listening-filters__select" data-filter-level aria-label="{{ 'Filter by level'|t }}">
+          <option value="">{{ 'All levels'|t }}</option>
+          <option value="easy">{{ 'Easy'|t }}</option>
+          <option value="normal">{{ 'Normal'|t }}</option>
+          <option value="challenge">{{ 'Challenge'|t }}</option>
+        </select>
+
+        <select class="lms-listening-filters__select" data-filter-format aria-label="{{ 'Filter by type'|t }}">
+          <option value="">{{ 'All types'|t }}</option>
+          <option value="sentence">{{ 'Sentence'|t }}</option>
+          <option value="narrative">{{ 'Narrative'|t }}</option>
+          <option value="dialogue">{{ 'Dialogue'|t }}</option>
+        </select>
+
+        {% if deck_names|length > 1 %}
+          <select class="lms-listening-filters__select" data-filter-deck aria-label="{{ 'Filter by deck'|t }}">
+            <option value="">{{ 'All decks'|t }}</option>
+            {% for name in deck_names %}
+              <option value="{{ name }}">{{ name }}</option>
+            {% endfor %}
+          </select>
+        {% endif %}
+      </div>
+
+      <p class="lms-listening-empty lms-listening-filters__no-match" data-filter-empty hidden>
+        {{ 'No passages match your filters.'|t }}
+      </p>
+
+      <div class="lms-listening-passages" data-listening-passage-grid>
+        {% for passage in passages %}
+          <div class="lms-listening-passage-card"
+            data-listening-passage
+            data-title="{{ passage.title|lower }}"
+            data-deck="{{ passage.deck_name|lower }}"
+            data-level="{{ passage.level }}"
+            data-format="{{ passage.format }}">
+            <div class="lms-listening-passage-card__badges">
+              <div class="lms-listening-passage-card__level lms-listening-passage-card__level--{{ passage.level }}">{{ passage.level|capitalize }}</div>
+              <div class="lms-listening-passage-card__format" title="{{ passage.format|capitalize }}">
+                <i class="fas {{ passage.format == 'dialogue' ? 'fa-comments' : (passage.format == 'narrative' ? 'fa-align-left' : 'fa-comment-dots') }}"></i>
+              </div>
+            </div>
+            <h3 class="lms-listening-passage-card__title">
+              <a href="{{ path('lms_listening.listen', {'lms_listening_passage': passage.entity.id()}) }}">{{ passage.title }}</a>
+            </h3>
+            <p class="lms-listening-passage-card__meta">
+              {{ 'From deck: @deck'|t({'@deck': passage.deck_name}) }}
+              &middot; {{ '@count words'|t({'@count': passage.word_count}) }}
+              &middot; {{ '@count questions'|t({'@count': passage.question_count}) }}
+            </p>
+            <a class="lms-listening-passage-card__cta" href="{{ path('lms_listening.listen', {'lms_listening_passage': passage.entity.id()}) }}">
+              <i class="fas fa-play"></i> {{ 'Start listening'|t }}
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>

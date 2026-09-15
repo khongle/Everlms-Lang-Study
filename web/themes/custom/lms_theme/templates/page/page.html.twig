@@ -65,6 +65,12 @@
                     {% if lms_flashcard_enabled %}
                     <a href="{{ path('lms_flashcard.my_decks') }}" class="lms-mega-link"><i class="fas fa-clone text-info"></i> My Flashcards</a>
                     {% endif %}
+                    {% if lms_reading_enabled %}
+                    <a href="{{ path('lms_reading.my_passages') }}" class="lms-mega-link"><i class="fas fa-book-open text-info"></i> Reading</a>
+                    {% endif %}
+                    {% if lms_listening_enabled %}
+                    <a href="{{ path('lms_listening.my_passages') }}" class="lms-mega-link"><i class="fas fa-headphones text-info"></i> Listening</a>
+                    {% endif %}
                     <a href="{{ path('lms_course.pricing') }}" class="lms-mega-link"><i class="fas fa-id-badge text-success"></i> Membership</a>
                     <a href="{{ path('user.page') }}" class="lms-mega-link"><i class="fas fa-user text-purple"></i> My Profile</a>
                   </div>
@@ -77,6 +83,12 @@
                     <a href="/workspace/content/news" class="lms-mega-link"><i class="fas fa-newspaper text-info"></i> Manage News</a>
                     {% if lms_flashcard_enabled %}
                     <a href="{{ path('lms_flashcard.import') }}" class="lms-mega-link"><i class="fas fa-file-import text-purple"></i> Import Flashcards</a>
+                    {% endif %}
+                    {% if lms_reading_enabled %}
+                    <a href="{{ path('lms_reading.import') }}" class="lms-mega-link"><i class="fas fa-file-import text-purple"></i> Import Reading</a>
+                    {% endif %}
+                    {% if lms_listening_enabled %}
+                    <a href="{{ path('lms_listening.import') }}" class="lms-mega-link"><i class="fas fa-file-import text-purple"></i> Import Listening</a>
                     {% endif %}
                     <a href="{{ path('lms_rating.admin_list') }}" class="lms-mega-link"><i class="fas fa-comments text-success"></i> Student Feedback</a>
                   </div>
@@ -116,6 +128,14 @@
                 {% if lms_flashcard_enabled %}
                 <a href="{{ path('lms_flashcard.my_decks') }}" class="lms-mega-link"><i class="fas fa-clone text-info"></i> My Flashcards</a>
                 <a href="{{ path('lms_flashcard.import') }}" class="lms-mega-link"><i class="fas fa-file-import text-purple"></i> Import Flashcards</a>
+                {% endif %}
+                {% if lms_reading_enabled %}
+                <a href="{{ path('lms_reading.my_passages') }}" class="lms-mega-link"><i class="fas fa-book-open text-info"></i> Reading</a>
+                <a href="{{ path('lms_reading.import') }}" class="lms-mega-link"><i class="fas fa-file-import text-purple"></i> Import Reading</a>
+                {% endif %}
+                {% if lms_listening_enabled %}
+                <a href="{{ path('lms_listening.my_passages') }}" class="lms-mega-link"><i class="fas fa-headphones text-info"></i> Listening</a>
+                <a href="{{ path('lms_listening.import') }}" class="lms-mega-link"><i class="fas fa-file-import text-purple"></i> Import Listening</a>
                 {% endif %}
                 <a href="{{ path('lms_progress.certificates') }}" class="lms-mega-link"><i class="fas fa-award text-warning"></i> My Certificates</a>
                 <a href="{{ path('lms_course.profile') }}" class="lms-mega-link"><i class="fas fa-user text-info"></i> My Profile</a>

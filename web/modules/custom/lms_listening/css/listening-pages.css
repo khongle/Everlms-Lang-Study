@@ -1,0 +1,522 @@
+/**
+ * Styles for every lms_listening student-facing page (My Passages, Listen,
+ * Comprehension, Review). Deliberately a compact, single stylesheet rather
+ * than mirroring lms_reading's much larger reading-pages.css line for
+ * line — functional parity first; `.lms-section`/`.container` base layout
+ * comes from lms_theme/global, same as every other module's pages.
+ */
+
+/* --- My Passages ------------------------------------------------------- */
+
+.lms-listening-page__header {
+  margin-bottom: 1.5rem;
+}
+
+.lms-listening-page__title {
+  margin: 0 0 0.35rem;
+}
+
+.lms-listening-page__subtitle {
+  margin: 0;
+  opacity: 0.75;
+}
+
+.lms-listening-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  opacity: 0.7;
+}
+
+.lms-listening-empty i {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+/* Same shape/palette as lms_reading's .lms-reading-toolbar — explicit
+   box-sizing/height/width on the input and selects matter here: without
+   them the theme's global `select { width: 100%; ... }` form reset wins,
+   stretching each dropdown to the full toolbar width and forcing
+   search/level/type onto separate stacked rows instead of sitting neatly
+   side by side. */
+.lms-listening-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+  padding: 0.6rem 0.75rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.lms-listening-filters__search {
+  position: relative;
+  flex: 1 1 200px;
+  max-width: 320px;
+}
+
+.lms-listening-filters__search i {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 0.8rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.lms-listening-toolbar input.lms-listening-filters__input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 2.35rem;
+  padding: 0 0.75rem 0 2.4rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  color: #111827;
+  background: #f9fafb;
+}
+
+.lms-listening-toolbar select.lms-listening-filters__select {
+  box-sizing: border-box;
+  flex: 0 1 11rem;
+  width: auto;
+  min-width: 8rem;
+  max-width: 14rem;
+  height: 2.35rem;
+  padding: 0 2rem 0 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  color: #374151;
+  background: #f9fafb;
+}
+
+.lms-listening-toolbar input.lms-listening-filters__input:focus,
+.lms-listening-toolbar select.lms-listening-filters__select:focus {
+  outline: none;
+  border-color: #0f766e;
+  background: #fff;
+}
+
+.lms-listening-filters__no-match {
+  margin-bottom: 1.5rem;
+}
+
+body.layout-academy .lms-listening-toolbar {
+  background: #fffaf2;
+  border-color: rgba(104, 74, 36, 0.15);
+  box-shadow: 0 10px 28px rgba(71, 48, 27, 0.06);
+}
+
+body.layout-academy input.lms-listening-filters__input,
+body.layout-academy select.lms-listening-filters__select {
+  background: rgba(104, 74, 36, 0.06);
+  border-color: rgba(104, 74, 36, 0.2);
+  color: #6d5a44;
+}
+
+body.layout-academy input.lms-listening-filters__input:focus,
+body.layout-academy select.lms-listening-filters__select:focus {
+  border-color: #8d1f2d;
+  background: #fffaf2;
+}
+
+.lms-listening-passages {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.lms-listening-passage-card {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lms-listening-passage-card.is-filtered-out {
+  display: none;
+}
+
+.lms-listening-passage-card__badges {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lms-listening-passage-card__level {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.lms-listening-passage-card__level--easy { background: rgba(34, 197, 94, 0.15); color: #15803d; }
+.lms-listening-passage-card__level--normal { background: rgba(59, 130, 246, 0.15); color: #1d4ed8; }
+.lms-listening-passage-card__level--challenge { background: rgba(220, 38, 38, 0.15); color: #b91c1c; }
+
+.lms-listening-passage-card__title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.lms-listening-passage-card__title a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.lms-listening-passage-card__meta {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.lms-listening-passage-card__cta {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.5rem;
+  background: #0f766e;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  justify-content: center;
+}
+
+/* --- Listen step --------------------------------------------------------*/
+
+.lms-listening-passage__header {
+  margin-bottom: 1rem;
+}
+
+.lms-listening-passage__back {
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  text-decoration: none;
+  opacity: 0.75;
+}
+
+.lms-listening-passage__title {
+  margin: 0 0 0.3rem;
+}
+
+.lms-listening-passage__meta {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.lms-listening-passage__format-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.lms-listening-passage__listen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 118, 110, 0.08);
+  margin: 1rem 0;
+}
+
+.lms-listening-passage__listen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  background: #0f766e;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lms-listening-passage__listen-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  font-size: 0.85rem;
+}
+
+.lms-listening-passage__listen-options label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.lms-listening-passage__listen-options select {
+  padding: 0.25rem 0.4rem;
+}
+
+.lms-listening-passage__replay-count {
+  font-size: 0.8rem;
+  opacity: 0.65;
+}
+
+.lms-listening-passage__reveal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.lms-listening-passage__reveal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: transparent;
+  cursor: pointer;
+}
+
+.lms-listening-passage__reveal-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.lms-listening-passage__hints {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.lms-listening-passage__hints li {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(234, 179, 8, 0.12);
+  font-style: italic;
+}
+
+.lms-listening-passage__content {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.03);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.lms-listening-passage__body {
+  display: block;
+}
+
+.lms-listening-passage__sentence.is-speaking {
+  background: rgba(250, 204, 21, 0.35);
+  border-radius: 0.25rem;
+}
+
+.lms-listening-passage__dialogue {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.lms-listening-passage__turn {
+  max-width: 80%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.lms-listening-passage__turn--b {
+  align-self: flex-end;
+  background: rgba(15, 118, 110, 0.1);
+}
+
+.lms-listening-passage__turn.is-speaking {
+  outline: 2px solid rgba(250, 204, 21, 0.7);
+}
+
+/* Click any sentence/turn to hear it (again) — see playFromUnit() in
+   js/listening-passage.js. Applied via JS (not directly on
+   __sentence/__turn) so it's only added once the transcript is actually
+   revealed and TTS is available. */
+.lms-listening-passage__unit--clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.lms-listening-passage__sentence.lms-listening-passage__unit--clickable:hover {
+  background: rgba(15, 118, 110, 0.1);
+  border-radius: 0.25rem;
+}
+
+.lms-listening-passage__turn.lms-listening-passage__unit--clickable:hover {
+  background: rgba(15, 118, 110, 0.18);
+}
+
+.lms-listening-passage__turn-speaker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0.65;
+  margin-bottom: 0.15rem;
+}
+
+.lms-listening-passage__footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lms-listening-passage__continue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  background: #0f766e;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* --- Comprehension step ---------------------------------------------------*/
+
+.lms-listening-questions__header {
+  margin-bottom: 1rem;
+}
+
+.lms-listening-question {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.lms-listening-question__text {
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.lms-listening-question__choice {
+  display: block;
+  padding: 0.4rem 0;
+}
+
+.lms-listening-question__text-input {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.lms-listening-questions__submit {
+  padding: 0.6rem 1.4rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: #0f766e;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* --- Review ---------------------------------------------------------------*/
+
+.lms-listening-review__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.lms-listening-review__stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.lms-listening-review__stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.lms-listening-review__stat-label {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.lms-listening-review__aids span {
+  display: inline-block;
+  margin-right: 0.6rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  font-size: 0.8rem;
+}
+
+.lms-listening-review__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.lms-listening-review__next {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  background: #0f766e;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.lms-listening-review__back {
+  display: inline-block;
+  text-decoration: none;
+}
+
+/* Warmer accent on the "layout-academy" theme, matching how lms_reading's
+   own pages restyle for it. */
+body.layout-academy .lms-listening-passage-card__cta,
+body.layout-academy .lms-listening-passage__continue,
+body.layout-academy .lms-listening-passage__listen-btn,
+body.layout-academy .lms-listening-questions__submit,
+body.layout-academy .lms-listening-review__next {
+  background: #8d1f2d;
+}
+
+body.layout-academy .lms-listening-passage__listen {
+  background: rgba(141, 31, 45, 0.08);
+}
+
+body.layout-academy .lms-listening-passage__turn--b {
+  background: rgba(141, 31, 45, 0.1);
+}
+
+/* "My Note" widget (lms_note/note_widget) tinted to match this page's own
+   accent — base styling lives in lms_note's own note-widget.css,
+   deliberately neutral so it works unmodified on Reading's page too.
+   (Passive Listening's own copy of this override lives in
+   listening-passive.css — this file isn't attached on that page.) */
+.lms-listening-passage .lms-note-widget__save {
+  background: #0f766e;
+}
+
+body.layout-academy .lms-listening-passage .lms-note-widget__save {
+  background: #8d1f2d;
+}
+
+body.layout-academy .lms-listening-passage .lms-note-widget__textarea:focus {
+  border-color: #8d1f2d;
+}

@@ -1,0 +1,25 @@
+services:
+  lms_listening.import_validator:
+    class: Drupal\lms_listening\Service\ListeningImportValidator
+    arguments:
+      - '@entity_type.manager'
+
+  lms_listening.import_batch:
+    class: Drupal\lms_listening\Service\ListeningImportBatchService
+    arguments:
+      - '@entity_type.manager'
+
+  lms_listening.visibility:
+    class: Drupal\lms_listening\Service\ListeningVisibilityService
+    arguments:
+      - '@entity_type.manager'
+
+  lms_listening.queue:
+    class: Drupal\lms_listening\Service\ListeningQueueService
+    arguments:
+      - '@tempstore.private'
+      - '@entity_type.manager'
+      - '@lms_listening.visibility'
+
+  lms_listening.presentation:
+    class: Drupal\lms_listening\Service\ListeningPresentationService

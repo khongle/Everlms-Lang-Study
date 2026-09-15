@@ -1,0 +1,124 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for lms_reading module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function lms_reading_theme($existing, $type, $theme, $path) {
+  return [
+    'lms_reading_my_passages' => [
+      'variables' => [
+        'passages' => [],
+      ],
+      'template' => 'lms-reading-my-passages',
+    ],
+    'lms_reading_passage_view' => [
+      'variables' => [
+        'passage' => NULL,
+        'dialogue_turns' => [],
+        // Undeclared render array keys are silently dropped by the theme
+        // system — this has to be listed here or the template's own
+        // {% if times_seen_label %} check would always see nothing, no
+        // matter what the controller passes (a real bug that shipped for
+        // a while on lms_listening's equivalent "Next passage" link —
+        // see that module's hook_theme() for the postmortem note).
+        'times_seen_label' => NULL,
+      ],
+      'template' => 'lms-reading-passage-view',
+    ],
+    'lms_reading_questions' => [
+      'variables' => [
+        'passage' => NULL,
+      ],
+      'template' => 'lms-reading-questions',
+    ],
+    'lms_reading_review' => [
+      'variables' => [
+        'passage' => NULL,
+        'attempt' => NULL,
+        'unknown_terms' => [],
+        'words_clicked_count' => 0,
+      ],
+      'template' => 'lms-reading-review',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for lms_flashcard_my_decks.
+ *
+ * Adds `reading_count` to each item in $variables['decks'] — the number of
+ * Reading passages built on that deck that the current user may actually
+ * read — so lms_flashcard's own "My Flashcards" template (see the Reading
+ * link added there) can show a badge, without lms_flashcard's code having
+ * to know lms_reading exists at all: this is the reverse direction, an
+ * *optional* module (lms_reading) reaching INTO another module's render
+ * output via the standard preprocess hook, which is invoked only for
+ * enabled modules — so on a site with lms_reading disabled, this function
+ * doesn't exist/run and the Flashcard page is entirely unaffected. This is
+ * the one place lms_reading's code executes ON a Flashcard page; it never
+ * writes anything, only reads lms_reading_passage (its own entity) and
+ * lms_flashcard_deck ids already present in $variables.
+ */
+function lms_reading_preprocess_lms_flashcard_my_decks(array &$variables): void {
+  if (empty($variables['decks'])) {
+    return;
+  }
+
+  $deck_ids = [];
+  foreach ($variables['decks'] as $deck_row) {
+    if (!empty($deck_row['entity'])) {
+      $deck_ids[] = (int) $deck_row['entity']->id();
+    }
+  }
+  if (!$deck_ids) {
+    return;
+  }
+
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $passage_storage = $entity_type_manager->getStorage('lms_reading_passage');
+  $passage_ids = $passage_storage->getQuery()
+    ->condition('field_deck', $deck_ids, 'IN')
+    ->condition('status', TRUE)
+    ->accessCheck(FALSE)
+    ->execute();
+
+  $counts = [];
+  if ($passage_ids) {
+    $uid = (int) \Drupal::currentUser()->id();
+    foreach ($passage_storage->loadMultiple($passage_ids) as $passage) {
+      /** @var \Drupal\lms_reading\Entity\ReadingPassage $passage */
+      // Same "own it, or its owner is staff" rule as
+      // ReadingVisibilityService::isPassageVisibleTo() — not calling that
+      // service here since it also re-checks the *deck's* visibility,
+      // which is redundant: every deck in $variables['decks'] already
+      // passed lms_flashcard's own visibility filter to appear on this
+      // page at all.
+      $owner_id = (int) $passage->getOwnerId();
+      $visible = $owner_id === $uid;
+      if (!$visible) {
+        $owner = $passage->getOwner();
+        $visible = !$owner || $owner->hasPermission('view lms_course') || $owner->hasPermission('administer lms_course');
+      }
+      if (!$visible) {
+        continue;
+      }
+      $deck_id = (int) $passage->get('field_deck')->target_id;
+      $counts[$deck_id] = ($counts[$deck_id] ?? 0) + 1;
+    }
+  }
+
+  foreach ($variables['decks'] as &$deck_row) {
+    if (empty($deck_row['entity'])) {
+      continue;
+    }
+    $deck_row['reading_count'] = $counts[(int) $deck_row['entity']->id()] ?? 0;
+  }
+  unset($deck_row);
+
+  $variables['#attached']['library'][] = 'lms_reading/reading_deck_badge';
+}

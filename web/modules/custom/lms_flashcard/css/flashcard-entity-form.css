@@ -378,6 +378,26 @@
   background: linear-gradient(90deg, var(--flashcard-highlight), rgba(205, 162, 79, 0.15));
 }
 
+.lms-flashcard-entity-form__cards-filter {
+  display: block;
+  width: 100%;
+  margin: 0.9rem 0 0;
+  padding: 0.55rem 0.8rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--flashcard-text);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--flashcard-border);
+  border-radius: 0.6rem;
+  box-sizing: border-box;
+}
+
+.lms-flashcard-entity-form__cards-filter:focus {
+  outline: none;
+  border-color: var(--flashcard-accent);
+  box-shadow: 0 0 0 3px rgba(205, 162, 79, 0.2);
+}
+
 .lms-flashcard-entity-form__cards-list {
   display: flex;
   flex-direction: column;
@@ -402,6 +422,25 @@
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(104, 74, 36, 0.12);
   border-radius: 0.9rem;
+}
+
+.lms-flashcard-entity-form__card-item.is-unpublished {
+  background: rgba(104, 74, 36, 0.05);
+  border-style: dashed;
+  opacity: 0.75;
+}
+
+.lms-flashcard-entity-form__card-unpublished-badge {
+  display: inline-block;
+  margin: 0.35rem 0 0;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(141, 31, 45, 0.1);
+  color: #8d1f2d;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .lms-flashcard-entity-form__card-header {
@@ -444,6 +483,19 @@
   line-height: 1.55;
 }
 
+.lms-flashcard-entity-form__cards-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lms-flashcard-entity-form__card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
 .lms-flashcard-entity-form__card-delete,
 .lms-flashcard-entity-form__cards-add-link {
   display: inline-flex;
@@ -453,6 +505,28 @@
   font-size: 0.85rem;
   font-weight: 700;
   text-decoration: none;
+}
+
+.lms-flashcard-entity-form__card-toggle-status {
+  padding: 0.25rem 0.7rem;
+  background: transparent;
+  border: 1px solid rgba(104, 74, 36, 0.25);
+  border-radius: 999px;
+  color: var(--flashcard-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lms-flashcard-entity-form__card-toggle-status:hover,
+.lms-flashcard-entity-form__card-toggle-status:focus {
+  border-color: var(--flashcard-accent);
+  color: var(--flashcard-accent);
+}
+
+.is-unpublished .lms-flashcard-entity-form__card-toggle-status {
+  border-color: rgba(74, 124, 89, 0.4);
+  color: #4a7c59;
 }
 
 .lms-flashcard-entity-form__card-delete:hover,

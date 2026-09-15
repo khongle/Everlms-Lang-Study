@@ -1,0 +1,215 @@
+/**
+ * Passive Listening session shell (see PASSIVE_LISTENING_PLAN.md). Same
+ * palette/shape as listening-pages.css (teal #0f766e accent, warm
+ * "layout-academy" override) — kept as its own small file since it's
+ * attached only from ListeningController::listenPassive(), not every
+ * lms_listening page.
+ */
+
+.lms-listening-passive__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.lms-listening-passive__back {
+  color: #0f766e;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.lms-listening-passive__back:hover {
+  text-decoration: underline;
+}
+
+.lms-listening-passive__progress {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.lms-listening-passive__voice-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 118, 110, 0.08);
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+}
+
+.lms-listening-passive__voice-bar label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.lms-listening-passive__voice-bar select {
+  padding: 0.25rem 0.4rem;
+}
+
+.lms-listening-passive__card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.9rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.lms-listening-passive__level-badge {
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #0f766e;
+}
+
+.lms-listening-passive__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.4rem;
+}
+
+.lms-listening-passive__status {
+  margin: 0 0 1.25rem;
+  color: #6b7280;
+  font-size: 0.92rem;
+}
+
+.lms-listening-passive__transcript {
+  line-height: 1.7;
+  color: #1f2937;
+}
+
+.lms-listening-passive__transcript p {
+  margin: 0 0 0.85rem;
+}
+
+.lms-listening-passive__line strong {
+  color: #0f766e;
+}
+
+.lms-listening-passive__vocab {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.lms-listening-passive__vocab-heading {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+
+.lms-listening-passive__vocab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lms-listening-passive__vocab-list li {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: #f0fdfa;
+  color: #0f766e;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.lms-listening-passive__controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.lms-listening-passive__start-btn,
+.lms-listening-passive__stop-btn {
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.7rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.lms-listening-passive__start-btn {
+  background: #0f766e;
+  color: #fff;
+}
+
+.lms-listening-passive__start-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.lms-listening-passive__stop-btn {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.lms-listening-passive__stop-btn:hover {
+  background: #f3f4f6;
+}
+
+.lms-listening-passive__done {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.lms-listening-passive__done i {
+  font-size: 2.25rem;
+  color: #0f766e;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.lms-listening-passive__done-link {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  background: #0f766e;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Warmer accent on the "layout-academy" theme, matching every other
+   lms_listening page's own override (see listening-pages.css). */
+body.layout-academy .lms-listening-passive__back,
+body.layout-academy .lms-listening-passive__level-badge,
+body.layout-academy .lms-listening-passive__line strong,
+body.layout-academy .lms-listening-passive__vocab-list li,
+body.layout-academy .lms-listening-passive__done i {
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-listening-passive__vocab-list li {
+  background: #fdf3e7;
+}
+
+body.layout-academy .lms-listening-passive__start-btn,
+body.layout-academy .lms-listening-passive__done-link {
+  background: #8d1f2d;
+}
+
+/* "My Note" widget (lms_note/note_widget) — base styling lives in
+   lms_note's own note-widget.css; Active Listening's copy of this same
+   override lives in listening-pages.css (that file isn't attached here). */
+.lms-listening-passive .lms-note-widget__save {
+  background: #0f766e;
+}
+
+body.layout-academy .lms-listening-passive .lms-note-widget__save {
+  background: #8d1f2d;
+}
+
+body.layout-academy .lms-listening-passive .lms-note-widget__textarea:focus {
+  border-color: #8d1f2d;
+}

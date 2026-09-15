@@ -1,0 +1,31 @@
+/**
+ * Small count badge on the "Reading" button of lms_flashcard's My
+ * Flashcards deck cards — attached ONLY from
+ * lms_reading_preprocess_lms_flashcard_my_decks() (see lms_reading.module),
+ * which itself only runs while lms_reading is enabled, so this library is
+ * never referenced from lms_flashcard's own code/templates.
+ *
+ * Palette matches lms_flashcard's own `.lms-flashcard-deck-card__stat`
+ * pill badges (see flashcard-pages.css) so it reads as a native part of
+ * that card, not a bolted-on module.
+ */
+.lms-reading-deck-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.4rem;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.15);
+  color: #4338ca;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+body.layout-academy .lms-reading-deck-badge {
+  background: rgba(141, 31, 45, 0.12);
+  color: #8d1f2d;
+}

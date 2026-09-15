@@ -8,7 +8,7 @@
       <p class="text-muted" style="color: #8b949e;">{{ 'Review your learning notes across all courses.'|t }}</p>
     </div>
 
-    {% if grouped_notes is empty %}
+    {% if grouped_notes is empty and listening_notes is empty and reading_notes is empty %}
       <div class="lms-empty-state">
         <i class="fas fa-edit"></i>
         <h3>{{ "You haven't taken any notes yet."|t }}</h3>
@@ -59,6 +59,75 @@
             </div>
           </div>
         {% endfor %}
+
+        {# Listening + Reading notes (see NOTE_EXPANSION_PLAN.md) — same
+           card look as the course groups above, minus the per-lesson
+           timestamp badge/attachment count neither of these has (text
+           only, one note per passage). Each section only renders when it
+           actually has notes. #}
+        {% if listening_notes is not empty %}
+          <div class="lms-notes-course-group lms-card" style="background: #161b22; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.5rem;">
+            <div style="display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+              <h2 style="margin: 0; font-size: 1.25rem; color: #e6edf3;">
+                <i class="fas fa-headphones" style="color: #667eea; margin-right: 0.5rem;"></i>
+                {{ 'Listening'|t }}
+              </h2>
+            </div>
+
+            <div class="lms-notes-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+              {% for note in listening_notes %}
+                <div class="lms-note-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem; display: flex; flex-direction: column;">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1rem; margin: 0; color: #e6edf3;">{{ note.title }}</h3>
+                    <span style="font-size: 0.75rem; color: #8b949e;">{{ note.last_updated|date('M d, Y') }}</span>
+                  </div>
+
+                  <div class="lms-note-content" style="font-size: 0.875rem; color: #c9d1d9; line-height: 1.6; flex: 1; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 0.375rem;">
+                    {{ note.text|raw }}
+                  </div>
+
+                  <div style="margin-top: 1.5rem; text-align: right;">
+                    <a href="{{ path('lms_listening.listen', {'lms_listening_passage': note.passage_id}) }}" class="lms-btn lms-btn--outline lms-btn--sm" style="font-size: 0.75rem; padding: 0.3rem 0.8rem; border-radius: 1rem;">
+                      {{ 'Go to Passage'|t }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if reading_notes is not empty %}
+          <div class="lms-notes-course-group lms-card" style="background: #161b22; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.5rem;">
+            <div style="display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+              <h2 style="margin: 0; font-size: 1.25rem; color: #e6edf3;">
+                <i class="fas fa-book-open" style="color: #667eea; margin-right: 0.5rem;"></i>
+                {{ 'Reading'|t }}
+              </h2>
+            </div>
+
+            <div class="lms-notes-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+              {% for note in reading_notes %}
+                <div class="lms-note-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem; display: flex; flex-direction: column;">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1rem; margin: 0; color: #e6edf3;">{{ note.title }}</h3>
+                    <span style="font-size: 0.75rem; color: #8b949e;">{{ note.last_updated|date('M d, Y') }}</span>
+                  </div>
+
+                  <div class="lms-note-content" style="font-size: 0.875rem; color: #c9d1d9; line-height: 1.6; flex: 1; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 0.375rem;">
+                    {{ note.text|raw }}
+                  </div>
+
+                  <div style="margin-top: 1.5rem; text-align: right;">
+                    <a href="{{ path('lms_reading.read', {'lms_reading_passage': note.passage_id}) }}" class="lms-btn lms-btn--outline lms-btn--sm" style="font-size: 0.75rem; padding: 0.3rem 0.8rem; border-radius: 1rem;">
+                      {{ 'Go to Passage'|t }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
       </div>
     {% endif %}
   </div>

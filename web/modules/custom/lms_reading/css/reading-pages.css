@@ -1,0 +1,1006 @@
+/**
+ * Reading module pages: passage list, passage view, questions, review.
+ *
+ * Palette/spacing intentionally mirrors lms_flashcard's student-facing CSS
+ * (see css/flashcard-pages.css and css/flashcard-study.css there) so Reading
+ * reads as the same product, not a bolted-on module — same indigo accent
+ * (#4f46e5), neutral grays, 0.5-0.85rem radii, and the same
+ * `body.layout-academy` warm-skin refinement block at the bottom. All
+ * classes are namespaced lms-reading-* so nothing here can affect Flashcard
+ * pages even when both libraries load on the same page.
+ */
+
+.lms-reading-page__header {
+  margin-bottom: 2rem;
+}
+
+.lms-reading-page__title {
+  margin: 0 0 0.35rem;
+  font-size: 2rem;
+}
+
+.lms-reading-page__subtitle {
+  margin: 0;
+  color: #6b7280;
+}
+
+.lms-reading-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border: 1px dashed #d1d5db;
+  border-radius: 0.75rem;
+  color: #6b7280;
+}
+
+.lms-reading-empty i {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: #9ca3af;
+}
+
+/* --- Toolbar: search + level + type + deck, all on one row (level/type
+   are plain <select> dropdowns, same as deck — not chip buttons, to keep
+   this to one compact row instead of two). Same shape/palette as
+   lms_flashcard's .lms-flashcard-toolbar. --- */
+.lms-reading-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+  padding: 0.6rem 0.75rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.lms-reading-filters__search {
+  position: relative;
+  flex: 1 1 200px;
+  max-width: 320px;
+}
+
+.lms-reading-filters__search i {
+  position: absolute;
+  top: 50%;
+  left: 0.85rem;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 0.8rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.lms-reading-toolbar input.lms-reading-filters__input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 2.35rem;
+  padding: 0 0.75rem 0 2.4rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  color: #111827;
+  background: #f9fafb;
+}
+
+/* Explicit width/flex-basis rather than leaving it to the browser default —
+   the theme's global `select { width: 100%; ... }` form reset otherwise
+   wins (no width set here beats it), stretching each select to the full
+   toolbar width and forcing search/level/type/deck onto separate stacked
+   rows instead of sitting side by side. */
+.lms-reading-toolbar select.lms-reading-filters__select {
+  box-sizing: border-box;
+  flex: 0 1 11rem;
+  width: auto;
+  min-width: 8rem;
+  max-width: 14rem;
+  height: 2.35rem;
+  padding: 0 2rem 0 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  color: #374151;
+  background: #f9fafb;
+}
+
+.lms-reading-toolbar input.lms-reading-filters__input:focus,
+.lms-reading-toolbar select.lms-reading-filters__select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  background: #fff;
+}
+
+.lms-reading-filters__no-match {
+  margin-bottom: 1.5rem;
+}
+
+/* --- Passage list --- */
+
+.lms-reading-passages {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.lms-reading-passage-card[data-reading-passage].is-filtered-out {
+  display: none;
+}
+
+.lms-reading-passage-card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.lms-reading-passage-card__badges {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.lms-reading-passage-card__level {
+  align-self: flex-start;
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.18rem 0.55rem;
+  border-radius: 1rem;
+  margin-bottom: 0;
+}
+
+.lms-reading-passage-card__format {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.1);
+  color: #4338ca;
+  font-size: 0.75rem;
+}
+
+.lms-reading-passage-card__level--easy {
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+}
+
+.lms-reading-passage-card__level--normal {
+  background: rgba(217, 119, 6, 0.12);
+  color: #b45309;
+}
+
+.lms-reading-passage-card__level--challenge {
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+}
+
+.lms-reading-passage-card__title {
+  margin: 0 0 0.4rem;
+  font-size: 1.02rem;
+  line-height: 1.35;
+  color: #111827;
+}
+
+.lms-reading-passage-card__title a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.lms-reading-passage-card__title a:hover {
+  color: #4f46e5;
+}
+
+.lms-reading-passage-card__meta {
+  color: #6b7280;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  flex: 1;
+  margin: 0 0 1rem;
+}
+
+.lms-reading-passage-card__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 0.45rem;
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.lms-reading-passage-card__cta:hover {
+  background: #4338ca;
+  color: #fff;
+}
+
+/* --- Passage view (Read step) --- */
+
+.lms-reading-passage__header {
+  margin-bottom: 1.5rem;
+}
+
+.lms-reading-passage__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+  text-decoration: none;
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.lms-reading-passage__back:hover {
+  color: #4f46e5;
+}
+
+.lms-reading-passage__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.6rem;
+  color: #111827;
+}
+
+.lms-reading-passage__meta {
+  color: #6b7280;
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.lms-reading-passage__body {
+  font-size: 1.15rem;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  width: 100%;
+  color: #1f2937;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem 1.75rem;
+  margin-top: 1.25rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+/* A light dotted underline rather than a filled background box — with
+   nearly every content word in a Challenge-level passage clickable, a
+   solid tint behind each one reads as clutter (a wall of little pills)
+   more than a hint. The underline stays legible at a glance while keeping
+   the sentence itself easy to read normally. */
+.lms-reading-passage__word {
+  padding-bottom: 0.05em;
+  cursor: pointer;
+  border-bottom: 0.14em dotted rgba(79, 70, 229, 0.55);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.lms-reading-passage__word:hover,
+.lms-reading-passage__word:focus-visible {
+  background: rgba(79, 70, 229, 0.1);
+  border-bottom-style: solid;
+  outline: none;
+  border-radius: 0.2rem 0.2rem 0 0;
+}
+
+/* --- Listen to passage (Web Speech API read-aloud, for listening
+   practice — see js/reading-passage.js) --- */
+
+.lms-reading-passage__listen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding: 0.65rem 0.9rem;
+  background: #f5f5ff;
+  border: 1px solid rgba(79, 70, 229, 0.25);
+  border-radius: 0.65rem;
+}
+
+.lms-reading-passage__listen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.lms-reading-passage__listen-btn:hover {
+  background: #4338ca;
+}
+
+.lms-reading-passage__listen-btn i {
+  width: 1em;
+  text-align: center;
+}
+
+.lms-reading-passage__listen-options {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.lms-reading-passage__listen-speed,
+.lms-reading-passage__listen-voice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4338ca;
+}
+
+.lms-reading-passage__listen-speed select,
+.lms-reading-passage__listen-voice select {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid rgba(79, 70, 229, 0.35);
+  border-radius: 0.4rem;
+  background: #fff;
+  color: #1f2937;
+  font-size: 0.85rem;
+}
+
+.lms-reading-passage__listen-voice select {
+  max-width: 14rem;
+}
+
+/* Whole sentence currently being read aloud — a soft highlight band
+   distinct from the (much subtler) word-click underline above, so the
+   student can follow along at a glance while listening. Same treatment
+   for a dialogue turn — see .lms-reading-passage__turn.is-speaking below,
+   which additionally brightens the whole bubble rather than just its text. */
+.lms-reading-passage__sentence.is-speaking {
+  background: rgba(250, 204, 21, 0.35);
+  border-radius: 0.3rem;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* --- Passage format badge ("Narrative" / "Dialogue"), see
+   .lms-reading-passage__meta in the header --- */
+.lms-reading-passage__format-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 600;
+  color: #4338ca;
+}
+
+/* --- Dialogue passages: chat-bubble turns, alternating sides so the two
+   speakers stay visually distinct without relying on color alone --- */
+.lms-reading-passage__dialogue {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+}
+
+.lms-reading-passage__turn {
+  max-width: 80%;
+  padding: 0.85rem 1.1rem;
+  border-radius: 0.9rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.lms-reading-passage__turn--a {
+  align-self: flex-start;
+  border-bottom-left-radius: 0.2rem;
+}
+
+.lms-reading-passage__turn--b {
+  align-self: flex-end;
+  background: #f5f5ff;
+  border-color: rgba(79, 70, 229, 0.2);
+  border-bottom-right-radius: 0.2rem;
+}
+
+.lms-reading-passage__turn-speaker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #4f46e5;
+  margin-bottom: 0.3rem;
+}
+
+.lms-reading-passage__turn-line {
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+.lms-reading-passage__turn.is-speaking {
+  border-color: #eab308;
+  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.35);
+}
+
+@media (max-width: 640px) {
+  .lms-reading-passage__turn {
+    max-width: 92%;
+  }
+}
+
+/* --- Word info popup --- */
+
+.lms-reading-passage__word-popup {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  left: 1.25rem;
+  max-width: 22rem;
+  margin-left: auto;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+  z-index: 100;
+}
+
+.lms-reading-passage__word-popup-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.7rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.lms-reading-passage__word-popup-close:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.lms-reading-passage__word-popup-term {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #111827;
+  padding-right: 1.5rem;
+}
+
+.lms-reading-passage__word-popup-pos {
+  display: inline-block;
+  font-style: italic;
+  color: #4f46e5;
+  font-size: 0.78rem;
+  margin-top: 0.15rem;
+}
+
+.lms-reading-passage__word-popup-pron {
+  color: #6b7280;
+  font-size: 0.88rem;
+  margin-top: 0.15rem;
+  margin-bottom: 0.5rem;
+}
+
+.lms-reading-passage__word-popup-meaning {
+  color: #374151;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.lms-reading-passage__word-popup-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+.lms-reading-passage__word-popup-btn {
+  flex: 1;
+  min-height: 2.35rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.lms-reading-passage__word-popup-btn--known {
+  border-color: #22c55e;
+  color: #15803d;
+}
+
+.lms-reading-passage__word-popup-btn--known:hover {
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.lms-reading-passage__word-popup-btn--unknown {
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
+.lms-reading-passage__word-popup-btn--unknown:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.lms-reading-passage__footer {
+  margin-top: 2rem;
+}
+
+.lms-reading-passage__continue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.7rem;
+  padding: 0.62rem 1.25rem;
+  border-radius: 0.45rem;
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.lms-reading-passage__continue:hover {
+  background: #4338ca;
+  color: #fff;
+}
+
+/* --- Questions (Understand + Guess from Context) --- */
+
+.lms-reading-questions__header {
+  margin-bottom: 1.5rem;
+}
+
+.lms-reading-questions__title {
+  margin: 0.5rem 0 0;
+  font-size: 1.4rem;
+  color: #111827;
+}
+
+.lms-reading-question {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.65rem;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.lms-reading-question--context {
+  border-color: rgba(79, 70, 229, 0.25);
+  background: #f5f5ff;
+}
+
+.lms-reading-question__text {
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.65rem;
+  line-height: 1.5;
+}
+
+.lms-reading-question--context .lms-reading-question__text {
+  font-weight: 500;
+  font-style: italic;
+  color: #3730a3;
+}
+
+.lms-reading-question__sub {
+  color: #4f46e5;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0 0 0.65rem;
+}
+
+.lms-reading-question__choice {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  margin: 0 0 0.4rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: #1f2937;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.lms-reading-question__choice:last-child {
+  margin-bottom: 0;
+}
+
+.lms-reading-question__choice:hover {
+  border-color: #4f46e5;
+  background: #eef2ff;
+}
+
+.lms-reading-question__choice input {
+  accent-color: #4f46e5;
+  flex-shrink: 0;
+}
+
+.lms-reading-question__text-input {
+  width: 100%;
+  max-width: 22rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: #1f2937;
+  background: #f9fafb;
+}
+
+.lms-reading-question__text-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.lms-reading-questions__actions {
+  margin-top: 1.5rem;
+}
+
+.lms-reading-questions__submit {
+  min-height: 2.9rem;
+  padding: 0.65rem 1.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: #4f46e5;
+  color: #fff;
+  cursor: pointer;
+}
+
+.lms-reading-questions__submit:hover {
+  background: #4338ca;
+}
+
+/* --- Review screen --- */
+
+.lms-reading-review__title {
+  margin: 0 0 1.5rem;
+  font-size: 1.6rem;
+  color: #111827;
+}
+
+.lms-reading-review__stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.lms-reading-review__stat {
+  flex: 1 1 140px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.65rem;
+  padding: 1rem 0.75rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.lms-reading-review__stat-value {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #4f46e5;
+}
+
+.lms-reading-review__stat-label {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.lms-reading-review__unknown {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 1.75rem;
+}
+
+.lms-reading-review__unknown h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: #111827;
+}
+
+.lms-reading-review__unknown-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0 0 1.1rem;
+  padding: 0;
+}
+
+.lms-reading-review__unknown-list li {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #b91c1c;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.lms-reading-review__add-btn {
+  min-height: 2.7rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.lms-reading-review__add-btn:hover {
+  background: #4338ca;
+}
+
+.lms-reading-review__add-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.lms-reading-review__added-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #15803d;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.lms-reading-review__back {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 600;
+  color: #4f46e5;
+}
+
+.lms-reading-review__back:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .lms-reading-passage__word-popup {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+  }
+}
+
+/* --- Academy skin refinement (currently the active homepage_style) —
+   same warm cream/gold palette + Playfair Display heading treatment as
+   flashcard-pages.css's own body.layout-academy block, so Reading pages
+   never look like a mismatched module under that skin. --- */
+
+body.layout-academy .lms-reading-page__title,
+body.layout-academy .lms-reading-passage__title,
+body.layout-academy .lms-reading-questions__title,
+body.layout-academy .lms-reading-review__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #302117;
+}
+
+body.layout-academy .lms-reading-page__subtitle,
+body.layout-academy .lms-reading-passage__meta {
+  color: #7a6248;
+}
+
+body.layout-academy .lms-reading-empty {
+  border-color: rgba(104, 74, 36, 0.25);
+  background: #fffaf2;
+  color: #6d5a44;
+}
+
+body.layout-academy .lms-reading-empty i {
+  color: #b39254;
+}
+
+body.layout-academy .lms-reading-toolbar {
+  background: #fffaf2;
+  border-color: rgba(104, 74, 36, 0.15);
+  box-shadow: 0 10px 28px rgba(71, 48, 27, 0.06);
+}
+
+body.layout-academy input.lms-reading-filters__input,
+body.layout-academy select.lms-reading-filters__select {
+  background: rgba(104, 74, 36, 0.06);
+  border-color: rgba(104, 74, 36, 0.2);
+  color: #6d5a44;
+}
+
+body.layout-academy input.lms-reading-filters__input:focus,
+body.layout-academy select.lms-reading-filters__select:focus {
+  border-color: #8d1f2d;
+  background: #fffaf2;
+}
+
+body.layout-academy .lms-reading-passage-card,
+body.layout-academy .lms-reading-passage__body,
+body.layout-academy .lms-reading-passage__turn,
+body.layout-academy .lms-reading-question,
+body.layout-academy .lms-reading-review__stat,
+body.layout-academy .lms-reading-review__unknown {
+  background: #fffaf2;
+  border-color: rgba(104, 74, 36, 0.15);
+  box-shadow: 0 8px 20px rgba(71, 48, 27, 0.06);
+}
+
+body.layout-academy .lms-reading-passage__turn--b {
+  background: rgba(141, 31, 45, 0.05);
+  border-color: rgba(141, 31, 45, 0.2);
+}
+
+body.layout-academy .lms-reading-passage__turn-speaker,
+body.layout-academy .lms-reading-passage__format-badge {
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-reading-passage__turn-line {
+  color: #302117;
+}
+
+body.layout-academy .lms-reading-passage__turn.is-speaking {
+  border-color: #ba8b38;
+  box-shadow: 0 0 0 2px rgba(186, 139, 56, 0.35);
+}
+
+body.layout-academy .lms-reading-question--context {
+  background: rgba(141, 31, 45, 0.05);
+  border-color: rgba(141, 31, 45, 0.2);
+}
+
+body.layout-academy .lms-reading-question--context .lms-reading-question__text {
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-reading-passage-card__title,
+body.layout-academy .lms-reading-question__text,
+body.layout-academy .lms-reading-passage__word-popup-term {
+  color: #302117;
+}
+
+body.layout-academy .lms-reading-passage-card__title a:hover,
+body.layout-academy .lms-reading-passage__back:hover,
+body.layout-academy .lms-reading-review__back {
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-reading-passage-card__meta,
+body.layout-academy .lms-reading-review__stat-label,
+body.layout-academy .lms-reading-passage__word-popup-meaning {
+  color: #6d5a44;
+}
+
+body.layout-academy .lms-reading-passage__word {
+  border-bottom-color: rgba(141, 31, 45, 0.5);
+}
+
+body.layout-academy .lms-reading-passage__word:hover {
+  background: rgba(141, 31, 45, 0.1);
+}
+
+body.layout-academy .lms-reading-passage__listen {
+  background: rgba(141, 31, 45, 0.05);
+  border-color: rgba(141, 31, 45, 0.2);
+}
+
+body.layout-academy .lms-reading-passage__listen-speed,
+body.layout-academy .lms-reading-passage__listen-voice {
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-reading-passage__listen-speed select,
+body.layout-academy .lms-reading-passage__listen-voice select {
+  border-color: rgba(141, 31, 45, 0.3);
+}
+
+body.layout-academy .lms-reading-passage__listen-btn {
+  background: linear-gradient(135deg, #ba8b38, #d5b46d);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-reading-passage__listen-btn:hover {
+  background: linear-gradient(135deg, #a97c2f, #c9a45e);
+}
+
+body.layout-academy .lms-reading-passage__sentence.is-speaking {
+  background: rgba(186, 139, 56, 0.3);
+}
+
+body.layout-academy .lms-reading-passage-card__cta,
+body.layout-academy .lms-reading-passage__continue,
+body.layout-academy .lms-reading-questions__submit,
+body.layout-academy .lms-reading-review__add-btn {
+  background: linear-gradient(135deg, #ba8b38, #d5b46d);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-reading-passage-card__cta:hover,
+body.layout-academy .lms-reading-passage__continue:hover,
+body.layout-academy .lms-reading-questions__submit:hover,
+body.layout-academy .lms-reading-review__add-btn:hover {
+  background: linear-gradient(135deg, #a97c2f, #c9a45e);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-reading-question__choice:hover {
+  border-color: #8d1f2d;
+  background: rgba(141, 31, 45, 0.06);
+}
+
+body.layout-academy .lms-reading-question__choice input,
+body.layout-academy .lms-reading-question__text-input:focus {
+  accent-color: #8d1f2d;
+}
+
+body.layout-academy .lms-reading-review__stat-value {
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-reading-passage-card__level--easy,
+body.layout-academy .lms-reading-passage-card__level--normal,
+body.layout-academy .lms-reading-passage-card__level--challenge {
+  background: rgba(104, 74, 36, 0.12);
+  color: #7a6248;
+}
+
+body.layout-academy .lms-reading-passage-card__format {
+  background: rgba(141, 31, 45, 0.1);
+  color: #8d1f2d;
+}
+
+/* "My Note" widget (lms_note/note_widget) — base styling lives in
+   lms_note's own note-widget.css, deliberately neutral so it works
+   unmodified on Listening's pages too. Accent matches this page's own
+   primary CTA (.lms-reading-passage__continue) above. */
+.lms-reading-passage .lms-note-widget__save {
+  background: #4f46e5;
+}
+
+body.layout-academy .lms-reading-passage .lms-note-widget__save {
+  background: linear-gradient(135deg, #ba8b38, #d5b46d);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-reading-passage .lms-note-widget__textarea:focus {
+  border-color: #ba8b38;
+}

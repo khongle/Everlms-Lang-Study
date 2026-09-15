@@ -1,0 +1,41 @@
+{# Review screen: score + basic listening stats. Simpler than lms_reading's
+   Review (no word-click glossary in this module — see ListeningPassage's
+   class docblock). #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-listening-review">
+  <div class="container">
+    <h1 class="lms-listening-review__title">{{ 'Review'|t }}: {{ passage.label }}</h1>
+
+    <div class="lms-listening-review__stats">
+      <div class="lms-listening-review__stat">
+        <span class="lms-listening-review__stat-value">{{ attempt.get('field_score').value }}%</span>
+        <span class="lms-listening-review__stat-label">{{ 'Score'|t }} ({{ attempt.get('field_correct_count').value }}/{{ attempt.get('field_question_count').value }})</span>
+      </div>
+      <div class="lms-listening-review__stat">
+        <span class="lms-listening-review__stat-value">{{ (attempt.get('field_duration_seconds').value / 60)|round(0, 'floor') }}m {{ attempt.get('field_duration_seconds').value % 60 }}s</span>
+        <span class="lms-listening-review__stat-label">{{ 'Time'|t }}</span>
+      </div>
+      <div class="lms-listening-review__stat">
+        <span class="lms-listening-review__stat-value">{{ attempt.get('field_replay_count').value }}</span>
+        <span class="lms-listening-review__stat-label">{{ 'Replays'|t }}</span>
+      </div>
+    </div>
+
+    {% if attempt.get('field_transcript_shown').value or attempt.get('field_translation_shown').value or attempt.get('field_hints_used').value > 0 %}
+      <p class="lms-listening-review__aids">
+        {{ 'Aids used:'|t }}
+        {% if attempt.get('field_hints_used').value > 0 %}<span>{{ '@count hint(s)'|t({'@count': attempt.get('field_hints_used').value}) }}</span>{% endif %}
+        {% if attempt.get('field_transcript_shown').value %}<span>{{ 'Transcript'|t }}</span>{% endif %}
+        {% if attempt.get('field_translation_shown').value %}<span>{{ 'Translation'|t }}</span>{% endif %}
+      </p>
+    {% endif %}
+
+    <div class="lms-listening-review__actions">
+      {% if next_passage_id %}
+        <a class="lms-listening-review__next" href="{{ path('lms_listening.listen', {'lms_listening_passage': next_passage_id}) }}">{{ 'Next passage'|t }} <i class="fas fa-arrow-right"></i></a>
+      {% endif %}
+      <a class="lms-listening-review__back" href="{{ path('lms_listening.my_passages') }}">{{ 'Back to Listening'|t }}</a>
+    </div>
+  </div>
+</section>

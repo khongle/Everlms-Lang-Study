@@ -1,0 +1,95 @@
+/**
+ * Styles for the Listening JSON import form's "example JSON" tip block —
+ * compact equivalent of lms_reading's reading-import.css.
+ */
+
+.lms-listening-import__tip {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  background: rgba(15, 118, 110, 0.04);
+}
+
+.lms-listening-import__example-tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.lms-listening-import__example-tab {
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: transparent;
+  cursor: pointer;
+}
+
+.lms-listening-import__example-tab.is-active {
+  background: #0f766e;
+  color: #fff;
+  border-color: #0f766e;
+}
+
+.lms-listening-import__tip-hint {
+  margin: 0 0 0.6rem;
+  font-size: 0.88rem;
+  opacity: 0.85;
+}
+
+/* The accepted level/format values, called out above the tabs (not just
+   inside each sample's <code> block) so a value like "medium" gets caught
+   before Import is clicked instead of after — see buildExampleTip()'s own
+   comment. Full opacity + a border so it doesn't read as just another
+   dimmed caption like the per-panel hints below it. */
+.lms-listening-import__tip-hint--schema {
+  padding: 0.6rem 0.85rem;
+  margin-bottom: 0.85rem;
+  border: 1px solid rgba(15, 118, 110, 0.35);
+  border-radius: 0.5rem;
+  background: rgba(15, 118, 110, 0.08);
+  opacity: 1;
+  color: #0f4c47;
+}
+
+.lms-listening-import__tip-hint--schema i {
+  color: #0f766e;
+  margin-right: 0.25rem;
+}
+
+.lms-listening-import__tip-hint--schema code {
+  background: rgba(15, 118, 110, 0.12);
+  padding: 0.05rem 0.35rem;
+  border-radius: 0.3rem;
+}
+
+.lms-listening-import__tip-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.lms-listening-import__tip-btn {
+  padding: 0.35rem 0.8rem;
+  border-radius: 0.4rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.lms-listening-import__tip-code {
+  max-height: 320px;
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.85);
+  color: #d4f5f0;
+  padding: 0.85rem;
+  border-radius: 0.5rem;
+  font-size: 0.78rem;
+}
+
+.lms-listening-import__divider {
+  text-align: center;
+  opacity: 0.6;
+  margin: 1rem 0;
+}

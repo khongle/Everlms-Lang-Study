@@ -1,0 +1,22 @@
+{# Understand + Guess from Context steps — rendered client-side from
+   drupalSettings.lmsReading (see js/reading-passage.js), this template is
+   mostly a shell/container. #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-reading-questions">
+  <div class="container">
+    <div class="lms-reading-questions__header">
+      <a class="lms-reading-passage__back" href="{{ path('lms_reading.read', {'lms_reading_passage': passage.id()}) }}"><i class="fas fa-arrow-left"></i> {{ 'Back to passage'|t }}</a>
+      <h1 class="lms-reading-questions__title">{{ 'Understand'|t }}: {{ passage.label }}</h1>
+    </div>
+
+    <form id="lms-reading-questions-form" data-reading-questions-form>
+      <div data-reading-questions-list></div>
+      <div data-reading-context-list></div>
+
+      <div class="lms-reading-questions__actions">
+        <button type="submit" class="lms-reading-questions__submit">{{ 'Check answers'|t }}</button>
+      </div>
+    </form>
+  </div>
+</section>

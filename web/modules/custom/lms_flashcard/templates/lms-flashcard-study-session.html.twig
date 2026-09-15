@@ -2,9 +2,25 @@
 {{ attach_library('lms_theme/global') }}
 
 <section class="lms-section lms-flashcard-study" data-deck-id="{{ deck.id() }}">
-  <div class="container" style="max-width: 640px;">
+  <div class="container lms-flashcard-study__container">
     <div class="lms-flashcard-study__header">
-      <h1 class="lms-manage__title">{{ deck.label() }}</h1>
+      <div class="lms-flashcard-study__header-row">
+        <h1 class="lms-manage__title">{{ deck.label() }}</h1>
+        {# Quick Edit (see QUICK_EDIT_STUDY_CARD_PLAN.md): sits next to the
+           title rather than in its own row above the card, so it reads as
+           part of the page header instead of a disconnected floating
+           element. It's a sibling of [data-flashcard-card] regardless of
+           where it lives in the markup, never nested inside it, so its
+           clicks simply can't bubble into the card's own flip-on-click
+           handler — no stopPropagation() gymnastics needed for that
+           particular risk, though the JS still stops propagation on drawer
+           clicks/keydowns defensively (see flashcard-study.js). Hidden by
+           default; flashcard-study.js shows it per-card via
+           card.can_quick_edit from the API response. #}
+        <button type="button" class="lms-flashcard-study__quick-edit-btn" data-flashcard-quick-edit hidden>
+          <i class="fas fa-pen" aria-hidden="true"></i> {{ 'Quick edit'|t }}
+        </button>
+      </div>
       <p class="lms-flashcard-study__progress-text" data-flashcard-progress-text></p>
       <div class="lms-flashcard-study__progress-bar" data-flashcard-progress-bar hidden>
         <div class="lms-flashcard-study__progress-fill" data-flashcard-progress-fill></div>
@@ -30,10 +46,19 @@
               </button>
             </div>
             <div class="lms-flashcard__pronunciation" data-flashcard-pronunciation></div>
+            {# Only shown for the plain flip view (style=flip, level 1) in
+               both directions — see showCard()'s showImage computation.
+               Suppressed for Spelling/Quiz/Pronunciation Practice and the
+               Study Now level-2/3 exercises, whose own markup already fills
+               this same space. #}
+            <div class="lms-flashcard__image" data-flashcard-image-front hidden>
+              <img data-flashcard-image-front-img alt="">
+            </div>
             <div class="lms-flashcard__meta-row" data-flashcard-meta-row>
               <span class="lms-flashcard__seen-count" data-flashcard-seen-count hidden></span>
               <span class="lms-flashcard__spell-level" data-flashcard-spell-level hidden></span>
               <span class="lms-flashcard__spell-level" data-flashcard-quiz-level hidden></span>
+              <span class="lms-flashcard__spell-level" data-flashcard-pronounce-level hidden></span>
             </div>
             <div class="lms-flashcard__prompt" data-flashcard-prompt hidden></div>
             <div class="lms-flashcard__spell" data-flashcard-spell hidden>
@@ -56,6 +81,43 @@
               </div>
               <button type="button" class="lms-flashcard__spell-next" data-flashcard-quiz-next hidden>{{ 'Next word →'|t }}</button>
             </div>
+            {# "Study Now" (style=flip) level-2 recall check — its own
+               isolated markup/state rather than reusing data-flashcard-quiz
+               above, at the student's own request not to touch Quiz
+               Practice at all; see buildMasteryExercise() in
+               flashcard-study.js. #}
+            <div class="lms-flashcard__mastery" data-flashcard-mastery hidden>
+              <div class="lms-flashcard__mastery-definition" data-flashcard-mastery-definition></div>
+              {# Bonus round shown after a correct answer on the meaning
+                 round above, only for cards with an uploaded image — see
+                 startMasteryImageRound() in flashcard-study.js. Reuses
+                 .lms-flashcard__image as-is (same stable-box sizing as the
+                 plain flip view's own image), just a different
+                 data-attribute for JS to target. #}
+              <div class="lms-flashcard__image" data-flashcard-mastery-image hidden>
+                <img data-flashcard-mastery-image-img alt="">
+              </div>
+              <div class="lms-flashcard__mastery-choices" data-flashcard-mastery-choices></div>
+            </div>
+            <div class="lms-flashcard__pronounce" data-flashcard-pronounce hidden>
+              <div class="lms-flashcard__pronounce-definition" data-flashcard-pronounce-definition></div>
+              <button type="button" class="lms-flashcard__mic-btn" data-flashcard-mic-btn aria-label="{{ 'Record your pronunciation'|t }}" title="{{ 'Record your pronunciation'|t }}">
+                <i class="fas fa-microphone" aria-hidden="true"></i>
+              </button>
+              <p class="lms-flashcard__pronounce-status" data-flashcard-pronounce-status hidden></p>
+              {# Shown instead of the mic button on browsers without the Web
+                 Speech API (Safari/Firefox), or once mic permission is
+                 denied — see buildPronunciationExercise() in
+                 flashcard-study.js. #}
+              <div class="lms-flashcard__pronounce-fallback" data-flashcard-pronounce-fallback hidden>
+                <p class="lms-flashcard__pronounce-fallback-note" data-flashcard-pronounce-fallback-note>{{ 'Say the word aloud yourself, then grade it:'|t }}</p>
+                <div class="lms-flashcard__pronounce-fallback-actions">
+                  <button type="button" class="lms-flashcard__pronounce-fallback-btn lms-flashcard__pronounce-fallback-btn--good" data-flashcard-pronounce-fallback-correct>{{ 'I said it correctly'|t }}</button>
+                  <button type="button" class="lms-flashcard__pronounce-fallback-btn lms-flashcard__pronounce-fallback-btn--retry" data-flashcard-pronounce-fallback-incorrect>{{ 'Need more practice'|t }}</button>
+                </div>
+              </div>
+              <button type="button" class="lms-flashcard__spell-next" data-flashcard-pronounce-next hidden>{{ 'Next word →'|t }}</button>
+            </div>
             <p class="lms-flashcard__hint" data-flashcard-hint>{{ 'Click, tap or press space to reveal'|t }}</p>
           </div>
           <div class="lms-flashcard__face lms-flashcard__face--back">
@@ -66,8 +128,25 @@
               </button>
             </div>
             <div class="lms-flashcard__pronunciation" data-flashcard-back-pronunciation hidden></div>
+            <div class="lms-flashcard__image" data-flashcard-image-back hidden>
+              <img data-flashcard-image-back-img alt="">
+            </div>
             <div class="lms-flashcard__definition" data-flashcard-definition></div>
-            <div class="lms-flashcard__examples" data-flashcard-examples></div>
+            <div class="lms-flashcard__content">
+              <div class="lms-flashcard__examples-section" data-flashcard-examples-section hidden>
+                <h4 class="lms-flashcard__section-heading">{{ 'Examples'|t }}</h4>
+                <div class="lms-flashcard__examples" data-flashcard-examples></div>
+              </div>
+            </div>
+            {# Common word combinations for the term (e.g. "start a family"),
+               separate from the full example sentences above — see
+               field_collocations/field_collocation_translations on Card and
+               renderPairList() in flashcard-study.js. Hidden by JS when the
+               card has none. #}
+            <div class="lms-flashcard__collocations-section" data-flashcard-collocations-section hidden>
+              <h4 class="lms-flashcard__section-heading">{{ 'Collocations'|t }}</h4>
+              <div class="lms-flashcard__examples" data-flashcard-collocations></div>
+            </div>
           </div>
         </div>
       </div>
@@ -78,6 +157,115 @@
         <button type="button" class="lms-flashcard__grade lms-flashcard__grade--good" data-quality="2">{{ 'Good'|t }} <small>3 · <span data-flashcard-preview="good"></span></small></button>
         <button type="button" class="lms-flashcard__grade lms-flashcard__grade--easy" data-quality="3">{{ 'Easy'|t }} <small>4 · <span data-flashcard-preview="easy"></span></small></button>
       </div>
+
+      {# style=flip only: replaces the 4 grade buttons above (hidden for
+         this style, see showCard() in flashcard-study.js). One button,
+         relabeled per step: after flipping (level 1) it moves the card on
+         to its level-2 recall check a few cards later; after answering
+         that check (level 2) it advances to the next card. See
+         handleMasteryContinue(). Reuses the same "next" pill style as the
+         Spelling/Quiz Practice buttons above (lms-flashcard__spell-next) —
+         a shared look, not shared code; data-flashcard-mastery-continue is
+         what JS actually targets. #}
+      <button type="button" class="lms-flashcard__spell-next" data-flashcard-mastery-continue hidden>{{ 'Continue →'|t }}</button>
     </div>
+
+    {# Quick Edit sidebar (see QUICK_EDIT_STUDY_CARD_PLAN.md). Siblings of
+       [data-flashcard-stage] rather than nested inside it, for the same
+       click-isolation reason as the toolbar button above. Hidden by
+       default; flashcard-study.js toggles both together. #}
+    <div class="lms-flashcard-edit-overlay" data-flashcard-edit-overlay hidden></div>
+    <aside class="lms-flashcard-edit-drawer" data-flashcard-edit-drawer hidden aria-hidden="true" role="dialog" aria-label="{{ 'Quick edit'|t }}">
+      <div class="lms-flashcard-edit-drawer__header">
+        <h3 class="lms-flashcard-edit-drawer__title" data-flashcard-edit-title>{{ 'Quick edit'|t }}</h3>
+        <button type="button" class="lms-flashcard-edit-drawer__close" data-flashcard-edit-close aria-label="{{ 'Close'|t }}">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="lms-flashcard-edit-drawer__body" data-flashcard-edit-body>
+        <p class="lms-flashcard-edit-drawer__status" data-flashcard-edit-status hidden></p>
+
+        <label class="lms-flashcard-edit-drawer__label">{{ 'Term'|t }}
+          <input type="text" class="lms-flashcard-edit-drawer__input" data-flashcard-edit-term maxlength="255">
+        </label>
+
+        <label class="lms-flashcard-edit-drawer__label">{{ 'Definition'|t }}
+          <textarea class="lms-flashcard-edit-drawer__textarea" data-flashcard-edit-definition rows="3"></textarea>
+        </label>
+
+        <label class="lms-flashcard-edit-drawer__label">{{ 'Translation (native language)'|t }}
+          <input type="text" class="lms-flashcard-edit-drawer__input" data-flashcard-edit-translation maxlength="255" placeholder="{{ 'e.g. quả dứa'|t }}">
+        </label>
+
+        <label class="lms-flashcard-edit-drawer__label">{{ 'Part of speech'|t }}
+          <select class="lms-flashcard-edit-drawer__select" data-flashcard-edit-pos>
+            <option value="">{{ '— None —'|t }}</option>
+            <option value="noun">{{ 'Noun'|t }}</option>
+            <option value="verb">{{ 'Verb'|t }}</option>
+            <option value="adjective">{{ 'Adjective'|t }}</option>
+            <option value="adverb">{{ 'Adverb'|t }}</option>
+            <option value="pronoun">{{ 'Pronoun'|t }}</option>
+            <option value="preposition">{{ 'Preposition'|t }}</option>
+            <option value="conjunction">{{ 'Conjunction'|t }}</option>
+            <option value="interjection">{{ 'Interjection'|t }}</option>
+            <option value="determiner">{{ 'Determiner'|t }}</option>
+            <option value="article">{{ 'Article'|t }}</option>
+            <option value="phrase">{{ 'Phrase'|t }}</option>
+            <option value="idiom">{{ 'Idiom'|t }}</option>
+            <option value="other">{{ 'Other'|t }}</option>
+          </select>
+        </label>
+
+        <label class="lms-flashcard-edit-drawer__label">{{ 'Pronunciation (IPA)'|t }}
+          <input type="text" class="lms-flashcard-edit-drawer__input" data-flashcard-edit-pronunciation maxlength="128" placeholder="/…/">
+        </label>
+
+        <label class="lms-flashcard-edit-drawer__label">{{ 'Difficulty'|t }}
+          <select class="lms-flashcard-edit-drawer__select" data-flashcard-edit-difficulty>
+            <option value="easy">{{ 'Easy'|t }}</option>
+            <option value="medium">{{ 'Medium'|t }}</option>
+            <option value="hard">{{ 'Hard'|t }}</option>
+          </select>
+        </label>
+
+        <div class="lms-flashcard-edit-drawer__field-group">
+          <span class="lms-flashcard-edit-drawer__label">{{ 'Pronunciation audio'|t }}</span>
+          <div class="lms-flashcard-edit-drawer__file-row" data-flashcard-edit-audio-current hidden>
+            <audio controls data-flashcard-edit-audio-preview></audio>
+            <button type="button" class="lms-flashcard-edit-drawer__remove-btn" data-flashcard-edit-audio-remove>{{ 'Remove'|t }}</button>
+          </div>
+          <input type="file" accept="audio/mpeg,audio/wav,audio/ogg,.mp3,.wav,.ogg" data-flashcard-edit-audio-input>
+        </div>
+
+        <div class="lms-flashcard-edit-drawer__field-group">
+          <span class="lms-flashcard-edit-drawer__label">{{ 'Image'|t }}</span>
+          <div class="lms-flashcard-edit-drawer__file-row" data-flashcard-edit-image-current hidden>
+            <img class="lms-flashcard-edit-drawer__image-preview" data-flashcard-edit-image-preview alt="">
+            <button type="button" class="lms-flashcard-edit-drawer__remove-btn" data-flashcard-edit-image-remove>{{ 'Remove'|t }}</button>
+          </div>
+          <input type="file" accept="image/png,image/jpeg,image/gif,image/webp,.png,.jpg,.jpeg,.gif,.webp" data-flashcard-edit-image-input>
+        </div>
+
+        <div class="lms-flashcard-edit-drawer__pairs" data-flashcard-edit-examples>
+          <div class="lms-flashcard-edit-drawer__pairs-header">
+            <span class="lms-flashcard-edit-drawer__label">{{ 'Example sentences'|t }}</span>
+            <button type="button" class="lms-flashcard-edit-drawer__add-btn" data-flashcard-edit-examples-add>+ {{ 'Add'|t }}</button>
+          </div>
+          <div data-flashcard-edit-examples-rows></div>
+        </div>
+
+        <div class="lms-flashcard-edit-drawer__pairs" data-flashcard-edit-collocations>
+          <div class="lms-flashcard-edit-drawer__pairs-header">
+            <span class="lms-flashcard-edit-drawer__label">{{ 'Collocations'|t }}</span>
+            <button type="button" class="lms-flashcard-edit-drawer__add-btn" data-flashcard-edit-collocations-add>+ {{ 'Add'|t }}</button>
+          </div>
+          <div data-flashcard-edit-collocations-rows></div>
+        </div>
+      </div>
+      <div class="lms-flashcard-edit-drawer__footer">
+        <button type="button" class="lms-flashcard-edit-drawer__cancel" data-flashcard-edit-cancel>{{ 'Cancel'|t }}</button>
+        <button type="button" class="lms-flashcard-edit-drawer__save" data-flashcard-edit-save>{{ 'Save'|t }}</button>
+      </div>
+    </aside>
   </div>
 </section>

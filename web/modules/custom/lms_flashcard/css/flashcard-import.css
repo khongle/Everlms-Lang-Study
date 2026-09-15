@@ -98,6 +98,86 @@
   font-size: 0.9375rem;
 }
 
+/* Type-to-filter box injected before the "Target deck" select, and the
+   line reporting an auto-detected deck_id/deck from the pasted/uploaded
+   JSON — see flashcard-import.js's lmsFlashcardImportDeckPicker. */
+.lms-flashcard-import-form .lms-flashcard-import__deck-search {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #cfd4da;
+  border-radius: 0.4rem;
+  font-size: 0.875rem;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__deck-search:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.18);
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__deck-no-match {
+  margin: -0.15rem 0 0.5rem;
+  color: #b42318;
+  font-size: 0.8rem;
+}
+
+/* The JSON's deck_id didn't match anything in the list — an amber warning
+   rather than the blue "matched" tone below, since the manual picker stays
+   visible here (the student still has to pick by hand). */
+.lms-flashcard-import-form .lms-flashcard-import__deck-autodetect {
+  margin: 0 0 0.5rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.4rem;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+/* Forces the whole "Target deck" field (label, search box, select,
+   description) hidden once its deck_id is matched from the JSON — see
+   setMatched() in flashcard-import.js for why this needs !important. */
+.lms-flashcard-import-form .form-item-deck-id.lms-flashcard-import__deck-field--matched {
+  display: none !important;
+}
+
+/* Replaces the field while matched: a one-line confirmation plus a way to
+   still open the manual picker back up. */
+.lms-flashcard-import-form .lms-flashcard-import__deck-matched {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.4rem;
+  background: #ecfdf3;
+  border: 1px solid #a7e8c4;
+  color: #05603a;
+  font-size: 0.85rem;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__deck-change-btn {
+  flex-shrink: 0;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid #a7e8c4;
+  border-radius: 0.4rem;
+  background: #fff;
+  color: #05603a;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lms-flashcard-import-form .lms-flashcard-import__deck-change-btn:hover {
+  background: #ecfdf3;
+}
+
 /* --- File upload box --- */
 .lms-flashcard-import-form .form-managed-file {
   display: flex;

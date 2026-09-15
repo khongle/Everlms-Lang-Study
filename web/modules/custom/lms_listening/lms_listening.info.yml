@@ -1,0 +1,10 @@
+name: 'LMS Listening'
+type: module
+description: 'Listening comprehension practice built from Flashcard vocabulary decks: sentence-level and passage-level "listen first, read later" exercises with hint/transcript/translation reveal and comprehension questions.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+  - lms_flashcard:lms_flashcard
+  - lms_question:lms_question
+lifecycle: experimental

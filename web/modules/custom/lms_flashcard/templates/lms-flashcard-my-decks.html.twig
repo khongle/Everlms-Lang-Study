@@ -1,6 +1,18 @@
 {# My Flashcards page: every published deck with due/new counts #}
 {{ attach_library('lms_theme/global') }}
 {{ attach_library('lms_flashcard/flashcard_pages') }}
+{{ attach_library('lms_flashcard/flashcard_my_decks') }}
+
+{# Client-side filter: search text + language + a status chip (mine/due/new).
+   All the data it needs (name, description, language, is_mine, due/new
+   counts) is already in `decks` below, so this filters in JS instead of a
+   round trip — see js/flashcard-my-decks.js. #}
+{% set languages = [] %}
+{% for deck in decks %}
+  {% if deck.language and deck.language not in languages %}
+    {% set languages = languages|merge([deck.language]) %}
+  {% endif %}
+{% endfor %}
 
 <section class="lms-section lms-flashcard-page">
   <div class="container">
@@ -16,9 +28,70 @@
         <p>{{ 'Check back once your instructor publishes a vocabulary deck.'|t }}</p>
       </div>
     {% else %}
-      <div class="lms-flashcard-decks">
+      <div class="lms-flashcard-toolbar" data-flashcard-filters>
+        <div class="lms-flashcard-toolbar__filters">
+          <div class="lms-flashcard-filters__search">
+            <i class="fas fa-search"></i>
+            <input type="search" class="lms-flashcard-filters__input" data-filter-search placeholder="{{ 'Search decks…'|t }}" aria-label="{{ 'Search decks'|t }}">
+          </div>
+
+          {% if languages|length > 1 %}
+            <select class="lms-flashcard-filters__select" data-filter-language aria-label="{{ 'Filter by language'|t }}">
+              <option value="">{{ 'All languages'|t }}</option>
+              {% for lang in languages %}
+                <option value="{{ lang }}">{{ lang }}</option>
+              {% endfor %}
+            </select>
+          {% endif %}
+
+          <div class="lms-flashcard-filters__chips" role="group" aria-label="{{ 'Filter decks'|t }}">
+            <button type="button" class="lms-flashcard-filters__chip is-active" data-filter-chip="all">{{ 'All'|t }}</button>
+            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="mine">{{ 'Mine'|t }}</button>
+            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="due">{{ 'Due'|t }}</button>
+            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="new">{{ 'New'|t }}</button>
+          </div>
+        </div>
+
+        {# Sort + grid/list view grouped together on the right, separate
+           from the search/language/status filters on the left — was a
+           plain <select> stretching full-width on its own row before,
+           disconnected from everything above it. data-created on each
+           card (below) is what "Newest first"/"Oldest first" sort by;
+           the view toggle's preference is remembered per browser — both
+           in js/flashcard-my-decks.js. #}
+        <div class="lms-flashcard-toolbar__right">
+          <select class="lms-flashcard-filters__select lms-flashcard-filters__select--sort" data-sort-select aria-label="{{ 'Sort decks'|t }}">
+            <option value="name_asc">{{ 'Name (A–Z)'|t }}</option>
+            <option value="created_desc">{{ 'Newest first'|t }}</option>
+            <option value="created_asc">{{ 'Oldest first'|t }}</option>
+          </select>
+
+          <div class="lms-flashcard-toolbar__view" role="group" aria-label="{{ 'View mode'|t }}">
+            <button type="button" class="lms-flashcard-view-btn is-active" data-view-toggle="grid" aria-pressed="true" title="{{ 'Grid view'|t }}">
+              <i class="fas fa-grip"></i>
+            </button>
+            <button type="button" class="lms-flashcard-view-btn" data-view-toggle="list" aria-pressed="false" title="{{ 'List view'|t }}">
+              <i class="fas fa-list"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="lms-flashcard-empty lms-flashcard-filters__no-match" data-filter-empty hidden>
+        {{ 'No decks match your filters.'|t }}
+      </p>
+
+      <div class="lms-flashcard-decks" data-flashcard-deck-grid>
         {% for deck in decks %}
-          <div class="lms-flashcard-deck-card">
+          <div class="lms-flashcard-deck-card"
+            data-flashcard-deck
+            data-name="{{ deck.name|lower }}"
+            data-desc="{{ deck.description|default('')|striptags|lower }}"
+            data-language="{{ deck.language }}"
+            data-mine="{{ deck.is_mine ? '1' : '0' }}"
+            data-due="{{ deck.due_count > 0 ? '1' : '0' }}"
+            data-new="{{ deck.new_count > 0 ? '1' : '0' }}"
+            data-created="{{ deck.entity.get('created').value }}">
             <div class="lms-flashcard-deck-card__top">
               <h3 class="lms-flashcard-deck-card__title">{{ deck.name }}</h3>
               <div class="lms-flashcard-deck-card__badges">
@@ -43,31 +116,157 @@
               {% endif %}
             </div>
 
-            <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__cta">
-              {{ 'Study Now'|t }}
-            </a>
+            {# Study Now mastery — how much of this deck has cleared level 3
+               right now (see StudyQueueBuilder::getMasteryPercent()), not
+               just today's due/new cards above. The "Reset" link (only
+               shown once there's something to reset — 0% has nothing to
+               undo) clears this progress bar back down so the student can
+               go through Study Now again — see js/flashcard-my-decks.js's
+               lmsFlashcardMasteryReset behavior and
+               FlashcardApiController::resetMastery(). Deliberately does
+               NOT re-lock Spelling/Pronunciation/Reading/Listening below —
+               those gate on deck.practice_unlocked instead (see
+               StudyQueueBuilder::isPracticeUnlocked()), which stays TRUE
+               forever once every card here has been mastered at least
+               once, reset or not. #}
+            <div class="lms-flashcard-deck-card__mastery" title="{{ 'Study Now mastery — reach 100% to unlock the other study modes below (they stay unlocked even after resetting this)'|t }}">
+              <div class="lms-flashcard-deck-card__mastery-bar">
+                <div class="lms-flashcard-deck-card__mastery-fill" style="width: {{ deck.mastery_percent }}%"></div>
+              </div>
+              <span class="lms-flashcard-deck-card__mastery-label">{{ 'Mastery: @percent%'|t({'@percent': deck.mastery_percent}) }}</span>
+              {% if deck.mastery_percent > 0 %}
+                <button type="button" class="lms-flashcard-deck-card__mastery-reset" data-flashcard-reset-mastery="{{ deck.entity.id() }}" data-deck-name="{{ deck.entity.label() }}" title="{{ 'Reset your Study Now progress for this deck'|t }}">
+                  <i class="fas fa-rotate-left"></i> {{ 'Reset'|t }}
+                </button>
+              {% endif %}
+            </div>
 
-            {# Definition-first + fill-in-the-missing-letters spelling puzzle,
-               with the term read aloud right away — see StudyController::study()
-               and buildSpellPuzzle() in flashcard-study.js. Still a real SRS
-               session (same due/new cards as Study Now), just a different
-               way of reviewing them. #}
-            <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?style=spell" class="lms-flashcard-deck-card__spell-link">
-              <i class="fas fa-spell-check"></i> {{ 'Spelling Practice'|t }}
-            </a>
+            <div class="lms-flashcard-deck-card__actions">
+              <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__cta">
+                <i class="fas fa-play"></i>
+                {{ 'Study Now'|t }}
+              </a>
 
-            {# 3-level example-sentence quiz (cloze MCQ → listen-and-match →
-               listen-and-type) — see StudyController::buildQuizPool() and
-               buildQuizExercise() in flashcard-study.js. Same real-SRS +
-               independent-level pattern as Spelling Practice above. #}
-            <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?style=quiz" class="lms-flashcard-deck-card__spell-link">
-              <i class="fas fa-list-check"></i> {{ 'Quiz Practice'|t }}
-            </a>
+              <div class="lms-flashcard-deck-card__practice-links" aria-label="{{ 'Practice modes'|t }}">
+                {# Definition-first + fill-in-the-missing-letters spelling puzzle,
+                   with the term read aloud right away — see StudyController::study()
+                   and buildSpellPuzzle() in flashcard-study.js. Still a real SRS
+                   session (same due/new cards as Study Now), just a different
+                   way of reviewing them.
+
+                   Locked below 100% Study Now mastery, at the student's own
+                   request — same lock/tooltip pattern repeats for
+                   Pronunciation/Reading/Listening further down. #}
+                {% if deck.practice_unlocked %}
+                  <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?style=spell" class="lms-flashcard-deck-card__practice-link lms-flashcard-deck-card__practice-link--spell">
+                    <i class="fas fa-spell-check"></i> {{ 'Spelling'|t }}
+                  </a>
+                {% else %}
+                  <span class="lms-flashcard-deck-card__practice-link lms-flashcard-deck-card__practice-link--spell is-locked" title="{{ 'Reach 100% Study Now mastery to unlock Spelling'|t }}">
+                    <i class="fas fa-lock"></i> {{ 'Spelling'|t }}
+                  </span>
+                {% endif %}
+
+                {# No separate "Quiz" entry point any more, at the student's
+                   own request — its 3 exercises (cloze MCQ → listen-and-match
+                   → listen-and-type) are folded into "Study Now" itself as
+                   mastery level 3, reused as-is (see StudyController::
+                   buildQuizPool() and buildQuizExercise()/finishQuizAnswer()
+                   in flashcard-study.js) rather than duplicated — the
+                   ?style=quiz route/page/JS underneath are all still there,
+                   just no longer linked here. #}
+
+                {# Term/IPA/meaning shown up front (no forced direction=reverse
+                   — see StudyController::study()); the student records
+                   themselves saying the word and gets graded via the Web
+                   Speech API, or self-grades on browsers without it — see
+                   buildPronunciationExercise() in flashcard-study.js. Same
+                   real-SRS + independent-level pattern as the two above. #}
+                {% if deck.practice_unlocked %}
+                  <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.entity.id()}) }}?style=pronounce" class="lms-flashcard-deck-card__practice-link lms-flashcard-deck-card__practice-link--pronounce">
+                    <i class="fas fa-microphone"></i> {{ 'Pronunciation'|t }}
+                  </a>
+                {% else %}
+                  <span class="lms-flashcard-deck-card__practice-link lms-flashcard-deck-card__practice-link--pronounce is-locked" title="{{ 'Reach 100% Study Now mastery to unlock Pronunciation'|t }}">
+                    <i class="fas fa-lock"></i> {{ 'Pronunciation'|t }}
+                  </span>
+                {% endif %}
+
+                {# Single additive link into the separate lms_reading module
+                   (see READING_PRACTICE_PLAN.md at the repo root) — a plain
+                   hardcoded href, not {{ path('lms_reading.my_passages') }},
+                   so this template never errors if lms_reading is ever
+                   disabled/absent; it would just be a 404 link, not a fatal
+                   route-not-found exception breaking My Flashcards. Nothing
+                   else on this page changes for Reading.
+
+                   deck.reading_count (how many passages this deck has) is
+                   NOT set here — it's added by
+                   lms_reading_preprocess_lms_flashcard_my_decks() in
+                   lms_reading.module, which only runs while lms_reading is
+                   enabled; on a site without it, deck.reading_count is
+                   simply undefined and Twig's `is defined` check below
+                   just skips the badge. #}
+                {% if deck.practice_unlocked %}
+                  <a href="/learn/reading?deck={{ deck.entity.id() }}" class="lms-flashcard-deck-card__practice-link lms-flashcard-deck-card__practice-link--reading">
+                    <i class="fas fa-book-open"></i> {{ 'Reading'|t }}
+                    {% if deck.reading_count is defined and deck.reading_count > 0 %}
+                      <span class="lms-reading-deck-badge">{{ deck.reading_count }}</span>
+                    {% endif %}
+                  </a>
+                {% else %}
+                  <span class="lms-flashcard-deck-card__practice-link lms-flashcard-deck-card__practice-link--reading is-locked" title="{{ 'Reach 100% Study Now mastery to unlock Reading'|t }}">
+                    <i class="fas fa-lock"></i> {{ 'Reading'|t }}
+                  </span>
+                {% endif %}
+
+                {# Same additive-link pattern as Reading just above, this time
+                   into the separate lms_listening module — a plain hardcoded
+                   href so this template never errors if lms_listening is
+                   ever disabled/absent. Points at lms_listening.start, the
+                   level-picker page ("which level(s) do you want to
+                   practice?") that queues a couple of passages per level and
+                   drops the student into the first one — see
+                   ListeningStartForm's docblock. lms_listening also
+                   progressively enhances this exact link into an in-page
+                   popup instead of a full navigation, purely via a JS
+                   behavior matched by class name (lms_listening_preprocess_
+                   lms_flashcard_my_decks() attaches that library to this
+                   page) — this template stays unaware of it, same
+                   decoupling as everywhere else here; the href is what
+                   still works if that JS doesn't run. data-deck-name feeds
+                   that popup's "Pick a level for X" heading; data-level-counts
+                   (a JSON object, e.g. {"easy":5,"challenge":2}) tells it how
+                   many passages exist per level, to show a count next to each
+                   checkbox and disable any level with none — both inert
+                   markup otherwise. deck.listening_count/listening_level_counts
+                   are set by the same preprocess function (only runs while
+                   lms_listening is enabled); Twig's `is defined` check below
+                   skips the badge otherwise. #}
+                {% if deck.practice_unlocked %}
+                  <a href="/learn/listening-start?deck={{ deck.entity.id() }}" data-deck-name="{{ deck.entity.label() }}" data-level-counts="{{ deck.listening_level_counts|default('{}') }}" data-passages="{{ deck.listening_passages|default('[]') }}" class="lms-flashcard-deck-card__practice-link lms-flashcard-deck-card__practice-link--listening">
+                    <i class="fas fa-headphones"></i> {{ 'Listening'|t }}
+                    {% if deck.listening_count is defined and deck.listening_count > 0 %}
+                      <span class="lms-listening-deck-badge">{{ deck.listening_count }}</span>
+                    {% endif %}
+                  </a>
+                {% else %}
+                  <span class="lms-flashcard-deck-card__practice-link lms-flashcard-deck-card__practice-link--listening is-locked" title="{{ 'Reach 100% Study Now mastery to unlock Listening'|t }}">
+                    <i class="fas fa-lock"></i> {{ 'Listening'|t }}
+                  </span>
+                {% endif %}
+              </div>
+            </div>
 
             {% if deck.is_mine %}
               <div class="lms-flashcard-deck-card__manage">
                 <a href="{{ path('entity.lms_flashcard_deck.edit_form', {'lms_flashcard_deck': deck.entity.id()}) }}">{{ 'Edit'|t }}</a>
                 <a href="{{ path('lms_flashcard.import') }}">{{ 'Add cards'|t }}</a>
+                {# JSON of every card in this deck, in the exact shape the
+                   importer accepts — meant to be pasted to an LLM for edits
+                   and re-imported afterwards without creating duplicates.
+                   See DeckExportController. #}
+                <a href="{{ path('lms_flashcard.deck_export', {'lms_flashcard_deck': deck.entity.id()}) }}">{{ 'Export JSON'|t }}</a>
                 <a href="{{ path('entity.lms_flashcard_deck.delete_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link--danger">{{ 'Delete'|t }}</a>
               </div>
             {% endif %}

@@ -39,3 +39,40 @@ function lms_note_update_10002() {
 
   return 'Added field_attachments to lms_note entity.';
 }
+
+/**
+ * Add field_context_type/field_context_id to lms_note (generalizing it
+ * beyond course lessons — see NOTE_EXPANSION_PLAN.md) and backfill every
+ * pre-existing row to context_type = 'lesson'.
+ *
+ * installFieldStorageDefinition() only defines the columns — it does NOT
+ * populate existing rows even with setDefaultValue() (confirmed the hard
+ * way earlier in this project: see lms_flashcard_update_10014(), which had
+ * to fix 213 rows left NULL by the same mistake). So the backfill here is
+ * a direct, explicit UPDATE, not a field default.
+ */
+function lms_note_update_10003() {
+  $type_definition = BaseFieldDefinition::create('string')
+    ->setLabel(new TranslatableMarkup('Context type'))
+    ->setSetting('max_length', 32);
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_context_type', 'lms_note', 'lms_note', $type_definition);
+
+  $id_definition = BaseFieldDefinition::create('integer')
+    ->setLabel(new TranslatableMarkup('Context ID'))
+    ->setSetting('unsigned', TRUE);
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_context_id', 'lms_note', 'lms_note', $id_definition);
+
+  $database = \Drupal::database();
+  $updated = $database->update('lms_note')
+    ->fields(['field_context_type' => 'lesson'])
+    ->expression('field_context_id', 'field_lesson')
+    ->isNotNull('field_lesson')
+    ->isNull('field_context_type')
+    ->execute();
+
+  \Drupal::entityTypeManager()->getStorage('lms_note')->resetCache();
+
+  return "Added field_context_type/field_context_id to lms_note; backfilled $updated existing row(s) to context_type='lesson'.";
+}

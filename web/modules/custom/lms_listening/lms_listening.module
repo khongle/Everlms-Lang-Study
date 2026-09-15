@@ -1,0 +1,156 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for lms_listening module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function lms_listening_theme($existing, $type, $theme, $path) {
+  return [
+    'lms_listening_my_passages' => [
+      'variables' => [
+        'passages' => [],
+      ],
+      'template' => 'lms-listening-my-passages',
+    ],
+    'lms_listening_passage_view' => [
+      'variables' => [
+        'passage' => NULL,
+        'dialogue_turns' => [],
+        'hints' => [],
+        // See lms_listening_review's own next_passage_id comment just
+        // below for why every render-array key needs to be listed here.
+        'times_seen_label' => NULL,
+      ],
+      'template' => 'lms-listening-passage-view',
+    ],
+    'lms_listening_passive_view' => [
+      'variables' => [
+        'passage' => NULL,
+      ],
+      'template' => 'lms-listening-passive-view',
+    ],
+    'lms_listening_questions' => [
+      'variables' => [
+        'passage' => NULL,
+      ],
+      'template' => 'lms-listening-questions',
+    ],
+    'lms_listening_review' => [
+      'variables' => [
+        'passage' => NULL,
+        'attempt' => NULL,
+        // Undeclared render array keys are silently dropped by the theme
+        // system, so this must be listed here too — omitting it (as an
+        // earlier pass of the "Next passage" link did) means the template's
+        // {% if next_passage_id %} check always saw an undefined variable
+        // and never rendered the link, however correctly the controller
+        // computed it.
+        'next_passage_id' => NULL,
+      ],
+      'template' => 'lms-listening-review',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for lms_flashcard_my_decks.
+ *
+ * Adds `listening_count` to each item in $variables['decks'] — the number of
+ * Listening passages built on that deck that the current user may actually
+ * open — so lms_flashcard's own "My Flashcards" template (see the Listening
+ * link added there) can show a badge, without lms_flashcard's code having to
+ * know lms_listening exists at all. Also adds `listening_level_counts`, the
+ * same breakdown per level (as a JSON string) for js/listening-start-modal.js
+ * to show "@count available" next to each checkbox and disable any level
+ * with none. Mirrors
+ * lms_reading_preprocess_lms_flashcard_my_decks() in lms_reading.module
+ * exactly (kept as an independent copy, not a shared helper, per this
+ * module's independence from lms_reading's own code) — this is the reverse
+ * direction, an *optional* module reaching INTO another module's render
+ * output via the standard preprocess hook, which only runs for enabled
+ * modules: on a site with lms_listening disabled, this function doesn't
+ * exist/run and the Flashcard page is entirely unaffected. This never
+ * writes anything, only reads lms_listening_passage (its own entity) and
+ * lms_flashcard_deck ids already present in $variables.
+ */
+function lms_listening_preprocess_lms_flashcard_my_decks(array &$variables): void {
+  if (empty($variables['decks'])) {
+    return;
+  }
+
+  $deck_ids = [];
+  foreach ($variables['decks'] as $deck_row) {
+    if (!empty($deck_row['entity'])) {
+      $deck_ids[] = (int) $deck_row['entity']->id();
+    }
+  }
+  if (!$deck_ids) {
+    return;
+  }
+
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $passage_storage = $entity_type_manager->getStorage('lms_listening_passage');
+  $passage_ids = $passage_storage->getQuery()
+    ->condition('field_deck', $deck_ids, 'IN')
+    ->condition('status', TRUE)
+    ->accessCheck(FALSE)
+    ->execute();
+
+  $counts = [];
+  $level_counts = [];
+  // {id, title, level} per deck — backs the "choose specific passages"
+  // option in Passive Listening's start popup (see
+  // js/listening-start-modal.js and PASSIVE_LISTENING_PLAN.md), an
+  // alternative to the random per-level pick. Built in this same pass
+  // rather than via ListeningQueueService::listPassagesForDeck() (which
+  // would re-query per deck) — same visibility check already computed
+  // below, no reason to run it twice.
+  $passages_by_deck = [];
+  if ($passage_ids) {
+    $uid = (int) \Drupal::currentUser()->id();
+    foreach ($passage_storage->loadMultiple($passage_ids) as $passage) {
+      /** @var \Drupal\lms_listening\Entity\ListeningPassage $passage */
+      // Same "own it, or its owner is staff" rule as
+      // ListeningVisibilityService::isPassageVisibleTo() — not calling that
+      // service here since it also re-checks the *deck's* visibility, which
+      // is redundant: every deck in $variables['decks'] already passed
+      // lms_flashcard's own visibility filter to appear on this page at all.
+      $owner_id = (int) $passage->getOwnerId();
+      $visible = $owner_id === $uid;
+      if (!$visible) {
+        $owner = $passage->getOwner();
+        $visible = !$owner || $owner->hasPermission('view lms_course') || $owner->hasPermission('administer lms_course');
+      }
+      if (!$visible) {
+        continue;
+      }
+      $deck_id = (int) $passage->get('field_deck')->target_id;
+      $counts[$deck_id] = ($counts[$deck_id] ?? 0) + 1;
+      $level = $passage->get('field_level')->value;
+      $level_counts[$deck_id][$level] = ($level_counts[$deck_id][$level] ?? 0) + 1;
+      $passages_by_deck[$deck_id][] = [
+        'id' => (int) $passage->id(),
+        'title' => (string) $passage->label(),
+        'level' => $level,
+      ];
+    }
+  }
+
+  foreach ($variables['decks'] as &$deck_row) {
+    if (empty($deck_row['entity'])) {
+      continue;
+    }
+    $deck_id = (int) $deck_row['entity']->id();
+    $deck_row['listening_count'] = $counts[$deck_id] ?? 0;
+    $deck_row['listening_level_counts'] = json_encode($level_counts[$deck_id] ?? new \stdClass());
+    $deck_row['listening_passages'] = json_encode($passages_by_deck[$deck_id] ?? []);
+  }
+  unset($deck_row);
+
+  $variables['#attached']['library'][] = 'lms_listening/listening_deck_badge';
+  $variables['#attached']['library'][] = 'lms_listening/listening_start_modal';
+}

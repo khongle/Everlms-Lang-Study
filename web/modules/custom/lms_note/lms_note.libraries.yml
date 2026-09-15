@@ -1,0 +1,10 @@
+note_widget:
+  version: 1.x
+  css:
+    theme:
+      css/note-widget.css: {}
+  js:
+    js/note-widget.js: {}
+  dependencies:
+    - core/once
+    - core/drupal

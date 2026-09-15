@@ -1,0 +1,11 @@
+name: 'LMS Reading'
+type: module
+description: 'Reading comprehension practice built from Flashcard vocabulary decks: Read, Understand, Guess from Context, and Review.'
+core_version_requirement: ^11
+package: EverLMS
+dependencies:
+  - lms_base:lms_base
+  - lms_flashcard:lms_flashcard
+  - lms_question:lms_question
+  - taxonomy:taxonomy
+lifecycle: experimental

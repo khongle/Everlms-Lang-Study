@@ -1,5 +1,12 @@
+# No explicit `version:` on any of these — that field is meant for pinning
+# genuinely third-party/vendored assets to a real semver, not first-party
+# module JS/CSS under active development. Setting one (even a placeholder
+# like "1.x") replaces Drupal's own auto-bumped cache-busting query string
+# (which changes on every `drush cache:rebuild`) with that fixed literal, so
+# a browser that already cached e.g. flashcard-import.js?v=1.x keeps serving
+# its stale copy from before an edit, from the exact same URL, indefinitely.
+# Leaving it unset means every cache rebuild forces browsers to refetch.
 flashcard_study:
-  version: 1.x
   css:
     theme:
       css/flashcard-study.css: {}
@@ -11,7 +18,6 @@ flashcard_study:
     - core/drupalSettings
 
 flashcard_import:
-  version: 1.x
   css:
     theme:
       css/flashcard-import.css: {}
@@ -22,19 +28,35 @@ flashcard_import:
     - core/once
 
 flashcard_pages:
-  version: 1.x
   css:
     theme:
       css/flashcard-pages.css: {}
 
+flashcard_export:
+  js:
+    js/flashcard-export.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+flashcard_my_decks:
+  js:
+    js/flashcard-my-decks.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
 flashcard_entity_form:
-  version: 1.x
   css:
     theme:
       css/flashcard-entity-form.css: {}
+  js:
+    js/flashcard-entity-form.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
 
 flashcard_admin:
-  version: 1.x
   css:
     theme:
       css/flashcard-admin.css: {}

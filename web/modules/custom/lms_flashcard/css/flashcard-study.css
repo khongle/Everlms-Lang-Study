@@ -5,6 +5,10 @@
   gap: 1.5rem;
 }
 
+.lms-flashcard-study__container {
+  max-width: 860px;
+}
+
 .lms-flashcard-study__header {
   margin-bottom: 1.5rem;
 }
@@ -16,7 +20,7 @@
 
 .lms-flashcard-study__progress-bar {
   width: 100%;
-  max-width: 640px;
+  max-width: 860px;
   height: 0.5rem;
   border-radius: 999px;
   background: #e5e7eb;
@@ -95,7 +99,7 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
 
 .lms-flashcard {
   width: 100%;
-  min-height: 320px;
+  min-height: 580px;
   perspective: 1200px;
   cursor: pointer;
 }
@@ -103,7 +107,7 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
 .lms-flashcard__inner {
   position: relative;
   width: 100%;
-  height: 320px;
+  height: 580px;
   transition: transform 0.5s;
   transform-style: preserve-3d;
 }
@@ -114,8 +118,8 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
    the plain flip/reverse card keeps its original compact size. */
 .lms-flashcard--spell,
 .lms-flashcard--spell .lms-flashcard__inner {
-  height: 420px;
-  min-height: 420px;
+  height: 600px;
+  min-height: 600px;
 }
 
 /* Quiz mode's sentence prompt + up to 4 stacked answer choices need more
@@ -123,8 +127,17 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
    why this is a modifier rather than the unconditional card height. */
 .lms-flashcard--quiz,
 .lms-flashcard--quiz .lms-flashcard__inner {
-  height: 480px;
-  min-height: 480px;
+  height: 620px;
+  min-height: 620px;
+}
+
+/* Pronunciation mode shows the definition up front (see
+   buildPronunciationExercise() in flashcard-study.js) plus the mic button
+   and feedback line — similar footprint to Spelling's puzzle. */
+.lms-flashcard--pronounce,
+.lms-flashcard--pronounce .lms-flashcard__inner {
+  height: 600px;
+  min-height: 600px;
 }
 
 .lms-flashcard.is-flipped .lms-flashcard__inner {
@@ -151,11 +164,20 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 2rem;
+  padding: 2rem 2.25rem;
 }
 
 .lms-flashcard__face--back {
   transform: rotateY(180deg);
+  align-items: stretch;
+  justify-content: flex-start;
+  text-align: left;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.lms-flashcard__face--back > * {
+  flex-shrink: 0;
 }
 
 .lms-flashcard__pos {
@@ -486,6 +508,162 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
   overflow-wrap: anywhere;
 }
 
+/* Pronunciation Practice — see buildPronunciationExercise() in
+   flashcard-study.js. */
+.lms-flashcard__pronounce {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 24rem;
+  margin: 0.5rem auto 0;
+}
+
+/* "Study Now" (style=flip) level-2 recall check — see
+   buildMasteryExercise() in flashcard-study.js. Same wrapper shape as
+   .lms-flashcard__quiz above (and reuses its .lms-flashcard__quiz-choice
+   buttons directly for the 4 answers), independent markup otherwise. */
+.lms-flashcard__mastery {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 26rem;
+  margin: 0.75rem auto 0;
+}
+
+.lms-flashcard__mastery-definition {
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: #111827;
+  text-align: center;
+}
+
+.lms-flashcard__mastery-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lms-flashcard__pronounce-definition {
+  color: #374151;
+  font-size: 1rem;
+}
+
+.lms-flashcard__mic-btn {
+  width: 3.5rem;
+  height: 3.5rem;
+  border: none;
+  border-radius: 999px;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.lms-flashcard__mic-btn:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+.lms-flashcard__mic-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.lms-flashcard__mic-btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* Pulses while a recording is in progress, so it's obvious the mic is
+   actually listening rather than idle — see startPronounceRecording(). */
+.lms-flashcard__mic-btn.is-recording {
+  background: #da3633;
+  animation: lms-flashcard-mic-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes lms-flashcard-mic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(218, 54, 51, 0.45); }
+  50% { box-shadow: 0 0 0 10px rgba(218, 54, 51, 0); }
+}
+
+.lms-flashcard__pronounce-status {
+  min-height: 1.2rem;
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.lms-flashcard__pronounce-status.is-correct {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.lms-flashcard__pronounce-status.is-close {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.lms-flashcard__pronounce-status.is-incorrect {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+/* Manual self-grade fallback — shown instead of the mic button on browsers
+   without Web Speech API support, or once mic permission is denied — see
+   switchToPronounceFallback() in flashcard-study.js. */
+.lms-flashcard__pronounce-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lms-flashcard__pronounce-fallback-note {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+.lms-flashcard__pronounce-fallback-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.lms-flashcard__pronounce-fallback-btn {
+  padding: 0.5rem 0.9rem;
+  border: none;
+  border-radius: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lms-flashcard__pronounce-fallback-btn--good {
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+}
+
+.lms-flashcard__pronounce-fallback-btn--good:hover {
+  background: rgba(34, 197, 94, 0.22);
+}
+
+.lms-flashcard__pronounce-fallback-btn--retry {
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
+
+.lms-flashcard__pronounce-fallback-btn--retry:hover {
+  background: rgba(239, 68, 68, 0.18);
+}
+
 /* Reverse-mode ("meaning → word") prompt shown on the front face instead
    of the term — see flashcard-study.js showCard(). */
 .lms-flashcard__prompt {
@@ -495,36 +673,57 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
 }
 
 .lms-flashcard__definition {
-  font-size: 1.25rem;
+  max-width: 680px;
+  margin: 0 auto 1.35rem;
   color: #111827;
-  margin-bottom: 1rem;
+  font-size: 1.28rem;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.lms-flashcard__content {
+  width: 100%;
+  min-height: 0;
+  flex-shrink: 0;
+}
+
+.lms-flashcard__examples-section,
+.lms-flashcard__collocations-section {
+  width: 100%;
+  padding: 1rem 1.1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #f9fafb;
 }
 
 .lms-flashcard__example {
   color: #374151;
+  font-size: 1.08rem;
   font-style: italic;
+  line-height: 1.6;
 }
 
 .lms-flashcard__example-row {
   display: grid;
-  grid-template-columns: 1.9rem minmax(0, 1fr);
+  grid-template-columns: 2rem minmax(0, 1fr);
   align-items: start;
-  gap: 0.55rem;
+  gap: 0.7rem;
 }
 
 .lms-flashcard__example-speak {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.65rem;
-  height: 1.65rem;
+  width: 1.85rem;
+  height: 1.85rem;
   padding: 0;
   border: 1px solid rgba(79, 70, 229, 0.22);
   border-radius: 999px;
   background: rgba(79, 70, 229, 0.08);
   color: #4f46e5;
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   line-height: 1;
 }
 
@@ -536,22 +735,40 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
   display: grid;
   gap: 0.85rem;
   width: 100%;
-  max-height: 11rem;
-  overflow-y: auto;
 }
 
 .lms-flashcard__example-pair {
-  padding-left: 0.85rem;
-  border-left: 2px solid rgba(79, 70, 229, 0.28);
+  padding: 0.9rem 1rem;
+  border-left: 3px solid rgba(79, 70, 229, 0.28);
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+/* Collocations sit in their own labeled section below the examples, on the
+   back face — see renderPairList() in flashcard-study.js. Reuses
+   .lms-flashcard__examples/__example-pair/etc for the row layout itself. */
+.lms-flashcard__collocations-section {
+  margin-top: 1rem;
+}
+
+.lms-flashcard__section-heading {
+  margin: 0 0 0.85rem;
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
 }
 
 .lms-flashcard__example-translation {
+  margin: 0.4rem 0 0 2.7rem;
   padding: 0;
   background: transparent;
   border: 0;
   color: #6b7280;
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: 1rem;
   text-align: left;
   display: inline-block;
   cursor: pointer;
@@ -569,9 +786,13 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
 
 /* --- Academy skin refinement (currently the active homepage_style) --- */
 body.layout-academy .lms-flashcard__face {
-  background: #fffaf2;
+  background: linear-gradient(180deg, #fffaf2 0%, #fff7ea 100%);
   border-color: rgba(104, 74, 36, 0.15);
   box-shadow: 0 10px 28px rgba(71, 48, 27, 0.08);
+}
+
+body.layout-academy .lms-flashcard__face--back {
+  scrollbar-color: rgba(141, 31, 45, 0.35) rgba(104, 74, 36, 0.08);
 }
 
 body.layout-academy .lms-flashcard__pos,
@@ -705,6 +926,48 @@ body.layout-academy .lms-flashcard__example-translation {
   color: #81694a;
 }
 
+body.layout-academy .lms-flashcard__examples-section,
+body.layout-academy .lms-flashcard__collocations-section {
+  background: rgba(255, 252, 246, 0.72);
+  border-color: rgba(104, 74, 36, 0.16);
+}
+
+body.layout-academy .lms-flashcard__example-pair {
+  background: rgba(255, 255, 255, 0.48);
+  border-left-color: rgba(141, 31, 45, 0.28);
+}
+
+body.layout-academy .lms-flashcard__section-heading {
+  color: #b39254;
+}
+
+body.layout-academy .lms-flashcard__pronounce-definition {
+  color: #6d5a44;
+}
+
+body.layout-academy .lms-flashcard__mic-btn {
+  background: linear-gradient(135deg, #ba8b38, #d5b46d);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-flashcard__mic-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a97c2f, #c9a45e);
+}
+
+body.layout-academy .lms-flashcard__mic-btn.is-recording {
+  background: #8d1f2d;
+  animation: lms-flashcard-mic-pulse-academy 1.2s ease-in-out infinite;
+}
+
+@keyframes lms-flashcard-mic-pulse-academy {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(141, 31, 45, 0.45); }
+  50% { box-shadow: 0 0 0 10px rgba(141, 31, 45, 0); }
+}
+
+body.layout-academy .lms-flashcard__pronounce-fallback-note {
+  color: #7a6248;
+}
+
 .lms-flashcard__grades {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -735,6 +998,45 @@ body.layout-academy .lms-flashcard__example-translation {
 .lms-flashcard__grade--good { background: #388bfd; }
 .lms-flashcard__grade--easy { background: #3fb950; }
 
+@media (max-width: 760px) {
+  .lms-flashcard-study__container {
+    max-width: 100%;
+  }
+
+  .lms-flashcard,
+  .lms-flashcard__inner,
+  .lms-flashcard--spell,
+  .lms-flashcard--spell .lms-flashcard__inner,
+  .lms-flashcard--quiz,
+  .lms-flashcard--quiz .lms-flashcard__inner,
+  .lms-flashcard--pronounce,
+  .lms-flashcard--pronounce .lms-flashcard__inner {
+    height: 620px;
+    min-height: 620px;
+  }
+
+  .lms-flashcard__face {
+    padding: 1.25rem;
+  }
+
+  .lms-flashcard__definition {
+    font-size: 1.08rem;
+  }
+
+  .lms-flashcard__examples-section,
+  .lms-flashcard__collocations-section {
+    padding: 0.75rem;
+  }
+
+  .lms-flashcard__examples {
+    max-height: 11rem;
+  }
+
+  .lms-flashcard__grades {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* Same red/orange/blue/green progression, re-tinted warm to fit the
    academy skin's cream/maroon/gold palette instead of the bright default
    colors, which clashed with it. */
@@ -742,3 +1044,517 @@ body.layout-academy .lms-flashcard__grade--again { background: #8d1f2d; }
 body.layout-academy .lms-flashcard__grade--hard { background: #b8763a; }
 body.layout-academy .lms-flashcard__grade--good { background: #7c8c5a; }
 body.layout-academy .lms-flashcard__grade--easy { background: #4a7c59; }
+
+/* ==========================================================================
+   Quick Edit — header button, card image display, and the edit drawer.
+   See QUICK_EDIT_STUDY_CARD_PLAN.md.
+   ========================================================================== */
+
+/* Sits next to the deck title rather than in its own row, so it reads as
+   part of the page header instead of a disconnected floating element. */
+.lms-flashcard-study__header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lms-flashcard-study__header-row .lms-manage__title {
+  margin: 0;
+  min-width: 0;
+}
+
+.lms-flashcard-study__quick-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  color: #4f46e5;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.lms-flashcard-study__quick-edit-btn:hover {
+  background: rgba(79, 70, 229, 0.08);
+  border-color: rgba(79, 70, 229, 0.35);
+}
+
+.lms-flashcard-study__quick-edit-btn:active {
+  transform: scale(0.97);
+}
+
+body.layout-academy .lms-flashcard-study__quick-edit-btn {
+  color: #7a6248;
+  border-color: rgba(104, 74, 36, 0.3);
+}
+
+body.layout-academy .lms-flashcard-study__quick-edit-btn:hover {
+  background: rgba(186, 139, 56, 0.12);
+  border-color: rgba(186, 139, 56, 0.5);
+}
+
+@media (max-width: 480px) {
+  /* A long deck title plus the button no longer fit on one line at phone
+     width — stack them instead of letting the button get squeezed. */
+  .lms-flashcard-study__header-row {
+    flex-wrap: wrap;
+  }
+}
+
+/* Card image (front/back — only one is ever visible per card, see
+   showCard()'s showImage computation in flashcard-study.js). A stable box
+   with a fixed max-height so adding/removing an image never shifts the
+   card's own layout. */
+.lms-flashcard__image {
+  width: 100%;
+  max-width: 220px;
+  /* Auto side margins center it under align-items:stretch containers (e.g.
+     .lms-flashcard__mastery below) same as under align-items:center ones
+     (the plain front/back faces), where they're a no-op. */
+  margin: 0.5rem auto;
+}
+
+.lms-flashcard__image img {
+  display: block;
+  width: 100%;
+  max-height: 160px;
+  object-fit: contain;
+  border-radius: 0.6rem;
+  border: 1px solid #e5e7eb;
+}
+
+/* --------------------------------------------------------------------------
+   Edit drawer + overlay — slides in from the right; see showEditDrawer()/
+   hideEditDrawer() in flashcard-study.js for how `hidden` and `.is-open`
+   work together to make that transition actually play.
+   -------------------------------------------------------------------------- */
+
+.lms-flashcard-edit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  backdrop-filter: blur(1px);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.lms-flashcard-edit-overlay.is-open {
+  opacity: 1;
+}
+
+.lms-flashcard-edit-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(440px, 100vw);
+  background: #fff;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.18);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.lms-flashcard-edit-drawer.is-open {
+  transform: translateX(0);
+}
+
+.lms-flashcard-edit-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.35rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.lms-flashcard-edit-drawer__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lms-flashcard-edit-drawer__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: none;
+  border: none;
+  border-radius: 999px;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.lms-flashcard-edit-drawer__close:hover {
+  background: rgba(17, 24, 39, 0.06);
+  color: #111827;
+}
+
+.lms-flashcard-edit-drawer__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.lms-flashcard-edit-drawer__status {
+  margin: 0;
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.lms-flashcard-edit-drawer__status.is-error {
+  background: rgba(218, 54, 51, 0.1);
+  color: #b42318;
+}
+
+.lms-flashcard-edit-drawer__status.is-success {
+  background: rgba(63, 185, 80, 0.12);
+  color: #1a7f37;
+}
+
+.lms-flashcard-edit-drawer__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+
+.lms-flashcard-edit-drawer__input,
+.lms-flashcard-edit-drawer__textarea,
+.lms-flashcard-edit-drawer__select {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.lms-flashcard-edit-drawer__input:focus,
+.lms-flashcard-edit-drawer__textarea:focus,
+.lms-flashcard-edit-drawer__select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.lms-flashcard-edit-drawer__textarea {
+  resize: vertical;
+  min-height: 4.5rem;
+}
+
+/* Audio/Image/Examples/Collocations each get a boxed "card" of their own so
+   the drawer reads as a handful of clear sections instead of one long
+   undifferentiated list of fields. */
+.lms-flashcard-edit-drawer__field-group,
+.lms-flashcard-edit-drawer__pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid #eef0f3;
+  border-radius: 0.6rem;
+  background: #fafafa;
+}
+
+.lms-flashcard-edit-drawer__file-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.lms-flashcard-edit-drawer__file-row audio {
+  max-width: 100%;
+  height: 2.25rem;
+}
+
+.lms-flashcard-edit-drawer__image-preview {
+  max-width: 100px;
+  max-height: 70px;
+  border-radius: 0.4rem;
+  object-fit: contain;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+/* Native file inputs can't be fully restyled, but the "choose file" button
+   part of them can (broadly supported: Chromium/Firefox via
+   ::file-selector-button, Safari via the -webkit- alias) — without this
+   they render as a plain unstyled OS control that looks out of place next
+   to the rest of the form. */
+.lms-flashcard-edit-drawer__field-group input[type="file"] {
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.lms-flashcard-edit-drawer__field-group input[type="file"]::file-selector-button,
+.lms-flashcard-edit-drawer__field-group input[type="file"]::-webkit-file-upload-button {
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.8rem;
+  margin-right: 0.7rem;
+  border-radius: 0.4rem;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.lms-flashcard-edit-drawer__field-group input[type="file"]:hover::file-selector-button,
+.lms-flashcard-edit-drawer__field-group input[type="file"]:hover::-webkit-file-upload-button {
+  background: #f3f4f6;
+}
+
+.lms-flashcard-edit-drawer__remove-btn {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #b42318;
+  border-radius: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.lms-flashcard-edit-drawer__remove-btn:hover {
+  background: rgba(218, 54, 51, 0.08);
+  border-color: rgba(218, 54, 51, 0.4);
+}
+
+.lms-flashcard-edit-drawer__pairs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lms-flashcard-edit-drawer__pairs-header .lms-flashcard-edit-drawer__label {
+  padding: 0;
+}
+
+.lms-flashcard-edit-drawer__add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #4f46e5;
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.lms-flashcard-edit-drawer__add-btn:hover {
+  background: rgba(79, 70, 229, 0.06);
+  border-color: rgba(79, 70, 229, 0.35);
+}
+
+.lms-flashcard-edit-drawer__pair-row {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.lms-flashcard-edit-drawer__pair-input {
+  font: inherit;
+  font-size: 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.6rem;
+  flex: 1 1 50%;
+  min-width: 0;
+  box-sizing: border-box;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.lms-flashcard-edit-drawer__pair-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.lms-flashcard-edit-drawer__pair-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: none;
+  border: none;
+  border-radius: 999px;
+  color: #9ca3af;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.lms-flashcard-edit-drawer__pair-remove:hover {
+  background: rgba(218, 54, 51, 0.08);
+  color: #b42318;
+}
+
+.lms-flashcard-edit-drawer__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding: 1rem 1.35rem;
+  border-top: 1px solid #e5e7eb;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.lms-flashcard-edit-drawer__cancel,
+.lms-flashcard-edit-drawer__save {
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.lms-flashcard-edit-drawer__cancel:active,
+.lms-flashcard-edit-drawer__save:active {
+  transform: scale(0.97);
+}
+
+.lms-flashcard-edit-drawer__cancel {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.lms-flashcard-edit-drawer__cancel:hover {
+  background: #f3f4f6;
+}
+
+.lms-flashcard-edit-drawer__save {
+  background: #4f46e5;
+  color: #fff;
+}
+
+.lms-flashcard-edit-drawer__save:hover {
+  background: #4338ca;
+}
+
+.lms-flashcard-edit-drawer__cancel:disabled,
+.lms-flashcard-edit-drawer__save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Academy skin (cream/maroon/gold) — re-tints the drawer to match rather
+   than leaving the bright default indigo accents from the rest of this
+   file's non-academy styling. */
+body.layout-academy .lms-flashcard-edit-drawer__header,
+body.layout-academy .lms-flashcard-edit-drawer__footer {
+  background: #fffaf2;
+  border-color: rgba(104, 74, 36, 0.15);
+}
+
+body.layout-academy .lms-flashcard-edit-drawer__title { color: #4a3728; }
+body.layout-academy .lms-flashcard-edit-drawer__label { color: #6d5a44; }
+
+body.layout-academy .lms-flashcard-edit-drawer__field-group,
+body.layout-academy .lms-flashcard-edit-drawer__pairs {
+  background: #fffaf2;
+  border-color: rgba(104, 74, 36, 0.15);
+}
+
+body.layout-academy .lms-flashcard-edit-drawer__input:focus,
+body.layout-academy .lms-flashcard-edit-drawer__textarea:focus,
+body.layout-academy .lms-flashcard-edit-drawer__select:focus,
+body.layout-academy .lms-flashcard-edit-drawer__pair-input:focus {
+  border-color: #ba8b38;
+  box-shadow: 0 0 0 3px rgba(186, 139, 56, 0.18);
+}
+
+body.layout-academy .lms-flashcard-edit-drawer__add-btn { color: #96702c; }
+
+body.layout-academy .lms-flashcard-edit-drawer__cancel {
+  color: #6d5a44;
+}
+
+body.layout-academy .lms-flashcard-edit-drawer__save {
+  background: linear-gradient(135deg, #ba8b38, #d5b46d);
+  color: #2f241a;
+}
+
+body.layout-academy .lms-flashcard-edit-drawer__save:hover {
+  background: linear-gradient(135deg, #a97c2f, #c9a45e);
+}
+
+@media (max-width: 760px) {
+  /* Full-screen sheet rather than a 440px side panel — a fixed-width
+     drawer would either overflow the viewport or leave barely any room
+     for its own form fields on a phone. */
+  .lms-flashcard-edit-drawer {
+    width: 100%;
+  }
+
+  .lms-flashcard-edit-drawer__footer {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .lms-flashcard-edit-drawer__pair-row {
+    flex-wrap: wrap;
+  }
+
+  .lms-flashcard-edit-drawer__pair-input {
+    flex-basis: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lms-flashcard-edit-overlay,
+  .lms-flashcard-edit-drawer {
+    transition: none;
+  }
+}

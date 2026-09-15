@@ -102,7 +102,8 @@ final class ImportValidator {
     }
 
     $seen_terms = [];
-    $existing_terms = $result['deck_id'] ? $this->getExistingTerms($result['deck_id']) : [];
+    $seen_ids = [];
+    $existing = $result['deck_id'] ? $this->getExistingCards($result['deck_id']) : ['terms' => [], 'ids' => []];
 
     foreach (array_values($data['cards']) as $index => $card) {
       $row = ['index' => $index, 'data' => [], 'errors' => [], 'warnings' => []];
@@ -127,6 +128,34 @@ final class ImportValidator {
         $row['errors'][] = (string) $this->t('"definition" is required.');
       }
 
+      // An "id" on a card (only meaningful for mode=append, since new_deck
+      // has no existing cards to match against — silently ignored there)
+      // means "update this exact card" rather than "create a new one" —
+      // see ImportBatchService::importCardChunk(). This is what
+      // /manage/flashcard-decks/{deck}/export round-trips through an LLM
+      // edit and back in without duplicating cards (see
+      // DeckExportController). An id that doesn't resolve to a card in
+      // *this* deck is rejected rather than silently falling back to
+      // "create new" — most likely a stale export from a different deck or
+      // a typo, and updating the wrong card would be worse than erroring.
+      $update_id = NULL;
+      if ($result['mode'] === 'append' && isset($card['id']) && $card['id'] !== '' && $card['id'] !== NULL) {
+        $update_id = (int) $card['id'];
+        if ($update_id <= 0 || !isset($existing['ids'][$update_id])) {
+          $row['errors'][] = (string) $this->t('id @id does not belong to this deck (or no longer exists). Remove "id" to import this row as a new card instead.', ['@id' => $card['id']]);
+          $update_id = NULL;
+        }
+        elseif (isset($seen_ids[$update_id])) {
+          $row['errors'][] = (string) $this->t('Duplicate id @id within this import (row @other).', [
+            '@id' => $update_id,
+            '@other' => $seen_ids[$update_id],
+          ]);
+        }
+        else {
+          $seen_ids[$update_id] = $index;
+        }
+      }
+
       $term_key = mb_strtolower($term);
       if ($term !== '') {
         if (isset($seen_terms[$term_key])) {
@@ -138,7 +167,10 @@ final class ImportValidator {
         else {
           $seen_terms[$term_key] = $index;
         }
-        if (isset($existing_terms[$term_key])) {
+        // Only a meaningful warning for a row that will CREATE a new card —
+        // a row with a valid update_id above is expected to match an
+        // existing term (that's the card it's updating).
+        if ($update_id === NULL && isset($existing['terms'][$term_key])) {
           $row['warnings'][] = (string) $this->t('@term already exists in this deck — will be imported as an additional card.', ['@term' => $term]);
         }
       }
@@ -159,6 +191,27 @@ final class ImportValidator {
       if (mb_strlen($pronunciation) > 128) {
         $row['warnings'][] = (string) $this->t('"pronunciation" truncated to 128 characters.');
         $pronunciation = mb_substr($pronunciation, 0, 128);
+      }
+
+      // The term itself translated into the deck's native language (e.g.
+      // "pineapple" -> "quả dứa") — distinct from "definition", which is
+      // the fuller English-language meaning. Same field the study page's
+      // Quick Edit drawer's "Translation" input writes to (Card::
+      // field_translation) and the level-2 "Study Now" recall check
+      // prefers to show — see FlashcardApiController::quickEditSave() and
+      // buildMasteryExercise() in flashcard-study.js.
+      //
+      // Deliberately NOT named $translation: that name gets reused (and
+      // overwritten) further down inside the examples/collocations loops
+      // below, and PHP's foreach doesn't scope its variables to the loop
+      // body — reusing the name here silently clobbered this value with
+      // whichever example/collocation translation was processed last (or
+      // '' when there were none), which is exactly the bug this comment is
+      // here to stop someone from reintroducing.
+      $term_translation = trim((string) ($card['translation'] ?? ''));
+      if (mb_strlen($term_translation) > 255) {
+        $row['warnings'][] = (string) $this->t('"translation" truncated to 255 characters.');
+        $term_translation = mb_substr($term_translation, 0, 255);
       }
 
       $examples = [];
@@ -201,12 +254,44 @@ final class ImportValidator {
         }
       }
 
+      $collocations = [];
+      if (isset($card['collocations'])) {
+        if (!is_array($card['collocations'])) {
+          $row['errors'][] = (string) $this->t('"collocations" must be an array.');
+        }
+        else {
+          foreach (array_values($card['collocations']) as $collocation_index => $collocation) {
+            if (!is_array($collocation)) {
+              $row['errors'][] = (string) $this->t('Collocation @number must be an object.', ['@number' => $collocation_index + 1]);
+              continue;
+            }
+            $phrase = trim((string) ($collocation['phrase'] ?? ''));
+            $translation = trim((string) ($collocation['translation'] ?? ''));
+            if ($phrase === '') {
+              $row['errors'][] = (string) $this->t('Collocation @number requires a phrase.', ['@number' => $collocation_index + 1]);
+              continue;
+            }
+            if ($translation === '') {
+              $row['errors'][] = (string) $this->t('Collocation @number requires a translation.', ['@number' => $collocation_index + 1]);
+              continue;
+            }
+            $collocations[] = [
+              'phrase' => $phrase,
+              'translation' => $translation,
+            ];
+          }
+        }
+      }
+
       $row['data'] = [
+        'id' => $update_id,
         'term' => $term,
         'definition' => $definition,
+        'translation' => $term_translation,
         'part_of_speech' => $part_of_speech,
         'pronunciation' => $pronunciation,
         'examples' => $examples,
+        'collocations' => $collocations,
         'difficulty' => $difficulty,
       ];
 
@@ -333,22 +418,26 @@ final class ImportValidator {
   }
 
   /**
-   * Loads lowercased existing card terms for a deck (dupe-warning lookup).
+   * Loads a deck's existing cards for two lookups used above: lowercased
+   * terms (dupe-warning) and raw card IDs (id-based update matching, see
+   * the "id" handling in validate()).
    */
-  private function getExistingTerms(int $deck_id): array {
+  private function getExistingCards(int $deck_id): array {
     $storage = $this->entityTypeManager->getStorage('lms_flashcard_card');
     $ids = $storage->getQuery()
       ->condition('field_deck', $deck_id)
       ->accessCheck(FALSE)
       ->execute();
     if (!$ids) {
-      return [];
+      return ['terms' => [], 'ids' => []];
     }
     $terms = [];
+    $card_ids = [];
     foreach ($storage->loadMultiple($ids) as $card) {
       $terms[mb_strtolower((string) $card->label())] = TRUE;
+      $card_ids[(int) $card->id()] = TRUE;
     }
-    return $terms;
+    return ['terms' => $terms, 'ids' => $card_ids];
   }
 
 }

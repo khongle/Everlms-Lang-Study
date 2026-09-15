@@ -76,6 +76,21 @@ class CardStat extends ContentEntityBase implements EntityOwnerInterface {
       ->setDescription(new TranslatableMarkup('1 to 3 — which of the 3 example-sentence exercises Quiz Practice gives for this card (1: cloze multiple-choice, 2: listen-and-match the sentence, 3: listen-and-type the sentence from its translation). +1 per pass, -1 per fail; never leaves the 1-3 range. Independent of field_spell_level and of the real SM-2 schedule on the Review entity, which is updated in parallel — see FlashcardApiController::submitReview().'))
       ->setDefaultValue(1);
 
+    $fields['field_pronunciation_level'] = BaseFieldDefinition::create('integer')
+      ->setLabel(new TranslatableMarkup('Pronunciation Level'))
+      ->setDescription(new TranslatableMarkup('1 (Warm-up) to 5 (Mastered) — a single difficulty/mastery counter for Pronunciation Practice, same shape as field_spell_level since this is one skill (say the word correctly) rather than the 3 exercise types Quiz Practice cycles through. +1 per correct attempt, -1 per incorrect one; never leaves the 1-5 range. Purely informational — unlike field_spell_level/field_quiz_level it never changes what the exercise looks like, only the badge shown to the student. Independent of field_times_seen and of the real SM-2 schedule on the Review entity, which is updated in parallel from the same check — see FlashcardApiController::submitReview().'))
+      ->setDefaultValue(1);
+
+    $fields['field_mastered'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(new TranslatableMarkup('Mastered'))
+      ->setDescription(new TranslatableMarkup("Set once this card has passed \"Study Now\" mastery level 3 (see FlashcardApiController::submitMastery()'s level3_pass handling) — unlike the mastery flow's in-session queue state, this persists across sessions, so StudyQueueBuilder::getMasteryPercent() can show a lasting \"% of this deck mastered\" on the deck card. Doesn't get \"un-mastered\" by being requeued in a later session, but IS deliberately cleared back to FALSE by \"Reset Mastery\" (StudyQueueBuilder::resetMastery()) so a student can re-earn the progress bar — see field_ever_mastered below for the flag that tracks reaching it at all, which a reset never touches."))
+      ->setDefaultValue(FALSE);
+
+    $fields['field_ever_mastered'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(new TranslatableMarkup('Ever Mastered'))
+      ->setDescription(new TranslatableMarkup("Set the first time this card ever passes \"Study Now\" mastery level 3, alongside field_mastered — but unlike that field, resetMastery() never clears this one back to FALSE. StudyQueueBuilder::isPracticeUnlocked() checks this (not field_mastered) to decide whether Spelling/Pronunciation Practice (and, from outside this module, Reading/Listening) stay unlocked for a deck: once a student has genuinely mastered every card in it at least once, resetting the progress bar to study it again shouldn't re-lock content they've already earned access to."))
+      ->setDefaultValue(FALSE);
+
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Created'));
 

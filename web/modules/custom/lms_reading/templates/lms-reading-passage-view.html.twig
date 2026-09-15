@@ -1,0 +1,126 @@
+{# Read step: passage text with clickable highlighted words #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-reading-passage">
+  <div class="container">
+    {% set format = passage.get('field_format').value %}
+    <div class="lms-reading-passage__header">
+      <a class="lms-reading-passage__back" href="{{ path('lms_reading.my_passages') }}"><i class="fas fa-arrow-left"></i> {{ 'All passages'|t }}</a>
+      <h1 class="lms-reading-passage__title">{{ passage.label }}</h1>
+      <p class="lms-reading-passage__meta">
+        <span class="lms-reading-passage__format-badge">
+          <i class="fas {{ format == 'dialogue' ? 'fa-comments' : 'fa-align-left' }}"></i>
+          {{ format == 'dialogue' ? 'Dialogue'|t : 'Narrative'|t }}
+        </span>
+        &middot; {{ 'Level: @level'|t({'@level': passage.get('field_level').value|capitalize}) }} &middot; {{ '@count words'|t({'@count': passage.get('field_word_count').value}) }}
+        {% if times_seen_label %}
+          &middot; <span class="lms-reading-passage__seen-count">{{ times_seen_label }}</span>
+        {% endif %}
+      </p>
+    </div>
+
+    {# "Listen" toolbar: reads the whole passage aloud sentence-by-sentence
+       via the browser's Web Speech API (same mechanism as lms_flashcard's
+       speakCard() fallback — see js/reading-passage.js), for listening
+       practice alongside reading. Hidden by JS on browsers without
+       speechSynthesis support instead of being left broken. #}
+    <div class="lms-reading-passage__listen" data-reading-listen-bar hidden>
+      <button type="button" class="lms-reading-passage__listen-btn" data-reading-listen-toggle>
+        <i class="fas fa-play" data-reading-listen-icon></i>
+        <span data-reading-listen-label>{{ 'Listen to passage'|t }}</span>
+      </button>
+      <div class="lms-reading-passage__listen-options">
+        {# Populated client-side from speechSynthesis.getVoices() — the set
+           of installed voices (and which ones exist for a given language)
+           varies per browser/OS, so there's nothing meaningful to render
+           server-side here. Hidden by JS until at least one matching voice
+           is found — see js/reading-passage.js populateVoices(). #}
+        <label class="lms-reading-passage__listen-voice" data-reading-listen-voice-wrapper hidden>
+          {{ 'Voice'|t }}
+          <select data-reading-listen-voice></select>
+        </label>
+        <label class="lms-reading-passage__listen-speed">
+          {{ 'Speed'|t }}
+          <select data-reading-listen-speed>
+            <option value="0.75">0.75&times;</option>
+            <option value="1" selected>1&times;</option>
+            <option value="1.25">1.25&times;</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    {# Common wrapper for both formats — the word-popup and Listen behaviors
+       (js/reading-passage.js) query within this one root regardless of
+       which of the two blocks below is present, so a click/listen works
+       the same way whether the word is in the intro paragraph or inside a
+       dialogue turn. #}
+    <div class="lms-reading-passage__content" data-reading-content>
+      {% if passage.get('field_body').value %}
+        {# Rendered as plain, auto-escaped text (not |raw) — field_body is
+           author-supplied via JSON import (open to any authenticated user,
+           see ReadingImportForm), so it must never be trusted as HTML. JS
+           rebuilds the highlighted + sentence-tokenized version from this
+           element's textContent using safe DOM text nodes, never
+           innerHTML — see js/reading-passage.js. For a Dialogue passage
+           this is just the optional scene-setting intro line, not the
+           conversation itself (see the dialogue block below). #}
+        <div class="lms-reading-passage__body" data-reading-body>{{ passage.get('field_body').value }}</div>
+      {% endif %}
+
+      {% if format == 'dialogue' and dialogue_turns is not empty %}
+        {# Each turn's speaker name is rendered separately from its line —
+           js/reading-passage.js only highlights/reads the line
+           (data-reading-line), never the speaker label, and can optionally
+           alternate the read-aloud voice per distinct speaker name. #}
+        <div class="lms-reading-passage__dialogue" data-reading-dialogue>
+          {% for turn in dialogue_turns %}
+            <div class="lms-reading-passage__turn lms-reading-passage__turn--{{ loop.index0 is even ? 'a' : 'b' }}" data-reading-unit data-speaker="{{ turn.speaker }}">
+              <div class="lms-reading-passage__turn-speaker">{{ turn.speaker }}</div>
+              <div class="lms-reading-passage__turn-line" data-reading-line>{{ turn.line }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="lms-reading-passage__word-popup" data-reading-word-popup hidden>
+      <button type="button" class="lms-reading-passage__word-popup-close" data-reading-word-popup-close aria-label="{{ 'Close'|t }}">&times;</button>
+      <div class="lms-reading-passage__word-popup-term" data-reading-word-popup-term></div>
+      <div class="lms-reading-passage__word-popup-pos" data-reading-word-popup-pos></div>
+      <div class="lms-reading-passage__word-popup-pron" data-reading-word-popup-pron></div>
+      <div class="lms-reading-passage__word-popup-meaning" data-reading-word-popup-meaning></div>
+      <div class="lms-reading-passage__word-popup-actions">
+        <button type="button" class="lms-reading-passage__word-popup-btn lms-reading-passage__word-popup-btn--known" data-reading-word-known>{{ 'Got it'|t }}</button>
+        <button type="button" class="lms-reading-passage__word-popup-btn lms-reading-passage__word-popup-btn--unknown" data-reading-word-unknown>{{ "I don't know this word"|t }}</button>
+      </div>
+    </div>
+
+    {# Shared "My Note" widget (lms_note module) — see
+       NOTE_EXPANSION_PLAN.md. Text-only, one note per passage per student,
+       explicit Save/Delete (no autosave). #}
+    <div class="lms-note-widget" data-lms-note-widget data-note-context-type="reading_passage" data-note-context-id="{{ passage.id() }}">
+      <div class="lms-note-widget__head">
+        <h3 class="lms-note-widget__title"><i class="fas fa-note-sticky"></i> {{ 'My Note'|t }}</h3>
+        <span class="lms-note-widget__status" data-note-status></span>
+      </div>
+      <div class="lms-note-widget__toolbar" data-note-toolbar>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="bold" title="{{ 'Bold'|t }}"><i class="fas fa-bold"></i></button>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="italic" title="{{ 'Italic'|t }}"><i class="fas fa-italic"></i></button>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="underline" title="{{ 'Underline'|t }}"><i class="fas fa-underline"></i></button>
+        <span class="lms-note-widget__tool-sep"></span>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="insertUnorderedList" title="{{ 'Bullet list'|t }}"><i class="fas fa-list-ul"></i></button>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="insertOrderedList" title="{{ 'Numbered list'|t }}"><i class="fas fa-list-ol"></i></button>
+      </div>
+      <div class="lms-note-widget__textarea" data-note-textarea contenteditable="false" data-empty-text="{{ 'Loading…'|t }}"></div>
+      <div class="lms-note-widget__actions">
+        <button type="button" class="lms-note-widget__save" data-note-save disabled>{{ 'Save'|t }}</button>
+        <button type="button" class="lms-note-widget__delete" data-note-delete hidden>{{ 'Delete'|t }}</button>
+      </div>
+    </div>
+
+    <div class="lms-reading-passage__footer">
+      <a class="lms-reading-passage__continue" data-reading-continue href="#">{{ 'Continue to questions'|t }} <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,50 @@
+{# Deck JSON export: paste-to-LLM-and-reimport workflow — see
+   DeckExportController and ImportValidator's `id`-matching docblocks. #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-flashcard-page">
+  <div class="container" style="max-width: 760px;">
+    <div class="lms-flashcard-export__breadcrumb">
+      <a href="{{ path('lms_flashcard.my_decks') }}">{{ 'My Flashcards'|t }}</a>
+      <a href="{{ path('entity.lms_flashcard_deck.canonical', {'lms_flashcard_deck': deck.id()}) }}">{{ deck.label() }}</a>
+      <span aria-current="page">{{ 'Export'|t }}</span>
+    </div>
+
+    <div class="lms-flashcard-page__header">
+      <h1 class="lms-flashcard-page__title">{{ 'Export "@name"'|t({'@name': deck.label()}) }}</h1>
+      <p class="lms-flashcard-page__subtitle">
+        {{ '@count card(s), in the same JSON shape the importer accepts.'|t({'@count': card_count}) }}
+      </p>
+    </div>
+
+    {% set import_url = path('lms_flashcard.import') %}
+    <div class="lms-flashcard-export__hint">
+      <p>
+        {% trans %}
+          Paste this into an LLM chat (e.g. "improve these definitions" or "add
+          2 more examples per card"), then paste the result back in on the
+          <a href="{{ import_url }}">Import</a> page using
+          "Append to an existing deck".
+        {% endtrans %}
+      </p>
+      <p>
+        <strong>{{ 'Keep the "id" field on every card you ask it to edit.'|t }}</strong>
+        {{ 'Re-importing a card with a matching id updates that exact card instead of creating a duplicate. A card with no id (or a new one you add to the list) is imported as brand new.'|t }}
+      </p>
+    </div>
+
+    <div class="lms-flashcard-export__actions">
+      <button type="button" class="lms-flashcard-export__btn lms-flashcard-export__btn--primary" data-flashcard-export-copy>
+        <i class="fas fa-copy"></i> {{ 'Copy JSON'|t }}
+      </button>
+      <a href="{{ path('lms_flashcard.deck_export_download', {'lms_flashcard_deck': deck.id()}) }}" class="lms-flashcard-export__btn">
+        <i class="fas fa-download"></i> {{ 'Download .json'|t }}
+      </a>
+      <a href="{{ path('lms_flashcard.import') }}" class="lms-flashcard-export__btn">
+        <i class="fas fa-file-import"></i> {{ 'Go to Import'|t }}
+      </a>
+    </div>
+
+    <pre class="lms-flashcard-export__code"><code id="lms-flashcard-export-json">{{ json }}</code></pre>
+  </div>
+</section>

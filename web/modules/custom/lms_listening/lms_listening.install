@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @file
+ * Install/update hooks for lms_listening module.
+ */
+
+/**
+ * Ensures a code-defined Listening entity type has installed storage.
+ *
+ * Mirrors lms_reading's _lms_reading_ensure_entity_type_installed() — kept
+ * as a separate copy (not a shared helper) so lms_listening never has to
+ * require lms_reading's .install file to be loaded.
+ */
+function _lms_listening_ensure_entity_type_installed(string $entity_type_id): \Drupal\Core\Entity\EntityTypeInterface {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $entity_type_manager->clearCachedDefinitions();
+  $entity_type = $entity_type_manager->getDefinition($entity_type_id, FALSE);
+  if (!$entity_type) {
+    throw new \RuntimeException(sprintf('The "%s" entity type could not be discovered.', $entity_type_id));
+  }
+
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  if (!$update_manager->getEntityType($entity_type_id)) {
+    $update_manager->installEntityType($entity_type);
+  }
+
+  return $entity_type;
+}
+
+/**
+ * Implements hook_install().
+ *
+ * Belt-and-suspenders alongside Drupal core's automatic entity-type install
+ * on module enable — matches the defensive pattern lms_reading_install()
+ * uses.
+ */
+function lms_listening_install(): void {
+  foreach ([
+    'lms_listening_passage',
+    'lms_listening_attempt',
+    'lms_listening_passage_stat',
+  ] as $entity_type_id) {
+    _lms_listening_ensure_entity_type_installed($entity_type_id);
+  }
+}
+
+/**
+ * Installs the ListeningPassageStat entity type (per-user "times seen" view
+ * counter) — mirrors lms_flashcard_update_10004 for CardStat.
+ */
+function lms_listening_update_10001(): string {
+  _lms_listening_ensure_entity_type_installed('lms_listening_passage_stat');
+  return 'Installed Listening Passage Stat entity storage.';
+}

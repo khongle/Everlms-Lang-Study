@@ -99,7 +99,13 @@ final class ImportBatchService {
   }
 
   /**
-   * Batch op: create up to CHUNK_SIZE card entities.
+   * Batch op: create or update up to CHUNK_SIZE card entities.
+   *
+   * A row whose `id` (see ImportValidator's "id" handling) resolved to an
+   * existing card in the target deck updates that card in place instead of
+   * creating a new one — this is what lets a deck exported via
+   * DeckExportController, edited by an LLM, and re-imported come back
+   * without duplicating every card.
    */
   public static function importCardChunk(array $chunk, array &$context): void {
     $deckId = $context['results']['deck_id'] ?? NULL;
@@ -107,6 +113,7 @@ final class ImportBatchService {
     $context['results']['card_ids'] ??= [];
     $context['results']['failed_rows'] ??= [];
     $context['results']['created_count'] ??= 0;
+    $context['results']['updated_count'] ??= 0;
 
     foreach ($chunk as $row) {
       $data = $row['data'];
@@ -119,19 +126,46 @@ final class ImportBatchService {
           static fn(array $example): string => $example['translation'],
           $data['examples'] ?? [],
         );
-        $card = $storage->create([
-          'field_deck' => $deckId,
+        $collocation_phrases = array_map(
+          static fn(array $collocation): string => $collocation['phrase'],
+          $data['collocations'] ?? [],
+        );
+        $collocation_translations = array_map(
+          static fn(array $collocation): string => $collocation['translation'],
+          $data['collocations'] ?? [],
+        );
+        $values = [
           'name' => $data['term'],
           'field_definition' => ['value' => $data['definition'], 'format' => 'basic_html'],
+          'field_translation' => $data['translation'] ?? '',
           'field_part_of_speech' => $data['part_of_speech'] ?: NULL,
           'field_pronunciation' => $data['pronunciation'],
           'field_example_sentences' => $example_sentences,
           'field_example_translations' => $example_translations,
+          'field_collocations' => $collocation_phrases,
+          'field_collocation_translations' => $collocation_translations,
           'field_difficulty' => $data['difficulty'],
-        ]);
-        $card->save();
-        $context['results']['card_ids'][] = (int) $card->id();
-        $context['results']['created_count']++;
+        ];
+
+        if (!empty($data['id'])) {
+          $card = $storage->load($data['id']);
+          if (!$card) {
+            // Already validated to exist — only reachable if it was
+            // deleted in the moments between validation and this batch op.
+            throw new \RuntimeException((string) t('Card @id no longer exists.', ['@id' => $data['id']]));
+          }
+          foreach ($values as $field => $value) {
+            $card->set($field, $value);
+          }
+          $card->save();
+          $context['results']['updated_count']++;
+        }
+        else {
+          $card = $storage->create(['field_deck' => $deckId] + $values);
+          $card->save();
+          $context['results']['card_ids'][] = (int) $card->id();
+          $context['results']['created_count']++;
+        }
       }
       catch (\Throwable $e) {
         $context['results']['failed_rows'][] = [
@@ -142,7 +176,9 @@ final class ImportBatchService {
       }
     }
 
-    $context['message'] = t('Imported @count cards so far…', ['@count' => $context['results']['created_count']]);
+    $context['message'] = t('Processed @count cards so far…', [
+      '@count' => $context['results']['created_count'] + $context['results']['updated_count'],
+    ]);
   }
 
   /**
@@ -179,10 +215,15 @@ final class ImportBatchService {
     }
 
     $created = $results['created_count'] ?? 0;
+    $updated = $results['updated_count'] ?? 0;
     $failed = $results['failed_rows'] ?? [];
 
     if ($created > 0) {
-      \Drupal::messenger()->addStatus(t('Imported @count flashcards.', ['@count' => $created]));
+      \Drupal::messenger()->addStatus(t('Imported @count new flashcard(s).', ['@count' => $created]));
+    }
+
+    if ($updated > 0) {
+      \Drupal::messenger()->addStatus(t('Updated @count existing flashcard(s) (matched by id).', ['@count' => $updated]));
     }
 
     if ($failed) {
@@ -197,7 +238,7 @@ final class ImportBatchService {
       }
     }
 
-    if (empty($results['deck_id']) && $created === 0 && !$failed) {
+    if (empty($results['deck_id']) && $created === 0 && $updated === 0 && !$failed) {
       \Drupal::messenger()->addError(t('Nothing was imported.'));
     }
   }

@@ -177,3 +177,237 @@ function lms_flashcard_update_10006(): string {
 
   return 'Added field_quiz_level to Flashcard Card Stat.';
 }
+
+/**
+ * Adds field_pronunciation_level to CardStat (Pronunciation Practice level).
+ */
+function lms_flashcard_update_10007(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card_stat');
+  $storage_definitions = CardStat::baseFieldDefinitions($entity_type);
+
+  if (!$update_manager->getFieldStorageDefinition('field_pronunciation_level', 'lms_flashcard_card_stat')) {
+    $update_manager->installFieldStorageDefinition(
+      'field_pronunciation_level',
+      'lms_flashcard_card_stat',
+      'lms_flashcard',
+      $storage_definitions['field_pronunciation_level'],
+    );
+  }
+
+  return 'Added field_pronunciation_level to Flashcard Card Stat.';
+}
+
+/**
+ * Adds field_collocations and field_collocation_translations to Card.
+ */
+function lms_flashcard_update_10008(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card');
+  $storage_definitions = Card::baseFieldDefinitions($entity_type);
+
+  foreach (['field_collocations', 'field_collocation_translations'] as $field_name) {
+    if (!$update_manager->getFieldStorageDefinition($field_name, 'lms_flashcard_card')) {
+      $update_manager->installFieldStorageDefinition(
+        $field_name,
+        'lms_flashcard_card',
+        'lms_flashcard',
+        $storage_definitions[$field_name],
+      );
+    }
+  }
+
+  return 'Added field_collocations and field_collocation_translations to Flashcard.';
+}
+
+/**
+ * Adds field_mastered to CardStat — the persistent "passed Study Now level
+ * 3 at least once" flag behind the deck-card mastery percentage and the
+ * Spelling/Pronunciation/Reading/Listening lock (see
+ * StudyQueueBuilder::getMasteryPercent()'s docblock).
+ */
+function lms_flashcard_update_10009(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card_stat');
+  $storage_definitions = CardStat::baseFieldDefinitions($entity_type);
+
+  if (!$update_manager->getFieldStorageDefinition('field_mastered', 'lms_flashcard_card_stat')) {
+    $update_manager->installFieldStorageDefinition(
+      'field_mastered',
+      'lms_flashcard_card_stat',
+      'lms_flashcard',
+      $storage_definitions['field_mastered'],
+    );
+  }
+
+  return 'Added field_mastered to Flashcard Card Stat.';
+}
+
+/**
+ * Backfills CardStat.field_mastered = TRUE for every (uid, card) that
+ * already has a real SM-2 Review with at least 1 repetition — i.e. every
+ * card actually graded through the *old* Study Now (plain flip + manual
+ * grade) before the 3-level mastery flow (see FlashcardApiController::
+ * submitMastery()) replaced it. A one-time migration, not a live check:
+ * StudyQueueBuilder::getMasteryPercent() only ever reads field_mastered
+ * itself afterward, so a student's resetMastery() action actually drops
+ * a deck's percentage back down instead of it silently recomputing back
+ * to "mastered" from this same untouched Review data every time.
+ *
+ * Runs once at deploy time, so doing this as a plain loop over every
+ * matching Review (rather than the batch API other update hooks in this
+ * file don't use either) is consistent with how this file already handles
+ * one-time backfills (e.g. lms_reading_update_10001's equivalent in that
+ * module) — acceptable at this site's scale.
+ */
+function lms_flashcard_update_10010(): string {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $review_storage = $entity_type_manager->getStorage('lms_flashcard_review');
+  $stat_storage = $entity_type_manager->getStorage('lms_flashcard_card_stat');
+
+  $review_ids = $review_storage->getQuery()
+    ->condition('field_repetitions', 1, '>=')
+    ->accessCheck(FALSE)
+    ->execute();
+
+  $updated = 0;
+  foreach ($review_storage->loadMultiple($review_ids) as $review) {
+    $uid = (int) $review->getOwnerId();
+    $cardId = (int) $review->get('field_card')->target_id;
+    if (!$uid || !$cardId) {
+      continue;
+    }
+
+    $statIds = $stat_storage->getQuery()
+      ->condition('uid', $uid)
+      ->condition('field_card', $cardId)
+      ->range(0, 1)
+      ->accessCheck(FALSE)
+      ->execute();
+    $stat = $statIds ? $stat_storage->load(reset($statIds)) : $stat_storage->create(['uid' => $uid, 'field_card' => $cardId]);
+
+    if (!$stat->get('field_mastered')->value) {
+      $stat->set('field_mastered', TRUE);
+      $stat->save();
+      $updated++;
+    }
+  }
+
+  return "Backfilled field_mastered for {$updated} Flashcard Card Stat row(s) from existing SM-2 review history.";
+}
+
+/**
+ * Adds field_translation to Card — a short native-language translation of
+ * the term itself (e.g. "pineapple" → "quả dứa"), distinct from
+ * field_definition's fuller English-language meaning. Edited from the study
+ * page's Quick Edit drawer (see QUICK_EDIT_STUDY_CARD_PLAN.md) alongside
+ * Definition.
+ */
+function lms_flashcard_update_10011(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card');
+  $storage_definitions = Card::baseFieldDefinitions($entity_type);
+
+  if (!$update_manager->getFieldStorageDefinition('field_translation', 'lms_flashcard_card')) {
+    $update_manager->installFieldStorageDefinition(
+      'field_translation',
+      'lms_flashcard_card',
+      'lms_flashcard',
+      $storage_definitions['field_translation'],
+    );
+  }
+
+  return 'Added field_translation to Flashcard.';
+}
+
+/**
+ * Adds CardStat.field_ever_mastered — a "reached 100% Study Now mastery at
+ * least once" flag that "Reset Mastery" never clears, unlike field_mastered
+ * itself (see both fields' docblocks on CardStat). Backfills it from every
+ * currently-TRUE field_mastered row, so a student already at 100% on a deck
+ * right now keeps Spelling/Pronunciation/Reading/Listening unlocked the next
+ * time they use Reset Mastery, instead of this change silently re-locking
+ * decks they'd already earned.
+ */
+function lms_flashcard_update_10012(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card_stat');
+  $storage_definitions = CardStat::baseFieldDefinitions($entity_type);
+
+  if (!$update_manager->getFieldStorageDefinition('field_ever_mastered', 'lms_flashcard_card_stat')) {
+    $update_manager->installFieldStorageDefinition(
+      'field_ever_mastered',
+      'lms_flashcard_card_stat',
+      'lms_flashcard',
+      $storage_definitions['field_ever_mastered'],
+    );
+  }
+
+  $statStorage = \Drupal::entityTypeManager()->getStorage('lms_flashcard_card_stat');
+  $ids = $statStorage->getQuery()
+    ->condition('field_mastered', TRUE)
+    ->accessCheck(FALSE)
+    ->execute();
+
+  $updated = 0;
+  foreach ($statStorage->loadMultiple($ids) as $stat) {
+    /** @var \Drupal\lms_flashcard\Entity\CardStat $stat */
+    if (!$stat->get('field_ever_mastered')->value) {
+      $stat->set('field_ever_mastered', TRUE);
+      $stat->save();
+      $updated++;
+    }
+  }
+
+  return "Added field_ever_mastered to Flashcard Card Stat and backfilled it for {$updated} currently-mastered row(s).";
+}
+
+/**
+ * Adds Card.status (published/unpublished) — see that field's own docblock
+ * on Card. Installed with its default value (TRUE), so every existing card
+ * stays published/studyable; nothing gets silently hidden by this update.
+ */
+function lms_flashcard_update_10013(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card');
+  $storage_definitions = Card::baseFieldDefinitions($entity_type);
+
+  if (!$update_manager->getFieldStorageDefinition('status', 'lms_flashcard_card')) {
+    $update_manager->installFieldStorageDefinition(
+      'status',
+      'lms_flashcard_card',
+      'lms_flashcard',
+      $storage_definitions['status'],
+    );
+  }
+
+  return 'Added Card.status (published/unpublished), defaulting every existing card to published.';
+}
+
+/**
+ * Fixes lms_flashcard_update_10013: installFieldStorageDefinition()'s
+ * ->setDefaultValue(TRUE) only applies to entities created AFTER the field
+ * exists — it does NOT retroactively backfill the new column for rows that
+ * already existed, so every card's `status` was left NULL (not 1) by that
+ * update, and NULL reads as falsy/"unpublished" everywhere StudyQueueBuilder
+ * and StudyController::buildQuizPool() now check `status = TRUE` — meaning
+ * every card in every deck was silently excluded from every study mode
+ * until this runs. A direct DB UPDATE rather than loading+saving each Card
+ * entity — this is a one-time data fix, not a deliberate content change, so
+ * skipping entity hooks/'changed' timestamp bumps for 213+ rows is correct
+ * here.
+ */
+function lms_flashcard_update_10014(): string {
+  $updated = \Drupal::database()->update('lms_flashcard_card')
+    ->fields(['status' => 1])
+    ->isNull('status')
+    ->execute();
+
+  // The entities above were just updated underneath Drupal's entity system
+  // (a raw DB query, not $entity->save()) — clear its cache so anything
+  // that already loaded a Card this request/page cache cycle doesn't keep
+  // serving the stale NULL value.
+  \Drupal::entityTypeManager()->getStorage('lms_flashcard_card')->resetCache();
+
+  return "Backfilled Card.status = 1 (published) for {$updated} card(s) left NULL by lms_flashcard_update_10013.";
+}

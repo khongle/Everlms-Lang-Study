@@ -1,0 +1,116 @@
+<?php
+
+/**
+ * @file
+ * Install/update hooks for lms_reading module.
+ */
+
+/**
+ * Ensures a code-defined Reading entity type has installed storage.
+ *
+ * Mirrors lms_flashcard's _lms_flashcard_ensure_entity_type_installed() —
+ * kept as a separate copy (not a shared helper) so lms_reading never has to
+ * require lms_flashcard's .install file to be loaded.
+ */
+function _lms_reading_ensure_entity_type_installed(string $entity_type_id): \Drupal\Core\Entity\EntityTypeInterface {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $entity_type_manager->clearCachedDefinitions();
+  $entity_type = $entity_type_manager->getDefinition($entity_type_id, FALSE);
+  if (!$entity_type) {
+    throw new \RuntimeException(sprintf('The "%s" entity type could not be discovered.', $entity_type_id));
+  }
+
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  if (!$update_manager->getEntityType($entity_type_id)) {
+    $update_manager->installEntityType($entity_type);
+  }
+
+  return $entity_type;
+}
+
+/**
+ * Implements hook_install().
+ *
+ * Belt-and-suspenders alongside Drupal core's automatic entity-type install
+ * on module enable — matches the defensive pattern lms_flashcard_update_10003
+ * added after some sites ended up with missing storage for a code-defined
+ * entity type.
+ */
+function lms_reading_install(): void {
+  foreach ([
+    'lms_reading_passage',
+    'lms_reading_context_item',
+    'lms_reading_word_note',
+    'lms_reading_attempt',
+    'lms_reading_passage_stat',
+  ] as $entity_type_id) {
+    _lms_reading_ensure_entity_type_installed($entity_type_id);
+  }
+}
+
+/**
+ * Adds field_format, field_dialogue_speakers, field_dialogue_lines to
+ * ReadingPassage (the new "Dialogue" passage format, alongside the
+ * existing plain-paragraph "Narrative" one) and makes field_body optional
+ * (a Dialogue passage's real content lives in field_dialogue_lines;
+ * field_body is only its optional intro there).
+ *
+ * Backfills field_format = 'narrative' on every existing passage — the
+ * field's own setDefaultValue() only applies to entities created *after*
+ * this update, not retroactively to rows already in the database — and
+ * recomputes field_word_count for each (harmless no-op for a row whose
+ * format doesn't change, but keeps this update self-contained rather than
+ * assuming the count is already correct).
+ */
+function lms_reading_update_10001(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = _lms_reading_ensure_entity_type_installed('lms_reading_passage');
+  $storage_definitions = \Drupal\lms_reading\Entity\ReadingPassage::baseFieldDefinitions($entity_type);
+
+  foreach (['field_format', 'field_dialogue_speakers', 'field_dialogue_lines'] as $field_name) {
+    if (!$update_manager->getFieldStorageDefinition($field_name, 'lms_reading_passage')) {
+      $update_manager->installFieldStorageDefinition(
+        $field_name,
+        'lms_reading_passage',
+        'lms_reading',
+        $storage_definitions[$field_name],
+      );
+    }
+  }
+
+  // field_body switched from required to optional (Dialogue passages may
+  // leave it empty) — deliberately NOT calling
+  // $update_manager->updateFieldStorageDefinition() for this: it failed on
+  // this site with "$original must be ... FieldStorageDefinitionInterface,
+  // null given" (field_body has no separately-tracked "last installed"
+  // definition since it shipped as part of the entity type's original base
+  // fields, not via an incremental installFieldStorageDefinition() call).
+  // Harmless to skip: "required" is a validation-time constraint checked
+  // by ContentEntityForm (which reads the live class definition fresh each
+  // request, not a cached schema snapshot), not a stored SQL schema
+  // difference — the column itself is untouched either way, and
+  // ReadingImportBatchService always calls ->save() directly without
+  // ->validate(), so this constraint never blocked it in the first place.
+  $storage = \Drupal::entityTypeManager()->getStorage('lms_reading_passage');
+  $ids = $storage->getQuery()->accessCheck(FALSE)->execute();
+  foreach ($storage->loadMultiple($ids) as $passage) {
+    /** @var \Drupal\lms_reading\Entity\ReadingPassage $passage */
+    if ($passage->get('field_format')->isEmpty()) {
+      $passage->set('field_format', 'narrative');
+    }
+    // preSave() recomputes field_word_count itself.
+    $passage->save();
+  }
+
+  return 'Added Dialogue passage format (field_format, field_dialogue_speakers, field_dialogue_lines) to Reading Passage.';
+}
+
+/**
+ * Installs the ReadingPassageStat entity type (per-user "times seen" view
+ * counter) — mirrors lms_flashcard_update_10004 for CardStat and
+ * lms_listening_update_10001 for ListeningPassageStat.
+ */
+function lms_reading_update_10002(): string {
+  _lms_reading_ensure_entity_type_installed('lms_reading_passage_stat');
+  return 'Installed Reading Passage Stat entity storage.';
+}

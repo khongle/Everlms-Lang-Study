@@ -66,6 +66,7 @@ final class StudyQueueBuilder {
 
     $cardIds = $cardStorage->getQuery()
       ->condition('field_deck', $deckIds, 'IN')
+      ->condition('status', TRUE)
       ->accessCheck(FALSE)
       ->execute();
     if (!$cardIds) {
@@ -149,6 +150,94 @@ final class StudyQueueBuilder {
   }
 
   /**
+   * Re-inserts a card a few positions ahead, tagged with the "Study Now"
+   * mastery level (see FlashcardApiController::submitMastery()) it should
+   * come back at — style=flip's own two-step "flip, then a later recall
+   * check" flow, entirely separate from the real SM-2 grade Again/Hard/
+   * Good/Easy still track for every other style (quiz/spell/pronounce, and
+   * flip's own initial pass isn't graded manually any more either — see
+   * that controller's class docblock). Same buffer/positioning as
+   * requeueAfterAgain(), just a different tag and never touching a real
+   * schedule.
+   *
+   * @param array $remainingQueue
+   *   The queue entries not yet shown this session.
+   * @param array $item
+   *   The ['card_id' => int, ...] entry just shown.
+   * @param int $level
+   *   1 (needs the plain flip again — a level-2 recall check was failed) or
+   *   2 (ready for the recall check — the flip was just completed).
+   *
+   * @return array
+   *   The updated remaining queue.
+   */
+  public function requeueForMastery(array $remainingQueue, array $item, int $level): array {
+    $position = min(self::AGAIN_BUFFER, count($remainingQueue));
+    array_splice($remainingQueue, $position, 0, [[
+      'card_id' => $item['card_id'],
+      'source' => 'mastery',
+      'level' => $level,
+    ]]);
+    return $remainingQueue;
+  }
+
+  /**
+   * Builds the "Study Now" (style=flip) queue — deliberately NOT
+   * buildQueue()'s due/new-gated queue, at the student's own report that
+   * a deck sitting at, say, 48% mastery only ever offered its 1-2 cards
+   * due *today* to work through, leaving the rest unreachable for days or
+   * weeks: this flow never touches the real SM-2 schedule at all (see
+   * FlashcardApiController::submitMastery()'s docblock), so there's
+   * nothing to protect by pacing it the way real spaced repetition needs
+   * to be paced — every card not yet mastered is fair game right now.
+   *
+   * @param int $uid
+   *   The studying user.
+   * @param int $deckId
+   *   The deck to pick from.
+   * @param bool $includeMastered
+   *   TRUE for "Practice all cards" (mode=practice) — every card in the
+   *   deck, including ones already mastered, for general extra review
+   *   rather than the "get to 100%" grind. FALSE (default): only cards
+   *   CardStat.field_mastered doesn't yet mark TRUE for this user.
+   *
+   * @return array
+   *   List of ['card_id' => int, 'source' => 'mastery'], shuffled — no
+   *   due-first/new-last ordering to preserve here, unlike buildQueue().
+   */
+  public function buildMasteryQueue(int $uid, int $deckId, bool $includeMastered = FALSE): array {
+    $cardStorage = $this->entityTypeManager->getStorage('lms_flashcard_card');
+    $cardIds = $cardStorage->getQuery()
+      ->condition('field_deck', $deckId)
+      ->condition('status', TRUE)
+      ->accessCheck(FALSE)
+      ->execute();
+    if (!$cardIds) {
+      return [];
+    }
+    $cardIds = array_values(array_map('intval', $cardIds));
+
+    if (!$includeMastered) {
+      $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
+      $statIds = $statStorage->getQuery()
+        ->condition('uid', $uid)
+        ->condition('field_card', $cardIds, 'IN')
+        ->condition('field_mastered', TRUE)
+        ->accessCheck(FALSE)
+        ->execute();
+      $masteredCardIds = [];
+      foreach ($statStorage->loadMultiple($statIds) as $stat) {
+        /** @var \Drupal\lms_flashcard\Entity\CardStat $stat */
+        $masteredCardIds[] = (int) $stat->get('field_card')->target_id;
+      }
+      $cardIds = array_values(array_diff($cardIds, $masteredCardIds));
+    }
+
+    shuffle($cardIds);
+    return array_map(static fn (int $cardId): array => ['card_id' => $cardId, 'source' => 'mastery'], $cardIds);
+  }
+
+  /**
    * How many new cards this user may still start today.
    */
   public function getRemainingNewCardBudget(int $uid): int {
@@ -179,6 +268,7 @@ final class StudyQueueBuilder {
 
     $cardIds = $cardStorage->getQuery()
       ->condition('field_deck', $deckId)
+      ->condition('status', TRUE)
       ->accessCheck(FALSE)
       ->execute();
     if (!$cardIds) {
@@ -207,6 +297,138 @@ final class StudyQueueBuilder {
     $new = count(array_diff($cardIds, array_keys($seen)));
 
     return ['due' => $due, 'new' => min($new, max(0, $this->getRemainingNewCardBudget($uid)))];
+  }
+
+  /**
+   * What fraction of a deck this user has mastered via "Study Now" (style=
+   * flip's 3-level mastery flow — see FlashcardApiController::
+   * submitMastery()), 0-100. Shown on the deck card and used to gate
+   * Spelling/Pronunciation Practice (and, from outside this module,
+   * Reading/Listening) behind reaching 100%, at the student's own request.
+   *
+   * Purely CardStat.field_mastered — the single source of truth (set when
+   * a card passes level 3; cleared by resetMastery() below) rather than
+   * also live-checking the real SM-2 Review for old pre-mastery-flow
+   * progress here: that backfill happened once, as a data migration
+   * (lms_flashcard_update_10010 in lms_flashcard.install), specifically so
+   * resetMastery() has one flag to clear and this then actually drops back
+   * out of 100% — checking the live Review data here too would have made
+   * a reset on an originally-backfilled deck impossible, since it would
+   * just recompute back to "mastered" from that same untouched SM-2 data
+   * every time.
+   *
+   * An empty deck (0 cards) returns 100 — nothing to master, so nothing
+   * should end up permanently locked because of it.
+   */
+  public function getMasteryPercent(int $uid, int $deckId): int {
+    $cardStorage = $this->entityTypeManager->getStorage('lms_flashcard_card');
+    $cardIds = $cardStorage->getQuery()
+      ->condition('field_deck', $deckId)
+      ->condition('status', TRUE)
+      ->accessCheck(FALSE)
+      ->execute();
+    if (!$cardIds) {
+      return 100;
+    }
+    $cardIds = array_values(array_map('intval', $cardIds));
+
+    $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
+    $masteredCount = $statStorage->getQuery()
+      ->condition('uid', $uid)
+      ->condition('field_card', $cardIds, 'IN')
+      ->condition('field_mastered', TRUE)
+      ->accessCheck(FALSE)
+      ->count()
+      ->execute();
+
+    return (int) round($masteredCount / count($cardIds) * 100);
+  }
+
+  /**
+   * Whether Spelling/Pronunciation Practice (and, from outside this
+   * module, Reading/Listening) should be unlocked for this user on this
+   * deck — TRUE once every card has ever passed "Study Now" mastery level
+   * 3 at least once (CardStat.field_ever_mastered), regardless of the
+   * current, resettable getMasteryPercent(). Deliberately a separate check
+   * from that one: getMasteryPercent()'s progress bar is meant to go back
+   * down when a student uses "Reset Mastery" so they can re-earn it, but
+   * content they've already proven they know shouldn't re-lock just
+   * because they wanted another pass through Study Now — see
+   * field_ever_mastered's own docblock on CardStat and resetMastery()
+   * below, which never touches it.
+   *
+   * An empty deck (0 cards) returns TRUE, same reasoning as
+   * getMasteryPercent()'s own empty-deck case.
+   */
+  public function isPracticeUnlocked(int $uid, int $deckId): bool {
+    $cardStorage = $this->entityTypeManager->getStorage('lms_flashcard_card');
+    $cardIds = $cardStorage->getQuery()
+      ->condition('field_deck', $deckId)
+      ->condition('status', TRUE)
+      ->accessCheck(FALSE)
+      ->execute();
+    if (!$cardIds) {
+      return TRUE;
+    }
+    $cardIds = array_values(array_map('intval', $cardIds));
+
+    $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
+    $everMasteredCount = $statStorage->getQuery()
+      ->condition('uid', $uid)
+      ->condition('field_card', $cardIds, 'IN')
+      ->condition('field_ever_mastered', TRUE)
+      ->accessCheck(FALSE)
+      ->count()
+      ->execute();
+
+    return $everMasteredCount >= count($cardIds);
+  }
+
+  /**
+   * Clears CardStat.field_mastered for every card in a deck this user had
+   * mastered — "Reset Mastery" on the deck card, for a student who wants
+   * to go back through "Study Now" and re-earn the progress bar
+   * getMasteryPercent() shows, rather than it staying at 100% forever.
+   * Deliberately narrow in two ways: never touches field_ever_mastered
+   * (so isPracticeUnlocked() — the actual gate on Spelling/Pronunciation/
+   * Reading/Listening — stays unlocked for content already earned, see
+   * that field's own docblock on CardStat), and never touches the real
+   * SM-2 schedule (Sm2SchedulerService, the Review entity) — a student who
+   * wants a true do-over of spaced repetition itself already has
+   * "Practice all cards" for that; this only resets the progress-bar
+   * flag, so due dates earned through real study are left alone.
+   *
+   * @return int
+   *   How many cards were reset (0 if the deck/user had nothing to reset).
+   */
+  public function resetMastery(int $uid, int $deckId): int {
+    $cardStorage = $this->entityTypeManager->getStorage('lms_flashcard_card');
+    $cardIds = $cardStorage->getQuery()
+      ->condition('field_deck', $deckId)
+      ->accessCheck(FALSE)
+      ->execute();
+    if (!$cardIds) {
+      return 0;
+    }
+
+    $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
+    $statIds = $statStorage->getQuery()
+      ->condition('uid', $uid)
+      ->condition('field_card', array_values(array_map('intval', $cardIds)), 'IN')
+      ->condition('field_mastered', TRUE)
+      ->accessCheck(FALSE)
+      ->execute();
+    if (!$statIds) {
+      return 0;
+    }
+
+    foreach ($statStorage->loadMultiple($statIds) as $stat) {
+      /** @var \Drupal\lms_flashcard\Entity\CardStat $stat */
+      $stat->set('field_mastered', FALSE);
+      $stat->save();
+    }
+
+    return count($statIds);
   }
 
   /**

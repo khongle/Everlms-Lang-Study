@@ -13,6 +13,8 @@ function lms_note_theme($existing, $type, $theme, $path) {
     'lms_my_notes' => [
       'variables' => [
         'grouped_notes' => [],
+        'listening_notes' => [],
+        'reading_notes' => [],
       ],
       'template' => 'lms-my-notes',
     ],

@@ -1,0 +1,30 @@
+/**
+ * Small count badge on the "Listening" button of lms_flashcard's My
+ * Flashcards deck cards — attached ONLY from
+ * lms_listening_preprocess_lms_flashcard_my_decks() (see
+ * lms_listening.module), which itself only runs while lms_listening is
+ * enabled, so this library is never referenced from lms_flashcard's own
+ * code/templates. Mirrors lms_reading's reading-deck-badge.css, with a
+ * distinct accent color so the two module's badges/links are visually
+ * distinguishable at a glance.
+ */
+.lms-listening-deck-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.4rem;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  background: rgba(13, 148, 136, 0.15);
+  color: #0f766e;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+body.layout-academy .lms-listening-deck-badge {
+  background: rgba(15, 111, 92, 0.14);
+  color: #0f6f5c;
+}

@@ -1,0 +1,123 @@
+{# Listen step: audio-first — the transcript/hints stay hidden until the
+   student explicitly reveals them (see js/listening-passage.js), enforcing
+   LISTENING_TRAINING_PLAN.txt section 1: "Do not show the text before the
+   learner listens." (No "Show translation" step any more — removed at the
+   student's request; field_translation may still hold imported data, it's
+   simply never surfaced here.) #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-listening-passage">
+  <div class="container">
+    {% set format = passage.get('field_format').value %}
+    <div class="lms-listening-passage__header">
+      <a class="lms-listening-passage__back" href="{{ path('lms_listening.my_passages') }}"><i class="fas fa-arrow-left"></i> {{ 'All passages'|t }}</a>
+      <h1 class="lms-listening-passage__title">{{ passage.label }}</h1>
+      <p class="lms-listening-passage__meta">
+        <span class="lms-listening-passage__format-badge">
+          <i class="fas {{ format == 'dialogue' ? 'fa-comments' : (format == 'narrative' ? 'fa-align-left' : 'fa-comment-dots') }}"></i>
+          {{ format|capitalize }}
+        </span>
+        &middot; {{ 'Level: @level'|t({'@level': passage.get('field_level').value|capitalize}) }}
+        {% if times_seen_label %}
+          &middot; <span class="lms-listening-passage__seen-count">{{ times_seen_label }}</span>
+        {% endif %}
+      </p>
+    </div>
+
+    {# Play/Pause toolbar — same TTS mechanism as lms_reading's "Listen to
+       passage" (js/listening-passage.js is an independent copy, including
+       the voice/speed-change mid-playback fix). Hidden by JS on browsers
+       without speechSynthesis support instead of being left broken. #}
+    <div class="lms-listening-passage__listen" data-listening-listen-bar hidden>
+      <button type="button" class="lms-listening-passage__listen-btn" data-listening-listen-toggle>
+        <i class="fas fa-play" data-listening-listen-icon></i>
+        <span data-listening-listen-label>{{ 'Listen'|t }}</span>
+      </button>
+      <div class="lms-listening-passage__listen-options">
+        <label class="lms-listening-passage__listen-voice" data-listening-listen-voice-wrapper hidden>
+          {{ 'Voice'|t }}
+          <select data-listening-listen-voice></select>
+        </label>
+        <label class="lms-listening-passage__listen-speed">
+          {{ 'Speed'|t }}
+          <select data-listening-listen-speed>
+            <option value="0.75">0.75&times;</option>
+            <option value="1" selected>1&times;</option>
+            <option value="1.25">1.25&times;</option>
+          </select>
+        </label>
+      </div>
+      <span class="lms-listening-passage__replay-count" data-listening-replay-count hidden></span>
+    </div>
+
+    {# Progressive reveal: disabled until the student has pressed Play at
+       least once — see js/listening-passage.js — so a hint/transcript
+       can't be grabbed without listening at all first. #}
+    <div class="lms-listening-passage__reveal" data-listening-reveal-bar>
+      {% if hints is not empty %}
+        <button type="button" class="lms-listening-passage__reveal-btn" data-listening-hint-btn disabled>
+          <i class="fas fa-lightbulb"></i> {{ 'Show hint'|t }}
+        </button>
+      {% endif %}
+      <button type="button" class="lms-listening-passage__reveal-btn" data-listening-transcript-btn disabled>
+        <i class="fas fa-align-left"></i> {{ 'Show transcript'|t }}
+      </button>
+    </div>
+
+    <ul class="lms-listening-passage__hints" data-listening-hint-list hidden></ul>
+
+    {# Common wrapper for both formats, hidden until "Show transcript" is
+       pressed — js/listening-passage.js still builds the sentence/turn
+       units and attaches TTS to them immediately (needed to speak them),
+       it just keeps this whole block hidden until revealed. #}
+    <div class="lms-listening-passage__content" data-listening-content hidden>
+      {% if passage.get('field_body').value %}
+        {# Rendered as plain, auto-escaped text (not |raw) — field_body is
+           author-supplied via JSON import, so it must never be trusted as
+           HTML. JS rebuilds the sentence-tokenized version from this
+           element's textContent using safe DOM text nodes, never
+           innerHTML. For a Dialogue passage this is just the optional
+           scene-setting intro, not the conversation itself. #}
+        <div class="lms-listening-passage__body" data-listening-body>{{ passage.get('field_body').value }}</div>
+      {% endif %}
+
+      {% if format == 'dialogue' and dialogue_turns is not empty %}
+        <div class="lms-listening-passage__dialogue" data-listening-dialogue>
+          {% for turn in dialogue_turns %}
+            <div class="lms-listening-passage__turn lms-listening-passage__turn--{{ loop.index0 is even ? 'a' : 'b' }}" data-speaker="{{ turn.speaker }}">
+              <div class="lms-listening-passage__turn-speaker">{{ turn.speaker }}</div>
+              <div class="lms-listening-passage__turn-line" data-listening-line>{{ turn.line }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    {# Shared "My Note" widget (lms_note module) — see
+       NOTE_EXPANSION_PLAN.md. Text-only, one note per passage per student,
+       explicit Save/Delete (no autosave). #}
+    <div class="lms-note-widget" data-lms-note-widget data-note-context-type="listening_passage" data-note-context-id="{{ passage.id() }}">
+      <div class="lms-note-widget__head">
+        <h3 class="lms-note-widget__title"><i class="fas fa-note-sticky"></i> {{ 'My Note'|t }}</h3>
+        <span class="lms-note-widget__status" data-note-status></span>
+      </div>
+      <div class="lms-note-widget__toolbar" data-note-toolbar>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="bold" title="{{ 'Bold'|t }}"><i class="fas fa-bold"></i></button>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="italic" title="{{ 'Italic'|t }}"><i class="fas fa-italic"></i></button>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="underline" title="{{ 'Underline'|t }}"><i class="fas fa-underline"></i></button>
+        <span class="lms-note-widget__tool-sep"></span>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="insertUnorderedList" title="{{ 'Bullet list'|t }}"><i class="fas fa-list-ul"></i></button>
+        <button type="button" class="lms-note-widget__tool" data-note-cmd="insertOrderedList" title="{{ 'Numbered list'|t }}"><i class="fas fa-list-ol"></i></button>
+      </div>
+      <div class="lms-note-widget__textarea" data-note-textarea contenteditable="false" data-empty-text="{{ 'Loading…'|t }}"></div>
+      <div class="lms-note-widget__actions">
+        <button type="button" class="lms-note-widget__save" data-note-save disabled>{{ 'Save'|t }}</button>
+        <button type="button" class="lms-note-widget__delete" data-note-delete hidden>{{ 'Delete'|t }}</button>
+      </div>
+    </div>
+
+    <div class="lms-listening-passage__footer">
+      <a class="lms-listening-passage__continue" data-listening-continue href="#">{{ 'Continue to questions'|t }} <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>

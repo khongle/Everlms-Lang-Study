@@ -25,6 +25,7 @@ use Drupal\views\EntityViewsData;
     'id' => 'id',
     'uuid' => 'uuid',
     'label' => 'name',
+    'published' => 'status',
   ],
   handlers: [
     'view_builder' => EntityViewBuilder::class,
@@ -81,6 +82,14 @@ class Card extends ContentEntityBase {
       ->setDescription(new TranslatableMarkup('The meaning shown on the back of the card.'))
       ->setRequired(TRUE)
       ->setDisplayOptions('form', ['type' => 'text_textarea', 'weight' => -8])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['field_translation'] = BaseFieldDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Translation'))
+      ->setDescription(new TranslatableMarkup('The term translated into the deck\'s native language (see Deck::field_native_language), e.g. "pineapple" → "quả dứa".'))
+      ->setSetting('max_length', 255)
+      ->setDisplayOptions('form', ['type' => 'string_textfield', 'weight' => -7.5])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
@@ -149,6 +158,30 @@ class Card extends ContentEntityBase {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['field_collocations'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(new TranslatableMarkup('Collocations'))
+      ->setDescription(new TranslatableMarkup('Common word combinations this term appears in (e.g. "make a decision" for "decision"). Keep them in the same order as their translations below.'))
+      ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textarea',
+        'weight' => -3.5,
+        'settings' => ['rows' => 1],
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['field_collocation_translations'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(new TranslatableMarkup('Collocation Translations'))
+      ->setDescription(new TranslatableMarkup('Add each translation in the same position as its collocation above.'))
+      ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textarea',
+        'weight' => -3.4,
+        'settings' => ['rows' => 1],
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['field_audio'] = BaseFieldDefinition::create('file')
       ->setLabel(new TranslatableMarkup('Pronunciation Audio'))
       ->setSetting('file_directory', 'flashcards/audio/[date:custom:Y-m]')
@@ -175,6 +208,14 @@ class Card extends ContentEntityBase {
         'hard' => 'Hard',
       ])
       ->setDisplayOptions('form', ['type' => 'options_select', 'weight' => -1])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['status'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(new TranslatableMarkup('Published'))
+      ->setDescription(new TranslatableMarkup('Unpublished cards are skipped entirely by every study mode (StudyQueueBuilder\'s queue/count/mastery queries and StudyController::buildQuizPool()\'s distractor pool) but still included in a deck\'s Export JSON — this only hides a card from being studied, it never deletes or excludes it from export/management.'))
+      ->setDefaultValue(TRUE)
+      ->setDisplayOptions('form', ['type' => 'boolean_checkbox', 'weight' => 98])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 

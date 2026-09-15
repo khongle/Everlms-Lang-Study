@@ -1,0 +1,20 @@
+{# Comprehension step — rendered client-side from drupalSettings.lmsListening
+   (see js/listening-passage.js), this template is mostly a shell/container. #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-listening-questions">
+  <div class="container">
+    <div class="lms-listening-questions__header">
+      <a class="lms-listening-passage__back" href="{{ path('lms_listening.listen', {'lms_listening_passage': passage.id()}) }}"><i class="fas fa-arrow-left"></i> {{ 'Back to passage'|t }}</a>
+      <h1 class="lms-listening-questions__title">{{ 'Comprehension'|t }}: {{ passage.label }}</h1>
+    </div>
+
+    <form id="lms-listening-questions-form" data-listening-questions-form>
+      <div data-listening-questions-list></div>
+
+      <div class="lms-listening-questions__actions">
+        <button type="submit" class="lms-listening-questions__submit">{{ 'Check answers'|t }}</button>
+      </div>
+    </form>
+  </div>
+</section>

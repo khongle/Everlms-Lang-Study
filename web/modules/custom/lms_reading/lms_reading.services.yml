@@ -1,0 +1,15 @@
+services:
+  lms_reading.import_validator:
+    class: Drupal\lms_reading\Service\ReadingImportValidator
+    arguments:
+      - '@entity_type.manager'
+
+  lms_reading.import_batch:
+    class: Drupal\lms_reading\Service\ReadingImportBatchService
+    arguments:
+      - '@entity_type.manager'
+
+  lms_reading.visibility:
+    class: Drupal\lms_reading\Service\ReadingVisibilityService
+    arguments:
+      - '@entity_type.manager'

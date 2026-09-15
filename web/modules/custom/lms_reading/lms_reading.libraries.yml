@@ -1,0 +1,51 @@
+# No explicit `version:` on any of these first-party assets — same reasoning
+# as lms_flashcard.libraries.yml: leaving it unset means every cache rebuild
+# forces browsers to refetch instead of serving a stale cached copy.
+reading_pages:
+  css:
+    theme:
+      css/reading-pages.css: {}
+
+reading_my_passages:
+  js:
+    js/reading-my-passages.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+reading_passage:
+  css:
+    theme:
+      css/reading-pages.css: {}
+  js:
+    js/reading-passage.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/drupalSettings
+
+reading_review:
+  js:
+    js/reading-review.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/drupalSettings
+
+reading_import:
+  css:
+    theme:
+      css/reading-import.css: {}
+  js:
+    js/reading-import.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+# Attached only from lms_reading_preprocess_lms_flashcard_my_decks() — see
+# that function's docblock in lms_reading.module for why this is safe to
+# have a library that only ever renders on an lms_flashcard page.
+reading_deck_badge:
+  css:
+    theme:
+      css/reading-deck-badge.css: {}

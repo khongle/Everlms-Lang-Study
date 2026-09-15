@@ -1,0 +1,43 @@
+{# Review screen: score, duration, clicked words, unknown words + "Add
+   unknown words to Flashcards" button. #}
+{{ attach_library('lms_theme/global') }}
+
+<section class="lms-section lms-reading-review">
+  <div class="container">
+    <h1 class="lms-reading-review__title">{{ 'Review'|t }}: {{ passage.label }}</h1>
+
+    <div class="lms-reading-review__stats">
+      <div class="lms-reading-review__stat">
+        <span class="lms-reading-review__stat-value">{{ attempt.get('field_score').value }}%</span>
+        <span class="lms-reading-review__stat-label">{{ 'Score'|t }} ({{ attempt.get('field_correct_count').value }}/{{ attempt.get('field_question_count').value }})</span>
+      </div>
+      <div class="lms-reading-review__stat">
+        <span class="lms-reading-review__stat-value">{{ (attempt.get('field_duration_seconds').value / 60)|round(0, 'floor') }}m {{ attempt.get('field_duration_seconds').value % 60 }}s</span>
+        <span class="lms-reading-review__stat-label">{{ 'Reading time'|t }}</span>
+      </div>
+      <div class="lms-reading-review__stat">
+        <span class="lms-reading-review__stat-value">{{ words_clicked_count }}</span>
+        <span class="lms-reading-review__stat-label">{{ 'Words clicked'|t }}</span>
+      </div>
+    </div>
+
+    {% if unknown_terms is not empty %}
+      <div class="lms-reading-review__unknown">
+        <h3>{{ 'Unknown words'|t }}</h3>
+        <ul class="lms-reading-review__unknown-list">
+          {% for term in unknown_terms %}
+            <li>{{ term }}</li>
+          {% endfor %}
+        </ul>
+
+        {% if attempt.get('field_added_to_flashcards').value %}
+          <p class="lms-reading-review__added-notice">{{ 'These words have been added to Flashcards.'|t }}</p>
+        {% else %}
+          <button type="button" class="lms-reading-review__add-btn" data-reading-add-unknown-words>{{ 'Add unknown words to Flashcards'|t }}</button>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <a class="lms-reading-review__back" href="{{ path('lms_reading.my_passages') }}">{{ 'Back to Reading'|t }}</a>
+  </div>
+</section>
