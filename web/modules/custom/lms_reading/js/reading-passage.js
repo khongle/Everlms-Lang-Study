@@ -214,6 +214,32 @@
    * Hidden entirely on browsers without speechSynthesis rather than
    * showing a control that would silently do nothing.
    */
+  /**
+   * "Show translation" — one-shot reveal of field_translation's
+   * server-rendered (but hidden) content, same pattern as Active
+   * Listening's own Show Translation (js/listening-passage.js, an
+   * independent copy). Unlike that one, this isn't gated behind a
+   * "Listen first" unlock — Reading has no such prerequisite (the
+   * passage text is already on the page), so the button is clickable
+   * immediately. The template only renders this markup at all when the
+   * passage actually has a translation, so this behavior is a no-op
+   * otherwise.
+   */
+  Drupal.behaviors.lmsReadingTranslation = {
+    attach: function (context) {
+      once('lms-reading-translation', '[data-reading-translation-btn]', context).forEach(function (btn) {
+        var translationEl = document.querySelector('[data-reading-translation]');
+        if (!translationEl) {
+          return;
+        }
+        btn.addEventListener('click', function () {
+          translationEl.hidden = false;
+          btn.hidden = true;
+        });
+      });
+    },
+  };
+
   Drupal.behaviors.lmsReadingPassageListen = {
     attach: function (context) {
       once('lms-reading-passage-listen', '[data-reading-listen-bar]', context).forEach(function (bar) {

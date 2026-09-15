@@ -320,6 +320,16 @@ body.layout-academy select.lms-listening-filters__select:focus {
   display: block;
 }
 
+.lms-listening-passage__translation {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 118, 110, 0.08);
+  border-left: 3px solid #0f766e;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
 .lms-listening-passage__sentence.is-speaking {
   background: rgba(250, 204, 21, 0.35);
   border-radius: 0.25rem;
@@ -519,4 +529,9 @@ body.layout-academy .lms-listening-passage .lms-note-widget__save {
 
 body.layout-academy .lms-listening-passage .lms-note-widget__textarea:focus {
   border-color: #8d1f2d;
+}
+
+body.layout-academy .lms-listening-passage__translation {
+  background: rgba(141, 31, 45, 0.08);
+  border-left-color: #8d1f2d;
 }

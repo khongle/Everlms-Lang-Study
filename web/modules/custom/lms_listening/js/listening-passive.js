@@ -94,6 +94,8 @@
         var transcriptEl = section.querySelector('[data-listening-passive-transcript]');
         var vocabWrapEl = section.querySelector('[data-listening-passive-vocab]');
         var vocabListEl = section.querySelector('[data-listening-passive-vocab-list]');
+        var translationBtn = section.querySelector('[data-listening-passive-translation-btn]');
+        var translationEl = section.querySelector('[data-listening-passive-translation]');
         var stopBtn = section.querySelector('[data-listening-passive-stop]');
         var startLabelEl = section.querySelector('[data-listening-passive-start-label]');
         var doneEl = section.querySelector('[data-listening-passive-done]');
@@ -306,6 +308,19 @@
           if (vocabWrapEl) {
             vocabWrapEl.hidden = terms.length === 0;
           }
+
+          // Re-hidden (button re-shown) on every new passage — a
+          // translation revealed for the previous passage must not
+          // silently carry over and look like it belongs to this one.
+          // The button itself only ever shows when this passage actually
+          // has a translation.
+          if (translationEl) {
+            translationEl.hidden = true;
+            translationEl.textContent = passage.translation || '';
+          }
+          if (translationBtn) {
+            translationBtn.hidden = !passage.translation;
+          }
         }
 
         function speakTranscript(passage) {
@@ -426,6 +441,15 @@
                 statusEl.textContent = Drupal.t('Something went wrong — please try starting again.');
               }
             });
+        }
+
+        if (translationBtn) {
+          translationBtn.addEventListener('click', function () {
+            if (translationEl) {
+              translationEl.hidden = false;
+            }
+            translationBtn.hidden = true;
+          });
         }
 
         startBtn.addEventListener('click', function () {

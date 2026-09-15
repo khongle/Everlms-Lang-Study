@@ -24,6 +24,53 @@
     };
 
     /**
+     * The header's profile mega-menu (avatar + name -> Dashboard/My
+     * Courses/.../My Profile) only ever reveals on CSS :hover
+     * (scss/components/_mega-menu.scss) — fine with a mouse, but a
+     * touchscreen has no hover state, so tapping the trigger (a real
+     * <a href> pointing at My Profile) just navigated straight there
+     * instead of ever showing the dropdown. This adds a tap-to-open
+     * fallback (an `.is-open` class the same SCSS rule also reveals on)
+     * for exactly that case — matchMedia('(hover: hover)') is false on
+     * essentially every touch device and true on anything with a real
+     * mouse, so desktop hover behavior is untouched either way.
+     */
+    Drupal.behaviors.lmsProfileMegaMenu = {
+        attach: function (context) {
+            once('lms-profile-mega-menu', '.lms-mega-menu-wrapper--profile', context).forEach(function (wrapper) {
+                var trigger = wrapper.querySelector('.lms-navbar__account-trigger');
+                var dropdown = wrapper.querySelector('.lms-mega-dropdown');
+                if (!trigger || !dropdown) {
+                    return;
+                }
+
+                trigger.addEventListener('click', function (event) {
+                    if (window.matchMedia && window.matchMedia('(hover: hover)').matches) {
+                        // Has a real pointer — :hover already handles this normally.
+                        return;
+                    }
+                    if (!wrapper.classList.contains('is-open')) {
+                        // First tap: reveal the dropdown instead of
+                        // following the trigger's own href. The dropdown
+                        // has its own "My Profile" link for anyone who
+                        // actually wants that destination.
+                        event.preventDefault();
+                        wrapper.classList.add('is-open');
+                    }
+                    // Already open: let this tap follow the href through, same
+                    // as clicking any other already-visible link.
+                });
+
+                document.addEventListener('click', function (event) {
+                    if (wrapper.classList.contains('is-open') && !wrapper.contains(event.target)) {
+                        wrapper.classList.remove('is-open');
+                    }
+                });
+            });
+        }
+    };
+
+    /**
      * Smooth scroll for anchor links.
      */
     Drupal.behaviors.lmsSmoothScroll = {

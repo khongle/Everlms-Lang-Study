@@ -163,6 +163,13 @@ class ReadingPassage extends ContentEntityBase implements EntityOwnerInterface {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['field_translation'] = BaseFieldDefinition::create('text_long')
+      ->setLabel(new TranslatableMarkup('Translation'))
+      ->setDescription(new TranslatableMarkup('Optional full translation of the passage (native-language), revealed only on demand via a "Show Translation" toggle — same field/purpose as lms_listening\'s ListeningPassage::field_translation, kept as an independent copy per this module\'s independence from lms_listening\'s own code.'))
+      ->setDisplayOptions('form', ['type' => 'text_textarea', 'weight' => -15.5, 'settings' => ['rows' => 4]])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['field_word_count'] = BaseFieldDefinition::create('integer')
       ->setLabel(new TranslatableMarkup('Word Count'))
       ->setDescription(new TranslatableMarkup('Computed automatically on save, from field_body (Narrative) or field_body + every field_dialogue_lines entry (Dialogue).'))

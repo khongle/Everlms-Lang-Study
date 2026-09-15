@@ -65,6 +65,19 @@ final class ListeningPresentationService {
   }
 
   /**
+   * The passage's optional native-language translation, plain-text (HTML
+   * tags stripped, same treatment as buildPassiveTranscript()'s `body` —
+   * field_translation is a text_long field, but this is only ever shown
+   * as inert text, never rendered as markup) — or NULL when the passage
+   * has none, so a caller can simply omit/hide the "Show translation"
+   * control instead of showing an empty one.
+   */
+  public function buildTranslation(ListeningPassage $passage): ?string {
+    $value = trim(strip_tags((string) $passage->get('field_translation')->value));
+    return $value !== '' ? $value : NULL;
+  }
+
+  /**
    * The passage's linked vocabulary terms (Card::label() only — see
    * PASSIVE_LISTENING_PLAN.md's decision to read just the English term,
    * not translation/pronunciation/definition) in field_cards' stored

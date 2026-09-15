@@ -284,6 +284,7 @@ final class ListeningImportForm extends FormBase {
         'format' => 'sentence',
         'level' => 'easy',
         'body' => 'I usually eat salmon for dinner on Fridays.',
+        'translation' => 'Tôi thường ăn cá hồi vào bữa tối các ngày thứ Sáu.',
         'card_terms' => ['salmon'],
       ],
       'questions' => [
@@ -345,6 +346,7 @@ final class ListeningImportForm extends FormBase {
           ['speaker' => 'Chemist', 'line' => 'I can recommend this cough medicine. Take it twice a day, after meals.'],
         ],
         'hints' => ['a health problem', 'something to take twice a day'],
+        'translation' => "Dược sĩ: Chào buổi sáng! Tôi có thể giúp gì cho bạn?\nDavid: Tôi bị ho nặng đã ba ngày rồi. Anh có thuốc gì cho việc này không?\nDược sĩ: Tôi có thể giới thiệu loại thuốc ho này. Uống hai lần một ngày, sau bữa ăn.",
         'card_terms' => ['chemist', 'cough medicine', 'medicine'],
       ],
       'questions' => [
@@ -374,7 +376,7 @@ final class ListeningImportForm extends FormBase {
       $html .= '<p class="lms-listening-import__tip-hint">' . $this->t('Every term in <code>card_terms</code> must already exist as a card in the deck named by <code>deck_machine_name</code> — import the vocabulary into Flashcards first, then build the listening passage around it. Exactly one <code>questions</code> item is typical for Sentence.') . '</p>';
     }
     elseif ($key === 'narrative') {
-      $html .= '<p class="lms-listening-import__tip-hint">' . $this->t('<code>hints</code> and <code>translation</code> are optional — they are revealed one step at a time (Hint → Transcript → Translation) only after the student has listened, never shown up front.') . '</p>';
+      $html .= '<p class="lms-listening-import__tip-hint">' . $this->t('<code>hints</code> and <code>translation</code> are both optional. <code>hints</code> are revealed one at a time only after the student has listened, never shown up front. <code>translation</code> is independent of that — a "Show translation" button appears on the Listen page whenever a passage has one, defaulting to hidden either way.') . '</p>';
     }
     else {
       $html .= '<p class="lms-listening-import__tip-hint">' . $this->t('Set <code>listening_passage.format</code> to <code>"dialogue"</code> and replace <code>body</code> with <code>dialogue</code> — an ordered list of <code>{"speaker", "line"}</code> turns (at least 2). <code>body</code> becomes optional: a one-line scene-setting intro, or omit it entirely.') . '</p>';

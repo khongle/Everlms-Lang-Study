@@ -221,6 +221,7 @@ final class ListeningApiController extends ControllerBase {
         'level' => $passage->get('field_level')->value,
         'transcript' => $this->presentation->buildPassiveTranscript($passage),
         'vocabTerms' => $this->presentation->buildVocabTerms($passage),
+        'translation' => $this->presentation->buildTranslation($passage),
       ],
     ]);
   }

@@ -84,6 +84,22 @@
       {% endif %}
     </div>
 
+    {% if not passage.get('field_translation').isEmpty() %}
+      {# Reading isn't gated behind a "Listen first" step the way
+         Active Listening's own hint/transcript reveal is — the passage
+         text is right there already, so this can be clicked any time.
+         Hidden until pressed; see js/reading-passage.js. #}
+      <button type="button" class="lms-reading-passage__reveal-btn" data-reading-translation-btn>
+        <i class="fas fa-language"></i> {{ 'Show translation'|t }}
+      </button>
+      <div class="lms-reading-passage__translation" data-reading-translation hidden>
+        {# Rendered as plain, auto-escaped text (not |raw) — same reasoning
+           as field_body above, since field_translation is likewise
+           author-supplied via JSON import. #}
+        {{ passage.get('field_translation').value }}
+      </div>
+    {% endif %}
+
     <div class="lms-reading-passage__word-popup" data-reading-word-popup hidden>
       <button type="button" class="lms-reading-passage__word-popup-close" data-reading-word-popup-close aria-label="{{ 'Close'|t }}">&times;</button>
       <div class="lms-reading-passage__word-popup-term" data-reading-word-popup-term></div>

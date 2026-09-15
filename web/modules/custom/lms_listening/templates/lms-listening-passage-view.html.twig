@@ -62,6 +62,11 @@
       <button type="button" class="lms-listening-passage__reveal-btn" data-listening-transcript-btn disabled>
         <i class="fas fa-align-left"></i> {{ 'Show transcript'|t }}
       </button>
+      {% if not passage.get('field_translation').isEmpty() %}
+        <button type="button" class="lms-listening-passage__reveal-btn" data-listening-translation-btn disabled>
+          <i class="fas fa-language"></i> {{ 'Show translation'|t }}
+        </button>
+      {% endif %}
     </div>
 
     <ul class="lms-listening-passage__hints" data-listening-hint-list hidden></ul>
@@ -92,6 +97,17 @@
         </div>
       {% endif %}
     </div>
+
+    {% if not passage.get('field_translation').isEmpty() %}
+      {# Rendered as plain, auto-escaped text (not |raw) — same reasoning
+         as field_body above, since field_translation is likewise
+         author-supplied via JSON import. Independent of the transcript
+         reveal (a student can show one without the other) — hidden until
+         "Show translation" is pressed, see js/listening-passage.js. #}
+      <div class="lms-listening-passage__translation" data-listening-translation hidden>
+        {{ passage.get('field_translation').value }}
+      </div>
+    {% endif %}
 
     {# Shared "My Note" widget (lms_note module) — see
        NOTE_EXPANSION_PLAN.md. Text-only, one note per passage per student,

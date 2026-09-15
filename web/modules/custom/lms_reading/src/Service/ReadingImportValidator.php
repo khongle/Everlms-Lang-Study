@@ -22,6 +22,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  *     "format": "narrative|dialogue" (optional, defaults to "narrative"),
  *     "body": "...", (required for narrative; an optional intro line for dialogue)
  *     "dialogue": [ {"speaker": "...", "line": "..."}, ... ] (required for dialogue, >= 2 turns; absent/ignored for narrative)
+ *     "translation": "...", (optional, revealed only on demand via a "Show Translation" toggle)
  *     "card_terms": ["term1", "term2", ...]
  *   },
  *   "questions": [ {"type": "multiple_choice|true_false|fill_blank|short_answer", ...}, ... ],
@@ -68,7 +69,7 @@ final class ReadingImportValidator {
    * @return array
    *   [
    *     'errors' => string[] (non-empty means the whole import is rejected),
-   *     'passage' => ['title', 'machine_name', 'deck_id', 'level', 'body', 'card_ids'],
+   *     'passage' => ['title', 'machine_name', 'deck_id', 'level', 'body', 'translation', 'card_ids'],
    *     'questions' => [validated question rows],
    *     'context_items' => [validated context-item rows],
    *     'word_glossary' => [validated glossary rows],
@@ -203,6 +204,12 @@ final class ReadingImportValidator {
       $errors[] = (string) $this->t('passage.body is required when passage.format is "narrative".');
     }
 
+    // Optional native-language translation of the whole passage — same
+    // field/purpose as lms_listening's own "translation" (see that
+    // module's ListeningImportValidator), revealed only on demand via a
+    // "Show Translation" toggle, never gated behind format.
+    $translation = trim((string) ($passage['translation'] ?? ''));
+
     $deck_id = NULL;
     $deck_machine_name = trim((string) ($passage['deck_machine_name'] ?? ''));
     if ($deck_machine_name === '') {
@@ -255,6 +262,7 @@ final class ReadingImportValidator {
       'format' => $format,
       'body' => $body,
       'dialogue' => $dialogue,
+      'translation' => $translation,
       'deck_id' => $deck_id,
       'card_ids' => $card_ids,
     ];

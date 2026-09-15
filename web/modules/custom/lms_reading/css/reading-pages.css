@@ -261,6 +261,32 @@
   font-size: 0.88rem;
 }
 
+.lms-reading-passage__reveal-btn {
+  margin-top: 1.25rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #374151;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lms-reading-passage__reveal-btn:hover {
+  background: #f3f4f6;
+}
+
+.lms-reading-passage__translation {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: rgba(79, 70, 229, 0.06);
+  border-left: 3px solid #4f46e5;
+  line-height: 1.7;
+  font-style: italic;
+}
+
 .lms-reading-passage__body {
   font-size: 1.15rem;
   line-height: 1.9;
@@ -1003,4 +1029,9 @@ body.layout-academy .lms-reading-passage .lms-note-widget__save {
 
 body.layout-academy .lms-reading-passage .lms-note-widget__textarea:focus {
   border-color: #ba8b38;
+}
+
+body.layout-academy .lms-reading-passage__translation {
+  background: rgba(186, 139, 56, 0.1);
+  border-left-color: #ba8b38;
 }

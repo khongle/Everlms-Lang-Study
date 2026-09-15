@@ -999,6 +999,39 @@ body.layout-academy .lms-flashcard__pronounce-fallback-note {
 .lms-flashcard__grade--easy { background: #3fb950; }
 
 @media (max-width: 760px) {
+  body.lms-flashcard-study-focus {
+    overflow: hidden;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard-study {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    overflow: hidden;
+    background: linear-gradient(180deg, #f8efe0 0%, #fffaf2 48%, #f8efe0 100%);
+    padding: max(0.85rem, env(safe-area-inset-top)) 0 max(0.7rem, env(safe-area-inset-bottom));
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard-study__container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-inline: 1rem;
+    box-sizing: border-box;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard-study__header {
+    flex: 0 0 auto;
+    margin-bottom: 0.75rem;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard-study [data-flashcard-stage] {
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: 0.75rem;
+    touch-action: pan-y;
+  }
+
   .lms-flashcard-study__container {
     max-width: 100%;
   }
@@ -1011,8 +1044,33 @@ body.layout-academy .lms-flashcard__pronounce-fallback-note {
   .lms-flashcard--quiz .lms-flashcard__inner,
   .lms-flashcard--pronounce,
   .lms-flashcard--pronounce .lms-flashcard__inner {
-    height: 620px;
-    min-height: 620px;
+    height: clamp(430px, calc(100dvh - 215px), 620px);
+    min-height: 0;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard,
+  body.lms-flashcard-study-focus .lms-flashcard__inner,
+  body.lms-flashcard-study-focus .lms-flashcard--spell,
+  body.lms-flashcard-study-focus .lms-flashcard--spell .lms-flashcard__inner,
+  body.lms-flashcard-study-focus .lms-flashcard--quiz,
+  body.lms-flashcard-study-focus .lms-flashcard--quiz .lms-flashcard__inner,
+  body.lms-flashcard-study-focus .lms-flashcard--pronounce,
+  body.lms-flashcard-study-focus .lms-flashcard--pronounce .lms-flashcard__inner {
+    height: 100%;
+    min-height: 0;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard {
+    flex: 1 1 auto;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard__face {
+    overflow: hidden;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard__face--back {
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .lms-flashcard__face {
@@ -1029,7 +1087,36 @@ body.layout-academy .lms-flashcard__pronounce-fallback-note {
   }
 
   .lms-flashcard__examples {
-    max-height: 11rem;
+    max-height: none;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard__face--back {
+    gap: 0.75rem;
+    padding-bottom: 1.5rem;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard__quiz,
+  body.lms-flashcard-study-focus .lms-flashcard__mastery {
+    gap: 0.55rem;
+    max-width: 100%;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard__quiz-sentence,
+  body.lms-flashcard-study-focus .lms-flashcard__mastery-definition {
+    font-size: 1rem;
+    line-height: 1.4;
+    max-height: 5.7rem;
+    overflow-y: auto;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard__quiz-choices,
+  body.lms-flashcard-study-focus .lms-flashcard__mastery-choices {
+    gap: 0.45rem;
+  }
+
+  body.lms-flashcard-study-focus .lms-flashcard__quiz-choice {
+    padding: 0.55rem 0.8rem;
+    font-size: 0.88rem;
   }
 
   .lms-flashcard__grades {

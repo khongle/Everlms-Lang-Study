@@ -54,6 +54,17 @@
         <h2 class="lms-listening-passive__vocab-heading">{{ 'Vocabulary'|t }}</h2>
         <ul class="lms-listening-passive__vocab-list" data-listening-passive-vocab-list></ul>
       </div>
+
+      {# Independent of transcript/vocab — hidden by default, and re-hidden
+         (with the button re-shown) each time renderPassage() swaps in a
+         new passage, same "not gated behind anything else" behavior as
+         Active mode's own Show Translation. The button itself only shows
+         at all when the current passage actually has a translation —
+         see js/listening-passive.js. #}
+      <button type="button" class="lms-listening-passive__reveal-btn" data-listening-passive-translation-btn hidden>
+        <i class="fas fa-language"></i> {{ 'Show translation'|t }}
+      </button>
+      <div class="lms-listening-passive__translation" data-listening-passive-translation hidden></div>
     </div>
 
     {# Shared "My Note" widget (lms_note module) — see

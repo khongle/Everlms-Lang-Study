@@ -1,7 +1,14 @@
 .lms-mega-menu-wrapper {
   position: relative;
 
-  &:hover .lms-mega-dropdown {
+  // :hover alone leaves this unreachable on touch devices — there is no
+  // hover state, so tapping the trigger (a real <a href> to My Profile)
+  // just navigated straight through instead of ever revealing the
+  // dropdown. js/main.js's lmsProfileMegaMenu behavior adds this class on
+  // tap (only where matchMedia('(hover: hover)') is false, so desktop
+  // mouse users are unaffected) as a same-effect fallback.
+  &:hover .lms-mega-dropdown,
+  &.is-open .lms-mega-dropdown {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);

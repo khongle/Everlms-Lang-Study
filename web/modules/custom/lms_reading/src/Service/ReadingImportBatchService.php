@@ -57,6 +57,7 @@ final class ReadingImportBatchService {
       'field_level' => $passage_data['level'],
       'field_format' => $passage_data['format'],
       'field_body' => $passage_data['body'] !== '' ? ['value' => $passage_data['body'], 'format' => 'basic_html'] : NULL,
+      'field_translation' => $passage_data['translation'] !== '' ? ['value' => $passage_data['translation'], 'format' => 'basic_html'] : NULL,
       'field_dialogue_speakers' => array_column($passage_data['dialogue'], 'speaker'),
       'field_dialogue_lines' => array_column($passage_data['dialogue'], 'line'),
       'field_questions' => $question_ids,

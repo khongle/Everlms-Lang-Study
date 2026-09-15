@@ -195,6 +195,7 @@ final class ListeningController extends ControllerBase {
               'level' => $lms_listening_passage->get('field_level')->value,
               'transcript' => $this->presentation->buildPassiveTranscript($lms_listening_passage),
               'vocabTerms' => $this->presentation->buildVocabTerms($lms_listening_passage),
+              'translation' => $this->presentation->buildTranslation($lms_listening_passage),
             ],
           ],
         ],

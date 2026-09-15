@@ -443,6 +443,12 @@
         var currentCard = null;
         var revealed = false;
         var loading = false;
+        var focusMediaQuery = window.matchMedia ? window.matchMedia('(max-width: 760px)') : null;
+        var swipeStartX = 0;
+        var swipeStartY = 0;
+        var swipeTracking = false;
+        var swipeHorizontal = false;
+        var suppressNextCardClick = false;
         // Session-total is captured once from the first card's "remaining"
         // count (remaining + the one just shown = how many were queued up
         // at the start of this session); studiedCount then just counts
@@ -2204,6 +2210,62 @@
           }
         }
 
+        function updateFocusMode() {
+          var useFocusMode = !!(focusMediaQuery && focusMediaQuery.matches);
+          document.body.classList.toggle('lms-flashcard-study-focus', useFocusMode);
+        }
+
+        /**
+         * Mobile swipe helper: left-swipe advances when the current exercise
+         * is ready to move on. It deliberately refuses to skip unanswered
+         * quiz/spell/pronunciation/mastery checks. For the plain flip step,
+         * a left-swipe means "move this card along" rather than "tap the
+         * card", so it calls the same progression action as Continue.
+         */
+        function advanceFromSwipe() {
+          if (loading || quickEditOpen || !currentCard) {
+            return;
+          }
+          if (style === 'spell') {
+            if (spellNextEl && !spellNextEl.hidden) {
+              loadNext();
+            }
+            return;
+          }
+          if (style === 'quiz' || (style === 'flip' && currentMasteryLevel === 3)) {
+            if (quizNextEl && !quizNextEl.hidden) {
+              loadNext();
+            }
+            return;
+          }
+          if (style === 'pronounce') {
+            if (pronounceNextEl && !pronounceNextEl.hidden) {
+              loadNext();
+            }
+            return;
+          }
+          if (style === 'flip') {
+            if (currentMasteryLevel === 1) {
+              advanceFromLevel1();
+            }
+            else if (!masteryContinueEl.hidden) {
+              handleMasteryContinue();
+            }
+          }
+        }
+
+        function retreatFromSwipe() {
+          if (loading || quickEditOpen || !currentCard) {
+            return;
+          }
+          if (style === 'flip' && currentMasteryLevel === 1 && revealed) {
+            flip();
+          }
+          else {
+            speakCard();
+          }
+        }
+
         function loadNext() {
           loading = true;
           cardEl.setAttribute('aria-busy', 'true');
@@ -2521,7 +2583,70 @@
           });
         });
 
-        cardEl.addEventListener('click', flip);
+        cardEl.addEventListener('click', function (e) {
+          if (suppressNextCardClick) {
+            e.preventDefault();
+            e.stopPropagation();
+            suppressNextCardClick = false;
+            return;
+          }
+          flip();
+        });
+        cardEl.addEventListener('touchstart', function (e) {
+          if (!focusMediaQuery || !focusMediaQuery.matches || quickEditOpen || !e.touches || e.touches.length !== 1) {
+            return;
+          }
+          var target = e.target;
+          if (target && target.closest && target.closest('button, input, textarea, select, audio, a')) {
+            return;
+          }
+          swipeTracking = true;
+          swipeHorizontal = false;
+          swipeStartX = e.touches[0].clientX;
+          swipeStartY = e.touches[0].clientY;
+        }, { passive: true });
+        cardEl.addEventListener('touchmove', function (e) {
+          if (!swipeTracking || !e.touches || e.touches.length !== 1) {
+            return;
+          }
+          var dx = e.touches[0].clientX - swipeStartX;
+          var dy = e.touches[0].clientY - swipeStartY;
+          if (!swipeHorizontal && Math.abs(dx) > 14 && Math.abs(dx) > Math.abs(dy) * 1.35) {
+            swipeHorizontal = true;
+          }
+          if (swipeHorizontal) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+        cardEl.addEventListener('touchend', function (e) {
+          if (!swipeTracking) {
+            return;
+          }
+          swipeTracking = false;
+          if (!swipeHorizontal || !e.changedTouches || !e.changedTouches.length) {
+            return;
+          }
+          var dx = e.changedTouches[0].clientX - swipeStartX;
+          var dy = e.changedTouches[0].clientY - swipeStartY;
+          if (Math.abs(dx) < 56 || Math.abs(dy) > 90) {
+            return;
+          }
+          e.preventDefault();
+          suppressNextCardClick = true;
+          window.setTimeout(function () {
+            suppressNextCardClick = false;
+          }, 450);
+          if (dx < 0) {
+            advanceFromSwipe();
+          }
+          else {
+            retreatFromSwipe();
+          }
+        }, { passive: false });
+        cardEl.addEventListener('touchcancel', function () {
+          swipeTracking = false;
+          swipeHorizontal = false;
+        }, { passive: true });
         cardEl.addEventListener('keydown', function (e) {
           if (e.key === ' ') {
             e.preventDefault();
@@ -2631,6 +2756,19 @@
               speakCard();
             }
           }
+        });
+
+        updateFocusMode();
+        if (focusMediaQuery) {
+          if (focusMediaQuery.addEventListener) {
+            focusMediaQuery.addEventListener('change', updateFocusMode);
+          }
+          else if (focusMediaQuery.addListener) {
+            focusMediaQuery.addListener(updateFocusMode);
+          }
+        }
+        window.addEventListener('pagehide', function () {
+          document.body.classList.remove('lms-flashcard-study-focus');
         });
 
         // Quick Edit wiring (see QUICK_EDIT_STUDY_CARD_PLAN.md). The drawer/

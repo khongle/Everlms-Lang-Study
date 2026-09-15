@@ -205,6 +205,7 @@ final class ReadingImportForm extends FormBase {
         'deck_machine_name' => 'everyday-english-at-the-chemists',
         'level' => 'easy',
         'body' => "Yesterday, I went to the chemist's because I had a bad cough and a sore throat. I told the pharmacist about my symptoms. She recommended some cough medicine and told me to take it twice a day.",
+        'translation' => 'Hôm qua, tôi đã đến hiệu thuốc vì tôi bị ho nặng và đau họng. Tôi kể cho dược sĩ nghe về các triệu chứng của mình. Cô ấy đã giới thiệu một loại thuốc ho và bảo tôi uống hai lần một ngày.',
         'card_terms' => ['chemist', 'cough', 'pharmacist', 'medicine', 'symptom'],
       ],
       'questions' => [
@@ -268,6 +269,7 @@ final class ReadingImportForm extends FormBase {
           ['speaker' => 'David', 'line' => 'Thank you. Should I see a doctor if it does not get better?'],
           ['speaker' => 'Chemist', 'line' => "Yes, if it's still bad in a week, please see a doctor."],
         ],
+        'translation' => "Dược sĩ: Chào buổi sáng! Tôi có thể giúp gì cho bạn?\nDavid: Tôi bị ho nặng đã ba ngày rồi. Anh có thuốc gì cho việc này không?\nDược sĩ: Tôi có thể giới thiệu loại thuốc ho này. Uống hai lần một ngày, sau bữa ăn.\nDavid: Cảm ơn. Nếu không đỡ thì tôi có nên đi khám bác sĩ không?\nDược sĩ: Có, nếu sau một tuần vẫn còn nặng thì bạn nên đi khám bác sĩ.",
         'card_terms' => ['chemist', 'cough', 'medicine'],
       ],
       'questions' => [
@@ -315,7 +317,7 @@ final class ReadingImportForm extends FormBase {
     $html .= '<p class="lms-reading-import__tip-hint"><i class="fas fa-lightbulb"></i> ' . $description . '</p>';
     if ($key === 'narrative') {
       $html .= '<p class="lms-reading-import__tip-hint">' . $this->t('Every term in <code>card_terms</code> must already exist as a card in the deck named by <code>deck_machine_name</code> — import the vocabulary into Flashcards first (see <a href="@import">Import Flashcards</a>), then build the reading passage around it.', ['@import' => '/manage/flashcard-decks/import']) . '</p>';
-      $html .= '<p class="lms-reading-import__tip-hint">' . $this->t('At least one item in <code>questions</code> is required. <code>context_items</code> and <code>word_glossary</code> are optional — <code>word_glossary</code> is only for words in the passage that are NOT already in <code>card_terms</code>.') . '</p>';
+      $html .= '<p class="lms-reading-import__tip-hint">' . $this->t('At least one item in <code>questions</code> is required. <code>context_items</code> and <code>word_glossary</code> are optional — <code>word_glossary</code> is only for words in the passage that are NOT already in <code>card_terms</code>. <code>passage.translation</code> is also optional — a "Show translation" button appears on the Read page whenever a passage has one, defaulting to hidden.') . '</p>';
     }
     else {
       $html .= '<p class="lms-reading-import__tip-hint">' . $this->t('Set <code>passage.format</code> to <code>"dialogue"</code> and replace <code>passage.body</code> with <code>passage.dialogue</code> — an ordered list of <code>{"speaker", "line"}</code> turns (at least 2). <code>passage.body</code> becomes optional: a one-line scene-setting intro shown above the conversation, or omit it entirely.') . '</p>';

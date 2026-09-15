@@ -103,6 +103,8 @@
         var revealBar = document.querySelector('[data-listening-reveal-bar]');
         var hintBtn = revealBar ? revealBar.querySelector('[data-listening-hint-btn]') : null;
         var transcriptBtn = revealBar ? revealBar.querySelector('[data-listening-transcript-btn]') : null;
+        var translationBtn = revealBar ? revealBar.querySelector('[data-listening-translation-btn]') : null;
+        var translationEl = document.querySelector('[data-listening-translation]');
         var hintList = document.querySelector('[data-listening-hint-list]');
         var hints = settings.hints || [];
 
@@ -149,6 +151,9 @@
           if (transcriptBtn) {
             transcriptBtn.disabled = false;
           }
+          if (translationBtn) {
+            translationBtn.disabled = false;
+          }
         }
 
         if (hintBtn) {
@@ -178,6 +183,19 @@
             session.transcriptShown = true;
             saveSession(passageId, session);
             transcriptBtn.disabled = true;
+          });
+        }
+
+        // One-shot reveal, same as Transcript above — independent of it
+        // (a student can show the translation without the transcript, or
+        // vice versa). Only rendered by the template at all when the
+        // passage actually has one (field_translation), so translationBtn/
+        // translationEl are both simply absent otherwise.
+        if (translationBtn && translationEl) {
+          translationBtn.addEventListener('click', function () {
+            translationEl.hidden = false;
+            translationBtn.disabled = true;
+            translationBtn.hidden = true;
           });
         }
 

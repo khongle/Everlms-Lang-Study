@@ -114,3 +114,22 @@ function lms_reading_update_10002(): string {
   _lms_reading_ensure_entity_type_installed('lms_reading_passage_stat');
   return 'Installed Reading Passage Stat entity storage.';
 }
+
+/**
+ * Adds field_translation to ReadingPassage — optional full translation of
+ * the passage, revealed only on demand via a "Show Translation" toggle.
+ * Same field/purpose as lms_listening's ListeningPassage::field_translation.
+ * No backfill needed: it's optional and starts empty on every existing
+ * row either way (unlike a boolean/status field with a meaningful
+ * non-empty default, there is nothing to compute here).
+ */
+function lms_reading_update_10003() {
+  $field_storage_definition = \Drupal\Core\Field\BaseFieldDefinition::create('text_long')
+    ->setLabel(new \Drupal\Core\StringTranslation\TranslatableMarkup('Translation'))
+    ->setDescription(new \Drupal\Core\StringTranslation\TranslatableMarkup('Optional full translation of the passage (native-language), revealed only on demand via a "Show Translation" toggle.'));
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_translation', 'lms_reading_passage', 'lms_reading', $field_storage_definition);
+
+  return 'Added field_translation to ReadingPassage.';
+}
