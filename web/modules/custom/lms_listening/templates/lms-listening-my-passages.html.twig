@@ -8,9 +8,13 @@
    lms-reading-my-passages.html.twig / reading-my-passages.js), kept as an
    independent copy rather than a shared import. #}
 {% set deck_names = [] %}
+{% set deletable_count = 0 %}
 {% for passage in passages %}
   {% if passage.deck_name and passage.deck_name not in deck_names %}
     {% set deck_names = deck_names|merge([passage.deck_name]) %}
+  {% endif %}
+  {% if passage.can_delete %}
+    {% set deletable_count = deletable_count + 1 %}
   {% endif %}
 {% endfor %}
 
@@ -56,7 +60,31 @@
             {% endfor %}
           </select>
         {% endif %}
+
+        {% if deletable_count > 0 %}
+          {# Toggles .is-selecting on the grid below (js/listening-my-passages.js),
+             which reveals the checkbox on every card the current user is
+             actually allowed to delete (can_delete — real entity access,
+             computed once in ListeningController::myPassages(), never
+             re-derived here) and the bulk action bar underneath it. #}
+          <button type="button" class="lms-listening-select-toggle" data-listening-select-toggle>
+            <i class="fas fa-check-square"></i> {{ 'Select'|t }}
+          </button>
+        {% endif %}
       </div>
+
+      {% if deletable_count > 0 %}
+        <div class="lms-listening-bulk-bar" data-listening-bulk-bar hidden>
+          <span class="lms-listening-bulk-bar__count" data-listening-bulk-count>{{ '0 selected'|t }}</span>
+          <div class="lms-listening-bulk-bar__actions">
+            <button type="button" class="lms-listening-bulk-bar__select-all" data-listening-select-all>{{ 'Select all'|t }}</button>
+            <button type="button" class="lms-listening-bulk-bar__delete" data-listening-bulk-delete disabled>
+              <i class="fas fa-trash"></i> {{ 'Delete selected'|t }}
+            </button>
+            <button type="button" class="lms-listening-bulk-bar__cancel" data-listening-select-cancel>{{ 'Cancel'|t }}</button>
+          </div>
+        </div>
+      {% endif %}
 
       <p class="lms-listening-empty lms-listening-filters__no-match" data-filter-empty hidden>
         {{ 'No passages match your filters.'|t }}
@@ -66,10 +94,16 @@
         {% for passage in passages %}
           <div class="lms-listening-passage-card"
             data-listening-passage
+            data-id="{{ passage.entity.id() }}"
             data-title="{{ passage.title|lower }}"
             data-deck="{{ passage.deck_name|lower }}"
             data-level="{{ passage.level }}"
             data-format="{{ passage.format }}">
+            {% if passage.can_delete %}
+              <label class="lms-listening-passage-card__select">
+                <input type="checkbox" data-listening-select-checkbox value="{{ passage.entity.id() }}" aria-label="{{ 'Select @title'|t({'@title': passage.title}) }}">
+              </label>
+            {% endif %}
             <div class="lms-listening-passage-card__badges">
               <div class="lms-listening-passage-card__level lms-listening-passage-card__level--{{ passage.level }}">{{ passage.level|capitalize }}</div>
               <div class="lms-listening-passage-card__format" title="{{ passage.format|capitalize }}">

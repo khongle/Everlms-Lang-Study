@@ -136,6 +136,7 @@ function lms_listening_preprocess_lms_flashcard_my_decks(array &$variables): voi
         'id' => (int) $passage->id(),
         'title' => (string) $passage->label(),
         'level' => $level,
+        'format' => (string) $passage->get('field_format')->value,
       ];
     }
   }

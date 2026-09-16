@@ -77,6 +77,36 @@
             flashLabel(useBtn, Drupal.t('Added!'));
           });
         });
+
+        // "Save prompt" — see ListeningImportForm::buildForm()'s docblock
+        // on the prompt_save button. Rendered as <input type="submit"> by
+        // Drupal's own Form API either way, so preventDefault() here is
+        // what actually stops it from submitting the whole form (with
+        // whatever JSON is or isn't pasted in) — the PHP-side
+        // #executes_submit_callback/#limit_validation_errors are only a
+        // fallback for if this listener never attaches at all.
+        var promptField = form.querySelector('[data-listening-prompt-field]');
+        var saveBtn = form.querySelector('[data-listening-save-prompt]');
+        if (promptField && saveBtn) {
+          saveBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            saveBtn.disabled = true;
+            fetch('/api/lms/listening/save-import-prompt', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify({ prompt: promptField.value }),
+            })
+              .then(function (response) { return response.json(); })
+              .then(function (data) {
+                saveBtn.disabled = false;
+                flashLabel(saveBtn, (data && data.status === 'ok') ? Drupal.t('Saved!') : Drupal.t('Failed — try again'));
+              })
+              .catch(function () {
+                saveBtn.disabled = false;
+                flashLabel(saveBtn, Drupal.t('Failed — try again'));
+              });
+          });
+        }
       });
     },
   };

@@ -49,9 +49,10 @@
                         // Has a real pointer — :hover already handles this normally.
                         return;
                     }
-                    // Touch/mobile: the account chip is only a menu trigger.
-                    // Never follow its href here; the dropdown already has a
-                    // dedicated "My Profile" link for actual navigation.
+                    // Touch/mobile: the trigger is a menu toggle only, never a
+                    // navigation link. Every tap opens/closes the dropdown;
+                    // actual navigation happens through the "My Profile" link
+                    // inside it.
                     event.preventDefault();
                     wrapper.classList.toggle('is-open');
                 });

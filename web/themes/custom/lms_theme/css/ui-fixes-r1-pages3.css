@@ -2392,6 +2392,18 @@ body.route--lms-course-profile .lms-profile__layout-redesign
   box-sizing: border-box !important;
 }
 
+/* page.html.twig renders this wrapper whenever `page.highlighted` has ANY
+   block assigned (tabs, admin actions, messages), even if that block has
+   nothing to show for the current route/user — e.g. "Primary tabs" on a
+   plain controller page with no local tasks. The margin-top above then
+   shows as a bare empty strip above the actual content on every such page.
+   The 404/403 fix further down only silences this for those two routes;
+   apply it everywhere the wrapper really is empty. */
+.lms-messages-wrapper:empty {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 /* Base alert box for every message in this region */
 .lms-messages-wrapper .messages,
 .lms-page__content .messages {

@@ -113,3 +113,28 @@ lms_listening.api_passive_next:
   requirements:
     _user_is_logged_in: 'TRUE'
   methods: [POST]
+
+lms_listening.api_save_import_prompt:
+  # Backs the standalone "Save prompt" button next to the Import form's
+  # prompt textarea (js/listening-import.js) — writes straight into this
+  # user's own private tempstore (ListeningImportForm reads it back for
+  # #default_value) and does nothing else: no JSON parsing, no entity
+  # created, no AI call of any kind, just persisting some text.
+  path: '/api/lms/listening/save-import-prompt'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningApiController::saveImportPrompt'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_listening.api_bulk_delete:
+  # Backs the "Delete selected" bar on /learn/listening (see
+  # ListeningApiController::bulkDelete()) — per-entity access is still
+  # re-checked server-side there, this route only gates on being logged in
+  # at all, same as every other endpoint in this file.
+  path: '/api/lms/listening/bulk-delete'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningApiController::bulkDelete'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]

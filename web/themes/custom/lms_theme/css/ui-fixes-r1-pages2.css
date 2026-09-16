@@ -650,18 +650,6 @@ body.route--lms-course-pricing .lms-pricing-card .lms-btn--outline {
   font-weight: 600;
 }
 
-/* [P006] ISSUE 1-0189: mobile — avoid duplicate nav affordances.
-   When the hamburger toggle is shown (<=992px), collapse the inline auth
-   links into the drawer paradigm by hiding the standalone navbar action
-   buttons so only the hamburger remains as the single nav affordance. */
-@media (max-width: 992px) {
-  .lms-navbar__actions .lms-btn,
-  .lms-navbar__actions a[href="/user/login"],
-  .lms-navbar__actions a[href="/user/register"] {
-    display: none;
-  }
-}
-
 /* [P006] ISSUE 1-0195: tighten/equalize spacing rhythm on mobile so the gap
    between the last feature row and the CTA is consistent across cards. */
 @media (max-width: 480px) {

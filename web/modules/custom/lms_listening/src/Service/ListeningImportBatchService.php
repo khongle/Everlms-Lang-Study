@@ -53,6 +53,7 @@ final class ListeningImportBatchService {
       'field_dialogue_lines' => array_column($passage_data['dialogue'], 'line'),
       'field_hints' => $passage_data['hints'],
       'field_translation' => $passage_data['translation'] !== '' ? ['value' => $passage_data['translation'], 'format' => 'basic_html'] : NULL,
+      'field_prompt' => $passage_data['prompt'] !== '' ? $passage_data['prompt'] : NULL,
       'field_questions' => $question_ids,
       'status' => TRUE,
     ]);

@@ -333,6 +333,22 @@ body {
   right: 0;
 }
 
+/* main.css reveals the profile dropdown on `.lms-mega-menu-wrapper:hover`
+   OR `.is-open` (js/main.js adds `.is-open` on tap for touch devices, since
+   there's no real hover to trigger the first rule). On touch devices a tap
+   leaves `:hover` "stuck" matching until something else is tapped, so even
+   after JS removes `.is-open` on a second tap to close the menu, the
+   still-matching `:hover` rule alone keeps it visible. Devices with no real
+   pointer have no `:hover` to get stuck, so on those, visibility should
+   depend on `.is-open` alone — force-hide whenever it's absent. */
+@media (hover: none) {
+  .lms-mega-menu-wrapper:not(.is-open) .lms-mega-dropdown {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(10px) !important;
+  }
+}
+
 .lms-navbar--two-tier .lms-nav__exit-impersonation {
   min-height: 38px !important;
   border-radius: 999px !important;
@@ -438,9 +454,12 @@ body.toolbar-horizontal.toolbar-tray-open .lms-navbar.lms-navbar--two-tier {
   .lms-navbar--two-tier .lms-navbar__panel {
     width: 100%;
     height: auto;
+    flex-wrap: wrap;
   }
 
   .lms-navbar--two-tier .lms-navbar__actions {
+    order: 1;
+    width: 100%;
     min-height: 48px;
     display: flex !important;
     justify-content: flex-start;
@@ -459,6 +478,7 @@ body.toolbar-horizontal.toolbar-tray-open .lms-navbar.lms-navbar--two-tier {
   }
 
   .lms-navbar--two-tier .lms-navbar__nav {
+    order: 2;
     display: none !important;
     width: 100%;
     min-height: 0;

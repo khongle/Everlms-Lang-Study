@@ -27,6 +27,22 @@
 
   var DEFAULT_PER_LEVEL = 3;
 
+  function formatLabel(format) {
+    switch (format) {
+      case 'dialogue':
+        return Drupal.t('Dialogue');
+
+      case 'narrative':
+        return Drupal.t('Narrative');
+
+      case 'sentence':
+        return Drupal.t('Sentence');
+
+      default:
+        return format ? format.charAt(0).toUpperCase() + format.slice(1) : Drupal.t('Sentence');
+    }
+  }
+
   /**
    * Builds the (initially hidden) overlay + card once per page, reused for
    * every deck card's "Listening" link. Level rows are rebuilt per-open
@@ -236,8 +252,16 @@
         input.type = 'checkbox';
         input.value = passage.id;
         input.dataset.passageId = passage.id;
+        var titleText = document.createElement('span');
+        titleText.className = 'lms-listening-start-modal__specific-title';
+        titleText.textContent = passage.title;
+        var format = passage.format || 'sentence';
+        var formatBadge = document.createElement('span');
+        formatBadge.className = 'lms-listening-start-modal__format-badge lms-listening-start-modal__format-badge--' + format;
+        formatBadge.textContent = formatLabel(format);
         label.appendChild(input);
-        label.appendChild(document.createTextNode(' ' + passage.title));
+        label.appendChild(titleText);
+        label.appendChild(formatBadge);
         ui.specificListEl.appendChild(label);
         checkboxes.push(input);
       });

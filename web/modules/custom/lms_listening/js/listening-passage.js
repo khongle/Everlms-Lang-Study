@@ -240,6 +240,17 @@
         // default underneath them.
         var userPickedVoice = false;
 
+        /**
+         * Whether this passage has any speaker-tagged turn — i.e. whether
+         * speakFrom()/speakOneUnit() will alternate per-speaker voices
+         * rather than speak everything in one. Drives the Voice dropdown's
+         * default label/selection just below, so it doesn't visually claim
+         * a single named voice while two are actually alternating.
+         */
+        function isDialoguePassage() {
+          return unitEls.some(function (el) { return !!el.dataset.speaker; });
+        }
+
         function populateVoices() {
           var all = window.speechSynthesis.getVoices() || [];
           var langPrefix = speechLang.split('-')[0];
@@ -252,11 +263,19 @@
             return;
           }
 
+          // Preserve whatever the student already picked across a refresh;
+          // otherwise default to PREFERRED_VOICE_NAME — except for a
+          // Dialogue passage, where speakFrom()/speakOneUnit() alternate a
+          // voice per speaker instead of using any single one, so
+          // pre-selecting PREFERRED_VOICE_NAME here would show one named
+          // voice while two are actually heard. Label that state "Auto"
+          // and leave the dropdown on it instead.
+          var dialogue = isDialoguePassage();
           var previousValue = voiceSelect.value;
           voiceSelect.textContent = '';
           var defaultOption = document.createElement('option');
           defaultOption.value = '';
-          defaultOption.textContent = Drupal.t('Default');
+          defaultOption.textContent = dialogue ? Drupal.t('Auto (alternating voices)') : Drupal.t('Default');
           voiceSelect.appendChild(defaultOption);
           var preferredIndex = -1;
           matchingVoices.forEach(function (voice, index) {
@@ -271,6 +290,9 @@
 
           if (userPickedVoice && previousValue !== '' && matchingVoices[previousValue]) {
             voiceSelect.value = previousValue;
+          }
+          else if (dialogue) {
+            voiceSelect.value = '';
           }
           else if (preferredIndex !== -1) {
             voiceSelect.value = String(preferredIndex);
@@ -365,11 +387,20 @@
           var utterance = new SpeechSynthesisUtterance(speechTextFor(el));
           utterance.lang = speechLang;
           utterance.rate = parseFloat(speedSelect.value) || 1;
-          if (voiceSelect.value !== '' && matchingVoices[voiceSelect.value]) {
+          // Only an actual, explicit pick from the Voice dropdown overrides
+          // per-speaker alternation. `voiceSelect.value` is also non-empty
+          // right after populateVoices() auto-preselects PREFERRED_VOICE_NAME
+          // as a nicer default than the browser's own "Default" — that's not
+          // something the student chose, and letting it win here silently
+          // flattens every dialogue turn into one voice.
+          if (userPickedVoice && voiceSelect.value !== '' && matchingVoices[voiceSelect.value]) {
             utterance.voice = matchingVoices[voiceSelect.value];
           }
           else if (el.dataset.speaker && speakerVoiceIndex[el.dataset.speaker] !== undefined) {
             utterance.voice = matchingVoices[speakerVoiceIndex[el.dataset.speaker]];
+          }
+          else if (voiceSelect.value !== '' && matchingVoices[voiceSelect.value]) {
+            utterance.voice = matchingVoices[voiceSelect.value];
           }
           utterance.onend = function () {
             if (!restarting && state === 'playing') {
@@ -424,11 +455,20 @@
           var utterance = new SpeechSynthesisUtterance(speechTextFor(el));
           utterance.lang = speechLang;
           utterance.rate = parseFloat(speedSelect.value) || 1;
-          if (voiceSelect.value !== '' && matchingVoices[voiceSelect.value]) {
+          // Only an actual, explicit pick from the Voice dropdown overrides
+          // per-speaker alternation. `voiceSelect.value` is also non-empty
+          // right after populateVoices() auto-preselects PREFERRED_VOICE_NAME
+          // as a nicer default than the browser's own "Default" — that's not
+          // something the student chose, and letting it win here silently
+          // flattens every dialogue turn into one voice.
+          if (userPickedVoice && voiceSelect.value !== '' && matchingVoices[voiceSelect.value]) {
             utterance.voice = matchingVoices[voiceSelect.value];
           }
           else if (el.dataset.speaker && speakerVoiceIndex[el.dataset.speaker] !== undefined) {
             utterance.voice = matchingVoices[speakerVoiceIndex[el.dataset.speaker]];
+          }
+          else if (voiceSelect.value !== '' && matchingVoices[voiceSelect.value]) {
+            utterance.voice = matchingVoices[voiceSelect.value];
           }
           utterance.onend = function () {
             if (!restarting) {

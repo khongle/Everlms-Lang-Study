@@ -705,6 +705,33 @@ body.layout-academy .lms-flashcard-deck-card__practice-link.is-locked:hover {
 }
 
 @media (max-width: 640px) {
+  /* Toolbar: search/chips (__filters) and sort/view-toggle (__right) were
+     both flex-wrap items of the same row, so once they wrapped onto
+     separate lines, __right's `margin-left: auto` (meant to pin it to the
+     far end of a shared row) instead stranded it flush-right on its own
+     line with a lopsided gap on the left — inconsistent with every other
+     row here reading left-aligned. Stack both groups as their own
+     full-width rows instead, each internally using the space they need. */
+  .lms-flashcard-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lms-flashcard-toolbar__filters,
+  .lms-flashcard-toolbar__right {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .lms-flashcard-toolbar__right {
+    justify-content: space-between;
+  }
+
+  .lms-flashcard-filters__search {
+    flex-basis: 100%;
+    max-width: none;
+  }
+
   .lms-flashcard-deck-card {
     padding: 1rem;
   }

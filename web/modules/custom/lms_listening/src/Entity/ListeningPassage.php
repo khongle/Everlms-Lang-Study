@@ -197,6 +197,13 @@ class ListeningPassage extends ContentEntityBase implements EntityOwnerInterface
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['field_prompt'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(new TranslatableMarkup('Generation Prompt'))
+      ->setDescription(new TranslatableMarkup('Optional — the prompt you gave an AI tool (ChatGPT or similar) to generate this passage\'s JSON, kept for your own reference if you want to regenerate or tweak it later. Never shown to students anywhere; only visible here and to whoever else can edit this passage.'))
+      ->setDisplayOptions('form', ['type' => 'string_textarea', 'weight' => -13.4, 'settings' => ['rows' => 6]])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
     $fields['field_word_count'] = BaseFieldDefinition::create('integer')
       ->setLabel(new TranslatableMarkup('Word Count'))
       ->setDescription(new TranslatableMarkup('Computed automatically on save, from field_body plus every field_dialogue_lines entry.'))

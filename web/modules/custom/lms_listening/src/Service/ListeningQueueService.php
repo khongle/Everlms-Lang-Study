@@ -142,7 +142,12 @@ final class ListeningQueueService {
       foreach ($storage->loadMultiple($ids) as $passage) {
         /** @var \Drupal\lms_listening\Entity\ListeningPassage $passage */
         if ($this->visibility->isPassageVisibleTo($passage, $uid)) {
-          $rows[] = ['id' => (int) $passage->id(), 'title' => (string) $passage->label(), 'level' => $level];
+          $rows[] = [
+            'id' => (int) $passage->id(),
+            'title' => (string) $passage->label(),
+            'level' => $level,
+            'format' => (string) $passage->get('field_format')->value,
+          ];
         }
       }
     }

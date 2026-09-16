@@ -155,8 +155,50 @@ body.layout-academy .lms-listening-start-modal__intro--passive {
   cursor: pointer;
 }
 
+.lms-listening-start-modal__specific-title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.lms-listening-start-modal__format-badge {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 1px 7px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.lms-listening-start-modal__format-badge--dialogue {
+  border-color: #99f6e4;
+  background: #f0fdfa;
+  color: #0f766e;
+}
+
+.lms-listening-start-modal__format-badge--narrative {
+  border-color: #fecaca;
+  background: #fff1f2;
+  color: #9f1239;
+}
+
 body.layout-academy .lms-listening-start-modal__specific-level-heading {
   color: #8d1f2d;
+}
+
+body.layout-academy .lms-listening-start-modal__format-badge--dialogue {
+  border-color: #fed7aa;
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+body.layout-academy .lms-listening-start-modal__format-badge--narrative {
+  border-color: #e9d5ff;
+  background: #faf5ff;
+  color: #7e22ce;
 }
 
 .lms-listening-start-modal__error {

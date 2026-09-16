@@ -42,7 +42,6 @@
   }
 }
 
-body:not(.is-workspace) .lms-navbar--two-tier .lms-navbar__container,
 body:not(.is-workspace) .lms-footer__container,
 body.layout-government:not(.is-workspace) .gov-container,
 body.layout-medical:not(.is-workspace) .medical-shell,

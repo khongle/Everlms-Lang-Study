@@ -8,6 +8,7 @@ use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\Core\Url;
 use Drupal\lms_listening\Entity\ListeningPassage;
 use Drupal\lms_listening\Service\ListeningPresentationService;
@@ -33,6 +34,7 @@ final class ListeningApiController extends ControllerBase {
     protected ListeningQueueService $queue,
     protected ListeningPresentationService $presentation,
     protected TimeInterface $time,
+    protected PrivateTempStoreFactory $tempStoreFactory,
   ) {
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $current_user;
@@ -49,6 +51,7 @@ final class ListeningApiController extends ControllerBase {
       $container->get('lms_listening.queue'),
       $container->get('lms_listening.presentation'),
       $container->get('datetime.time'),
+      $container->get('tempstore.private'),
     );
   }
 
@@ -362,6 +365,107 @@ final class ListeningApiController extends ControllerBase {
       }
     }
     return FALSE;
+  }
+
+  /**
+   * POST /api/lms/listening/save-import-prompt
+   *
+   * Body: { prompt: string }. Backs the standalone "Save prompt" button
+   * next to the Import form's prompt textarea (js/listening-import.js) —
+   * deliberately NOT the form's own submit, so jotting a prompt down never
+   * requires a valid JSON payload to already be pasted in, and never runs
+   * any of the JSON-import machinery (ListeningImportValidator/
+   * ListeningImportBatchService) or calls an AI provider of any kind. Just
+   * writes the text into this user's own private tempstore —
+   * ListeningImportForm::buildForm() reads it straight back out as the
+   * field's #default_value, and submitForm() clears it once a real Import
+   * actually lands it on field_prompt for real.
+   *
+   * An empty string is a valid, meaningful save (clears whatever draft was
+   * there before) — only a missing/non-string `prompt` key is rejected.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   `{status: 'ok'}`, or `{error}` with a 4xx status for a malformed
+   *   request.
+   */
+  public function saveImportPrompt(Request $request): JsonResponse {
+    $uid = (int) $this->currentUser->id();
+    if (!$uid) {
+      return new JsonResponse(['error' => 'Unauthorized'], 403);
+    }
+
+    $body = json_decode((string) $request->getContent(), TRUE);
+    if (!is_array($body) || !array_key_exists('prompt', $body) || !is_string($body['prompt'])) {
+      return new JsonResponse(['error' => 'Missing prompt.'], 400);
+    }
+
+    $this->tempStoreFactory->get('lms_listening')->set('import_draft_prompt', trim($body['prompt']));
+
+    return new JsonResponse(['status' => 'ok']);
+  }
+
+  /**
+   * POST /api/lms/listening/bulk-delete
+   *
+   * Body: { passage_ids: int[] }. Backs the "Delete selected" bar on
+   * /learn/listening (see js/listening-my-passages.js and the checkbox on
+   * each card in lms-listening-my-passages.html.twig, only rendered for a
+   * passage the current user can actually delete in the first place —
+   * ListeningController::myPassages()'s `can_delete`). Access is re-checked
+   * here anyway, per entity, rather than trusted from the client: the
+   * checkbox controls what's *offered*, not what's *allowed*.
+   *
+   * Deletes whatever the current user is allowed to (ListeningAccessControlHandler:
+   * owner, or 'edit lms_course') and silently skips the rest, rather than
+   * failing the whole batch over one ID the client shouldn't have sent —
+   * this only fires from a checkbox list the template already filtered by
+   * `can_delete`, so a skip here means the entity changed hands/was removed
+   * between page load and this click, not a client bug worth surfacing as
+   * an error.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   `{status: 'ok', deleted: int[], skipped: int[]}` — `deleted` lists the
+   *   ids actually removed (so the page can drop just those cards), `skipped`
+   *   the ones that existed but access denied deleting, for once client-side
+   *   ever wants to surface that distinctly. `{error}` with 4xx only for a
+   *   malformed request (not logged in, no ids sent).
+   */
+  public function bulkDelete(Request $request): JsonResponse {
+    $uid = (int) $this->currentUser->id();
+    if (!$uid) {
+      return new JsonResponse(['error' => 'Unauthorized'], 403);
+    }
+
+    $body = json_decode((string) $request->getContent(), TRUE);
+    $requested_ids = is_array($body) && is_array($body['passage_ids'] ?? NULL)
+      ? array_values(array_unique(array_map('intval', $body['passage_ids'])))
+      : [];
+    $requested_ids = array_filter($requested_ids);
+    if (!$requested_ids) {
+      return new JsonResponse(['error' => 'Missing passage_ids.'], 400);
+    }
+
+    $storage = $this->entityTypeManager->getStorage('lms_listening_passage');
+    $deleted = [];
+    $skipped = [];
+    foreach ($storage->loadMultiple($requested_ids) as $passage) {
+      /** @var \Drupal\lms_listening\Entity\ListeningPassage $passage */
+      if (!$passage->access('delete', $this->currentUser)) {
+        $skipped[] = (int) $passage->id();
+        continue;
+      }
+      $deleted[] = (int) $passage->id();
+      $passage->delete();
+    }
+    // Any requested id that didn't even load (already deleted by someone
+    // else, or never existed) counts as skipped too, same end result for
+    // the caller either way.
+    $skipped = array_values(array_unique(array_merge(
+      $skipped,
+      array_diff($requested_ids, $deleted, $skipped),
+    )));
+
+    return new JsonResponse(['status' => 'ok', 'deleted' => $deleted, 'skipped' => $skipped]);
   }
 
   /**

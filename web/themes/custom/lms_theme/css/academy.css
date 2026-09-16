@@ -11,6 +11,13 @@ body.layout-academy .academy-home {
   transform: translateX(-50%);
   overflow: hidden;
   background: linear-gradient(180deg, #f8f1e6 0%, #f3eadb 100%);
+  /* .lms-page__content has a flat 2rem top padding meant for regular inner
+     pages; the academy homepage wants its hero flush against the header
+     instead, so cancel that padding here. (A negative margin on the hero
+     section itself gets clipped by this wrapper's own overflow:hidden —
+     needed for the 100vw full-bleed trick above — so the offset has to live
+     on the wrapper, not the child.) */
+  margin-top: -2rem;
 }
 
 body.layout-academy .academy-shell {

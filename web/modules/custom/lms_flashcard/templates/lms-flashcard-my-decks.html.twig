@@ -61,9 +61,9 @@
            in js/flashcard-my-decks.js. #}
         <div class="lms-flashcard-toolbar__right">
           <select class="lms-flashcard-filters__select lms-flashcard-filters__select--sort" data-sort-select aria-label="{{ 'Sort decks'|t }}">
-            <option value="name_asc">{{ 'Name (A–Z)'|t }}</option>
-            <option value="created_desc">{{ 'Newest first'|t }}</option>
+            <option value="created_desc" selected="selected">{{ 'Newest first'|t }}</option>
             <option value="created_asc">{{ 'Oldest first'|t }}</option>
+            <option value="name_asc">{{ 'Name (A–Z)'|t }}</option>
           </select>
 
           <div class="lms-flashcard-toolbar__view" role="group" aria-label="{{ 'View mode'|t }}">

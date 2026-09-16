@@ -791,18 +791,20 @@ body.route--lms-course-category-detail .card-lms__desc a {
 
 /* [P005] ISSUE 1-0165 / 1-0166: Mobile header — hamburger AND inline Login/
    Register both shown; Register clips at the viewport edge. Below the mobile
-   breakpoint, hide the inline action links (the hamburger drawer is the nav),
-   and keep the container from overflowing. */
+   breakpoint, keep the container from overflowing.
+   NOTE: this used to also force `.lms-navbar__actions{display:none}` and
+   `.lms-navbar{position:relative}` on the assumption every page's header has
+   a hamburger drawer duplicating Login/Register. Only page.html.twig's
+   two-tier header does (and it already manages its own mobile actions/
+   position via header-two-tier.css); the three auth-page headers
+   (page--user--login/register--password.html.twig) have no toggle or drawer
+   at all, so those two rules just deleted their only Login/Register/Home
+   links and un-fixed the header, opening a blank gap equal to the header's
+   reserved body padding. Removed. */
 @media (max-width: 992px) {
   .lms-navbar__container {
     overflow: hidden;
   }
-  .lms-navbar__actions {
-    display: none;
-  }
-  /* The JS toggles .lms-navbar__nav--open but no CSS reveals it; surface the
-     drawer (incl. Login/Register links if rendered into the nav) so nav still
-     works once inline actions are hidden. */
   .lms-navbar__nav.lms-navbar__nav--open {
     display: flex;
     flex-direction: column;
@@ -819,12 +821,20 @@ body.route--lms-course-category-detail .card-lms__desc a {
     padding: 0.5rem 0;
     z-index: 1000;
   }
-  .lms-navbar {
-    position: relative;
-  }
   .lms-navbar__nav.lms-navbar__nav--open .lms-navbar__link {
     padding: 0.75rem 1.5rem;
     width: 100%;
+  }
+  /* The auth-page header (page--user--login/register--password.html.twig)
+     has no toggle/drawer — .lms-navbar__actions (Register/Login/Home links)
+     is its only navigation. Several older per-page patches in this file and
+     ui-fixes-r1-pages2.css still toggle a plain, unscoped
+     `.lms-navbar__actions{display:none}` at this breakpoint (leftover from
+     the old hamburger-drawer design page.html.twig no longer uses); rather
+     than chase every one of those, force it visible here for the simple
+     header specifically. */
+  .lms-navbar:not(.lms-navbar--two-tier) .lms-navbar__actions {
+    display: flex !important;
   }
 }
 

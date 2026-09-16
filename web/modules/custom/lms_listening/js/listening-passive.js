@@ -140,9 +140,21 @@
         }
 
         /**
+         * Whether `currentPassage` is a Dialogue with turns — i.e. whether
+         * speakTranscript() below will alternate per-speaker voices rather
+         * than speak in one. Drives the Voice dropdown's default label/
+         * selection just below, so it doesn't visually claim a single named
+         * voice while two are actually alternating.
+         */
+        function isDialoguePassage() {
+          var t = (currentPassage && currentPassage.transcript) || {};
+          return t.format === 'dialogue' && Array.isArray(t.dialogueTurns) && t.dialogueTurns.length > 0;
+        }
+
+        /**
          * Fills the Voice <select> from matchingVoices — same shape as
          * js/listening-passage.js's own populateVoices() (Active mode):
-         * a "Default" option (value "") plus one per matching voice,
+         * a "Default"/"Auto" option (value "") plus one per matching voice,
          * index-valued. Only shown when there's more than one to choose
          * from; hidden (but Speed stays available either way) otherwise —
          * getVoices() can return just one, or resolve asynchronously after
@@ -159,12 +171,18 @@
           // Preserve whatever the student already picked across a refresh
           // (onvoiceschanged can fire more than once as a browser loads
           // its voice list in stages); otherwise default to
-          // PREFERRED_VOICE_NAME when it's available.
+          // PREFERRED_VOICE_NAME when it's available — except for a
+          // Dialogue passage, where speakTranscript() alternates a voice
+          // per speaker instead of using any single one, so pre-selecting
+          // PREFERRED_VOICE_NAME here would show one named voice while two
+          // are actually heard. Label that state "Auto" and leave the
+          // dropdown on it instead.
+          var dialogue = isDialoguePassage();
           var previousValue = voiceSelectEl.value;
           voiceSelectEl.textContent = '';
           var defaultOption = document.createElement('option');
           defaultOption.value = '';
-          defaultOption.textContent = Drupal.t('Default');
+          defaultOption.textContent = dialogue ? Drupal.t('Auto (alternating voices)') : Drupal.t('Default');
           voiceSelectEl.appendChild(defaultOption);
           var preferredIndex = -1;
           matchingVoices.forEach(function (voice, index) {
@@ -178,6 +196,9 @@
           });
           if (userPickedVoice && previousValue !== '' && matchingVoices[previousValue]) {
             voiceSelectEl.value = previousValue;
+          }
+          else if (dialogue) {
+            voiceSelectEl.value = '';
           }
           else if (preferredIndex !== -1) {
             voiceSelectEl.value = String(preferredIndex);
@@ -321,11 +342,17 @@
           if (translationBtn) {
             translationBtn.hidden = !passage.translation;
           }
+
+          // Keep the Voice dropdown's "Default"/"Auto (alternating voices)"
+          // label in sync with *this* passage right away — otherwise it'd
+          // still show whatever the previous passage's format implied
+          // until speakTranscript() gets around to it (which never
+          // happens at all for a non-Dialogue passage).
+          populateVoiceSelect();
         }
 
         function speakTranscript(passage) {
           var t = passage.transcript || {};
-          var picked = manualVoice();
           var rate = currentRate();
           if (t.format === 'dialogue' && Array.isArray(t.dialogueTurns) && t.dialogueTurns.length) {
             // getVoices() can still be empty on the very first call in some
@@ -333,19 +360,23 @@
             // right before assigning, not just once at attach time.
             refreshVoices();
             var speakerVoiceIndex = assignSpeakerVoices(t.dialogueTurns);
+            // Only an actual, explicit pick from the Voice dropdown
+            // overrides per-speaker alternation — manualVoice() also
+            // returns a value right after populateVoiceSelect() auto-
+            // preselects PREFERRED_VOICE_NAME as a nicer default than
+            // "Default", which isn't something the student chose, and
+            // letting it win here silently flattens every dialogue turn
+            // into one voice (the bug this guard exists to prevent).
+            var picked = userPickedVoice ? manualVoice() : undefined;
             return t.dialogueTurns.reduce(function (chain, turn) {
               return chain.then(function () {
-                // An explicit pick from the Voice dropdown wins outright
-                // (same "Default" vs. a named voice) — otherwise this
-                // turn's speaker gets its own alternating voice, same as
-                // js/listening-passage.js's Active mode.
                 var voiceIndex = turn.speaker ? speakerVoiceIndex[turn.speaker] : undefined;
-                var voice = picked || (voiceIndex !== undefined ? matchingVoices[voiceIndex] : undefined);
+                var voice = picked || (voiceIndex !== undefined ? matchingVoices[voiceIndex] : undefined) || manualVoice();
                 return speak(turn.line, speechLang, voice, rate);
               });
             }, Promise.resolve());
           }
-          return speak(t.body, speechLang, picked, rate);
+          return speak(t.body, speechLang, manualVoice(), rate);
         }
 
         function speakVocab(passage) {

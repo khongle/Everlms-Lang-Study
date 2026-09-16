@@ -93,3 +93,61 @@
   opacity: 0.6;
   margin: 1rem 0;
 }
+
+/* Drupal renders the submit button with its own `button--primary` class
+   (not Bootstrap's `btn-primary`), which this theme never styles outside a
+   few specific forms (auth/certificate) — so it fell back to Bootstrap's
+   bare `.btn` alone: real padding/border-radius, but background and border
+   both fully transparent (Bootstrap only colors a *variant* class like
+   `.btn-primary`), rendering as near-invisible plain text next to the
+   properly-styled tip buttons above it. */
+.lms-listening-import-form .form-actions .form-submit {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 1.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #0f766e;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.lms-listening-import-form .form-actions .form-submit:hover {
+  background: #0d5f58;
+}
+
+body.layout-academy .lms-listening-import-form .form-actions .form-submit {
+  background: #8d1f2d;
+}
+
+body.layout-academy .lms-listening-import-form .form-actions .form-submit:hover {
+  background: #6f1824;
+}
+
+/* "Save prompt" — deliberately lighter/secondary next to the maroon/teal
+   "Import" button above: it's a much smaller action (just persists some
+   text), not the main call to action on this form. */
+.lms-listening-import-form .lms-listening-import__save-prompt-btn {
+  display: inline-flex;
+  align-items: center;
+  margin: -0.5rem 0 1rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.4rem;
+  background: #fff;
+  color: #111827;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lms-listening-import-form .lms-listening-import__save-prompt-btn:hover {
+  background: #f3f4f6;
+}
+
+.lms-listening-import-form .lms-listening-import__save-prompt-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

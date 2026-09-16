@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\file\Entity\File;
 use Drupal\lms_listening\Service\ListeningImportBatchService;
 use Drupal\lms_listening\Service\ListeningImportValidator;
@@ -36,6 +37,7 @@ final class ListeningImportForm extends FormBase {
     protected ListeningImportValidator $importValidator,
     protected ListeningImportBatchService $importBatch,
     protected AccountProxyInterface $currentUser,
+    protected PrivateTempStoreFactory $tempStoreFactory,
   ) {}
 
   /**
@@ -46,6 +48,7 @@ final class ListeningImportForm extends FormBase {
       $container->get('lms_listening.import_validator'),
       $container->get('lms_listening.import_batch'),
       $container->get('current_user'),
+      $container->get('tempstore.private'),
     );
   }
 
@@ -86,6 +89,47 @@ final class ListeningImportForm extends FormBase {
       '#title' => $this->t('Paste JSON'),
       '#rows' => 16,
       '#description' => $this->t('Paste JSON copied directly from ChatGPT (or any other source) matching the schema shown above. To import several passages at once, wrap them in a "listenings" array (or paste a bare JSON array) of {listening_passage, questions} objects.'),
+    ];
+
+    // A plain form field, not a JSON key you'd have to remember to type in
+    // yourself — saved onto every passage this import creates (field_prompt
+    // on each ListeningPassage entity; see submitForm()), purely for your
+    // own future reference. If a specific item's own pasted JSON already
+    // has its own "listening_passage.prompt", that one wins for that item
+    // instead — this field is the fallback for whatever doesn't specify one.
+    //
+    // The "Save" button next to it (js/listening-import.js) is deliberately
+    // NOT this form's submit — it just fetch()es the text straight to
+    // lms_listening.api_save_import_prompt, which drops it into this user's
+    // own private tempstore (prefilled back in below) and nothing else: no
+    // JSON validation, no passage created, no AI call of any kind. That's
+    // for whenever you want to jot the prompt down *before* you've even run
+    // it through ChatGPT and pasted the JSON back — Import itself still
+    // saves it for real (onto the created passage(s)) the normal way too.
+    $form['prompt'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Your prompt (optional)'),
+      '#rows' => 4,
+      '#default_value' => $this->tempStoreFactory->get('lms_listening')->get('import_draft_prompt') ?? '',
+      '#description' => $this->t('The prompt you gave an AI tool (ChatGPT or similar) to generate the JSON above — saved with the passage(s) so you can find it again later if you want to regenerate or tweak it. Applies to every passage this import creates. Never shown to students.'),
+      '#attributes' => ['data-listening-prompt-field' => TRUE],
+    ];
+
+    $form['prompt_save'] = [
+      '#type' => 'button',
+      '#value' => $this->t('Save prompt'),
+      // Never submits the form — see js/listening-import.js, which
+      // preventDefault()s this button's click entirely and handles it with
+      // its own fetch() instead. #executes_submit_callback + the empty
+      // #limit_validation_errors below are only a backstop in case JS fails
+      // to attach for some reason: without JS this still natively submits
+      // the form (it's rendered as <input type="submit"> either way), but
+      // skips validateForm()'s "you must paste/upload JSON" check entirely
+      // and never reaches submitForm() — a safe do-nothing reload, not an
+      // error or an accidental import.
+      '#executes_submit_callback' => FALSE,
+      '#limit_validation_errors' => [],
+      '#attributes' => ['data-listening-save-prompt' => TRUE, 'class' => ['lms-listening-import__save-prompt-btn']],
     ];
 
     $form['actions'] = ['#type' => 'actions'];
@@ -175,9 +219,17 @@ final class ListeningImportForm extends FormBase {
     /** @var array[] $validated_items */
     $validated_items = $form_state->get('lms_listening_validated_import');
 
+    // Fallback for whichever items didn't already carry their own
+    // listening_passage.prompt in the pasted JSON (see the "prompt" field
+    // above) — an explicit per-item one always wins over this form-wide one.
+    $form_prompt = trim((string) $form_state->getValue('prompt'));
+
     $passage_ids = [];
     $titles = [];
     foreach ($validated_items as $validated) {
+      if ($validated['passage']['prompt'] === '' && $form_prompt !== '') {
+        $validated['passage']['prompt'] = $form_prompt;
+      }
       $passage_ids[] = $this->importBatch->import($validated, (int) $this->currentUser->id());
       $titles[] = $validated['passage']['title'];
     }
@@ -187,6 +239,13 @@ final class ListeningImportForm extends FormBase {
       $file = File::load(reset($fids));
       $file?->delete();
     }
+
+    // The draft is only useful while you're still working up to a real
+    // Import — once it lands on the actual passage(s) via field_prompt
+    // there (either their own JSON's prompt, or this form-wide fallback
+    // above), leaving the scratch copy behind would just show up as a
+    // stale, already-used draft the next time this form is opened.
+    $this->tempStoreFactory->get('lms_listening')->delete('import_draft_prompt');
 
     if (count($passage_ids) === 1) {
       $this->messenger()->addStatus($this->t('Listening passage "@title" imported.', ['@title' => $titles[0]]));
@@ -285,6 +344,7 @@ final class ListeningImportForm extends FormBase {
         'level' => 'easy',
         'body' => 'I usually eat salmon for dinner on Fridays.',
         'translation' => 'Tôi thường ăn cá hồi vào bữa tối các ngày thứ Sáu.',
+        'prompt' => 'Write one short sentence using the word "salmon" for an easy listening exercise, plus a Vietnamese translation.',
         'card_terms' => ['salmon'],
       ],
       'questions' => [
@@ -311,6 +371,7 @@ final class ListeningImportForm extends FormBase {
         'body' => "Yesterday I went to the supermarket because we didn't have any vegetables left. I bought some carrots, onions, and a fresh avocado. I wanted to make a healthy dinner, but I forgot to buy tomatoes.",
         'hints' => ['supermarket', 'vegetables', 'forgot something'],
         'translation' => 'Hôm qua tôi đã đi siêu thị vì nhà hết rau. Tôi đã mua cà rốt, hành tây và một quả bơ tươi. Tôi muốn nấu một bữa tối lành mạnh, nhưng tôi quên mua cà chua.',
+        'prompt' => 'Write a short narrative (3-4 sentences) using the words carrot, onion, avocado, tomato, at a "normal" difficulty, plus 3 progressive hints and a Vietnamese translation.',
         'card_terms' => ['carrot', 'onion', 'avocado', 'tomato'],
       ],
       'questions' => [
@@ -339,14 +400,15 @@ final class ListeningImportForm extends FormBase {
         'deck_machine_name' => 'everyday-english-at-the-chemists',
         'format' => 'dialogue',
         'level' => 'challenge',
-        'body' => "David goes to the chemist's because he has a bad cough.",
+        'transcript' => "David goes to the chemist's because he has a bad cough.",
         'dialogue' => [
           ['speaker' => 'Chemist', 'line' => 'Good morning! How can I help you today?'],
           ['speaker' => 'David', 'line' => "I've had a bad cough for three days. Do you have anything for it?"],
           ['speaker' => 'Chemist', 'line' => 'I can recommend this cough medicine. Take it twice a day, after meals.'],
         ],
         'hints' => ['a health problem', 'something to take twice a day'],
-        'translation' => "Dược sĩ: Chào buổi sáng! Tôi có thể giúp gì cho bạn?\nDavid: Tôi bị ho nặng đã ba ngày rồi. Anh có thuốc gì cho việc này không?\nDược sĩ: Tôi có thể giới thiệu loại thuốc ho này. Uống hai lần một ngày, sau bữa ăn.",
+        'native_translation' => "David đến hiệu thuốc vì anh ấy bị ho nặng.\nDược sĩ: Chào buổi sáng! Tôi có thể giúp gì cho bạn?\nDavid: Tôi bị ho nặng đã ba ngày rồi. Anh có thuốc gì cho việc này không?\nDược sĩ: Tôi có thể giới thiệu loại thuốc ho này. Uống hai lần một ngày, sau bữa ăn.",
+        'prompt' => 'Write a 3-turn dialogue at a chemist\'s between a customer and a chemist, using the words chemist and cough medicine, at "challenge" difficulty, plus 2 hints and a Vietnamese translation.',
         'card_terms' => ['chemist', 'cough medicine', 'medicine'],
       ],
       'questions' => [
@@ -379,7 +441,7 @@ final class ListeningImportForm extends FormBase {
       $html .= '<p class="lms-listening-import__tip-hint">' . $this->t('<code>hints</code> and <code>translation</code> are both optional. <code>hints</code> are revealed one at a time only after the student has listened, never shown up front. <code>translation</code> is independent of that — a "Show translation" button appears on the Listen page whenever a passage has one, defaulting to hidden either way.') . '</p>';
     }
     else {
-      $html .= '<p class="lms-listening-import__tip-hint">' . $this->t('Set <code>listening_passage.format</code> to <code>"dialogue"</code> and replace <code>body</code> with <code>dialogue</code> — an ordered list of <code>{"speaker", "line"}</code> turns (at least 2). <code>body</code> becomes optional: a one-line scene-setting intro, or omit it entirely.') . '</p>';
+      $html .= '<p class="lms-listening-import__tip-hint">' . $this->t('Set <code>listening_passage.format</code> to <code>"dialogue"</code>. The transcript lives in <code>dialogue</code> as an ordered list of <code>{"speaker", "line"}</code> turns (at least 2). Use <code>transcript</code> only as an optional scene-setting intro, and <code>native_translation</code> for the full native-language translation.') . '</p>';
     }
     $html .= '<div class="lms-listening-import__tip-actions">';
     $html .= '<button type="button" class="lms-listening-import__tip-btn" data-listening-use-example="' . $code_id . '">' . $this->t('Use this example') . '</button>';

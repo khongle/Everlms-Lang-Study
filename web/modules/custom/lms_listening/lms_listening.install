@@ -53,3 +53,21 @@ function lms_listening_update_10001(): string {
   _lms_listening_ensure_entity_type_installed('lms_listening_passage_stat');
   return 'Installed Listening Passage Stat entity storage.';
 }
+
+/**
+ * Adds field_prompt to ListeningPassage — optional, the AI prompt used to
+ * generate this passage's JSON, kept only for the importer's own reference.
+ * Same install pattern as lms_reading_update_10003's field_translation. No
+ * backfill needed: it's optional and starts empty on every existing row
+ * either way.
+ */
+function lms_listening_update_10002(): string {
+  $field_storage_definition = \Drupal\Core\Field\BaseFieldDefinition::create('string_long')
+    ->setLabel(new \Drupal\Core\StringTranslation\TranslatableMarkup('Generation Prompt'))
+    ->setDescription(new \Drupal\Core\StringTranslation\TranslatableMarkup('Optional — the prompt you gave an AI tool (ChatGPT or similar) to generate this passage\'s JSON, kept for your own reference if you want to regenerate or tweak it later. Never shown to students anywhere.'));
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_prompt', 'lms_listening_passage', 'lms_listening', $field_storage_definition);
+
+  return 'Added field_prompt to ListeningPassage.';
+}

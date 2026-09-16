@@ -94,6 +94,11 @@ final class ListeningController extends ControllerBase {
         'word_count' => (int) $passage->get('field_word_count')->value,
         'question_count' => $passage->get('field_questions')->count(),
         'is_mine' => (int) $passage->getOwnerId() === $uid,
+        // Drives the bulk-select checkbox (see the template) — real entity
+        // access (ListeningAccessControlHandler: owner OR 'edit lms_course'),
+        // not just is_mine, so staff can bulk-delete passages they didn't
+        // personally import too.
+        'can_delete' => $passage->access('delete', $this->currentUser),
       ];
     }
 

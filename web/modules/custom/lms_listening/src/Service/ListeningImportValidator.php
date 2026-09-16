@@ -20,10 +20,11 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  *   "listening_passage": {
  *     "title": "...", "deck_machine_name": "...", "level": "easy|normal|challenge",
  *     "format": "sentence|narrative|dialogue" (optional, defaults to "sentence"),
- *     "body": "...", (required for sentence/narrative; an optional intro line for dialogue)
+ *     "body" or "transcript": "...", (required for sentence/narrative; an optional intro line for dialogue)
  *     "dialogue": [ {"speaker": "...", "line": "..."}, ... ] (required for dialogue, >= 2 turns; absent/ignored otherwise)
  *     "hints": ["...", "..."], (optional, ordered — most useful for narrative/dialogue)
- *     "translation": "...", (optional)
+ *     "translation" or "native_translation": "...", (optional)
+ *     "prompt": "...", (optional — the prompt you gave an AI tool to generate this JSON, kept only for your own reference; see field_prompt)
  *     "card_terms": ["term1", "term2", ...]
  *   },
  *   "questions": [ {"type": "multiple_choice|true_false|fill_blank|short_answer", ...}, ... ]
@@ -134,7 +135,7 @@ final class ListeningImportValidator {
       $format = 'sentence';
     }
 
-    $body = trim((string) ($passage['body'] ?? ''));
+    $body = trim((string) ($passage['body'] ?? $passage['transcript'] ?? ''));
     $dialogue = [];
     if ($format === 'dialogue') {
       // body is optional here — just a scene-setting intro line — so no
@@ -186,7 +187,12 @@ final class ListeningImportValidator {
       }
     }
 
-    $translation = trim((string) ($passage['translation'] ?? ''));
+    $translation = trim((string) ($passage['translation'] ?? $passage['native_translation'] ?? ''));
+
+    // Optional, free-form, never validated beyond being a string — purely a
+    // note-to-self for whoever imports this (see field_prompt's own
+    // docblock in ListeningPassage.php), so there's nothing here to reject.
+    $prompt = trim((string) ($passage['prompt'] ?? ''));
 
     $deck_id = NULL;
     $deck_machine_name = trim((string) ($passage['deck_machine_name'] ?? ''));
@@ -238,6 +244,7 @@ final class ListeningImportValidator {
       'dialogue' => $dialogue,
       'hints' => $hints,
       'translation' => $translation,
+      'prompt' => $prompt,
       'deck_id' => $deck_id,
       'card_ids' => $card_ids,
     ];

@@ -146,7 +146,8 @@ final class ListeningStartForm extends FormBase {
     if ($passages) {
       $options = [];
       foreach ($passages as $passage) {
-        $options[$passage['id']] = ucfirst($passage['level']) . ' — ' . $passage['title'];
+        $format = ucfirst((string) ($passage['format'] ?? 'sentence'));
+        $options[$passage['id']] = ucfirst($passage['level']) . ' - ' . $format . ' - ' . $passage['title'];
       }
       $form['specific_passages'] = [
         '#type' => 'checkboxes',
