@@ -157,6 +157,40 @@ lms_listening.api_quick_edit_save:
       lms_listening_passage:
         type: entity:lms_listening_passage
 
+lms_listening.music_library:
+  # Background Music library — see BackgroundMusicTrack's docblock. Open to
+  # any authenticated user, same as lms_listening.import: this page only
+  # ever manages the current user's own uploads (BackgroundMusicController::
+  # library() scopes the query to `uid`), so there's nothing to restrict.
+  path: '/manage/listening-music'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\BackgroundMusicController::library'
+    _title: 'Background Music'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    _admin_route: TRUE
+
+lms_listening.api_music_upload:
+  path: '/api/lms/listening/music'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\BackgroundMusicController::upload'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+
+lms_listening.api_music_delete:
+  path: '/api/lms/listening/music/{lms_listening_bg_track}/delete'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\BackgroundMusicController::delete'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+  options:
+    parameters:
+      lms_listening_bg_track:
+        type: entity:lms_listening_bg_track
+
 lms_listening.api_bulk_delete:
   # Backs the "Delete selected" bar on /learn/listening (see
   # ListeningApiController::bulkDelete()) — per-entity access is still

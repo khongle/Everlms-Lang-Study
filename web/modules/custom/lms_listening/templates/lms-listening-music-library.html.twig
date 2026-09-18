@@ -1,0 +1,47 @@
+{# Background Music library (/manage/listening-music) — see
+   BackgroundMusicController::library()'s docblock: only lists/manages the
+   current user's own uploads, even though every published track (from any
+   user) is what actually shows up in the "Background music" picker on the
+   Passive Listening page itself. #}
+{{ attach_library('lms_theme/global') }}
+{{ attach_library('lms_listening/listening_pages') }}
+{{ attach_library('lms_listening/listening_music_library') }}
+
+<section class="lms-section lms-listening-page">
+  <div class="container">
+    <div class="lms-listening-page__header">
+      <h1 class="lms-listening-page__title">{{ 'Background Music'|t }}</h1>
+      <p class="lms-listening-page__subtitle">{{ 'Upload mp3/ogg/m4a clips to loop quietly under Passive Listening narration. Anyone signed in can add a track — the whole library is shared, so everyone picks from the same list.'|t }}</p>
+    </div>
+
+    <div class="lms-music-library__upload" data-music-upload-form>
+      <p class="lms-music-library__status" data-music-upload-status hidden></p>
+      <div class="lms-music-library__upload-row">
+        <input type="text" class="lms-music-library__name-input" data-music-name-input placeholder="{{ 'Track name (optional)'|t }}">
+        <input type="file" accept="audio/mpeg,audio/ogg,audio/mp4,.mp3,.ogg,.m4a" data-music-file-input>
+        <button type="button" class="lms-music-library__upload-btn" data-music-upload-btn>
+          <i class="fas fa-upload"></i> {{ 'Upload'|t }}
+        </button>
+      </div>
+    </div>
+
+    <div class="lms-music-library__list" data-music-track-list>
+      {% if tracks is empty %}
+        <div class="lms-listening-empty" data-music-empty>
+          <i class="fas fa-music"></i>
+          <h3>{{ 'You haven\'t added any background music yet.'|t }}</h3>
+          <p>{{ 'Upload a clip above — it\'ll show up for every learner in the Background music picker.'|t }}</p>
+        </div>
+      {% endif %}
+      {% for track in tracks %}
+        <div class="lms-music-library__track" data-music-track-row data-track-id="{{ track.id }}">
+          <span class="lms-music-library__track-name">{{ track.name }}</span>
+          <audio controls preload="none" src="{{ track.url }}"></audio>
+          <button type="button" class="lms-music-library__delete-btn" data-music-delete-btn data-track-id="{{ track.id }}" title="{{ 'Delete'|t }}">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

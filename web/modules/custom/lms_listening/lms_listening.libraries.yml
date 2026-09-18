@@ -67,3 +67,16 @@ listening_passive:
     - core/drupal
     - core/once
     - core/drupalSettings
+
+# Background Music library (/manage/listening-music) — attached only from
+# BackgroundMusicController::library().
+listening_music_library:
+  css:
+    theme:
+      css/listening-music-library.css: {}
+  js:
+    js/listening-music-library.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/drupalSettings

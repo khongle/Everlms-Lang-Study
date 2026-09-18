@@ -306,6 +306,110 @@
         var editSentenceAudioRemoveBtn = document.querySelector('[data-listening-edit-sentence-audio-remove]');
         var editSentenceAudioInputEl = document.querySelector('[data-listening-edit-sentence-audio-input]');
 
+        // Background Music (see BackgroundMusicTrack's docblock) — a
+        // second, independent <audio> element, created once here and kept
+        // alive for the whole (possibly multi-passage, looping) session,
+        // unlike activeAudioEl above which is recreated per narration
+        // clip. Deliberately separate from the TTS/narration volume:
+        // there's no "master volume" concept in this page, just this one
+        // slider for the music bed underneath.
+        var bgTrackSelectEl = section.querySelector('[data-listening-passive-bg-track]');
+        var bgVolumeEl = section.querySelector('[data-listening-passive-bg-volume]');
+        var bgTracks = settings.bgTracks || [];
+        var BG_TRACK_STORAGE_KEY = 'lmsListeningPassiveBgTrackId';
+        var BG_VOLUME_STORAGE_KEY = 'lmsListeningPassiveBgVolume';
+        var bgAudioEl = new Audio();
+        bgAudioEl.loop = true;
+        bgAudioEl.preload = 'none';
+
+        function readStoredPref(key) {
+          try {
+            return window.localStorage.getItem(key);
+          }
+          catch (e) {
+            return null;
+          }
+        }
+
+        function writeStoredPref(key, value) {
+          try {
+            window.localStorage.setItem(key, value);
+          }
+          catch (e) {
+            // Private browsing / storage disabled — the picker still works
+            // for this page load, it just won't remember next time.
+          }
+        }
+
+        function applyBgTrack(trackId) {
+          var track = null;
+          for (var i = 0; i < bgTracks.length; i++) {
+            if (String(bgTracks[i].id) === String(trackId)) {
+              track = bgTracks[i];
+              break;
+            }
+          }
+          if (track) {
+            bgAudioEl.src = track.url;
+          }
+          else {
+            bgAudioEl.pause();
+            bgAudioEl.removeAttribute('src');
+          }
+          // Greyed out while "None" is picked — the slider has nothing to
+          // control yet, and a silent slider that visibly does nothing
+          // reads as broken rather than as "no track selected".
+          if (bgVolumeEl) {
+            bgVolumeEl.disabled = !track;
+          }
+        }
+
+        function playBgMusicIfSelected() {
+          if (bgTrackSelectEl && bgTrackSelectEl.value && bgAudioEl.src) {
+            // play() returns a Promise that rejects if the browser blocks
+            // it — always inside a click handler here (startBtn), so
+            // autoplay restrictions don't apply, but a rejection is
+            // swallowed defensively rather than throwing regardless.
+            bgAudioEl.play().catch(function () {});
+          }
+        }
+
+        if (bgTrackSelectEl) {
+          bgTracks.forEach(function (track) {
+            var option = document.createElement('option');
+            option.value = String(track.id);
+            option.textContent = track.name;
+            bgTrackSelectEl.appendChild(option);
+          });
+
+          var storedTrackId = readStoredPref(BG_TRACK_STORAGE_KEY);
+          if (storedTrackId && bgTrackSelectEl.querySelector('option[value="' + storedTrackId + '"]')) {
+            bgTrackSelectEl.value = storedTrackId;
+          }
+          applyBgTrack(bgTrackSelectEl.value);
+
+          bgTrackSelectEl.addEventListener('change', function () {
+            writeStoredPref(BG_TRACK_STORAGE_KEY, bgTrackSelectEl.value);
+            applyBgTrack(bgTrackSelectEl.value);
+            if (running) {
+              playBgMusicIfSelected();
+            }
+          });
+        }
+
+        if (bgVolumeEl) {
+          var storedVolume = readStoredPref(BG_VOLUME_STORAGE_KEY);
+          if (storedVolume !== null && !isNaN(parseInt(storedVolume, 10))) {
+            bgVolumeEl.value = storedVolume;
+          }
+          bgAudioEl.volume = (parseInt(bgVolumeEl.value, 10) || 0) / 100;
+
+          bgVolumeEl.addEventListener('input', function () {
+            bgAudioEl.volume = (parseInt(bgVolumeEl.value, 10) || 0) / 100;
+            writeStoredPref(BG_VOLUME_STORAGE_KEY, bgVolumeEl.value);
+          });
+        }
+
         var currentPassage = settings.passage;
         var firstPassageId = settings.passage.id;
         var passageNumber = 0;
@@ -1479,6 +1583,7 @@
             stopBtn.hidden = false;
           }
           requestWakeLock();
+          playBgMusicIfSelected();
           startNewRun(0);
         });
 
@@ -1500,6 +1605,7 @@
               window.speechSynthesis.cancel();
             }
             stopActivePassageAudio();
+            bgAudioEl.pause();
             clearTranscriptHighlight();
             stopBtn.hidden = true;
             startBtn.hidden = false;
@@ -1520,6 +1626,7 @@
             window.speechSynthesis.cancel();
           }
           stopActivePassageAudio();
+          bgAudioEl.pause();
         });
 
         if (!window.speechSynthesis) {

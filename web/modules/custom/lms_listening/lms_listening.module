@@ -53,6 +53,12 @@ function lms_listening_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'lms-listening-review',
     ],
+    'lms_listening_music_library' => [
+      'variables' => [
+        'tracks' => [],
+      ],
+      'template' => 'lms-listening-music-library',
+    ],
   ];
 }
 

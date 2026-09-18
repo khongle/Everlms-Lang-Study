@@ -1,0 +1,115 @@
+/**
+ * /manage/listening-music — same compact card/toolbar palette as
+ * listening-pages.css's other student-facing pages.
+ */
+
+.lms-music-library__upload {
+  margin-bottom: 1.5rem;
+  padding: 0.85rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.lms-music-library__upload-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.lms-music-library__name-input {
+  box-sizing: border-box;
+  flex: 1 1 220px;
+  height: 2.35rem;
+  padding: 0 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.lms-music-library__upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2.35rem;
+  padding: 0 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.lms-music-library__upload-btn:hover {
+  background: #4338ca;
+}
+
+.lms-music-library__upload-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.lms-music-library__status {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  color: #4f46e5;
+}
+
+.lms-music-library__status.is-error {
+  color: #dc2626;
+}
+
+.lms-music-library__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.lms-music-library__track {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.6rem;
+}
+
+.lms-music-library__track-name {
+  flex: 1 1 160px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.lms-music-library__track audio {
+  height: 2.1rem;
+  max-width: 280px;
+  flex: 1 1 220px;
+}
+
+.lms-music-library__delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  background: #fef2f2;
+  color: #dc2626;
+  cursor: pointer;
+}
+
+.lms-music-library__delete-btn:hover {
+  background: #fee2e2;
+}
+
+.lms-music-library__delete-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

@@ -86,6 +86,24 @@
             <option value="1.25">1.25&times;</option>
           </select>
         </label>
+        {# Background music — see BackgroundMusicTrack's docblock.
+           Populated from drupalSettings.lmsListeningPassive.bgTracks
+           (js/listening-passive.js); empty list still renders the bar
+           with just "None" selectable, no separate hidden/shown state
+           needed since there's always at least the "None" option. #}
+        <label class="lms-listening-passive__music">
+          {{ 'Music'|t }}
+          <select data-listening-passive-bg-track>
+            <option value="">{{ 'None'|t }}</option>
+          </select>
+        </label>
+        <label class="lms-listening-passive__music-volume">
+          {{ 'Music volume'|t }}
+          <input type="range" min="0" max="100" value="30" data-listening-passive-bg-volume>
+        </label>
+        <a class="lms-listening-passive__music-manage-link" href="{{ path('lms_listening.music_library') }}" target="_blank" rel="noopener">
+          <i class="fas fa-music" aria-hidden="true"></i> {{ 'Manage music'|t }}
+        </a>
       </div>
       <div class="lms-listening-passive__controls">
         <button type="button" class="lms-listening-passive__start-btn" data-listening-passive-start>

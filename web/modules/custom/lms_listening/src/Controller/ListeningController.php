@@ -208,6 +208,12 @@ final class ListeningController extends ControllerBase {
             'deckId' => $deck ? (int) $deck->id() : NULL,
             'nextUrl' => '/api/lms/listening/passive-next',
             'language' => $deck?->get('field_language')->value ?: 'en',
+            // Background Music — see BackgroundMusicTrack's docblock. Every
+            // published track from every user (it's a shared library, not
+            // scoped to this passage's owner) — js/listening-passive.js
+            // populates the "Background music" picker from this list.
+            'bgTracks' => $this->buildBgTracks(),
+            'musicLibraryUrl' => '/manage/listening-music',
             'passage' => [
               'id' => (int) $lms_listening_passage->id(),
               'title' => $lms_listening_passage->label(),
@@ -226,6 +232,38 @@ final class ListeningController extends ControllerBase {
       ],
       '#cache' => ['max-age' => 0],
     ];
+  }
+
+  /**
+   * Builds the {id, name, url} list of every published Background Music
+   * Track (see BackgroundMusicTrack's docblock) for the Passive Listening
+   * page's "Background music" picker — bypasses entity access
+   * (accessCheck(FALSE)) since this is a shared library everyone browses
+   * regardless of who uploaded each clip, same as ImportForm's example tip
+   * not needing per-entity checks.
+   */
+  private function buildBgTracks(): array {
+    $storage = $this->entityTypeManager->getStorage('lms_listening_bg_track');
+    $ids = $storage->getQuery()
+      ->condition('status', 1)
+      ->sort('name', 'ASC')
+      ->accessCheck(FALSE)
+      ->execute();
+
+    $urlGenerator = \Drupal::service('file_url_generator');
+    $tracks = [];
+    foreach ($storage->loadMultiple($ids) as $track) {
+      $file = $track->get('field_file')->entity;
+      if (!$file) {
+        continue;
+      }
+      $tracks[] = [
+        'id' => (int) $track->id(),
+        'name' => $track->label(),
+        'url' => $urlGenerator->generateAbsoluteString($file->getFileUri()),
+      ];
+    }
+    return $tracks;
   }
 
   /**

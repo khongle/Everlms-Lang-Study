@@ -83,6 +83,25 @@ body.layout-academy .lms-listening-passive__quick-edit-btn:hover {
   padding: 0.25rem 0.4rem;
 }
 
+.lms-listening-passive__music-volume input[type="range"] {
+  width: 6.5rem;
+  vertical-align: middle;
+}
+
+.lms-listening-passive__music-manage-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #0f766e;
+  font-size: 0.8rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lms-listening-passive__music-manage-link:hover {
+  text-decoration: underline;
+}
+
 .lms-listening-passive__card {
   background: #fff;
   border: 1px solid #e5e7eb;
