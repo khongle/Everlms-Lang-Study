@@ -114,3 +114,19 @@ function lms_listening_update_10004(): string {
 
   return 'Added field_sentence_audio to ListeningPassage.';
 }
+
+/**
+ * Installs the BackgroundMusicTrack entity type (see its docblock) — a
+ * code-defined content entity, so like lms_listening_passage_stat in
+ * update_10001 above, its storage only ever gets created automatically on
+ * module *install*. A site that already had lms_listening enabled before
+ * this entity type existed in code never re-runs hook_install(), so without
+ * this update hook its table is only created by someone manually running
+ * `drush entity-updates` — easy to miss on a deploy pipeline that only runs
+ * `drush updb`, which is exactly what happened here (BackgroundMusicController
+ * would 500 with "table doesn't exist" until this runs).
+ */
+function lms_listening_update_10005(): string {
+  _lms_listening_ensure_entity_type_installed('lms_listening_bg_track');
+  return 'Installed Background Music Track entity storage.';
+}
