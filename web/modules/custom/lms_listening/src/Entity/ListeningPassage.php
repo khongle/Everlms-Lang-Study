@@ -197,6 +197,27 @@ class ListeningPassage extends ContentEntityBase implements EntityOwnerInterface
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['field_audio'] = BaseFieldDefinition::create('file')
+      ->setLabel(new TranslatableMarkup('Narration Audio'))
+      ->setDescription(new TranslatableMarkup('Optional recorded narration (mp3/mp4/etc.) — when present, Active and Passive Listening play this instead of the browser\'s built-in text-to-speech voice for the whole passage. Clicking an individual sentence/turn to hear it on its own always still uses the TTS voice, since there is no way to seek to a specific sentence inside an uploaded recording.'))
+      ->setSetting('file_directory', 'listening/audio/[date:custom:Y-m]')
+      ->setSetting('file_extensions', 'mp3 mp4 m4a wav ogg')
+      ->setSetting('max_filesize', '20 MB')
+      ->setDisplayOptions('form', ['type' => 'file_generic', 'weight' => -13.45])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['field_sentence_audio'] = BaseFieldDefinition::create('file')
+      ->setLabel(new TranslatableMarkup('Per-Sentence Audio'))
+      ->setDescription(new TranslatableMarkup('Optional recorded clips, one per transcript sentence/turn, in the same order as the transcript itself (upload/delta order = sentence order — the importer/editor is responsible for getting that order right, same as field_dialogue_speakers/field_dialogue_lines\' own paired-by-order convention). Takes priority over field_audio for whole-passage playback when present: each sentence with a clip here plays that clip; any sentence without one falls back to TTS for just that sentence. Clicking a single sentence to hear it on its own also uses its clip here when it has one, TTS otherwise.'))
+      ->setCardinality(BaseFieldDefinition::CARDINALITY_UNLIMITED)
+      ->setSetting('file_directory', 'listening/sentence-audio/[date:custom:Y-m]')
+      ->setSetting('file_extensions', 'mp3 mp4 m4a wav ogg')
+      ->setSetting('max_filesize', '10 MB')
+      ->setDisplayOptions('form', ['type' => 'file_generic', 'weight' => -13.4])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['field_prompt'] = BaseFieldDefinition::create('string_long')
       ->setLabel(new TranslatableMarkup('Generation Prompt'))
       ->setDescription(new TranslatableMarkup('Optional — the prompt you gave an AI tool (ChatGPT or similar) to generate this passage\'s JSON, kept for your own reference if you want to regenerate or tweak it later. Never shown to students anywhere; only visible here and to whoever else can edit this passage.'))

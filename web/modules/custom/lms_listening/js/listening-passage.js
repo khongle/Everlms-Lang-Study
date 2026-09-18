@@ -30,15 +30,168 @@
   };
 
   // Preselected in the Voice dropdown instead of "Default" whenever it's
-  // available (Windows' built-in SAPI voice, offered by Chrome/Edge) — the
-  // student's own pick, requested after trying every voice by hand. Only a
-  // substring match (not the full "Microsoft David - English (United
-  // States)" label) since Windows spells this slightly differently across
-  // versions (e.g. "Microsoft David Desktop - English (United States)").
-  // Silently falls back to "Default" wherever this voice isn't installed
-  // (macOS, Linux, mobile) — same as js/listening-passive.js's own copy of
-  // this constant/logic.
-  var PREFERRED_VOICE_NAME = 'Microsoft David';
+  // available — the student's own pick (a Google TTS male voice — sounds
+  // noticeably less harsh/robotic than Windows' own SAPI voices). Only
+  // Chrome/Edge's online "Google …" voices carry this name; other
+  // browsers/OSes don't have it, so this silently falls back to "Default"
+  // wherever it isn't installed. Same constant/logic as
+  // js/listening-passive.js's own copy — see its findPreferredVoiceIndex()
+  // for how a language without a gendered Google voice set is handled.
+  var PREFERRED_VOICE_NAME = 'Google';
+
+  /**
+   * Index into `voices` of the best Google-voice match — a "Google …
+   * Male" voice if one exists, else any other "Google" voice (some
+   * languages ship as a single ungendered voice), else -1 (falls back to
+   * "Default"). Independent copy of js/listening-passive.js's own
+   * findPreferredVoiceIndex().
+   */
+  function findPreferredVoiceIndex(voices) {
+    var fallbackIndex = -1;
+    for (var i = 0; i < voices.length; i++) {
+      var name = voices[i].name || '';
+      if (name.indexOf(PREFERRED_VOICE_NAME) !== -1) {
+        if (name.toLowerCase().indexOf('male') !== -1 && name.toLowerCase().indexOf('female') === -1) {
+          return i;
+        }
+        if (fallbackIndex === -1) {
+          fallbackIndex = i;
+        }
+      }
+    }
+    return fallbackIndex;
+  }
+
+  /**
+   * Writes `text` to the clipboard — navigator.clipboard.writeText() where
+   * available (secure context), falling back to a temporary off-screen
+   * textarea + document.execCommand('copy') otherwise (older browsers, or
+   * plain http:// in dev). Returns a Promise resolving/rejecting either
+   * way, so callers can show a "Copied!"/"Copy failed" status uniformly.
+   */
+  function writeToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        var ok = document.execCommand('copy');
+        document.body.removeChild(textarea);
+        if (ok) {
+          resolve();
+        }
+        else {
+          reject(new Error('execCommand copy failed'));
+        }
+      }
+      catch (e) {
+        document.body.removeChild(textarea);
+        reject(e);
+      }
+    });
+  }
+
+  /**
+   * Briefly swaps a copy button's label to `message`, then restores its
+   * original text after a short delay — shared feedback pattern for both
+   * this file's and js/listening-passive.js's own "Copy transcript"
+   * button.
+   */
+  function flashButtonLabel(labelEl, message) {
+    if (!labelEl) {
+      return;
+    }
+    var original = labelEl.dataset.originalText || labelEl.textContent;
+    labelEl.dataset.originalText = original;
+    labelEl.textContent = message;
+    window.setTimeout(function () {
+      labelEl.textContent = original;
+    }, 1800);
+  }
+
+  /**
+   * Splits a dialogue passage's whole-block translation text into one
+   * {speaker, line} row per turn, by locating each occurrence of one of
+   * `dialogueTurns`' own speaker names followed by ":" — the translator
+   * is expected to keep those same (untranslated) speaker labels in the
+   * translation text (e.g. "Mia: ... Ben: ..."). Returns null (render as
+   * one plain block, same as before this existed) when there's no
+   * dialogue, or the text doesn't actually contain any recognizable
+   * "Speaker:" labels — never throws, never guesses at a split that
+   * might be wrong. Independent copy of js/listening-passive.js's own
+   * splitDialogueTranslation().
+   */
+  function splitDialogueTranslation(text, dialogueTurns) {
+    if (!text || !Array.isArray(dialogueTurns) || !dialogueTurns.length) {
+      return null;
+    }
+    var uniqueNames = [];
+    dialogueTurns.forEach(function (turn) {
+      if (turn.speaker && uniqueNames.indexOf(turn.speaker) === -1) {
+        uniqueNames.push(turn.speaker);
+      }
+    });
+    if (!uniqueNames.length) {
+      return null;
+    }
+    var escaped = uniqueNames.map(function (name) {
+      return name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    });
+    var pattern = new RegExp('(?:^|\\s)(' + escaped.join('|') + ')\\s*:\\s*', 'g');
+    var matches = [];
+    var match;
+    while ((match = pattern.exec(text)) !== null) {
+      matches.push({ speaker: match[1], start: match.index, contentStart: pattern.lastIndex });
+    }
+    if (!matches.length) {
+      return null;
+    }
+    var rows = [];
+    matches.forEach(function (m, i) {
+      var end = (i + 1 < matches.length) ? matches[i + 1].start : text.length;
+      var line = text.slice(m.contentStart, end).trim();
+      if (line) {
+        rows.push({ speaker: m.speaker, line: line });
+      }
+    });
+    return rows.length ? rows : null;
+  }
+
+  /**
+   * Fills `container` with `text` — one line per speaker turn (matching
+   * the English transcript's own layout) when splitDialogueTranslation()
+   * can find them, otherwise the plain text as a single block like
+   * before this existed. Independent copy of js/listening-passive.js's
+   * own renderTranslationBlock().
+   */
+  function renderTranslationBlock(container, text, dialogueTurns, lineClass) {
+    if (!container) {
+      return;
+    }
+    container.replaceChildren();
+    var rows = splitDialogueTranslation(text, dialogueTurns);
+    if (!rows) {
+      container.textContent = text || '';
+      return;
+    }
+    rows.forEach(function (row) {
+      var p = document.createElement('p');
+      if (lineClass) {
+        p.className = lineClass;
+      }
+      var strong = document.createElement('strong');
+      strong.textContent = row.speaker + ': ';
+      p.appendChild(strong);
+      p.appendChild(document.createTextNode(row.line));
+      container.appendChild(p);
+    });
+  }
 
   function sessionKey(passageId) {
     return 'lmsListeningSession:' + passageId;
@@ -107,6 +260,51 @@
         var translationEl = document.querySelector('[data-listening-translation]');
         var hintList = document.querySelector('[data-listening-hint-list]');
         var hints = settings.hints || [];
+
+        // Reformat the server-rendered translation block into one line
+        // per speaker turn, matching the English transcript's own layout
+        // (see splitDialogueTranslation()/renderTranslationBlock() above)
+        // — done once up front, independent of TTS availability, since
+        // Twig only ever renders it as a single plain-text block
+        // (lms-listening-passage-view.html.twig has no per-turn markup
+        // for the translation the way it does for the transcript itself).
+        if (translationEl) {
+          var turnSpeakerEls = content ? content.querySelectorAll('[data-speaker]') : [];
+          var dialogueTurnsForTranslation = Array.prototype.map.call(turnSpeakerEls, function (el) {
+            return { speaker: el.dataset.speaker };
+          });
+          renderTranslationBlock(
+            translationEl,
+            translationEl.textContent,
+            dialogueTurnsForTranslation,
+            'lms-listening-passage__translation-line',
+          );
+        }
+
+        // "Copy transcript (no names)" — content-creation aid (see
+        // Quick Edit below), not a student-facing control: only shown to
+        // whoever can Quick Edit this passage. Extracts each
+        // sentence/turn's plain text (no "Speaker: " prefix) from the DOM
+        // directly rather than waiting on unitEls (built later, only once
+        // TTS is available) — so it still works even without TTS support.
+        var copyTranscriptBtn = document.querySelector('[data-listening-copy-transcript]');
+        var copyTranscriptLabelEl = document.querySelector('[data-listening-copy-label]');
+        if (copyTranscriptBtn) {
+          copyTranscriptBtn.hidden = !settings.canQuickEdit;
+          copyTranscriptBtn.addEventListener('click', function () {
+            if (!content) {
+              return;
+            }
+            var units = content.querySelectorAll('.lms-listening-passage__sentence, .lms-listening-passage__turn');
+            var lines = Array.prototype.map.call(units, function (el) {
+              var lineEl = el.querySelector('.lms-listening-passage__turn-line');
+              return (lineEl || el).textContent.trim();
+            }).filter(function (line) { return line !== ''; });
+            writeToClipboard(lines.join('\n'))
+              .then(function () { flashButtonLabel(copyTranscriptLabelEl, Drupal.t('Copied!')); })
+              .catch(function () { flashButtonLabel(copyTranscriptLabelEl, Drupal.t('Copy failed')); });
+          });
+        }
 
         // The template ships this as a plain href="#" — set upfront (rather
         // than in the TTS-only section below) so it works even on browsers
@@ -199,6 +397,318 @@
           });
         }
 
+        // --- Quick Edit drawer (narration audio upload) ------------------
+        // Wired before the TTS-availability guard below so it still works
+        // in a browser without speechSynthesis — uploading/removing the
+        // recording doesn't itself need TTS, even though full playback
+        // control still does today (see that guard's own comment). Same
+        // shape as js/listening-passive.js's own copy, and ultimately
+        // lms_flashcard's Quick Edit drawer — kept independent since this
+        // one edits exactly one field (field_audio), not a card's whole
+        // content, and this page has exactly one passage rather than a
+        // looping queue.
+        var currentAudioUrl = settings.audioUrl || null;
+        // sentenceAudioUrls[i] is the recorded-clip URL to use for
+        // unitEls[i], or undefined — best-effort index pairing against
+        // upload order (see ListeningPresentationService::
+        // buildSentenceAudioUrls()'s docblock). Non-empty takes priority
+        // over currentAudioUrl for the Play button's continuous playback
+        // — see usesWholeFileAudio() further below, near activeAudioEl.
+        var sentenceAudioUrls = settings.sentenceAudioUrls || [];
+        var quickEditBtnEl = document.querySelector('[data-listening-quick-edit]');
+        var editOverlayEl = document.querySelector('[data-listening-edit-overlay]');
+        var editDrawerEl = document.querySelector('[data-listening-edit-drawer]');
+        var editCloseBtn = document.querySelector('[data-listening-edit-close]');
+        var editCancelBtn = document.querySelector('[data-listening-edit-cancel]');
+        var editSaveBtn = document.querySelector('[data-listening-edit-save]');
+        var editStatusEl = document.querySelector('[data-listening-edit-status]');
+        var editAudioCurrentEl = document.querySelector('[data-listening-edit-audio-current]');
+        var editAudioPreviewEl = document.querySelector('[data-listening-edit-audio-preview]');
+        var editAudioRemoveBtn = document.querySelector('[data-listening-edit-audio-remove]');
+        var editAudioInputEl = document.querySelector('[data-listening-edit-audio-input]');
+        var editSentenceAudioCurrentEl = document.querySelector('[data-listening-edit-sentence-audio-current]');
+        var editSentenceAudioRemoveBtn = document.querySelector('[data-listening-edit-sentence-audio-remove]');
+        var editSentenceAudioInputEl = document.querySelector('[data-listening-edit-sentence-audio-input]');
+        var quickEditOpen = false;
+        var quickEditSaving = false;
+        var editAudioRemoveFlag = false;
+        var editSentenceAudioRemoveFlag = false;
+        var editDrawerCloseTimer = null;
+
+        if (quickEditBtnEl) {
+          quickEditBtnEl.hidden = !settings.canQuickEdit;
+        }
+
+        function showEditDrawer() {
+          if (editDrawerCloseTimer) {
+            window.clearTimeout(editDrawerCloseTimer);
+            editDrawerCloseTimer = null;
+          }
+          if (editOverlayEl) {
+            editOverlayEl.hidden = false;
+          }
+          if (editDrawerEl) {
+            editDrawerEl.hidden = false;
+          }
+          window.requestAnimationFrame(function () {
+            if (editOverlayEl) {
+              editOverlayEl.classList.add('is-open');
+            }
+            if (editDrawerEl) {
+              editDrawerEl.classList.add('is-open');
+              editDrawerEl.setAttribute('aria-hidden', 'false');
+            }
+          });
+        }
+
+        function hideEditDrawer() {
+          if (editOverlayEl) {
+            editOverlayEl.classList.remove('is-open');
+          }
+          if (editDrawerEl) {
+            editDrawerEl.classList.remove('is-open');
+            editDrawerEl.setAttribute('aria-hidden', 'true');
+          }
+          editDrawerCloseTimer = window.setTimeout(function () {
+            if (editOverlayEl) {
+              editOverlayEl.hidden = true;
+            }
+            if (editDrawerEl) {
+              editDrawerEl.hidden = true;
+            }
+            editDrawerCloseTimer = null;
+          }, 300);
+        }
+
+        function setEditStatus(message, isError) {
+          if (!editStatusEl) {
+            return;
+          }
+          editStatusEl.hidden = !message;
+          editStatusEl.textContent = message || '';
+          editStatusEl.classList.toggle('is-error', !!isError);
+          editStatusEl.classList.toggle('is-success', !isError && !!message);
+        }
+
+        function setEditSaving(saving) {
+          quickEditSaving = saving;
+          if (editSaveBtn) {
+            editSaveBtn.disabled = saving;
+          }
+          if (editCancelBtn) {
+            editCancelBtn.disabled = saving;
+          }
+        }
+
+        function populateQuickEditForm(data) {
+          editAudioRemoveFlag = false;
+          if (editAudioInputEl) {
+            editAudioInputEl.value = '';
+          }
+          if (editAudioCurrentEl) {
+            editAudioCurrentEl.hidden = !data.audio_url;
+          }
+          if (editAudioPreviewEl && data.audio_url) {
+            editAudioPreviewEl.src = data.audio_url;
+          }
+
+          editSentenceAudioRemoveFlag = false;
+          if (editSentenceAudioInputEl) {
+            editSentenceAudioInputEl.value = '';
+          }
+          var sentenceAudio = Array.isArray(data.sentence_audio) ? data.sentence_audio : [];
+          if (editSentenceAudioCurrentEl) {
+            editSentenceAudioCurrentEl.hidden = sentenceAudio.length === 0;
+            editSentenceAudioCurrentEl.replaceChildren();
+            sentenceAudio.forEach(function (item, index) {
+              var li = document.createElement('li');
+              var label = document.createElement('span');
+              label.textContent = (index + 1) + '. ' + item.filename;
+              li.appendChild(label);
+              editSentenceAudioCurrentEl.appendChild(li);
+            });
+          }
+          if (editSentenceAudioRemoveBtn) {
+            editSentenceAudioRemoveBtn.hidden = sentenceAudio.length === 0;
+          }
+        }
+
+        function openQuickEdit() {
+          if (!settings.quickEditGetUrl || quickEditOpen) {
+            return;
+          }
+          quickEditOpen = true;
+          setEditStatus('', false);
+          setEditSaving(false);
+          populateQuickEditForm({
+            audio_url: currentAudioUrl,
+            sentence_audio: sentenceAudioUrls.map(function (url) { return { filename: url.split('/').pop() }; }),
+          });
+          showEditDrawer();
+
+          fetch(settings.quickEditGetUrl, { headers: { Accept: 'application/json' } })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+              if (!quickEditOpen || !data || data.status !== 'ok' || !data.passage) {
+                return;
+              }
+              populateQuickEditForm(data.passage);
+            })
+            .catch(function () {
+              // Keep showing the currentAudioUrl-populated form.
+            });
+        }
+
+        function closeQuickEdit() {
+          quickEditOpen = false;
+          hideEditDrawer();
+          if (quickEditBtnEl && !quickEditBtnEl.hidden) {
+            quickEditBtnEl.focus();
+          }
+        }
+
+        function saveQuickEdit() {
+          if (quickEditSaving || !settings.quickEditSaveUrl) {
+            return;
+          }
+
+          setEditSaving(true);
+          setEditStatus('', false);
+
+          var formData = new FormData();
+          if (editAudioInputEl && editAudioInputEl.files && editAudioInputEl.files[0]) {
+            formData.append('audio', editAudioInputEl.files[0]);
+          }
+          else if (editAudioRemoveFlag) {
+            formData.append('remove_audio', 'true');
+          }
+
+          if (editSentenceAudioInputEl && editSentenceAudioInputEl.files && editSentenceAudioInputEl.files.length) {
+            Array.prototype.forEach.call(editSentenceAudioInputEl.files, function (file) {
+              formData.append('sentence_audio[]', file);
+            });
+          }
+          else if (editSentenceAudioRemoveFlag) {
+            formData.append('remove_sentence_audio', 'true');
+          }
+
+          fetch(settings.quickEditSaveUrl, { method: 'POST', body: formData, headers: { Accept: 'application/json' } })
+            .then(function (response) { return response.json().then(function (data) { return { ok: response.ok, data: data }; }); })
+            .then(function (result) {
+              setEditSaving(false);
+              if (!result.ok || !result.data || result.data.status !== 'ok' || !result.data.passage) {
+                setEditStatus((result.data && result.data.error) || Drupal.t('Something went wrong — please try again.'), true);
+                return;
+              }
+              currentAudioUrl = result.data.passage.audio_url || null;
+              sentenceAudioUrls = (result.data.passage.sentence_audio || []).map(function (item) { return item.url; });
+              setEditStatus(Drupal.t('Saved.'), false);
+              window.setTimeout(function () {
+                if (quickEditOpen) {
+                  closeQuickEdit();
+                }
+              }, 900);
+            })
+            .catch(function () {
+              setEditSaving(false);
+              setEditStatus(Drupal.t('Something went wrong — please try again.'), true);
+            });
+        }
+
+        if (quickEditBtnEl) {
+          quickEditBtnEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            openQuickEdit();
+          });
+        }
+        if (editCloseBtn) {
+          editCloseBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeQuickEdit();
+          });
+        }
+        if (editCancelBtn) {
+          editCancelBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeQuickEdit();
+          });
+        }
+        if (editOverlayEl) {
+          editOverlayEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (!quickEditSaving) {
+              closeQuickEdit();
+            }
+          });
+        }
+        if (editSaveBtn) {
+          editSaveBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            saveQuickEdit();
+          });
+        }
+        if (editDrawerEl) {
+          editDrawerEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+          });
+          editDrawerEl.addEventListener('keydown', function (e) {
+            e.stopPropagation();
+            if (e.key === 'Escape' && !quickEditSaving) {
+              closeQuickEdit();
+            }
+          });
+        }
+        if (editAudioRemoveBtn) {
+          editAudioRemoveBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            editAudioRemoveFlag = true;
+            if (editAudioInputEl) {
+              editAudioInputEl.value = '';
+            }
+            if (editAudioCurrentEl) {
+              editAudioCurrentEl.hidden = true;
+            }
+          });
+        }
+        if (editAudioInputEl) {
+          editAudioInputEl.addEventListener('change', function () {
+            if (editAudioInputEl.files && editAudioInputEl.files[0]) {
+              editAudioRemoveFlag = false;
+              if (editAudioCurrentEl) {
+                editAudioCurrentEl.hidden = true;
+              }
+            }
+          });
+        }
+        if (editSentenceAudioRemoveBtn) {
+          editSentenceAudioRemoveBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            editSentenceAudioRemoveFlag = true;
+            if (editSentenceAudioInputEl) {
+              editSentenceAudioInputEl.value = '';
+            }
+            if (editSentenceAudioCurrentEl) {
+              editSentenceAudioCurrentEl.hidden = true;
+              editSentenceAudioCurrentEl.replaceChildren();
+            }
+            editSentenceAudioRemoveBtn.hidden = true;
+          });
+        }
+        if (editSentenceAudioInputEl) {
+          editSentenceAudioInputEl.addEventListener('change', function () {
+            if (editSentenceAudioInputEl.files && editSentenceAudioInputEl.files.length) {
+              editSentenceAudioRemoveFlag = false;
+              if (editSentenceAudioCurrentEl) {
+                editSentenceAudioCurrentEl.hidden = true;
+                editSentenceAudioCurrentEl.replaceChildren();
+              }
+              if (editSentenceAudioRemoveBtn) {
+                editSentenceAudioRemoveBtn.hidden = true;
+              }
+            }
+          });
+        }
+
         // --- TTS playback (Web Speech API) — same mechanism/robustness
         // fixes as lms_reading's "Listen to passage" (js/reading-passage.js):
         // voice/speed pickers populated from speechSynthesis.getVoices(),
@@ -277,16 +787,13 @@
           defaultOption.value = '';
           defaultOption.textContent = dialogue ? Drupal.t('Auto (alternating voices)') : Drupal.t('Default');
           voiceSelect.appendChild(defaultOption);
-          var preferredIndex = -1;
           matchingVoices.forEach(function (voice, index) {
             var option = document.createElement('option');
             option.value = index;
             option.textContent = voice.name + (voice.localService ? '' : ' *');
             voiceSelect.appendChild(option);
-            if (preferredIndex === -1 && voice.name.indexOf(PREFERRED_VOICE_NAME) !== -1) {
-              preferredIndex = index;
-            }
           });
+          var preferredIndex = findPreferredVoiceIndex(matchingVoices);
 
           if (userPickedVoice && previousValue !== '' && matchingVoices[previousValue]) {
             voiceSelect.value = previousValue;
@@ -320,6 +827,87 @@
           window.speechSynthesis.onvoiceschanged = populateVoices;
         }
 
+        // Holds a Screen Wake Lock while state === 'playing' so mobile
+        // browsers don't turn the screen off mid-playback — once the
+        // screen actually turns off, speechSynthesis stops firing its
+        // callbacks (utterance.onend never runs) and playback silently
+        // stalls until the student manually unlocks the phone again.
+        // Unsupported browsers (no navigator.wakeLock) simply keep
+        // today's behavior.
+        var wakeLock = null;
+
+        function requestWakeLock() {
+          if (!('wakeLock' in navigator)) {
+            return;
+          }
+          navigator.wakeLock.request('screen').then(function (lock) {
+            wakeLock = lock;
+            wakeLock.addEventListener('release', function () {
+              wakeLock = null;
+            });
+          }).catch(function () {
+            // Ignore — e.g. battery saver mode, or the document isn't
+            // visible right now. Best-effort only.
+          });
+        }
+
+        function releaseWakeLock() {
+          if (wakeLock) {
+            wakeLock.release().catch(function () {});
+            wakeLock = null;
+          }
+        }
+
+        // The lock is auto-released by the browser the instant the tab
+        // goes to the background/hidden (which also happens right as the
+        // screen locks) — re-acquire it as soon as the page is visible
+        // again while still playing.
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'visible' && state === 'playing' && !wakeLock) {
+            requestWakeLock();
+          }
+        });
+
+        // The <audio> element currently playing — either currentAudioUrl
+        // (whole-file mode, via playWholeAudio()) or one unit's own
+        // recorded clip (per-sentence mode, via speakFrom()/speakOneUnit()
+        // below) — or null. Same pause-in-place-for-a-click-interjection
+        // design as js/listening-passive.js's own copy.
+        var activeAudioEl = null;
+
+        /**
+         * Whole-passage audio is only actually used for the Play button's
+         * continuous playback when there's no per-sentence audio at all —
+         * otherwise speakFrom() (mixing recorded clips and TTS per unit)
+         * takes over entirely. See the toggleBtn/playFromUnit/
+         * restartCurrentUnit branches below, all of which check this.
+         */
+        function usesWholeFileAudio() {
+          return !!currentAudioUrl && sentenceAudioUrls.length === 0;
+        }
+
+        function stopActivePassageAudio() {
+          if (activeAudioEl) {
+            activeAudioEl.pause();
+            activeAudioEl = null;
+          }
+        }
+
+        function playWholeAudio() {
+          var audio = new Audio(currentAudioUrl);
+          activeAudioEl = audio;
+          function onEnd() {
+            if (activeAudioEl === audio) {
+              activeAudioEl = null;
+            }
+            currentIndex = 0;
+            setState('idle');
+          }
+          audio.addEventListener('ended', onEnd);
+          audio.addEventListener('error', onEnd);
+          audio.play().catch(onEnd);
+        }
+
         var state = 'idle'; // 'idle' | 'playing' | 'paused'
         var currentIndex = 0;
         var hasPlayedOnce = false;
@@ -340,6 +928,12 @@
           label.textContent = state === 'playing'
             ? Drupal.t('Pause')
             : (state === 'paused' ? Drupal.t('Resume listening') : Drupal.t('Listen'));
+          if (state === 'playing') {
+            requestWakeLock();
+          }
+          else {
+            releaseWakeLock();
+          }
         }
 
         function clearHighlight() {
@@ -384,6 +978,25 @@
           var el = unitEls[index];
           highlightUnit(index);
 
+          // A recorded clip for this exact unit takes priority over TTS —
+          // see sentenceAudioUrls' own doc comment above.
+          if (sentenceAudioUrls[index]) {
+            var clip = new Audio(sentenceAudioUrls[index]);
+            activeAudioEl = clip;
+            var advance = function () {
+              if (activeAudioEl === clip) {
+                activeAudioEl = null;
+              }
+              if (!restarting && state === 'playing') {
+                speakFrom(index + 1);
+              }
+            };
+            clip.addEventListener('ended', advance);
+            clip.addEventListener('error', advance);
+            clip.play().catch(advance);
+            return;
+          }
+
           var utterance = new SpeechSynthesisUtterance(speechTextFor(el));
           utterance.lang = speechLang;
           utterance.rate = parseFloat(speedSelect.value) || 1;
@@ -423,12 +1036,19 @@
          * pause()/resume()).
          */
         function restartCurrentUnit() {
-          if (state === 'idle') {
+          // A voice/speed change only affects future TTS — either a
+          // click-to-hear-one-line interjection, or the per-unit chain
+          // below (which itself only falls back to TTS for units with no
+          // recorded clip of their own). It never applies to a
+          // whole-file-only recording already playing as one file, so
+          // there's nothing to restart here for that case.
+          if (usesWholeFileAudio() || state === 'idle') {
             return;
           }
           lineStopped = false;
           restarting = true;
           window.speechSynthesis.cancel();
+          stopActivePassageAudio();
           setState('playing');
           window.setTimeout(function () {
             restarting = false;
@@ -451,6 +1071,27 @@
           currentIndex = index;
           var el = unitEls[index];
           highlightUnit(index);
+
+          // A recorded clip for this exact unit takes priority over TTS —
+          // per the user's own "click always uses that sentence's own
+          // clip when it has one" decision.
+          if (sentenceAudioUrls[index]) {
+            var clip = new Audio(sentenceAudioUrls[index]);
+            activeAudioEl = clip;
+            var onClipEnd = function () {
+              if (activeAudioEl === clip) {
+                activeAudioEl = null;
+              }
+              if (!restarting) {
+                lineStopped = true;
+                setState('paused');
+              }
+            };
+            clip.addEventListener('ended', onClipEnd);
+            clip.addEventListener('error', onClipEnd);
+            clip.play().catch(onClipEnd);
+            return;
+          }
 
           var utterance = new SpeechSynthesisUtterance(speechTextFor(el));
           utterance.lang = speechLang;
@@ -495,8 +1136,54 @@
           hasPlayedOnce = true;
           unlockReveal();
 
+          // With a whole-file-only recording (no per-sentence audio at
+          // all), a clicked sentence/turn always plays via TTS instead
+          // (there's no way to seek the recording to a specific sentence)
+          // — pausing the recording in place (not stopping it) and
+          // resuming it from the same spot once the TTS interjection
+          // ends, rather than the TTS-only "stays paused, click Resume to
+          // replay this line" behavior below. When per-sentence audio
+          // exists instead, this branch is skipped entirely — the
+          // fallthrough below calls speakOneUnit(), which plays that
+          // unit's own clip when it has one (see its own branch there).
+          if (usesWholeFileAudio()) {
+            var audioEl = activeAudioEl;
+            var resumeAt = audioEl ? audioEl.currentTime : 0;
+            var wasPlaying = state === 'playing' && !!audioEl;
+            if (audioEl) {
+              audioEl.pause();
+            }
+            window.speechSynthesis.cancel();
+            highlightUnit(index);
+            setState('playing');
+
+            var interjection = new SpeechSynthesisUtterance(speechTextFor(unitEls[index]));
+            interjection.lang = speechLang;
+            interjection.rate = parseFloat(speedSelect.value) || 1;
+            if (voiceSelect.value !== '' && matchingVoices[voiceSelect.value]) {
+              interjection.voice = matchingVoices[voiceSelect.value];
+            }
+            function resumeAfterInterjection() {
+              clearHighlight();
+              if (wasPlaying) {
+                activeAudioEl = audioEl;
+                audioEl.currentTime = resumeAt;
+                audioEl.play().catch(function () {});
+                setState('playing');
+              }
+              else {
+                setState('idle');
+              }
+            }
+            interjection.onend = resumeAfterInterjection;
+            interjection.onerror = resumeAfterInterjection;
+            window.speechSynthesis.speak(interjection);
+            return;
+          }
+
           restarting = true;
           window.speechSynthesis.cancel();
+          stopActivePassageAudio();
           setState('playing');
           window.setTimeout(function () {
             restarting = false;
@@ -513,6 +1200,37 @@
         });
 
         toggleBtn.addEventListener('click', function () {
+          if (usesWholeFileAudio()) {
+            if (state === 'idle') {
+              if (hasPlayedOnce) {
+                session.replayCount++;
+                saveSession(passageId, session);
+                updateReplayCountDisplay();
+              }
+              hasPlayedOnce = true;
+              unlockReveal();
+              setState('playing');
+              playWholeAudio();
+            }
+            else if (state === 'playing') {
+              if (activeAudioEl) {
+                activeAudioEl.pause();
+              }
+              setState('paused');
+            }
+            else if (activeAudioEl) {
+              activeAudioEl.play().catch(function () {});
+              setState('playing');
+            }
+            else {
+              // Shouldn't normally happen (paused implies activeAudioEl
+              // exists), but recover cleanly rather than getting stuck.
+              setState('playing');
+              playWholeAudio();
+            }
+            return;
+          }
+
           if (state === 'idle') {
             if (hasPlayedOnce) {
               session.replayCount++;
@@ -531,7 +1249,16 @@
             window.setTimeout(function () { speakFrom(currentIndex); }, 50);
           }
           else if (state === 'playing') {
-            window.speechSynthesis.pause();
+            // The currently-playing unit might be a recorded clip
+            // (activeAudioEl) rather than a TTS utterance when
+            // sentenceAudioUrls has a mix of the two — pause whichever
+            // one is actually sounding.
+            if (activeAudioEl) {
+              activeAudioEl.pause();
+            }
+            else {
+              window.speechSynthesis.pause();
+            }
             setState('paused');
           }
           else if (lineStopped) {
@@ -543,11 +1270,16 @@
             lineStopped = false;
             restarting = true;
             window.speechSynthesis.cancel();
+            stopActivePassageAudio();
             setState('playing');
             window.setTimeout(function () {
               restarting = false;
               speakFrom(currentIndex);
             }, 50);
+          }
+          else if (activeAudioEl) {
+            activeAudioEl.play().catch(function () {});
+            setState('playing');
           }
           else {
             window.speechSynthesis.resume();
@@ -563,11 +1295,15 @@
 
         if (continueLink) {
           continueLink.addEventListener('click', function () {
+            releaseWakeLock();
             window.speechSynthesis.cancel();
+            stopActivePassageAudio();
           });
         }
         window.addEventListener('beforeunload', function () {
+          releaseWakeLock();
           window.speechSynthesis.cancel();
+          stopActivePassageAudio();
         });
       });
     },

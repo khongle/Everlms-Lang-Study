@@ -122,22 +122,36 @@
               </div>
               {% else %}
               <div class="lms-mega-dropdown lms-mega-dropdown--small">
+                <div class="lms-mega-col-title lms-mega-col-title--inset">{{ 'Learning'|t }}</div>
                 <a href="{{ path('lms_progress.dashboard') }}" class="lms-mega-link"><i class="fas fa-chart-line text-primary"></i> Dashboard</a>
                 <a href="{{ path('lms_progress.my_courses') }}" class="lms-mega-link"><i class="fas fa-book-open text-success"></i> My Courses</a>
                 <a href="{{ path('lms_quiz.my_results') }}" class="lms-mega-link"><i class="fas fa-star text-purple"></i> My Quizzes</a>
+                <a href="{{ path('lms_progress.certificates') }}" class="lms-mega-link"><i class="fas fa-award text-warning"></i> My Certificates</a>
+
+                {% if lms_flashcard_enabled or lms_reading_enabled or lms_listening_enabled %}
+                <hr class="lms-mega-divider" />
+                <div class="lms-mega-col-title lms-mega-col-title--inset">{{ 'Practice'|t }}</div>
                 {% if lms_flashcard_enabled %}
-                <a href="{{ path('lms_flashcard.my_decks') }}" class="lms-mega-link"><i class="fas fa-clone text-info"></i> My Flashcards</a>
-                <a href="{{ path('lms_flashcard.import') }}" class="lms-mega-link"><i class="fas fa-file-import text-purple"></i> Import Flashcards</a>
+                <div class="lms-mega-link-row">
+                  <a href="{{ path('lms_flashcard.my_decks') }}" class="lms-mega-link"><i class="fas fa-clone text-info"></i> Flashcards</a>
+                  <a href="{{ path('lms_flashcard.import') }}" class="lms-mega-link-import" title="{{ 'Import Flashcards'|t }}" aria-label="{{ 'Import Flashcards'|t }}"><i class="fas fa-file-import" aria-hidden="true"></i></a>
+                </div>
                 {% endif %}
                 {% if lms_reading_enabled %}
-                <a href="{{ path('lms_reading.my_passages') }}" class="lms-mega-link"><i class="fas fa-book-open text-info"></i> Reading</a>
-                <a href="{{ path('lms_reading.import') }}" class="lms-mega-link"><i class="fas fa-file-import text-purple"></i> Import Reading</a>
+                <div class="lms-mega-link-row">
+                  <a href="{{ path('lms_reading.my_passages') }}" class="lms-mega-link"><i class="fas fa-book-open text-info"></i> Reading</a>
+                  <a href="{{ path('lms_reading.import') }}" class="lms-mega-link-import" title="{{ 'Import Reading'|t }}" aria-label="{{ 'Import Reading'|t }}"><i class="fas fa-file-import" aria-hidden="true"></i></a>
+                </div>
                 {% endif %}
                 {% if lms_listening_enabled %}
-                <a href="{{ path('lms_listening.my_passages') }}" class="lms-mega-link"><i class="fas fa-headphones text-info"></i> Listening</a>
-                <a href="{{ path('lms_listening.import') }}" class="lms-mega-link"><i class="fas fa-file-import text-purple"></i> Import Listening</a>
+                <div class="lms-mega-link-row">
+                  <a href="{{ path('lms_listening.my_passages') }}" class="lms-mega-link"><i class="fas fa-headphones text-info"></i> Listening</a>
+                  <a href="{{ path('lms_listening.import') }}" class="lms-mega-link-import" title="{{ 'Import Listening'|t }}" aria-label="{{ 'Import Listening'|t }}"><i class="fas fa-file-import" aria-hidden="true"></i></a>
+                </div>
                 {% endif %}
-                <a href="{{ path('lms_progress.certificates') }}" class="lms-mega-link"><i class="fas fa-award text-warning"></i> My Certificates</a>
+                {% endif %}
+
+                <hr class="lms-mega-divider" />
                 <a href="{{ path('lms_course.profile') }}" class="lms-mega-link"><i class="fas fa-user text-info"></i> My Profile</a>
               </div>
               {% endif %}

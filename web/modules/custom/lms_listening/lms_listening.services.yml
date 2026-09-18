@@ -23,3 +23,5 @@ services:
 
   lms_listening.presentation:
     class: Drupal\lms_listening\Service\ListeningPresentationService
+    arguments:
+      - '@file_url_generator'

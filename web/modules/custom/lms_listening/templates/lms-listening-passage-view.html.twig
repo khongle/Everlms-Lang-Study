@@ -22,7 +22,56 @@
           &middot; <span class="lms-listening-passage__seen-count">{{ times_seen_label }}</span>
         {% endif %}
       </p>
+      {# Shown only when drupalSettings.lmsListening.canQuickEdit is true
+         (js/listening-passage.js) — owner or staff, same rule the save
+         endpoint re-checks server-side. #}
+      <button type="button" class="lms-listening-passage__quick-edit-btn" data-listening-quick-edit hidden>
+        <i class="fas fa-pen" aria-hidden="true"></i> {{ 'Quick edit'|t }}
+      </button>
     </div>
+
+    {# Narration audio Quick Edit drawer — mp3/mp4/etc. upload that
+       js/listening-passage.js plays instead of the browser's TTS voice for
+       the whole passage when present (clicking an individual sentence/turn
+       to hear it on its own still always uses TTS). See
+       ListeningApiController::quickEditFormData()/quickEditSave() — same
+       drawer markup/behavior as Passive mode's own copy
+       (lms-listening-passive-view.html.twig), kept independent per this
+       module's "no cross-mode JS dependency" convention. #}
+    <div class="lms-listening-edit-overlay" data-listening-edit-overlay hidden></div>
+    <aside class="lms-listening-edit-drawer" data-listening-edit-drawer hidden aria-hidden="true" role="dialog" aria-label="{{ 'Quick edit'|t }}">
+      <div class="lms-listening-edit-drawer__header">
+        <h3 class="lms-listening-edit-drawer__title">{{ 'Quick edit — narration audio'|t }}</h3>
+        <button type="button" class="lms-listening-edit-drawer__close" data-listening-edit-close aria-label="{{ 'Close'|t }}">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="lms-listening-edit-drawer__body">
+        <p class="lms-listening-edit-drawer__status" data-listening-edit-status hidden></p>
+        <p class="lms-listening-edit-drawer__hint">{{ 'Whole-passage recording: plays instead of the browser voice for the whole passage. Per-sentence recordings (below) take priority over it when present — each sentence/turn with its own clip plays that clip in order; any one without one falls back to the browser voice just for itself. Clicking a single sentence/turn on its own always uses its own clip if it has one, otherwise the browser voice.'|t }}</p>
+
+        <div class="lms-listening-edit-drawer__field-group">
+          <span class="lms-listening-edit-drawer__label">{{ 'Whole-passage audio'|t }}</span>
+          <div class="lms-listening-edit-drawer__file-row" data-listening-edit-audio-current hidden>
+            <audio controls data-listening-edit-audio-preview></audio>
+            <button type="button" class="lms-listening-edit-drawer__remove-btn" data-listening-edit-audio-remove>{{ 'Remove'|t }}</button>
+          </div>
+          <input type="file" accept="audio/mpeg,audio/mp4,video/mp4,audio/wav,audio/ogg,.mp3,.mp4,.m4a,.wav,.ogg" data-listening-edit-audio-input>
+        </div>
+
+        <div class="lms-listening-edit-drawer__field-group">
+          <span class="lms-listening-edit-drawer__label">{{ 'Per-sentence audio (select in transcript order)'|t }}</span>
+          <ul class="lms-listening-edit-drawer__sentence-audio-list" data-listening-edit-sentence-audio-current hidden></ul>
+          <button type="button" class="lms-listening-edit-drawer__remove-btn" data-listening-edit-sentence-audio-remove hidden>{{ 'Remove all'|t }}</button>
+          <input type="file" multiple accept="audio/mpeg,audio/mp4,video/mp4,audio/wav,audio/ogg,.mp3,.mp4,.m4a,.wav,.ogg" data-listening-edit-sentence-audio-input>
+          <span class="lms-listening-edit-drawer__file-hint">{{ 'Selecting new files here replaces the whole set — there\'s no editing one clip at a time yet.'|t }}</span>
+        </div>
+      </div>
+      <div class="lms-listening-edit-drawer__footer">
+        <button type="button" class="lms-listening-edit-drawer__cancel" data-listening-edit-cancel>{{ 'Cancel'|t }}</button>
+        <button type="button" class="lms-listening-edit-drawer__save" data-listening-edit-save>{{ 'Save'|t }}</button>
+      </div>
+    </aside>
 
     {# Play/Pause toolbar — same TTS mechanism as lms_reading's "Listen to
        passage" (js/listening-passage.js is an independent copy, including
@@ -67,6 +116,17 @@
           <i class="fas fa-language"></i> {{ 'Show translation'|t }}
         </button>
       {% endif %}
+      {# Copies unitEls' plain text (no "Speaker: " prefix, one
+         sentence/turn per line) to the clipboard — handy for pasting into
+         a third-party TTS tool and uploading the results back into the
+         Quick Edit drawer's per-sentence audio field in the same order.
+         Shown only to whoever can Quick Edit this passage (same gate as
+         data-listening-quick-edit) — content-creation aid, not a
+         student-facing control. See its click handler in
+         js/listening-passage.js. #}
+      <button type="button" class="lms-listening-passage__reveal-btn" data-listening-copy-transcript hidden>
+        <i class="fas fa-copy"></i> <span data-listening-copy-label>{{ 'Copy transcript (no names)'|t }}</span>
+      </button>
     </div>
 
     <ul class="lms-listening-passage__hints" data-listening-hint-list hidden></ul>

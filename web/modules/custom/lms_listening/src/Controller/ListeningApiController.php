@@ -5,11 +5,17 @@ declare(strict_types=1);
 namespace Drupal\lms_listening\Controller;
 
 use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Component\Utility\Bytes;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\Core\Url;
+use Drupal\file\FileInterface;
+use Drupal\file\FileRepositoryInterface;
+use Drupal\file\FileUsage\FileUsageInterface;
 use Drupal\lms_listening\Entity\ListeningPassage;
 use Drupal\lms_listening\Service\ListeningPresentationService;
 use Drupal\lms_listening\Service\ListeningQueueService;
@@ -35,6 +41,9 @@ final class ListeningApiController extends ControllerBase {
     protected ListeningPresentationService $presentation,
     protected TimeInterface $time,
     protected PrivateTempStoreFactory $tempStoreFactory,
+    protected FileRepositoryInterface $fileRepository,
+    protected FileSystemInterface $fileSystem,
+    protected FileUsageInterface $fileUsage,
   ) {
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $current_user;
@@ -52,6 +61,9 @@ final class ListeningApiController extends ControllerBase {
       $container->get('lms_listening.presentation'),
       $container->get('datetime.time'),
       $container->get('tempstore.private'),
+      $container->get('file.repository'),
+      $container->get('file_system'),
+      $container->get('file.usage'),
     );
   }
 
@@ -225,6 +237,11 @@ final class ListeningApiController extends ControllerBase {
         'transcript' => $this->presentation->buildPassiveTranscript($passage),
         'vocabTerms' => $this->presentation->buildVocabTerms($passage),
         'translation' => $this->presentation->buildTranslation($passage),
+        'audioUrl' => $this->presentation->buildAudioUrl($passage),
+        'sentenceAudioUrls' => $this->presentation->buildSentenceAudioUrls($passage),
+        'canQuickEdit' => $this->canQuickEditPassage($passage),
+        'quickEditGetUrl' => '/api/lms/listening/' . $passage->id() . '/quick-edit',
+        'quickEditSaveUrl' => '/api/lms/listening/' . $passage->id() . '/quick-edit',
       ],
     ]);
   }
@@ -466,6 +483,233 @@ final class ListeningApiController extends ControllerBase {
     )));
 
     return new JsonResponse(['status' => 'ok', 'deleted' => $deleted, 'skipped' => $skipped]);
+  }
+
+  /**
+   * Whether the current user may Quick Edit $passage's narration audio —
+   * the passage's owner, or staff with 'edit lms_course'. Exactly what
+   * ListeningAccessControlHandler::checkAccess() already computes for the
+   * 'update' operation, so this simply delegates rather than
+   * re-implementing the owner check by hand (mirrors
+   * FlashcardApiController::canQuickEditCard()).
+   */
+  private function canQuickEditPassage(ListeningPassage $passage): bool {
+    return (bool) $passage->access('update', $this->currentUser);
+  }
+
+  /**
+   * Builds the {id, audio_url, audio_filename, sentence_audio} shape both
+   * Quick Edit endpoints return. `sentence_audio` is a list of
+   * {url, filename} in field delta (= transcript) order — see
+   * ListeningPresentationService::buildSentenceAudioUrls()'s docblock for
+   * the pairing convention.
+   */
+  private function buildQuickEditPayload(ListeningPassage $passage): array {
+    $audio = $passage->get('field_audio')->entity;
+    $urlGenerator = \Drupal::service('file_url_generator');
+
+    $sentenceAudio = [];
+    foreach ($passage->get('field_sentence_audio')->referencedEntities() as $file) {
+      $sentenceAudio[] = [
+        'url' => $urlGenerator->generateString($file->getFileUri()),
+        'filename' => $file->getFilename(),
+      ];
+    }
+
+    return [
+      'id' => (int) $passage->id(),
+      'audio_url' => $audio ? $urlGenerator->generateString($audio->getFileUri()) : NULL,
+      'audio_filename' => $audio ? $audio->getFilename() : NULL,
+      'sentence_audio' => $sentenceAudio,
+    ];
+  }
+
+  /**
+   * Validates and saves one uploaded audio file against $fieldDef's own
+   * file_extensions/max_filesize settings — shared by quickEditSave()'s
+   * field_audio and field_sentence_audio handling so the two never drift
+   * apart on what counts as a valid upload.
+   *
+   * @return \Drupal\file\FileInterface|\Symfony\Component\HttpFoundation\JsonResponse
+   *   The saved (permanent, but not yet attached to any entity) file, or a
+   *   4xx/5xx JsonResponse ready to return as-is if validation/saving
+   *   failed.
+   */
+  private function saveUploadedAudioFile(
+    \Symfony\Component\HttpFoundation\File\UploadedFile $upload,
+    FieldDefinitionInterface $fieldDef,
+    string $directory,
+  ): FileInterface|JsonResponse {
+    $allowedExtensions = preg_split('/\s+/', trim((string) $fieldDef->getSetting('file_extensions'))) ?: [];
+    $extension = strtolower($upload->getClientOriginalExtension());
+    if (!in_array($extension, $allowedExtensions, TRUE)) {
+      return new JsonResponse(['error' => 'Audio file type not allowed. Allowed: ' . implode(', ', $allowedExtensions)], 400);
+    }
+    $maxSize = Bytes::toNumber((string) $fieldDef->getSetting('max_filesize'));
+    if ($maxSize && $upload->getSize() > $maxSize) {
+      return new JsonResponse(['error' => 'Audio file exceeds the size limit'], 400);
+    }
+
+    $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+    try {
+      $file = $this->fileRepository->writeData(
+        file_get_contents($upload->getPathname()),
+        $directory . '/' . $upload->getClientOriginalName(),
+        FileSystemInterface::EXISTS_RENAME
+      );
+    }
+    catch (\Exception $e) {
+      return new JsonResponse(['error' => 'Failed to save audio file'], 500);
+    }
+    $file->setPermanent();
+    $file->save();
+    return $file;
+  }
+
+  /**
+   * GET /api/lms/listening/{lms_listening_passage}/quick-edit — fetch the
+   * current narration audio right before opening the edit drawer (avoids
+   * populating it from a possibly-stale copy already sitting in the
+   * page's JS state).
+   */
+  public function quickEditFormData(ListeningPassage $lms_listening_passage): JsonResponse {
+    if (!$this->currentUser->id()) {
+      return new JsonResponse(['error' => 'Unauthorized'], 403);
+    }
+    if (!$this->canQuickEditPassage($lms_listening_passage)) {
+      return new JsonResponse(['error' => 'Forbidden'], 403);
+    }
+
+    return new JsonResponse([
+      'status' => 'ok',
+      'passage' => $this->buildQuickEditPayload($lms_listening_passage),
+    ]);
+  }
+
+  /**
+   * Deletes a file entity only if nothing references it any more — Drupal's
+   * own FileFieldItemList::postSave() (run by $passage->save() in
+   * quickEditSave() just before this is called) already decremented usage
+   * for a replaced/removed field_audio, but never deletes the file itself
+   * once usage hits zero. Mirrors FlashcardApiController::
+   * deleteFileIfUnused() exactly.
+   */
+  private function deleteFileIfUnused(FileInterface $file): void {
+    if (empty($this->fileUsage->listUsage($file))) {
+      $file->delete();
+    }
+  }
+
+  /**
+   * POST /api/lms/listening/{lms_listening_passage}/quick-edit — replace
+   * or remove the passage's narration audio from the Active/Passive
+   * Listening page's Quick Edit drawer. multipart/form-data:
+   * - `audio` (single upload) / `remove_audio` (boolean flag) for the
+   *   whole-passage recording (field_audio).
+   * - `sentence_audio[]` (one or more uploads, in the order they should
+   *   apply to the transcript — see ListeningPresentationService::
+   *   buildSentenceAudioUrls()) / `remove_sentence_audio` (boolean flag)
+   *   for the per-sentence clips (field_sentence_audio). A `sentence_audio[]`
+   *   upload always REPLACES the entire existing set rather than adding to
+   *   it — there's no per-clip edit in this first version, only
+   *   "upload a fresh full set" or "remove them all".
+   *
+   * Returns the same shape as quickEditFormData() so the front end can
+   * immediately switch playback to (or off) the new audio.
+   */
+  public function quickEditSave(ListeningPassage $lms_listening_passage, Request $request): JsonResponse {
+    if (!$this->currentUser->id()) {
+      return new JsonResponse(['error' => 'Unauthorized'], 403);
+    }
+    $passage = $lms_listening_passage;
+    if (!$this->canQuickEditPassage($passage)) {
+      return new JsonResponse(['error' => 'Forbidden'], 403);
+    }
+
+    $removeAudio = filter_var($request->request->get('remove_audio', 'false'), FILTER_VALIDATE_BOOLEAN);
+    $audioUpload = $request->files->get('audio');
+    if ($audioUpload && !$audioUpload->isValid()) {
+      return new JsonResponse(['error' => 'Audio upload failed, please try again'], 400);
+    }
+
+    $removeSentenceAudio = filter_var($request->request->get('remove_sentence_audio', 'false'), FILTER_VALIDATE_BOOLEAN);
+    $sentenceAudioUploads = $request->files->get('sentence_audio');
+    $sentenceAudioUploads = is_array($sentenceAudioUploads) ? array_values(array_filter($sentenceAudioUploads)) : [];
+    foreach ($sentenceAudioUploads as $upload) {
+      if (!$upload->isValid()) {
+        return new JsonResponse(['error' => 'One of the per-sentence audio uploads failed, please try again'], 400);
+      }
+    }
+
+    $oldAudio = $passage->get('field_audio')->entity;
+    $newAudioFile = NULL;
+    if ($audioUpload) {
+      $directory = 'public://listening/audio/' . date('Y-m');
+      $saved = $this->saveUploadedAudioFile($audioUpload, $passage->get('field_audio')->getFieldDefinition(), $directory);
+      if ($saved instanceof JsonResponse) {
+        return $saved;
+      }
+      $newAudioFile = $saved;
+    }
+
+    // Old field_sentence_audio files — captured before any change, same as
+    // $oldAudio above, so they can be cleaned up after save() once a
+    // replacement/removal has actually landed.
+    $oldSentenceAudioFiles = $passage->get('field_sentence_audio')->referencedEntities();
+    $newSentenceAudioFiles = [];
+    if ($sentenceAudioUploads) {
+      $sentenceAudioFieldDef = $passage->get('field_sentence_audio')->getFieldDefinition();
+      $sentenceAudioDirectory = 'public://listening/sentence-audio/' . date('Y-m');
+      foreach ($sentenceAudioUploads as $upload) {
+        $saved = $this->saveUploadedAudioFile($upload, $sentenceAudioFieldDef, $sentenceAudioDirectory);
+        if ($saved instanceof JsonResponse) {
+          // Roll back whichever of this batch already saved, so a
+          // mid-batch failure (e.g. one oversized file) doesn't leave
+          // orphaned permanent files unreferenced by anything.
+          foreach ($newSentenceAudioFiles as $partial) {
+            $partial->delete();
+          }
+          return $saved;
+        }
+        $newSentenceAudioFiles[] = $saved;
+      }
+    }
+
+    if ($newAudioFile) {
+      $passage->set('field_audio', ['target_id' => $newAudioFile->id()]);
+    }
+    elseif ($removeAudio) {
+      $passage->set('field_audio', NULL);
+    }
+
+    if ($newSentenceAudioFiles) {
+      $passage->set('field_sentence_audio', array_map(
+        static fn ($file) => ['target_id' => $file->id()],
+        $newSentenceAudioFiles,
+      ));
+    }
+    elseif ($removeSentenceAudio) {
+      $passage->set('field_sentence_audio', NULL);
+    }
+
+    $passage->save();
+
+    // Now that $passage->save() above has run Drupal's own file-usage
+    // bookkeeping (FileFieldItemList::postSave()), clean up whichever old
+    // file(s) it just orphaned — see deleteFileIfUnused()'s docblock.
+    if ($oldAudio && ($newAudioFile || $removeAudio) && (int) $oldAudio->id() !== (int) ($newAudioFile?->id() ?? 0)) {
+      $this->deleteFileIfUnused($oldAudio);
+    }
+    if ($oldSentenceAudioFiles && ($newSentenceAudioFiles || $removeSentenceAudio)) {
+      foreach ($oldSentenceAudioFiles as $oldFile) {
+        $this->deleteFileIfUnused($oldFile);
+      }
+    }
+
+    return new JsonResponse([
+      'status' => 'ok',
+      'passage' => $this->buildQuickEditPayload($passage),
+    ]);
   }
 
   /**

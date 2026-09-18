@@ -283,8 +283,8 @@ final class ImportForm extends FormBase {
   private function buildExampleTip(): Markup {
     $sample = [
       'deck' => [
-        'name' => 'Everyday English: Family & Home',
-        'machine_name' => 'everyday-english-family-home',
+        'name' => 'Family & Home',
+        'machine_name' => 'family-home',
         'topic' => 'Family',
         'description' => 'Common words you use every day at home.',
         'language' => 'en',

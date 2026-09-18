@@ -71,3 +71,46 @@ function lms_listening_update_10002(): string {
 
   return 'Added field_prompt to ListeningPassage.';
 }
+
+/**
+ * Adds field_audio to ListeningPassage — optional recorded narration
+ * (mp3/mp4/etc.) that Active/Passive Listening play instead of the
+ * browser's TTS voice when present (see js/listening-passage.js and
+ * js/listening-passive.js's own audio-vs-TTS branching, and
+ * ListeningApiController::quickEditSave() for how it's uploaded). Same
+ * install pattern as lms_flashcard's own field_audio on Card. No backfill
+ * needed: optional, starts empty on every existing row either way.
+ */
+function lms_listening_update_10003(): string {
+  $field_storage_definition = \Drupal\Core\Field\BaseFieldDefinition::create('file')
+    ->setLabel(new \Drupal\Core\StringTranslation\TranslatableMarkup('Narration Audio'))
+    ->setSetting('file_extensions', 'mp3 mp4 m4a wav ogg')
+    ->setSetting('max_filesize', '20 MB');
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_audio', 'lms_listening_passage', 'lms_listening', $field_storage_definition);
+
+  return 'Added field_audio to ListeningPassage.';
+}
+
+/**
+ * Adds field_sentence_audio to ListeningPassage — optional per-sentence/
+ * per-turn recorded clips (cardinality unlimited, upload/delta order =
+ * transcript order), taking priority over field_audio for whole-passage
+ * playback when present (see js/listening-passage.js and
+ * js/listening-passive.js's own speakUnit() per-unit source selection).
+ * Same install pattern as field_audio above. No backfill needed: optional,
+ * starts empty on every existing row either way.
+ */
+function lms_listening_update_10004(): string {
+  $field_storage_definition = \Drupal\Core\Field\BaseFieldDefinition::create('file')
+    ->setLabel(new \Drupal\Core\StringTranslation\TranslatableMarkup('Per-Sentence Audio'))
+    ->setCardinality(\Drupal\Core\Field\BaseFieldDefinition::CARDINALITY_UNLIMITED)
+    ->setSetting('file_extensions', 'mp3 mp4 m4a wav ogg')
+    ->setSetting('max_filesize', '10 MB');
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_sentence_audio', 'lms_listening_passage', 'lms_listening', $field_storage_definition);
+
+  return 'Added field_sentence_audio to ListeningPassage.';
+}

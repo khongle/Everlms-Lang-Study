@@ -154,6 +154,20 @@ final class ListeningController extends ControllerBase {
             // Used to pick a voice/accent for the TTS playback — same
             // field/purpose as lms_reading's drupalSettings.lmsReading.language.
             'language' => $lms_listening_passage->get('field_deck')->entity?->get('field_language')->value ?: 'en',
+            // Optional recorded narration — when set, js/listening-passage.js
+            // plays this instead of the browser's TTS voice for the whole
+            // passage (see ListeningPresentationService::buildAudioUrl()).
+            'audioUrl' => $this->presentation->buildAudioUrl($lms_listening_passage),
+            // Optional per-sentence/per-turn clips — takes priority over
+            // audioUrl above when non-empty (see ListeningPresentationService
+            // ::buildSentenceAudioUrls()).
+            'sentenceAudioUrls' => $this->presentation->buildSentenceAudioUrls($lms_listening_passage),
+            // Quick Edit: lets the front end show/hide the button without a
+            // round trip — owner-or-staff, same rule ListeningApiController::
+            // canQuickEditPassage() enforces server-side on both endpoints.
+            'canQuickEdit' => (bool) $lms_listening_passage->access('update', $this->currentUser),
+            'quickEditGetUrl' => '/api/lms/listening/' . $lms_listening_passage->id() . '/quick-edit',
+            'quickEditSaveUrl' => '/api/lms/listening/' . $lms_listening_passage->id() . '/quick-edit',
           ],
         ],
       ],
@@ -201,6 +215,11 @@ final class ListeningController extends ControllerBase {
               'transcript' => $this->presentation->buildPassiveTranscript($lms_listening_passage),
               'vocabTerms' => $this->presentation->buildVocabTerms($lms_listening_passage),
               'translation' => $this->presentation->buildTranslation($lms_listening_passage),
+              'audioUrl' => $this->presentation->buildAudioUrl($lms_listening_passage),
+              'sentenceAudioUrls' => $this->presentation->buildSentenceAudioUrls($lms_listening_passage),
+              'canQuickEdit' => (bool) $lms_listening_passage->access('update', $this->currentUser),
+              'quickEditGetUrl' => '/api/lms/listening/' . $lms_listening_passage->id() . '/quick-edit',
+              'quickEditSaveUrl' => '/api/lms/listening/' . $lms_listening_passage->id() . '/quick-edit',
             ],
           ],
         ],

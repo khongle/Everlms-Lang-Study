@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\lms_listening\Service;
 
+use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\lms_listening\Entity\ListeningPassage;
 
 /**
@@ -16,6 +17,10 @@ use Drupal\lms_listening\Entity\ListeningPassage;
  * ListeningController so the two flows can never quietly drift apart.
  */
 final class ListeningPresentationService {
+
+  public function __construct(
+    protected FileUrlGeneratorInterface $fileUrlGenerator,
+  ) {}
 
   /**
    * Zips field_dialogue_speakers/field_dialogue_lines into one row per
@@ -75,6 +80,42 @@ final class ListeningPresentationService {
   public function buildTranslation(ListeningPassage $passage): ?string {
     $value = trim(strip_tags((string) $passage->get('field_translation')->value));
     return $value !== '' ? $value : NULL;
+  }
+
+  /**
+   * The passage's optional uploaded narration audio (field_audio) as a
+   * public URL — or NULL when it has none, so Active/Passive Listening's
+   * JS can fall back to the browser's own TTS voice for the whole passage
+   * (see js/listening-passage.js and js/listening-passive.js). Clicking
+   * an individual sentence/turn to hear it on its own always still uses
+   * TTS regardless of this — there's no way to seek to a specific
+   * sentence inside an uploaded recording.
+   */
+  public function buildAudioUrl(ListeningPassage $passage): ?string {
+    $file = $passage->get('field_audio')->entity;
+    return $file ? $this->fileUrlGenerator->generateString($file->getFileUri()) : NULL;
+  }
+
+  /**
+   * The passage's optional per-sentence/per-turn recorded clips
+   * (field_sentence_audio) as public URLs, in field delta (= upload)
+   * order — meant to be zipped 1:1 against the transcript's own sentence/
+   * turn order by the caller (js/listening-passage.js and
+   * js/listening-passive.js's transcriptUnits), same best-effort
+   * index-pairing convention as the client-side translation-tooltip
+   * sentence pairing. Empty array when the passage has none, so a
+   * sentence with no matching entry here simply falls back to TTS for
+   * itself — see those files' speakUnit(). Takes priority over
+   * buildAudioUrl() for whole-passage continuous playback when non-empty.
+   *
+   * @return string[]
+   */
+  public function buildSentenceAudioUrls(ListeningPassage $passage): array {
+    $urls = [];
+    foreach ($passage->get('field_sentence_audio')->referencedEntities() as $file) {
+      $urls[] = $this->fileUrlGenerator->generateString($file->getFileUri());
+    }
+    return $urls;
   }
 
   /**

@@ -127,6 +127,36 @@ lms_listening.api_save_import_prompt:
     _user_is_logged_in: 'TRUE'
   methods: [POST]
 
+lms_listening.api_quick_edit_get:
+  # Quick Edit (narration audio upload) from the Active/Passive Listening
+  # page — see ListeningApiController::quickEditFormData()/quickEditSave().
+  # Gated the same "own content" way as every other endpoint in this file
+  # (_user_is_logged_in only, per-entity access re-checked in the
+  # controller via canQuickEditPassage()), so a non-owner gets a clean 403
+  # JSON response instead of Drupal's default access-denied page.
+  path: '/api/lms/listening/{lms_listening_passage}/quick-edit'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningApiController::quickEditFormData'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [GET]
+  options:
+    parameters:
+      lms_listening_passage:
+        type: entity:lms_listening_passage
+
+lms_listening.api_quick_edit_save:
+  path: '/api/lms/listening/{lms_listening_passage}/quick-edit'
+  defaults:
+    _controller: '\Drupal\lms_listening\Controller\ListeningApiController::quickEditSave'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+  options:
+    parameters:
+      lms_listening_passage:
+        type: entity:lms_listening_passage
+
 lms_listening.api_bulk_delete:
   # Backs the "Delete selected" bar on /learn/listening (see
   # ListeningApiController::bulkDelete()) — per-entity access is still
