@@ -35,7 +35,24 @@ final class NoteController extends ControllerBase {
     'lesson' => 'lms_lesson',
     'listening_passage' => 'lms_listening_passage',
     'reading_passage' => 'lms_reading_passage',
+    // Per-sentence note on a Passive Listening passage (see
+    // js/listening-passive.js's Quick Note dialog) — not a real entity of
+    // its own, so its context_id is a composite of the passage id and the
+    // sentence's position in the transcript rather than a lookup key into
+    // this map; contextEntityExists() special-cases it below. Listed here
+    // only so resolveContext() accepts it as a known type.
+    'listening_sentence' => 'lms_listening_passage',
   ];
+
+  /**
+   * A per-sentence note's context_id is passage_id * this + sentence
+   * index, since field_context_id is a single plain integer with no room
+   * for a second dimension. Must match SENTENCE_NOTE_MULTIPLIER in
+   * js/listening-passive.js. 100000 comfortably covers any real
+   * passage's sentence count while keeping composite ids well under the
+   * unsigned int column's range for any passage id Drupal will assign.
+   */
+  private const SENTENCE_CONTEXT_MULTIPLIER = 100000;
 
   /**
    * What js/note-widget.js's rich-text toolbar (Bold/Italic/Underline/
@@ -103,6 +120,10 @@ final class NoteController extends ControllerBase {
    * controller already gated visibility before the note widget rendered).
    */
   private function contextEntityExists(string $context_type, int $context_id): bool {
+    if ($context_type === 'listening_sentence') {
+      $passage_id = intdiv($context_id, self::SENTENCE_CONTEXT_MULTIPLIER);
+      return (bool) $this->entityTypeManager->getStorage('lms_listening_passage')->load($passage_id);
+    }
     $entity_type_id = self::CONTEXT_ENTITY_TYPES[$context_type] ?? NULL;
     if (!$entity_type_id) {
       return FALSE;
@@ -301,6 +322,53 @@ final class NoteController extends ControllerBase {
     }
 
     return new JsonResponse(['status' => 'not_found', 'note_text' => '', 'attachments' => []]);
+  }
+
+  /**
+   * API endpoint to bulk-fetch this user's per-sentence notes for one
+   * Passive Listening passage in a single request, keyed by sentence
+   * index — used to paint "has a note" indicators and hover tooltips
+   * across a whole transcript right after it renders, instead of the
+   * widget's usual one-context-at-a-time getNote() per sentence. See
+   * SENTENCE_CONTEXT_MULTIPLIER's docblock for the composite context_id
+   * this range-queries back apart.
+   */
+  public function sentenceNotesList(Request $request): JsonResponse {
+    // AccountProxyInterface::id() is documented as returning int, but in
+    // practice (this Drupal version) hands back a numeric string — an
+    // explicit cast avoids a TypeError against every private helper
+    // below, whose `int $uid` parameters are strictly typed.
+    $uid = (int) $this->currentUser->id();
+    if (!$uid) {
+      return new JsonResponse(['error' => 'Unauthorized'], 403);
+    }
+
+    $passage_id = (int) $request->query->get('passage_id');
+    if (!$passage_id) {
+      return new JsonResponse(['error' => 'Missing passage_id'], 400);
+    }
+
+    $min = $passage_id * self::SENTENCE_CONTEXT_MULTIPLIER;
+    $max = $min + self::SENTENCE_CONTEXT_MULTIPLIER - 1;
+
+    $storage = $this->entityTypeManager->getStorage('lms_note');
+    $nids = $storage->getQuery()
+      ->condition('uid', $uid)
+      ->condition('field_context_type', 'listening_sentence')
+      ->condition('field_context_id', [$min, $max], 'BETWEEN')
+      ->accessCheck(FALSE)
+      ->execute();
+
+    $notes = [];
+    foreach ($storage->loadMultiple($nids) as $note) {
+      if ($note->get('field_body')->isEmpty()) {
+        continue;
+      }
+      $index = ((int) $note->get('field_context_id')->value) - $min;
+      $notes[$index] = $note->get('field_body')->value;
+    }
+
+    return new JsonResponse(['status' => 'ok', 'notes' => $notes]);
   }
 
   /**

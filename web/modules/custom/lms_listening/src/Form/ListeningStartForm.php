@@ -138,10 +138,6 @@ final class ListeningStartForm extends FormBase {
       '#default_value' => 3,
     ];
 
-    // Passive-only: pick exact passages instead of a random per-level
-    // count — see PASSIVE_LISTENING_PLAN.md. Only shown (via #states) once
-    // Passive is picked, and only built at all if the deck actually has
-    // any passages to list.
     $passages = $this->queue->listPassagesForDeck((int) $this->currentUser->id(), $deck_id);
     if ($passages) {
       $options = [];
@@ -154,9 +150,6 @@ final class ListeningStartForm extends FormBase {
         '#title' => $this->t('Or choose specific passages'),
         '#description' => $this->t('Checking any passage here plays exactly those (still Easy → Normal → Challenge order), instead of the random per-level pick above.'),
         '#options' => $options,
-        '#states' => [
-          'visible' => [':input[name="mode"]' => ['value' => 'passive']],
-        ],
       ];
     }
 
@@ -182,16 +175,9 @@ final class ListeningStartForm extends FormBase {
     parent::validateForm($form, $form_state);
 
     $levels = array_values(array_filter((array) $form_state->getValue('levels')));
-    if ($form_state->getValue('mode') === 'passive') {
-      $specific = array_values(array_filter((array) $form_state->getValue('specific_passages', [])));
-      if (!$levels && !$specific) {
-        $form_state->setErrorByName('levels', $this->t('Pick at least one level, or choose specific passages below.'));
-      }
-      return;
-    }
-
-    if (!$levels) {
-      $form_state->setErrorByName('levels', $this->t('Pick at least one level.'));
+    $specific = array_values(array_filter((array) $form_state->getValue('specific_passages', [])));
+    if (!$levels && !$specific) {
+      $form_state->setErrorByName('levels', $this->t('Pick at least one level, or choose specific passages below.'));
     }
   }
 
@@ -207,13 +193,18 @@ final class ListeningStartForm extends FormBase {
       return;
     }
 
-    $levels = array_values(array_filter((array) $form_state->getValue('levels')));
-    $per_level = max(1, (int) $form_state->getValue('per_level') ?: 3);
-
-    $passage_ids = $this->queue->buildFromLevels($uid, $deck_id, $levels, $per_level);
+    $specific = array_values(array_filter((array) $form_state->getValue('specific_passages', [])));
+    if ($specific) {
+      $passage_ids = $this->queue->buildQueueFromIds($uid, $deck_id, array_map('intval', $specific));
+    }
+    else {
+      $levels = array_values(array_filter((array) $form_state->getValue('levels')));
+      $per_level = max(1, (int) $form_state->getValue('per_level') ?: 3);
+      $passage_ids = $this->queue->buildFromLevels($uid, $deck_id, $levels, $per_level);
+    }
 
     if (!$passage_ids) {
-      $this->messenger()->addWarning($this->t('No passages were found for the level(s) you picked in this deck.'));
+      $this->messenger()->addWarning($this->t('No passages were found for the selection you picked in this deck.'));
       $form_state->setRedirectUrl(Url::fromRoute('lms_listening.my_passages', [], ['query' => ['deck' => $deck_id]]));
       return;
     }

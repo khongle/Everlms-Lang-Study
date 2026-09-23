@@ -1,19 +1,8 @@
 /**
  * @file
- * Progressively enhances the "Listening" link on a Flashcard deck card
- * (lms-flashcard-my-decks.html.twig) into an in-page popup instead of a
- * full-page navigation to lms_listening.start (ListeningStartForm), which
- * stays the plain href and therefore the fallback if this script doesn't
- * run (JS disabled, or an error). Only lms_listening's own code reads that
- * markup (by class name / data attribute); the Flashcard template itself
- * stays unaware of this — same decoupling as the rest of the "additive
- * link" pattern there.
- *
- * The popup posts straight to /api/lms/listening/start (see
- * ListeningApiController::start()) rather than driving the page-based
- * ListeningStartForm through Drupal's AJAX form framework, since the two
- * do the exact same one-shot "pick levels, get a redirect" job and a
- * plain JSON endpoint is much less to keep in sync.
+ * Enhanced Listening Start Modal for Flashcard decks.
+ * Allows learners to choose specific listening passages or practice randomly by level
+ * in both Active (with questions) and Passive (hands-free) modes.
  */
 
 (function (Drupal, once) {
@@ -31,22 +20,17 @@
     switch (format) {
       case 'dialogue':
         return Drupal.t('Dialogue');
-
       case 'narrative':
         return Drupal.t('Narrative');
-
       case 'sentence':
         return Drupal.t('Sentence');
-
       default:
         return format ? format.charAt(0).toUpperCase() + format.slice(1) : Drupal.t('Sentence');
     }
   }
 
   /**
-   * Builds the (initially hidden) overlay + card once per page, reused for
-   * every deck card's "Listening" link. Level rows are rebuilt per-open
-   * (see updateLevelCounts()) since the available count differs per deck.
+   * Builds the modal overlay and structure once, reused on link clicks.
    */
   function buildModal() {
     var overlay = document.createElement('div');
@@ -59,98 +43,177 @@
     modal.setAttribute('aria-modal', 'true');
     modal.setAttribute('aria-labelledby', 'lms-listening-start-modal-title');
 
+    // 1. Header with Title, Deck badge, and Close (✕) button
+    var header = document.createElement('div');
+    header.className = 'lms-listening-start-modal__header';
+
+    var headerInfo = document.createElement('div');
+    headerInfo.className = 'lms-listening-start-modal__header-info';
+
+    var deckBadge = document.createElement('span');
+    deckBadge.className = 'lms-listening-start-modal__deck-badge';
+    headerInfo.appendChild(deckBadge);
+
     var title = document.createElement('h2');
     title.id = 'lms-listening-start-modal-title';
-    title.textContent = Drupal.t('Choose levels to practice');
-    modal.appendChild(title);
+    title.className = 'lms-listening-start-modal__title';
+    title.textContent = Drupal.t('Listening Practice');
+    headerInfo.appendChild(title);
 
-    // Active (today's checkboxes/count UI below) vs. Passive (no picker at
-    // all — fixed 1-Easy/1-Normal/1-Challenge session, see
-    // PASSIVE_LISTENING_PLAN.md). Active stays selected by default so
-    // nothing changes for a student who never notices this toggle exists.
+    var closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'lms-listening-start-modal__close-btn';
+    closeBtn.setAttribute('aria-label', Drupal.t('Close'));
+    closeBtn.innerHTML = '&times;';
+
+    header.appendChild(headerInfo);
+    header.appendChild(closeBtn);
+    modal.appendChild(header);
+
+    // 2. Mode Switcher (Active vs Passive pills)
     var modeWrap = document.createElement('div');
-    modeWrap.className = 'lms-listening-start-modal__mode';
-    var modeActiveLabel = document.createElement('label');
-    var modeActiveInput = document.createElement('input');
-    modeActiveInput.type = 'radio';
-    modeActiveInput.name = 'lms-listening-mode';
-    modeActiveInput.value = 'active';
-    modeActiveInput.checked = true;
-    modeActiveLabel.appendChild(modeActiveInput);
-    modeActiveLabel.appendChild(document.createTextNode(' ' + Drupal.t('Active (answer questions)')));
-    var modePassiveLabel = document.createElement('label');
-    var modePassiveInput = document.createElement('input');
-    modePassiveInput.type = 'radio';
-    modePassiveInput.name = 'lms-listening-mode';
-    modePassiveInput.value = 'passive';
-    modePassiveLabel.appendChild(modePassiveInput);
-    modePassiveLabel.appendChild(document.createTextNode(' ' + Drupal.t('Passive (just listen)')));
-    modeWrap.appendChild(modeActiveLabel);
-    modeWrap.appendChild(modePassiveLabel);
+    modeWrap.className = 'lms-listening-start-modal__mode-switcher';
+
+    var modeActiveBtn = document.createElement('button');
+    modeActiveBtn.type = 'button';
+    modeActiveBtn.className = 'lms-listening-start-modal__mode-btn is-active';
+    modeActiveBtn.dataset.mode = 'active';
+    modeActiveBtn.innerHTML = '<span class="mode-icon"><i class="fas fa-tasks"></i></span>' +
+      '<div class="mode-text">' +
+      '<strong class="mode-title">' + Drupal.t('Active Practice') + '</strong>' +
+      '<span class="mode-sub">' + Drupal.t('Listen & answer questions') + '</span>' +
+      '</div>';
+
+    var modePassiveBtn = document.createElement('button');
+    modePassiveBtn.type = 'button';
+    modePassiveBtn.className = 'lms-listening-start-modal__mode-btn';
+    modePassiveBtn.dataset.mode = 'passive';
+    modePassiveBtn.innerHTML = '<span class="mode-icon"><i class="fas fa-headphones-alt"></i></span>' +
+      '<div class="mode-text">' +
+      '<strong class="mode-title">' + Drupal.t('Passive Listening') + '</strong>' +
+      '<span class="mode-sub">' + Drupal.t('Continuous hands-free audio') + '</span>' +
+      '</div>';
+
+    modeWrap.appendChild(modeActiveBtn);
+    modeWrap.appendChild(modePassiveBtn);
     modal.appendChild(modeWrap);
 
-    var intro = document.createElement('p');
-    intro.className = 'lms-listening-start-modal__intro';
-    modal.appendChild(intro);
+    // Mode description banner
+    var modeBanner = document.createElement('div');
+    modeBanner.className = 'lms-listening-start-modal__banner';
+    modal.appendChild(modeBanner);
 
-    var passiveIntro = document.createElement('p');
-    passiveIntro.className = 'lms-listening-start-modal__intro lms-listening-start-modal__intro--passive';
-    passiveIntro.textContent = Drupal.t('Passages play back to back, Easy → Normal → Challenge, then loop back to the start and repeat until you press Stop — pick the levels and how many per level below (random within each), or choose exact passages further down. Just listen; no questions, nothing to answer.');
-    passiveIntro.hidden = true;
-    modal.appendChild(passiveIntro);
+    // 3. Selection Method Tabs (Specific Passages vs Quick Random by Level)
+    var tabNav = document.createElement('div');
+    tabNav.className = 'lms-listening-start-modal__tab-nav';
+
+    var tabBtnSpecific = document.createElement('button');
+    tabBtnSpecific.type = 'button';
+    tabBtnSpecific.className = 'lms-listening-start-modal__tab-btn is-active';
+    tabBtnSpecific.dataset.tab = 'specific';
+    tabBtnSpecific.innerHTML = '<i class="fas fa-list-check"></i> ' + Drupal.t('Choose Passages');
+
+    var tabBtnRandom = document.createElement('button');
+    tabBtnRandom.type = 'button';
+    tabBtnRandom.className = 'lms-listening-start-modal__tab-btn';
+    tabBtnRandom.dataset.tab = 'random';
+    tabBtnRandom.innerHTML = '<i class="fas fa-shuffle"></i> ' + Drupal.t('Quick Pick by Level');
+
+    tabNav.appendChild(tabBtnSpecific);
+    tabNav.appendChild(tabBtnRandom);
+    modal.appendChild(tabNav);
+
+    // Tab Content 1: Specific Passages List
+    var tabPaneSpecific = document.createElement('div');
+    tabPaneSpecific.className = 'lms-listening-start-modal__tab-pane lms-listening-start-modal__tab-pane--specific is-active';
+
+    var specificToolbar = document.createElement('div');
+    specificToolbar.className = 'lms-listening-start-modal__specific-toolbar';
+
+    var specificHint = document.createElement('span');
+    specificHint.className = 'lms-listening-start-modal__specific-hint';
+    specificHint.textContent = Drupal.t('Check the passages you wish to practice:');
+    specificToolbar.appendChild(specificHint);
+
+    var specificGlobalActions = document.createElement('div');
+    specificGlobalActions.className = 'lms-listening-start-modal__global-actions';
+    var selectAllBtn = document.createElement('button');
+    selectAllBtn.type = 'button';
+    selectAllBtn.className = 'lms-listening-start-modal__text-link';
+    selectAllBtn.textContent = Drupal.t('Select All');
+    var deselectAllBtn = document.createElement('button');
+    deselectAllBtn.type = 'button';
+    deselectAllBtn.className = 'lms-listening-start-modal__text-link';
+    deselectAllBtn.textContent = Drupal.t('Clear');
+    specificGlobalActions.appendChild(selectAllBtn);
+    specificGlobalActions.appendChild(document.createTextNode(' · '));
+    specificGlobalActions.appendChild(deselectAllBtn);
+    specificToolbar.appendChild(specificGlobalActions);
+    tabPaneSpecific.appendChild(specificToolbar);
+
+    var specificListEl = document.createElement('div');
+    specificListEl.className = 'lms-listening-start-modal__specific-list';
+    tabPaneSpecific.appendChild(specificListEl);
+    modal.appendChild(tabPaneSpecific);
+
+    // Tab Content 2: Quick Pick by Level
+    var tabPaneRandom = document.createElement('div');
+    tabPaneRandom.className = 'lms-listening-start-modal__tab-pane lms-listening-start-modal__tab-pane--random';
+
+    var randomHint = document.createElement('p');
+    randomHint.className = 'lms-listening-start-modal__random-hint';
+    randomHint.textContent = Drupal.t('Select one or more levels. The system will randomly pick passages for your session:');
+    tabPaneRandom.appendChild(randomHint);
 
     var levelsWrap = document.createElement('div');
     levelsWrap.className = 'lms-listening-start-modal__levels';
-    modal.appendChild(levelsWrap);
+    tabPaneRandom.appendChild(levelsWrap);
 
-    var perLevelWrap = document.createElement('label');
+    var perLevelWrap = document.createElement('div');
     perLevelWrap.className = 'lms-listening-start-modal__per-level';
-    var perLevelText = document.createTextNode(Drupal.t('Passages per level') + ' ');
+    var perLevelLabel = document.createElement('label');
+    perLevelLabel.textContent = Drupal.t('Passages per selected level:');
     var perLevelInput = document.createElement('input');
     perLevelInput.type = 'number';
     perLevelInput.min = '1';
+    perLevelInput.max = '20';
     perLevelInput.value = String(DEFAULT_PER_LEVEL);
-    perLevelWrap.appendChild(perLevelText);
+    perLevelWrap.appendChild(perLevelLabel);
     perLevelWrap.appendChild(perLevelInput);
-    modal.appendChild(perLevelWrap);
+    tabPaneRandom.appendChild(perLevelWrap);
 
-    // Passive-only: pick exact passages instead of a random per-level
-    // count — see PASSIVE_LISTENING_PLAN.md. A <details> so it stays out
-    // of the way until opened, same pattern lms_flashcard's import-example
-    // tip uses. Checking any box here overrides the level/per-level
-    // controls above entirely (see the Start click handler below).
-    var specificWrap = document.createElement('details');
-    specificWrap.className = 'lms-listening-start-modal__specific';
-    specificWrap.hidden = true;
-    var specificSummary = document.createElement('summary');
-    specificSummary.textContent = Drupal.t('Or choose specific passages');
-    specificWrap.appendChild(specificSummary);
-    var specificHint = document.createElement('p');
-    specificHint.className = 'lms-listening-start-modal__specific-hint';
-    specificHint.textContent = Drupal.t('Checking any passage below plays exactly those (still Easy → Normal → Challenge order), instead of the random per-level pick above.');
-    specificWrap.appendChild(specificHint);
-    var specificListEl = document.createElement('div');
-    specificListEl.className = 'lms-listening-start-modal__specific-list';
-    specificWrap.appendChild(specificListEl);
-    modal.appendChild(specificWrap);
+    modal.appendChild(tabPaneRandom);
 
-    var error = document.createElement('p');
+    // Error message element
+    var error = document.createElement('div');
     error.className = 'lms-listening-start-modal__error';
     error.hidden = true;
     modal.appendChild(error);
 
+    // 4. Modal Actions Footer
     var actions = document.createElement('div');
     actions.className = 'lms-listening-start-modal__actions';
+
+    var selectionSummary = document.createElement('div');
+    selectionSummary.className = 'lms-listening-start-modal__summary';
+    actions.appendChild(selectionSummary);
+
+    var actionButtons = document.createElement('div');
+    actionButtons.className = 'lms-listening-start-modal__action-btns';
+
     var cancelBtn = document.createElement('button');
     cancelBtn.type = 'button';
     cancelBtn.className = 'lms-listening-start-modal__cancel';
     cancelBtn.textContent = Drupal.t('Cancel');
+
     var startBtn = document.createElement('button');
     startBtn.type = 'button';
     startBtn.className = 'lms-listening-start-modal__start';
-    startBtn.textContent = Drupal.t('Start practicing');
-    actions.appendChild(cancelBtn);
-    actions.appendChild(startBtn);
+    startBtn.textContent = Drupal.t('Start Practicing');
+
+    actionButtons.appendChild(cancelBtn);
+    actionButtons.appendChild(startBtn);
+    actions.appendChild(actionButtons);
     modal.appendChild(actions);
 
     overlay.appendChild(modal);
@@ -158,35 +221,32 @@
 
     return {
       overlay: overlay,
-      modeActiveInput: modeActiveInput,
-      modePassiveInput: modePassiveInput,
-      intro: intro,
-      passiveIntro: passiveIntro,
-      levelsWrap: levelsWrap,
-      perLevelWrap: perLevelWrap,
-      perLevelInput: perLevelInput,
-      specificWrap: specificWrap,
+      modal: modal,
+      deckBadge: deckBadge,
+      closeBtn: closeBtn,
+      modeActiveBtn: modeActiveBtn,
+      modePassiveBtn: modePassiveBtn,
+      modeBanner: modeBanner,
+      tabBtnSpecific: tabBtnSpecific,
+      tabBtnRandom: tabBtnRandom,
+      tabPaneSpecific: tabPaneSpecific,
+      tabPaneRandom: tabPaneRandom,
+      selectAllBtn: selectAllBtn,
+      deselectAllBtn: deselectAllBtn,
       specificListEl: specificListEl,
+      levelsWrap: levelsWrap,
+      perLevelInput: perLevelInput,
       error: error,
+      selectionSummary: selectionSummary,
       cancelBtn: cancelBtn,
       startBtn: startBtn,
     };
   }
 
   /**
-   * Rebuilds the level checkboxes for the deck currently open, each with
-   * an "(N available)" count and disabled when that count is 0 — a level
-   * with nothing to practice can't be picked at all, rather than being
-   * offered and only failing (or silently contributing nothing) after
-   * submission.
-   *
-   * @param {Object} ui
-   *   The object returned by buildModal().
-   * @param {Object} counts
-   *   Level => count, e.g. {"easy": 5, "challenge": 2} — levels absent
-   *   from this object are treated as 0.
+   * Renders level checkboxes in the "Quick Random" tab.
    */
-  function renderLevelCheckboxes(ui, counts) {
+  function renderLevelCheckboxes(ui, counts, onCountChange) {
     ui.levelsWrap.textContent = '';
     var checkboxes = [];
 
@@ -195,17 +255,40 @@
       var count = counts[level] || 0;
 
       var label = document.createElement('label');
+      label.className = 'lms-listening-start-modal__level-card';
+
       var input = document.createElement('input');
       input.type = 'checkbox';
       input.value = level;
       input.disabled = count === 0;
+
+      var titleSpan = document.createElement('span');
+      titleSpan.className = 'level-title';
+      titleSpan.textContent = pair[1]();
+
+      var badge = document.createElement('span');
+      badge.className = 'level-badge';
+      badge.textContent = Drupal.t('@count available', { '@count': count });
+
       label.appendChild(input);
-      label.appendChild(document.createTextNode(
-        ' ' + pair[1]() + ' ' + Drupal.t('(@count available)', { '@count': count }),
-      ));
+      label.appendChild(titleSpan);
+      label.appendChild(badge);
+
       if (count === 0) {
         label.classList.add('is-disabled');
       }
+
+      input.addEventListener('change', function () {
+        if (input.checked) {
+          label.classList.add('is-checked');
+        } else {
+          label.classList.remove('is-checked');
+        }
+        if (typeof onCountChange === 'function') {
+          onCountChange();
+        }
+      });
+
       ui.levelsWrap.appendChild(label);
       checkboxes.push(input);
     });
@@ -214,22 +297,9 @@
   }
 
   /**
-   * Rebuilds the "choose specific passages" checkbox list for the deck
-   * currently open — grouped under a level heading (Easy/Normal/Challenge,
-   * only for levels that actually have passages), each row labeled with
-   * the passage's own title so the student can tell them apart.
-   *
-   * @param {Object} ui
-   *   The object returned by buildModal().
-   * @param {Array} passages
-   *   [{id, title, level}, ...] — see data-passages on the Listening link
-   *   (lms_listening_preprocess_lms_flashcard_my_decks() in
-   *   lms_listening.module).
-   *
-   * @return {Array} The rendered checkbox <input> elements, each with its
-   *   passage id on `dataset.passageId`.
+   * Renders the interactive list of specific passages grouped by level.
    */
-  function renderSpecificPassages(ui, passages) {
+  function renderSpecificPassages(ui, passages, onSelectionChange) {
     ui.specificListEl.textContent = '';
     var checkboxes = [];
 
@@ -240,31 +310,91 @@
         return;
       }
 
-      var heading = document.createElement('p');
-      heading.className = 'lms-listening-start-modal__specific-level-heading';
-      heading.textContent = pair[1]();
-      ui.specificListEl.appendChild(heading);
+      var groupSection = document.createElement('div');
+      groupSection.className = 'lms-listening-start-modal__level-group';
+
+      // Group Header with select all for this level
+      var groupHeader = document.createElement('div');
+      groupHeader.className = 'lms-listening-start-modal__level-group-header';
+
+      var headingText = document.createElement('span');
+      headingText.className = 'lms-listening-start-modal__level-group-title';
+      headingText.innerHTML = '<strong>' + pair[1]() + '</strong> <span class="group-count">(' + levelPassages.length + ')</span>';
+
+      var groupAction = document.createElement('button');
+      groupAction.type = 'button';
+      groupAction.className = 'lms-listening-start-modal__text-link lms-listening-start-modal__group-toggle';
+      groupAction.textContent = Drupal.t('Select level');
+
+      groupHeader.appendChild(headingText);
+      groupHeader.appendChild(groupAction);
+      groupSection.appendChild(groupHeader);
+
+      var levelInputs = [];
 
       levelPassages.forEach(function (passage) {
         var label = document.createElement('label');
         label.className = 'lms-listening-start-modal__specific-item';
+
         var input = document.createElement('input');
         input.type = 'checkbox';
         input.value = passage.id;
         input.dataset.passageId = passage.id;
+        input.dataset.level = level;
+
         var titleText = document.createElement('span');
         titleText.className = 'lms-listening-start-modal__specific-title';
         titleText.textContent = passage.title;
+
         var format = passage.format || 'sentence';
         var formatBadge = document.createElement('span');
         formatBadge.className = 'lms-listening-start-modal__format-badge lms-listening-start-modal__format-badge--' + format;
         formatBadge.textContent = formatLabel(format);
+
         label.appendChild(input);
         label.appendChild(titleText);
         label.appendChild(formatBadge);
-        ui.specificListEl.appendChild(label);
+        groupSection.appendChild(label);
+
+        input.addEventListener('change', function () {
+          if (input.checked) {
+            label.classList.add('is-checked');
+          } else {
+            label.classList.remove('is-checked');
+          }
+          updateGroupToggleText();
+          if (typeof onSelectionChange === 'function') {
+            onSelectionChange();
+          }
+        });
+
+        levelInputs.push(input);
         checkboxes.push(input);
       });
+
+      function updateGroupToggleText() {
+        var allChecked = levelInputs.every(function (i) { return i.checked; });
+        groupAction.textContent = allChecked ? Drupal.t('Deselect') : Drupal.t('Select level');
+      }
+
+      groupAction.addEventListener('click', function () {
+        var allChecked = levelInputs.every(function (i) { return i.checked; });
+        var targetState = !allChecked;
+        levelInputs.forEach(function (i) {
+          i.checked = targetState;
+          if (targetState) {
+            i.closest('.lms-listening-start-modal__specific-item').classList.add('is-checked');
+          } else {
+            i.closest('.lms-listening-start-modal__specific-item').classList.remove('is-checked');
+          }
+        });
+        updateGroupToggleText();
+        if (typeof onSelectionChange === 'function') {
+          onSelectionChange();
+        }
+      });
+
+      ui.specificListEl.appendChild(groupSection);
     });
 
     return checkboxes;
@@ -278,10 +408,11 @@
       }
 
       var ui = buildModal();
-      var checkboxes = [];
+      var levelCheckboxes = [];
       var specificCheckboxes = [];
+      var currentMode = 'active';
+      var currentTab = 'specific';
       var fallbackHref = null;
-      var deckNameForIntro = '';
 
       function close() {
         ui.overlay.hidden = true;
@@ -289,137 +420,204 @@
         ui.startBtn.disabled = false;
       }
 
-      /**
-       * Swaps the intro line + Start button label, and shows/hides the
-       * Passive-only "choose specific passages" section — the level
-       * checkboxes and "Passages per level" count are shared by both
-       * modes now (Passive originally hid them entirely — fixed at 1 per
-       * level, all 3 levels — but the student asked to be able to adjust
-       * both, same controls Active mode already had).
-       */
+      function updateSummary() {
+        var isPassive = currentMode === 'passive';
+        if (currentTab === 'specific') {
+          var checkedCount = specificCheckboxes.filter(function (cb) { return cb.checked; }).length;
+          if (checkedCount > 0) {
+            ui.selectionSummary.innerHTML = '<i class="fas fa-check-circle"></i> ' +
+              Drupal.t('<strong>@count</strong> passage(s) selected', { '@count': checkedCount });
+            ui.startBtn.disabled = false;
+          } else {
+            ui.selectionSummary.innerHTML = '<span class="text-muted">' + Drupal.t('No passages selected yet') + '</span>';
+          }
+        } else {
+          var checkedLevels = levelCheckboxes.filter(function (cb) { return cb.checked; });
+          var perLevel = parseInt(ui.perLevelInput.value, 10) || DEFAULT_PER_LEVEL;
+          if (checkedLevels.length > 0) {
+            var approxTotal = checkedLevels.length * perLevel;
+            ui.selectionSummary.innerHTML = '<i class="fas fa-sliders"></i> ' +
+              Drupal.t('~@count passage(s) across @levels level(s)', { '@count': approxTotal, '@levels': checkedLevels.length });
+            ui.startBtn.disabled = false;
+          } else {
+            ui.selectionSummary.innerHTML = '<span class="text-muted">' + Drupal.t('Pick at least one level') + '</span>';
+          }
+        }
+
+        ui.startBtn.textContent = isPassive ? Drupal.t('Start Passive Listening') : Drupal.t('Start Practicing');
+      }
+
       function applyMode(mode) {
-        var isPassive = mode === 'passive';
-        ui.intro.hidden = isPassive;
-        ui.passiveIntro.hidden = !isPassive;
-        ui.specificWrap.hidden = !isPassive;
-        ui.startBtn.textContent = isPassive ? Drupal.t('Start passive listening') : Drupal.t('Start practicing');
-        ui.error.hidden = true;
+        currentMode = mode;
+        if (mode === 'active') {
+          ui.modeActiveBtn.classList.add('is-active');
+          ui.modePassiveBtn.classList.remove('is-active');
+          ui.modeBanner.className = 'lms-listening-start-modal__banner lms-listening-start-modal__banner--active';
+          ui.modeBanner.innerHTML = '<i class="fas fa-info-circle"></i> ' +
+            Drupal.t('<strong>Active Practice:</strong> Listen to the passage audio, view transcripts, and complete IELTS comprehension questions.');
+        } else {
+          ui.modePassiveBtn.classList.add('is-active');
+          ui.modeActiveBtn.classList.remove('is-active');
+          ui.modeBanner.className = 'lms-listening-start-modal__banner lms-listening-start-modal__banner--passive';
+          ui.modeBanner.innerHTML = '<i class="fas fa-headphones"></i> ' +
+            Drupal.t('<strong>Passive Listening:</strong> Passages play continuously in sequence (loops automatically). Ideal for commuting or background study.');
+        }
+        updateSummary();
       }
 
-      ui.modeActiveInput.addEventListener('change', function () {
-        if (ui.modeActiveInput.checked) {
-          applyMode('active');
+      function applyTab(tab) {
+        currentTab = tab;
+        if (tab === 'specific') {
+          ui.tabBtnSpecific.classList.add('is-active');
+          ui.tabBtnRandom.classList.remove('is-active');
+          ui.tabPaneSpecific.classList.add('is-active');
+          ui.tabPaneRandom.classList.remove('is-active');
+        } else {
+          ui.tabBtnRandom.classList.add('is-active');
+          ui.tabBtnSpecific.classList.remove('is-active');
+          ui.tabPaneRandom.classList.add('is-active');
+          ui.tabPaneSpecific.classList.remove('is-active');
         }
-      });
-      ui.modePassiveInput.addEventListener('change', function () {
-        if (ui.modePassiveInput.checked) {
-          applyMode('passive');
-        }
-      });
+        ui.error.hidden = true;
+        updateSummary();
+      }
 
-      function open(link) {
-        fallbackHref = link.getAttribute('href');
-        deckNameForIntro = link.dataset.deckName || Drupal.t('this deck');
+      ui.modeActiveBtn.addEventListener('click', function () { applyMode('active'); });
+      ui.modePassiveBtn.addEventListener('click', function () { applyMode('passive'); });
+      ui.tabBtnSpecific.addEventListener('click', function () { applyTab('specific'); });
+      ui.tabBtnRandom.addEventListener('click', function () { applyTab('random'); });
 
-        var counts = {};
-        try {
-          counts = JSON.parse(link.dataset.levelCounts || '{}');
-        }
-        catch (e) {
-          // Malformed/missing data-level-counts — treat as "nothing known
-          // available", same as every level actually being empty; the
-          // student can still fall back to the plain page via Cancel.
-        }
-        checkboxes = renderLevelCheckboxes(ui, counts);
-
-        var passages = [];
-        try {
-          passages = JSON.parse(link.dataset.passages || '[]');
-        }
-        catch (e) {
-          // Malformed/missing data-passages — same "treat as none
-          // available" fallback as data-level-counts above; the specific-
-          // passages section just ends up empty, the random per-level
-          // pick above still works.
-        }
-        specificCheckboxes = renderSpecificPassages(ui, Array.isArray(passages) ? passages : []);
-
-        // Drupal.t()'s `@` placeholder HTML-escapes its value (it's meant
-        // for innerHTML, not textContent) — using innerHTML here is what
-        // actually decodes "Chemist's" correctly instead of showing a
-        // literal "Chemist&#039;s".
-        ui.intro.innerHTML = Drupal.t('Pick one or more levels to practice from @deck, and how many passages per level.', {
-          '@deck': deckNameForIntro,
+      ui.selectAllBtn.addEventListener('click', function () {
+        specificCheckboxes.forEach(function (cb) {
+          cb.checked = true;
+          cb.closest('.lms-listening-start-modal__specific-item').classList.add('is-checked');
         });
-        ui.perLevelInput.value = String(DEFAULT_PER_LEVEL);
+        ui.modal.querySelectorAll('.lms-listening-start-modal__group-toggle').forEach(function (btn) {
+          btn.textContent = Drupal.t('Deselect');
+        });
+        updateSummary();
+      });
 
-        // No listening passages at all for this deck (every level empty) —
-        // Passive mode has nothing to build a session from either, so
-        // don't offer it; reset to Active in case it was left selected
-        // from a previous deck that did have passages.
-        var totalAvailable = Object.keys(counts).reduce(function (sum, level) { return sum + (counts[level] || 0); }, 0);
-        ui.modePassiveInput.disabled = totalAvailable === 0;
-        ui.modeActiveInput.checked = true;
-        applyMode('active');
+      ui.deselectAllBtn.addEventListener('click', function () {
+        specificCheckboxes.forEach(function (cb) {
+          cb.checked = false;
+          cb.closest('.lms-listening-start-modal__specific-item').classList.remove('is-checked');
+        });
+        ui.modal.querySelectorAll('.lms-listening-start-modal__group-toggle').forEach(function (btn) {
+          btn.textContent = Drupal.t('Select level');
+        });
+        updateSummary();
+      });
 
-        ui.error.hidden = true;
-        ui.overlay.hidden = false;
-      }
-
+      ui.perLevelInput.addEventListener('input', updateSummary);
+      ui.closeBtn.addEventListener('click', close);
       ui.cancelBtn.addEventListener('click', close);
+
       ui.overlay.addEventListener('click', function (event) {
         if (event.target === ui.overlay) {
           close();
         }
       });
+
       document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape' && !ui.overlay.hidden) {
           close();
         }
       });
 
+      function open(link) {
+        fallbackHref = link.getAttribute('href');
+        var deckName = link.dataset.deckName || Drupal.t('Deck');
+
+        var counts = {};
+        try {
+          counts = JSON.parse(link.dataset.levelCounts || '{}');
+        } catch (e) {}
+
+        var passages = [];
+        try {
+          passages = JSON.parse(link.dataset.passages || '[]');
+        } catch (e) {}
+
+        var totalPassages = Array.isArray(passages) ? passages.length : 0;
+        ui.deckBadge.textContent = deckName + (totalPassages ? ' · ' + totalPassages + ' ' + Drupal.t('passages') : '');
+
+        // Render controls
+        levelCheckboxes = renderLevelCheckboxes(ui, counts, updateSummary);
+        specificCheckboxes = renderSpecificPassages(ui, passages, updateSummary);
+
+        // Pre-check all passages by default so the user can immediately hit Start or deselect what they don't want
+        specificCheckboxes.forEach(function (cb) {
+          cb.checked = true;
+          cb.closest('.lms-listening-start-modal__specific-item').classList.add('is-checked');
+        });
+        ui.modal.querySelectorAll('.lms-listening-start-modal__group-toggle').forEach(function (btn) {
+          btn.textContent = Drupal.t('Deselect');
+        });
+
+        ui.perLevelInput.value = String(DEFAULT_PER_LEVEL);
+
+        // Disable passive mode if deck has 0 passages
+        var totalAvailable = Object.keys(counts).reduce(function (sum, l) { return sum + (counts[l] || 0); }, 0);
+        ui.modePassiveBtn.disabled = totalAvailable === 0;
+
+        // Reset to active mode & specific tab
+        applyMode('active');
+        applyTab('specific');
+
+        ui.error.hidden = true;
+        ui.overlay.hidden = false;
+        updateSummary();
+      }
+
+      // Start submission handler
       ui.startBtn.addEventListener('click', function () {
         var deckId = new URL(fallbackHref, window.location.origin).searchParams.get('deck');
-        var isPassive = ui.modePassiveInput.checked;
         var requestBody;
 
-        var perLevel = parseInt(ui.perLevelInput.value, 10);
-        if (!perLevel || perLevel < 1) {
-          perLevel = DEFAULT_PER_LEVEL;
-        }
-
-        var levels = checkboxes.filter(function (cb) { return cb.checked; }).map(function (cb) { return cb.value; });
-
-        if (isPassive) {
-          var specificIds = specificCheckboxes
+        if (currentTab === 'specific') {
+          var chosenIds = specificCheckboxes
             .filter(function (cb) { return cb.checked; })
             .map(function (cb) { return cb.dataset.passageId; });
 
-          if (specificIds.length) {
-            // Chosen exact passages override the level/per-level pick
-            // entirely — see ListeningApiController::startPassive().
-            requestBody = { deck_id: deckId, mode: 'passive', passage_ids: specificIds };
-          }
-          else {
-            if (!levels.length) {
-              ui.error.textContent = Drupal.t('Pick at least one level, or choose specific passages below.');
-              ui.error.hidden = false;
-              return;
-            }
-            requestBody = { deck_id: deckId, mode: 'passive', levels: levels, per_level: perLevel };
-          }
-        }
-        else {
-          if (!levels.length) {
-            ui.error.textContent = Drupal.t('Pick at least one level.');
+          if (!chosenIds.length) {
+            ui.error.textContent = Drupal.t('Please select at least one passage from the list.');
             ui.error.hidden = false;
             return;
           }
 
-          requestBody = { deck_id: deckId, levels: levels, per_level: perLevel };
+          requestBody = {
+            deck_id: deckId,
+            mode: currentMode,
+            passage_ids: chosenIds,
+          };
+        } else {
+          var chosenLevels = levelCheckboxes
+            .filter(function (cb) { return cb.checked; })
+            .map(function (cb) { return cb.value; });
+
+          if (!chosenLevels.length) {
+            ui.error.textContent = Drupal.t('Please select at least one level.');
+            ui.error.hidden = false;
+            return;
+          }
+
+          var perLevel = parseInt(ui.perLevelInput.value, 10);
+          if (!perLevel || perLevel < 1) {
+            perLevel = DEFAULT_PER_LEVEL;
+          }
+
+          requestBody = {
+            deck_id: deckId,
+            mode: currentMode,
+            levels: chosenLevels,
+            per_level: perLevel,
+          };
         }
 
         ui.startBtn.disabled = true;
+        ui.startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + Drupal.t('Loading...');
+
         fetch('/api/lms/listening/start', {
           method: 'POST',
           credentials: 'same-origin',
@@ -433,18 +631,12 @@
               return;
             }
             ui.startBtn.disabled = false;
+            updateSummary();
             ui.error.textContent = data.error || Drupal.t('Something went wrong. Please try again.');
             ui.error.hidden = false;
           })
           .catch(function () {
-            // Network hiccup — fall back to the plain page rather than
-            // leave the student stuck behind a popup that can't proceed.
-            // (Active mode only: a Passive-mode start has no equivalent
-            // plain-page fallback URL to send them to, since fallbackHref
-            // always points at the Active/no-JS form — reload the modal's
-            // own page instead in that case so they aren't sent into
-            // Active mode's picker by surprise.)
-            if (isPassive) {
+            if (currentMode === 'passive') {
               window.location.reload();
               return;
             }

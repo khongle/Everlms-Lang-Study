@@ -130,15 +130,17 @@
                forever once every card here has been mastered at least
                once, reset or not. #}
             <div class="lms-flashcard-deck-card__mastery" title="{{ 'Study Now mastery — reach 100% to unlock the other study modes below (they stay unlocked even after resetting this)'|t }}">
+              <div class="lms-flashcard-deck-card__mastery-header">
+                <span class="lms-flashcard-deck-card__mastery-label">{{ 'Mastery: @percent%'|t({'@percent': deck.mastery_percent}) }}</span>
+                {% if deck.mastery_percent > 0 %}
+                  <button type="button" class="lms-flashcard-deck-card__mastery-reset" data-flashcard-reset-mastery="{{ deck.entity.id() }}" data-deck-name="{{ deck.entity.label() }}" title="{{ 'Reset your Study Now progress for this deck'|t }}">
+                    <i class="fas fa-rotate-left"></i> {{ 'Reset'|t }}
+                  </button>
+                {% endif %}
+              </div>
               <div class="lms-flashcard-deck-card__mastery-bar">
                 <div class="lms-flashcard-deck-card__mastery-fill" style="width: {{ deck.mastery_percent }}%"></div>
               </div>
-              <span class="lms-flashcard-deck-card__mastery-label">{{ 'Mastery: @percent%'|t({'@percent': deck.mastery_percent}) }}</span>
-              {% if deck.mastery_percent > 0 %}
-                <button type="button" class="lms-flashcard-deck-card__mastery-reset" data-flashcard-reset-mastery="{{ deck.entity.id() }}" data-deck-name="{{ deck.entity.label() }}" title="{{ 'Reset your Study Now progress for this deck'|t }}">
-                  <i class="fas fa-rotate-left"></i> {{ 'Reset'|t }}
-                </button>
-              {% endif %}
             </div>
 
             <div class="lms-flashcard-deck-card__actions">
@@ -260,14 +262,14 @@
 
             {% if deck.is_mine %}
               <div class="lms-flashcard-deck-card__manage">
-                <a href="{{ path('entity.lms_flashcard_deck.edit_form', {'lms_flashcard_deck': deck.entity.id()}) }}">{{ 'Edit'|t }}</a>
-                <a href="{{ path('lms_flashcard.import') }}">{{ 'Add cards'|t }}</a>
+                <a href="{{ path('entity.lms_flashcard_deck.edit_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-pen"></i> {{ 'Edit'|t }}</a>
+                <a href="{{ path('lms_flashcard.import') }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-plus"></i> {{ 'Add cards'|t }}</a>
                 {# JSON of every card in this deck, in the exact shape the
                    importer accepts — meant to be pasted to an LLM for edits
                    and re-imported afterwards without creating duplicates.
                    See DeckExportController. #}
-                <a href="{{ path('lms_flashcard.deck_export', {'lms_flashcard_deck': deck.entity.id()}) }}">{{ 'Export JSON'|t }}</a>
-                <a href="{{ path('entity.lms_flashcard_deck.delete_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link--danger">{{ 'Delete'|t }}</a>
+                <a href="{{ path('lms_flashcard.deck_export', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-file-export"></i> {{ 'Export'|t }}</a>
+                <a href="{{ path('entity.lms_flashcard_deck.delete_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link lms-flashcard-deck-card__manage-link--danger"><i class="fas fa-trash-alt"></i> {{ 'Delete'|t }}</a>
               </div>
             {% endif %}
           </div>

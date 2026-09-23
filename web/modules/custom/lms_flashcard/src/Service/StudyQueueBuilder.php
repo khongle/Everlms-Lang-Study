@@ -26,7 +26,7 @@ final class StudyQueueBuilder {
   /**
    * How many other cards to show before a just-failed card comes back.
    */
-  private const AGAIN_BUFFER = 3;
+  private const AGAIN_BUFFER = 5;
 
   /**
    * Review cards shown per 1 new card, once new cards start interleaving.
@@ -105,6 +105,20 @@ final class StudyQueueBuilder {
       }
     }
     usort($due, static fn (array $a, array $b) => $a['next_review_at'] <=> $b['next_review_at']);
+
+    $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
+    $statIds = $statStorage->getQuery()
+      ->condition('uid', $uid)
+      ->condition('field_card', $cardIds, 'IN')
+      ->accessCheck(FALSE)
+      ->execute();
+    if ($statIds) {
+      foreach ($statStorage->loadMultiple($statIds) as $stat) {
+        if ($stat->get('field_mastered')->value || (int) ($stat->get('field_times_seen')->value ?? 0) > 0) {
+          $seenCardIds[(int) $stat->get('field_card')->target_id] = TRUE;
+        }
+      }
+    }
 
     $newCardIds = array_values(array_diff($cardIds, array_keys($seenCardIds)));
     $newCap = max(0, $this->getRemainingNewCardBudget($uid));
@@ -230,7 +244,12 @@ final class StudyQueueBuilder {
         /** @var \Drupal\lms_flashcard\Entity\CardStat $stat */
         $masteredCardIds[] = (int) $stat->get('field_card')->target_id;
       }
-      $cardIds = array_values(array_diff($cardIds, $masteredCardIds));
+      $unmastered = array_values(array_diff($cardIds, $masteredCardIds));
+      // When all cards in the deck are already mastered (100% mastery),
+      // fall back to drilling all cards so the student can still review
+      // the deck via "Study Now" rather than getting an empty queue and
+      // being immediately bounced to the session summary.
+      $cardIds = $unmastered ?: $cardIds;
     }
 
     shuffle($cardIds);
@@ -291,6 +310,20 @@ final class StudyQueueBuilder {
       $nextReviewAt = (int) ($review->get('field_next_review_at')->value ?? 0);
       if (in_array($status, ['review', 'learning', 'relearning'], TRUE) && $nextReviewAt <= $now) {
         $due++;
+      }
+    }
+
+    $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
+    $statIds = $statStorage->getQuery()
+      ->condition('uid', $uid)
+      ->condition('field_card', $cardIds, 'IN')
+      ->accessCheck(FALSE)
+      ->execute();
+    if ($statIds) {
+      foreach ($statStorage->loadMultiple($statIds) as $stat) {
+        if ($stat->get('field_mastered')->value || (int) ($stat->get('field_times_seen')->value ?? 0) > 0) {
+          $seen[(int) $stat->get('field_card')->target_id] = TRUE;
+        }
       }
     }
 

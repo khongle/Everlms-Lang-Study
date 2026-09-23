@@ -907,6 +907,47 @@ body.layout-academy.layout-minimalist:not(.is-front-page):not(.is-workspace) .lm
   color: #2f241a !important;
 }
 
+body.layout-academy.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 30px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 0 0.55rem !important;
+}
+
+body.layout-academy.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row .lms-mega-link {
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 0.42rem 0.55rem !important;
+  transform: none !important;
+}
+
+body.layout-academy.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row .lms-mega-link:hover,
+body.layout-academy.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row .lms-mega-link:focus-visible {
+  transform: none !important;
+}
+
+body.layout-academy.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row .lms-mega-link-import {
+  position: relative !important;
+  z-index: 1 !important;
+  width: 30px !important;
+  height: 30px !important;
+  justify-self: end !important;
+  margin: 0 !important;
+  background: #fffaf2 !important;
+  border-color: rgba(74, 58, 43, 0.42) !important;
+  color: #2f241a !important;
+  transform: none !important;
+}
+
+body.layout-academy.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row .lms-mega-link-import:hover,
+body.layout-academy.layout-minimalist:not(.is-front-page):not(.is-workspace) .lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row .lms-mega-link-import:focus-visible {
+  background: #f6ecde !important;
+  border-color: rgba(47, 36, 26, 0.58) !important;
+  color: #2f241a !important;
+  transform: none !important;
+}
+
 /* ============================================================
    ACADEMY — CATALOG / CATEGORIES / FORUM / PRICING / NEWS / GLOSSARY
    Warm surface alignment for all inner public pages.

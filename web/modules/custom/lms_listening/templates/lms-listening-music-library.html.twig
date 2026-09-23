@@ -36,7 +36,19 @@
       {% for track in tracks %}
         <div class="lms-music-library__track" data-music-track-row data-track-id="{{ track.id }}">
           <span class="lms-music-library__track-name">{{ track.name }}</span>
-          <audio controls preload="none" src="{{ track.url }}"></audio>
+          <div class="lms-music-player" data-music-player>
+            <audio preload="none" src="{{ track.url }}" data-music-audio></audio>
+            <button type="button" class="lms-music-player__play" data-music-play title="{{ 'Play'|t }}" aria-label="{{ 'Play'|t }}">
+              <i class="fas fa-play" aria-hidden="true"></i>
+            </button>
+            <span class="lms-music-player__time" data-music-time>0:00 / 0:00</span>
+            <input type="range" class="lms-music-player__seek" data-music-seek min="0" max="1000" value="0" step="1" aria-label="{{ 'Seek'|t }}">
+            <label class="lms-music-player__volume">
+              <i class="fas fa-volume-up" aria-hidden="true"></i>
+              <span class="visually-hidden">{{ 'Volume'|t }}</span>
+              <input type="range" data-music-volume min="0" max="100" value="100" step="1" aria-label="{{ 'Volume'|t }}">
+            </label>
+          </div>
           <button type="button" class="lms-music-library__delete-btn" data-music-delete-btn data-track-id="{{ track.id }}" title="{{ 'Delete'|t }}">
             <i class="fas fa-trash"></i>
           </button>

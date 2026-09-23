@@ -202,7 +202,7 @@ final class ReadingImportForm extends FormBase {
     $sample = [
       'passage' => [
         'title' => "At the Chemist's — Easy",
-        'deck_machine_name' => 'everyday-english-at-the-chemists',
+        'deck_machine_name' => 'at-the-chemists',
         'level' => 'easy',
         'body' => "Yesterday, I went to the chemist's because I had a bad cough and a sore throat. I told the pharmacist about my symptoms. She recommended some cough medicine and told me to take it twice a day.",
         'translation' => 'Hôm qua, tôi đã đến hiệu thuốc vì tôi bị ho nặng và đau họng. Tôi kể cho dược sĩ nghe về các triệu chứng của mình. Cô ấy đã giới thiệu một loại thuốc ho và bảo tôi uống hai lần một ngày.',
@@ -258,7 +258,7 @@ final class ReadingImportForm extends FormBase {
     return [
       'passage' => [
         'title' => "At the Chemist's — A Conversation",
-        'deck_machine_name' => 'everyday-english-at-the-chemists',
+        'deck_machine_name' => 'at-the-chemists',
         'level' => 'normal',
         'format' => 'dialogue',
         'body' => "David goes to the chemist's because he has a bad cough.",

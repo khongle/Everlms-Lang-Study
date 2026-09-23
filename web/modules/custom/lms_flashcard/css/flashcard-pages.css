@@ -206,7 +206,7 @@
 
 .lms-flashcard-decks {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   gap: 1.5rem;
 }
 
@@ -214,41 +214,35 @@
   display: none;
 }
 
-/* --- List view: same cards, laid out as compact rows --- */
+/* --- List view: sleek horizontal cards --- */
 .lms-flashcard-decks--list {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 1.25rem;
 }
 
 .lms-flashcard-decks--list .lms-flashcard-deck-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 560px);
+  grid-template-columns: minmax(0, 1fr) 380px;
   grid-template-areas:
-    "top stats"
-    "desc mastery"
+    "top mastery"
     "desc actions"
-    "manage manage";
+    "stats actions"
+    "manage actions";
   align-items: start;
-  gap: 0.85rem 1.5rem;
-  padding: 1.15rem 1.25rem;
-}
-
-.lms-flashcard-decks--list .lms-flashcard-deck-card__mastery {
-  grid-area: mastery;
-  margin: 0;
+  gap: 0.6rem 2rem;
+  padding: 1.5rem 1.75rem;
 }
 
 .lms-flashcard-decks--list .lms-flashcard-deck-card__top {
   grid-area: top;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 0;
+  margin-bottom: 0.25rem;
 }
 
 .lms-flashcard-decks--list .lms-flashcard-deck-card__desc {
   grid-area: desc;
-  margin: 0;
+  margin: 0 0 0.6rem;
+  min-height: auto;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -257,35 +251,26 @@
 
 .lms-flashcard-decks--list .lms-flashcard-deck-card__stats {
   grid-area: stats;
-  justify-content: flex-end;
-  gap: 0.45rem;
-  margin: 0;
-  white-space: nowrap;
-}
-
-.lms-flashcard-decks--list .lms-flashcard-deck-card__actions {
-  grid-area: actions;
-  grid-template-columns: minmax(120px, 0.85fr) minmax(180px, 1.4fr);
-  justify-self: end;
-  width: min(100%, 560px);
-}
-
-.lms-flashcard-decks--list .lms-flashcard-deck-card__practice-links {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.lms-flashcard-decks--list .lms-flashcard-deck-card__cta,
-.lms-flashcard-decks--list .lms-flashcard-deck-card__practice-link {
-  margin-top: 0;
-  white-space: nowrap;
+  margin: 0 0 0.6rem;
 }
 
 .lms-flashcard-decks--list .lms-flashcard-deck-card__manage {
   grid-area: manage;
-  justify-content: flex-end;
   margin-top: 0.2rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid #f3f4f6;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(104, 74, 36, 0.08);
+  justify-content: flex-start;
+  gap: 1.25rem;
+}
+
+.lms-flashcard-decks--list .lms-flashcard-deck-card__mastery {
+  grid-area: mastery;
+  margin: 0 0 0.5rem;
+}
+
+.lms-flashcard-decks--list .lms-flashcard-deck-card__actions {
+  grid-area: actions;
+  width: 100%;
 }
 
 @media (max-width: 980px) {
@@ -298,14 +283,11 @@
       "mastery"
       "actions"
       "manage";
-  }
-
-  .lms-flashcard-decks--list .lms-flashcard-deck-card__stats {
-    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 1.25rem;
   }
 
   .lms-flashcard-decks--list .lms-flashcard-deck-card__actions {
-    justify-self: stretch;
     width: 100%;
   }
 }
@@ -314,54 +296,69 @@
   display: flex;
   flex-direction: column;
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  padding: 1.25rem;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.35rem 1.4rem;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.lms-flashcard-deck-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
 .lms-flashcard-deck-card__top {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
 }
 
 .lms-flashcard-deck-card__title {
   margin: 0;
-  font-size: 1.02rem;
+  font-size: 1.15rem;
   line-height: 1.35;
-  color: #111827;
+  font-weight: 700;
+  color: #0f172a;
 }
 
 .lms-flashcard-deck-card__badges {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.35rem;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .lms-flashcard-deck-card__badge {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 700;
   text-transform: uppercase;
-  color: #6b7280;
-  border: 1px solid #d1d5db;
-  border-radius: 1rem;
-  padding: 0.15rem 0.5rem;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  background: #f8fafc;
   white-space: nowrap;
 }
 
 .lms-flashcard-deck-card__badge--mine {
   color: #4f46e5;
-  border-color: #4f46e5;
+  border-color: #c7d2fe;
+  background: #eef2ff;
 }
 
 .lms-flashcard-deck-card__desc {
-  color: #6b7280;
-  font-size: 0.875rem;
-  line-height: 1.55;
-  flex: 1;
-  margin: 0 0 1rem;
+  color: #64748b;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  margin: 0 0 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 3.8rem;
 }
 
 .lms-flashcard-deck-card__stats {
@@ -369,43 +366,85 @@
   flex-wrap: wrap;
   gap: 0.45rem;
   margin: 0 0 1rem;
-  font-size: 0.8rem;
-  color: #374151;
 }
 
 .lms-flashcard-deck-card__stat {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  min-height: 1.65rem;
-  padding: 0.18rem 0.55rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 999px;
-  background: #f9fafb;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
 }
 
 .lms-flashcard-deck-card__stat--due {
-  color: #d97706;
+  color: #b45309;
+  border-color: #fde68a;
+  background: #fef3c7;
 }
 
 .lms-flashcard-deck-card__stat--new {
-  color: #4f46e5;
+  color: #4338ca;
+  border-color: #c7d2fe;
+  background: #eef2ff;
 }
 
-/* Study Now mastery — see StudyQueueBuilder::getMasteryPercent(). Reaching
-   100% unlocks .is-locked below. */
+/* Study Now mastery */
 .lms-flashcard-deck-card__mastery {
+  margin: 0 0 1.1rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.lms-flashcard-deck-card__mastery-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin: 0 0 1rem;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.lms-flashcard-deck-card__mastery-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.lms-flashcard-deck-card__mastery-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: none;
+  background: none;
+  padding: 0;
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.lms-flashcard-deck-card__mastery-reset:hover {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+.lms-flashcard-deck-card__mastery-reset:disabled {
+  cursor: default;
+  text-decoration: none;
+  opacity: 0.5;
 }
 
 .lms-flashcard-deck-card__mastery-bar {
-  flex: 1 1 auto;
-  height: 0.4rem;
+  width: 100%;
+  height: 6px;
   border-radius: 999px;
-  background: #e5e7eb;
+  background: #e2e8f0;
   overflow: hidden;
 }
 
@@ -413,46 +452,13 @@
   height: 100%;
   border-radius: 999px;
   background: #4f46e5;
-  transition: width 0.2s ease;
-}
-
-.lms-flashcard-deck-card__mastery-label {
-  flex: 0 0 auto;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-}
-
-.lms-flashcard-deck-card__mastery-reset {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  border: none;
-  background: none;
-  padding: 0;
-  color: #9ca3af;
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.lms-flashcard-deck-card__mastery-reset:hover {
-  color: #4f46e5;
-}
-
-.lms-flashcard-deck-card__mastery-reset:disabled {
-  cursor: default;
-  text-decoration: none;
-  opacity: 0.6;
+  transition: width 0.3s ease;
 }
 
 .lms-flashcard-deck-card__actions {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.55rem;
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .lms-flashcard-deck-card__cta {
@@ -461,28 +467,31 @@
   justify-content: center;
   gap: 0.45rem;
   text-align: center;
-  min-height: 2.7rem;
-  padding: 0.62rem 0.95rem;
-  border-radius: 0.45rem;
+  height: 40px;
+  padding: 0 1rem;
+  border-radius: 10px;
   background: #4f46e5;
   color: #fff;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.92rem;
   text-decoration: none;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+  transition: all 0.2s ease;
 }
 
 .lms-flashcard-deck-card__cta:hover {
   background: #4338ca;
   color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
 .lms-flashcard-deck-card__practice-links {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.4rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.45rem;
 }
 
-/* Secondary CTAs: same review queue as "Study Now" (due + new cards, real
-   SRS), just shown as alternate practice modes — see StudyController::study(). */
 .lms-flashcard-deck-card__practice-link,
 .lms-flashcard-deck-card__spell-link {
   display: inline-flex;
@@ -490,59 +499,87 @@
   justify-content: center;
   gap: 0.35rem;
   text-align: center;
-  min-height: 2.7rem;
-  padding: 0.48rem 0.62rem;
-  border-radius: 0.45rem;
-  border: 1px solid #d1d5db;
+  height: 38px;
+  padding: 0 0.45rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
   color: #4f46e5;
   font-size: 0.78rem;
   font-weight: 600;
   line-height: 1.15;
   text-decoration: none;
+  transition: all 0.15s ease;
 }
 
 .lms-flashcard-deck-card__practice-link:hover,
 .lms-flashcard-deck-card__spell-link:hover {
   background: #eef2ff;
+  border-color: #4f46e5;
   color: #4f46e5;
+  transform: translateY(-1px);
 }
 
-/* Locked below 100% Study Now mastery — see StudyQueueBuilder::
-   getMasteryPercent() and the "Reach 100%..." title/tooltip on the
-   element itself. A <span>, not a disabled <a>, so there's no href to
-   navigate to at all. */
 .lms-flashcard-deck-card__practice-link.is-locked {
   cursor: not-allowed;
-  color: #9ca3af;
-  background: #f3f4f6;
-  border-color: #e5e7eb;
+  color: #94a3b8;
+  background: #f8fafc;
+  border-color: #e2e8f0;
 }
 
 .lms-flashcard-deck-card__practice-link.is-locked:hover {
-  background: #f3f4f6;
-  color: #9ca3af;
+  background: #f8fafc;
+  color: #94a3b8;
+  border-color: #e2e8f0;
+  transform: none;
+}
+
+.lms-flashcard-deck-card__practice-link .lms-listening-deck-badge,
+.lms-flashcard-deck-card__practice-link .lms-reading-deck-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-left: 3px;
+  background: rgba(79, 70, 229, 0.12);
+  color: #4f46e5;
 }
 
 .lms-flashcard-deck-card__manage {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem;
-  justify-content: flex-end;
-  margin-top: 0.6rem;
-  font-size: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #f1f5f9;
+  font-size: 0.78rem;
 }
 
 .lms-flashcard-deck-card__manage a {
-  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #64748b;
   text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s ease;
 }
 
 .lms-flashcard-deck-card__manage a:hover {
-  text-decoration: underline;
+  color: #0f172a;
 }
 
 .lms-flashcard-deck-card__manage-link--danger {
   color: #dc2626 !important;
+}
+
+.lms-flashcard-deck-card__manage-link--danger:hover {
+  color: #991b1b !important;
 }
 
 /* --- Academy skin refinement (currently the active homepage_style) --- */
@@ -601,8 +638,9 @@ body.layout-academy .lms-flashcard-view-btn:hover {
 
 body.layout-academy .lms-flashcard-filters__chip.is-active,
 body.layout-academy .lms-flashcard-view-btn.is-active {
-  background: #fffaf2;
-  color: #8d1f2d;
+  background: #8d1f2d;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(141, 31, 45, 0.25);
 }
 
 body.layout-academy .lms-flashcard-decks--list .lms-flashcard-deck-card__manage {
@@ -614,9 +652,15 @@ body.layout-academy .lms-flashcard-decks--list .lms-flashcard-deck-card__stats {
 }
 
 body.layout-academy .lms-flashcard-deck-card {
-  background: #fffaf2;
-  border-color: rgba(104, 74, 36, 0.15);
-  box-shadow: 0 8px 20px rgba(71, 48, 27, 0.06);
+  background: #ffffff;
+  border-color: rgba(104, 74, 36, 0.16);
+  box-shadow: 0 4px 16px rgba(71, 48, 27, 0.05);
+}
+
+body.layout-academy .lms-flashcard-deck-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(71, 48, 27, 0.1);
+  border-color: rgba(141, 31, 45, 0.28);
 }
 
 body.layout-academy .lms-flashcard-deck-card__title {
@@ -626,11 +670,13 @@ body.layout-academy .lms-flashcard-deck-card__title {
 body.layout-academy .lms-flashcard-deck-card__badge {
   color: #7a6248;
   border-color: rgba(104, 74, 36, 0.3);
+  background: #fdfbf7;
 }
 
 body.layout-academy .lms-flashcard-deck-card__badge--mine {
   color: #8d1f2d;
-  border-color: #8d1f2d;
+  border-color: #f8d7da;
+  background: #fdf2f4;
 }
 
 body.layout-academy .lms-flashcard-deck-card__desc,
@@ -639,42 +685,26 @@ body.layout-academy .lms-flashcard-deck-card__stats {
 }
 
 body.layout-academy .lms-flashcard-deck-card__stat {
-  background: rgba(255, 250, 242, 0.75);
-  border-color: rgba(104, 74, 36, 0.18);
+  background: rgba(104, 74, 36, 0.05);
+  border-color: rgba(104, 74, 36, 0.16);
+  color: #5c4731;
 }
 
 body.layout-academy .lms-flashcard-deck-card__stat--due {
-  color: #a1662a;
+  color: #92400e;
+  border-color: #fde68a;
+  background: #fef3c7;
 }
 
 body.layout-academy .lms-flashcard-deck-card__stat--new {
   color: #8d1f2d;
+  border-color: #f8d7da;
+  background: #fdf2f4;
 }
 
-body.layout-academy .lms-flashcard-deck-card__cta {
-  background: linear-gradient(135deg, #ba8b38, #d5b46d);
-  color: #2f241a;
-}
-
-body.layout-academy .lms-flashcard-deck-card__cta:hover {
-  background: linear-gradient(135deg, #a97c2f, #c9a45e);
-  color: #2f241a;
-}
-
-body.layout-academy .lms-flashcard-deck-card__manage a {
-  color: #81694a;
-}
-
-body.layout-academy .lms-flashcard-deck-card__practice-link,
-body.layout-academy .lms-flashcard-deck-card__spell-link {
-  border-color: rgba(141, 31, 45, 0.3);
-  color: #8d1f2d;
-}
-
-body.layout-academy .lms-flashcard-deck-card__practice-link:hover,
-body.layout-academy .lms-flashcard-deck-card__spell-link:hover {
-  background: rgba(141, 31, 45, 0.08);
-  color: #8d1f2d;
+body.layout-academy .lms-flashcard-deck-card__mastery {
+  background: rgba(104, 74, 36, 0.04);
+  border-color: rgba(104, 74, 36, 0.08);
 }
 
 body.layout-academy .lms-flashcard-deck-card__mastery-bar {
@@ -697,11 +727,51 @@ body.layout-academy .lms-flashcard-deck-card__mastery-reset:hover {
   color: #8d1f2d;
 }
 
+body.layout-academy .lms-flashcard-deck-card__cta {
+  background: linear-gradient(135deg, #ba8b38, #d5b46d);
+  color: #2f241a;
+  box-shadow: 0 3px 10px rgba(186, 139, 56, 0.22);
+}
+
+body.layout-academy .lms-flashcard-deck-card__cta:hover {
+  background: linear-gradient(135deg, #a97c2f, #c9a45e);
+  color: #2f241a;
+  box-shadow: 0 6px 16px rgba(186, 139, 56, 0.32);
+}
+
+body.layout-academy .lms-flashcard-deck-card__manage a {
+  color: #81694a;
+}
+
+body.layout-academy .lms-flashcard-deck-card__manage a:hover {
+  color: #302117;
+}
+
+body.layout-academy .lms-flashcard-deck-card__practice-link,
+body.layout-academy .lms-flashcard-deck-card__spell-link {
+  background: #ffffff;
+  border-color: rgba(141, 31, 45, 0.25);
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-flashcard-deck-card__practice-link:hover,
+body.layout-academy .lms-flashcard-deck-card__spell-link:hover {
+  background: #fdf2f4;
+  border-color: #8d1f2d;
+  color: #8d1f2d;
+}
+
+body.layout-academy .lms-flashcard-deck-card__practice-link .lms-listening-deck-badge,
+body.layout-academy .lms-flashcard-deck-card__practice-link .lms-reading-deck-badge {
+  background: rgba(141, 31, 45, 0.12);
+  color: #8d1f2d;
+}
+
 body.layout-academy .lms-flashcard-deck-card__practice-link.is-locked,
 body.layout-academy .lms-flashcard-deck-card__practice-link.is-locked:hover {
   color: #a89880;
-  background: rgba(104, 74, 36, 0.06);
-  border-color: rgba(104, 74, 36, 0.18);
+  background: rgba(104, 74, 36, 0.05);
+  border-color: rgba(104, 74, 36, 0.16);
 }
 
 @media (max-width: 640px) {

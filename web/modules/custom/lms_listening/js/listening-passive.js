@@ -47,6 +47,14 @@
   // that's handled.
   var PREFERRED_VOICE_NAME = 'Google';
 
+  // Must match NoteController::SENTENCE_CONTEXT_MULTIPLIER server-side —
+  // a per-sentence note's composite context_id is
+  // passage.id * SENTENCE_NOTE_MULTIPLIER + sentence index, since
+  // lms_note only has one plain integer context_id field, not a
+  // (passage, sentence) pair. See wireSentenceNotes()/
+  // sentenceNoteContextId() below.
+  var SENTENCE_NOTE_MULTIPLIER = 100000;
+
   /**
    * Index into `voices` of the best Google-voice match — a "Google …
    * Male" voice if one exists (e.g. "Google UK English Male"), else any
@@ -282,6 +290,23 @@
         var voiceSelectEl = section.querySelector('[data-listening-passive-voice]');
         var speedSelectEl = section.querySelector('[data-listening-passive-speed]');
         var noteWidgetEl = section.querySelector('[data-lms-note-widget]');
+
+        // Per-sentence Quick Note dialog — see wireSentenceNotes()/
+        // openSentenceNoteDialog() below and the data-listening-note-*
+        // markup in lms-listening-passive-view.html.twig. Same
+        // document.querySelector-outside-`section` posture as the Quick
+        // Edit drawer refs below it (there's only ever one of these per
+        // page, and its `position: fixed` doesn't care where it lives in
+        // the DOM).
+        var noteOverlayEl = document.querySelector('[data-listening-note-overlay]');
+        var noteDialogEl = document.querySelector('[data-listening-note-dialog]');
+        var noteCloseBtn = document.querySelector('[data-listening-note-close]');
+        var noteCancelBtn = document.querySelector('[data-listening-note-cancel]');
+        var noteSaveBtn = document.querySelector('[data-listening-note-save]');
+        var noteDeleteBtn = document.querySelector('[data-listening-note-delete]');
+        var noteTextareaEl = document.querySelector('[data-listening-note-textarea]');
+        var noteSentenceEl = document.querySelector('[data-listening-note-sentence]');
+        var noteStatusEl = document.querySelector('[data-listening-note-status]');
         // "Copy transcript (no names)" — content-creation aid (see Quick
         // Edit below), not a student-facing control: only shown to
         // whoever can Quick Edit this passage.
@@ -315,12 +340,14 @@
         // slider for the music bed underneath.
         var bgTrackSelectEl = section.querySelector('[data-listening-passive-bg-track]');
         var bgVolumeEl = section.querySelector('[data-listening-passive-bg-volume]');
+        var bgVolumeWrapEl = section.querySelector('[data-listening-passive-bg-volume-wrap]');
         var bgTracks = settings.bgTracks || [];
         var BG_TRACK_STORAGE_KEY = 'lmsListeningPassiveBgTrackId';
         var BG_VOLUME_STORAGE_KEY = 'lmsListeningPassiveBgVolume';
         var bgAudioEl = new Audio();
         bgAudioEl.loop = true;
         bgAudioEl.preload = 'none';
+        var bgPauseExpected = false;
 
         function readStoredPref(key) {
           try {
@@ -353,7 +380,7 @@
             bgAudioEl.src = track.url;
           }
           else {
-            bgAudioEl.pause();
+            pauseBgMusicIntentionally();
             bgAudioEl.removeAttribute('src');
           }
           // Greyed out while "None" is picked — the slider has nothing to
@@ -361,6 +388,9 @@
           // reads as broken rather than as "no track selected".
           if (bgVolumeEl) {
             bgVolumeEl.disabled = !track;
+          }
+          if (bgVolumeWrapEl) {
+            bgVolumeWrapEl.hidden = !track;
           }
         }
 
@@ -370,9 +400,35 @@
             // it — always inside a click handler here (startBtn), so
             // autoplay restrictions don't apply, but a rejection is
             // swallowed defensively rather than throwing regardless.
+            bgPauseExpected = false;
             bgAudioEl.play().catch(function () {});
           }
         }
+
+        function shouldBgMusicBePlaying() {
+          return !!(running && !stopped && bgTrackSelectEl && bgTrackSelectEl.value && bgAudioEl.src);
+        }
+
+        function keepBgMusicPlaying() {
+          if (!shouldBgMusicBePlaying() || !bgAudioEl.paused) {
+            return;
+          }
+          bgPauseExpected = false;
+          bgAudioEl.play().catch(function () {});
+        }
+
+        function pauseBgMusicIntentionally() {
+          bgPauseExpected = true;
+          bgAudioEl.pause();
+        }
+
+        bgAudioEl.addEventListener('pause', function () {
+          if (bgPauseExpected) {
+            bgPauseExpected = false;
+            return;
+          }
+          window.setTimeout(keepBgMusicPlaying, 80);
+        });
 
         if (bgTrackSelectEl) {
           bgTracks.forEach(function (track) {
@@ -427,8 +483,7 @@
         var currentAudioUrl = null;
         // sentenceAudioUrls[i] is the recorded-clip URL to use for
         // transcriptUnits[i], or undefined — best-effort index pairing
-        // against upload order, same convention as translationUnits (see
-        // its own doc comment above). When non-empty, speakTranscript()'s
+        // against upload order. When non-empty, speakTranscript()'s
         // speakUnit() plays each unit's own clip where one exists, falling
         // back to TTS only for the units that don't have one — see that
         // function below.
@@ -464,17 +519,25 @@
         // speaking via highlightTranscriptUnit().
         var transcriptUnits = [];
 
-        // translationUnits[i] is the translated sentence to show in a
-        // tooltip for transcriptUnits[i] — best-effort only: there's no
-        // per-sentence translation stored server-side (field_translation
-        // is one plain-text block for the whole passage), so this pairs
-        // the i-th English sentence with the i-th sentence of the
-        // translation text by splitSentences()'ing both and matching by
-        // index. Holds where the translation doesn't split into at least
-        // as many sentences as the transcript (e.g. no translation at
-        // all, or the translator merged/reordered sentences) — those
-        // indexes are simply left undefined and no tooltip shows.
-        var translationUnits = [];
+        // sentenceNotes[i] is this student's saved plain-text note for
+        // transcriptUnits[i], or undefined — populated in bulk by
+        // loadSentenceNotes() after each renderPassage() call (one
+        // request per passage rather than one per sentence). Drives both
+        // the "has a note" indicator on each sentence/turn and the hover
+        // tooltip that shows its text — see wireSentenceNotes()/
+        // showSentenceNoteTooltip() below.
+        var sentenceNotes = {};
+        // Bumped on every loadSentenceNotes() call; a fetch whose token
+        // no longer matches when it resolves belongs to a passage the
+        // looping session has already advanced past and is discarded,
+        // same guard as js/note-widget.js's own requestToken.
+        var sentenceNotesRequestToken = 0;
+        // Index into transcriptUnits the note dialog currently has open,
+        // or null — set by openSentenceNoteDialog(), read by
+        // saveSentenceNote()/deleteSentenceNote().
+        var openNoteIndex = null;
+        var noteSaving = false;
+        var noteDialogCloseTimer = null;
 
         // Bumped every time a fresh "run" of playback starts — the
         // initial Start click, or clicking a transcript sentence/turn to
@@ -484,6 +547,10 @@
         // cancelled utterance's onend) quietly do nothing instead of
         // racing whichever run superseded them.
         var activeToken = 0;
+        var playbackPhase = 'idle';
+        var currentTranscriptIndex = 0;
+        var currentVocabIndex = 0;
+        var suspendedByVisibility = false;
 
         // Holds a Screen Wake Lock while playing so mobile browsers don't
         // turn the screen off mid-session — once the screen actually
@@ -522,8 +589,34 @@
         // visible again while a session is still running, instead of
         // only ever acquiring it once at Start.
         document.addEventListener('visibilitychange', function () {
-          if (document.visibilityState === 'visible' && running && !wakeLock) {
+          if (document.visibilityState === 'hidden' && running && !stopped) {
+            suspendedByVisibility = true;
+            return;
+          }
+
+          if (document.visibilityState === 'visible' && running && !stopped) {
             requestWakeLock();
+            playBgMusicIfSelected();
+            if (window.speechSynthesis && window.speechSynthesis.paused) {
+              window.speechSynthesis.resume();
+            }
+            if (
+              suspendedByVisibility &&
+              (playbackPhase === 'transcript' || playbackPhase === 'vocab') &&
+              !activeAudioEl &&
+              (!window.speechSynthesis || (!window.speechSynthesis.speaking && !window.speechSynthesis.pending))
+            ) {
+              suspendedByVisibility = false;
+              activeToken++;
+              runPlayback(
+                playbackPhase === 'vocab' ? 0 : currentTranscriptIndex,
+                activeToken,
+                playbackPhase === 'vocab' ? 'vocab' : 'transcript',
+                currentVocabIndex
+              );
+              return;
+            }
+            suspendedByVisibility = false;
           }
         });
 
@@ -748,34 +841,10 @@
               transcriptEl.appendChild(body);
             }
 
-            // Best-effort pairing with the transcript's own units — for
-            // dialogue, splitDialogueTranslation() gives an exact 1:1
-            // per-turn match (already stripped of the "Speaker: " label)
-            // whenever the translator kept those labels; falls back to
-            // no tooltip at all for dialogue rather than a naive sentence
-            // split that would leave "Mia: " stuck onto the wrong turn.
-            // For a plain body, sentence-splitting both texts and pairing
-            // by index is still the only option (see translationUnits'
-            // own doc comment above for the same caveat there).
-            translationUnits = [];
-            if (passage.translation) {
-              if (t.format === 'dialogue') {
-                var dialogueTranslationRows = splitDialogueTranslation(passage.translation, t.dialogueTurns);
-                if (dialogueTranslationRows) {
-                  transcriptUnits.forEach(function (unit, i) {
-                    translationUnits[i] = dialogueTranslationRows[i] ? dialogueTranslationRows[i].line : undefined;
-                  });
-                }
-              }
-              else {
-                var translatedSentences = splitSentences(passage.translation);
-                transcriptUnits.forEach(function (unit, i) {
-                  translationUnits[i] = translatedSentences[i];
-                });
-              }
-            }
-
+            sentenceNotes = {};
             wireTranscriptClicks();
+            wireSentenceNotes();
+            loadSentenceNotes(passage.id);
           }
 
           var terms = Array.isArray(passage.vocabTerms) ? passage.vocabTerms : [];
@@ -879,6 +948,8 @@
                 return;
               }
               var unit = transcriptUnits[index];
+              playbackPhase = 'transcript';
+              currentTranscriptIndex = index;
               highlightTranscriptUnit(index);
 
               // A recorded clip for this exact unit takes priority over
@@ -894,7 +965,10 @@
                 };
                 clip.addEventListener('ended', advance);
                 clip.addEventListener('error', advance);
-                clip.play().catch(advance);
+                clip.addEventListener('play', keepBgMusicPlaying);
+                clip.play()
+                  .then(keepBgMusicPlaying)
+                  .catch(advance);
                 return;
               }
 
@@ -909,13 +983,14 @@
               utterance.onend = function () { speakUnit(index + 1); };
               utterance.onerror = utterance.onend;
               window.speechSynthesis.speak(utterance);
+              keepBgMusicPlaying();
             }
 
             speakUnit(startIndex || 0);
           });
         }
 
-        function speakVocab(token) {
+        function speakVocab(token, startIndex) {
           var terms = Array.isArray(currentPassage.vocabTerms) ? currentPassage.vocabTerms : [];
           if (!terms.length) {
             return Promise.resolve();
@@ -925,7 +1000,8 @@
           }
           var picked = manualVoice();
           var rate = currentRate();
-          return terms.reduce(function (chain, term) {
+          var firstIndex = Math.max(0, Math.min(parseInt(startIndex || 0, 10) || 0, terms.length - 1));
+          return terms.slice(firstIndex).reduce(function (chain, term, offset) {
             return chain.then(function () {
               // A click on a transcript unit mid-vocab cancels whatever's
               // speaking and starts a new run — without this check, the
@@ -934,6 +1010,8 @@
               if (token !== activeToken) {
                 return Promise.resolve();
               }
+              playbackPhase = 'vocab';
+              currentVocabIndex = firstIndex + offset;
               return speak(term, speechLang, picked, rate).then(function () {
                 return wait(PAUSE_BETWEEN_VOCAB_TERMS_MS);
               });
@@ -973,6 +1051,8 @@
             }
             var audio = new Audio(currentAudioUrl);
             activeAudioEl = audio;
+            playbackPhase = 'transcript';
+            currentTranscriptIndex = 0;
 
             function finish() {
               audio.removeEventListener('ended', finish);
@@ -990,7 +1070,10 @@
             // speakTranscript()'s per-sentence onend does.
             audio.addEventListener('ended', finish);
             audio.addEventListener('error', finish);
-            audio.play().catch(finish);
+            audio.addEventListener('play', keepBgMusicPlaying);
+            audio.play()
+              .then(keepBgMusicPlaying)
+              .catch(finish);
           });
         }
 
@@ -1034,7 +1117,7 @@
          * comment above) instead of only `stopped`, so a jumpToUnit()
          * call can cleanly supersede whichever run was in flight.
          */
-        function runPlayback(startIndex, token) {
+        function runPlayback(startIndex, token, startPhase, vocabStartIndex) {
           if (stopped || token !== activeToken) {
             return;
           }
@@ -1042,18 +1125,25 @@
             statusEl.textContent = Drupal.t('Playing…');
           }
 
-          var transcriptStep = usesWholeFileAudio() ? playPassageAudio(token) : speakTranscript(startIndex, token);
+          var resumeInVocab = startPhase === 'vocab';
+          var transcriptStep = resumeInVocab
+            ? Promise.resolve()
+            : (usesWholeFileAudio() ? playPassageAudio(token) : speakTranscript(startIndex, token));
           transcriptStep
             .then(function () {
               if (stopped || token !== activeToken) {
                 return Promise.resolve();
               }
-              return wait(PAUSE_BEFORE_VOCAB_MS).then(function () { return speakVocab(token); });
+              playbackPhase = 'vocab';
+              currentVocabIndex = resumeInVocab ? (vocabStartIndex || 0) : 0;
+              return (resumeInVocab ? Promise.resolve() : wait(PAUSE_BEFORE_VOCAB_MS))
+                .then(function () { return speakVocab(token, currentVocabIndex); });
             })
             .then(function () {
               if (stopped || token !== activeToken) {
                 return;
               }
+              playbackPhase = 'loading';
               return wait(PAUSE_BEFORE_NEXT_PASSAGE_MS).then(fetchNextPassage);
             })
             .then(function (data) {
@@ -1065,6 +1155,9 @@
                 return;
               }
               renderPassage(data.passage);
+              playbackPhase = 'transcript';
+              currentTranscriptIndex = 0;
+              currentVocabIndex = 0;
               runPlayback(0, token);
             })
             .catch(function () {
@@ -1152,7 +1245,9 @@
               clearTranscriptHighlight();
               if (!stopped && audioEl === activeAudioEl) {
                 audioEl.currentTime = resumeAt;
-                audioEl.play().catch(function () {});
+                audioEl.play()
+                  .then(keepBgMusicPlaying)
+                  .catch(function () {});
               }
             });
             return;
@@ -1164,21 +1259,34 @@
         // Single floating tooltip element reused for every sentence/turn —
         // appended to <body> (not `section`) so its `position: fixed`
         // isn't affected by any ancestor's own transform/overflow, and
-        // repositioned per call rather than recreated.
+        // repositioned per call rather than recreated. Shows this
+        // student's own saved note for whichever sentence/turn triggered
+        // it (see sentenceNotes above) — there used to be a translation
+        // in here instead; that's now shown via the "Show translation"
+        // button below the transcript for the whole passage at once.
         var tooltipEl = null;
         var tooltipHideTimer = null;
+        var noteActionBtn = null;
+        var noteActionHideTimer = null;
 
         function ensureTooltipEl() {
           if (!tooltipEl) {
             tooltipEl = document.createElement('div');
             tooltipEl.className = 'lms-listening-passive__sentence-tooltip';
             tooltipEl.setAttribute('role', 'tooltip');
+            tooltipEl.addEventListener('mouseenter', function () {
+              if (tooltipHideTimer) {
+                window.clearTimeout(tooltipHideTimer);
+                tooltipHideTimer = null;
+              }
+            });
+            tooltipEl.addEventListener('mouseleave', scheduleTooltipHoverHide);
             document.body.appendChild(tooltipEl);
           }
           return tooltipEl;
         }
 
-        function hideTranslationTooltip() {
+        function hideSentenceNoteTooltip() {
           if (tooltipHideTimer) {
             window.clearTimeout(tooltipHideTimer);
             tooltipHideTimer = null;
@@ -1188,18 +1296,106 @@
           }
         }
 
-        function showTranslationTooltip(unitEl, text) {
+        function ensureNoteActionBtn() {
+          if (!noteActionBtn) {
+            noteActionBtn = document.createElement('button');
+            noteActionBtn.type = 'button';
+            noteActionBtn.className = 'lms-listening-passive__floating-note-btn';
+            noteActionBtn.innerHTML = '<i class="fas fa-note-sticky" aria-hidden="true"></i>';
+            noteActionBtn.addEventListener('mouseenter', function () {
+              if (noteActionHideTimer) {
+                window.clearTimeout(noteActionHideTimer);
+                noteActionHideTimer = null;
+              }
+            });
+            noteActionBtn.addEventListener('mouseleave', scheduleNoteActionHide);
+            document.body.appendChild(noteActionBtn);
+          }
+          return noteActionBtn;
+        }
+
+        function hideNoteActionBtn() {
+          if (noteActionHideTimer) {
+            window.clearTimeout(noteActionHideTimer);
+            noteActionHideTimer = null;
+          }
+          if (noteActionBtn) {
+            noteActionBtn.classList.remove('is-visible');
+          }
+        }
+
+        function showNoteActionBtn(unitEl, index) {
+          if (noteActionHideTimer) {
+            window.clearTimeout(noteActionHideTimer);
+            noteActionHideTimer = null;
+          }
+          var btn = ensureNoteActionBtn();
+          btn.setAttribute('aria-label', sentenceNotes[index] ? Drupal.t('Edit note for this sentence') : Drupal.t('Add note for this sentence'));
+          btn.onclick = function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            hideSentenceNoteTooltip();
+            hideNoteActionBtn();
+            openSentenceNoteDialog(index);
+          };
+          var rect = unitEl.getBoundingClientRect();
+          var anchorEl = unitEl.closest('.lms-listening-passive__transcript') || unitEl.closest('.lms-listening-passive__card') || unitEl;
+          var anchorRect = anchorEl.getBoundingClientRect();
+          var top = rect.top + (rect.height / 2) - 10;
+          var left = anchorRect.right - 28;
+          btn.style.top = Math.max(8, top) + 'px';
+          btn.style.left = Math.max(8, left) + 'px';
+          btn.classList.add('is-visible');
+        }
+
+        function scheduleNoteActionHide() {
+          if (noteActionHideTimer) {
+            window.clearTimeout(noteActionHideTimer);
+          }
+          noteActionHideTimer = window.setTimeout(hideNoteActionBtn, 700);
+        }
+
+        function isTouchLikePointer() {
+          return !!(window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches);
+        }
+
+        function showSentenceNoteTooltip(unitEl, text, index) {
           if (tooltipHideTimer) {
             window.clearTimeout(tooltipHideTimer);
             tooltipHideTimer = null;
           }
           var el = ensureTooltipEl();
-          el.textContent = text;
+          el.replaceChildren();
+          String(text || '').split(/\n+/).map(function (line) {
+            return line.trim();
+          }).filter(Boolean).forEach(function (line) {
+            var item = document.createElement('div');
+            item.className = 'lms-listening-passive__sentence-tooltip-item';
+            item.textContent = line;
+            el.appendChild(item);
+          });
+          if (typeof index === 'number') {
+            var actions = document.createElement('div');
+            actions.className = 'lms-listening-passive__sentence-tooltip-actions';
+            var editBtn = document.createElement('button');
+            editBtn.type = 'button';
+            editBtn.className = 'lms-listening-passive__sentence-tooltip-edit';
+            editBtn.innerHTML = '<i class="fas fa-pen" aria-hidden="true"></i> ' + Drupal.t('Edit');
+            editBtn.addEventListener('click', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+              hideSentenceNoteTooltip();
+              openSentenceNoteDialog(index);
+            });
+            actions.appendChild(editBtn);
+            el.appendChild(actions);
+          }
           el.classList.add('is-visible');
           var rect = unitEl.getBoundingClientRect();
-          var top = rect.top - el.offsetHeight - 8;
-          if (top < 8) {
-            top = rect.bottom + 8;
+          var gap = 6;
+          var top = rect.bottom + gap;
+          if (top + el.offsetHeight > window.innerHeight - 8) {
+            top = rect.top - el.offsetHeight - gap;
           }
           var left = Math.min(Math.max(rect.left, 8), window.innerWidth - el.offsetWidth - 8);
           el.style.top = Math.max(8, top) + 'px';
@@ -1213,7 +1409,14 @@
           if (tooltipHideTimer) {
             window.clearTimeout(tooltipHideTimer);
           }
-          tooltipHideTimer = window.setTimeout(hideTranslationTooltip, 4000);
+          tooltipHideTimer = window.setTimeout(hideSentenceNoteTooltip, 4000);
+        }
+
+        function scheduleTooltipHoverHide() {
+          if (tooltipHideTimer) {
+            window.clearTimeout(tooltipHideTimer);
+          }
+          tooltipHideTimer = window.setTimeout(hideSentenceNoteTooltip, 220);
         }
 
         // Tap/click anywhere outside the tooltip and outside a transcript
@@ -1226,32 +1429,328 @@
           if (tooltipEl.contains(event.target)) {
             return;
           }
-          if (event.target.closest && event.target.closest('.lms-listening-passive__unit--clickable')) {
+          if (event.target.closest && event.target.closest('.lms-listening-passive__sentence, .lms-listening-passive__line')) {
             return;
           }
-          hideTranslationTooltip();
+          hideSentenceNoteTooltip();
         });
-        window.addEventListener('scroll', hideTranslationTooltip, true);
+        window.addEventListener('scroll', hideSentenceNoteTooltip, true);
 
+        // Click-to-jump only (cursor/clickable styling + jumping playback
+        // to that sentence/turn) — gated on TTS same as before, since
+        // there's nothing to jump playback to without it. The note
+        // button/tooltip below is wired separately in wireSentenceNotes()
+        // so taking notes still works even where TTS isn't available.
         function wireTranscriptClicks() {
           if (!ttsAvailable) {
             return;
           }
           transcriptUnits.forEach(function (unit, index) {
             unit.el.classList.add('lms-listening-passive__unit--clickable');
+            unit.el.addEventListener('click', function (event) {
+              if (event.target.closest && event.target.closest('.lms-listening-passive__unit-note-btn')) {
+                return;
+              }
+              if (isTouchLikePointer() && sentenceNotes[index]) {
+                return;
+              }
+              jumpToUnit(index);
+            });
+          });
+        }
+
+        /**
+         * Toggles the "has a note" indicator on transcriptUnits[index]'s
+         * own element (see .lms-listening-passive__unit--has-note in
+         * listening-passive.css) to match whatever sentenceNotes[index]
+         * currently holds.
+         */
+        function applyNoteIndicator(index) {
+          var unit = transcriptUnits[index];
+          if (!unit) {
+            return;
+          }
+          unit.el.classList.toggle('lms-listening-passive__unit--has-note', !!sentenceNotes[index]);
+        }
+
+        /**
+         * Adds a small "quick note" button to every rendered sentence/turn
+         * (visible on hover, or always at partial opacity once it has a
+         * note — see the CSS) and wires the hover/tap tooltip that shows a
+         * saved note's text. Independent of ttsAvailable/
+         * wireTranscriptClicks() — note-taking doesn't need TTS.
+         */
+        function wireSentenceNotes() {
+          transcriptUnits.forEach(function (unit, index) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'lms-listening-passive__unit-note-btn';
+            btn.innerHTML = '<i class="fas fa-note-sticky" aria-hidden="true"></i>';
+            btn.setAttribute('aria-label', Drupal.t('Add note for this sentence'));
+            btn.addEventListener('click', function (event) {
+              event.stopPropagation();
+              openSentenceNoteDialog(index);
+            });
+            unit.el.appendChild(btn);
+
             unit.el.addEventListener('mouseenter', function () {
-              if (translationUnits[index]) {
-                showTranslationTooltip(unit.el, translationUnits[index]);
+              showNoteActionBtn(unit.el, index);
+              if (sentenceNotes[index]) {
+                showSentenceNoteTooltip(unit.el, sentenceNotes[index], index);
               }
             });
-            unit.el.addEventListener('mouseleave', hideTranslationTooltip);
-            unit.el.addEventListener('click', function () {
-              jumpToUnit(index);
-              if (translationUnits[index]) {
-                showTranslationTooltip(unit.el, translationUnits[index]);
+            unit.el.addEventListener('mouseleave', function () {
+              scheduleTooltipHoverHide();
+              scheduleNoteActionHide();
+            });
+            unit.el.addEventListener('click', function (event) {
+              if (event.target.closest && event.target.closest('.lms-listening-passive__unit-note-btn')) {
+                return;
+              }
+              showNoteActionBtn(unit.el, index);
+              if (sentenceNotes[index]) {
+                event.preventDefault();
+                event.stopPropagation();
+                showSentenceNoteTooltip(unit.el, sentenceNotes[index], index);
                 scheduleTooltipAutoHide();
               }
+              else if (isTouchLikePointer()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
             });
+          });
+        }
+
+        /**
+         * Bulk-fetches this student's saved notes for every sentence/turn
+         * of `passageId` in one request (see
+         * NoteController::sentenceNotesList()) rather than one per
+         * sentence, and updates every rendered unit's indicator once it
+         * resolves.
+         */
+        function loadSentenceNotes(passageId) {
+          var token = ++sentenceNotesRequestToken;
+          fetch('/api/lms/note/sentence-list?passage_id=' + encodeURIComponent(passageId))
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+              if (token !== sentenceNotesRequestToken) {
+                return;
+              }
+              sentenceNotes = (data && data.notes) || {};
+              transcriptUnits.forEach(function (unit, index) {
+                applyNoteIndicator(index);
+              });
+            })
+            .catch(function () {});
+        }
+
+        function sentenceNoteContextId(index) {
+          return currentPassage.id * SENTENCE_NOTE_MULTIPLIER + index;
+        }
+
+        function setNoteDialogStatus(message, tone) {
+          if (!noteStatusEl) {
+            return;
+          }
+          noteStatusEl.hidden = !message;
+          noteStatusEl.textContent = message || '';
+          noteStatusEl.classList.toggle('is-error', tone === 'error');
+          noteStatusEl.classList.toggle('is-success', tone === 'success');
+        }
+
+        function showNoteDialog() {
+          if (noteDialogCloseTimer) {
+            window.clearTimeout(noteDialogCloseTimer);
+            noteDialogCloseTimer = null;
+          }
+          if (noteOverlayEl) {
+            noteOverlayEl.hidden = false;
+          }
+          if (noteDialogEl) {
+            noteDialogEl.hidden = false;
+          }
+          window.requestAnimationFrame(function () {
+            if (noteOverlayEl) {
+              noteOverlayEl.classList.add('is-open');
+            }
+            if (noteDialogEl) {
+              noteDialogEl.classList.add('is-open');
+              noteDialogEl.setAttribute('aria-hidden', 'false');
+            }
+            if (noteTextareaEl) {
+              noteTextareaEl.focus();
+            }
+          });
+        }
+
+        function hideNoteDialog() {
+          if (noteOverlayEl) {
+            noteOverlayEl.classList.remove('is-open');
+          }
+          if (noteDialogEl) {
+            noteDialogEl.classList.remove('is-open');
+            noteDialogEl.setAttribute('aria-hidden', 'true');
+          }
+          // Actually hide (display:none) only once the closing transition
+          // has had time to finish — same pattern as hideEditDrawer().
+          noteDialogCloseTimer = window.setTimeout(function () {
+            if (noteOverlayEl) {
+              noteOverlayEl.hidden = true;
+            }
+            if (noteDialogEl) {
+              noteDialogEl.hidden = true;
+            }
+            noteDialogCloseTimer = null;
+          }, 200);
+          openNoteIndex = null;
+        }
+
+        function openSentenceNoteDialog(index) {
+          var unit = transcriptUnits[index];
+          if (!unit) {
+            return;
+          }
+          openNoteIndex = index;
+          if (noteSentenceEl) {
+            noteSentenceEl.textContent = unit.text;
+          }
+          if (noteTextareaEl) {
+            noteTextareaEl.value = sentenceNotes[index] || '';
+          }
+          if (noteDeleteBtn) {
+            noteDeleteBtn.hidden = !sentenceNotes[index];
+          }
+          setNoteDialogStatus('');
+          showNoteDialog();
+        }
+
+        function saveSentenceNote() {
+          if (openNoteIndex === null || noteSaving) {
+            return;
+          }
+          var index = openNoteIndex;
+          var text = noteTextareaEl ? noteTextareaEl.value.trim() : '';
+          noteSaving = true;
+          setNoteDialogStatus(Drupal.t('Saving…'));
+          if (noteSaveBtn) {
+            noteSaveBtn.disabled = true;
+          }
+
+          fetch('/api/lms/note/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+              context_type: 'listening_sentence',
+              context_id: sentenceNoteContextId(index),
+              note_text: text,
+            }),
+          })
+            .then(function (response) {
+              noteSaving = false;
+              if (noteSaveBtn) {
+                noteSaveBtn.disabled = false;
+              }
+              if (response.ok) {
+                if (text) {
+                  sentenceNotes[index] = text;
+                }
+                else {
+                  delete sentenceNotes[index];
+                }
+                applyNoteIndicator(index);
+                hideNoteDialog();
+              }
+              else {
+                setNoteDialogStatus(Drupal.t('Error saving'), 'error');
+              }
+            })
+            .catch(function () {
+              noteSaving = false;
+              if (noteSaveBtn) {
+                noteSaveBtn.disabled = false;
+              }
+              setNoteDialogStatus(Drupal.t('Network error'), 'error');
+            });
+        }
+
+        function deleteSentenceNote() {
+          if (openNoteIndex === null || noteSaving) {
+            return;
+          }
+          if (!window.confirm(Drupal.t('Delete this note?'))) {
+            return;
+          }
+          var index = openNoteIndex;
+          noteSaving = true;
+          setNoteDialogStatus(Drupal.t('Deleting…'));
+
+          fetch('/api/lms/note/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+              context_type: 'listening_sentence',
+              context_id: sentenceNoteContextId(index),
+            }),
+          })
+            .then(function (response) {
+              noteSaving = false;
+              if (response.ok) {
+                delete sentenceNotes[index];
+                applyNoteIndicator(index);
+                hideNoteDialog();
+              }
+              else {
+                setNoteDialogStatus(Drupal.t('Error deleting'), 'error');
+              }
+            })
+            .catch(function () {
+              noteSaving = false;
+              setNoteDialogStatus(Drupal.t('Network error'), 'error');
+            });
+        }
+
+        if (noteCloseBtn) {
+          noteCloseBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            hideNoteDialog();
+          });
+        }
+        if (noteCancelBtn) {
+          noteCancelBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            hideNoteDialog();
+          });
+        }
+        if (noteOverlayEl) {
+          noteOverlayEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (!noteSaving) {
+              hideNoteDialog();
+            }
+          });
+        }
+        if (noteSaveBtn) {
+          noteSaveBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            saveSentenceNote();
+          });
+        }
+        if (noteDeleteBtn) {
+          noteDeleteBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            deleteSentenceNote();
+          });
+        }
+        if (noteDialogEl) {
+          noteDialogEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+          });
+          noteDialogEl.addEventListener('keydown', function (e) {
+            e.stopPropagation();
+            if (e.key === 'Escape' && !noteSaving) {
+              hideNoteDialog();
+            }
           });
         }
 
@@ -1605,7 +2104,7 @@
               window.speechSynthesis.cancel();
             }
             stopActivePassageAudio();
-            bgAudioEl.pause();
+            pauseBgMusicIntentionally();
             clearTranscriptHighlight();
             stopBtn.hidden = true;
             startBtn.hidden = false;
@@ -1626,7 +2125,7 @@
             window.speechSynthesis.cancel();
           }
           stopActivePassageAudio();
-          bgAudioEl.pause();
+          pauseBgMusicIntentionally();
         });
 
         if (!window.speechSynthesis) {

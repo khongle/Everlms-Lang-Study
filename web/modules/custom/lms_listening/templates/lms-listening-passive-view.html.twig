@@ -65,6 +65,34 @@
       </div>
     </aside>
 
+    {# Per-sentence Quick Note dialog — see js/listening-passive.js
+       wireSentenceNotes()/openSentenceNoteDialog(). Distinct from the
+       passage-wide "My Note" widget below: this one is keyed per
+       sentence/turn (context_type "listening_sentence", a composite
+       context_id — see NoteController::SENTENCE_CONTEXT_MULTIPLIER),
+       opened via the small note button that appears on hovering a
+       transcript line, and shown again as a tooltip on hover once saved.
+       Same show/hide transition pattern as the Quick Edit drawer above,
+       just a centered dialog instead of a side drawer. #}
+    <div class="lms-listening-note-overlay" data-listening-note-overlay hidden></div>
+    <div class="lms-listening-note-dialog" data-listening-note-dialog hidden aria-hidden="true" role="dialog" aria-label="{{ 'Sentence note'|t }}">
+      <div class="lms-listening-note-dialog__header">
+        <h3 class="lms-listening-note-dialog__title">{{ 'Note for this sentence'|t }}</h3>
+        <button type="button" class="lms-listening-note-dialog__close" data-listening-note-close aria-label="{{ 'Close'|t }}">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <p class="lms-listening-note-dialog__sentence" data-listening-note-sentence></p>
+      <textarea class="lms-listening-note-dialog__textarea" data-listening-note-textarea rows="4" placeholder="{{ 'Type your note for this sentence…'|t }}"></textarea>
+      <p class="lms-listening-note-dialog__status" data-listening-note-status hidden></p>
+      <div class="lms-listening-note-dialog__footer">
+        <button type="button" class="lms-listening-note-dialog__delete" data-listening-note-delete hidden>{{ 'Delete'|t }}</button>
+        <span class="lms-listening-note-dialog__spacer"></span>
+        <button type="button" class="lms-listening-note-dialog__cancel" data-listening-note-cancel>{{ 'Cancel'|t }}</button>
+        <button type="button" class="lms-listening-note-dialog__save" data-listening-note-save>{{ 'Save'|t }}</button>
+      </div>
+    </div>
+
     {# Same Voice/Speed idea as Active mode's own bar
        (lms-listening-passage-view.html.twig) — populated from
        speechSynthesis.getVoices() client-side, so it starts hidden until
@@ -97,7 +125,7 @@
             <option value="">{{ 'None'|t }}</option>
           </select>
         </label>
-        <label class="lms-listening-passive__music-volume">
+        <label class="lms-listening-passive__music-volume" data-listening-passive-bg-volume-wrap hidden>
           {{ 'Music volume'|t }}
           <input type="range" min="0" max="100" value="30" data-listening-passive-bg-volume>
         </label>

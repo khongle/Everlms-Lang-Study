@@ -22,6 +22,14 @@ lms_note.get:
     _user_is_logged_in: 'TRUE'
   methods: [GET]
 
+lms_note.sentence_list:
+  path: '/api/lms/note/sentence-list'
+  defaults:
+    _controller: '\Drupal\lms_note\Controller\NoteController::sentenceNotesList'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [GET]
+
 lms_note.upload_attachment:
   path: '/api/lms/note/upload-attachment'
   defaults:

@@ -226,7 +226,11 @@ final class StudyController extends ControllerBase {
    * (no translations — only needed for the *current* card's own example,
    * which nextCard() already provides); `definition` and multi-word terms
    * are stripped of HTML/whitespace the same way FlashcardApiController
-   * does for the legacy single-example fields.
+   * does for the legacy single-example fields. `translation` is included so
+   * the definition-fallback exercises (no usable example sentence) can
+   * prefer the student's native-language translation over the raw English
+   * definition, both for the prompt and for other cards' distractor choices
+   * — see pickDistractorDefinitions() in flashcard-study.js.
    */
   private function buildQuizPool(Deck $deck): array {
     $storage = $this->entityTypeManager->getStorage('lms_flashcard_card');
@@ -251,6 +255,7 @@ final class StudyController extends ControllerBase {
         'id' => (int) $card->id(),
         'term' => $card->label(),
         'definition' => trim(strip_tags((string) $card->get('field_definition')->value)),
+        'translation' => trim((string) $card->get('field_translation')->value),
         'examples' => $sentences,
       ];
     }

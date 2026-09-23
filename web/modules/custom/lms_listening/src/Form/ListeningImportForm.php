@@ -339,7 +339,7 @@ final class ListeningImportForm extends FormBase {
     return [
       'listening_passage' => [
         'title' => 'Listening: salmon for dinner',
-        'deck_machine_name' => 'everyday-english-meat-fish-fruit-vegetables',
+        'deck_machine_name' => 'meat-fish-fruit-vegetables',
         'format' => 'sentence',
         'level' => 'easy',
         'body' => 'I usually eat salmon for dinner on Fridays.',
@@ -365,7 +365,7 @@ final class ListeningImportForm extends FormBase {
     return [
       'listening_passage' => [
         'title' => 'Listening: A trip to the supermarket',
-        'deck_machine_name' => 'everyday-english-meat-fish-fruit-vegetables',
+        'deck_machine_name' => 'meat-fish-fruit-vegetables',
         'format' => 'narrative',
         'level' => 'normal',
         'body' => "Yesterday I went to the supermarket because we didn't have any vegetables left. I bought some carrots, onions, and a fresh avocado. I wanted to make a healthy dinner, but I forgot to buy tomatoes.",
@@ -397,7 +397,7 @@ final class ListeningImportForm extends FormBase {
     return [
       'listening_passage' => [
         'title' => "Listening: At the Chemist's",
-        'deck_machine_name' => 'everyday-english-at-the-chemists',
+        'deck_machine_name' => 'at-the-chemists',
         'format' => 'dialogue',
         'level' => 'challenge',
         'transcript' => "David goes to the chemist's because he has a bad cough.",

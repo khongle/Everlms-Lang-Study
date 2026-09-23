@@ -76,6 +76,42 @@
   max-width: min(92vw, 240px);
 }
 
+.lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.5rem;
+}
+
+.lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row .lms-mega-link {
+  min-width: 0;
+  padding-inline: 0.5rem;
+}
+
+.lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row .lms-mega-link:hover,
+.lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-row .lms-mega-link:focus-visible {
+  transform: none;
+}
+
+.lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-import {
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  color: #334155;
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(15, 23, 42, 0.22);
+  box-shadow: none;
+}
+
+.lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-import:hover,
+.lms-mega-dropdown--profile.lms-mega-dropdown--small .lms-mega-link-import:focus-visible {
+  color: #1f2937;
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.34);
+  transform: none;
+}
+
 .lms-brand-mark {
   display: block;
   width: auto;

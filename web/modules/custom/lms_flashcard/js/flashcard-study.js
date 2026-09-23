@@ -273,6 +273,7 @@
         var backTermEl = section.querySelector('[data-flashcard-back-term]');
         var backPronunciationEl = section.querySelector('[data-flashcard-back-pronunciation]');
         var speakBackEl = section.querySelector('[data-flashcard-speak-back]');
+        var backFaceEl = section.querySelector('.lms-flashcard__face--back');
         // Spelling mode hides frontTermRowEl (it forces the "reverse"
         // layout — see showCard()), so it has no speaker button of its
         // own otherwise; without this, replaying the pronunciation while
@@ -295,6 +296,7 @@
         var quizEl = section.querySelector('[data-flashcard-quiz]');
         var speakQuizEl = section.querySelector('[data-flashcard-speak-quiz]');
         var quizSentenceEl = section.querySelector('[data-flashcard-quiz-sentence]');
+        var quizTranslationEl = section.querySelector('[data-flashcard-quiz-translation]');
         var quizChoicesEl = section.querySelector('[data-flashcard-quiz-choices]');
         var quizWriteEl = section.querySelector('[data-flashcard-quiz-write]');
         var quizWriteInputEl = section.querySelector('[data-flashcard-quiz-write-input]');
@@ -303,6 +305,7 @@
         var quizLevelEl = section.querySelector('[data-flashcard-quiz-level]');
         var currentQuizLevel = 1;
         var quizAnswered = false;
+        var quizHadMistake = false;
         var quizExpectedText = '';
         var quizChoiceEntries = [];
 
@@ -355,8 +358,21 @@
         var masteryImageImgEl = section.querySelector('[data-flashcard-mastery-image-img]');
         var masteryChoicesEl = section.querySelector('[data-flashcard-mastery-choices]');
         var masteryContinueEl = section.querySelector('[data-flashcard-mastery-continue]');
+        var masteryTypingEl = section.querySelector('[data-flashcard-mastery-typing]');
+        var speakTypingEl = section.querySelector('[data-flashcard-speak-typing]');
+        var masteryTypingMeaningEl = section.querySelector('[data-flashcard-mastery-typing-meaning]');
+        var masteryTypingIpaEl = section.querySelector('[data-flashcard-mastery-typing-ipa]');
+        var masterySlotsContainerEl = section.querySelector('[data-flashcard-mastery-slots-container]');
+        var masterySlotsEl = section.querySelector('[data-flashcard-mastery-slots]');
+        var masterySlotsData = [];
+        var masteryTypingInputEl = section.querySelector('[data-flashcard-mastery-typing-input]');
+        var masteryTypingCheckEl = section.querySelector('[data-flashcard-mastery-typing-check]');
+        var masteryTypingRevealEl = section.querySelector('[data-flashcard-mastery-typing-reveal]');
+        var masteryTypingHadMistake = false;
+        var masteryTypingAnswered = false;
         var currentMasteryLevel = 1;
         var masteryAnswered = false;
+        var masteryHadMistake = false;
         var masteryChoiceEntries = [];
         // Whether the current card has an image at all (decided once per
         // card, in buildMasteryExercise()) and whether the bonus image
@@ -906,8 +922,12 @@
         function pickDistractorDefinitions(excludeCardId, n) {
           var candidates = [];
           quizPool.forEach(function (entry) {
-            if (entry.id !== excludeCardId && entry.definition) {
-              candidates.push(entry.definition);
+            if (entry.id === excludeCardId) {
+              return;
+            }
+            var text = entry.translation || entry.definition;
+            if (text) {
+              candidates.push(text);
             }
           });
           return sampleArray(candidates, n);
@@ -921,6 +941,15 @@
          */
         function renderQuizChoices(choices, onAnswer) {
           quizChoicesEl.replaceChildren();
+          var allShort = choices.every(function (c) {
+            return String((c && c.text) || '').trim().length <= 25;
+          });
+          if (allShort) {
+            quizChoicesEl.classList.add('lms-flashcard__quiz-choices--grid');
+          }
+          else {
+            quizChoicesEl.classList.remove('lms-flashcard__quiz-choices--grid');
+          }
           quizChoiceEntries = shuffleInPlace(choices.slice()).map(function (choice) {
             var btn = document.createElement('button');
             btn.type = 'button';
@@ -933,6 +962,12 @@
               if (quizAnswered) {
                 return;
               }
+              if (!choice.correct) {
+                quizHadMistake = true;
+                btn.disabled = true;
+                btn.classList.add('is-incorrect');
+                return;
+              }
               quizAnswered = true;
               quizChoiceEntries.forEach(function (entry) {
                 entry.btn.disabled = true;
@@ -940,10 +975,7 @@
                   entry.btn.classList.add('is-correct');
                 }
               });
-              if (!choice.correct) {
-                btn.classList.add('is-incorrect');
-              }
-              onAnswer(choice.correct);
+              onAnswer(!quizHadMistake);
             });
             quizChoicesEl.appendChild(btn);
             return { btn: btn, choice: choice };
@@ -964,8 +996,9 @@
         /**
          * Builds the level-1 exercise: an English example sentence with
          * `term` blanked out, multiple-choice word options. Falls back to
-         * the definition as the prompt (no blank) when the card has no
-         * usable example — `found` is whatever findQuizExample() returned.
+         * the card's translation (or, lacking one, its English definition)
+         * as the prompt (no blank) when the card has no usable example —
+         * `found` is whatever findQuizExample() returned.
          */
         function buildQuizLevel1(card, found) {
           quizSentenceEl.replaceChildren();
@@ -976,9 +1009,13 @@
             blank.textContent = '_____';
             quizSentenceEl.appendChild(blank);
             quizSentenceEl.appendChild(document.createTextNode(found.after));
+            if (quizTranslationEl && found.translation) {
+              quizTranslationEl.textContent = found.translation;
+              quizTranslationEl.hidden = false;
+            }
           }
           else {
-            quizSentenceEl.textContent = card.definition || '';
+            quizSentenceEl.textContent = card.translation || card.definition || '';
           }
           var choices = pickDistractorTerms(card.term, 3).map(function (text) {
             return { text: text, correct: false };
@@ -991,12 +1028,16 @@
          * Builds the level-2 exercise: the Vietnamese translation of an
          * example (term's pronunciation played separately, see showCard()),
          * multiple-choice among English sentences — pick the one that
-         * matches. Falls back to matching the English *definition* among
-         * other definitions when there's no usable example/translation.
+         * matches. Falls back to matching the card's own translation (or,
+         * lacking one, its English definition) among other cards' same when
+         * there's no usable example/translation.
          */
         function buildQuizLevel2(card, found) {
           if (found) {
             quizSentenceEl.textContent = found.translation;
+            if (quizTranslationEl) {
+              quizTranslationEl.hidden = true;
+            }
             var sentenceChoices = pickDistractorSentences(card.id, 3).map(function (text) {
               return { text: text, correct: false };
             });
@@ -1004,11 +1045,12 @@
             renderQuizChoices(sentenceChoices, finishQuizAnswer);
           }
           else {
-            quizSentenceEl.textContent = card.definition || '';
+            var fallbackText = card.translation || card.definition || '';
+            quizSentenceEl.textContent = fallbackText;
             var defChoices = pickDistractorDefinitions(card.id, 3).map(function (text) {
               return { text: text, correct: false };
             });
-            defChoices.push({ text: card.definition || '', correct: true });
+            defChoices.push({ text: fallbackText, correct: true });
             renderQuizChoices(defChoices, finishQuizAnswer);
           }
         }
@@ -1025,10 +1067,13 @@
           quizWriteEl.hidden = false;
           if (found) {
             quizSentenceEl.textContent = found.translation;
+            if (quizTranslationEl) {
+              quizTranslationEl.hidden = true;
+            }
             quizExpectedText = found.sentence;
           }
           else {
-            quizSentenceEl.textContent = card.definition || '';
+            quizSentenceEl.textContent = card.translation || card.definition || '';
             quizExpectedText = card.term;
           }
           quizWriteInputEl.focus();
@@ -1044,6 +1089,10 @@
           quizChoicesEl.replaceChildren();
           quizChoiceEntries = [];
           quizSentenceEl.replaceChildren();
+          if (quizTranslationEl) {
+            quizTranslationEl.textContent = '';
+            quizTranslationEl.hidden = true;
+          }
           quizWriteEl.hidden = true;
           quizWriteEl.querySelectorAll('.lms-flashcard__quiz-answer').forEach(function (answerEl) {
             answerEl.remove();
@@ -1058,6 +1107,7 @@
             quizNextEl.hidden = true;
           }
           quizAnswered = false;
+          quizHadMistake = false;
           quizExpectedText = '';
 
           var examples = Array.isArray(card.examples) ? card.examples : [];
@@ -1375,11 +1425,17 @@
          * name, own closure state) rather than calling that one directly,
          * so this mode never shares code paths with Quiz Practice.
          */
-        function pickMasteryDistractorTerms(excludeTerm, n) {
+        function pickMasteryDistractorMeanings(excludeMeaning, n) {
           var pool = [];
+          var seen = {};
+          var normExclude = String(excludeMeaning || '').trim().toLowerCase();
+          seen[normExclude] = true;
           quizPool.forEach(function (entry) {
-            if (entry.term && entry.term !== excludeTerm) {
-              pool.push(entry.term);
+            var meaning = (entry.translation || entry.definition || '').trim();
+            var normMeaning = meaning.toLowerCase();
+            if (meaning && !seen[normMeaning]) {
+              seen[normMeaning] = true;
+              pool.push(meaning);
             }
           });
           return sampleArray(pool, n);
@@ -1404,6 +1460,12 @@
               if (masteryAnswered) {
                 return;
               }
+              if (!choice.correct) {
+                masteryHadMistake = true;
+                btn.disabled = true;
+                btn.classList.add('is-incorrect');
+                return;
+              }
               masteryAnswered = true;
               masteryChoiceEntries.forEach(function (entry) {
                 entry.btn.disabled = true;
@@ -1411,20 +1473,13 @@
                   entry.btn.classList.add('is-correct');
                 }
               });
-              if (!choice.correct) {
-                btn.classList.add('is-incorrect');
-              }
 
               // A correct answer on the meaning round advances into the
               // bonus image round instead of finishing right away, for any
               // card with an uploaded image (see startMasteryImageRound())
               // — a brief pause first so the "correct" highlight above is
-              // actually seen before the exercise swaps under it. A wrong
-              // answer on either round, or a correct answer on the image
-              // round itself (masteryImageRoundActive already true by
-              // then), falls through to finish the check right away same
-              // as before this bonus round existed.
-              if (choice.correct && !masteryImageRoundActive && masteryHasImageRound) {
+              // actually seen before the exercise swaps under it.
+              if (!masteryImageRoundActive && masteryHasImageRound) {
                 masteryTransitionPending = true;
                 window.setTimeout(startMasteryImageRound, 550);
                 return;
@@ -1439,7 +1494,7 @@
               if (!revealed) {
                 flip();
               }
-              finishMasteryLevel2(choice.correct);
+              finishMasteryLevel2(!masteryHadMistake);
               masteryContinueEl.textContent = Drupal.t('Next word →');
               masteryContinueEl.hidden = false;
               masteryContinueEl.focus();
@@ -1507,19 +1562,253 @@
          */
         function buildMasteryExercise(card) {
           masteryAnswered = false;
+          masteryHadMistake = false;
           masteryImageRoundActive = false;
           masteryTransitionPending = false;
-          masteryHasImageRound = !!card.image_url;
+          masteryHasImageRound = false;
           if (masteryImageEl) {
             masteryImageEl.hidden = true;
           }
-          masteryDefinitionEl.hidden = false;
-          masteryDefinitionEl.textContent = card.translation || card.definition || '';
-          var choices = pickMasteryDistractorTerms(card.term, 3).map(function (text) {
+          if (masteryDefinitionEl) {
+            masteryDefinitionEl.hidden = false;
+            masteryDefinitionEl.textContent = Drupal.t('Choose the correct meaning:');
+          }
+          var correctMeaning = (card.translation || card.definition || '').trim();
+          var choices = pickMasteryDistractorMeanings(correctMeaning, 3).map(function (text) {
             return { text: text, correct: false };
           });
-          choices.push({ text: card.term, correct: true });
+          choices.push({ text: correctMeaning, correct: true });
           renderMasteryChoices(choices);
+        }
+
+        /**
+         * Builds interactive character slot boxes for Level 3 Typing Recall.
+         * Creates separate word groups so multi-word terms (e.g. "boiled rice")
+         * wrap gracefully without splitting a word across lines.
+         */
+        function buildMasterySlots(term) {
+          if (!masterySlotsEl) {
+            return;
+          }
+          masterySlotsEl.replaceChildren();
+          masterySlotsData = [];
+
+          var clean = String(term || '').trim().replace(/\s+/g, ' ');
+          var words = clean.split(' ');
+
+          words.forEach(function (word, wordIdx) {
+            if (wordIdx > 0) {
+              var spaceEl = document.createElement('span');
+              spaceEl.className = 'lms-flashcard__mastery-slot-space';
+              spaceEl.setAttribute('aria-hidden', 'true');
+              masterySlotsEl.appendChild(spaceEl);
+              masterySlotsData.push({
+                el: null,
+                targetChar: ' ',
+                isSpace: true,
+                isPunctuation: false,
+              });
+            }
+
+            var wordGroupEl = document.createElement('span');
+            wordGroupEl.className = 'lms-flashcard__mastery-word-group';
+
+            var chars = word.split('');
+            chars.forEach(function (ch) {
+              var isLetter = /[a-zA-Z0-9\u00C0-\u024F\u1EA0-\u1EF9]/.test(ch);
+              var slotEl = document.createElement('span');
+              slotEl.className = 'lms-flashcard__mastery-slot';
+              if (!isLetter) {
+                slotEl.textContent = ch;
+                slotEl.classList.add('is-punctuation');
+              }
+              else {
+                slotEl.textContent = '-';
+                slotEl.classList.add('is-empty');
+              }
+              wordGroupEl.appendChild(slotEl);
+              masterySlotsData.push({
+                el: slotEl,
+                targetChar: ch,
+                isSpace: false,
+                isPunctuation: !isLetter,
+              });
+            });
+
+            masterySlotsEl.appendChild(wordGroupEl);
+          });
+        }
+
+        /**
+         * Updates visual character slots based on the student's current typed text.
+         */
+        function updateMasterySlots(typedValue, isFocused) {
+          if (!masterySlotsData || !masterySlotsData.length) {
+            return;
+          }
+          if (typeof isFocused === 'undefined') {
+            isFocused = document.activeElement === masteryTypingInputEl;
+          }
+          var typed = String(typedValue || '');
+          var typedIdx = 0;
+          var activeFound = false;
+
+          masterySlotsData.forEach(function (slot) {
+            if (slot.isSpace) {
+              if (typed[typedIdx] === ' ') {
+                typedIdx++;
+              }
+              return;
+            }
+
+            if (slot.isPunctuation) {
+              if (typed[typedIdx] === slot.targetChar) {
+                typedIdx++;
+              }
+              return;
+            }
+
+            slot.el.classList.remove('is-active', 'is-filled', 'is-empty');
+
+            if (typedIdx < typed.length) {
+              slot.el.textContent = typed[typedIdx];
+              slot.el.classList.add('is-filled');
+              typedIdx++;
+            }
+            else {
+              slot.el.textContent = '-';
+              slot.el.classList.add('is-empty');
+              if (isFocused && !activeFound) {
+                slot.el.classList.add('is-active');
+                activeFound = true;
+              }
+            }
+          });
+        }
+
+        function buildMasteryTyping(card) {
+          masteryTypingAnswered = false;
+          masteryTypingHadMistake = false;
+          if (!masteryTypingEl) {
+            return;
+          }
+          masteryTypingEl.hidden = false;
+
+          if (masteryTypingMeaningEl) {
+            masteryTypingMeaningEl.textContent = (card.translation || card.definition || '').trim();
+          }
+          if (masteryTypingIpaEl) {
+            masteryTypingIpaEl.hidden = !card.pronunciation;
+            masteryTypingIpaEl.textContent = card.pronunciation || '';
+          }
+          if (masterySlotsEl) {
+            masterySlotsEl.classList.remove('is-invalid', 'is-correct');
+            buildMasterySlots(card.term);
+          }
+          if (masteryTypingInputEl) {
+            masteryTypingInputEl.value = '';
+            masteryTypingInputEl.maxLength = (card.term || '').trim().length + 5;
+            masteryTypingInputEl.disabled = false;
+            window.setTimeout(function () {
+              masteryTypingInputEl.focus();
+              updateMasterySlots('', true);
+            }, 100);
+          }
+          if (masteryTypingCheckEl) {
+            masteryTypingCheckEl.disabled = false;
+          }
+          if (masteryTypingRevealEl) {
+            masteryTypingRevealEl.hidden = false;
+          }
+          speakTerm();
+        }
+
+        function checkMasteryTyping() {
+          if (masteryTypingAnswered || !currentCard || !masteryTypingInputEl) {
+            return;
+          }
+          var val = (masteryTypingInputEl.value || '').trim().toLowerCase();
+          var expected = (currentCard.term || '').trim().toLowerCase();
+          var valNoSpace = val.replace(/\s+/g, '');
+          var expectedNoSpace = expected.replace(/\s+/g, '');
+
+          if (!val) {
+            masteryTypingInputEl.focus();
+            return;
+          }
+
+          if (val === expected || (expectedNoSpace && valNoSpace === expectedNoSpace)) {
+            masteryTypingAnswered = true;
+            masteryTypingInputEl.disabled = true;
+            if (masterySlotsEl) {
+              masterySlotsEl.classList.remove('is-invalid');
+              masterySlotsEl.classList.add('is-correct');
+            }
+            if (masteryTypingCheckEl) {
+              masteryTypingCheckEl.disabled = true;
+            }
+            if (masteryTypingRevealEl) {
+              masteryTypingRevealEl.hidden = true;
+            }
+
+            // If no mistake was made (first try correct): PASS!
+            // If made a mistake or revealed before typing correctly: FAIL (requeue at level 1)
+            var passed = !masteryTypingHadMistake;
+            finishMasteryLevel3(passed);
+
+            // Flip to back face to review full details
+            revealed = true;
+            cardEl.classList.add('is-flipped');
+            if (backFaceEl) {
+              backFaceEl.scrollTop = 0;
+            }
+            masteryContinueEl.hidden = false;
+            masteryContinueEl.textContent = Drupal.t('Next word →');
+          }
+          else {
+            masteryTypingHadMistake = true;
+            if (masterySlotsEl) {
+              masterySlotsEl.classList.remove('is-invalid');
+              void masterySlotsEl.offsetWidth; // re-trigger shake
+              masterySlotsEl.classList.add('is-invalid');
+            }
+            masteryTypingInputEl.focus();
+          }
+        }
+
+        function revealMasteryTyping() {
+          if (masteryTypingAnswered || !currentCard) {
+            return;
+          }
+          masteryTypingAnswered = true;
+          masteryTypingHadMistake = true;
+
+          if (masteryTypingInputEl) {
+            masteryTypingInputEl.value = currentCard.term;
+            masteryTypingInputEl.disabled = true;
+          }
+          updateMasterySlots(currentCard.term, false);
+          if (masterySlotsEl) {
+            masterySlotsEl.classList.remove('is-invalid');
+          }
+          if (masteryTypingCheckEl) {
+            masteryTypingCheckEl.disabled = true;
+          }
+          if (masteryTypingRevealEl) {
+            masteryTypingRevealEl.hidden = true;
+          }
+
+          // Marked as failed -> drop back to Level 1
+          finishMasteryLevel3(false);
+
+          // Flip card to back face so student can review
+          revealed = true;
+          cardEl.classList.add('is-flipped');
+          if (backFaceEl) {
+            backFaceEl.scrollTop = 0;
+          }
+          masteryContinueEl.hidden = false;
+          masteryContinueEl.textContent = Drupal.t('Next word →');
         }
 
         /**
@@ -1933,9 +2222,41 @@
             });
         }
 
+        function renderBackDefinition(card) {
+          if (!definitionEl) {
+            return;
+          }
+          definitionEl.replaceChildren();
+          var primaryText = (card.translation || '').trim();
+          var secondaryText = (card.definition || '').trim();
+
+          // If no translation was provided, promote definition to primary.
+          if (!primaryText && secondaryText) {
+            primaryText = secondaryText;
+            secondaryText = '';
+          }
+
+          if (primaryText) {
+            var transEl = document.createElement('div');
+            transEl.className = 'lms-flashcard__meaning-primary';
+            transEl.textContent = primaryText;
+            definitionEl.appendChild(transEl);
+          }
+          if (secondaryText) {
+            var defEl = document.createElement('div');
+            defEl.className = 'lms-flashcard__meaning-secondary';
+            defEl.textContent = secondaryText;
+            definitionEl.appendChild(defEl);
+          }
+        }
+
         function showCard(card) {
           currentCard = card;
           var direction = card.direction || 'forward';
+
+          if (backFaceEl) {
+            backFaceEl.scrollTop = 0;
+          }
 
           toggleQuickEditButton(card);
 
@@ -1956,13 +2277,14 @@
             frontTermRowEl.hidden = true;
             pronunciationEl.hidden = true;
             promptEl.hidden = false;
-            promptEl.textContent = card.definition;
+            promptEl.textContent = card.definition || card.translation || '';
 
             backTermRowEl.hidden = false;
             backTermEl.textContent = card.term;
-            backPronunciationEl.hidden = false;
+            backPronunciationEl.hidden = !card.pronunciation;
             backPronunciationEl.textContent = card.pronunciation || '';
-            definitionEl.hidden = true;
+            definitionEl.hidden = false;
+            renderBackDefinition(card);
           }
           else {
             termEl.textContent = card.term;
@@ -1971,9 +2293,12 @@
             pronunciationEl.textContent = card.pronunciation || '';
             promptEl.hidden = true;
 
-            backTermRowEl.hidden = true;
+            backTermRowEl.hidden = false;
+            backTermEl.textContent = card.term;
+            backPronunciationEl.hidden = !card.pronunciation;
+            backPronunciationEl.textContent = card.pronunciation || '';
             definitionEl.hidden = false;
-            definitionEl.textContent = card.definition;
+            renderBackDefinition(card);
           }
 
           spellEl.hidden = style !== 'spell';
@@ -2004,17 +2329,10 @@
           // submitQuizResult() here, so this never touches the real SM-2
           // schedule — matching level 1/2's own no-SM-2-impact promise.
           currentMasteryLevel = style === 'flip' ? (card.mastery_level || 1) : 1;
-          var showQuiz = style === 'quiz' || (style === 'flip' && currentMasteryLevel === 3);
+          var showQuiz = style === 'quiz';
           quizEl.hidden = !showQuiz;
           if (showQuiz) {
-            // Quiz mode also forces direction='reverse' above, which shows
-            // promptEl (the definition) on the front by default — but Quiz
-            // builds its own prompt text inside quizSentenceEl instead (a
-            // cloze sentence, a translation, or the definition as a
-            // fallback — see buildQuizExercise()), so suppress the generic
-            // one to avoid showing the definition twice.
             promptEl.hidden = true;
-
             currentQuizLevel = card.quiz_level || 1;
             updateQuizLevelBadge();
             buildQuizExercise(card, currentQuizLevel);
@@ -2032,39 +2350,30 @@
             pronounceLevelEl.hidden = true;
           }
 
-          // "Study Now" (style === 'flip') level-2 recall check — replaces
-          // the normal front face (term hidden, prompt suppressed) with
-          // masteryEl's own definition + 4 term choices; level 1 is just
-          // the ordinary flip, level 3 is the Quiz-reuse block above —
-          // both untouched here. See buildMasteryExercise() and showCard()'s
-          // caller-side handling of masteryContinueEl for the rest of this
-          // flow. currentMasteryLevel itself is computed earlier, above the
-          // quiz block, since that needs it too.
+          // "Study Now" (style === 'flip'):
+          // - Level 1: Ordinary flip card
+          // - Level 2: Recall multiple choice (meaning)
+          // - Level 3: Typing recall (type the English word)
           masteryEl.hidden = !(style === 'flip' && currentMasteryLevel === 2);
+          if (masteryTypingEl) {
+            masteryTypingEl.hidden = !(style === 'flip' && currentMasteryLevel === 3);
+          }
           masteryContinueEl.hidden = true;
-          // Reset from whatever the previous card (possibly a level-2
-          // recall check) left this reading as — see the "Next word →"
-          // override in renderMasteryChoices()'s click handler.
           masteryContinueEl.textContent = Drupal.t('Continue →');
+
           if (style === 'flip' && currentMasteryLevel === 2) {
-            frontTermRowEl.hidden = true;
-            pronunciationEl.hidden = true;
+            frontTermRowEl.hidden = false;
+            pronunciationEl.hidden = !card.pronunciation;
             promptEl.hidden = true;
             buildMasteryExercise(card);
           }
-          if (style === 'flip' && currentMasteryLevel === 3) {
-            // The quiz block above already builds the exercise and hides
-            // promptEl; still need to hide the front term/pronunciation
-            // ourselves the way Quiz's own forced direction='reverse'
-            // otherwise would — style=flip keeps whatever direction the
-            // session started with, so nothing else hides these here.
+          else if (style === 'flip' && currentMasteryLevel === 3) {
             frontTermRowEl.hidden = true;
             pronunciationEl.hidden = true;
+            promptEl.hidden = true;
+            buildMasteryTyping(card);
           }
           if (hintEl && style === 'flip') {
-            // Level 1 is still the ordinary flip, same hint as ever; levels
-            // 2-3 have nothing to "reveal" — the exercise is right there on
-            // the front — so the hint would just be confusing/wrong.
             hintEl.hidden = currentMasteryLevel !== 1;
           }
 
@@ -2157,8 +2466,16 @@
               speakTerm();
             }
           }
-          else if (!(style === 'flip' && currentMasteryLevel === 2)) {
+          else {
             speakCard();
+          }
+
+          if (style === 'flip' && currentMasteryLevel === 1) {
+            window.setTimeout(function () {
+              if (cardEl) {
+                cardEl.focus();
+              }
+            }, 50);
           }
         }
 
@@ -2185,18 +2502,20 @@
           if (style === 'spell' && !revealed && spellCheckEl && !spellCheckEl.disabled) {
             return;
           }
-          if ((style === 'quiz' || (style === 'flip' && currentMasteryLevel === 3)) && !revealed && !quizAnswered) {
+          if (style === 'quiz' && !revealed && !quizAnswered) {
             return;
           }
-          // Mastery level 2 (the recall check): same reasoning as Quiz
-          // above, own state — a raw click can't jump to the back (which
-          // would reveal the term/definition, the very answer) before the
-          // check is answered.
           if (style === 'flip' && currentMasteryLevel === 2 && !revealed && !masteryAnswered) {
+            return;
+          }
+          if (style === 'flip' && currentMasteryLevel === 3 && !revealed && !masteryTypingAnswered) {
             return;
           }
           revealed = !revealed;
           cardEl.classList.toggle('is-flipped', revealed);
+          if (revealed && backFaceEl) {
+            backFaceEl.scrollTop = 0;
+          }
           // Read the term aloud on every click, not just the first time the
           // card appears — flipping front→back or back→front both count.
           speakCard();
@@ -2404,7 +2723,7 @@
          * session's Next button.)
          */
         function handleMasteryContinue() {
-          if (currentMasteryLevel === 2) {
+          if (currentMasteryLevel === 2 || currentMasteryLevel === 3) {
             loadNext();
           }
           else {
@@ -2412,7 +2731,7 @@
           }
         }
 
-        [speakFrontEl, speakBackEl, speakSpellEl].forEach(function (speakEl) {
+        [speakFrontEl, speakSpellEl].forEach(function (speakEl) {
           if (speakEl) {
             speakEl.addEventListener('click', function (e) {
               e.stopPropagation();
@@ -2420,6 +2739,13 @@
             });
           }
         });
+
+        if (speakBackEl) {
+          speakBackEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            speakTerm();
+          });
+        }
 
         // Quiz's own speaker button always means "play the word" — unlike
         // the group above, speakCard()'s reveal-state gating would make it
@@ -2430,6 +2756,58 @@
           speakQuizEl.addEventListener('click', function (e) {
             e.stopPropagation();
             speakTerm();
+          });
+        }
+
+        if (speakTypingEl) {
+          speakTypingEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            speakTerm();
+          });
+        }
+
+        if (masteryTypingCheckEl) {
+          masteryTypingCheckEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            checkMasteryTyping();
+          });
+        }
+
+        if (masteryTypingRevealEl) {
+          masteryTypingRevealEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            revealMasteryTyping();
+          });
+        }
+
+        if (masterySlotsContainerEl) {
+          masterySlotsContainerEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (masteryTypingInputEl && !masteryTypingInputEl.disabled) {
+              masteryTypingInputEl.focus();
+            }
+          });
+        }
+
+        if (masteryTypingInputEl) {
+          masteryTypingInputEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+          });
+          masteryTypingInputEl.addEventListener('input', function () {
+            updateMasterySlots(masteryTypingInputEl.value, true);
+          });
+          masteryTypingInputEl.addEventListener('focus', function () {
+            updateMasterySlots(masteryTypingInputEl.value, true);
+          });
+          masteryTypingInputEl.addEventListener('blur', function () {
+            updateMasterySlots(masteryTypingInputEl.value, false);
+          });
+          masteryTypingInputEl.addEventListener('keydown', function (e) {
+            e.stopPropagation();
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              checkMasteryTyping();
+            }
           });
         }
 
@@ -2656,7 +3034,10 @@
             if (style === 'spell' || style === 'pronounce') {
               speakCard();
             }
-            else if (style === 'quiz' || (style === 'flip' && currentMasteryLevel === 3)) {
+            else if (style === 'quiz') {
+              speakTerm();
+            }
+            else if (style === 'flip' && currentMasteryLevel === 3) {
               speakTerm();
             }
             else {
@@ -2666,7 +3047,23 @@
           }
           if (e.key === 'Enter') {
             e.preventDefault();
-            flip();
+            e.stopPropagation();
+            if (style === 'flip') {
+              if (currentMasteryLevel === 1) {
+                if (!revealed) {
+                  flip();
+                }
+                else {
+                  handleMasteryContinue();
+                }
+              }
+              else if (!masteryContinueEl.hidden) {
+                handleMasteryContinue();
+              }
+            }
+            else {
+              flip();
+            }
           }
         });
 
@@ -2708,7 +3105,7 @@
             }
             return;
           }
-          if (style === 'quiz' || (style === 'flip' && currentMasteryLevel === 3)) {
+          if (style === 'quiz') {
             var quizChoiceMap = { '1': 0, '2': 1, '3': 2, '4': 3 };
             if (quizChoiceMap.hasOwnProperty(e.key) && quizNextEl && quizNextEl.hidden) {
               e.preventDefault();
@@ -2736,12 +3133,28 @@
             return;
           }
           if (style === 'flip') {
-            // Level 1: Enter/click flips as normal (handled by cardEl's own
-            // keydown listener above), then ArrowRight advances once
-            // masteryContinueEl has appeared. Level 2: 1-4 picks a recall
-            // choice while unanswered, then ArrowRight (relabeled "Next
-            // word →" by then) moves on — no manual grading shortcuts (1-4
-            // as Again/Hard/Good/Easy) any more for this style.
+            if (e.key === 'Enter') {
+              if (document.activeElement === masteryTypingInputEl && currentMasteryLevel === 3 && !masteryTypingAnswered) {
+                return;
+              }
+              if (currentMasteryLevel === 1) {
+                e.preventDefault();
+                if (!revealed) {
+                  flip();
+                }
+                else {
+                  handleMasteryContinue();
+                }
+              }
+              else if (!masteryContinueEl.hidden) {
+                e.preventDefault();
+                handleMasteryContinue();
+              }
+              return;
+            }
+
+            // Level 1: Enter/click flips as normal, then ArrowRight / Enter advances.
+            // Level 2: 1-4 picks a recall choice while unanswered, then ArrowRight / Enter moves on.
             var masteryChoiceMap = { '1': 0, '2': 1, '3': 2, '4': 3 };
             if (currentMasteryLevel === 2 && masteryChoiceMap.hasOwnProperty(e.key) && !masteryAnswered) {
               e.preventDefault();
@@ -2753,7 +3166,12 @@
             }
             else if (e.key === ' ' && currentMasteryLevel === 1) {
               e.preventDefault();
-              speakCard();
+              if (!revealed) {
+                flip();
+              }
+              else {
+                speakCard();
+              }
             }
           }
         });

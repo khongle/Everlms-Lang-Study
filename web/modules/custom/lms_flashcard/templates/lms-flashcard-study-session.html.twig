@@ -74,6 +74,7 @@
                 <i class="fas fa-volume-up"></i>
               </button>
               <div class="lms-flashcard__quiz-sentence" data-flashcard-quiz-sentence></div>
+              <div class="lms-flashcard__quiz-translation" data-flashcard-quiz-translation hidden></div>
               <div class="lms-flashcard__quiz-choices" data-flashcard-quiz-choices></div>
               <div class="lms-flashcard__quiz-write" data-flashcard-quiz-write hidden>
                 <input type="text" class="lms-flashcard__quiz-write-input" data-flashcard-quiz-write-input autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -98,6 +99,23 @@
                 <img data-flashcard-mastery-image-img alt="">
               </div>
               <div class="lms-flashcard__mastery-choices" data-flashcard-mastery-choices></div>
+            </div>
+            {# "Study Now" (style=flip) level-3 typing recall check:
+               type the English word based on audio + Vietnamese meaning. #}
+            <div class="lms-flashcard__mastery-typing" data-flashcard-mastery-typing hidden>
+              <button type="button" class="lms-flashcard__speak" data-flashcard-speak-typing aria-label="{{ 'Play pronunciation'|t }}" title="{{ 'Play pronunciation'|t }}">
+                <i class="fas fa-volume-up"></i>
+              </button>
+              <div class="lms-flashcard__mastery-typing-meaning" data-flashcard-mastery-typing-meaning></div>
+              <div class="lms-flashcard__mastery-typing-ipa" data-flashcard-mastery-typing-ipa></div>
+              <div class="lms-flashcard__mastery-typing-input-wrap">
+                <div class="lms-flashcard__mastery-slots-container" data-flashcard-mastery-slots-container>
+                  <div class="lms-flashcard__mastery-slots" data-flashcard-mastery-slots></div>
+                  <input type="text" class="lms-flashcard__mastery-typing-input" data-flashcard-mastery-typing-input autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="{{ 'Type the English word'|t }}">
+                </div>
+                <button type="button" class="lms-flashcard__mastery-typing-check" data-flashcard-mastery-typing-check>{{ 'Check'|t }}</button>
+              </div>
+              <button type="button" class="lms-flashcard__mastery-typing-reveal" data-flashcard-mastery-typing-reveal>{{ 'I don\'t remember (Show answer)'|t }}</button>
             </div>
             <div class="lms-flashcard__pronounce" data-flashcard-pronounce hidden>
               <div class="lms-flashcard__pronounce-definition" data-flashcard-pronounce-definition></div>

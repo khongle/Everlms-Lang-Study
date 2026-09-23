@@ -108,25 +108,36 @@ final class ListeningApiController extends ControllerBase {
     // 'passive' falls through to the existing Active-mode code completely
     // unchanged, so an old client that never sends `mode` at all (or a
     // typo'd value) behaves exactly as it did before this branch existed.
-    if (is_array($body) && ($body['mode'] ?? NULL) === 'passive') {
-      // Specific passages (see PASSIVE_LISTENING_PLAN.md's "choose exact
-      // passages" addition) take priority over the level/per_level random
-      // pick when the student checked any — see startPassive().
-      $passive_passage_ids = is_array($body['passage_ids'] ?? NULL) ? array_map('intval', $body['passage_ids']) : [];
+    // Specific passages support for BOTH active and passive modes:
+    $passage_ids = is_array($body['passage_ids'] ?? NULL) ? array_map('intval', $body['passage_ids']) : [];
+
+    if ($mode === 'passive') {
       $passive_levels = is_array($body['levels'] ?? NULL)
         ? array_values(array_intersect($body['levels'], ['easy', 'normal', 'challenge']))
         : ['easy', 'normal', 'challenge'];
-      if (!$passive_passage_ids && !$passive_levels) {
+      if (!$passage_ids && !$passive_levels) {
         return new JsonResponse(['error' => 'Pick at least one level, or specific passages.'], 400);
       }
       $passive_per_level = max(1, (int) ($body['per_level'] ?? 1));
-      return $this->startPassive($uid, $deck_id, $passive_per_level, $passive_levels, $passive_passage_ids);
+      return $this->startPassive($uid, $deck_id, $passive_per_level, $passive_levels, $passage_ids);
+    }
+
+    // Active mode with specific passages:
+    if ($passage_ids) {
+      $ordered_ids = $this->queue->buildQueueFromIds($uid, $deck_id, $passage_ids);
+      if (!$ordered_ids) {
+        return new JsonResponse(['error' => 'No valid passages selected.'], 400);
+      }
+      $this->queue->setQueue($uid, $deck_id, $ordered_ids);
+      return new JsonResponse([
+        'redirect_url' => Url::fromRoute('lms_listening.listen', ['lms_listening_passage' => $ordered_ids[0]])->toString(),
+      ]);
     }
 
     $requested_levels = is_array($body['levels'] ?? NULL) ? $body['levels'] : [];
     $levels = array_values(array_intersect($requested_levels, ['easy', 'normal', 'challenge']));
     if (!$levels) {
-      return new JsonResponse(['error' => 'Pick at least one level.'], 400);
+      return new JsonResponse(['error' => 'Pick at least one level, or choose specific passages.'], 400);
     }
 
     $per_level = max(1, (int) ($body['per_level'] ?? 3));
