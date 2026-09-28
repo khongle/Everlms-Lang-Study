@@ -186,3 +186,26 @@ light_mode:
   css:
     theme:
       css/light-mode.css: {}
+
+workspace:
+  css:
+    theme:
+      css/admin-workspace.css: { weight: 1200 }
+  js:
+    js/admin-workspace.js: { attributes: { defer: true } }
+  dependencies:
+    - lms_theme/global
+    - core/drupal
+    - core/once
+
+course_editor:
+  css:
+    theme:
+      css/course-editor.css: { weight: 1300 }
+  js:
+    js/course-editor.js: { attributes: { defer: true } }
+  dependencies:
+    - lms_theme/workspace
+    - core/drupal
+    - core/once
+    - core/drupalSettings

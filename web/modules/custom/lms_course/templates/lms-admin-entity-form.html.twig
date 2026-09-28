@@ -1,761 +1,175 @@
-{# Admin Entity Form Wrapper #}
 {{ attach_library('lms_theme/global') }}
-
 <div class="lms-admin">
   {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: active_menu } %}
-
   <div class="lms-admin__main">
-    <div class="lms-admin__header" style="padding-top: 3rem;">
-      <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ title }}</h1>
-    </div>
-
-    <div class="lms-admin-card" style="padding: 2.5rem; background: #0b0f19; border-top: 1px solid rgba(255,255,255,0.05); min-height: calc(100vh - 100px);">
-      <style>
-        /* HIDE GLOBAL NAVBAR IN WORKSPACE TO SAVE VERTICAL SPACE */
-        .lms-navbar {
-           display: none !important;
-        }
-
-        /* FORCE FULL WIDTH FOR DRUPAL FORM LAYOUTS */
-        .layout-node-form, .layout-region, .layout-region-node-main, .layout-region-user-main {
-            display: block !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            float: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-        .layout-region-node-secondary, .entity-meta, .layout-region-user-secondary {
-            display: none !important;
-        }
-
-        /* PERMANENTLY PURGE DRUPAL'S NATIVE TEXT FORMATS & CKEDITOR LABELS GLOBALLY */
-        #lms-admin-form-app .filter-wrapper,
-        #lms-admin-form-app .js-filter-wrapper,
-        #lms-admin-form-app [id*="format-wrapper"],
-        #lms-admin-form-app .filter-help,
-        #lms-admin-form-app .filter-guidelines,
-        #lms-admin-form-app .ck-editor__label,
-        #lms-admin-form-app label[for*="format"],
-        #lms-admin-form-app .description,
-        #lms-admin-form-app [aria-label="Rich Text Editor"],
-        .ui-dialog .filter-wrapper,
-        .ui-dialog .js-filter-wrapper,
-        .ui-dialog [id*="format-wrapper"],
-        .ui-dialog .filter-help,
-        .ui-dialog .filter-guidelines,
-        .ui-dialog .ck-editor__label,
-        .ui-dialog label[for*="format"],
-        .ui-dialog .description,
-        .ui-dialog legend,
-        .ui-dialog .fieldset-legend,
-        .ui-dialog [aria-label="Rich Text Editor"] {
-           display: none !important;
-           visibility: hidden !important;
-           height: 0 !important;
-           margin: 0 !important;
-           padding: 0 !important;
-           border: none !important;
-           position: absolute !important;
-        }
-
-        /* ==========================================
-           DRUPAL NATIVE MODAL (.ui-dialog) OVERRIDES 
-           (Handles modals launched by settings/modules outside lms-form-content)
-           ========================================== */
-        .ui-dialog,
-        .ui-dialog.ief-popup-dialog {
-            width: 1000px !important;
-            max-width: 95vw !important;
-            max-height: 90vh !important;
-            z-index: 1600 !important;
-            border-radius: 12px !important;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.3) !important;
-            border: 1px solid #e2e8f0 !important;
-            padding: 0 !important;
-            background: #ffffff !important;
-        }
-        body.is-workspace .ui-widget-overlay,
-        body.path-workspace .ui-widget-overlay,
-        body.is-workspace .ief-popup-overlay,
-        body.path-workspace .ief-popup-overlay {
-            z-index: 900 !important;
-        }
-        body.is-workspace .ui-dialog,
-        body.is-workspace .ui-dialog.ief-popup-dialog,
-        body.path-workspace .ui-dialog,
-        body.path-workspace .ui-dialog.ief-popup-dialog {
-            width: min(1000px, calc(100vw - 360px)) !important;
-            max-width: calc(100vw - 360px) !important;
-            left: 0 !important;
-            margin-left: 80px !important;
-        }
-        @media (max-width: 899px) {
-          body.is-workspace .ui-dialog,
-          body.is-workspace .ui-dialog.ief-popup-dialog,
-          body.path-workspace .ui-dialog,
-          body.path-workspace .ui-dialog.ief-popup-dialog {
-              width: calc(100vw - 2rem) !important;
-              max-width: calc(100vw - 2rem) !important;
-              left: 1rem !important;
-              margin-left: 0 !important;
-          }
-        }
-        .ui-dialog .ui-dialog-titlebar {
-            display: flex !important;
-            visibility: visible !important;
-            background: #ffffff !important;
-            border: none !important;
-            border-bottom: 1px solid #e2e8f0 !important;
-            padding: 20px 30px !important;
-        }
-        .ui-dialog .ui-dialog-title {
-            font-size: 1.3rem !important;
-            color: #1e293b !important;
-            font-weight: 700 !important;
-            margin: 0 !important;
-        }
-        .ui-dialog .ui-dialog-titlebar-close {
-            display: block !important;
-            visibility: visible !important;
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            color: #94a3b8 !important;
-            transition: color 0.2s !important;
-        }
-        .ui-dialog .ui-dialog-titlebar-close:hover {
-            color: #ef4444 !important;
-        }
-        .ui-dialog .ui-dialog-content {
-            padding: 20px 30px !important;
-        }
-
-        /* MAGIC MODAL POPUP FOR NESTED LESSON FORMS */
-        /* Transforms a deeply-nested Chapter > Lesson Inline Entity Form into a beautiful Modal Window! */
-
-        /* Professional Light Mode Form */
-        .lms-admin-entity-form-wrapper {
-          background: #ffffff; /* Clean white */
-          border-radius: 0.5rem;
-          padding: 2.5rem;
-          color: #334155;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Soft premium shadow */
-        }
-
-        /* JFC-Style Horizontal Tabs */
-        .lms-form-tabs {
-          display: flex;
-          border-bottom: 1px solid #e2e8f0; /* Light gray border */
-          margin-bottom: 2rem;
-          gap: 2.5rem;
-          flex-wrap: wrap; 
-        }
-        .lms-form-tab {
-          background: transparent;
-          border: none;
-          color: #64748b; /* Inactive grey text */
-          font-weight: 600;
-          font-size: 1.05rem;
-          padding: 0 0 1rem 0;
-          cursor: pointer;
-          border-bottom: 2px solid transparent;
-          margin-bottom: -1px; /* Overlap border */
-          transition: all 0.2s ease;
-        }
-        .lms-form-tab:hover {
-          color: #1e293b; 
-        }
-        .lms-form-tab.active {
-          color: #3b82f6; /* EverLMS Blue */
-          border-bottom-color: #3b82f6;
-        }
-
-        /* Tab Panes */
-        .lms-form-pane {
-          display: none;
-          width: 100%;
-        }
-        .lms-form-pane.active {
-          display: block;
-          animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(5px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Form Item Typography & Spacing */
-        .lms-form-content .form-item {
-          margin-bottom: 1.5rem;
-          width: 100%;
-        }
-        .lms-form-content .form-item label {
-          display: block;
-          color: #334155;
-          font-weight: 600;
-          margin-bottom: 0.5rem;
-          font-size: 0.95rem;
-        }
-        
-        /* HIDE Descriptions and Text Formats as requested */
-        #lms-admin-form-app .lms-form-content .description,
-        #lms-admin-form-app .lms-form-content .filter-wrapper,
-        #lms-admin-form-app .lms-form-content .text-format-wrapper .filter-guidelines,
-        #lms-admin-form-app .lms-form-content .text-format-wrapper .filter-help,
-        #lms-admin-form-app .lms-form-content .text-format-wrapper > .form-item,
-        #lms-admin-form-app .lms-form-content .editor-toggle-link,
-        #lms-admin-form-app .lms-form-content .filter-options {
-          display: none !important;
-        }
-        
-        /* Light Inputs - Overriding _workspace-admin.scss bleeding dark mode */
-        #lms-admin-form-app .lms-form-content label,
-        #lms-admin-form-app .lms-form-content .form-item > label {
-          color: #334155 !important;
-        }
-
-        #lms-admin-form-app .lms-form-content input:not([type="submit"]):not([type="button"]):not([value="Edit"]):not([value="Remove"]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), 
-        #lms-admin-form-app .lms-form-content select, 
-        #lms-admin-form-app .lms-form-content textarea,
-        #lms-admin-form-app .lms-form-content .form-element, 
-        #lms-admin-form-app .lms-form-content .form-select, 
-        #lms-admin-form-app .lms-form-content .form-textarea, 
-        #lms-admin-form-app .lms-form-content .form-text, 
-        #lms-admin-form-app .lms-form-content .form-date, 
-        #lms-admin-form-app .lms-form-content .form-time, 
-        #lms-admin-form-app .lms-form-content .form-autocomplete, 
-        #lms-admin-form-app .lms-form-content .form-number, 
-        #lms-admin-form-app .lms-form-content .form-email, 
-        #lms-admin-form-app .lms-form-content .form-password,
-        #lms-admin-form-app .lms-form-content .ck-editor__editable,
-        #lms-admin-form-app .lms-form-content .ck-editor__main {
-          width: 100%;
-          background: #f8fafc !important; 
-          border: 1px solid #cbd5e1 !important; 
-          color: #1e293b !important;
-          padding: 0.75rem 1rem !important;
-          border-radius: 0.5rem !important;
-          transition: all 0.2s;
-          font-family: inherit;
-          box-sizing: border-box;
-        }
-        
-        /* CKEditor Toolbar Light Mode */
-        #lms-admin-form-app .lms-form-content .ck.ck-toolbar {
-          background: #f1f5f9 !important;
-          border: 1px solid #cbd5e1 !important;
-          border-bottom: none !important;
-          border-top-left-radius: 0.5rem !important;
-          border-top-right-radius: 0.5rem !important;
-        }
-        #lms-admin-form-app .lms-form-content .ck.ck-toolbar *,
-        #lms-admin-form-app .lms-form-content .ck.ck-button {
-          color: #334155 !important;
-        }
-        #lms-admin-form-app .lms-form-content .ck.ck-toolbar .ck-button:hover {
-          background: #e2e8f0 !important;
-        }
-        
-        #lms-admin-form-app .lms-form-content .ck.ck-editor__main > .ck-editor__editable {
-          border-top-left-radius: 0 !important;
-          border-top-right-radius: 0 !important;
-          min-height: 150px;
-          background: #f8fafc !important;
-          color: #1e293b !important;
-        }
-
-        #lms-admin-form-app .lms-form-content input:focus, 
-        #lms-admin-form-app .lms-form-content textarea:focus,
-        #lms-admin-form-app .lms-form-content select:focus,
-        #lms-admin-form-app .lms-form-content .form-element:focus,
-        #lms-admin-form-app .lms-form-content .ck-editor__editable.ck-focused {
-          outline: none !important;
-          border-color: #3b82f6 !important; /* EverLMS Blue */
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
-          background: #ffffff !important;
-        }
-        
-        /* Form Actions (Save button area) */
-        .lms-form-content .form-actions {
-          margin-top: 3rem;
-          padding-top: 1.5rem;
-          border-top: 1px solid #e2e8f0;
-          display: flex;
-          gap: 1rem;
-        }
-        .lms-form-content input[type="submit"],
-        .lms-form-content .button {
-          background: #3b82f6 !important; /* EverLMS Blue */
-          color: white !important;
-          padding: 0.75rem 2.5rem !important;
-          border-radius: 0.5rem !important;
-          border: none !important;
-          font-weight: 600 !important;
-          cursor: pointer !important;
-          transition: all 0.2s ease !important;
-          font-size: 1rem !important;
-        }
-        .lms-form-content input[type="submit"]:hover,
-        .lms-form-content .button:hover {
-          background: #2563eb !important;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
-        }
-
-        {% if active_menu == 'courses' or active_menu == 'quizzes' %}
-        /* THE ULTIMATE NUCLEAR OPTION: HIDE ALL DRUPAL NATIVE FORM WRAPPERS */
-        #lms-admin-form-app .lms-form-content form > * {
-           display: none !important;
-        }
-        
-        /* EXCEPT OUR CUSTOM TABS AND THE SAVE BUTTON */
-        #lms-admin-form-app .lms-form-content form > .lms-form-tabs {
-           display: flex !important;
-        }
-        #lms-admin-form-app .lms-form-content form > .lms-form-panes {
-           display: block !important;
-        }
-        #lms-admin-form-app .lms-form-content form > .form-actions {
-           display: flex !important;
-        }
-        {% else %}
-        /* FOR NON-COURSES: ENSURE FIELDS ARE VISIBLE */
-        #lms-admin-form-app .lms-form-content form > * {
-           display: block;
-        }
-        #lms-admin-form-app .lms-form-content form > .form-actions {
-           display: flex;
-        }
-        /* Except hidden fields */
-        #lms-admin-form-app .lms-form-content form > input[type="hidden"] {
-           display: none !important;
-        }
-        {% endif %}
-
-        /* Remove stray fieldset borders for any remaining native wrappers that got moved */
-        .lms-form-pane fieldset {
-          border: none !important;
-          padding: 0 !important;
-          margin: 0 !important;
-        }
-        .lms-form-pane legend {
-          display: none !important;
-        }
-
-        /* ==========================================
-           UDEMY-STYLE CURRICULUM (INLINE ENTITY FORM)
-           ========================================== */
-        
-        /* Reset Table */
-        .lms-form-content .ief-entity-table {
-            border: none !important;
-            background: transparent !important;
-            width: 100% !important;
-            border-collapse: separate !important;
-            border-spacing: 0 12px !important;
-        }
-        .lms-form-content .ief-entity-table thead {
-            display: none !important;
-        }
-
-        /* Closed Row (The Accordion Header) */
-        .lms-form-content .ief-row-entity {
-            background: #f8fafc !important;
-            border-radius: 8px !important;
-            border: 1px solid #e2e8f0 !important;
-            display: flex !important;
-            align-items: center !important;
-            padding: 14px 20px !important;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
-            transition: all 0.2s ease !important;
-        }
-        .lms-form-content .ief-row-entity:hover {
-            border-color: #cbd5e1 !important;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.04) !important;
-        }
-
-        .lms-form-content .ief-row-entity > td {
-            border: none !important;
-            padding: 0 !important;
-            background: transparent !important;
-        }
-        
-        /* DO NOT override display for structurally hidden weight columns */
-        .lms-form-content .ief-row-entity > td:not(.tabledrag-hide) {
-            display: block !important;
-        }
-        .lms-form-content .ief-row-entity > td.tabledrag-hide {
-            display: none !important;
-        }
-
-        /* The Title column (it dynamically contains the drag handle and the title) */
-        .lms-form-content .ief-row-entity > td[class*="-label"],
-        .lms-form-content .ief-row-entity > td.inline-entity-form-node-title {
-            flex-grow: 1 !important;
-            font-weight: 600 !important;
-            font-size: 1.15rem !important;
-            color: #1e293b !important;
-            margin-left: 10px !important;
-            display: flex !important;
-            align-items: center !important;
-            min-width: 0 !important; /* prevent flex blowout */
-        }
-        /* The Type/Bundle/Status Column Badge */
-        .lms-form-content .ief-row-entity > td[class*="-status"],
-        .lms-form-content .ief-row-entity > td[class*="-type"],
-        .lms-form-content .ief-row-entity > td[class*="-bundle"] {
-            background: #f1f5f9 !important;
-            color: #475569 !important;
-            font-size: 0.75rem !important;
-            font-weight: 700 !important;
-            padding: 4px 12px !important;
-            border-radius: 9999px !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-            margin-right: 15px !important;
-            margin-left: auto !important; /* PUSH BADGE AND BUTTONS TO THE RIGHT */
-            white-space: nowrap !important;
-            border: 1px solid #e2e8f0 !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            height: fit-content !important;
-            width: 135px !important;
-            flex-shrink: 0 !important;
-        }
-
-        /* Drag handle spacing - it lives INSIDE the title cell usually */
-        .lms-form-content .tabledrag-handle {
-            margin-right: 15px !important;
-            margin-left: 0 !important;
-            padding: 0 !important;
-            float: none !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-        .lms-form-content .tabledrag-handle::after {
-            content: "⋮⋮";
-            font-size: 22px;
-            color: #94a3b8;
-            background-image: none !important;
-            line-height: 1;
-        }
-
-        /* Hide Ugly Drupal TableDrag "Show row weights" Button */
-        .tabledrag-toggle-weight-wrapper {
-            display: none !important;
-        }
-
-        /* Row Action Buttons (Edit, Remove) globally and inside Dialogs */
-        .lms-form-content .ief-row-entity > td:last-child,
-        .lms-form-content .inline-entity-form-operations,
-        .ui-dialog .inline-entity-form-operations {
-            display: flex !important;
-            gap: 8px !important;
-            margin-left: 0 !important; /* Let badge margin handle the spacing */
-            align-items: center !important;
-            flex-wrap: nowrap !important; /* Prevent button stacking */
-            flex-shrink: 0 !important;
-            width: 155px !important; /* FORCE exact width for operations column */
-            min-width: 155px !important;
-            justify-content: flex-end !important;
-        }
-        
-        .lms-form-content .ief-entity-table input[value="Edit"],
-        .lms-form-content .ief-entity-table input[value="Sửa"],
-        .lms-form-content .ief-entity-table input[value="Remove"],
-        .lms-form-content .ief-entity-table input[value="Xóa"],
-        .ui-dialog .ief-entity-table input[value="Edit"],
-        .ui-dialog .ief-entity-table input[value="Sửa"],
-        .ui-dialog .ief-entity-table input[value="Remove"],
-        .ui-dialog .ief-entity-table input[value="Xóa"] {
-            background: #ffffff !important;
-            color: #64748b !important; /* Subtle gray text */
-            border: 1px solid #cbd5e1 !important; /* Subtle gray border */
-            padding: 5px 12px !important;
-            font-size: 0.85rem !important;
-            border-radius: 6px !important;
-            font-weight: 500 !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-            min-height: 0 !important;
-            line-height: 1.5 !important;
-            width: auto !important;
-            background-image: none !important;
-            box-shadow: none !important;
-        }
-        
-        /* Edit Button Hover */
-        .lms-form-content .ief-entity-table input[value="Edit"]:hover,
-        .lms-form-content .ief-entity-table input[value="Sửa"]:hover,
-        .ui-dialog .ief-entity-table input[value="Edit"]:hover,
-        .ui-dialog .ief-entity-table input[value="Sửa"]:hover {
-            border-color: #3b82f6 !important;
-            color: #2563eb !important;
-            background: #eff6ff !important;
-        }
-        
-        /* Remove Button Subtle Default, Destructive Hover */
-        .lms-form-content .ief-entity-table input[value="Remove"],
-        .lms-form-content .ief-entity-table input[value="Xóa"],
-        .ui-dialog .ief-entity-table input[value="Remove"],
-        .ui-dialog .ief-entity-table input[value="Xóa"] {
-            color: #94a3b8 !important; /* Even more subtle default for destructive action to prevent misclicks */
-        }
-        .lms-form-content .ief-entity-table input[value="Remove"]:hover,
-        .lms-form-content .ief-entity-table input[value="Xóa"]:hover,
-        .ui-dialog .ief-entity-table input[value="Remove"]:hover,
-        .ui-dialog .ief-entity-table input[value="Xóa"]:hover {
-            color: #ef4444 !important;
-            border-color: #f87171 !important;
-            background: #fef2f2 !important;
-        }
-
-        /* Opened Form Row (The Accordion Body fallback if Popup disabled) */
-        .lms-form-content .ief-row-form {
-            display: block !important;
-            background: #ffffff !important;
-            border: 2px solid #e2e8f0 !important;
-            border-radius: 10px !important;
-            padding: 24px !important;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05) !important;
-            margin: 10px 0 24px 0 !important;
-        }
-        
-        .lms-form-content .ief-row-form > td {
-            display: block !important;
-            border: none !important;
-            padding: 0 !important;
-        }
-
-        /* Inner IEF (Lessons inside Chapter Form) */
-        .lms-form-content .ief-row-form .ief-entity-table {
-            border-spacing: 0 8px !important;
-            background: #f8fafc !important; 
-            padding: 15px !important;
-            border-radius: 8px !important;
-            margin-top: 20px !important;
-        }
-        .lms-form-content .ief-row-form .ief-row-entity {
-            background: #ffffff !important;
-            border: 1px dashed #cbd5e1 !important;
-            padding: 10px 16px !important;
-            box-shadow: none !important;
-        }
-        .lms-form-content .ief-row-form .ief-row-entity > td:nth-child(2) {
-            font-size: 1rem !important;
-            font-weight: 500 !important;
-            color: #475569 !important;
-        }
-
-        /* Main Add new item buttons */
-        .lms-form-content input[value^="Add new "],
-        .lms-form-content input[value^="Add existing "] {
-            background: #ffffff !important;
-            color: #3b82f6 !important;
-            border: 2px dashed #cbd5e1 !important;
-            padding: 12px 24px !important;
-            border-radius: 8px !important;
-            font-weight: 600 !important;
-            width: auto !important;
-            margin-top: 10px !important;
-            margin-right: 15px !important; /* Separate adjacent action buttons */
-            transition: all 0.2s !important;
-            cursor: pointer !important;
-        }
-        .lms-form-content input[value^="Add new "]:hover,
-        .lms-form-content input[value^="Add existing "]:hover {
-            border-color: #3b82f6 !important;
-            background: #eff6ff !important;
-            box-shadow: 0 4px 6px rgba(59,130,246,0.05) !important;
-        }
-      </style>
-      
+    <div class="lms-admin__header"><h1 class="lms-admin__title">{{ title }}</h1></div>
+    <div class="lms-admin-card lms-admin-form-card">
       <div class="lms-admin-entity-form-wrapper" id="lms-admin-form-app">
-        
-        <!-- Professional Loading State -->
-        <div id="lms-form-loader" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; color: #94a3b8; transition: opacity 0.3s;">
-           <i class="fas fa-spinner fa-spin fa-3x" style="margin-bottom: 20px; color: #3b82f6;"></i>
-           <p style="font-size: 1.1rem; font-weight: 500;">Building Course Layout...</p>
-        </div>
-
-        <div class="lms-form-content" style="opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s;">
-          {{ form }}
-        </div>
+        <div class="lms-form-content">{{ form }}</div>
       </div>
-
-      <script>
-        (function() {
-          function buildExplicitTabs() {
-            const form = document.querySelector('.lms-form-content form');
-            if (!form) return;
-            // Support re-runs safely
-            const alreadyBuilt = document.querySelector('.lms-form-tabs');
-
-            if (!alreadyBuilt) {
+    </div>
+  </div>
+</div>
+<style>
+  #lms-admin-form-app .layout-node-form,
+  #lms-admin-form-app .layout-region-node-main,
+  #lms-admin-form-app .layout-region-user-main {
+    width: 100%; max-width: none; float: none; margin: 0; padding: 0;
+  }
+  #lms-admin-form-app .lms-form-tabs {
+    display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--workspace-border, #cbd5e1);
+  }
+  #lms-admin-form-app .lms-form-tab {
+    border: 0; border-bottom: 3px solid transparent; padding: 0.75rem 0.25rem;
+    background: transparent; color: var(--workspace-muted, #475569); font: inherit; font-weight: 600;
+  }
+  #lms-admin-form-app .lms-form-tab.active { color: #2563eb; border-bottom-color: #2563eb; }
+  #lms-admin-form-app .lms-form-tab:focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }
+  #lms-admin-form-app .lms-form-pane { display: none; }
+  #lms-admin-form-app .lms-form-pane.active { display: block; }
+  #lms-admin-form-app form.lms-form--tabbed > :not(.lms-form-tabs):not(.lms-form-panes):not(.form-actions) { display: none; }
+  #lms-admin-form-app .lms-form-content .description { font: inherit; line-height: 1.6; color: var(--workspace-muted, #475569); }
+</style>
+<script>
+(function () {
+  function buildExplicitTabs() {
+    const form = document.querySelector('#lms-admin-form-app .lms-form-content form');
+    if (!form) return;
+    if (form.querySelector('.lms-form-tabs')) {
+      const error = form.querySelector('.form-item--error, .form-element--error, [aria-invalid="true"]');
+      if (error && error.closest('.lms-form-pane') && form.lmsActivatePane) form.lmsActivatePane(error.closest('.lms-form-pane').id);
+      return;
+    }
                {% if active_menu == 'courses' or active_menu == 'quizzes' %}
                {% if active_menu == 'courses' %}
                // 1. Structured JFC Tabs with EXPLICIT Field Mapping
                const tabData = [
                   { 
                     id: 'tab-info', 
-                    title: "{{ 'Info'|t }}",
+                    title: "{{ 'Info'|t|escape('js') }}",
                     targetNames: ['name', 'field_thumbnail', 'field_banner', 'field_short_description', 'field_description', 'field_what_learn', 'field_prerequisites', 'field_who_for'] 
                   },
                   { 
                     id: 'tab-collection', 
-                    title: "{{ 'Course Collection'|t }}",
+                    title: "{{ 'Course settings'|t|escape('js') }}",
                     targetNames: ['status', 'field_category', 'field_tags', 'field_level', 'field_language', 'field_instructor', 'field_price', 'field_price_type', 'field_bestseller', 'field_featured'] 
                   },
                   { 
                     id: 'tab-chapter', 
-                    title: "{{ 'Chapter & lesson'|t }}",
+                    title: "{{ 'Chapters & lessons'|t|escape('js') }}",
                     targetNames: ['field_chapters', 'field_duration'] 
-                  },
-                  { 
-                    id: 'tab-quiz', 
-                    title: "{{ 'Quiz'|t }}",
-                    targetNames: [] 
                   }
                ];
                {% elseif active_menu == 'quizzes' %}
                const tabData = [
                   { 
                     id: 'tab-info', 
-                    title: "{{ 'Quiz Info'|t }}",
+                    title: "{{ 'Quiz Info'|t|escape('js') }}",
                     targetNames: ['name', 'field_body', 'field_threshold', 'field_time_limit', 'field_display_right_answer', 'field_form_style', 'field_question_count', 'field_take_quiz_number', 'field_prerequisite_quizzes', 'uid', 'created'] 
                   },
                   { 
                     id: 'tab-questions', 
-                    title: "{{ 'Questions'|t }}",
+                    title: "{{ 'Questions'|t|escape('js') }}",
                     targetNames: ['field_questions'] 
                   }
                ];
                {% endif %}
                
-               const tabHeader = document.createElement('div');
-               tabHeader.className = 'lms-form-tabs';
-               
-               const tabPanes = document.createElement('div');
-               tabPanes.className = 'lms-form-panes';
-               
-               // Move form actions directly to form scope so it gets un-hidden by CSS
-               const formActions = form.querySelector('.form-actions');
-               if (formActions) {
-                  form.appendChild(formActions); 
-               }
-               
-               tabData.forEach((tab, index) => {
-                  // Button
-                  const btn = document.createElement('button');
-                  btn.type = 'button';
-                  btn.className = 'lms-form-tab ' + (index === 0 ? 'active' : '');
-                  btn.textContent = tab.title;
-                  
-                  // Pane
-                  const pane = document.createElement('div');
-                  pane.className = 'lms-form-pane';
-                  if (index === 0) pane.classList.add('active');
-                  pane.id = tab.id;
-                  
-                  btn.addEventListener('click', (e) => {
-                     e.preventDefault();
-                     tabHeader.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-                     tabPanes.querySelectorAll('.lms-form-pane').forEach(p => p.classList.remove('active'));
-                     btn.classList.add('active');
-                     pane.classList.add('active');
-                  });
-                  
-                  tabHeader.appendChild(btn);
-                  tabPanes.appendChild(pane);
-                  
-                  // Surgically pluck only the targeted input fields by exact name
-                  tab.targetNames.forEach(fieldName => {
-                     let fieldClass = '.field--name-' + fieldName.replace(/_/g, '-');
-                     let fieldEl = form.querySelector(fieldClass);
-                     
-                     if (!fieldEl) {
-                        let input = form.querySelector('[name^="' + fieldName + '"]');
-                        if (input) {
-                           fieldEl = input.closest('.form-item, .form-wrapper, .js-form-item, .field-group-html-element');
-                        }
-                     }
-                     
-                     // Move the field OUT of the invisible Drupal layout into the visible Tab Pane!
-                     if (fieldEl) pane.appendChild(fieldEl);
-                  });
-               });
-               
-               // Gather any remaining unmapped loose fields (that are not hidden layout builders)
-               // Anything still containing an input/textarea but not moved will be moved to Info
-               const looseInputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
-               looseInputs.forEach(input => {
-                   const wrapper = input.closest('.form-item, .form-wrapper, .field--type-string, .field--type-entity-reference, .field--type-boolean');
-                   if (wrapper && !tabPanes.contains(wrapper) && (!formActions || !formActions.contains(wrapper))) {
-                       // It's a visible field we missed!
-                       const infoPane = tabPanes.querySelector('#tab-info');
-                       if (infoPane) infoPane.appendChild(wrapper);
-                   }
-               });
 
-               // Insert our fully populated tabs at the top of the form
-               form.insertBefore(tabPanes, form.firstChild);
-               form.insertBefore(tabHeader, tabPanes);
-               {% endif %}
-            }
-
-            // Reveal the perfectly formed UI
-            const loader = document.getElementById('lms-form-loader');
-            if (loader) {
-               loader.style.opacity = '0';
-               setTimeout(() => { loader.style.display = 'none'; }, 300);
-            }
-            const content = document.querySelector('.lms-form-content');
-            if (content) {
-               content.style.visibility = 'visible';
-               content.style.opacity = '1';
-            }
-          }
-
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', buildExplicitTabs);
-          } else {
-            buildExplicitTabs();
-          }
-          if (typeof Drupal !== 'undefined') {
-            Drupal.behaviors.lmsAdminTabs = {
-              attach: function() { buildExplicitTabs(); }
-            };
-
-            // DEDICATED BEHAVIOR FOR LESSON MODAL INJECTION & PURGE
-            Drupal.behaviors.lmsLessonModal = {
-              attach: function(context) {
-                 // Resilient Poller: check every 100ms for 3 seconds to catch late async reder                     let attempts = 0;
-                     const poller = setInterval(() => {
-                         attempts++;
-                         if (attempts > 50) clearInterval(poller); // Wait up to 5 seconds for slow AJAX
-                         
-                     // 1. Safe Fallback Purge for stubborn async elements (CKEditor labels, formats)
-                     // Added <h> tags and <legend> to catch all possible label structures
-                     document.querySelectorAll('label, legend, span, strong, div.description, h4, h3, h2').forEach(el => {
-                         if (el.textContent) {
-                             // Safely strip trailing asterisk (for required fields) and trim
-                             const text = el.textContent.trim().replace(/\*$/, '').trim();
-                             if (text === 'Rich Text Editor' || text === 'About text formats' || text === 'Text format') {
-                                 el.style.setProperty('display', 'none', 'important');
-                                 el.style.setProperty('visibility', 'hidden', 'important');
-                                 el.style.setProperty('position', 'absolute', 'important');
-                             }
-                         }
-                     });
-                 }, 100);
-              }
-            };
-          }
-        })();
-      </script>
-    </div>
-  </div>
-</div>
+    const tabHeader = document.createElement('div');
+    tabHeader.className = 'lms-form-tabs';
+    tabHeader.setAttribute('role', 'tablist');
+    const tabPanes = document.createElement('div');
+    tabPanes.className = 'lms-form-panes';
+    const formActions = form.querySelector(':scope > .form-actions') || form.querySelector('.form-actions');
+    if (formActions) form.appendChild(formActions);
+    function activate(paneId) {
+      tabHeader.querySelectorAll('button').forEach(button => {
+        const selected = button.getAttribute('aria-controls') === paneId;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-selected', String(selected));
+        button.tabIndex = selected ? 0 : -1;
+      });
+      tabPanes.querySelectorAll('.lms-form-pane').forEach(pane => pane.classList.toggle('active', pane.id === paneId));
+      try { sessionStorage.setItem('lms-form-tab:' + window.location.pathname, paneId); } catch (error) {}
+    }
+    form.lmsActivatePane = activate;
+    let invalidPane = null;
+    form.addEventListener('invalid', event => {
+      const pane = event.target.closest('.lms-form-pane');
+      if (pane && !invalidPane) {
+        invalidPane = pane;
+        activate(pane.id);
+        setTimeout(() => { invalidPane = null; }, 0);
+      }
+    }, true);
+    tabHeader.addEventListener('keydown', event => {
+      const buttons = Array.from(tabHeader.querySelectorAll('button'));
+      const index = buttons.indexOf(document.activeElement);
+      if (index === -1) return;
+      let next;
+      if (event.key === 'ArrowRight') next = (index + 1) % buttons.length;
+      else if (event.key === 'ArrowLeft') next = (index - 1 + buttons.length) % buttons.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = buttons.length - 1;
+      else return;
+      event.preventDefault();
+      activate(buttons[next].getAttribute('aria-controls'));
+      buttons[next].focus();
+    });
+    tabData.forEach(tab => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'lms-form-tab';
+      button.id = 'lms-' + tab.id;
+      button.textContent = tab.title;
+      button.setAttribute('role', 'tab');
+      button.setAttribute('aria-controls', tab.id);
+      const pane = document.createElement('div');
+      pane.className = 'lms-form-pane';
+      pane.id = tab.id;
+      pane.setAttribute('role', 'tabpanel');
+      pane.setAttribute('aria-labelledby', button.id);
+      button.addEventListener('click', () => activate(tab.id));
+      tabHeader.appendChild(button);
+      tabPanes.appendChild(pane);
+      tab.targetNames.forEach(fieldName => {
+        let field = form.querySelector('.field--name-' + fieldName.replace(/_/g, '-'));
+        if (!field) {
+          const input = form.querySelector('[name^="' + fieldName + '"]');
+          if (input) field = input.closest('.form-item, .form-wrapper, .js-form-item, .field-group-html-element');
+        }
+        if (field) pane.appendChild(field);
+      });
+    });
+    // Keep every unmapped editable field available in the Info section.
+    form.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(input => {
+      const wrapper = input.closest('.form-item, .form-wrapper, .field--type-string, .field--type-entity-reference, .field--type-boolean');
+      if (wrapper && !tabPanes.contains(wrapper) && (!formActions || !formActions.contains(wrapper))) {
+        tabPanes.querySelector('#tab-info').appendChild(wrapper);
+      }
+    });
+    form.insertBefore(tabPanes, form.firstChild);
+    form.insertBefore(tabHeader, tabPanes);
+    form.classList.add('lms-form--tabbed');
+    const invalid = tabPanes.querySelector('.form-item--error, .form-element--error, [aria-invalid="true"]');
+    let activePane = tabData[0].id;
+    try { activePane = sessionStorage.getItem('lms-form-tab:' + window.location.pathname) || activePane; } catch (error) {}
+    if (!tabData.some(tab => tab.id === activePane)) activePane = tabData[0].id;
+    if (invalid && invalid.closest('.lms-form-pane')) activePane = invalid.closest('.lms-form-pane').id;
+    activate(activePane);
+    if (invalid) {
+      const input = invalid.matches('input, select, textarea') ? invalid : invalid.querySelector('input:not([type="hidden"]), select, textarea');
+      if (input) {
+        input.focus({ preventScroll: true });
+        input.scrollIntoView({ block: 'nearest' });
+      }
+    }
+    {% endif %}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', buildExplicitTabs);
+  else buildExplicitTabs();
+  if (typeof Drupal !== 'undefined') Drupal.behaviors.lmsAdminTabs = { attach: buildExplicitTabs };
+})();
+</script>

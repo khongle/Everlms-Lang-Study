@@ -61,6 +61,11 @@ final class StudyController extends ControllerBase {
 
     $decks = [];
     $cacheTags = [];
+    // Personal counts and mastery change when cards, reviews, or stats save.
+    // Include their list tags so a successful reset/study refreshes this page.
+    foreach (['lms_flashcard_card_stat', 'lms_flashcard_review', 'lms_flashcard_card'] as $entity_type_id) {
+      $cacheTags = Cache::mergeTags($cacheTags, $this->entityTypeManager->getDefinition($entity_type_id)->getListCacheTags());
+    }
     foreach ($storage->loadMultiple($deckIds) as $deck) {
       /** @var \Drupal\lms_flashcard\Entity\Deck $deck */
       if (!$this->queueBuilder->isDeckVisibleTo($deck, $uid)) {
@@ -127,6 +132,8 @@ final class StudyController extends ControllerBase {
       '#theme' => 'lms_flashcard_my_decks',
       '#decks' => $decks,
       '#cache' => [
+        // Due cards and daily limits also change as time advances.
+        'max-age' => 60,
         'contexts' => ['user'],
         'tags' => Cache::mergeTags($cacheTags, $storage->getEntityType()->getListCacheTags()),
       ],

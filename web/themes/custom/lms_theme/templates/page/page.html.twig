@@ -99,6 +99,9 @@
                     <a href="{{ path('lms_course.admin_courses') }}" class="lms-mega-link"><i class="fas fa-video text-success"></i> Manage Courses</a>
                     <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-mega-link"><i class="fas fa-tasks text-warning"></i> Manage Quizzes</a>
                     <a href="{{ path('lms_course.admin_users') }}" class="lms-mega-link"><i class="fas fa-user-graduate text-info"></i> Manage Students</a>
+                    {% if switch_user_url %}
+                    <a href="{{ switch_user_url }}" class="lms-mega-link"><i class="fas fa-random text-primary" aria-hidden="true"></i> {{ 'Switch User'|t }}</a>
+                    {% endif %}
                     <a href="{{ path('lms_certificate.admin_dashboard') }}" class="lms-mega-link"><i class="fas fa-award text-danger"></i> Manage Certificates</a>
                     <a href="{{ path('lms_course.admin_orders') }}" class="lms-mega-link"><i class="fas fa-file-invoice-dollar text-success"></i> Store Orders</a>
                     <a href="/workspace/reports" class="lms-mega-link"><i class="fas fa-chart-bar text-warning"></i> Reports</a>
@@ -111,7 +114,6 @@
                     <a href="/admin/structure" class="lms-mega-link"><i class="fas fa-cubes text-success"></i> Structure</a>
                     <a href="/admin/people/permissions" class="lms-mega-link"><i class="fas fa-shield-alt text-primary"></i> Roles & Permissions</a>
                     <hr class="lms-mega-divider" />
-                    <a href="/open-switcher" class="lms-mega-link"><i class="fas fa-random text-primary"></i> Switch User</a>
                   </div>
                   {% endif %}
                 </div>
@@ -153,6 +155,9 @@
 
                 <hr class="lms-mega-divider" />
                 <a href="{{ path('lms_course.profile') }}" class="lms-mega-link"><i class="fas fa-user text-info"></i> My Profile</a>
+                {% if switch_user_url %}
+                <a href="{{ switch_user_url }}" class="lms-mega-link"><i class="fas fa-random text-primary" aria-hidden="true"></i> {{ 'Switch User'|t }}</a>
+                {% endif %}
               </div>
               {% endif %}
             </div>

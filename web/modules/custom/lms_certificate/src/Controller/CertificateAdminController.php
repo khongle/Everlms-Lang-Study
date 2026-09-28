@@ -5,6 +5,7 @@ namespace Drupal\lms_certificate\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * CertificateAdminController for the Manager UI Dashboard.
@@ -22,7 +23,12 @@ class CertificateAdminController extends ControllerBase {
     );
   }
 
-  public function adminDashboard() {
+  public function adminDashboard(Request $request) {
+    $search = trim((string) $request->query->get('search', ''));
+    $status = (string) $request->query->get('status', 'all');
+    if (!in_array($status, ['all', 'valid', 'revoked'], TRUE)) {
+      $status = 'all';
+    }
     $storage = $this->entityTypeManager->getStorage('lms_user_certificate');
     
     // Quick Stats
@@ -32,12 +38,23 @@ class CertificateAdminController extends ControllerBase {
     $week_ago = \Drupal::time()->getRequestTime() - (7 * 24 * 60 * 60);
     $recent_issued = $storage->getQuery()->condition('field_issued_at', $week_ago, '>')->accessCheck(FALSE)->count()->execute();
 
-    // Load certificates (simple pagination can be added via pager extension, but we'll load top 50 for now)
-    $ids = $storage->getQuery()
+    $query = $storage->getQuery()
       ->sort('field_issued_at', 'DESC')
-      ->range(0, 50)
-      ->accessCheck(FALSE)
-      ->execute();
+      ->pager(25)
+      ->accessCheck(FALSE);
+    if ($status !== 'all') {
+      $query->condition('field_revoked', $status === 'revoked' ? 1 : 0);
+    }
+    if ($search !== '') {
+      $matches = $query->orConditionGroup()
+        ->condition('field_certificate_number', '%' . $search . '%', 'LIKE');
+      $user_ids = $this->matchingUserIds($search);
+      if ($user_ids) {
+        $matches->condition('uid', $user_ids, 'IN');
+      }
+      $query->condition($matches);
+    }
+    $ids = $query->execute();
     $certificates = $storage->loadMultiple($ids);
 
     $items = [];
@@ -78,6 +95,12 @@ class CertificateAdminController extends ControllerBase {
         'recent' => $recent_issued,
       ],
       '#certificates' => $items,
+      '#filters' => ['search' => $search, 'status' => $status],
+      '#pager' => ['#type' => 'pager'],
+      '#cache' => [
+        'contexts' => ['url.query_args'],
+        'tags' => ['lms_user_certificate_list', 'user_list', 'lms_course_list'],
+      ],
       '#attached' => [
         'library' => [
           'core/drupal.dialog.ajax',
@@ -86,9 +109,21 @@ class CertificateAdminController extends ControllerBase {
     ];
   }
 
-  public function adminTemplates() {
+  public function adminTemplates(Request $request) {
+    $search = trim((string) $request->query->get('search', ''));
+    $status = (string) $request->query->get('status', 'all');
+    if (!in_array($status, ['all', 'active', 'disabled'], TRUE)) {
+      $status = 'all';
+    }
     $storage = $this->entityTypeManager->getStorage('lms_certificate_template');
-    $ids = $storage->getQuery()->accessCheck(FALSE)->execute();
+    $query = $storage->getQuery()->accessCheck(FALSE)->sort('name')->pager(25);
+    if ($search !== '') {
+      $query->condition('name', '%' . $search . '%', 'LIKE');
+    }
+    if ($status !== 'all') {
+      $query->condition('status', $status === 'active' ? 1 : 0);
+    }
+    $ids = $query->execute();
     $templates = $storage->loadMultiple($ids);
 
     $items = [];
@@ -106,8 +141,34 @@ class CertificateAdminController extends ControllerBase {
     return [
       '#theme' => 'lms_admin_certificate_templates',
       '#templates' => $items,
+      '#filters' => ['search' => $search, 'status' => $status],
+      '#pager' => ['#type' => 'pager'],
+      '#cache' => [
+        'contexts' => ['url.query_args'],
+        'tags' => ['lms_certificate_template_list'],
+      ],
       '#add_template_url' => \Drupal\Core\Url::fromRoute('lms_certificate.admin_template.add')->toString(),
     ];
+  }
+
+  /**
+   * Matches recipient names and email, including optional profile name fields.
+   */
+  private function matchingUserIds(string $search): array {
+    $query = $this->entityTypeManager->getStorage('user')->getQuery()->accessCheck(FALSE);
+    $definitions = \Drupal::service('entity_field.manager')->getFieldDefinitions('user', 'user');
+    foreach (preg_split('/\s+/u', $search, -1, PREG_SPLIT_NO_EMPTY) as $term) {
+      $matches = $query->orConditionGroup()
+        ->condition('name', '%' . $term . '%', 'LIKE')
+        ->condition('mail', '%' . $term . '%', 'LIKE');
+      foreach (['field_first_name', 'field_last_name'] as $field) {
+        if (isset($definitions[$field])) {
+          $matches->condition($field, '%' . $term . '%', 'LIKE');
+        }
+      }
+      $query->condition($matches);
+    }
+    return $query->execute();
   }
 
   public function templateAddForm(): array {

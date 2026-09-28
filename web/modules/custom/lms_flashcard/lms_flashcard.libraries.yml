@@ -40,6 +40,9 @@ flashcard_export:
     - core/once
 
 flashcard_my_decks:
+  css:
+    theme:
+      css/flashcard-library.css: { weight: 1350 }
   js:
     js/flashcard-my-decks.js: {}
   dependencies:

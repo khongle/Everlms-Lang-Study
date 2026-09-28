@@ -22,8 +22,15 @@ class MembershipAdminController extends ControllerBase {
   }
 
   public function pricingList(\Symfony\Component\HttpFoundation\Request $request): array {
-    $search = $request->query->get('search', '');
-    $status_filter = $request->query->get('status', 'all');
+    $search = trim((string) $request->query->get('search', ''));
+    $status_filter = (string) $request->query->get('status', 'all');
+    if (!in_array($status_filter, ['all', 'active', 'inactive'], TRUE)) {
+      $status_filter = 'all';
+    }
+    $billing = (string) $request->query->get('billing', 'all');
+    if (!in_array($billing, ['all', 'monthly', 'quarterly', 'yearly', 'lifetime'], TRUE)) {
+      $billing = 'all';
+    }
 
     $plan_storage = $this->entityTypeManager->getStorage('lms_membership_plan');
     $query = $plan_storage->getQuery()->accessCheck(FALSE);
@@ -37,7 +44,10 @@ class MembershipAdminController extends ControllerBase {
       $query->condition('status', $status_val);
     }
 
-    $ids = $query->sort('field_price', 'ASC')->execute();
+    if ($billing !== 'all') {
+      $query->condition('field_billing_cycle', $billing);
+    }
+    $ids = $query->sort('field_price', 'ASC')->pager(25)->execute();
     
     $plans = $ids ? $plan_storage->loadMultiple($ids) : [];
 
@@ -57,13 +67,16 @@ class MembershipAdminController extends ControllerBase {
     return [
       '#theme' => 'lms_admin_pricing',
       '#plans' => $items,
+      '#pager' => ['#type' => 'pager'],
       '#filters' => [
         'search' => $search,
         'status' => $status_filter,
+        'billing' => $billing,
       ],
       '#add_url' => Url::fromRoute('lms_membership.admin_pricing.add', [], ['query' => ['destination' => '/workspace/pricing']])->toString(),
       '#cache' => [
         'contexts' => ['url.query_args'],
+        'tags' => ['lms_membership_plan_list'],
       ],
     ];
   }
@@ -101,8 +114,11 @@ class MembershipAdminController extends ControllerBase {
     ];
   }
   public function userMembershipsList(\Symfony\Component\HttpFoundation\Request $request): array {
-    $search = $request->query->get('search', '');
-    $status_filter = $request->query->get('status', 'all');
+    $search = trim((string) $request->query->get('search', ''));
+    $status_filter = (string) $request->query->get('status', 'all');
+    if (!in_array($status_filter, ['all', 'active', 'trial', 'expired', 'cancelled'], TRUE)) {
+      $status_filter = 'all';
+    }
 
     $storage = $this->entityTypeManager->getStorage('lms_user_membership');
     $query = $storage->getQuery()->accessCheck(FALSE);
@@ -111,7 +127,27 @@ class MembershipAdminController extends ControllerBase {
       $query->condition('field_status', $status_filter);
     }
 
-    $ids = $query->sort('created', 'DESC')->execute();
+    if ($search !== '') {
+      $user_ids = $this->matchingUserIds($search);
+      $plan_ids = $this->entityTypeManager->getStorage('lms_membership_plan')->getQuery()
+        ->accessCheck(FALSE)
+        ->condition('name', '%' . $search . '%', 'LIKE')
+        ->execute();
+      $matches = $query->orConditionGroup();
+      if ($user_ids) {
+        $matches->condition('uid', $user_ids, 'IN');
+      }
+      if ($plan_ids) {
+        $matches->condition('field_plan', $plan_ids, 'IN');
+      }
+      if ($user_ids || $plan_ids) {
+        $query->condition($matches);
+      }
+      else {
+        $query->condition('id', 0);
+      }
+    }
+    $ids = $query->sort('created', 'DESC')->pager(25)->execute();
     $memberships = $ids ? $storage->loadMultiple($ids) : [];
 
     $items = [];
@@ -159,6 +195,7 @@ class MembershipAdminController extends ControllerBase {
     return [
       '#theme' => 'lms_admin_user_memberships',
       '#memberships' => $items,
+      '#pager' => ['#type' => 'pager'],
       '#filters' => [
         'search' => $search,
         'status' => $status_filter,
@@ -166,8 +203,29 @@ class MembershipAdminController extends ControllerBase {
       '#add_url' => \Drupal\Core\Url::fromRoute('lms_membership.admin_user_memberships.add', [], ['query' => ['destination' => '/workspace/user-memberships']])->toString(),
       '#cache' => [
         'contexts' => ['url.query_args'],
+        'tags' => ['lms_user_membership_list', 'lms_membership_plan_list', 'user_list'],
       ],
     ];
+  }
+
+  /**
+   * Matches names and email, including optional profile name fields.
+   */
+  private function matchingUserIds(string $search): array {
+    $query = $this->entityTypeManager->getStorage('user')->getQuery()->accessCheck(FALSE);
+    $definitions = \Drupal::service('entity_field.manager')->getFieldDefinitions('user', 'user');
+    foreach (preg_split('/\s+/u', $search, -1, PREG_SPLIT_NO_EMPTY) as $term) {
+      $matches = $query->orConditionGroup()
+        ->condition('name', '%' . $term . '%', 'LIKE')
+        ->condition('mail', '%' . $term . '%', 'LIKE');
+      foreach (['field_first_name', 'field_last_name'] as $field) {
+        if (isset($definitions[$field])) {
+          $matches->condition($field, '%' . $term . '%', 'LIKE');
+        }
+      }
+      $query->condition($matches);
+    }
+    return $query->execute();
   }
 
   public function userMembershipAddForm(): array {

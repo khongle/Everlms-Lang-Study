@@ -41,12 +41,17 @@
 
         const cards = Array.from(grid.querySelectorAll('[data-flashcard-deck]'));
         const emptyMessage = page.querySelector('[data-filter-empty]');
+        const resultsLabel = page.querySelector('[data-filter-results]');
+        const resetFilterButton = root.querySelector('[data-filter-reset]');
         const searchInput = root.querySelector('[data-filter-search]');
         const languageSelect = root.querySelector('[data-filter-language]');
         const sortSelect = root.querySelector('[data-sort-select]');
         const chips = Array.from(root.querySelectorAll('[data-filter-chip]'));
         const viewButtons = Array.from(root.querySelectorAll('[data-view-toggle]'));
         let activeChip = 'all';
+        function refreshHeights() {
+          grid.dispatchEvent(new Event('lms-flashcard-layout'));
+        }
 
         function setView(view) {
           grid.classList.toggle('lms-flashcard-decks--list', view === 'list');
@@ -55,6 +60,7 @@
             btn.classList.toggle('is-active', isActive);
             btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
           });
+          refreshHeights();
         }
 
         const storedView = readStoredView();
@@ -82,8 +88,9 @@
             case 'new':
               return card.dataset.new === '1';
 
+            case 'all':
             default:
-              return true;
+              return card.dataset.course !== '1';
           }
         }
 
@@ -100,6 +107,9 @@
             const visible = matchesQuery && matchesLanguage && matchesChip(card);
 
             card.classList.toggle('is-filtered-out', !visible);
+            if (!visible) {
+              card.querySelectorAll('details[open]').forEach((details) => { details.open = false; });
+            }
             if (visible) {
               visibleCount += 1;
             }
@@ -108,6 +118,10 @@
           if (emptyMessage) {
             emptyMessage.hidden = visibleCount !== 0;
           }
+          if (resultsLabel) {
+            resultsLabel.textContent = Drupal.t('@shown of @total decks', { '@shown': visibleCount, '@total': cards.length });
+          }
+          refreshHeights();
         }
 
         // Reorders the already-rendered card nodes in place — appendChild()
@@ -136,6 +150,7 @@
               break;
           }
           sorted.forEach((card) => grid.appendChild(card));
+          refreshHeights();
         }
 
         if (searchInput) {
@@ -148,31 +163,143 @@
           sortSelect.addEventListener('change', sortCards);
           sortCards();
         }
+        function selectChip(value) {
+          activeChip = value;
+          chips.forEach((chip) => {
+            const active = chip.dataset.filterChip === value;
+            chip.classList.toggle('is-active', active);
+            chip.setAttribute('aria-pressed', active ? 'true' : 'false');
+          });
+        }
         chips.forEach((chip) => {
           chip.addEventListener('click', () => {
-            chips.forEach((other) => other.classList.remove('is-active'));
-            chip.classList.add('is-active');
-            activeChip = chip.dataset.filterChip;
+            selectChip(chip.dataset.filterChip);
             apply();
           });
+        });
+        if (resetFilterButton) {
+          resetFilterButton.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            if (languageSelect) languageSelect.value = '';
+            selectChip('all');
+            apply();
+          });
+        }
+        selectChip('all');
+        apply();
+      });
+    },
+  };
+
+  /**
+   * Match the title, counters, study and footer sections within each grid row.
+   * Re-measure natural heights so filtering, resizing and disclosures never
+   * retain dimensions from a previous layout; list/mobile cards stay natural.
+   */
+  Drupal.behaviors.lmsFlashcardMatchHeight = {
+    attach(context) {
+      once('lms-flashcard-match-height', '[data-flashcard-deck-grid]', context).forEach((grid) => {
+        const sections = [
+          '.lms-flashcard-deck-card__top',
+          '.lms-flashcard-deck-card__stats',
+          '.lms-flashcard-deck-card__actions',
+          '.lms-flashcard-deck-card__manage',
+        ];
+        let frame = null;
+        function matchHeights() {
+          frame = null;
+          const cards = Array.from(grid.querySelectorAll('[data-flashcard-deck]'));
+          cards.forEach((card) => sections.forEach((selector) => {
+            card.querySelector(selector).style.minHeight = '';
+          }));
+          if (grid.classList.contains('lms-flashcard-decks--list')) return;
+          const rows = [];
+          cards.filter((card) => card.getClientRects().length).forEach((card) => {
+            const top = card.getBoundingClientRect().top;
+            let row = rows.find((item) => Math.abs(item.top - top) < 1);
+            if (!row) {
+              row = { top, cards: [] };
+              rows.push(row);
+            }
+            row.cards.push(card);
+          });
+          rows.filter((row) => row.cards.length > 1).forEach((row) => {
+            sections.forEach((selector) => {
+              const elements = row.cards.map((card) => card.querySelector(selector));
+              const height = Math.ceil(Math.max(...elements.map((element) => element.getBoundingClientRect().height)));
+              elements.forEach((element) => { element.style.minHeight = height + 'px'; });
+            });
+          });
+        }
+        function schedule() {
+          if (frame === null) frame = window.requestAnimationFrame(matchHeights);
+        }
+        grid.addEventListener('lms-flashcard-layout', schedule);
+        grid.addEventListener('toggle', schedule, true);
+        if (window.ResizeObserver) {
+          let width = 0;
+          const observer = new ResizeObserver((entries) => {
+            const currentWidth = entries[0].contentRect.width;
+            if (Math.abs(currentWidth - width) > 0.5) {
+              width = currentWidth;
+              schedule();
+            }
+          });
+          observer.observe(grid);
+        }
+        // A breakpoint may change column count without changing grid width.
+        window.addEventListener('resize', schedule);
+        if (document.fonts) document.fonts.ready.then(schedule);
+        schedule();
+      });
+    },
+  };
+
+  /**
+   * Native secondary action disclosures retain keyboard activation and focus.
+   */
+  Drupal.behaviors.lmsFlashcardDeckMenus = {
+    attach(context) {
+      once('lms-flashcard-deck-menus', '.lms-flashcard-page--library', context).forEach((page) => {
+        const menus = Array.from(page.querySelectorAll('.lms-flashcard-deck-card__more'));
+        menus.forEach((menu) => {
+          menu.addEventListener('toggle', () => {
+            menu.classList.remove('lms-flashcard-deck-card__more--above');
+            menu.style.removeProperty('--flashcard-menu-height');
+            if (menu.open) {
+              menus.forEach((other) => { if (other !== menu) other.open = false; });
+              const panel = menu.querySelector('.lms-flashcard-deck-card__more-menu');
+              const anchor = menu.querySelector('summary').getBoundingClientRect();
+              const header = document.querySelector('.lms-navbar');
+              const headerBottom = header ? Math.max(0, header.getBoundingClientRect().bottom) : 0;
+              const spaceBelow = Math.max(40, window.innerHeight - anchor.bottom - 18);
+              const spaceAbove = Math.max(40, anchor.top - headerBottom - 18);
+              const above = panel.scrollHeight > spaceBelow && spaceAbove > spaceBelow;
+              menu.classList.toggle('lms-flashcard-deck-card__more--above', above);
+              menu.style.setProperty('--flashcard-menu-height', Math.floor(above ? spaceAbove : spaceBelow) + 'px');
+            }
+          });
+        });
+        document.addEventListener('click', (event) => {
+          menus.forEach((menu) => {
+            if (menu.open && !menu.contains(event.target)) menu.open = false;
+          });
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key !== 'Escape') return;
+          const openMenu = menus.find((menu) => menu.open);
+          if (openMenu) {
+            openMenu.open = false;
+            openMenu.querySelector('summary').focus();
+          }
         });
       });
     },
   };
 
   /**
-   * "Reset Mastery" on a deck card — clears this student's own Study Now
-   * mastery percentage back down (see FlashcardApiController::
-   * resetMastery()) so they can go through the 3-level flow again to
-   * re-earn the 100% that unlocks Spelling/Pronunciation/Reading/
-   * Listening. A plain confirm() rather than a full Drupal confirmation
-   * page: this only resets a personal progress flag (never the real SM-2
-   * schedule — see that endpoint's docblock), so a lighter-weight prompt
-   * matches how low the stakes actually are. Reloads the page on success
-   * rather than patching the DOM in place, since a successful reset
-   * changes both the mastery bar *and* swaps 4 other links between their
-   * unlocked/locked markup — simpler and less error-prone to just let the
-   * next render (from StudyController::myDecks()) settle all of that.
+   * Reset the learner's current mastery without changing earned practice access.
+   * Reload after success to recompute the progress bar and personal counts.
    */
   Drupal.behaviors.lmsFlashcardMasteryReset = {
     attach(context) {
@@ -181,7 +308,7 @@
           const deckId = button.dataset.flashcardResetMastery;
           const deckName = button.dataset.deckName || '';
           const confirmed = window.confirm(
-            Drupal.t('Reset your Study Now progress for "@deck"? You\'ll need to master it again to unlock the other study modes.', { '@deck': deckName }),
+            Drupal.t('Reset your Study Now progress for "@deck"? Practice modes you have already unlocked will stay available.', { '@deck': deckName }),
           );
           if (!confirmed) {
             return;

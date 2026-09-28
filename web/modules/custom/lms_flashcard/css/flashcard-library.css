@@ -1,0 +1,252 @@
+/* My Flashcards library only. Keep other flashcard and public pages isolated. */
+body.route--lms-flashcard-my-decks,
+body.layout-academy.layout-minimalist.route--lms-flashcard-my-decks:not(.is-front-page):not(.is-workspace) { background: linear-gradient(180deg, #f8f1e6, #f4ecdf) !important; }
+body.route--lms-flashcard-my-decks :is(.lms-page, .lms-page__content) { background: linear-gradient(180deg, #f8f1e6, #f4ecdf) !important; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library {
+  --library-text: #302117;
+  --library-muted: #6d5a44;
+  --library-border: rgba(104, 74, 36, 0.16);
+  --library-panel: #ffffff;
+  --library-blue: #8d1f2d;
+  padding: 36px 24px 64px;
+  background: linear-gradient(180deg, #f8f1e6, #f4ecdf);
+  color: var(--library-text);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library > .container {
+  width: 100%; max-width: 1280px; margin: 0 auto; padding: 0;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library *,
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library *::before,
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library *::after { box-sizing: border-box; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library :is(a, button, input, select, summary) { font: inherit; }
+/* Override the active public skin's serif headings and paragraph colors. */
+body.route--lms-flashcard-my-decks section.lms-flashcard-page.lms-flashcard-page--library :is(h1.lms-flashcard-page__title, h3.lms-flashcard-deck-card__title),
+body.route--lms-flashcard-my-decks section.lms-flashcard-page.lms-flashcard-page--library .lms-flashcard-empty h3 {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+  color: var(--library-text) !important;
+}
+body.route--lms-flashcard-my-decks section.lms-flashcard-page.lms-flashcard-page--library :is(p.lms-flashcard-page__subtitle, p.lms-flashcard-deck-card__desc, p.lms-flashcard-deck-card__practice-hint),
+body.route--lms-flashcard-my-decks section.lms-flashcard-page.lms-flashcard-page--library .lms-flashcard-empty { color: var(--library-muted) !important; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-page__header { margin: 0 0 26px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-page__title {
+  margin: 0 0 6px; font-size: 30px; font-weight: 700; line-height: 1.3; letter-spacing: -.025em;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-page__subtitle { margin: 0; font-size: 15px; }
+
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px 24px;
+  margin: 0 0 24px; padding: 22px; border: 1px solid var(--library-border);
+  border-radius: 14px; background: #fffaf2; box-shadow: 0 3px 16px rgb(71 48 27 / 3%);
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar__filters {
+  flex: 1 1 640px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; min-width: 0;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar__right {
+  display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin: 0;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__field { min-width: 0; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__field--search { flex: 1 1 260px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__field label {
+  display: block; margin-bottom: 7px; color: var(--library-text); font-size: 15px; font-weight: 600;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__search { width: 100%; max-width: none; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__search i { left: 14px; color: var(--library-muted); font-size: 15px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar :is(input.lms-flashcard-filters__input, select.lms-flashcard-filters__select) {
+  height: 44px; min-width: 0; margin: 0; padding: 10px 36px 10px 12px;
+  border: 1px solid rgba(104, 74, 36, 0.2); border-radius: 8px; background-color: rgba(104, 74, 36, 0.06);
+  color: var(--library-text); font: inherit;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar input.lms-flashcard-filters__input { padding-left: 40px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__chips {
+  display: flex; flex-wrap: wrap; gap: 6px; padding: 0; background: transparent; border-radius: 0;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__chip {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 44px;
+  margin: 0; padding: 8px 12px; border: 1px solid var(--library-border); border-radius: 8px;
+  background: #fdfbf7; color: #7a6248; font-weight: 500; box-shadow: none;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__chip.is-active {
+  border-color: #8d1f2d; background: #8d1f2d; color: #ffffff; font-weight: 600; box-shadow: none;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar__view {
+  display: flex; flex-wrap: nowrap; gap: 3px; padding: 3px; border: 1px solid var(--library-border); border-radius: 9px; background: rgba(104, 74, 36, 0.08);
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-view-btn {
+  width: 36px; height: 36px; margin: 0; padding: 0; border: 0; border-radius: 6px;
+  color: var(--library-muted); background: transparent;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-view-btn.is-active { background: #8d1f2d; color: #ffffff; box-shadow: none; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar__summary {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  flex-basis: 100%; padding-top: 14px; border-top: 1px solid rgba(104, 74, 36, 0.15); color: var(--library-muted);
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__reset {
+  min-height: 36px; margin: 0; padding: 5px 10px; border: 1px solid rgba(104, 74, 36, 0.2);
+  border-radius: 7px; background: #f8f1e6; color: #7a6248; font-weight: 500; cursor: pointer;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__reset:hover { background: #f0e4d2; color: #4a3722; }
+
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: 22px;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card {
+  position: relative; display: flex; flex-direction: column; min-width: 0; gap: 14px;
+  padding: 24px; border: 1px solid var(--library-border); border-radius: 14px; background: var(--library-panel);
+  color: var(--library-text); box-shadow: 0 3px 14px rgb(71 48 27 / 4%); transform: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card:hover {
+  transform: none; border-color: rgba(141, 31, 45, 0.28); box-shadow: 0 5px 18px rgb(71 48 27 / 7%);
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card:has(.lms-flashcard-deck-card__more[open]) { z-index: 5; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__top { display: block; margin: 0; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__title {
+  margin: 0; font-size: 20px; font-weight: 650; line-height: 1.4; overflow-wrap: anywhere;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__title a { color: #58a6ff; font: inherit; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__title a:hover { color: #8d1f2d; text-decoration: underline; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__badges { display: flex; flex-wrap: wrap; gap: 7px; margin: 0; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; border: 1px solid rgba(104, 74, 36, 0.3);
+  border-radius: 7px; background: #fdfbf7; color: #7a6248; font-size: 15px; font-weight: 500; line-height: 1.5; text-transform: none;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__badge--mine { background: #fdf2f4; border-color: #f8d7da; color: #8d1f2d; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__badge--course { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__badge--course i { color: inherit; font-size: 15px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__course-context {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 7px; margin: 0;
+  padding: 0 0 0 12px; border: 0; border-left: 3px solid #a7f3d0; border-radius: 0;
+  background: transparent; color: var(--library-muted); font-size: 15px;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__course-icon,
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__course-sep { display: none; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__course-link { color: #047857; font-weight: 500; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__lesson-link { flex-basis: 100%; color: var(--library-muted); font-weight: 400; line-height: 1.5; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__desc {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  min-height: 0; margin: 0; font-size: 15px; line-height: 1.6;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__stats { display: flex; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 8px; margin: auto 0 0; padding-top: 2px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__stat {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border: 1px solid rgba(104, 74, 36, 0.16);
+  border-radius: 7px; background: rgba(104, 74, 36, 0.05); color: #5c4731; font-size: 15px; font-weight: 500;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__stat--due { background: #fef3c7; border-color: #fde68a; color: #92400e; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__stat--new { background: #fdf2f4; border-color: #f8d7da; color: #8d1f2d; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__mastery { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__mastery-header { margin: 0 0 8px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__mastery-label { font-size: 15px; font-weight: 500; color: var(--library-muted); }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__mastery-bar { height: 6px; border-radius: 6px; background: rgba(104, 74, 36, 0.15); overflow: hidden; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__mastery-fill { height: 100%; background: #8d1f2d; border-radius: inherit; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__actions { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__cta {
+  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px;
+  margin: 0; padding: 10px 16px; border: 1px solid #ba8b38; border-radius: 9px;
+  background: linear-gradient(135deg, #ba8b38, #d5b46d); color: #2f241a; font-weight: 600; box-shadow: none;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__cta:hover { background: linear-gradient(135deg, #a97c2f, #c9a45e); border-color: #a97c2f; color: #2f241a; box-shadow: none; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library summary { list-style: none; cursor: pointer; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library summary::-webkit-details-marker { display: none; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice { margin: 0; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice-summary {
+  display: flex; align-items: center; gap: 8px; min-height: 42px; padding: 8px 12px;
+  border: 1px solid rgba(141, 31, 45, 0.25); border-radius: 8px; background: #fdf2f4; color: #8d1f2d; font-weight: 500;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice-summary span { margin-right: auto; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice-summary .fa-chevron-down { transition: transform .15s; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice[open] .fa-chevron-down { transform: rotate(180deg); }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding-top: 10px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice-link {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;
+  min-width: 0; min-height: 42px; margin: 0; padding: 8px; border: 1px solid rgba(141, 31, 45, 0.25); border-radius: 8px;
+  background: #ffffff; color: #8d1f2d; font-size: 15px; font-weight: 500; transform: none;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice-link:hover { background: #fdf2f4; border-color: #8d1f2d; color: #8d1f2d; transform: none; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice-link.is-locked,
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice-link.is-locked:hover {
+  background: rgba(104, 74, 36, 0.05); border-color: rgba(104, 74, 36, 0.16); color: #a89880; cursor: default; transform: none;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice-hint { margin: 0; font-size: 15px; line-height: 1.5; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice-link :is(.lms-listening-deck-badge, .lms-reading-deck-badge) {
+  min-width: 22px; height: 22px; padding: 0 5px; margin: 0; background: rgba(141, 31, 45, 0.12); color: #8d1f2d; font-size: 15px;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__manage {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin: 0; padding-top: 12px; border-top: 1px solid rgba(104, 74, 36, 0.15); font-size: 15px;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__manage a { color: #81694a; font-size: 15px; font-weight: 500; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__more { position: relative; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__more-summary {
+  display: inline-flex; align-items: center; gap: 9px; min-height: 36px; padding: 5px 9px;
+  border: 1px solid rgba(104, 74, 36, 0.2); border-radius: 7px; background: #fffaf2; color: #81694a;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__more-menu {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 10; display: flex; flex-direction: column;
+  width: 205px; max-width: calc(100vw - 64px); max-height: var(--flashcard-menu-height, 320px); overflow-y: auto; padding: 6px; border: 1px solid rgba(104, 74, 36, 0.2);
+  border-radius: 10px; background: #fffaf2; box-shadow: 0 8px 28px rgb(71 48 27 / 16%);
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__more--above .lms-flashcard-deck-card__more-menu { top: auto; bottom: calc(100% + 6px); }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__more:not([open]) .lms-flashcard-deck-card__more-menu,
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__practice:not([open]) .lms-flashcard-deck-card__practice-links { display: none; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__more-menu :is(a, button) {
+  display: flex; align-items: center; justify-content: flex-start; gap: 10px; width: 100%; min-height: 40px;
+  margin: 0; padding: 8px 10px; border: 0; border-radius: 6px; background: transparent;
+  color: #6d5a44; font-size: 15px; font-weight: 500; cursor: pointer; text-decoration: none;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__more-menu :is(a, button):hover { background: #f8f1e6; color: #302117; text-decoration: none; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__more-menu .lms-flashcard-deck-card__manage-link--danger { color: #8d1f2d !important; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__more-menu [data-flashcard-reset-mastery] { border-top: 1px solid rgba(104, 74, 36, 0.15); border-radius: 0 0 6px 6px; margin-top: 4px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library :is(a, button, input, select, summary):focus-visible { outline: 3px solid #ba8b38; outline-offset: 3px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-empty { background: #fffaf2; border-color: var(--library-border); color: var(--library-muted); }
+
+/* List view retains the same card content with a wider study/action column. */
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list { display: flex; flex-direction: column; gap: 16px; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list .lms-flashcard-deck-card {
+  display: grid; grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-areas: 'top mastery' 'badges actions' 'course actions' 'desc actions' 'stats manage';
+  align-items: start; gap: 10px 32px;
+}
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list .lms-flashcard-deck-card__top { grid-area: top; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list .lms-flashcard-deck-card__badges { grid-area: badges; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list .lms-flashcard-deck-card__course-context { grid-area: course; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list .lms-flashcard-deck-card__desc { grid-area: desc; margin: 0; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list .lms-flashcard-deck-card__stats { grid-area: stats; margin: 0; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list .lms-flashcard-deck-card__mastery { grid-area: mastery; margin: 0; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list .lms-flashcard-deck-card__actions { grid-area: actions; width: 100%; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list .lms-flashcard-deck-card__manage { grid-area: manage; margin: 0; }
+/* A card's explicit display styles must never override filtering. */
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library [data-flashcard-deck].is-filtered-out { display: none !important; }
+body.route--lms-flashcard-my-decks .lms-flashcard-page--library [hidden] { display: none !important; }
+
+@media (max-width: 1100px) {
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar__filters { flex-basis: 100%; }
+}
+@media (max-width: 800px) {
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks--list .lms-flashcard-deck-card {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+}
+@media (max-width: 640px) {
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library { padding: 24px 16px 40px; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-page__title { font-size: 26px; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar { padding: 16px; gap: 16px; align-items: stretch; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar__filters,
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar__right { width: 100%; align-items: flex-end; margin: 0; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__field--search { flex-basis: 100%; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__chips { gap: 4px; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__chip { height: 40px; padding: 7px 7px; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar__right { justify-content: space-between; gap: 10px; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-filters__field--sort { flex: 1; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar select.lms-flashcard-filters__select--sort { width: 100%; min-width: 0; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-decks { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card { padding: 20px; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-deck-card__stats { margin-top: 0; }
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library .lms-flashcard-toolbar__summary { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.route--lms-flashcard-my-decks .lms-flashcard-page--library * { transition: none; }
+}

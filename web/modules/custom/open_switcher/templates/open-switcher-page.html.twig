@@ -1,79 +1,117 @@
-{#
-/**
- * @file
- * Frontend Switch User page template.
- */
-#}
+{# Use the workspace shell only for accounts with workspace access. #}
+{% set use_workspace = use_workspace ?? false %}
+{% if use_workspace %}
+  <div class="lms-admin">
+    {% include '@lms_course/lms-admin-sidebar.html.twig' with {'active': 'switch_user'} %}
+    <div class="lms-admin__main">
+{% endif %}
+<section class="open-switcher{{ use_workspace ? ' open-switcher--workspace' : '' }}" aria-labelledby="open-switcher-title">
+  <header class="open-switcher__header">
+    <div class="open-switcher__heading-group">
+      <span class="open-switcher__header-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h14m-4-4 4 4-4 4M17 17H3m4-4-4 4 4 4"/></svg>
+      </span>
+      <div>
+        <h1 id="open-switcher-title">{{ 'Switch User'|t }}</h1>
+        <p>{{ 'Choose a user account for testing and support.'|t }}</p>
+      </div>
+    </div>
+    {% if use_workspace %}
+      <a href="{{ path('lms_course.admin_dashboard') }}" class="open-switcher__button open-switcher__button--secondary open-switcher__back">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg>
+        {{ 'Back to workspace'|t }}
+      </a>
+    {% endif %}
+  </header>
 
-<div class="oc-page-header">
-  <h1 class="oc-page-header__title">🔀 {{ 'Switch User'|t }}</h1>
-  <p class="oc-text-muted">{{ 'Impersonate another user account for testing and support.'|t }}</p>
-</div>
-
-<div class="oc-switch-user">
-
-  {# Impersonation status banner #}
   {% if is_impersonating %}
-    <div class="oc-alert oc-alert--warning">
-      <strong>⚠️ {{ 'You are impersonating another user.'|t }}</strong>
-      {{ 'Original account:'|t }} <strong>{{ original_name }}</strong> (uid: {{ original_uid }})
-      <a href="{{ switch_back_url }}" class="oc-btn oc-btn--sm oc-btn--outline" style="margin-left: 12px;">
-        ⬅ {{ 'Switch Back'|t }}
+    <div class="open-switcher__return" role="status">
+      <div>
+        <strong>{{ 'You are using another user account.'|t }}</strong>
+        <p>{{ 'Original account:'|t }} <strong>{{ original_name }}</strong> <span class="open-switcher__muted">({{ 'User ID'|t }}: {{ original_uid }})</span></p>
+      </div>
+      <a href="{{ switch_back_url }}" class="open-switcher__button open-switcher__button--secondary">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg>
+        {{ 'Return to original account'|t }}
       </a>
     </div>
   {% endif %}
 
-  {# Role filter #}
-  <div class="oc-card" style="margin-bottom: 24px;">
-    <div class="oc-card__body">
-      <form method="get" action="{{ filter_url }}" style="display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap;">
-        <div style="flex: 1; min-width: 200px;">
-          <label for="role-filter" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--oc-n-600); margin-bottom: 6px;">{{ 'Filter by Role'|t }}</label>
-          <select id="role-filter" name="role" style="width: 100%; padding: 10px 14px; border: 1px solid var(--oc-n-300); border-radius: 8px; font-size: 0.9375rem; background: var(--oc-n-0); color: var(--oc-n-800); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--oc-primary-400)'" onblur="this.style.borderColor='var(--oc-n-300)'">
-            <option value="">{{ '— All roles —'|t }}</option>
-            {% for rid, label in role_options %}
-              <option value="{{ rid }}" {{ selected_role == rid ? 'selected' }}>{{ label }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <button type="submit" class="oc-btn oc-btn--primary" style="height: 44px; padding: 0 24px;">{{ 'Filter'|t }}</button>
-      </form>
-    </div>
+  <div class="open-switcher__panel open-switcher__filters">
+    <form method="get" action="{{ filter_url }}" class="open-switcher__filter-form">
+      <div class="open-switcher__field">
+        <label for="open-switcher-role">{{ 'User role'|t }}</label>
+        <select id="open-switcher-role" name="role">
+          <option value="">{{ 'All roles'|t }}</option>
+          {% for rid, label in role_options %}
+            <option value="{{ rid }}"{% if selected_role == rid %} selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="open-switcher__filter-actions">
+        <button type="submit" class="open-switcher__button">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6 7v6l-4 2v-8L4 5Z"/></svg>
+          {{ 'Apply filter'|t }}
+        </button>
+        <a href="{{ filter_url }}" class="open-switcher__button open-switcher__button--secondary">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></svg>
+          {{ 'Reset'|t }}
+        </a>
+      </div>
+    </form>
   </div>
 
-  {# Users table #}
-  {% if users|length > 0 %}
-    <div class="oc-card">
-      <div class="oc-table-responsive">
-        <table class="oc-table">
+  <div class="open-switcher__panel">
+    <div class="open-switcher__list-header">
+      <h2>{{ 'User accounts'|t }}</h2>
+      <span class="open-switcher__count">{{ 'Accounts shown: @count'|t({'@count': users|length}) }}</span>
+    </div>
+    {% if users|length > 0 %}
+      <p class="open-switcher__scroll-hint">{{ 'Scroll horizontally to view all columns.'|t }}</p>
+      <div class="open-switcher__table-scroll" role="region" aria-label="{{ 'User accounts'|t }}" tabindex="0">
+        <table class="open-switcher__table">
+          <caption class="open-switcher__visually-hidden">{{ 'User accounts available for switching'|t }}</caption>
           <thead>
             <tr>
-              <th>{{ 'UID'|t }}</th>
-              <th>{{ 'Username'|t }}</th>
-              <th>{{ 'Email'|t }}</th>
-              <th>{{ 'Roles'|t }}</th>
-              <th style="text-align: center;">{{ 'Action'|t }}</th>
+              <th scope="col" class="open-switcher__id">{{ 'User ID'|t }}</th>
+              <th scope="col" class="open-switcher__username">{{ 'Username'|t }}</th>
+              <th scope="col" class="open-switcher__email">{{ 'Email'|t }}</th>
+              <th scope="col" class="open-switcher__role-column">{{ 'Roles'|t }}</th>
+              <th scope="col" class="open-switcher__action">{{ 'Action'|t }}</th>
             </tr>
           </thead>
           <tbody>
             {% for user in users %}
-              <tr>
-                <td style="color: var(--oc-n-400);">{{ user.uid }}</td>
-                <td><strong>{{ user.name }}</strong></td>
-                <td style="color: var(--oc-n-500);">{{ user.email }}</td>
-                <td>
-                  {% for role in user.roles %}
-                    <span class="oc-badge oc-badge--info">{{ role }}</span>
-                  {% else %}
-                    <span style="color: var(--oc-n-400); font-style: italic;">{{ '(authenticated)'|t }}</span>
-                  {% endfor %}
+              <tr{% if user.is_current %} class="open-switcher__current-row"{% endif %}>
+                <td class="open-switcher__id open-switcher__muted">{{ user.uid }}</td>
+                <th scope="row" class="open-switcher__username">
+                  {% set name_parts = user.name|trim|split(' ') %}
+                  {% set initials = name_parts|length > 1 ? (name_parts|first|slice(0, 1) ~ name_parts|last|slice(0, 1)) : user.name|slice(0, 2) %}
+                  <div class="open-switcher__account">
+                    <span class="open-switcher__avatar open-switcher__avatar--{{ loop.index0 % 3 }}" aria-hidden="true">{{ initials|upper }}</span>
+                    <span class="open-switcher__account-name">{{ user.name }}</span>
+                  </div>
+                </th>
+                <td class="open-switcher__email">{{ user.email }}</td>
+                <td class="open-switcher__role-column">
+                  <div class="open-switcher__roles">
+                    {% for role in user.roles %}
+                      <span class="open-switcher__badge">{{ role }}</span>
+                    {% else %}
+                      <span class="open-switcher__badge">{{ 'Authenticated user'|t }}</span>
+                    {% endfor %}
+                  </div>
                 </td>
-                <td style="text-align: center;">
+                <td class="open-switcher__action">
                   {% if user.is_current %}
-                    <span class="oc-badge oc-badge--success">{{ '✓ Current'|t }}</span>
+                    <span class="open-switcher__badge open-switcher__badge--current">
+                      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>
+                      {{ 'Current account'|t }}
+                    </span>
                   {% else %}
-                    <a href="{{ user.switch_url }}" class="oc-btn oc-btn--sm" style="background: #2563eb; color: #fff; border: none; font-weight: 600;">
-                      🔀 {{ 'Switch'|t }}
+                    <a href="{{ user.switch_url }}" class="open-switcher__button open-switcher__button--compact" aria-label="{{ 'Switch to @name'|t({'@name': user.name}) }}">
+                      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h14m-4-4 4 4-4 4M17 17H3m4-4-4 4 4 4"/></svg>
+                      {{ 'Switch user'|t }}
                     </a>
                   {% endif %}
                 </td>
@@ -82,11 +120,16 @@
           </tbody>
         </table>
       </div>
+    {% else %}
+      <div class="open-switcher__empty">
+        <h3>{{ 'No matching accounts'|t }}</h3>
+        <p>{{ 'No users match the selected role. Choose another role or reset the filter.'|t }}</p>
+        <a href="{{ filter_url }}" class="open-switcher__button open-switcher__button--secondary">{{ 'Show all accounts'|t }}</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% if use_workspace %}
     </div>
-  {% else %}
-    <div class="oc-empty-state">
-      <p>{{ 'No users found matching the selected filter.'|t }}</p>
-    </div>
-  {% endif %}
-
-</div>
+  </div>
+{% endif %}

@@ -31,7 +31,13 @@ final class ContentToolsController extends ControllerBase {
    * Dashboard page listing available content tools.
    */
   public function dashboard(): array {
-    $build = [];
+    $build = [
+      '#theme_wrappers' => ['lms_workspace_shell'],
+      '#workspace_title' => $this->t('Content Tools'),
+      '#workspace_subtitle' => $this->t('Manage content cleanup and training program input.'),
+      '#workspace_active' => 'content_tools',
+      '#attached' => ['library' => ['lms_theme/workspace']],
+    ];
 
     // Count total entities.
     $totalEntities = 0;
@@ -53,18 +59,18 @@ final class ContentToolsController extends ControllerBase {
 
     $build['tools'] = [
       '#type' => 'container',
-      '#attributes' => ['style' => 'display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0;'],
+      '#attributes' => ['class' => ['lms-admin-tools-grid']],
     ];
 
     // Clean Content card.
     $build['tools']['clean'] = [
       '#type' => 'inline_template',
       '#template' => '
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #fff;">
+        <div class="lms-admin-card">
           <h3>🗑 {{ title }}</h3>
           <p>{{ description }}</p>
           <p><strong>{{ status_label }}:</strong> {{ entity_count }} entities</p>
-          <a href="{{ url }}" class="button button--danger">{{ action }}</a>
+          <a href="{{ url }}" class="btn-lms-secondary lms-button--danger">{{ action }}</a>
         </div>',
       '#context' => [
         'title' => $this->t('Clean Content'),
@@ -80,11 +86,11 @@ final class ContentToolsController extends ControllerBase {
     $build['tools']['seed'] = [
       '#type' => 'inline_template',
       '#template' => '
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #fff;">
+        <div class="lms-admin-card">
           <h3>📝 {{ title }}</h3>
           <p>{{ description }}</p>
           <p><strong>{{ status_label }}:</strong> {{ seed_status }}</p>
-          <a href="{{ url }}" class="button button--primary">{{ action }}</a>
+          <a href="{{ url }}" class="btn-lms-primary">{{ action }}</a>
         </div>',
       '#context' => [
         'title' => $this->t('Seed Input'),
@@ -100,7 +106,7 @@ final class ContentToolsController extends ControllerBase {
     $build['tools']['generator'] = [
       '#type' => 'inline_template',
       '#template' => '
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #fff;">
+        <div class="lms-admin-card">
           <h3>🤖 {{ title }}</h3>
           <p>{{ description }}</p>
           <p><strong>{{ status_label }}:</strong> {{ generated_status }}</p>

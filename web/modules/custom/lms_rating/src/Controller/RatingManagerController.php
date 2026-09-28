@@ -19,6 +19,11 @@ class RatingManagerController extends ControllerBase {
    */
   public function list(Request $request) {
     $storage = $this->entityTypeManager()->getStorage('lms_rating');
+    $filters = [
+      'search' => trim((string) $request->query->get('search', '')),
+      'status' => (string) $request->query->get('status', 'all'),
+      'score' => (string) $request->query->get('score', 'all'),
+    ];
     
     // Default sorting and pagination
     $query = $storage->getQuery()
@@ -26,6 +31,15 @@ class RatingManagerController extends ControllerBase {
       ->accessCheck(FALSE)
       ->pager(15);
       
+    if ($filters['search'] !== '') {
+      $query->condition('field_review', '%' . $filters['search'] . '%', 'LIKE');
+    }
+    if (in_array($filters['status'], ['approved', 'pending'], TRUE)) {
+      $query->condition('field_approved', $filters['status'] === 'approved' ? 1 : 0);
+    }
+    if (in_array($filters['score'], ['1', '2', '3', '4', '5'], TRUE)) {
+      $query->condition('field_score', (int) $filters['score']);
+    }
     $ids = $query->execute();
     $ratings = $ids ? $storage->loadMultiple($ids) : [];
 
@@ -76,6 +90,8 @@ class RatingManagerController extends ControllerBase {
     return [
       '#theme' => 'lms_admin_ratings',
       '#ratings' => $items,
+      '#filters' => $filters,
+      '#cache' => ['contexts' => ['url.query_args'], 'tags' => ['lms_rating_list', 'user_list', 'lms_course_list']],
       '#pager' => ['#type' => 'pager'],
       '#active' => 'content_ratings',
     ];

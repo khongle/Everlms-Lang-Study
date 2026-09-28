@@ -5,11 +5,11 @@
   {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: active_menu } %}
 
   <div class="lms-admin__main">
-    <div class="lms-admin__header" style="padding-top: 3rem;">
-      <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ title }}</h1>
+    <div class="lms-admin__header">
+      <h1 class="lms-admin__title">{{ title }}</h1>
     </div>
 
-    <div class="lms-admin-card" style="padding: 2.5rem; background: #0b0f19; border-top: 1px solid rgba(255,255,255,0.05); min-height: calc(100vh - 100px);">
+    <div class="lms-admin-card lms-admin-form-card">
       <style>
         /* HIDE GLOBAL NAVBAR IN WORKSPACE TO SAVE VERTICAL SPACE */
         .lms-navbar {
@@ -20,7 +20,7 @@
         .lms-admin-user-form-wrapper {
           background: #ffffff; /* Clean white */
           border-radius: 0.5rem;
-          padding: 2.5rem;
+          padding: 1.5rem;
           color: #334155;
           box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Soft premium shadow */
         }
@@ -35,7 +35,7 @@
           color: #334155;
           font-weight: 600;
           margin-bottom: 0.5rem;
-          font-size: 0.95rem;
+          font-size: 15px;
         }
 
         /* Light Inputs - Overriding _workspace-admin.scss bleeding dark mode */

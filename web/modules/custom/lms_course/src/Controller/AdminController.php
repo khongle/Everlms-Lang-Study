@@ -105,10 +105,10 @@ final class AdminController extends ControllerBase {
    */
   public function courseList() {
     $request = \Drupal::request();
-    $status_filter = $request->query->get('status');
-    $category_filter = $request->query->get('category');
-    $instructor_filter = $request->query->get('instructor');
-    $search_filter = $request->query->get('search');
+    $status_filter = $request->query->get('status', 'all');
+    $category_filter = $request->query->get('category', 'all');
+    $instructor_filter = $request->query->get('instructor', 'all');
+    $search_filter = $request->query->get('search', '');
     $account = $this->currentUser();
 
     $query = $this->entityTypeManager->getStorage('lms_course')->getQuery()
@@ -272,57 +272,58 @@ final class AdminController extends ControllerBase {
   /**
    * Quiz management list.
    */
-  public function quizList(): array {
-    $ids = $this->entityTypeManager->getStorage('lms_quiz')
-      ->getQuery()
-      ->sort('created', 'DESC')
-      ->accessCheck(FALSE)
-      ->execute();
-    $quizzes = $ids
-      ? $this->entityTypeManager->getStorage('lms_quiz')->loadMultiple($ids)
-      : [];
-
+  public function quizList(\Symfony\Component\HttpFoundation\Request $request): array {
+    $search = trim((string) $request->query->get('search', ''));
+    $status = (string) $request->query->get('status', 'all');
+    $course_filter = (string) $request->query->get('course', 'all');
+    $storage = $this->entityTypeManager->getStorage('lms_quiz');
+    $query = $storage->getQuery()->sort('created', 'DESC')->accessCheck(FALSE)->pager(20);
+    if ($search !== '') {
+      $query->condition('name', '%' . $search . '%', 'LIKE');
+    }
+    if (in_array($status, ['active', 'draft'], TRUE)) {
+      $query->condition('status', $status === 'active' ? 1 : 0);
+    }
+    if (ctype_digit($course_filter)) {
+      $query->condition('field_course', (int) $course_filter);
+    }
+    $ids = $query->execute();
+    $quizzes = $ids ? $storage->loadMultiple($ids) : [];
     $items = [];
     $total_questions = 0;
-    
+    $active_quizzes = 0;
     foreach ($quizzes as $quiz) {
-      $course_label = 'None';
-      if ($quiz->hasField('field_course') && !$quiz->get('field_course')->isEmpty()) {
-        $course_label = $quiz->get('field_course')->entity ? $quiz->get('field_course')->entity->label() : 'None';
-      }
-      
+      $course = $quiz->hasField('field_course') ? $quiz->get('field_course')->entity : NULL;
       $question_count = count($quiz->get('field_questions'));
       $total_questions += $question_count;
-
-      // Use actual attempts if available
-      $attempts = $quiz->hasField('field_take_quiz_number') && !$quiz->get('field_take_quiz_number')->isEmpty() 
-        ? (int) $quiz->get('field_take_quiz_number')->value 
-        : rand(1, 5);
-
+      $active = $quiz->hasField('status') && $quiz->get('status')->value;
+      $active_quizzes += $active ? 1 : 0;
       $items[] = [
         'id' => $quiz->id(),
         'name' => $quiz->label(),
-        'course' => $course_label,
+        'course' => $course ? $course->label() : $this->t('No linked course'),
         'question_count' => $question_count,
         'time_limit' => $quiz->hasField('field_time_limit') ? (int) ($quiz->get('field_time_limit')->value ?? 0) : 0,
         'pass_score' => $quiz->hasField('field_threshold') ? (float) ($quiz->get('field_threshold')->value ?? 0) : 0,
-        'attempts' => $attempts,
-        'status' => $quiz->hasField('status') && $quiz->get('status')->value ? 'Active' : 'Draft',
+        'attempts' => $quiz->hasField('field_take_quiz_number') ? (int) ($quiz->get('field_take_quiz_number')->value ?? 0) : 0,
+        'status' => $active ? 'Active' : 'Draft',
         'edit_url' => \Drupal\Core\Url::fromRoute('lms_course.admin_quiz.edit', ['lms_quiz' => $quiz->id()], ['query' => ['destination' => '/workspace/quizzes']])->toString(),
       ];
     }
-
-    $quick_stats = [
-      'total_quizzes' => count($quizzes),
-      'bank_questions' => $total_questions,
-      'pending_grading' => 5, // Mock value as per design
-    ];
-
+    $course_options = [];
+    foreach ($this->entityTypeManager->getStorage('lms_course')->loadMultiple() as $course) {
+      $course_options[$course->id()] = $course->label();
+    }
+    asort($course_options);
     return [
       '#theme' => 'lms_admin_quizzes',
       '#quizzes' => $items,
-      '#quick_stats' => $quick_stats,
+      '#quick_stats' => ['total_quizzes' => count($items), 'bank_questions' => $total_questions, 'active_quizzes' => $active_quizzes],
+      '#filters' => ['search' => $search, 'status' => $status, 'course' => $course_filter],
+      '#course_options' => $course_options,
+      '#pager' => ['#type' => 'pager'],
       '#add_quiz_url' => \Drupal\Core\Url::fromRoute('lms_course.admin_quiz.create', [], ['query' => ['destination' => '/workspace/quizzes']])->toString(),
+      '#cache' => ['contexts' => ['url.query_args'], 'tags' => ['lms_quiz_list', 'lms_course_list']],
     ];
   }
 
@@ -485,11 +486,11 @@ final class AdminController extends ControllerBase {
       $primary_role = !empty($roles) ? reset($roles) : 'student';
 
       $switch_url = '';
-      if (\Drupal::moduleHandler()->moduleExists('open_switcher')) {
-        // Protect Super Admin if the current user isn't. Protect self-impersonation.
-        if (!((int) $user->id() === 1 && (int) \Drupal::currentUser()->id() !== 1) && (int) $user->id() !== (int) \Drupal::currentUser()->id()) {
-          $switch_url = \Drupal\Core\Url::fromRoute('open_switcher.switch_to', ['user' => $user->id()])->toString();
-        }
+      if (\Drupal::moduleHandler()->moduleExists('open_switcher')
+        && \Drupal::currentUser()->hasPermission('switch users')
+        && \Drupal\open_switcher\Controller\SwitchController::isSwitchableAccount($user)
+        && (int) $user->id() !== (int) \Drupal::currentUser()->id()) {
+        $switch_url = \Drupal\Core\Url::fromRoute('open_switcher.switch_to', ['user' => $user->id()])->toString();
       }
 
       $items[] = [
@@ -599,7 +600,14 @@ final class AdminController extends ControllerBase {
   /**
    * Reports page.
    */
-  public function reports(): array {
+  public function reports(\Symfony\Component\HttpFoundation\Request $request): array {
+    $filters = [
+      'course_search' => trim((string) $request->query->get('course_search', '')),
+      'learner_search' => trim((string) $request->query->get('learner_search', '')),
+      'quiz_search' => trim((string) $request->query->get('quiz_search', '')),
+      'course_status' => (string) $request->query->get('course_status', 'all'),
+      'inactive_days' => (string) $request->query->get('inactive_days', ''),
+    ];
     // Top-level enrollment metrics
     $enrollment_count = (int) $this->entityTypeManager->getStorage('lms_user_course')
       ->getQuery()->accessCheck(FALSE)->count()->execute();
@@ -618,17 +626,18 @@ final class AdminController extends ControllerBase {
     $quiz_stats = [];
 
     if (\Drupal::hasService('lms_analytics.course_report')) {
-      $course_stats = \Drupal::service('lms_analytics.course_report')->getCourseStats([], 100, 0);
+      $course_stats = \Drupal::service('lms_analytics.course_report')->getCourseStats(['search' => $filters['course_search'], 'status' => in_array($filters['course_status'], ['published', 'draft'], TRUE) ? $filters['course_status'] : ''], 100, 0);
     }
     if (\Drupal::hasService('lms_analytics.user_report')) {
-      $user_stats = \Drupal::service('lms_analytics.user_report')->getOverviewList([], 100, 0);
+      $user_stats = \Drupal::service('lms_analytics.user_report')->getOverviewList(['search' => $filters['learner_search'], 'inactive_days' => in_array($filters['inactive_days'], ['7', '30', '90'], TRUE) ? (int) $filters['inactive_days'] : 0], 100, 0);
     }
     if (\Drupal::hasService('lms_analytics.quiz_analytics')) {
-      $quiz_stats = \Drupal::service('lms_analytics.quiz_analytics')->getQuizOverview([], 100, 0);
+      $quiz_stats = \Drupal::service('lms_analytics.quiz_analytics')->getQuizOverview(['search' => $filters['quiz_search']], 100, 0);
     }
 
     return [
       '#theme' => 'lms_admin_reports_v2',
+      '#filters' => $filters,
       '#metrics' => [
         'total_enrollments' => $enrollment_count,
         'completions' => $completion_count,

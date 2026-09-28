@@ -8,13 +8,17 @@
    counts) is already in `decks` below, so this filters in JS instead of a
    round trip — see js/flashcard-my-decks.js. #}
 {% set languages = [] %}
+{% set standalone_deck_count = 0 %}
 {% for deck in decks %}
+  {% if not deck.course %}
+    {% set standalone_deck_count = standalone_deck_count + 1 %}
+  {% endif %}
   {% if deck.language and deck.language not in languages %}
     {% set languages = languages|merge([deck.language]) %}
   {% endif %}
 {% endfor %}
 
-<section class="lms-section lms-flashcard-page">
+<section class="lms-section lms-flashcard-page lms-flashcard-page--library">
   <div class="container">
     <div class="lms-flashcard-page__header">
       <h1 class="lms-flashcard-page__title">{{ 'My Flashcards'|t }}</h1>
@@ -30,61 +34,65 @@
     {% else %}
       <div class="lms-flashcard-toolbar" data-flashcard-filters>
         <div class="lms-flashcard-toolbar__filters">
-          <div class="lms-flashcard-filters__search">
-            <i class="fas fa-search"></i>
-            <input type="search" class="lms-flashcard-filters__input" data-filter-search placeholder="{{ 'Search decks…'|t }}" aria-label="{{ 'Search decks'|t }}">
+          <div class="lms-flashcard-filters__field lms-flashcard-filters__field--search">
+            <label for="flashcard-deck-search">{{ 'Search decks'|t }}</label>
+            <div class="lms-flashcard-filters__search">
+              <i class="fas fa-search" aria-hidden="true"></i>
+              <input type="search" id="flashcard-deck-search" class="lms-flashcard-filters__input" data-filter-search placeholder="{{ 'Search decks…'|t }}" aria-label="{{ 'Search decks'|t }}">
+            </div>
           </div>
 
           {% if languages|length > 1 %}
-            <select class="lms-flashcard-filters__select" data-filter-language aria-label="{{ 'Filter by language'|t }}">
-              <option value="">{{ 'All languages'|t }}</option>
-              {% for lang in languages %}
-                <option value="{{ lang }}">{{ lang }}</option>
-              {% endfor %}
-            </select>
+            <div class="lms-flashcard-filters__field lms-flashcard-filters__field--language">
+              <label for="flashcard-deck-language">{{ 'Language'|t }}</label>
+              <select id="flashcard-deck-language" class="lms-flashcard-filters__select" data-filter-language aria-label="{{ 'Filter by language'|t }}">
+                <option value="">{{ 'All languages'|t }}</option>
+                {% for lang in languages %}
+                  <option value="{{ lang }}">{{ lang }}</option>
+                {% endfor %}
+              </select>
+            </div>
           {% endif %}
 
           <div class="lms-flashcard-filters__chips" role="group" aria-label="{{ 'Filter decks'|t }}">
-            <button type="button" class="lms-flashcard-filters__chip is-active" data-filter-chip="all">{{ 'All'|t }}</button>
-            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="course"><i class="fas fa-graduation-cap"></i> {{ 'Courses'|t }}</button>
-            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="mine">{{ 'Mine'|t }}</button>
-            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="due">{{ 'Due'|t }}</button>
-            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="new">{{ 'New'|t }}</button>
+            <button type="button" class="lms-flashcard-filters__chip is-active" data-filter-chip="all" aria-pressed="true">{{ 'All'|t }}</button>
+            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="course" aria-pressed="false"><i class="fas fa-graduation-cap" aria-hidden="true"></i> {{ 'Courses'|t }}</button>
+            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="mine" aria-pressed="false">{{ 'Mine'|t }}</button>
+            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="due" aria-pressed="false">{{ 'Due'|t }}</button>
+            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="new" aria-pressed="false">{{ 'New'|t }}</button>
           </div>
         </div>
 
-        {# Sort + grid/list view grouped together on the right, separate
-           from the search/language/status filters on the left — was a
-           plain <select> stretching full-width on its own row before,
-           disconnected from everything above it. data-created on each
-           card (below) is what "Newest first"/"Oldest first" sort by;
-           the view toggle's preference is remembered per browser — both
-           in js/flashcard-my-decks.js. #}
         <div class="lms-flashcard-toolbar__right">
-          <select class="lms-flashcard-filters__select lms-flashcard-filters__select--sort" data-sort-select aria-label="{{ 'Sort decks'|t }}">
-            <option value="created_desc" selected="selected">{{ 'Newest first'|t }}</option>
-            <option value="created_asc">{{ 'Oldest first'|t }}</option>
-            <option value="name_asc">{{ 'Name (A–Z)'|t }}</option>
-          </select>
-
+          <div class="lms-flashcard-filters__field lms-flashcard-filters__field--sort">
+            <select id="flashcard-deck-sort" class="lms-flashcard-filters__select lms-flashcard-filters__select--sort" data-sort-select aria-label="{{ 'Sort decks'|t }}">
+              <option value="created_desc" selected="selected">{{ 'Newest first'|t }}</option>
+              <option value="created_asc">{{ 'Oldest first'|t }}</option>
+              <option value="name_asc">{{ 'Name (A–Z)'|t }}</option>
+            </select>
+          </div>
           <div class="lms-flashcard-toolbar__view" role="group" aria-label="{{ 'View mode'|t }}">
-            <button type="button" class="lms-flashcard-view-btn is-active" data-view-toggle="grid" aria-pressed="true" title="{{ 'Grid view'|t }}">
-              <i class="fas fa-grip"></i>
+            <button type="button" class="lms-flashcard-view-btn is-active" data-view-toggle="grid" aria-pressed="true" title="{{ 'Grid view'|t }}" aria-label="{{ 'Grid view'|t }}">
+              <i class="fas fa-grip" aria-hidden="true"></i>
             </button>
-            <button type="button" class="lms-flashcard-view-btn" data-view-toggle="list" aria-pressed="false" title="{{ 'List view'|t }}">
-              <i class="fas fa-list"></i>
+            <button type="button" class="lms-flashcard-view-btn" data-view-toggle="list" aria-pressed="false" title="{{ 'List view'|t }}" aria-label="{{ 'List view'|t }}">
+              <i class="fas fa-list" aria-hidden="true"></i>
             </button>
           </div>
+        </div>
+        <div class="lms-flashcard-toolbar__summary">
+          <span data-filter-results role="status" aria-live="polite">{{ '@shown of @total decks'|t({'@shown': standalone_deck_count, '@total': decks|length}) }}</span>
+          <button type="button" class="lms-flashcard-filters__reset" data-filter-reset>{{ 'Clear filters'|t }}</button>
         </div>
       </div>
 
-      <p class="lms-flashcard-empty lms-flashcard-filters__no-match" data-filter-empty hidden>
+      <p class="lms-flashcard-empty lms-flashcard-filters__no-match" data-filter-empty{% if standalone_deck_count > 0 %} hidden{% endif %}>
         {{ 'No decks match your filters.'|t }}
       </p>
 
       <div class="lms-flashcard-decks" data-flashcard-deck-grid>
         {% for deck in decks %}
-          <div class="lms-flashcard-deck-card"
+          <div class="lms-flashcard-deck-card{{ deck.course ? ' is-filtered-out' : '' }}"
             data-flashcard-deck
             data-name="{{ deck.name|lower }}"
             data-desc="{{ deck.description|default('')|striptags|lower }}"
@@ -98,7 +106,8 @@
               <h3 class="lms-flashcard-deck-card__title">
                 <a href="{{ path('lms_flashcard.deck_detail', {'lms_flashcard_deck': deck.entity.id()}) }}">{{ deck.name }}</a>
               </h3>
-              <div class="lms-flashcard-deck-card__badges">
+            </div>
+            <div class="lms-flashcard-deck-card__badges">
                 {% if deck.course %}
                   <span class="lms-flashcard-deck-card__badge lms-flashcard-deck-card__badge--course" title="{{ 'Associated Course: ' ~ deck.course.name }}">
                     <i class="fas fa-graduation-cap"></i> {{ 'Course'|t }}
@@ -108,7 +117,6 @@
                   <span class="lms-flashcard-deck-card__badge lms-flashcard-deck-card__badge--mine">{{ 'Mine'|t }}</span>
                 {% endif %}
                 <span class="lms-flashcard-deck-card__badge">{{ deck.language }}</span>
-              </div>
             </div>
 
             {% if deck.course %}
@@ -142,7 +150,7 @@
 
             {# Study Now mastery — how much of this deck has cleared level 3
                right now (see StudyQueueBuilder::getMasteryPercent()), not
-               just today's due/new cards above. The "Reset" link (only
+               just today's due/new cards above. The "Reset progress" action in More (only
                shown once there's something to reset — 0% has nothing to
                undo) clears this progress bar back down so the student can
                go through Study Now again — see js/flashcard-my-decks.js's
@@ -156,13 +164,8 @@
             <div class="lms-flashcard-deck-card__mastery" title="{{ 'Study Now mastery — reach 100% to unlock the other study modes below (they stay unlocked even after resetting this)'|t }}">
               <div class="lms-flashcard-deck-card__mastery-header">
                 <span class="lms-flashcard-deck-card__mastery-label">{{ 'Mastery: @percent%'|t({'@percent': deck.mastery_percent}) }}</span>
-                {% if deck.mastery_percent > 0 %}
-                  <button type="button" class="lms-flashcard-deck-card__mastery-reset" data-flashcard-reset-mastery="{{ deck.entity.id() }}" data-deck-name="{{ deck.entity.label() }}" title="{{ 'Reset your Study Now progress for this deck'|t }}">
-                    <i class="fas fa-rotate-left"></i> {{ 'Reset'|t }}
-                  </button>
-                {% endif %}
               </div>
-              <div class="lms-flashcard-deck-card__mastery-bar">
+              <div class="lms-flashcard-deck-card__mastery-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ deck.mastery_percent }}" aria-label="{{ 'Mastery for @deck'|t({'@deck': deck.name}) }}">
                 <div class="lms-flashcard-deck-card__mastery-fill" style="width: {{ deck.mastery_percent }}%"></div>
               </div>
             </div>
@@ -173,7 +176,13 @@
                 {{ 'Study Now'|t }}
               </a>
 
-              <div class="lms-flashcard-deck-card__practice-links" aria-label="{{ 'Practice modes'|t }}">
+              <details class="lms-flashcard-deck-card__practice">
+                <summary class="lms-flashcard-deck-card__practice-summary" aria-label="{{ 'Practice modes for @deck'|t({'@deck': deck.name}) }}">
+                  <span>{{ 'Practice modes'|t }}</span>
+                  {% if not deck.practice_unlocked %}<i class="fas fa-lock" aria-hidden="true"></i>{% endif %}
+                  <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </summary>
+                <div class="lms-flashcard-deck-card__practice-links" aria-label="{{ 'Practice modes'|t }}">
                 {# Definition-first + fill-in-the-missing-letters spelling puzzle,
                    with the term read aloud right away — see StudyController::study()
                    and buildSpellPuzzle() in flashcard-study.js. Still a real SRS
@@ -261,20 +270,34 @@
                     <i class="fas fa-lock"></i> {{ 'Listening'|t }}
                   </span>
                 {% endif %}
-              </div>
+                </div>
+              </details>
+              {% if not deck.practice_unlocked %}
+                <p class="lms-flashcard-deck-card__practice-hint">{{ 'Complete Study Now to unlock practice modes.'|t }}</p>
+              {% endif %}
             </div>
 
             <div class="lms-flashcard-deck-card__manage">
-              <a href="{{ path('lms_flashcard.deck_detail', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-list-ul"></i> {{ 'Detail'|t }}</a>
-              {% if deck.is_mine %}
-                <a href="{{ path('entity.lms_flashcard_deck.edit_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-pen"></i> {{ 'Edit'|t }}</a>
-                <a href="{{ path('lms_flashcard.import') }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-plus"></i> {{ 'Add cards'|t }}</a>
-                {# JSON of every card in this deck, in the exact shape the
-                   importer accepts — meant to be pasted to an LLM for edits
-                   and re-imported afterwards without creating duplicates.
-                   See DeckExportController. #}
-                <a href="{{ path('lms_flashcard.deck_export', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-file-export"></i> {{ 'Export'|t }}</a>
-                <a href="{{ path('entity.lms_flashcard_deck.delete_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link lms-flashcard-deck-card__manage-link--danger"><i class="fas fa-trash-alt"></i> {{ 'Delete'|t }}</a>
+              <a href="{{ path('lms_flashcard.deck_detail', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-list-ul" aria-hidden="true"></i> {{ 'Detail'|t }}</a>
+              {% if deck.is_mine or deck.mastery_percent > 0 %}
+                <details class="lms-flashcard-deck-card__more">
+                  <summary class="lms-flashcard-deck-card__more-summary" aria-label="{{ 'More options for @deck'|t({'@deck': deck.name}) }}">
+                    {{ 'More'|t }} <i class="fas fa-ellipsis" aria-hidden="true"></i>
+                  </summary>
+                  <div class="lms-flashcard-deck-card__more-menu">
+                    {% if deck.is_mine %}
+                      <a href="{{ path('entity.lms_flashcard_deck.edit_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-pen" aria-hidden="true"></i> {{ 'Edit'|t }}</a>
+                      <a href="{{ path('lms_flashcard.import') }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-plus" aria-hidden="true"></i> {{ 'Add cards'|t }}</a>
+                      <a href="{{ path('lms_flashcard.deck_export', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-file-export" aria-hidden="true"></i> {{ 'Export'|t }}</a>
+                      <a href="{{ path('entity.lms_flashcard_deck.delete_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link lms-flashcard-deck-card__manage-link--danger"><i class="fas fa-trash-alt" aria-hidden="true"></i> {{ 'Delete'|t }}</a>
+                    {% endif %}
+                    {% if deck.mastery_percent > 0 %}
+                      <button type="button" class="lms-flashcard-deck-card__mastery-reset" data-flashcard-reset-mastery="{{ deck.entity.id() }}" data-deck-name="{{ deck.entity.label() }}" title="{{ 'Reset your Study Now progress for this deck'|t }}">
+                        <i class="fas fa-rotate-left" aria-hidden="true"></i> {{ 'Reset progress'|t }}
+                      </button>
+                    {% endif %}
+                  </div>
+                </details>
               {% endif %}
             </div>
           </div>

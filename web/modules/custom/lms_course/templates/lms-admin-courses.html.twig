@@ -1,4 +1,4 @@
-{# Admin Course List — matches mockup #}
+{# Workspace course management #}
 {{ attach_library('lms_theme/global') }}
 
 <div class="lms-admin">
@@ -11,31 +11,30 @@
           <h1 class="lms-admin__title">{{ 'Course Management'|t }}</h1>
           <div class="lms-admin__subtitle">{{ 'Manage and overview all learning courses'|t }}</div>
         </div>
-        <div style="display: flex; gap: 1rem; align-items: center;">
+        <div class="lms-admin-header__actions">
           <a href="{{ add_course_url }}" class="btn-lms-primary"><i class="fas fa-plus"></i> {{ 'Add New Course'|t }}</a>
         </div>
       </div>
 
       <div class="lms-admin-filter">
         <div class="lms-admin-filter__group">
-          <label class="lms-admin-filter__label">{{ 'Search title'|t }}</label>
-          <div style="position: relative;">
-            <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #64748b;"></i>
-            <input type="text" name="search" value="{{ filters.search }}" class="lms-admin-filter__input" placeholder="{{ 'Search courses...'|t }}" style="padding-left: 2.5rem !important; width: 100%; box-sizing: border-box;">
+          <label for="course-search" class="lms-admin-filter__label">{{ 'Search title'|t }}</label>
+          <div class="lms-admin-filter__search">
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <input id="course-search" type="search" name="search" value="{{ filters.search }}" class="lms-admin-filter__input" placeholder="{{ 'Search courses...'|t }}">
           </div>
         </div>
         <div class="lms-admin-filter__group">
-          <label class="lms-admin-filter__label">{{ 'Status'|t }}</label>
-          <select name="status" class="lms-admin-filter__select">
+          <label for="course-status" class="lms-admin-filter__label">{{ 'Status'|t }}</label>
+          <select id="course-status" name="status" class="lms-admin-filter__select">
             <option value="all" {% if filters.status == 'all' %}selected{% endif %}>{{ 'All'|t }}</option>
             <option value="published" {% if filters.status == 'published' %}selected{% endif %}>{{ 'Published'|t }}</option>
             <option value="draft" {% if filters.status == 'draft' %}selected{% endif %}>{{ 'Draft'|t }}</option>
-            <option value="archived" {% if filters.status == 'archived' %}selected{% endif %}>{{ 'Archived'|t }}</option>
           </select>
         </div>
         <div class="lms-admin-filter__group">
-          <label class="lms-admin-filter__label">{{ 'Category'|t }}</label>
-          <select name="category" class="lms-admin-filter__select">
+          <label for="course-category" class="lms-admin-filter__label">{{ 'Category'|t }}</label>
+          <select id="course-category" name="category" class="lms-admin-filter__select">
             <option value="all" {% if filters.category == 'all' %}selected{% endif %}>{{ 'All Categories'|t }}</option>
             {% for id, label in category_options %}
               <option value="{{ id }}" {% if filters.category == id %}selected{% endif %}>{{ label }}</option>
@@ -43,18 +42,17 @@
           </select>
         </div>
         <div class="lms-admin-filter__group">
-          <label class="lms-admin-filter__label">{{ 'Instructor'|t }}</label>
-          <select name="instructor" class="lms-admin-filter__select">
+          <label for="course-instructor" class="lms-admin-filter__label">{{ 'Instructor'|t }}</label>
+          <select id="course-instructor" name="instructor" class="lms-admin-filter__select">
             <option value="all" {% if filters.instructor == 'all' %}selected{% endif %}>{{ 'All Instructors'|t }}</option>
             {% for id, label in instructor_options %}
               <option value="{{ id }}" {% if filters.instructor == id %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
           </select>
         </div>
-        <div style="display: flex; align-items: flex-end; padding-bottom: 2px;">
-          <button type="button" id="lms-course-reset-btn" class="lms-admin-filter__select" style="cursor: pointer; color: #fff; background: rgba(255,255,255,0.05); min-width: max-content; padding-left: 1rem; padding-right: 1rem; width: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 0.375rem;">
-            <i class="fas fa-sync-alt" style="margin-right: 0.5rem"></i> {{ 'Reset'|t }}
-          </button>
+        <div class="lms-admin-filter__actions">
+          <button type="submit" class="btn-lms-primary"><i class="fas fa-filter" aria-hidden="true"></i> {{ 'Apply filters'|t }}</button>
+          <button type="button" id="lms-course-reset-btn" class="btn-lms-secondary"><i class="fas fa-undo" aria-hidden="true"></i> {{ 'Reset'|t }}</button>
         </div>
       </div>
     </form>
@@ -83,15 +81,16 @@ document.addEventListener('DOMContentLoaded', function() {
       url = new URL(form.action, window.location.origin);
       const formData = new FormData(form);
       for (const [key, value] of formData) {
-        url.searchParams.append(key, value);
+        url.searchParams.set(key, value);
       }
     }
     
+    url.searchParams.delete('ajax');
     // Update history
     history.pushState(null, '', url.toString());
     
     // Add ajax param
-    url.searchParams.append('ajax', '1');
+    url.searchParams.set('ajax', '1');
 
     fetch(url)
       .then(response => response.text())

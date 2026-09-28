@@ -1,429 +1,22 @@
-{# lms-admin-sidebar.html.twig #}
-{% set active_bg = '#1d70f5' %}
-{% set sidebar_bg = '#161b22' %}
-
-<style>
-  /* Force hide all Drupal Admin UI and reset padding */
-  #toolbar-administration,
-  #toolbar-item-administration-tray,
-  [data-toolbar-tray="toolbar-item-administration-tray"],
-  .region-header,
-  .region-breadcrumb,
-  .block-page-title-block,
-  .page-header,
-  .content-header,
-  .lms-navbar,
-  .lms-footer,
-  footer {
-    display: none !important;
-  }
-  
-  body {
-    padding-top: 0 !important;
-    background-color: #0b0f19 !important;
-  }
-
-  .dialog-off-canvas-main-canvas,
-  main,
-  .page-content,
-  .layout-container,
-  .layout-main-wrapper,
-  .layout-content,
-  body {
-    background-color: #0b0f19 !important;
-    color: #e2e8f0;
-    margin: 0;
-    min-height: 100vh;
-  }
-
-  /* Override frontend container limits to ensure admin workspace reaches full width */
-  .lms-page,
-  .lms-page__content,
-  .layout-main-wrapper,
-  .layout-container,
-  .region-content,
-  .container {
-    max-width: 100% !important;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  /* Custom Scrollbar for sleek Dark Theme */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent; 
-  }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15); 
-    border-radius: 10px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25); 
-  }
-
-  .lms-admin {
-    display: flex;
-    min-height: 100vh;
-    background-color: #0b0f19; /* Deep dark bg for main area */
-    color: #cbd5e1;
-    font-family: 'Inter', sans-serif;
-  }
-  
-  .lms-admin__sidebar {
-    width: 260px;
-    min-width: 260px;
-    background-color: {{ sidebar_bg }};
-    border-right: 1px solid rgba(255,255,255,0.05);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh !important;
-    z-index: 1000;
-    overflow-y: auto;
-  }
-  
-  .lms-admin__sidebar-brand {
-    padding: 1.5rem;
-  }
-  .lms-admin__sidebar-brand a {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #e6edf3;
-    text-decoration: none;
-    outline: none;
-  }
-  .lms-admin__sidebar-brand i { 
-    color: inherit; 
-    font-size: 1.5rem; 
-  }
-  
-  .lms-admin__nav {
-    flex: 1;
-    padding: 0 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  
-  .lms-admin__nav-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: #64748b;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    padding: 1rem 0.5rem 0.5rem;
-  }
-  
-  .lms-admin__nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    color: #94a3b8;
-    text-decoration: none;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    border-radius: 0.5rem;
-    transition: all 0.2s ease;
-  }
-  
-  .lms-admin__nav-item:hover {
-    color: #fff;
-    background: rgba(255,255,255,0.05);
-  }
-  
-  .lms-admin__nav-item--active {
-    background-color: {{ active_bg }} !important;
-    color: #fff !important;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(29, 112, 245, 0.3);
-  }
-  
-  .lms-admin__subnav-item {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 1rem 0.5rem 3.25rem;
-    color: #94a3b8;
-    font-size: 0.875rem;
-    text-decoration: none;
-    border-radius: 0.375rem;
-    transition: all 0.2s ease;
-    margin-bottom: 0.25rem;
-  }
-  .lms-admin__subnav-item:hover {
-    color: #fff;
-    background: rgba(255,255,255,0.05);
-  }
-  .lms-admin__subnav-item--active {
-    color: #fff !important;
-    font-weight: 600;
-    background: rgba(29, 112, 245, 0.15) !important;
-    border-left: 3px solid #1d70f5;
-  }
-  
-  .lms-admin__nav-item i {
-    font-size: 1.1rem;
-    width: 20px;
-    text-align: center;
-  }
-
-  /* User Profile Snippet in Sidebar */
-  .lms-admin__sidebar-profile {
-    padding: 1.5rem;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-  }
-  
-  .lms-admin__profile-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  
-  .lms-admin__profile-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  .lms-admin__profile-text {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .lms-admin__profile-role {
-    font-size: 0.75rem;
-    color: #64748b;
-    font-weight: 600;
-    line-height: 1;
-    margin-bottom: 0.2em;
-  }
-  
-  .lms-admin__profile-name {
-    font-size: 0.9375rem;
-    color: #fff;
-    font-weight: 600;
-    line-height: 1;
-  }
-
-  /* Admin Main Area Common Styles */
-  .lms-admin__main {
-    flex: 1;
-    margin-left: 260px;
-    padding: 2.5rem;
-    padding-bottom: 2.5rem;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  .lms-admin__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 2rem;
-  }
-  .lms-admin__title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 0.25rem;
-  }
-  .lms-admin__subtitle {
-    color: #94a3b8;
-    font-size: 0.9375rem;
-  }
-  
-  /* Buttons */
-  .btn-lms-primary {
-    background-color: {{ active_bg }} !important;
-    background: none; /* override gradient */
-    color: #fff;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    padding: 0.625rem 1.25rem;
-    box-shadow: 0 4px 12px rgba(29, 112, 245, 0.2);
-  }
-  .btn-lms-primary:hover {
-    background-color: #1558c4 !important;
-  }
-
-  /* Filter Bar */
-  .lms-admin-filter {
-    background: #1e293b;
-    padding: 1rem 1.5rem;
-    border-radius: 0.75rem;
-    display: flex;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    align-items: flex-end;
-    border: 1px solid rgba(255,255,255,0.05);
-  }
-  .lms-admin-filter__group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    flex: 1;
-  }
-  .lms-admin-filter__label {
-    font-size: 0.8125rem;
-    color: #94a3b8;
-    font-weight: 600;
-  }
-  .lms-admin-filter__select, .lms-admin-filter__input {
-    background: #0f172a;
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #e2e8f0;
-    padding: 0.625rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.9375rem;
-    width: 100%;
-    outline: none;
-  }
-  .lms-admin-filter__select:focus, .lms-admin-filter__input:focus {
-    border-color: {{ active_bg }};
-  }
-  
-  /* Tables */
-  .lms-admin-card {
-    background: #1e293b;
-    border-radius: 0.75rem 0.75rem 0 0;
-    border: 1px solid rgba(255,255,255,0.05);
-    border-bottom: none;
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 0%; /* Prevent flex shifting */
-    min-height: 0;
-  }
-  .lms-table-responsive {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: auto;
-    position: relative;
-  }
-  .lms-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: transparent !important;
-  }
-  .lms-table tbody, .lms-table tr {
-    background: transparent !important;
-  }
-  .lms-table thead {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .lms-table thead th {
-    background-color: #1d70f5 !important;
-    background-clip: padding-box;
-    border-bottom: 2px solid rgba(0,0,0,0.1) !important;
-  }
-  .lms-table th {
-    background: #273445;
-    padding: 1rem 1.5rem;
-    color: #e2e8f0;
-    font-weight: 600;
-    font-size: 0.875rem;
-    text-align: left;
-    white-space: nowrap;
-  }
-  .lms-table td {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: #cbd5e1 !important;
-    font-size: 0.9375rem;
-    vertical-align: middle;
-    background: transparent !important;
-  }
-  .lms-table tbody tr:hover {
-    background: rgba(29, 112, 245, 0.05);
-  }
-  
-  /* Status Badges */
-  .lms-status {
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid transparent;
-  }
-  .lms-status--published, .lms-status--active {
-    background: rgba(16, 185, 129, 0.1);
-    color: #10b981;
-    border-color: rgba(16, 185, 129, 0.2);
-  }
-  .lms-status--draft, .lms-status--pending {
-    background: rgba(245, 158, 11, 0.1);
-    color: #f59e0b;
-    border-color: rgba(245, 158, 11, 0.2);
-  }
-  .lms-status--archived, .lms-status--inactive {
-    background: rgba(100, 116, 139, 0.1);
-    color: #94a3b8;
-    border-color: rgba(100, 116, 139, 0.2);
-  }
-  
-  /* Pagination Footer */
-  .lms-admin-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background: #1e293b;
-    font-size: 0.875rem;
-    color: #94a3b8;
-  }
-  .lms-pagination {
-    display: flex;
-    gap: 0.25rem;
-    margin: 0;
-  }
-  .lms-pagination__item {
-    padding: 0.35rem 0.75rem;
-    border-radius: 0.25rem;
-    color: #94a3b8;
-    background: transparent;
-    cursor: pointer;
-  }
-  .lms-pagination__item:hover {
-    background: rgba(255,255,255,0.05);
-  }
-  .lms-pagination__item--active {
-    background: {{ active_bg }} !important;
-    color: #fff !important;
-  }
-</style>
-
-<aside class="lms-admin__sidebar">
+{{ attach_library('lms_theme/workspace') }}
+<button type="button" class="lms-admin__menu-toggle" aria-controls="workspace-navigation" aria-expanded="false">
+  <i class="fas fa-bars" aria-hidden="true"></i> {{ 'Workspace menu'|t }}
+</button>
+<button type="button" class="lms-admin__menu-backdrop" aria-label="{{ 'Close workspace menu'|t }}" tabindex="-1" hidden></button>
+<aside class="lms-admin__sidebar" id="workspace-navigation" aria-label="{{ 'Workspace navigation'|t }}">
   <div class="lms-admin__sidebar-brand">
     <a href="{{ path('<front>') }}">
       {% if site_logo_url %}
-        <img src="{{ site_logo_url }}" alt="{{ site_logo_alt }}" style="height: 64px; width: auto; max-width: 190px; object-fit: contain;">
+        <img src="{{ site_logo_url }}" alt="{{ site_logo_alt }}" class="lms-admin__brand-logo">
       {% else %}
-        <i class="fas fa-graduation-cap" style="font-size: 1.75rem;"></i>
+        <i class="fas fa-graduation-cap" aria-hidden="true"></i>
         <span>{{ site_name }}</span>
       {% endif %}
     </a>
   </div>
   
-  <nav class="lms-admin__nav">
-    <div class="lms-admin__nav-label">Admin Navigation</div>
+  <nav class="lms-admin__nav" aria-label="{{ 'Admin navigation'|t }}">
+    <div class="lms-admin__nav-label">{{ 'Admin navigation'|t }}</div>
     <a href="{{ path('lms_course.admin_dashboard') }}" class="lms-admin__nav-item {{ active == 'dashboard' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-home"></i> {{ 'Dashboard'|t }}
     </a>
@@ -433,6 +26,11 @@
     <a href="{{ path('lms_course.admin_users') }}" class="lms-admin__nav-item {{ active == 'users' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-user-friends"></i> {{ 'User Management'|t }}
     </a>
+    {% if workspace_switch_user_url|default(null) %}
+      <a href="{{ workspace_switch_user_url }}" class="lms-admin__nav-item {{ active == 'switch_user' ? 'lms-admin__nav-item--active' }}">
+        <i class="fas fa-people-arrows" aria-hidden="true"></i> {{ 'Switch User'|t }}
+      </a>
+    {% endif %}
     <a href="{{ path('lms_course.admin_quizzes') }}" class="lms-admin__nav-item {{ active == 'quizzes' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-clipboard-check"></i> {{ 'Quiz Management'|t }}
     </a>
@@ -442,16 +40,15 @@
       </a>
     {% endif %}
     <!-- Manage Content Dropdown -->
-    {% set content_active = (active in ['content_slideshows', 'content_introductions', 'content_faqs', 'content_glossaries', 'content_news', 'content_ratings']) %}
-    <div class="lms-admin__nav-dropdown" style="display: flex; flex-direction: column;">
-      <a href="#" class="lms-admin__nav-item" style="color: {{ content_active ? '#fff' : '#94a3b8' }}; justify-content: space-between; {% if content_active %} background: rgba(255,255,255,0.03); {% endif %}"
-         onclick="const menu = this.nextElementSibling; const icon = this.querySelector('.lms-dropdown-icon'); if(menu.style.display === 'none') { menu.style.display = 'flex'; icon.style.transform = 'rotate(180deg)'; } else { menu.style.display = 'none'; icon.style.transform = 'rotate(0deg)'; } return false;">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <i class="fas fa-layer-group" style="width: 20px; text-align: center;"></i> <span style="font-weight: {{ content_active ? '600' : '500' }};">{{ 'Manage Content'|t }}</span>
+    {% set content_active = (active in ['content_slideshows', 'content_introductions', 'content_faqs', 'content_glossaries', 'content_news', 'content_ratings', 'content_tools']) %}
+    <details class="lms-admin__nav-dropdown" {{ content_active ? 'open' : '' }}>
+      <summary class="lms-admin__nav-item">
+        <div class="lms-admin__nav-link-content">
+          <i class="fas fa-layer-group" aria-hidden="true"></i> <span>{{ 'Manage Content'|t }}</span>
         </div>
-        <i class="fas fa-chevron-down lms-dropdown-icon" style="font-size: 0.8rem; transition: transform 0.2s; transform: rotate({{ content_active ? '180' : '0' }}deg);"></i>
-      </a>
-      <div class="lms-admin__dropdown-menu" style="display: {{ content_active ? 'flex' : 'none' }}; flex-direction: column; margin-top: 0.125rem;">
+        <i class="fas fa-chevron-down lms-dropdown-icon" aria-hidden="true"></i>
+      </summary>
+      <div class="lms-admin__dropdown-menu">
         <a href="/workspace/content/slideshows" class="lms-admin__subnav-item {{ active == 'content_slideshows' ? 'lms-admin__subnav-item--active' }}">
           {{ 'Slideshows'|t }}
         </a>
@@ -467,22 +64,27 @@
         <a href="/workspace/content/news" class="lms-admin__subnav-item {{ active == 'content_news' ? 'lms-admin__subnav-item--active' }}">
           {{ 'News'|t }}
         </a>
+        {% if lms_content_tools_enabled|default(false) %}
+          <a href="{{ path('lms_content_tools.dashboard') }}" class="lms-admin__subnav-item {{ active == 'content_tools' ? 'lms-admin__subnav-item--active' }}">{{ 'Content Tools'|t }}</a>
+        {% endif %}
+        {% if lms_rating_enabled|default(false) %}
         <a href="{{ path('lms_rating.admin_list') }}" class="lms-admin__subnav-item {{ active == 'content_ratings' ? 'lms-admin__subnav-item--active' }}">
           {{ 'Student Feedback'|t }}
         </a>
+        {% endif %}
       </div>
-    </div>
+    </details>
+    {% if lms_certificate_enabled|default(false) %}
     <!-- Certificate Dropdown -->
     {% set certificate_active = (active == 'certificates' or active == 'certificate_templates') %}
-    <div class="lms-admin__nav-dropdown" style="display: flex; flex-direction: column;">
-      <a href="#" class="lms-admin__nav-item" style="color: {{ certificate_active ? '#fff' : '#94a3b8' }}; justify-content: space-between; {% if certificate_active %} background: rgba(255,255,255,0.03); {% endif %}"
-         onclick="const menu = this.nextElementSibling; const icon = this.querySelector('.lms-dropdown-icon'); if(menu.style.display === 'none') { menu.style.display = 'flex'; icon.style.transform = 'rotate(180deg)'; } else { menu.style.display = 'none'; icon.style.transform = 'rotate(0deg)'; } return false;">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <i class="fas fa-award" style="width: 20px; text-align: center;"></i> <span style="font-weight: {{ certificate_active ? '600' : '500' }};">{{ 'Certificate'|t }}</span>
+    <details class="lms-admin__nav-dropdown" {{ certificate_active ? 'open' : '' }}>
+      <summary class="lms-admin__nav-item">
+        <div class="lms-admin__nav-link-content">
+          <i class="fas fa-award" aria-hidden="true"></i> <span>{{ 'Certificate'|t }}</span>
         </div>
-        <i class="fas fa-chevron-down lms-dropdown-icon" style="font-size: 0.8rem; transition: transform 0.2s; transform: rotate({{ certificate_active ? '180' : '0' }}deg);"></i>
-      </a>
-      <div class="lms-admin__dropdown-menu" style="display: {{ certificate_active ? 'flex' : 'none' }}; flex-direction: column; margin-top: 0.125rem;">
+        <i class="fas fa-chevron-down lms-dropdown-icon" aria-hidden="true"></i>
+      </summary>
+      <div class="lms-admin__dropdown-menu">
         <a href="{{ path('lms_certificate.admin_dashboard') }}" class="lms-admin__subnav-item {{ active == 'certificates' ? 'lms-admin__subnav-item--active' }}">
           {{ 'Certificate Management'|t }}
         </a>
@@ -490,22 +92,23 @@
           {{ 'Certificate Templates'|t }}
         </a>
       </div>
-    </div>
+    </details>
+    {% endif %}
     <!-- Orders -->
     <a href="{{ path('lms_course.admin_orders') }}" class="lms-admin__nav-item {{ active == 'orders' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-shopping-cart"></i> {{ 'Orders'|t }}
     </a>
+    {% if lms_membership_enabled|default(false) %}
     <!-- Membership Dropdown -->
     {% set membership_active = (active == 'pricing' or active == 'user_memberships') %}
-    <div class="lms-admin__nav-dropdown" style="display: flex; flex-direction: column;">
-      <a href="#" class="lms-admin__nav-item" style="color: {{ membership_active ? '#fff' : '#94a3b8' }}; justify-content: space-between; {% if membership_active %} background: rgba(255,255,255,0.03); {% endif %}"
-         onclick="const menu = this.nextElementSibling; const icon = this.querySelector('.lms-dropdown-icon'); if(menu.style.display === 'none') { menu.style.display = 'flex'; icon.style.transform = 'rotate(180deg)'; } else { menu.style.display = 'none'; icon.style.transform = 'rotate(0deg)'; } return false;">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <i class="fas fa-tags" style="width: 20px; text-align: center;"></i> <span style="font-weight: {{ membership_active ? '600' : '500' }};">{{ 'Membership'|t }}</span>
+    <details class="lms-admin__nav-dropdown" {{ membership_active ? 'open' : '' }}>
+      <summary class="lms-admin__nav-item">
+        <div class="lms-admin__nav-link-content">
+          <i class="fas fa-tags" aria-hidden="true"></i> <span>{{ 'Membership'|t }}</span>
         </div>
-        <i class="fas fa-chevron-down lms-dropdown-icon" style="font-size: 0.8rem; transition: transform 0.2s; transform: rotate({{ membership_active ? '180' : '0' }}deg);"></i>
-      </a>
-      <div class="lms-admin__dropdown-menu" style="display: {{ membership_active ? 'flex' : 'none' }}; flex-direction: column; margin-top: 0.125rem;">
+        <i class="fas fa-chevron-down lms-dropdown-icon" aria-hidden="true"></i>
+      </summary>
+      <div class="lms-admin__dropdown-menu">
         <a href="{{ path('lms_membership.admin_pricing') }}" class="lms-admin__subnav-item {{ active == 'pricing' ? 'lms-admin__subnav-item--active' }}">
           {{ 'Pricing'|t }}
         </a>
@@ -513,14 +116,15 @@
           {{ 'User Memberships'|t }}
         </a>
       </div>
-    </div>
+    </details>
+    {% endif %}
     <a href="{{ path('lms_course.admin_reports') }}" class="lms-admin__nav-item {{ active == 'reports' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-chart-line"></i> {{ 'Reports'|t }}
     </a>
-    <a href="#" class="lms-admin__nav-item {{ active == 'settings' ? 'lms-admin__nav-item--active' }}">
+    <a href="/admin/config" class="lms-admin__nav-item {{ active == 'settings' ? 'lms-admin__nav-item--active' }}">
       <i class="fas fa-cog"></i> {{ 'Settings'|t }}
     </a>
-    <a href="#" class="lms-admin__nav-item {{ active == 'support' ? 'lms-admin__nav-item--active' }}">
+    <a href="{{ path('lms_course.contact') }}" class="lms-admin__nav-item {{ active == 'support' ? 'lms-admin__nav-item--active' }}">
       <i class="far fa-question-circle"></i> {{ 'Support'|t }}
     </a>
   </nav>
@@ -535,8 +139,8 @@
       </div>
     </div>
   </div>
-  <div style="padding: 0 1.5rem 1.5rem;">
-    <a href="{{ path('user.logout') }}" style="display: block; text-align: center; padding: 0.75rem; background: rgba(245, 87, 108, 0.1); color: #f5576c; border-radius: 0.5rem; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: all 0.2s ease;">
+  <div class="lms-admin__sidebar-footer">
+    <a href="{{ path('user.logout') }}" class="lms-admin__logout">
       <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i> {{ 'Logout'|t }}
     </a>
   </div>

@@ -9,3 +9,8 @@ impersonation_dialog:
     - core/drupal
     - core/drupalSettings
     - core/once
+
+switch_user:
+  css:
+    theme:
+      css/switch-user.css: { weight: 1300 }

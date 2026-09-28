@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\open_switcher\Form;
 
 use Drupal\Core\Form\FormBase;
+use Drupal\open_switcher\Controller\SwitchController;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\user\Entity\Role;
@@ -19,6 +20,7 @@ class SwitchUserForm extends FormBase {
   }
 
   public function buildForm(array $form, FormStateInterface $form_state): array {
+    $form['#attached']['library'][] = 'open_switcher/switch_user';
     $request = $this->getRequest();
 
     // Show current impersonation status.
@@ -40,10 +42,14 @@ class SwitchUserForm extends FormBase {
     // Role filter.
     $roles = Role::loadMultiple();
     $roleOptions = ['' => $this->t('— All roles —')];
+    $administratorRoles = ['administrator'];
     foreach ($roles as $role) {
       $rid = $role->id();
       // Exclude anonymous, authenticated (base), and administrator.
-      if (in_array($rid, ['anonymous', 'authenticated', 'administrator'])) {
+      if ($role->isAdmin()) {
+        $administratorRoles[] = $rid;
+      }
+      if ($role->isAdmin() || in_array($rid, ['anonymous', 'authenticated', 'administrator'], TRUE)) {
         continue;
       }
       $roleOptions[$rid] = $role->label();
@@ -86,7 +92,7 @@ class SwitchUserForm extends FormBase {
     // Exclude admin users.
     $adminIds = $userStorage->getQuery()
       ->accessCheck(FALSE)
-      ->condition('roles', 'administrator')
+      ->condition('roles', array_unique($administratorRoles), 'IN')
       ->execute();
     if ($adminIds) {
       $query->condition('uid', $adminIds, 'NOT IN');
@@ -99,6 +105,8 @@ class SwitchUserForm extends FormBase {
     // Build table.
     $form['users'] = [
       '#type' => 'table',
+      '#prefix' => '<div class="open-switcher-admin-table-scroll" tabindex="0" role="region" aria-label="' . \Drupal\Component\Utility\Html::escape((string) $this->t('User accounts')) . '">',
+      '#suffix' => '</div>',
       '#header' => [
         $this->t('UID'),
         $this->t('Username'),
@@ -112,6 +120,9 @@ class SwitchUserForm extends FormBase {
 
     $currentUid = (int) \Drupal::currentUser()->id();
     foreach ($users as $user) {
+      if (!SwitchController::isSwitchableAccount($user)) {
+        continue;
+      }
       $uid = (int) $user->id();
       $userRoles = $user->getRoles(TRUE); // Exclude 'authenticated'.
       $roleLabels = [];
@@ -124,13 +135,13 @@ class SwitchUserForm extends FormBase {
         '#markup' => $uid,
       ];
       $form['users'][$uid]['name'] = [
-        '#markup' => $user->getDisplayName(),
+        '#plain_text' => $user->getDisplayName(),
       ];
       $form['users'][$uid]['email'] = [
-        '#markup' => $user->getEmail() ?: '—',
+        '#plain_text' => $user->getEmail() ?: '—',
       ];
       $form['users'][$uid]['roles'] = [
-        '#markup' => implode(', ', $roleLabels) ?: '<em>' . $this->t('(authenticated only)') . '</em>',
+        '#plain_text' => implode(', ', $roleLabels) ?: $this->t('(authenticated only)'),
       ];
       $form['users'][$uid]['status'] = [
         '#markup' => $user->isActive() ? '✅ Active' : '❌ Blocked',
@@ -148,7 +159,7 @@ class SwitchUserForm extends FormBase {
           '#url' => Url::fromRoute('open_switcher.switch_to', ['user' => $uid]),
           '#attributes' => [
             'class' => ['button', 'button--small', 'button--primary'],
-            'onclick' => "return confirm('" . $this->t('Switch to @name?', ['@name' => $user->getDisplayName()]) . "');",
+            'onclick' => 'return confirm(' . json_encode((string) $this->t('Switch to this user?'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) . ');',
           ],
         ];
       }

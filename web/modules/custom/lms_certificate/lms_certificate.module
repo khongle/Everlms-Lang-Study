@@ -33,12 +33,16 @@ function lms_certificate_theme($existing, $type, $theme, $path) {
       'variables' => [
         'stats' => [],
         'certificates' => [],
+        'filters' => [],
+        'pager' => [],
       ],
       'template' => 'lms-admin-certificates',
     ],
     'lms_admin_certificate_templates' => [
       'variables' => [
         'templates' => [],
+        'filters' => [],
+        'pager' => [],
         'add_template_url' => NULL,
       ],
       'template' => 'lms-admin-certificate-templates',

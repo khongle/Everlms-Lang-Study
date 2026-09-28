@@ -8,11 +8,19 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Drupal\user\Entity\Role;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Frontend controller for the Switch User page.
  */
 class SwitchFrontendController extends ControllerBase {
+
+  /**
+   * Redirects the former header URL while retaining selected filters.
+   */
+  public function legacyPage(Request $request): RedirectResponse {
+    return $this->redirect('open_switcher.frontend', [], ['query' => $request->query->all()]);
+  }
 
   /**
    * Renders the Switch User page for the frontend theme.
@@ -31,9 +39,13 @@ class SwitchFrontendController extends ControllerBase {
     // Role options for filter (exclude system roles).
     $roles = Role::loadMultiple();
     $roleOptions = [];
+    $administratorRoles = ['administrator'];
     foreach ($roles as $role) {
       $rid = $role->id();
-      if (in_array($rid, ['anonymous', 'authenticated', 'administrator'])) {
+      if ($role->isAdmin()) {
+        $administratorRoles[] = $rid;
+      }
+      if ($role->isAdmin() || in_array($rid, ['anonymous', 'authenticated', 'administrator'], TRUE)) {
         continue;
       }
       $roleOptions[$rid] = $role->label();
@@ -56,7 +68,7 @@ class SwitchFrontendController extends ControllerBase {
     // Exclude administrator-role users.
     $adminIds = $userStorage->getQuery()
       ->accessCheck(FALSE)
-      ->condition('roles', 'administrator')
+      ->condition('roles', array_unique($administratorRoles), 'IN')
       ->execute();
     if ($adminIds) {
       $query->condition('uid', $adminIds, 'NOT IN');
@@ -68,6 +80,9 @@ class SwitchFrontendController extends ControllerBase {
     // Build user rows.
     $rows = [];
     foreach ($users as $user) {
+      if (!SwitchController::isSwitchableAccount($user)) {
+        continue;
+      }
       $uid = (int) $user->id();
       $userRoles = $user->getRoles(TRUE);
       $roleLabels = [];
@@ -88,6 +103,9 @@ class SwitchFrontendController extends ControllerBase {
 
     return [
       '#theme' => 'open_switcher_page',
+      '#use_workspace' => $this->moduleHandler()->moduleExists('lms_course')
+        && $this->currentUser()->hasPermission('administer lms_course'),
+      '#attached' => ['library' => ['open_switcher/switch_user']],
       '#users' => $rows,
       '#role_options' => $roleOptions,
       '#selected_role' => $selectedRole,

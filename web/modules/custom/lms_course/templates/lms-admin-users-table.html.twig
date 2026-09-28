@@ -1,85 +1,36 @@
-      <form id="lms-bulk-users-form" method="post" action="{{ url('lms_course.admin.users.bulk') }}">
-        <div class="lms-table-responsive">
-          <table class="lms-table">
-            <thead>
-              <tr style="background: #0b0f19;">
-                <th style="width: 48px; text-align: center;"><input type="checkbox" id="bulk-select-all" style="accent-color: #1d70f5;"></th>
-                <th>{{ 'User'|t }}</th>
-                <th>{{ 'Email'|t }}</th>
-              <th>{{ 'Role'|t }}</th>
-              <th>{{ 'Courses Enrolled'|t }}</th>
-              <th>{{ 'Last Login'|t }}</th>
-              <th>{{ 'Status'|t }}</th>
-              <th style="text-align: right;">{{ 'Actions'|t }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for user in users %}
-              <tr>
-                <td style="text-align: center;"><input type="checkbox" name="users[]" value="{{ user.uid }}" class="bulk-user-checkbox" style="accent-color: #1d70f5;"></td>
-                <td style="display: flex; align-items: center; gap: 0.75rem;">
-                  {% if user.avatar_url %}
-                    <img src="{{ user.avatar_url }}" alt="{{ user.name }}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
-                  {% else %}
-                    <img src="https://ui-avatars.com/api/?name={{ user.name|url_encode }}&background=21262d&color=cbd5e1" alt="{{ user.name }}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
-                  {% endif %}
-                  <span style="font-weight: 600; color: #fff;">{{ user.name }}</span>
-                </td>
-                <td>{{ user.email }}</td>
-                <td>
-                  {% set role_color = '#64748b' %}
-                  {% set role_bg = 'rgba(100, 116, 139, 0.1)' %}
-                  
-                  {% if user.role == 'Student' %}
-                     {% set role_color = '#3b82f6' %}{% set role_bg = 'rgba(59, 130, 246, 0.15)' %}
-                  {% elseif user.role == 'Instructor' %}
-                     {% set role_color = '#f59e0b' %}{% set role_bg = 'rgba(245, 158, 11, 0.15)' %}
-                  {% elseif user.role == 'Manager' %}
-                     {% set role_color = '#d946ef' %}{% set role_bg = 'rgba(217, 70, 239, 0.15)' %}
-                  {% elseif user.role == 'Administrator' or user.role == 'Admin' %}
-                     {% set role_color = '#ef4444' %}{% set role_bg = 'rgba(239, 68, 68, 0.15)' %}
-                  {% endif %}
-                  
-                  <span style="color: {{ role_color }}; background: {{ role_bg }}; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.05);">
-                     {{ user.role }}
-                  </span>
-                </td>
-                <td style="text-align: center;">{{ user.enrolled }}</td>
-                <td>{{ user.last_login ? user.last_login|date('M d, Y') : 'Never' }}</td>
-                <td>
-                  <span class="lms-status {{ user.status == 'Active' ? 'lms-status--active' : 'lms-status--inactive' }}">
-                    {{ user.status }}
-                  </span>
-                </td>
-                <td style="text-align: right; white-space: nowrap;">
-                  {% if user.switch_url %}
-                    <a href="{{ user.switch_url }}" title="{{ 'Impersonate User'|t }}" style="color: #64748b; margin-right: 0.75rem; transition: color 0.15s;" onmouseover="this.style.color='#3b82f6'" onmouseout="this.style.color='#64748b'"><i class="fas fa-user-secret"></i></a>
-                  {% endif %}
-                  <a href="{{ user.edit_url }}" title="{{ 'Edit User'|t }}" style="color: #64748b; margin-right: 0.75rem; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'"><i class="fas fa-edit"></i></a>
-                  <a href="{{ user.view_url }}" title="{{ 'View Profile'|t }}" style="color: #64748b; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'"><i class="fas fa-eye"></i></a>
-                </td>
-              </tr>
-            {% else %}
-              <tr><td colspan="8" style="text-align: center; padding: 3rem;">{{ 'No users found.'|t }}</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      
-      <div style="padding: 1.5rem; background: #0b0f19; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-           <span style="font-size: 0.875rem; color: #94a3b8;"><b>Bulk Action</b></span>
-           <span id="bulk-selected-count" style="font-size: 0.875rem; color: #64748b;">0 selected users</span>
-           <button type="submit" name="action" value="activate" class="btn-lms-primary" style="padding: 0.35rem 1rem; font-size: 0.875rem; border: none; cursor: pointer;">Activate</button>
-           <button type="submit" name="action" value="deactivate" style="padding: 0.35rem 1rem; font-size: 0.875rem; background: transparent; border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; border-radius: 0.5rem; cursor: pointer;">Deactivate</button>
-           <button type="submit" name="action" value="export" class="lms-admin-filter__select" style="padding: 0.35rem 1rem; font-size: 0.875rem; width: auto; background: rgba(255,255,255,0.05); cursor: pointer; border: none;">Export</button>
-        </div>
-        
-        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #94a3b8;">
-           <span>Total {{ users|length }} users found on this page</span>
-           <div class="lms-pagination-container">
-             {{ pager }}
-           </div>
-        </div>
-      </div>
-      </form>
+<form id="lms-bulk-users-form" method="post" action="{{ url('lms_course.admin.users.bulk') }}">
+  <div class="lms-table-responsive">
+    <table class="lms-table lms-users-table">
+      <thead><tr>
+        <th scope="col" class="lms-table__select"><input type="checkbox" id="bulk-select-all" aria-label="{{ 'Select all users on this page'|t }}"></th>
+        <th scope="col">{{ 'User'|t }}</th><th scope="col">{{ 'Email'|t }}</th><th scope="col">{{ 'Role'|t }}</th><th scope="col">{{ 'Courses Enrolled'|t }}</th><th scope="col">{{ 'Last Login'|t }}</th><th scope="col">{{ 'Status'|t }}</th><th scope="col" class="lms-table__actions">{{ 'Actions'|t }}</th>
+      </tr></thead>
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td class="lms-table__select"><input type="checkbox" name="users[]" value="{{ user.uid }}" class="bulk-user-checkbox" aria-label="{{ 'Select @name'|t({'@name': user.name}) }}"></td>
+            <td><div class="lms-admin-person">{% if user.avatar_url %}<img src="{{ user.avatar_url }}" alt="">{% else %}<span class="lms-admin-person__avatar" aria-hidden="true">{{ user.name|first|upper }}</span>{% endif %}<span class="lms-table__primary">{{ user.name }}</span></div></td>
+            <td>{{ user.email }}</td>
+            <td><span class="lms-status lms-role--{{ user.role|lower }}">{{ user.role }}</span></td>
+            <td class="lms-table__numeric">{{ user.enrolled }}</td><td>{{ user.last_login ? user.last_login|date('M d, Y') : 'Never'|t }}</td>
+            <td><span class="lms-status {{ user.status == 'Active' ? 'lms-status--active' : 'lms-status--inactive' }}">{{ user.status }}</span></td>
+            <td class="lms-table__actions"><div class="lms-admin-actions">
+              {% if user.switch_url %}<a href="{{ user.switch_url }}" class="lms-admin-action-link" title="{{ 'Impersonate User'|t }}" aria-label="{{ 'Impersonate User'|t }}"><i class="fas fa-user-secret" aria-hidden="true"></i></a>{% endif %}
+              <a href="{{ user.edit_url }}" class="lms-admin-action-link" title="{{ 'Edit User'|t }}" aria-label="{{ 'Edit User'|t }}"><i class="fas fa-edit" aria-hidden="true"></i></a>
+              <a href="{{ user.view_url }}" class="lms-admin-action-link" title="{{ 'View Profile'|t }}" aria-label="{{ 'View Profile'|t }}"><i class="fas fa-eye" aria-hidden="true"></i></a>
+            </div></td>
+          </tr>
+        {% else %}<tr><td colspan="8" class="lms-table__empty">{{ 'No users match your filters.'|t }}</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="lms-admin-footer">
+    <div class="lms-admin-bulk-actions">
+      <strong>{{ 'Bulk actions'|t }}</strong><span id="bulk-selected-count" aria-live="polite">{{ '0 selected users'|t }}</span>
+      <button type="submit" name="action" value="activate" class="btn-lms-primary">{{ 'Activate'|t }}</button>
+      <button type="submit" name="action" value="deactivate" class="btn-lms-secondary lms-button--danger">{{ 'Deactivate'|t }}</button>
+      <button type="submit" name="action" value="export" class="btn-lms-secondary">{{ 'Export'|t }}</button>
+    </div>
+    <div class="lms-admin-footer__summary"><span>{{ users|length }} {{ 'users on this page'|t }}</span><div class="lms-pagination-container">{{ pager }}</div></div>
+  </div>
+</form>

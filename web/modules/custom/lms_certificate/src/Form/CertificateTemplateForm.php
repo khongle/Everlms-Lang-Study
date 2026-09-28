@@ -107,9 +107,12 @@ class CertificateTemplateForm extends ContentEntityForm {
         max-width: 1150px;
         margin: 20px auto 60px auto;
         display: flex;
-        justify-content: center;
+        overflow-x: auto;
+        padding: 1rem;
       }
       .cert-preview-outer {
+        flex: 0 0 auto;
+        margin: auto;
         width: ' . $scaled_width . 'px;
         height: ' . $scaled_height . 'px;
         position: relative;
@@ -181,7 +184,7 @@ class CertificateTemplateForm extends ContentEntityForm {
 
     $form['template_preview'] = [
       '#type' => 'details',
-      '#title' => $this->t('Template Default (Live Preview) - Scaled accurately for PDF rendering'),
+      '#title' => $this->t('Certificate preview'),
       '#open' => TRUE,
       '#weight' => 99,
       'preview_container' => [

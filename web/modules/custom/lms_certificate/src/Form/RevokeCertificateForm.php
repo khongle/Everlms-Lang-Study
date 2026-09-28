@@ -20,11 +20,14 @@ class RevokeCertificateForm extends ConfirmFormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state, ?EntityInterface $lms_user_certificate = NULL) {
     $this->certificate = $lms_user_certificate;
+    $form['#attached']['library'][] = 'lms_theme/global';
+    $form['#attributes']['class'][] = 'lms-admin-confirmation-form';
     
     $form['revoke_reason'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Reason for Revocation'),
       '#required' => TRUE,
+      '#description' => $this->t('Record why this certificate is being revoked.'),
     ];
     
     return parent::buildForm($form, $form_state);

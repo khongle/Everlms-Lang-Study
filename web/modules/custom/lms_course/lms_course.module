@@ -12,6 +12,10 @@ declare(strict_types=1);
  */
 function lms_course_theme(): array {
   return [
+    'lms_workspace_shell' => [
+      'render element' => 'element',
+      'template' => 'lms-workspace-shell',
+    ],
     'lms_instructor_profile' => [
       'variables' => [
         'instructor' => NULL,
@@ -152,6 +156,7 @@ function lms_course_theme(): array {
     ],
     'lms_admin_courses' => [
       'variables' => [
+        'add_course_url' => '',
         'courses' => [],
         'pager' => NULL,
         'filters' => [],
@@ -172,6 +177,9 @@ function lms_course_theme(): array {
         'quizzes' => [],
         'quick_stats' => [],
         'add_quiz_url' => '',
+        'filters' => [],
+        'course_options' => [],
+        'pager' => NULL,
       ],
       'template' => 'lms-admin-quizzes',
     ],
@@ -199,6 +207,7 @@ function lms_course_theme(): array {
         'add_content_url' => '',
         'active_menu' => '',
         'hide_thumbnail' => FALSE,
+        'supports_publishing' => TRUE,
       ],
       'template' => 'lms-admin-content',
     ],
@@ -216,6 +225,7 @@ function lms_course_theme(): array {
         'contents' => [],
         'pager' => NULL,
         'hide_thumbnail' => FALSE,
+        'supports_publishing' => TRUE,
       ],
       'template' => 'lms-admin-content-table',
     ],
@@ -229,6 +239,7 @@ function lms_course_theme(): array {
     'lms_admin_reports_v2' => [
       'variables' => [
         'metrics' => [],
+        'filters' => [],
         'course_stats' => [],
         'user_stats' => [],
         'quiz_stats' => [],
@@ -276,8 +287,17 @@ function lms_course_theme(): array {
  * Injects generic variables like current_user_name to all admin templates.
  */
 function lms_course_preprocess(&$variables, $hook) {
-  if (strpos($hook, 'lms_admin_') === 0) {
+  if (in_array($hook, ['lms_workspace_shell', 'lms_flashcard_admin_decks', 'open_switcher_page'], TRUE) || strpos($hook, 'lms_admin_') === 0) {
     $entity_type_manager = \Drupal::entityTypeManager();
+    $variables['workspace_switch_user_url'] = \Drupal::moduleHandler()->moduleExists('open_switcher')
+      && \Drupal::currentUser()->hasPermission('switch users')
+      ? \Drupal\Core\Url::fromRoute('open_switcher.frontend')->toString()
+      : NULL;
+    foreach (['lms_rating', 'lms_certificate', 'lms_membership'] as $module) {
+      $variables[$module . '_enabled'] = \Drupal::moduleHandler()->moduleExists($module);
+    }
+    $variables['lms_content_tools_enabled'] = \Drupal::moduleHandler()->moduleExists('lms_content_tools')
+      && \Drupal::currentUser()->hasPermission('administer lms content tools');
     $variables['lms_flashcard_enabled'] = \Drupal::moduleHandler()->moduleExists('lms_flashcard')
       && $entity_type_manager->hasDefinition('lms_flashcard_deck')
       && $entity_type_manager->hasDefinition('lms_flashcard_card');
@@ -409,3 +429,71 @@ function lms_course_entity_create_access(\Drupal\Core\Session\AccountInterface $
   return \Drupal\Core\Access\AccessResult::neutral();
 }
 
+
+/**
+ * Implements hook_page_attachments().
+ */
+function lms_course_page_attachments(array &$attachments): void {
+  $path = \Drupal::service('path.current')->getPath();
+  if ($path === '/workspace' || str_starts_with($path, '/workspace/')) {
+    // Workspace routes may use either Claro or the public site theme.
+    $attachments['#attached']['library'][] = 'lms_theme/workspace';
+    $attachments['#cache']['contexts'][] = 'user';
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function lms_course_form_alter(array &$form, \Drupal\Core\Form\FormStateInterface $form_state, string $form_id): void {
+  $route = \Drupal::routeMatch()->getRouteName();
+  $standalone_routes = [
+    'lms_course.admin.chapter.edit' => ['courses', t('Edit Chapter'), '/workspace/courses'],
+    'lms_course.admin.lesson.edit' => ['courses', t('Edit Lesson'), '/workspace/courses'],
+    'lms_content_tools.clean' => ['content_tools', t('Clean Content'), '/workspace/content-tools'],
+    'lms_content_tools.seed_input' => ['content_tools', t('Training Program Input'), '/workspace/content-tools'],
+    'lms_certificate.revoke' => ['certificates', t('Revoke Certificate'), '/workspace/certificates'],
+  ];
+  $is_target_form = in_array($form_id, [
+    'lms_content_tools_clean_form',
+    'lms_content_tools_seed_input_form',
+    'lms_certificate_revoke_form',
+  ], TRUE);
+  $form_object = $form_state->getFormObject();
+  if ($form_object instanceof \Drupal\Core\Entity\EntityFormInterface) {
+    $is_target_form = in_array($form_object->getEntity()->getEntityTypeId(), ['lms_chapter', 'lms_lesson'], TRUE)
+      && $form_object->getOperation() === 'admin_edit';
+  }
+  // AJAX dialogs contain only the form, without a second navigation shell.
+  $wrapper_format = \Drupal::request()->query->get('_wrapper_format', '');
+  $is_dialog = in_array($wrapper_format, ['drupal_modal', 'drupal_dialog', 'drupal_ajax'], TRUE);
+  if (isset($standalone_routes[$route]) && $is_target_form && !$is_dialog) {
+    [$active, $title, $back_url] = $standalone_routes[$route];
+    $form['#theme_wrappers'] = array_merge($form['#theme_wrappers'] ?? ['form'], ['lms_workspace_shell']);
+    $form['#workspace_title'] = $title;
+    $form['#workspace_active'] = $active;
+    $form['#workspace_back_url'] = $back_url;
+    $form['#workspace_is_form'] = TRUE;
+    $form['#attached']['library'][] = 'lms_theme/workspace';
+  }
+}
+
+/**
+ * Prepares the shared shell for standalone workspace forms and tools.
+ */
+function lms_course_preprocess_lms_workspace_shell(array &$variables): void {
+  $element = $variables['element'];
+  $variables['title'] = $element['#workspace_title'] ?? '';
+  $variables['subtitle'] = $element['#workspace_subtitle'] ?? '';
+  $variables['active_menu'] = $element['#workspace_active'] ?? '';
+  $variables['back_url'] = $element['#workspace_back_url'] ?? '';
+  $variables['is_form'] = $element['#workspace_is_form'] ?? FALSE;
+  $variables['content'] = $element['#children'];
+}
+
+/**
+ * Implements hook_entity_form_display_alter().
+ */
+function lms_course_entity_form_display_alter(\Drupal\Core\Entity\Display\EntityFormDisplayInterface $form_display, array $context): void {
+  \Drupal\lms_course\Form\CourseForm::prepareInlineFormDisplay($form_display, $context);
+}

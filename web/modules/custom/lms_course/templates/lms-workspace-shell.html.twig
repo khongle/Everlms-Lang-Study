@@ -1,0 +1,16 @@
+{{ attach_library('lms_theme/workspace') }}
+<div class="lms-admin">
+  {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: active_menu } %}
+  <div class="lms-admin__main">
+    <div class="lms-admin__header">
+      <div>
+        <h1 class="lms-admin__title">{{ title }}</h1>
+        {% if subtitle %}<p class="lms-admin__subtitle">{{ subtitle }}</p>{% endif %}
+      </div>
+      {% if back_url %}<a class="btn-lms-secondary" href="{{ back_url }}"><i class="fas fa-arrow-left" aria-hidden="true"></i> {{ 'Back'|t }}</a>{% endif %}
+    </div>
+    {% if is_form %}<div class="lms-admin-card lms-admin-form-shell">{% endif %}
+      {{ content }}
+    {% if is_form %}</div>{% endif %}
+  </div>
+</div>

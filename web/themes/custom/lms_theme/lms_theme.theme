@@ -105,8 +105,16 @@ function lms_theme_preprocess_page(&$variables) {
   $variables['current_route'] = $route_name;
   $variables += lms_theme_get_shared_site_variables();
 
+  $variables['switch_user_url'] = NULL;
+  $variables['is_impersonating'] = FALSE;
+  $variables['switch_back_url'] = NULL;
+  $switcher_enabled = \Drupal::moduleHandler()->moduleExists('open_switcher');
+  if ($switcher_enabled && \Drupal::currentUser()->hasPermission('switch users')) {
+    $variables['switch_user_url'] = \Drupal\Core\Url::fromRoute('open_switcher.frontend')->toString();
+  }
+
   $request = \Drupal::request();
-  if ($request->hasSession() && $request->getSession()->get('open_switcher_original_uid')) {
+  if ($switcher_enabled && $request->hasSession() && $request->getSession()->get('open_switcher_original_uid')) {
     $variables['is_impersonating'] = TRUE;
     $variables['switch_back_url'] = \Drupal\Core\Url::fromRoute('open_switcher.switch_back')->toString();
   }
@@ -226,10 +234,14 @@ function lms_theme_preprocess_html(&$variables) {
   }
 
   $current_uri = \Drupal::request()->getRequestUri();
-  $is_workspace = strpos($current_uri, '/workspace') === 0;
+  $is_workspace = strpos($current_uri, '/workspace') === 0
+    || ($route_name === 'open_switcher.frontend'
+      && \Drupal::moduleHandler()->moduleExists('lms_course')
+      && \Drupal::currentUser()->hasPermission('administer lms_course'));
   $is_learn = strpos($current_uri, '/learn') === 0;
   if ($is_workspace) {
     $variables['attributes']['class'][] = 'is-workspace';
+    $variables['#attached']['library'][] = 'lms_theme/workspace';
   }
   $is_front = \Drupal::service('path.matcher')->isFrontPage();
   if ($is_front) {

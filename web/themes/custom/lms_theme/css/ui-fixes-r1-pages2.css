@@ -2935,25 +2935,7 @@ body.route--system-403 #block-lms-theme-content {
   font-weight: 800;
 }
 
-/* [P032] ISSUE 1-0706: Reset button reads as disabled/secondary, low contrast */
-/* Give it a clear outlined-secondary look with a legible label + hover.
-   Element carries inline styles, so override with !important. */
-.lms-admin #lms-course-reset-btn {
-  color: #e2e8f0 !important;
-  background: rgba(29, 112, 245, 0.12) !important;
-  border: 1px solid rgba(29, 112, 245, 0.55) !important;
-  font-weight: 600 !important;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-.lms-admin #lms-course-reset-btn:hover {
-  color: #ffffff !important;
-  background: rgba(29, 112, 245, 0.25) !important;
-  border-color: #1d70f5 !important;
-}
-.lms-admin #lms-course-reset-btn:focus-visible {
-  outline: 2px solid #1d70f5;
-  outline-offset: 2px;
-}
+/* Workspace Reset styling is defined by the shared secondary button rules. */
 
 /* ==========================================================================
    MOBILE (<= 480px)

@@ -5,14 +5,14 @@
   {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: active_menu } %}
 
   <div class="lms-admin__main">
-    <div class="lms-admin__header" style="padding-top: 3rem;">
-      <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ title }}</h1>
-      <div style="display: flex; gap: 1rem; align-items: center;">
-        <a href="javascript:history.back()" class="btn-lms-secondary" style="color: #94a3b8;"><i class="fas fa-arrow-left"></i> {{ 'Back'|t }}</a>
+    <div class="lms-admin__header">
+      <h1 class="lms-admin__title">{{ title }}</h1>
+      <div class="lms-admin-header__actions">
+        <a href="javascript:history.back()" class="btn-lms-secondary"><i class="fas fa-arrow-left"></i> {{ 'Back'|t }}</a>
       </div>
     </div>
 
-    <div class="lms-admin-card" style="padding: 2.5rem; background: #0b0f19; border-top: 1px solid rgba(255,255,255,0.05); min-height: calc(100vh - 100px);">
+    <div class="lms-admin-card lms-admin-form-card">
       <style>
         /* HIDE GLOBAL NAVBAR IN WORKSPACE TO SAVE VERTICAL SPACE */
         .lms-navbar {
@@ -22,7 +22,7 @@
         .lms-admin-entity-view-wrapper {
           background: #ffffff; /* Clean white */
           border-radius: 0.5rem;
-          padding: 2.5rem;
+          padding: 1.5rem;
           color: #334155;
           box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Soft premium shadow */
           display: flex;
@@ -56,18 +56,18 @@
         }
 
         .lms-premium-label {
-            font-size: 0.875rem;
-            text-transform: uppercase;
+            font-size: 15px;
+            text-transform: none;
             font-weight: 700;
             color: #64748b;
-            letter-spacing: 0.05em;
+            letter-spacing: normal;
             margin-bottom: 0.75rem;
             border-bottom: 1px solid #cbd5e1;
             padding-bottom: 0.5rem;
         }
 
         .lms-premium-value {
-            font-size: 1.05rem;
+            font-size: 15px;
             color: #1e293b;
             line-height: 1.6;
         }

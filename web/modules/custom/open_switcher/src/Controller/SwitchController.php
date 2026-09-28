@@ -6,7 +6,8 @@ namespace Drupal\open_switcher\Controller;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Session\AccountInterface;
+use Drupal\user\Entity\Role;
+use Drupal\user\UserInterface;
 use Drupal\Core\Session\SessionManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -37,25 +38,26 @@ class SwitchController extends ControllerBase {
     $targetUser = $this->entityTypeManager()->getStorage('user')->load($user);
     if (!$targetUser) {
       $this->messenger()->addError($this->t('User not found.'));
-      return new RedirectResponse(Url::fromRoute('open_switcher.switch_form')->toString());
+      return new RedirectResponse(Url::fromRoute('open_switcher.frontend')->toString());
     }
 
-    // Cannot switch to user 1 (super admin) for security.
-    if ((int) $targetUser->id() === 1 && (int) $this->currentUser()->id() !== 1) {
-      $this->messenger()->addError($this->t('Cannot impersonate the super administrator.'));
-      return new RedirectResponse(Url::fromRoute('open_switcher.switch_form')->toString());
-    }
-
-    // Cannot switch to yourself.
+    // Keep the existing self-switch warning without changing session state.
     if ((int) $targetUser->id() === (int) $this->currentUser()->id()) {
       $this->messenger()->addWarning($this->t('You are already logged in as this user.'));
-      return new RedirectResponse(Url::fromRoute('open_switcher.switch_form')->toString());
+      return new RedirectResponse(Url::fromRoute('open_switcher.frontend')->toString());
     }
 
-    // Store original user ID in session.
+    if (!self::isSwitchableAccount($targetUser)) {
+      $this->messenger()->addError($this->t('Only active, non-administrator user accounts can be impersonated.'));
+      return new RedirectResponse(Url::fromRoute('open_switcher.frontend')->toString());
+    }
+
+    // Preserve the first account when switching again during impersonation.
     $session = $this->requestStack->getCurrentRequest()->getSession();
-    $session->set('open_switcher_original_uid', (int) $this->currentUser()->id());
-    $session->set('open_switcher_original_name', $this->currentUser()->getDisplayName());
+    if (!$session->get('open_switcher_original_uid')) {
+      $session->set('open_switcher_original_uid', (int) $this->currentUser()->id());
+      $session->set('open_switcher_original_name', $this->currentUser()->getDisplayName());
+    }
     $session->set('open_switcher_dialog', [
       'title' => (string) $this->t('Impersonation active'),
       'message' => (string) $this->t('You are now signed in as @name.', [
@@ -66,40 +68,59 @@ class SwitchController extends ControllerBase {
       'variant' => 'success',
     ]);
 
-    // Switch the session to the target user.
     $this->switchSession((int) $targetUser->id());
-
     return new RedirectResponse(Url::fromRoute('<front>')->toString());
+  }
+
+  /**
+   * Whether an account may be selected as an impersonation target.
+   */
+  public static function isSwitchableAccount(UserInterface $account): bool {
+    if ((int) $account->id() <= 1 || !$account->isAuthenticated() || !$account->isActive() || $account->hasRole('administrator')) {
+      return FALSE;
+    }
+    foreach (Role::loadMultiple($account->getRoles(TRUE)) as $role) {
+      if ($role->isAdmin()) {
+        return FALSE;
+      }
+    }
+    return TRUE;
   }
 
   /**
    * Switch back to the original user.
    */
   public function switchBack(): RedirectResponse {
-    $session = $this->requestStack->getCurrentRequest()->getSession();
-    $originalUid = $session->get('open_switcher_original_uid');
-    $originalName = $session->get('open_switcher_original_name', '');
+    $request = $this->requestStack->getCurrentRequest();
+    $session = $request && $request->hasSession() ? $request->getSession() : NULL;
+    $originalUid = $session ? (int) $session->get('open_switcher_original_uid', 0) : 0;
 
     if (!$originalUid) {
       $this->messenger()->addError($this->t('No original session found. Cannot switch back.'));
       return new RedirectResponse(Url::fromRoute('<front>')->toString());
     }
 
-    // Clear the switcher session data.
+    // The original account may have been deleted or blocked during the switch.
+    $originalAccount = $this->entityTypeManager()->getStorage('user')->load($originalUid);
+    if (!$originalAccount || !$originalAccount->isAuthenticated() || !$originalAccount->isActive()) {
+      user_logout();
+      $this->messenger()->addWarning($this->t('Your original account is unavailable or blocked. You have been signed out. Please sign in again.'));
+      return new RedirectResponse(Url::fromRoute('user.login')->toString());
+    }
+
+    $originalName = $originalAccount->getDisplayName();
+    $this->switchSession((int) $originalAccount->id());
     $session->remove('open_switcher_original_uid');
     $session->remove('open_switcher_original_name');
     $session->set('open_switcher_dialog', [
       'title' => (string) $this->t('Back to your account'),
       'message' => (string) $this->t('You are signed back in as @name.', [
-        '@name' => $originalName ?: (string) $this->t('your original account'),
+        '@name' => $originalName,
       ]),
       'details' => '',
       'confirmText' => (string) $this->t('Continue'),
       'variant' => 'neutral',
     ]);
-
-    // Switch session back to original user.
-    $this->switchSession($originalUid);
 
     return new RedirectResponse(Url::fromRoute('<front>')->toString());
   }
@@ -108,8 +129,10 @@ class SwitchController extends ControllerBase {
    * Custom access check for switching back.
    */
   public function canSwitchBack(): AccessResult {
-    $session = $this->requestStack->getCurrentRequest()->getSession();
-    $originalUid = $session->get('open_switcher_original_uid');
+    $request = $this->requestStack->getCurrentRequest();
+    $originalUid = $request && $request->hasSession()
+      ? $request->getSession()->get('open_switcher_original_uid')
+      : NULL;
     return AccessResult::allowedIf(!empty($originalUid))->setCacheMaxAge(0);
   }
 
@@ -123,7 +146,7 @@ class SwitchController extends ControllerBase {
       throw new \RuntimeException('Cannot load user ' . $uid);
     }
 
-    // Use Drupal's user.auth service  to switch identity.
+    // Keep Drupal's session migration and login hooks when changing identity.
     user_login_finalize($account);
   }
 

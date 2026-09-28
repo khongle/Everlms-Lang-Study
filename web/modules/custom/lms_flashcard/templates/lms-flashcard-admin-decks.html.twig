@@ -12,7 +12,7 @@
         <p class="lms-admin__subtitle">{{ 'Manage every public and private flashcard deck created by users.'|t }}</p>
       </div>
       <div class="lms-flashcard-admin__header-actions">
-        <a href="{{ import_url }}" class="btn-lms-outline"><i class="fas fa-file-import"></i> {{ 'Import'|t }}</a>
+        <a href="{{ import_url }}" class="btn-lms-secondary"><i class="fas fa-file-import"></i> {{ 'Import'|t }}</a>
         <a href="{{ add_url }}" class="btn-lms-primary"><i class="fas fa-plus"></i> {{ 'Create Deck'|t }}</a>
       </div>
     </header>
@@ -24,7 +24,7 @@
       <article class="lms-flashcard-admin__stat"><i class="fas fa-eye"></i><div><strong>{{ stats.published }}</strong><span>{{ 'Published'|t }}</span></div></article>
     </section>
 
-    <form method="get" action="{{ path('lms_flashcard.admin_decks') }}" class="lms-admin-filter lms-flashcard-admin__filters">
+    <form method="get" action="{{ path('lms_flashcard.admin_decks') }}" class="lms-admin-filter lms-flashcard-admin__filters" aria-label="{{ 'Filter flashcard decks'|t }}">
       <div class="lms-admin-filter__group lms-flashcard-admin__search">
         <label class="lms-admin-filter__label" for="flashcard-search">{{ 'Search deck'|t }}</label>
         <div class="lms-flashcard-admin__search-control">
@@ -49,8 +49,8 @@
           <option value="draft" {{ filters.status == 'draft' ? 'selected' : '' }}>{{ 'Draft'|t }}</option>
         </select>
       </div>
-      <button type="submit" class="btn-lms-primary lms-flashcard-admin__filter-button">{{ 'Filter'|t }}</button>
-      <a href="{{ path('lms_flashcard.admin_decks') }}" class="btn-lms-outline lms-flashcard-admin__filter-button">{{ 'Reset'|t }}</a>
+      <button type="submit" class="btn-lms-primary lms-flashcard-admin__filter-button">{{ 'Apply filters'|t }}</button>
+      <a href="{{ path('lms_flashcard.admin_decks') }}" class="btn-lms-secondary lms-flashcard-admin__filter-button">{{ 'Reset'|t }}</a>
     </form>
 
     <section class="lms-admin-card lms-flashcard-admin__table-card">
@@ -58,27 +58,20 @@
         <table class="lms-table lms-flashcard-admin__table">
           <thead>
             <tr>
-              <th>{{ 'Deck'|t }}</th>
-              <th>{{ 'Owner'|t }}</th>
-              <th>{{ 'Topic'|t }}</th>
-              <th>{{ 'Cards'|t }}</th>
-              <th>{{ 'Status'|t }}</th>
-              <th>{{ 'Updated'|t }}</th>
-              <th class="lms-flashcard-admin__actions-heading">{{ 'Actions'|t }}</th>
+              <th scope="col">{{ 'Deck'|t }}</th>
+              <th scope="col">{{ 'Owner'|t }}</th>
+              <th scope="col">{{ 'Topic'|t }}</th>
+              <th scope="col">{{ 'Cards'|t }}</th>
+              <th scope="col">{{ 'Status'|t }}</th>
+              <th scope="col">{{ 'Updated'|t }}</th>
+              <th scope="col" class="lms-flashcard-admin__actions-heading">{{ 'Actions'|t }}</th>
             </tr>
           </thead>
           <tbody>
             {% for deck in decks %}
-                <td>
+              <tr>
+                <td class="lms-table__primary">
                   <a href="{{ deck.edit_url }}" class="lms-flashcard-admin__deck-name">{{ deck.name }}</a>
-                  <span class="lms-flashcard-admin__machine-name">{{ deck.machine_name }}</span>
-                  {% if deck.course_name %}
-                    <div class="lms-flashcard-admin__course-badge">
-                      <i class="fas fa-graduation-cap"></i>
-                      <span>{{ deck.course_name }}</span>
-                      {% if deck.lesson_name %}<small>&bull; {{ deck.lesson_name }}</small>{% endif %}
-                    </div>
-                  {% endif %}
                 </td>
                 <td><span class="lms-flashcard-admin__owner">{{ deck.owner_name }}</span><small>#{{ deck.owner_id }}</small></td>
                 <td>{{ deck.topic }}</td>
@@ -87,8 +80,8 @@
                 <td>{{ deck.changed }}</td>
                 <td>
                   <div class="lms-admin-actions">
-                    <a href="{{ deck.edit_url }}" class="lms-admin-action-link" title="{{ 'Edit deck and cards'|t }}" aria-label="{{ 'Edit deck and cards'|t }}"><i class="fas fa-edit"></i></a>
-                    <a href="{{ deck.delete_url }}" class="lms-admin-action-link lms-admin-action-link--danger" title="{{ 'Delete deck'|t }}" aria-label="{{ 'Delete deck'|t }}"><i class="fas fa-trash"></i></a>
+                    <a href="{{ deck.edit_url }}" class="btn-lms-secondary" title="{{ 'Edit deck and cards'|t }}" aria-label="{{ 'Edit deck and cards'|t }}"><i class="fas fa-edit" aria-hidden="true"></i> {{ 'Edit'|t }}</a>
+                    <a href="{{ deck.delete_url }}" class="btn-lms-secondary lms-button--danger" title="{{ 'Delete deck'|t }}" aria-label="{{ 'Delete deck'|t }}"><i class="fas fa-trash" aria-hidden="true"></i> {{ 'Delete'|t }}</a>
                   </div>
                 </td>
               </tr>

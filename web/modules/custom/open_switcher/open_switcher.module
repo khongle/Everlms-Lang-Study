@@ -22,6 +22,7 @@ function open_switcher_theme(): array {
         'original_uid' => NULL,
         'switch_back_url' => NULL,
         'filter_url' => '',
+        'use_workspace' => FALSE,
       ],
     ],
   ];
@@ -83,7 +84,12 @@ function open_switcher_preprocess_menu(array &$variables): void {
  * rendering a global status message banner.
  */
 function open_switcher_page_attachments(array &$attachments): void {
+  // The header depends on both identity and the impersonation state of a session.
+  $attachments['#cache']['contexts'][] = 'user';
   $request = \Drupal::request();
+  if ($request->hasSession() && \Drupal::currentUser()->isAuthenticated()) {
+    $attachments['#cache']['contexts'][] = 'session';
+  }
   if (!$request->hasSession()) {
     return;
   }

@@ -4460,24 +4460,7 @@ body.is-workspace .lms-admin-card {
   overflow: hidden;
 }
 
-/* [P032] ISSUE 1-0706: Reset button looks disabled / low-contrast label */
-/* The inline style sets a faint rgba background; promote to a clear secondary
-   outlined button with a legible label and hover state. */
-.lms-admin #lms-course-reset-btn {
-  background: transparent !important;
-  color: #e2e8f0 !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  font-weight: 600;
-}
-.lms-admin #lms-course-reset-btn:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-}
-.lms-admin #lms-course-reset-btn:focus-visible {
-  outline: 2px solid #1d70f5;
-  outline-offset: 2px;
-}
+/* Workspace Reset styling is defined by the shared secondary button rules. */
 
 /* [P032] ISSUE 1-0716: align submenu chevrons consistently across nav items */
 .lms-admin .lms-admin__nav-dropdown > a {
@@ -4572,9 +4555,6 @@ body.is-workspace .lms-admin-card {
   }
   .lms-admin .lms-admin-filter > div:last-child {
     flex: 1 1 100%;
-  }
-  .lms-admin #lms-course-reset-btn {
-    width: 100% !important;
   }
 
   /* [P032] ISSUE 1-0708, 1-0717: table collapses to a thin strip with blank

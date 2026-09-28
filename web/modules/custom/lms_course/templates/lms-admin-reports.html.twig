@@ -1,11 +1,20 @@
-{# Admin Reports — matches 14-admin-reports.png #}
+{# Workspace analytics overview #}
 {{ attach_library('lms_theme/global') }}
 {{ attach_library('lms_analytics/admin_report') }}
 
 <div class="lms-admin">
   {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'reports' } %}
   <div class="lms-admin__main">
-    <h1 class="lms-admin__title">{{ 'Reports & Analytics'|t }}</h1>
+    <div class="lms-admin__header"><div><h1 class="lms-admin__title">{{ 'Reports & Analytics'|t }}</h1><p class="lms-admin__subtitle">{{ 'Review course performance and learner progress.'|t }}</p></div></div>
+    <form method="get" action="{{ path('lms_course.admin_reports') }}" class="lms-admin-filter" id="lms-report-filter-form">
+      <input type="hidden" name="tab" id="report-active-tab" value="course-analytics">
+      <div class="lms-admin-filter__group"><label for="report-course-search" class="lms-admin-filter__label">{{ 'Course title'|t }}</label><input id="report-course-search" type="search" name="course_search" value="{{ filters.course_search }}" class="lms-admin-filter__input" placeholder="{{ 'Search courses'|t }}"></div>
+      <div class="lms-admin-filter__group"><label for="report-course-status" class="lms-admin-filter__label">{{ 'Course status'|t }}</label><select id="report-course-status" name="course_status" class="lms-admin-filter__select">{% for value, label in {'all': 'All statuses', 'published': 'Published', 'draft': 'Draft'} %}<option value="{{ value }}" {% if filters.course_status == value %}selected{% endif %}>{{ label|t }}</option>{% endfor %}</select></div>
+      <div class="lms-admin-filter__group"><label for="report-learner-search" class="lms-admin-filter__label">{{ 'Learner name or email'|t }}</label><input id="report-learner-search" type="search" name="learner_search" value="{{ filters.learner_search }}" class="lms-admin-filter__input" placeholder="{{ 'Search learners'|t }}"></div>
+      <div class="lms-admin-filter__group"><label for="report-inactive" class="lms-admin-filter__label">{{ 'Learner activity'|t }}</label><select id="report-inactive" name="inactive_days" class="lms-admin-filter__select"><option value="">{{ 'All learners'|t }}</option>{% for days in [7, 30, 90] %}<option value="{{ days }}" {% if filters.inactive_days == days %}selected{% endif %}>{{ 'Inactive for @days days'|t({'@days': days}) }}</option>{% endfor %}</select></div>
+      <div class="lms-admin-filter__group"><label for="report-quiz-search" class="lms-admin-filter__label">{{ 'Quiz title'|t }}</label><input id="report-quiz-search" type="search" name="quiz_search" value="{{ filters.quiz_search }}" class="lms-admin-filter__input" placeholder="{{ 'Search quizzes'|t }}"></div>
+      <div class="lms-admin-filter__actions"><button type="submit" class="btn-lms-primary"><i class="fas fa-filter" aria-hidden="true"></i> {{ 'Apply filters'|t }}</button><a href="{{ path('lms_course.admin_reports') }}" class="btn-lms-secondary"><i class="fas fa-undo" aria-hidden="true"></i> {{ 'Reset'|t }}</a></div>
+    </form>
 
     <div class="lms-kpi-grid">
       <div class="lms-card lms-kpi-card">
@@ -38,18 +47,17 @@
       </div>
     </div>
 
-    <!-- Tab Navigation -->
-    <div class="lms-report-tabs" style="margin-top: 2.5rem; display: block;">
-      <ul class="lms-report-tabs__list" style="display: flex; list-style: none; gap: 2rem; border-bottom: 1px solid #334155; padding: 0 0 0.5rem 0; margin-bottom: 2rem;">
-        <li class="lms-report-tabs__item active" data-tab="course-analytics" style="cursor: pointer; padding: 0.5rem 0; border-bottom: 2px solid #3b82f6; font-weight: bold; color: #fff; font-size: 1.1rem;">{{ 'Course Analytics'|t }}</li>
-        <li class="lms-report-tabs__item" data-tab="learner-analytics" style="cursor: pointer; padding: 0.5rem 0; border-bottom: 2px solid transparent; color: #94a3b8; font-size: 1.1rem;">{{ 'Learner Analytics'|t }}</li>
-        <li class="lms-report-tabs__item" data-tab="quiz-analytics" style="cursor: pointer; padding: 0.5rem 0; border-bottom: 2px solid transparent; color: #94a3b8; font-size: 1.1rem;">{{ 'Quiz Analytics'|t }}</li>
-      </ul>
+    <div class="lms-report-tabs">
+      <div class="lms-report-tabs__list" role="tablist" aria-label="{{ 'Analytics reports'|t }}">
+        <button type="button" id="tab-course-analytics" class="lms-report-tabs__item active" data-tab="course-analytics" role="tab" aria-selected="true" aria-controls="course-analytics">{{ 'Course Analytics'|t }}</button>
+        <button type="button" id="tab-learner-analytics" class="lms-report-tabs__item" data-tab="learner-analytics" role="tab" aria-selected="false" aria-controls="learner-analytics">{{ 'Learner Analytics'|t }}</button>
+        <button type="button" id="tab-quiz-analytics" class="lms-report-tabs__item" data-tab="quiz-analytics" role="tab" aria-selected="false" aria-controls="quiz-analytics">{{ 'Quiz Analytics'|t }}</button>
+      </div>
 
       <!-- Tab Content: Course Analytics -->
-      <div id="course-analytics" class="lms-report-tab-content" style="display: block;">
+      <div id="course-analytics" class="lms-report-tab-content" role="tabpanel" aria-labelledby="tab-course-analytics" style="display: block;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-          <h2 style="margin: 0; color: #e2e8f0; font-size: 1.25rem;">{{ 'Course Financials & Engagement'|t }}</h2>
+          <h2 style="margin: 0; color: #334155; ">{{ 'Course Financials & Engagement'|t }}</h2>
           <a href="{{ url('lms_analytics.course_report_export') }}" class="btn-lms-primary" style="text-decoration: none; display: inline-flex; align-items: center;"><i class="fas fa-download" style="margin-right: 8px;"></i> {{ 'Export Course Data'|t }}</a>
         </div>
         
@@ -62,36 +70,36 @@
 
         <div class="lms-card">
           <div class="lms-table-responsive">
-            <table class="lms-table">
+            <table class="lms-table lms-report-table">
               <thead>
                 <tr>
-                  <th>{{ 'Course Name'|t }}</th>
-                  <th style="text-align: center;">{{ 'Enrollments'|t }}</th>
-                  <th style="text-align: center;">{{ 'Completions'|t }}</th>
-                  <th style="text-align: center;">{{ 'Completion Rate'|t }}</th>
-                  <th style="text-align: right;">{{ 'Total Revenue'|t }}</th>
+                  <th scope="col">{{ 'Course Name'|t }}</th>
+                  <th scope="col" style="text-align: center;">{{ 'Enrollments'|t }}</th>
+                  <th scope="col" style="text-align: center;">{{ 'Completions'|t }}</th>
+                  <th scope="col" style="text-align: center;">{{ 'Completion Rate'|t }}</th>
+                  <th scope="col" style="text-align: right;">{{ 'Total Revenue'|t }}</th>
                 </tr>
               </thead>
               <tbody>
                 {% for course in course_stats %}
                   <tr>
-                    <td>
-                      <div style="font-weight: 600;">{{ course.title }}</div>
-                      <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">{{ course.category }}</div>
+                    <td class="lms-table__primary">
+                      <div class="lms-table__primary">{{ course.title }}</div>
+                      <div class="lms-table__muted">{{ course.category }}</div>
                     </td>
                     <td style="text-align: center; font-weight: bold;">{{ course.enrollments }}</td>
-                    <td style="text-align: center;">{{ course.completions }}</td>
+                    <td style="text-align: center;">{{ course.completed }}</td>
                     <td style="text-align: center; width: 15%;">
-                      <div style="background: #334155; border-radius: 10px; height: 6px; width: 100%; overflow: hidden; margin-bottom: 4px;">
+                      <div style="background: #e2e8f0; border-radius: 10px; height: 6px; width: 100%; overflow: hidden; margin-bottom: 4px;">
                         <div style="background: {{ course.completion_rate >= 50 ? '#10b981' : '#f59e0b' }}; height: 100%; width: {{ course.completion_rate }}%;"></div>
                       </div>
-                      <small style="color: #cbd5e1;">{{ course.completion_rate }}%</small>
+                      <small style="color: #475569;">{{ course.completion_rate }}%</small>
                     </td>
                     <td style="text-align: right; font-weight: 600; color: #34d399;">${{ course.revenue|number_format(2) }}</td>
                   </tr>
                 {% else %}
                   <tr>
-                    <td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">{{ 'No course data available.'|t }}</td>
+                    <td colspan="5" style="text-align: center; color: #64748b; padding: 2rem;">{{ 'No course data available.'|t }}</td>
                   </tr>
                 {% endfor %}
               </tbody>
@@ -101,32 +109,32 @@
       </div>
 
       <!-- Tab Content: Learner Analytics -->
-      <div id="learner-analytics" class="lms-report-tab-content" style="display: none;">
+      <div id="learner-analytics" class="lms-report-tab-content" role="tabpanel" aria-labelledby="tab-learner-analytics" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-          <h2 style="margin: 0; color: #e2e8f0; font-size: 1.25rem;">{{ 'Learner Progress & Certifications'|t }}</h2>
+          <h2 style="margin: 0; color: #334155; ">{{ 'Learner Progress & Certifications'|t }}</h2>
           <a href="{{ url('lms_analytics.user_report_export') }}" class="btn-lms-primary" style="text-decoration: none; display: inline-flex; align-items: center;"><i class="fas fa-download" style="margin-right: 8px;"></i> {{ 'Export Learner Data'|t }}</a>
         </div>
         
         <div class="lms-card">
           <div class="lms-table-responsive">
-            <table class="lms-table">
+            <table class="lms-table lms-report-table">
               <thead>
                 <tr>
-                  <th>{{ 'Student'|t }}</th>
-                  <th style="text-align: center;">{{ 'Enrolled Courses'|t }}</th>
-                  <th style="text-align: center;">{{ 'Completed'|t }}</th>
-                  <th style="text-align: center;">{{ 'Avg Quiz Score'|t }}</th>
-                  <th style="text-align: center;">{{ 'Certificates'|t }}</th>
-                  <th style="text-align: right;">{{ 'Last Active'|t }}</th>
-                  <th style="text-align: center; width: 60px;">{{ 'Action'|t }}</th>
+                  <th scope="col">{{ 'Student'|t }}</th>
+                  <th scope="col" style="text-align: center;">{{ 'Enrolled Courses'|t }}</th>
+                  <th scope="col" style="text-align: center;">{{ 'Completed'|t }}</th>
+                  <th scope="col" style="text-align: center;">{{ 'Avg Quiz Score'|t }}</th>
+                  <th scope="col" style="text-align: center;">{{ 'Certificates'|t }}</th>
+                  <th scope="col" style="text-align: right;">{{ 'Last Active'|t }}</th>
+                  <th scope="col" style="text-align: center; width: 60px;">{{ 'Action'|t }}</th>
                 </tr>
               </thead>
               <tbody>
                 {% for user in user_stats %}
                   <tr class="lms-user-row">
-                    <td>
-                      <div style="font-weight: 600;">{{ user.name }}</div>
-                      <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">{{ user.email }}</div>
+                    <td class="lms-table__primary">
+                      <div class="lms-table__primary">{{ user.name }}</div>
+                      <div class="lms-table__muted">{{ user.email }}</div>
                     </td>
                     <td style="text-align: center; font-weight: bold;">{{ user.enrolled }}</td>
                     <td style="text-align: center; color: #10b981;">{{ user.completed }}</td>
@@ -136,72 +144,72 @@
                       </span>
                     </td>
                     <td style="text-align: center;">{{ user.certs }}</td>
-                    <td style="text-align: right; color: #cbd5e1; font-size: 0.9rem;">
+                    <td style="text-align: right; color: #475569; ">
                       {{ user.last_login ? user.last_login|date('M d, Y') : 'Never' }}
                     </td>
                     <td style="text-align: center;">
-                      <button type="button" class="lms-btn lms-btn--outline" onclick="toggleTracking({{ user.uid }})" style="padding: 4px 10px; font-size: 13px;" title="View Tracking">
+                      <button type="button" class="btn-lms-secondary" onclick="toggleTracking({{ user.uid }})" style="padding: 4px 10px; " title="View Tracking">
                         <i class="fas fa-eye"></i>
                       </button>
                     </td>
                   </tr>
 
                   <!-- Accordion Row -->
-                  <tr id="tracking-{{ user.uid }}" style="display: none; background: #0f172a;">
+                  <tr id="tracking-{{ user.uid }}" style="display: none; background: #f8fafc;">
                     <td colspan="7" style="padding: 0;">
-                      <div style="display: flex; gap: 2rem; padding: 1.5rem; border-top: 1px solid #1e293b; border-bottom: 2px solid #3b82f6;">
+                      <div style="display: flex; gap: 2rem; padding: 1.5rem; border-top: 1px solid #e2e8f0; border-bottom: 2px solid #3b82f6;">
                         
                         <!-- Courses In Progress -->
                         <div style="flex: 1;">
-                          <h4 style="color: #f59e0b; border-bottom: 2px solid #334155; padding-bottom: 8px; margin-top: 0; font-size: 0.95rem;">{{ 'Courses (In Progress)'|t }}</h4>
+                          <h4 style="color: #f59e0b; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-top: 0; ">{{ 'Courses (In Progress)'|t }}</h4>
                           <ul style="list-style: none; padding: 0; margin-top: 1rem;">
                             {% set has_in_progress = false %}
                             {% for c in user.tracking.courses %}
                               {% if c.status != 'completed' %}
                                 {% set has_in_progress = true %}
-                                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #1e293b; padding: 8px 0;">
-                                  <span style="color: #e2e8f0; font-size: 0.9rem;">{{ c.title }}</span>
-                                  <span style="color: #f59e0b; font-size: 0.85rem; font-weight: bold;">{{ c.progress }}%</span>
+                                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 8px 0;">
+                                  <span style="color: #334155; ">{{ c.title }}</span>
+                                  <span style="color: #f59e0b; font-weight: bold;">{{ c.progress }}%</span>
                                 </li>
                               {% endif %}
                             {% endfor %}
                             {% if not has_in_progress %}
-                              <li style="color: #64748b; font-size: 0.85rem; padding: 8px 0;">{{ 'No courses in progress.'|t }}</li>
+                              <li style="color: #64748b; padding: 8px 0;">{{ 'No courses in progress.'|t }}</li>
                             {% endif %}
                           </ul>
                         </div>
                         
                         <!-- Courses Completed -->
                         <div style="flex: 1;">
-                          <h4 style="color: #10b981; border-bottom: 2px solid #334155; padding-bottom: 8px; margin-top: 0; font-size: 0.95rem;">{{ 'Courses (Completed)'|t }}</h4>
+                          <h4 style="color: #10b981; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-top: 0; ">{{ 'Courses (Completed)'|t }}</h4>
                           <ul style="list-style: none; padding: 0; margin-top: 1rem;">
                             {% set has_completed = false %}
                             {% for c in user.tracking.courses %}
                               {% if c.status == 'completed' %}
                                 {% set has_completed = true %}
-                                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #1e293b; padding: 8px 0;">
-                                  <span style="color: #e2e8f0; font-size: 0.9rem;">{{ c.title }}</span>
-                                  <span style="color: #10b981; font-size: 0.85rem; font-weight: bold;"><i class="fas fa-check"></i> 100%</span>
+                                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 8px 0;">
+                                  <span style="color: #334155; ">{{ c.title }}</span>
+                                  <span style="color: #10b981; font-weight: bold;"><i class="fas fa-check"></i> 100%</span>
                                 </li>
                               {% endif %}
                             {% endfor %}
                             {% if not has_completed %}
-                              <li style="color: #64748b; font-size: 0.85rem; padding: 8px 0;">{{ 'No completed courses.'|t }}</li>
+                              <li style="color: #64748b; padding: 8px 0;">{{ 'No completed courses.'|t }}</li>
                             {% endif %}
                           </ul>
                         </div>
 
                         <!-- Quizzes Taken -->
                         <div style="flex: 1;">
-                          <h4 style="color: #3b82f6; border-bottom: 2px solid #334155; padding-bottom: 8px; margin-top: 0; font-size: 0.95rem;">{{ 'Quizzes (Taken)'|t }}</h4>
+                          <h4 style="color: #3b82f6; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-top: 0; ">{{ 'Quizzes (Taken)'|t }}</h4>
                           <ul style="list-style: none; padding: 0; margin-top: 1rem;">
                             {% for q in user.tracking.quizzes %}
-                              <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #1e293b; padding: 8px 0;">
-                                <span style="color: #e2e8f0; font-size: 0.9rem;">{{ q.title }}</span>
-                                <span style="color: #3b82f6; font-size: 0.85rem; font-weight: bold;">{{ q.score }}%</span>
+                              <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 8px 0;">
+                                <span style="color: #334155; ">{{ q.title }}</span>
+                                <span style="color: #3b82f6; font-weight: bold;">{{ q.score }}%</span>
                               </li>
                             {% else %}
-                              <li style="color: #64748b; font-size: 0.85rem; padding: 8px 0;">{{ 'No quizzes taken.'|t }}</li>
+                              <li style="color: #64748b; padding: 8px 0;">{{ 'No quizzes taken.'|t }}</li>
                             {% endfor %}
                           </ul>
                         </div>
@@ -212,7 +220,7 @@
 
                 {% else %}
                   <tr>
-                    <td colspan="7" style="text-align: center; color: #94a3b8; padding: 2rem;">{{ 'No learner data available.'|t }}</td>
+                    <td colspan="7" style="text-align: center; color: #64748b; padding: 2rem;">{{ 'No learner data available.'|t }}</td>
                   </tr>
                 {% endfor %}
               </tbody>
@@ -222,29 +230,29 @@
       </div>
 
       <!-- Tab Content: Quiz Analytics -->
-      <div id="quiz-analytics" class="lms-report-tab-content" style="display: none;">
+      <div id="quiz-analytics" class="lms-report-tab-content" role="tabpanel" aria-labelledby="tab-quiz-analytics" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-          <h2 style="margin: 0; color: #e2e8f0; font-size: 1.25rem;">{{ 'Quiz Performance Overview'|t }}</h2>
+          <h2 style="margin: 0; color: #334155; ">{{ 'Quiz Performance Overview'|t }}</h2>
         </div>
         
         <div class="lms-card">
           <div class="lms-table-responsive">
-            <table class="lms-table">
+            <table class="lms-table lms-report-table">
               <thead>
                 <tr>
-                  <th>{{ 'Quiz Title'|t }}</th>
-                  <th style="text-align: center;">{{ 'Total Attempts'|t }}</th>
-                  <th style="text-align: center;">{{ 'Avg. Score'|t }}</th>
-                  <th style="text-align: center;">{{ 'Pass Rate'|t }}</th>
-                  <th style="text-align: right;">{{ 'Action'|t }}</th>
+                  <th scope="col">{{ 'Quiz Title'|t }}</th>
+                  <th scope="col" style="text-align: center;">{{ 'Total Attempts'|t }}</th>
+                  <th scope="col" style="text-align: center;">{{ 'Avg. Score'|t }}</th>
+                  <th scope="col" style="text-align: center;">{{ 'Pass Rate'|t }}</th>
+                  <th scope="col" style="text-align: right;">{{ 'Action'|t }}</th>
                 </tr>
               </thead>
               <tbody>
                 {% for quiz in quiz_stats %}
                   <tr>
-                    <td>
-                      <div style="font-weight: 600;">{{ quiz.title }}</div>
-                      <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">{{ 'Min score:'|t }} {{ quiz.pass_threshold }}%</div>
+                    <td class="lms-table__primary">
+                      <div class="lms-table__primary">{{ quiz.title }}</div>
+                      <div class="lms-table__muted">{{ 'Min score:'|t }} {{ quiz.pass_threshold }}%</div>
                     </td>
                     <td style="text-align: center; font-weight: bold;">{{ quiz.attempts }}</td>
                     <td style="text-align: center; color: #60a5fa; font-weight: bold;">{{ quiz.avg_score|number_format(1) }}</td>
@@ -252,12 +260,12 @@
                       <span style="color: {{ quiz.pass_rate >= 50 ? '#10b981' : '#ef4444' }};">{{ quiz.pass_rate }}%</span>
                     </td>
                     <td style="text-align: right;">
-                      <a href="{{ url('lms_analytics.quiz_report_detail', {'quiz_id': quiz.id}) }}" class="lms-btn lms-btn--outline" style="padding: 4px 12px; font-size: 13px;">{{ 'Item Analysis'|t }}</a>
+                      <a href="{{ url('lms_analytics.quiz_report_detail', {'quiz_id': quiz.id}) }}" class="btn-lms-secondary" style="padding: 4px 12px; ">{{ 'Item Analysis'|t }}</a>
                     </td>
                   </tr>
                 {% else %}
                   <tr>
-                    <td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">{{ 'No quiz data available.'|t }}</td>
+                    <td colspan="5" style="text-align: center; color: #64748b; padding: 2rem;">{{ 'No quiz data available.'|t }}</td>
                   </tr>
                 {% endfor %}
               </tbody>
@@ -287,27 +295,19 @@
     const tabs = document.querySelectorAll('.lms-report-tabs__item');
     const contents = document.querySelectorAll('.lms-report-tab-content');
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-        tabs.forEach(t => {
-          t.style.borderBottomColor = 'transparent';
-          t.style.color = '#94a3b8';
-          t.style.fontWeight = 'normal';
-        });
-        
-        this.style.borderBottomColor = '#3b82f6';
-        this.style.color = '#fff';
-        this.style.fontWeight = 'bold';
-
-        contents.forEach(c => c.style.display = 'none');
-        
-        const targetId = this.getAttribute('data-tab');
-        const targetContent = document.getElementById(targetId);
-        if (targetContent) {
-            targetContent.style.display = 'block';
-        }
+    function selectReportTab(tab) {
+      tabs.forEach(item => {
+        const selected = item === tab;
+        item.classList.toggle('active', selected);
+        item.setAttribute('aria-selected', String(selected));
       });
-    });
+      contents.forEach(content => { content.style.display = content.id === tab.dataset.tab ? 'block' : 'none'; });
+      document.getElementById('report-active-tab').value = tab.dataset.tab;
+    }
+    tabs.forEach(tab => tab.addEventListener('click', () => selectReportTab(tab)));
+    const currentTab = new URL(window.location.href).searchParams.get('tab');
+    const selectedTab = Array.from(tabs).find(tab => tab.dataset.tab === currentTab);
+    if (selectedTab) selectReportTab(selectedTab);
 
     // 2. Chart.js Rendering Logic
     if (typeof Chart !== 'undefined' && document.getElementById('courseAnalyticsChart')) {
@@ -367,10 +367,10 @@
             plugins: {
               legend: {
                 labels: {
-                  color: '#cbd5e1',
+                  color: '#334155',
                   font: {
                     family: "'Inter', sans-serif",
-                    size: 13
+                    size: 15
                   }
                 }
               },
@@ -386,11 +386,11 @@
             scales: {
               x: {
                 grid: {
-                  color: '#334155',
+                  color: '#e2e8f0',
                   drawBorder: false,
                 },
                 ticks: {
-                  color: '#94a3b8',
+                  color: '#64748b',
                   font: {
                     family: "'Inter', sans-serif"
                   }
@@ -403,14 +403,14 @@
                 title: {
                   display: true,
                   text: 'Enrollments',
-                  color: '#94a3b8'
+                  color: '#64748b'
                 },
                 grid: {
-                  color: '#334155',
+                  color: '#e2e8f0',
                   drawBorder: false,
                 },
                 ticks: {
-                  color: '#94a3b8',
+                  color: '#64748b',
                   stepSize: 1
                 }
               },
@@ -421,7 +421,7 @@
                 title: {
                   display: true,
                   text: 'Revenue ($)',
-                  color: '#94a3b8'
+                  color: '#64748b'
                 },
                 grid: {
                   drawOnChartArea: false,

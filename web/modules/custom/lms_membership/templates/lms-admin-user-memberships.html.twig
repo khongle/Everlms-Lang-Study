@@ -1,91 +1,56 @@
-{# Admin User Memberships #}
 {{ attach_library('lms_theme/global') }}
 <div class="lms-admin">
   {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'user_memberships' } %}
-  <div class="lms-admin__main">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-      <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ 'User Memberships'|t }}</h1>
-      <a href="{{ add_url }}" class="lms-btn btn-lms-primary">
-        <i class="fas fa-plus" style="margin-right: 8px;"></i> {{ 'Add Membership'|t }}
-      </a>
-    </div>
+  <main class="lms-admin__main">
+    <header class="lms-admin__header">
+      <div><h1 class="lms-admin__title">{{ 'User Memberships'|t }}</h1><p class="lms-admin__subtitle">{{ 'Review members, subscription dates, and renewal settings.'|t }}</p></div>
+      <a href="{{ add_url }}" class="btn-lms-primary"><i class="fas fa-plus" aria-hidden="true"></i> {{ 'Add Membership'|t }}</a>
+    </header>
 
-    <!-- Filter Bar -->
-    <form method="GET" action="{{ path('<current>') }}" class="lms-admin-filter">
-      <div class="lms-admin-filter__group" style="flex: 2;">
-        <label class="lms-admin-filter__label">{{ 'Search'|t }}</label>
-        <input type="text" name="search" value="{{ filters.search }}" class="lms-admin-filter__input" placeholder="{{ 'Search...'|t }}">
+    <form method="get" action="{{ path('lms_membership.admin_user_memberships') }}" class="lms-admin-filter" aria-label="{{ 'Filter user memberships'|t }}">
+      <div class="lms-admin-filter__group lms-admin-filter__group--search">
+        <label class="lms-admin-filter__label" for="membership-search">{{ 'Member or plan'|t }}</label>
+        <input id="membership-search" type="search" name="search" value="{{ filters.search }}" class="lms-admin-filter__input" placeholder="{{ 'Search name, email, or plan'|t }}">
       </div>
       <div class="lms-admin-filter__group">
-        <label class="lms-admin-filter__label">{{ 'Status'|t }}</label>
-        <select name="status" class="lms-admin-filter__select">
-          <option value="all" {% if filters.status == 'all' %}selected{% endif %}>{{ 'All Statuses'|t }}</option>
-          <option value="active" {% if filters.status == 'active' %}selected{% endif %}>{{ 'Active'|t }}</option>
-          <option value="trial" {% if filters.status == 'trial' %}selected{% endif %}>{{ 'Trial'|t }}</option>
-          <option value="expired" {% if filters.status == 'expired' %}selected{% endif %}>{{ 'Expired'|t }}</option>
-          <option value="cancelled" {% if filters.status == 'cancelled' %}selected{% endif %}>{{ 'Cancelled'|t }}</option>
+        <label class="lms-admin-filter__label" for="membership-status">{{ 'Status'|t }}</label>
+        <select id="membership-status" name="status" class="lms-admin-filter__select">
+          <option value="all" {{ filters.status == 'all' ? 'selected' : '' }}>{{ 'All statuses'|t }}</option>
+          <option value="active" {{ filters.status == 'active' ? 'selected' : '' }}>{{ 'Active'|t }}</option>
+          <option value="trial" {{ filters.status == 'trial' ? 'selected' : '' }}>{{ 'Trial'|t }}</option>
+          <option value="expired" {{ filters.status == 'expired' ? 'selected' : '' }}>{{ 'Expired'|t }}</option>
+          <option value="cancelled" {{ filters.status == 'cancelled' ? 'selected' : '' }}>{{ 'Cancelled'|t }}</option>
         </select>
       </div>
-      <div class="lms-admin-filter__group" style="flex: 0 0 auto;">
-        <button type="submit" class="lms-btn btn-lms-primary" style="height: 42px; display: inline-flex; align-items: center;">
-          {{ 'Filter'|t }}
-        </button>
+      <div class="lms-admin-filter__actions">
+        <button type="submit" class="btn-lms-primary">{{ 'Apply filters'|t }}</button>
+        <a href="{{ path('lms_membership.admin_user_memberships') }}" class="btn-lms-secondary">{{ 'Reset'|t }}</a>
       </div>
     </form>
 
-    <div class="lms-admin-card">
+    <section class="lms-admin-card">
       <div class="lms-table-responsive">
         <table class="lms-table">
-          <thead>
-            <tr>
-              <th>{{ 'USER'|t }}</th>
-              <th>{{ 'PLAN'|t }}</th>
-              <th>{{ 'START DATE'|t }}</th>
-              <th>{{ 'END DATE'|t }}</th>
-              <th>{{ 'STATUS'|t }}</th>
-              <th>{{ 'AUTO RENEW'|t }}</th>
-              <th>{{ 'ACTIONS'|t }}</th>
-            </tr>
-          </thead>
+          <thead><tr><th scope="col">{{ 'Member'|t }}</th><th scope="col">{{ 'Plan'|t }}</th><th scope="col">{{ 'Start date'|t }}</th><th scope="col">{{ 'End date'|t }}</th><th scope="col">{{ 'Status'|t }}</th><th scope="col">{{ 'Auto renewal'|t }}</th><th scope="col">{{ 'Actions'|t }}</th></tr></thead>
           <tbody>
             {% for m in memberships %}
               <tr>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <img src="{{ m.user_avatar }}" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
-                    <div style="display: flex; flex-direction: column; gap: 0.125rem;">
-                      <span style="font-weight: 600; color: #fff;">{{ m.user_name }}</span>
-                      {% if m.email %}
-                        <span style="font-size: 0.75rem; color: #64748b;">{{ m.email }}</span>
-                      {% endif %}
-                    </div>
-                  </div>
-                </td>
-                <td>{{ m.plan_name }}</td>
-                <td>{{ m.start_date }}</td>
-                <td>{{ m.end_date }}</td>
-                <td>
-                  <span class="lms-badge {{ m.status in ['active', 'trial'] ? 'lms-badge--success' : (m.status == 'cancelled' ? 'lms-badge--warning' : 'lms-badge--danger') }}" style="text-transform: capitalize;">
-                    {{ m.status }}
-                  </span>
-                </td>
-                <td>
-                  {{ m.auto_renew }}
-                </td>
-                <td>
-                  <a href="{{ m.edit_url }}" class="lms-btn btn-lms-primary" style="padding: 6px 14px; font-size: 13px;">{{ 'Edit'|t }}</a>
-                </td>
+                <td><div class="lms-table__identity" style="display: flex; align-items: center; gap: 0.75rem;">
+                  <img src="{{ m.user_avatar }}" alt="" loading="lazy" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                  <div><strong class="lms-table__primary">{{ m.user_name }}</strong>{% if m.email %}<div class="lms-table__secondary">{{ m.email }}</div>{% endif %}</div>
+                </div></td>
+                <td>{{ m.plan_name }}</td><td>{{ m.start_date }}</td><td>{{ m.end_date }}</td>
+                <td><span class="lms-status {{ m.status in ['active', 'trial'] ? 'lms-status--published' : (m.status == 'cancelled' ? 'lms-status--draft' : 'lms-status--danger') }}">{{ m.status|capitalize }}</span></td>
+                <td>{{ m.auto_renew }}</td>
+                <td><a href="{{ m.edit_url }}" class="btn-lms-secondary"><i class="fas fa-edit" aria-hidden="true"></i> {{ 'Edit'|t }}</a></td>
               </tr>
             {% else %}
-              <tr>
-                <td colspan="7" class="lms-text-center" style="padding: 2rem; color: #94a3b8;">
-                  {{ 'No user memberships found.'|t }}
-                </td>
-              </tr>
+              <tr><td colspan="7" class="lms-table__empty">{{ 'No user memberships match these filters.'|t }}</td></tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
+      <footer class="lms-admin-footer"><span>{{ memberships|length }} {{ 'memberships on this page'|t }}</span>{{ pager }}</footer>
+    </section>
+  </main>
 </div>

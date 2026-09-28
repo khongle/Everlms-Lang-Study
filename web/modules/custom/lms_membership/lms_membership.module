@@ -19,6 +19,7 @@ function lms_membership_theme($existing, $type, $theme, $path) {
       'variables' => [
         'plans' => [],
         'filters' => [],
+        'pager' => [],
         'add_url' => '',
       ],
       'template' => 'lms-admin-pricing',
@@ -27,6 +28,7 @@ function lms_membership_theme($existing, $type, $theme, $path) {
       'variables' => [
         'memberships' => [],
         'filters' => [],
+        'pager' => [],
         'add_url' => '',
       ],
       'template' => 'lms-admin-user-memberships',

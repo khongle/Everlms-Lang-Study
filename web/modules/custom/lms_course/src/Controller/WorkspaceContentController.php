@@ -121,6 +121,7 @@ class WorkspaceContentController extends ControllerBase {
       '#add_content_url' => $add_url,
       '#active_menu' => $active_menu,
       '#hide_thumbnail' => $hide_thumbnail,
+      '#supports_publishing' => !$is_faq,
     ];
 
     if ($request->query->get('ajax') == '1') {
@@ -129,6 +130,7 @@ class WorkspaceContentController extends ControllerBase {
         '#contents' => $items,
         '#pager' => ['#type' => 'pager'],
         '#hide_thumbnail' => $hide_thumbnail,
+      '#supports_publishing' => !$is_faq,
       ];
       $html = \Drupal::service('renderer')->renderPlain($table_render);
       return new \Symfony\Component\HttpFoundation\Response((string) $html);

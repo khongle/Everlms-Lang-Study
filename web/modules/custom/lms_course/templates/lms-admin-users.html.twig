@@ -1,62 +1,40 @@
-{# Admin User List — matches mockup #}
 {{ attach_library('lms_theme/global') }}
-
 <div class="lms-admin">
   {% include '@lms_course/lms-admin-sidebar.html.twig' with { active: 'users' } %}
-
   <div class="lms-admin__main">
-    <form method="get" action="{{ url('<current>') }}" id="lms-admin-user-filter-form">
-      <div class="lms-admin__header">
-        <h1 class="lms-admin__title" style="margin-bottom: 0;">{{ 'User Management'|t }}</h1>
-        <div style="display: flex; gap: 1rem; align-items: center;">
-          <a href="{{ add_user_url }}" class="btn-lms-primary"><i class="fas fa-plus"></i> {{ 'Add User'|t }}</a>
-          <a href="#" class="lms-admin-filter__select" style="display: none; align-items: center; justify-content: center; width: auto; background: rgba(255,255,255,0.05); color: #e2e8f0; text-decoration: none; padding: 0.625rem 1.25rem;">{{ 'Bulk Import'|t }}</a>
-        </div>
+    <div class="lms-admin__header">
+      <div><h1 class="lms-admin__title">{{ 'User Management'|t }}</h1><p class="lms-admin__subtitle">{{ 'Manage accounts, roles and learning access.'|t }}</p></div>
+      <div class="lms-admin-header__actions"><a href="{{ add_user_url }}" class="btn-lms-primary"><i class="fas fa-plus" aria-hidden="true"></i> {{ 'Add User'|t }}</a></div>
+    </div>
+    <form method="get" action="{{ path('lms_course.admin_users') }}" id="lms-admin-user-filter-form" class="lms-admin-filter">
+      <div class="lms-admin-filter__group">
+        <label for="user-search" class="lms-admin-filter__label">{{ 'Search users'|t }}</label>
+        <input id="user-search" type="search" name="search" value="{{ current_search }}" class="lms-admin-filter__input" placeholder="{{ 'Name or email address'|t }}">
       </div>
-
-      <div class="lms-admin-card" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; border-bottom: none;">
-        <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid rgba(255,255,255,0.05);">
-          <div style="display: flex; gap: 1.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <div style="position: relative;">
-                <input type="text" name="search" value="{{ current_search }}" class="lms-admin-filter__input" placeholder="{{ 'Search users by name, email...'|t }}" style="padding-left: 1rem; padding-right: 2.5rem; width: 250px; padding-top: 0.35rem; padding-bottom: 0.35rem; border-radius: 0.375rem;">
-                <i class="fas fa-search" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none;"></i>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <span style="color: #94a3b8; font-size: 0.875rem; font-weight: 500;">Role:</span>
-              <select name="role" class="lms-admin-filter__select" style="width: 140px; padding: 0.35rem 0.75rem;">
-                <option value="All" {% if current_role == 'All' %}selected{% endif %}>All</option>
-                <option value="Student" {% if current_role == 'Student' %}selected{% endif %}>Student</option>
-                <option value="Instructor" {% if current_role == 'Instructor' %}selected{% endif %}>Instructor</option>
-                <option value="Manager" {% if current_role == 'Manager' %}selected{% endif %}>Manager</option>
-                <option value="Admin" {% if current_role == 'Admin' %}selected{% endif %}>Admin</option>
-              </select>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <span style="color: #94a3b8; font-size: 0.875rem; font-weight: 500;">Status:</span>
-              <select name="status" class="lms-admin-filter__select" style="width: 140px; padding: 0.35rem 0.75rem;">
-                <option value="All" {% if current_status == 'All' %}selected{% endif %}>All</option>
-                <option value="Active" {% if current_status == 'Active' %}selected{% endif %}>Active</option>
-                <option value="Inactive" {% if current_status == 'Inactive' %}selected{% endif %}>Inactive</option>
-              </select>
-            </div>
-          </div>
-          <div style="display: flex; gap: 0.75rem;">
-            <button type="button" id="lms-user-reset-btn" class="lms-admin-filter__select" style="background: transparent; color: #cbd5e1; padding: 0.35rem 1rem; font-size: 0.875rem; cursor: pointer;">
-              <i class="fas fa-sync-alt" style="margin-right:0.5rem"></i> Reset
-            </button>
-          </div>
-        </div>
+      <div class="lms-admin-filter__group">
+        <label for="user-role" class="lms-admin-filter__label">{{ 'Role'|t }}</label>
+        <select id="user-role" name="role" class="lms-admin-filter__select">
+          {% for value, label in {'All': 'All roles', 'Student': 'Student', 'Instructor': 'Instructor', 'Manager': 'Manager', 'Admin': 'Admin'} %}
+            <option value="{{ value }}" {% if current_role == value %}selected{% endif %}>{{ label|t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="lms-admin-filter__group">
+        <label for="user-status" class="lms-admin-filter__label">{{ 'Status'|t }}</label>
+        <select id="user-status" name="status" class="lms-admin-filter__select">
+          {% for value, label in {'All': 'All statuses', 'Active': 'Active', 'Inactive': 'Inactive'} %}
+            <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>{{ label|t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="lms-admin-filter__actions">
+        <button type="submit" class="btn-lms-primary"><i class="fas fa-filter" aria-hidden="true"></i> {{ 'Apply filters'|t }}</button>
+        <button type="button" id="lms-user-reset-btn" class="btn-lms-secondary"><i class="fas fa-undo" aria-hidden="true"></i> {{ 'Reset'|t }}</button>
       </div>
     </form>
-
-    <div class="lms-admin-card" style="border-top-left-radius: 0; border-top-right-radius: 0; margin-top: 0; border-top: none;">
-      <div id="lms-user-table-container">
-        {% include '@lms_course/lms-admin-users-table.html.twig' %}
-      </div>
+    <div class="lms-admin-card" id="lms-user-table-container">
+      {% include '@lms_course/lms-admin-users-table.html.twig' %}
     </div>
-
   </div>
 </div>
 
@@ -104,12 +82,13 @@
         url = new URL(form.getAttribute('action'), window.location.origin);
         const formData = new FormData(form);
         for (const [key, value] of formData) {
-          url.searchParams.append(key, value);
+          url.searchParams.set(key, value);
         }
       }
       
+      url.searchParams.delete('ajax');
       history.pushState(null, '', url.toString());
-      url.searchParams.append('ajax', '1');
+      url.searchParams.set('ajax', '1');
 
       fetch(url)
         .then(response => response.text())

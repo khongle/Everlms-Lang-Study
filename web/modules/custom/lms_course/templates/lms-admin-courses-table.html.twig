@@ -1,68 +1,26 @@
-    <div class="lms-admin-card">
-      <div class="lms-table-responsive">
-        <table class="lms-table">
-          <thead>
-            <tr style="background: #1d70f5; color: #fff;">
-              <th style="width: 48px; text-align: center; color: #fff;"><input type="checkbox" style="accent-color: #1d70f5;"></th>
-              <th style="color: #fff;">{{ 'Thumbnail'|t }}</th>
-              <th style="color: #fff;">{{ 'Course Title'|t }}</th>
-              <th style="color: #fff;">{{ 'Category'|t }}</th>
-              <th style="color: #fff;">{{ 'Instructor'|t }}</th>
-              <th style="color: #fff;">{{ 'Enrolled'|t }}</th>
-              <th style="color: #fff;">{{ 'Price'|t }}</th>
-              <th style="color: #fff;">{{ 'Status'|t }}</th>
-              <th style="text-align: right; color: #fff;">{{ 'Actions'|t }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for course in courses %}
-              <tr>
-                <td style="text-align: center;"><input type="checkbox" style="accent-color: #1d70f5;"></td>
-                <td style="width: 80px;">
-                  <div style="width: 64px; height: 40px; border-radius: 0.375rem; overflow: hidden; background: #0b0f19;">
-                    {% if course.thumbnail_url %}
-                      <img src="{{ course.thumbnail_url }}" alt="{{ course.name }}" style="width: 100%; height: 100%; object-fit: cover;">
-                    {% else %}
-                      <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#64748b;"><i class="fas fa-image"></i></div>
-                    {% endif %}
-                  </div>
-                </td>
-                <td style="font-weight: 600; color: #fff;">{{ course.name }}</td>
-                <td>{{ course.category }}</td>
-                <td>{{ course.instructor }}</td>
-                <td>{{ course.enrolled }}</td>
-                <td style="font-weight: 600; color: #fff;">
-                  {% if course.price > 0 %}
-                    ${{ course.price|number_format(0) }}
-                  {% else %}
-                    <span style="color: #10b981;">Free</span>
-                  {% endif %}
-                </td>
-                <td>
-                  {% set status_class = 'lms-status--archived' %}
-                  {% if course.status == 'Published' %}{% set status_class = 'lms-status--published' %}{% endif %}
-                  {% if course.status == 'Draft' %}{% set status_class = 'lms-status--draft' %}{% endif %}
-                  <span class="lms-status {{ status_class }}">{{ course.status }}</span>
-                </td>
-                <td class="lms-admin-table__actions">
-                  <div class="lms-admin-actions" aria-label="{{ 'Course actions'|t }}">
-                    <a href="{{ course.view_url }}" class="lms-admin-action-link" title="{{ 'View course'|t }}" aria-label="{{ 'View course'|t }}"><i class="fas fa-eye" aria-hidden="true"></i></a>
-                    <a href="{{ course.edit_url }}" class="lms-admin-action-link" title="{{ 'Edit course'|t }}" aria-label="{{ 'Edit course'|t }}"><i class="fas fa-edit" aria-hidden="true"></i></a>
-                    <a href="{{ course.delete_url }}" class="lms-admin-action-link lms-admin-action-link--danger" title="{{ 'Delete course'|t }}" aria-label="{{ 'Delete course'|t }}"><i class="fas fa-trash" aria-hidden="true"></i></a>
-                  </div>
-                </td>
-              </tr>
-            {% else %}
-              <tr><td colspan="9" style="text-align: center; padding: 3rem;">{{ 'No courses found.'|t }}</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      
-      <div class="lms-admin-footer">
-        <div>{{ 'Total'|t }} {{ courses|length }} {{ 'entries found on this page'|t }}</div>
-        <div class="lms-pagination-container">
-          {{ pager }}
-        </div>
-      </div>
-    </div>
+<div class="lms-admin-card">
+  <div class="lms-table-responsive">
+    <table class="lms-table lms-courses-table">
+      <thead><tr>
+        <th scope="col">{{ 'Thumbnail'|t }}</th><th scope="col">{{ 'Course Title'|t }}</th><th scope="col">{{ 'Category'|t }}</th><th scope="col">{{ 'Instructor'|t }}</th><th scope="col">{{ 'Enrolled'|t }}</th><th scope="col">{{ 'Price'|t }}</th><th scope="col">{{ 'Status'|t }}</th><th scope="col" class="lms-table__actions">{{ 'Actions'|t }}</th>
+      </tr></thead>
+      <tbody>
+        {% for course in courses %}
+          <tr>
+            <td><div class="lms-admin-thumbnail">{% if course.thumbnail_url %}<img src="{{ course.thumbnail_url }}" alt="">{% else %}<i class="fas fa-image" aria-hidden="true"></i>{% endif %}</div></td>
+            <td class="lms-table__primary">{{ course.name }}</td>
+            <td>{{ course.category }}</td><td>{{ course.instructor }}</td><td class="lms-table__numeric">{{ course.enrolled }}</td>
+            <td class="lms-table__numeric">{% if course.price > 0 %}${{ course.price|number_format(0) }}{% else %}<span class="lms-text-success">{{ 'Free'|t }}</span>{% endif %}</td>
+            <td><span class="lms-status {{ course.status == 'Published' ? 'lms-status--published' : (course.status == 'Draft' ? 'lms-status--draft' : 'lms-status--archived') }}">{{ course.status }}</span></td>
+            <td class="lms-table__actions"><div class="lms-admin-actions">
+              <a href="{{ course.view_url }}" class="lms-admin-action-link" title="{{ 'View course'|t }}" aria-label="{{ 'View course'|t }}"><i class="fas fa-eye" aria-hidden="true"></i></a>
+              <a href="{{ course.edit_url }}" class="lms-admin-action-link" title="{{ 'Edit course'|t }}" aria-label="{{ 'Edit course'|t }}"><i class="fas fa-edit" aria-hidden="true"></i></a>
+              <a href="{{ course.delete_url }}" class="lms-admin-action-link lms-admin-action-link--danger" title="{{ 'Delete course'|t }}" aria-label="{{ 'Delete course'|t }}"><i class="fas fa-trash" aria-hidden="true"></i></a>
+            </div></td>
+          </tr>
+        {% else %}<tr><td colspan="8" class="lms-table__empty">{{ 'No courses match your filters.'|t }}</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="lms-admin-footer"><span>{{ courses|length }} {{ 'courses on this page'|t }}</span><div class="lms-pagination-container">{{ pager }}</div></div>
+</div>

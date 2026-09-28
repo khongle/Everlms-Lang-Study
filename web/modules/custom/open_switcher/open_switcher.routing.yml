@@ -11,6 +11,7 @@ open_switcher.switch_to:
   defaults:
     _controller: '\Drupal\open_switcher\Controller\SwitchController::switchTo'
   requirements:
+    _csrf_token: 'TRUE'
     _permission: 'switch users'
     user: \d+
 
@@ -20,6 +21,7 @@ open_switcher.switch_back:
     _controller: '\Drupal\open_switcher\Controller\SwitchController::switchBack'
     _title: 'Switch Back'
   requirements:
+    _csrf_token: 'TRUE'
     _custom_access: '\Drupal\open_switcher\Controller\SwitchController::canSwitchBack'
 
 # ===== Frontend Routes =====
@@ -28,6 +30,7 @@ open_switcher.frontend:
   path: '/app/switch-user'
   defaults:
     _controller: '\Drupal\open_switcher\Controller\SwitchFrontendController::page'
+    _title: 'Switch User'
   requirements:
     _permission: 'switch users'
 
@@ -36,5 +39,14 @@ open_switcher.frontend_switch:
   defaults:
     _controller: '\Drupal\open_switcher\Controller\SwitchController::switchTo'
   requirements:
+    _csrf_token: 'TRUE'
     _permission: 'switch users'
     user: \d+
+
+# Compatibility for existing header links and bookmarks.
+open_switcher.legacy_frontend:
+  path: '/open-switcher'
+  defaults:
+    _controller: '\Drupal\open_switcher\Controller\SwitchFrontendController::legacyPage'
+  requirements:
+    _permission: 'switch users'
