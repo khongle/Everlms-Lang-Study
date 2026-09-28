@@ -13,6 +13,7 @@ function lms_listening_theme($existing, $type, $theme, $path) {
     'lms_listening_my_passages' => [
       'variables' => [
         'passages' => [],
+        'deck' => NULL,
       ],
       'template' => 'lms-listening-my-passages',
     ],
@@ -153,11 +154,11 @@ function lms_listening_preprocess_lms_flashcard_my_decks(array &$variables): voi
     }
     $deck_id = (int) $deck_row['entity']->id();
     $deck_row['listening_count'] = $counts[$deck_id] ?? 0;
+    $deck_row['listening_url'] = \Drupal\Core\Url::fromRoute('lms_listening.my_passages', [], ['query' => ['deck' => $deck_id]])->toString();
     $deck_row['listening_level_counts'] = json_encode($level_counts[$deck_id] ?? new \stdClass());
     $deck_row['listening_passages'] = json_encode($passages_by_deck[$deck_id] ?? []);
   }
   unset($deck_row);
 
   $variables['#attached']['library'][] = 'lms_listening/listening_deck_badge';
-  $variables['#attached']['library'][] = 'lms_listening/listening_start_modal';
 }

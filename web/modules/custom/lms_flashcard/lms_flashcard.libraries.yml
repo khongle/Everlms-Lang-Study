@@ -60,3 +60,16 @@ flashcard_admin:
   css:
     theme:
       css/flashcard-admin.css: {}
+
+flashcard_deck_detail:
+  css:
+    theme:
+      css/flashcard-deck-detail.css: {}
+  js:
+    js/flashcard-deck-detail.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/drupal.dialog.ajax
+    - core/drupal.dialog.off_canvas
+

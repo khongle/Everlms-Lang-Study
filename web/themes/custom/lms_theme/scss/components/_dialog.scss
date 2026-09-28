@@ -14,11 +14,80 @@
 // We only tweak opacity and cursor to ensure it works in both light and dark contexts
 // without forcefully applying dark theme colors that break light modals.
 .ui-dialog {
-  button:disabled, 
-  .button:disabled, 
+  button:disabled,
+  .button:disabled,
   button[disabled] {
     opacity: 0.5 !important;
     cursor: not-allowed !important;
     pointer-events: none !important;
+  }
+}
+
+// Off-canvas panels (Quick Edit sidebar, Settings Tray, etc.) use a
+// different title-bar layout than a centered modal — the centered-dialog
+// close-button fix above (absolute + translateY(-50%), tuned for a fixed
+// title-bar height) doesn't apply cleanly here, and jQuery UI's own icon
+// sprite can end up invisible depending on load order. Reset to a plain
+// flex title bar with our own guaranteed-visible "×" (CSS content, not an
+// image/font glyph that could fail to load) so the panel is always
+// closable regardless of what upstream CSS did or didn't load.
+.ui-dialog.ui-dialog-off-canvas {
+  .ui-dialog-titlebar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 1rem;
+    position: relative !important;
+    padding: 1rem 1.25rem !important;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .ui-dialog-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  .ui-dialog-titlebar-close {
+    position: static !important;
+    transform: none !important;
+    margin: 0 !important;
+    flex-shrink: 0;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 999px !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #f8fafc !important;
+    color: #1e293b !important;
+    cursor: pointer;
+    z-index: 5;
+
+    // Hide whatever jQuery UI's own icon markup renders (sprite image or
+    // icon font that may not have loaded) and draw a plain "×" instead —
+    // this is the part that must never fail to show up.
+    .ui-icon,
+    .ui-button-icon,
+    .ui-icon-closethick {
+      display: none !important;
+    }
+
+    &::after {
+      content: "\00d7";
+      font-size: 1.5rem;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    &:hover {
+      background: #f1f5f9 !important;
+      border-color: #c29d59 !important;
+    }
   }
 }

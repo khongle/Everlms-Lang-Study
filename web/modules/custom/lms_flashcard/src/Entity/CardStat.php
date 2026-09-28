@@ -86,6 +86,11 @@ class CardStat extends ContentEntityBase implements EntityOwnerInterface {
       ->setDescription(new TranslatableMarkup("Set once this card has passed \"Study Now\" mastery level 3 (see FlashcardApiController::submitMastery()'s level3_pass handling) — unlike the mastery flow's in-session queue state, this persists across sessions, so StudyQueueBuilder::getMasteryPercent() can show a lasting \"% of this deck mastered\" on the deck card. Doesn't get \"un-mastered\" by being requeued in a later session, but IS deliberately cleared back to FALSE by \"Reset Mastery\" (StudyQueueBuilder::resetMastery()) so a student can re-earn the progress bar — see field_ever_mastered below for the flag that tracks reaching it at all, which a reset never touches."))
       ->setDefaultValue(FALSE);
 
+    $fields['field_skipped'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(new TranslatableMarkup('Skipped'))
+      ->setDescription(new TranslatableMarkup("This user's own choice to leave a card (they already know it) out of their study sessions for a shared/course deck — a personal, per-student flag, deliberately NOT Card.status (which is the deck owner's content-publish switch, shared by every student studying that deck). StudyQueueBuilder excludes a card from this user's queue/counts/mastery denominator when this is TRUE, alongside (not instead of) the Card.status check. Toggled from the deck detail page's 'Skip' / 'Study Again' button — see FlashcardApiController::toggleCardSkip()."))
+      ->setDefaultValue(FALSE);
+
     $fields['field_ever_mastered'] = BaseFieldDefinition::create('boolean')
       ->setLabel(new TranslatableMarkup('Ever Mastered'))
       ->setDescription(new TranslatableMarkup("Set the first time this card ever passes \"Study Now\" mastery level 3, alongside field_mastered — but unlike that field, resetMastery() never clears this one back to FALSE. StudyQueueBuilder::isPracticeUnlocked() checks this (not field_mastered) to decide whether Spelling/Pronunciation Practice (and, from outside this module, Reading/Listening) stay unlocked for a deck: once a student has genuinely mastered every card in it at least once, resetting the progress bar to study it again shouldn't re-lock content they've already earned access to."))

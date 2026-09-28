@@ -16,9 +16,15 @@
       </div>
       <h1 style="font-size: 3rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; color: #fff;">{{ course.label }}</h1>
       
-      <p style="font-size: 1.125rem; color: #8b949e; margin-bottom: 2rem; max-width: 600px; line-height: 1.6;">
-        {{ course.field_short_description.value|striptags }}
-      </p>
+      {% if course.hasField('field_short_description') and not course.get('field_short_description').isEmpty() %}
+        <p style="font-size: 1.125rem; color: #8b949e; margin-bottom: 2rem; max-width: 600px; line-height: 1.6;">
+          {{ course.field_short_description.value|default('')|striptags }}
+        </p>
+      {% elseif course.hasField('field_description') and not course.get('field_description').isEmpty() %}
+        <p style="font-size: 1.125rem; color: #8b949e; margin-bottom: 2rem; max-width: 600px; line-height: 1.6;">
+          {{ course.field_description.value|default('')|striptags|slice(0, 180) }}...
+        </p>
+      {% endif %}
 
       <div class="lms-course-banner__meta" style="display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; color: #e6edf3; font-size: 0.9375rem; margin-bottom: 0;">
         <span class="lms-course-banner__instructor" style="display: flex; align-items: center; gap: 0.6rem;">
@@ -113,7 +119,7 @@
             </div>
           {% endif %}
 
-          {% if course.field_what_learn.value %}
+          {% if course.hasField('field_what_learn') and not course.get('field_what_learn').isEmpty() and course.field_what_learn.value|striptags|trim %}
             <div class="card-glass" style="margin-bottom: 3rem; background: rgba(22, 27, 34, 0.5); border: 1px solid hsla(0,0%,100%,0.05);">
               <h3 style="font-size: 1.375rem; margin-bottom: 1.5rem; color: #fff;"><i class="fas fa-check-circle text-success" style="margin-right: 0.5rem; color: #43e97b;"></i> {{ "What You'll Learn"|t }}</h3>
               <div class="lms-learn-list" style="columns: 2; column-gap: 2rem;">
@@ -122,14 +128,14 @@
             </div>
           {% endif %}
 
-          {% if course.field_prerequisites.value %}
+          {% if course.hasField('field_prerequisites') and not course.get('field_prerequisites').isEmpty() and course.field_prerequisites.value|striptags|trim %}
             <h3 style="font-size: 1.375rem; margin-bottom: 1rem; color: #fff;">{{ 'Prerequisites'|t }}</h3>
             <div class="lms-learn-list lms-course-body" style="margin-bottom: 3rem; color: #8b949e; line-height: 1.7;">
               {{ course.field_prerequisites.value|raw }}
             </div>
           {% endif %}
 
-          {% if course.field_who_for.value %}
+          {% if course.hasField('field_who_for') and not course.get('field_who_for').isEmpty() and course.field_who_for.value|striptags|trim %}
             <h3 style="font-size: 1.375rem; margin-bottom: 1rem; color: #fff;">{{ 'Who This Course Is For'|t }}</h3>
             <div class="lms-learn-list lms-course-body" style="margin-bottom: 3rem; color: #8b949e; line-height: 1.7;">
               {{ course.field_who_for.value|raw }}

@@ -16,6 +16,15 @@ function lms_flashcard_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'lms-flashcard-my-decks',
     ],
+    'lms_flashcard_deck_detail' => [
+      'variables' => [
+        'deck' => NULL,
+        'cards' => [],
+        'stats' => [],
+        'can_edit' => FALSE,
+      ],
+      'template' => 'lms-flashcard-deck-detail',
+    ],
     'lms_flashcard_study_session' => [
       'variables' => [
         'deck' => NULL,

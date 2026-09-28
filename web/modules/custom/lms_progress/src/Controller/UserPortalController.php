@@ -636,6 +636,73 @@ final class UserPortalController extends ControllerBase {
       $build['#attached']['library'][] = 'lms_zoom/countdown';
     }
 
+    // -----------------------------------------------------------------------
+    // Flashcard tab data: find deck scoped to this course + lesson.
+    // -----------------------------------------------------------------------
+    $flashcard_deck        = NULL;
+    $flashcard_cards       = [];
+    $flashcard_study_url   = '';
+    $flashcard_stats       = [
+      'card_count'     => 0,
+      'mastery_percent' => 0,
+      'due_count'      => 0,
+    ];
+
+    $deck_ids = $this->entityTypeManager->getStorage('lms_flashcard_deck')
+      ->getQuery()
+      ->condition('field_course', $lms_course->id())
+      ->condition('field_lesson', $lms_lesson->id())
+      ->condition('status', 1)
+      ->accessCheck(FALSE)
+      ->execute();
+
+    if ($deck_ids) {
+      /** @var \Drupal\lms_flashcard\Entity\Deck $deck */
+      $flashcard_deck = $this->entityTypeManager
+        ->getStorage('lms_flashcard_deck')
+        ->load(reset($deck_ids));
+
+      if ($flashcard_deck) {
+        // Load cards linked to this deck.
+        $card_ids = $this->entityTypeManager->getStorage('lms_flashcard_card')
+          ->getQuery()
+          ->condition('field_deck', $flashcard_deck->id())
+          ->condition('status', 1)
+          ->accessCheck(FALSE)
+          ->execute();
+
+        $total_cards = count($card_ids);
+        $flashcard_stats['card_count'] = $total_cards;
+
+        if ($card_ids) {
+          /** @var \Drupal\lms_flashcard\Entity\Card[] $cards */
+          $cards = $this->entityTypeManager
+            ->getStorage('lms_flashcard_card')
+            ->loadMultiple($card_ids);
+
+          foreach ($cards as $card) {
+            $flashcard_cards[] = [
+              'term'        => $card->label(),
+              'definition'  => $card->get('field_definition')->value ?? '',
+              'translation' => $card->get('field_translation')->value ?? '',
+              'is_mastered'  => FALSE,
+            ];
+          }
+        }
+
+        // Build study URL.
+        $flashcard_study_url = \Drupal\Core\Url::fromRoute(
+          'lms_flashcard.study',
+          ['lms_flashcard_deck' => $flashcard_deck->id()]
+        )->toString();
+      }
+    }
+
+    $build['#flashcard_deck']      = $flashcard_deck;
+    $build['#flashcard_cards']     = $flashcard_cards;
+    $build['#flashcard_study_url'] = $flashcard_study_url;
+    $build['#flashcard_stats']     = $flashcard_stats;
+
     return $build;
   }
 

@@ -333,6 +333,7 @@
                 }
 
                 var noteTextarea = container.querySelector('#lms-note-textarea');
+                var noteToolbar = container.querySelector('#lms-note-toolbar');
                 var noteSaveBtn = container.querySelector('#lms-note-save-btn');
                 var noteDeleteBtn = container.querySelector('#lms-note-delete-btn');
                 var noteStatus = container.querySelector('#lms-note-status');
@@ -500,21 +501,60 @@
                         }
                     });
 
+                    // A browser can leave a lone <br> (or an empty <div><br></div>)
+                    // behind in a contenteditable after the student types then
+                    // deletes everything — normalized to '' here so both the
+                    // :empty:before placeholder CSS and the unsaved-changes
+                    // comparison treat that the same as a genuinely empty note.
+                    var normalizeIfEmpty = function () {
+                        var html = noteTextarea.innerHTML;
+                        if (html === '<br>' || html === '<div><br></div>' || html === '<p><br></p>') {
+                            noteTextarea.innerHTML = '';
+                        }
+                    };
+
+                    var setNoteEditable = function (enabled) {
+                        noteTextarea.contentEditable = enabled ? 'true' : 'false';
+                        noteTextarea.classList.toggle('is-disabled', !enabled);
+                        if (noteToolbar) {
+                            noteToolbar.classList.toggle('is-disabled', !enabled);
+                        }
+                    };
+
                     noteTextarea.addEventListener('input', function () {
-                        hasUnsavedChanges = noteTextarea.value !== originalNoteText;
+                        normalizeIfEmpty();
+                        hasUnsavedChanges = noteTextarea.innerHTML !== originalNoteText;
                         setSaveEnabled(hasUnsavedChanges);
                     });
+
+                    if (noteToolbar) {
+                        noteToolbar.addEventListener('click', function (e) {
+                            var btn = e.target.closest('[data-note-cmd]');
+                            if (!btn || noteTextarea.contentEditable !== 'true') return;
+                            e.preventDefault();
+                            noteTextarea.focus();
+                            // execCommand is long-deprecated but is still the
+                            // only zero-dependency way to do basic rich-text
+                            // formatting without pulling in a third-party
+                            // editor library — same approach as lms_note's
+                            // shared note-widget.js.
+                            document.execCommand(btn.getAttribute('data-note-cmd'), false, null);
+                            normalizeIfEmpty();
+                            hasUnsavedChanges = noteTextarea.innerHTML !== originalNoteText;
+                            setSaveEnabled(hasUnsavedChanges);
+                        });
+                    }
 
                     fetch('/api/lms/note/get?lesson_id=' + encodeURIComponent(lessonId))
                         .then(function (r) { return r.json(); })
                         .then(function (data) {
-                            noteTextarea.disabled = false;
-                            noteTextarea.placeholder = Drupal.t('Type your notes here...');
+                            setNoteEditable(true);
+                            noteTextarea.setAttribute('data-empty-text', Drupal.t('Type your notes here… (use the toolbar above for bold, lists, etc.)'));
                             if (noteAttachmentInput) noteAttachmentInput.disabled = false;
 
                             if (data && data.status === 'found') {
-                                noteTextarea.value = data.note_text || '';
-                                originalNoteText = noteTextarea.value;
+                                noteTextarea.innerHTML = data.note_text || '';
+                                originalNoteText = noteTextarea.innerHTML;
                                 setDeleteVisible(true);
                             } else {
                                 originalNoteText = '';
@@ -526,8 +566,8 @@
                             setSaveEnabled(false);
                         })
                         .catch(function () {
-                            noteTextarea.disabled = false;
-                            noteTextarea.placeholder = Drupal.t('Type your notes here...');
+                            setNoteEditable(true);
+                            noteTextarea.setAttribute('data-empty-text', Drupal.t('Type your notes here…'));
                             if (noteAttachmentInput) noteAttachmentInput.disabled = false;
                             setDeleteVisible(false);
                             setSaveEnabled(false);
@@ -547,7 +587,7 @@
                                 body: JSON.stringify({
                                     course_id: courseId,
                                     lesson_id: lessonId,
-                                    note_text: noteTextarea.value,
+                                    note_text: noteTextarea.innerHTML,
                                     video_timestamp: 0
                                 })
                             });
@@ -556,7 +596,7 @@
                                 showStatus('<i class="fas fa-check-circle lms-note-status-icon is-success"></i> ' + Drupal.t('Saved successfully!'), 'success');
                                 setDeleteVisible(true);
 
-                                originalNoteText = noteTextarea.value;
+                                originalNoteText = noteTextarea.innerHTML;
                                 hasUnsavedChanges = false;
                                 setSaveEnabled(false);
 
@@ -593,7 +633,7 @@
                             });
 
                             if (response.ok) {
-                                noteTextarea.value = '';
+                                noteTextarea.innerHTML = '';
                                 originalNoteText = '';
                                 hasUnsavedChanges = false;
 

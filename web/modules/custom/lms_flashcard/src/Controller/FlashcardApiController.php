@@ -6,6 +6,7 @@ namespace Drupal\lms_flashcard\Controller;
 
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Utility\Bytes;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
@@ -1081,4 +1082,81 @@ final class FlashcardApiController extends ControllerBase {
     return $deck;
   }
 
+  /**
+   * POST /api/lms/flashcard/card/{lms_flashcard_card}/toggle-status
+   *
+   * Toggles the published/unpublished status of a single card.
+   * Unpublished cards are hidden from all study modes, but preserved in the deck.
+   */
+  public function toggleCardStatus(Card $lms_flashcard_card): JsonResponse {
+    if (!$lms_flashcard_card->access('update', $this->currentUser)) {
+      return new JsonResponse(['error' => 'Permission denied'], 403);
+    }
+
+    $newStatus = !$lms_flashcard_card->isPublished();
+    $lms_flashcard_card->set('status', $newStatus);
+    $lms_flashcard_card->save();
+
+    // Invalidate deck cache tags so stats on /learn/flashcards update.
+    $deck = $lms_flashcard_card->get('field_deck')->entity;
+    if ($deck) {
+      Cache::invalidateTags($deck->getCacheTags());
+    }
+
+    return new JsonResponse([
+      'status' => 'ok',
+      'card_id' => (int) $lms_flashcard_card->id(),
+      'published' => $newStatus,
+      'message' => $newStatus
+        ? (string) $this->t('Card published.')
+        : (string) $this->t('Card unpublished. This card will be skipped during study sessions.'),
+    ]);
+  }
+
+  /**
+   * POST /api/lms/flashcard/card/{lms_flashcard_card}/toggle-skip
+   *
+   * Toggles *this user's own* "Skip" flag (CardStat::field_skipped) for a
+   * single card — a personal study preference, not a content edit, so it's
+   * gated by deck visibility (same as every other study-session endpoint
+   * in this controller) rather than Card 'update' access like
+   * toggleCardStatus() above. Deliberately never touches Card.status: that
+   * stays the deck owner's own publish switch, shared by every student
+   * studying a course/shared deck, while this is scoped to just the
+   * requesting uid via loadOrCreateCardStat() — see CardStat::field_skipped's
+   * docblock for why these had to be split into two separate fields.
+   */
+  public function toggleCardSkip(Card $lms_flashcard_card): JsonResponse {
+    $uid = (int) $this->currentUser->id();
+    if (!$uid) {
+      return new JsonResponse(['error' => 'Unauthorized'], 403);
+    }
+
+    $deck = $lms_flashcard_card->get('field_deck')->entity;
+    if (!$deck instanceof Deck || !$this->queueBuilder->isDeckVisibleTo($deck, $uid)) {
+      return new JsonResponse(['error' => 'Permission denied'], 403);
+    }
+
+    $stat = $this->loadOrCreateCardStat((int) $lms_flashcard_card->id(), $uid);
+    $newSkipped = !$stat->get('field_skipped')->value;
+    $stat->set('field_skipped', $newSkipped);
+    $stat->save();
+
+    // Invalidate this deck's cache tags so this user's own stats on
+    // /learn/flashcards and the deck-detail page pick up the new count —
+    // same tag toggleCardStatus() invalidates, since both change what
+    // shows up on those pages for at least one viewer.
+    Cache::invalidateTags($deck->getCacheTags());
+
+    return new JsonResponse([
+      'status' => 'ok',
+      'card_id' => (int) $lms_flashcard_card->id(),
+      'skipped' => $newSkipped,
+      'message' => $newSkipped
+        ? (string) $this->t('Skipped. This card will be left out of your study sessions.')
+        : (string) $this->t('Back in your study sessions.'),
+    ]);
+  }
+
 }
+

@@ -46,6 +46,7 @@
 
           <div class="lms-flashcard-filters__chips" role="group" aria-label="{{ 'Filter decks'|t }}">
             <button type="button" class="lms-flashcard-filters__chip is-active" data-filter-chip="all">{{ 'All'|t }}</button>
+            <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="course"><i class="fas fa-graduation-cap"></i> {{ 'Courses'|t }}</button>
             <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="mine">{{ 'Mine'|t }}</button>
             <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="due">{{ 'Due'|t }}</button>
             <button type="button" class="lms-flashcard-filters__chip" data-filter-chip="new">{{ 'New'|t }}</button>
@@ -89,18 +90,41 @@
             data-desc="{{ deck.description|default('')|striptags|lower }}"
             data-language="{{ deck.language }}"
             data-mine="{{ deck.is_mine ? '1' : '0' }}"
+            data-course="{{ deck.course ? '1' : '0' }}"
             data-due="{{ deck.due_count > 0 ? '1' : '0' }}"
             data-new="{{ deck.new_count > 0 ? '1' : '0' }}"
             data-created="{{ deck.entity.get('created').value }}">
             <div class="lms-flashcard-deck-card__top">
-              <h3 class="lms-flashcard-deck-card__title">{{ deck.name }}</h3>
+              <h3 class="lms-flashcard-deck-card__title">
+                <a href="{{ path('lms_flashcard.deck_detail', {'lms_flashcard_deck': deck.entity.id()}) }}">{{ deck.name }}</a>
+              </h3>
               <div class="lms-flashcard-deck-card__badges">
+                {% if deck.course %}
+                  <span class="lms-flashcard-deck-card__badge lms-flashcard-deck-card__badge--course" title="{{ 'Associated Course: ' ~ deck.course.name }}">
+                    <i class="fas fa-graduation-cap"></i> {{ 'Course'|t }}
+                  </span>
+                {% endif %}
                 {% if deck.is_mine %}
                   <span class="lms-flashcard-deck-card__badge lms-flashcard-deck-card__badge--mine">{{ 'Mine'|t }}</span>
                 {% endif %}
                 <span class="lms-flashcard-deck-card__badge">{{ deck.language }}</span>
               </div>
             </div>
+
+            {% if deck.course %}
+              <div class="lms-flashcard-deck-card__course-context">
+                <i class="fas fa-graduation-cap lms-flashcard-deck-card__course-icon"></i>
+                <a href="{{ path('lms_course.detail', {'lms_course': deck.course.id}) }}" class="lms-flashcard-deck-card__course-link" title="{{ 'View Course'|t }}">
+                  {{ deck.course.name }}
+                </a>
+                {% if deck.lesson %}
+                  <span class="lms-flashcard-deck-card__course-sep"><i class="fas fa-chevron-right"></i></span>
+                  <a href="{{ path('lms_progress.lesson_view', {'lms_course': deck.course.id, 'lms_lesson': deck.lesson.id}) }}" class="lms-flashcard-deck-card__lesson-link" title="{{ 'Go to Lesson'|t }}">
+                    {{ deck.lesson.name }}
+                  </a>
+                {% endif %}
+              </div>
+            {% endif %}
 
             {% if deck.description %}
               <p class="lms-flashcard-deck-card__desc">{{ deck.description|striptags|slice(0, 140) }}</p>
@@ -222,31 +246,11 @@
                   </span>
                 {% endif %}
 
-                {# Same additive-link pattern as Reading just above, this time
-                   into the separate lms_listening module — a plain hardcoded
-                   href so this template never errors if lms_listening is
-                   ever disabled/absent. Points at lms_listening.start, the
-                   level-picker page ("which level(s) do you want to
-                   practice?") that queues a couple of passages per level and
-                   drops the student into the first one — see
-                   ListeningStartForm's docblock. lms_listening also
-                   progressively enhances this exact link into an in-page
-                   popup instead of a full navigation, purely via a JS
-                   behavior matched by class name (lms_listening_preprocess_
-                   lms_flashcard_my_decks() attaches that library to this
-                   page) — this template stays unaware of it, same
-                   decoupling as everywhere else here; the href is what
-                   still works if that JS doesn't run. data-deck-name feeds
-                   that popup's "Pick a level for X" heading; data-level-counts
-                   (a JSON object, e.g. {"easy":5,"challenge":2}) tells it how
-                   many passages exist per level, to show a count next to each
-                   checkbox and disable any level with none — both inert
-                   markup otherwise. deck.listening_count/listening_level_counts
-                   are set by the same preprocess function (only runs while
-                   lms_listening is enabled); Twig's `is defined` check below
-                   skips the badge otherwise. #}
+                {# Single additive link into the separate lms_listening module
+                   (mirroring the Reading link pattern) — links directly to
+                   the deck's listening passages list at /learn/listening?deck=ID. #}
                 {% if deck.practice_unlocked %}
-                  <a href="/learn/listening-start?deck={{ deck.entity.id() }}" data-deck-name="{{ deck.entity.label() }}" data-level-counts="{{ deck.listening_level_counts|default('{}') }}" data-passages="{{ deck.listening_passages|default('[]') }}" class="lms-flashcard-deck-card__practice-link lms-flashcard-deck-card__practice-link--listening">
+                  <a href="{{ deck.listening_url|default('/learn/listening?deck=' ~ deck.entity.id()) }}" class="lms-flashcard-deck-card__practice-link lms-flashcard-deck-card__practice-link--listening">
                     <i class="fas fa-headphones"></i> {{ 'Listening'|t }}
                     {% if deck.listening_count is defined and deck.listening_count > 0 %}
                       <span class="lms-listening-deck-badge">{{ deck.listening_count }}</span>
@@ -260,8 +264,9 @@
               </div>
             </div>
 
-            {% if deck.is_mine %}
-              <div class="lms-flashcard-deck-card__manage">
+            <div class="lms-flashcard-deck-card__manage">
+              <a href="{{ path('lms_flashcard.deck_detail', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-list-ul"></i> {{ 'Detail'|t }}</a>
+              {% if deck.is_mine %}
                 <a href="{{ path('entity.lms_flashcard_deck.edit_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-pen"></i> {{ 'Edit'|t }}</a>
                 <a href="{{ path('lms_flashcard.import') }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-plus"></i> {{ 'Add cards'|t }}</a>
                 {# JSON of every card in this deck, in the exact shape the
@@ -270,8 +275,8 @@
                    See DeckExportController. #}
                 <a href="{{ path('lms_flashcard.deck_export', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link"><i class="fas fa-file-export"></i> {{ 'Export'|t }}</a>
                 <a href="{{ path('entity.lms_flashcard_deck.delete_form', {'lms_flashcard_deck': deck.entity.id()}) }}" class="lms-flashcard-deck-card__manage-link lms-flashcard-deck-card__manage-link--danger"><i class="fas fa-trash-alt"></i> {{ 'Delete'|t }}</a>
-              </div>
-            {% endif %}
+              {% endif %}
+            </div>
           </div>
         {% endfor %}
       </div>

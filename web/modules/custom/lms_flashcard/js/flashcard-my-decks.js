@@ -73,6 +73,9 @@
             case 'mine':
               return card.dataset.mine === '1';
 
+            case 'course':
+              return card.dataset.course === '1';
+
             case 'due':
               return card.dataset.due === '1';
 

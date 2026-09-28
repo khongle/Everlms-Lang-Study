@@ -40,6 +40,43 @@ final class StudyQueueBuilder {
   ) {}
 
   /**
+   * Card IDs from $cardIds this user has personally marked "Skip" (see
+   * CardStat::field_skipped's docblock) — a per-user preference, distinct
+   * from Card.status which is the deck owner's own content publish switch
+   * shared by every student. Every method below that filters cards by
+   * `status = TRUE` also subtracts this, so a skip only ever affects the
+   * student who set it, never other students studying the same shared
+   * deck.
+   *
+   * @param int[] $cardIds
+   *   Card IDs already known to belong to the deck(s) in scope, so this
+   *   only needs to narrow down which of those this user skipped.
+   *
+   * @return int[]
+   */
+  public function getSkippedCardIds(int $uid, array $cardIds): array {
+    if (!$cardIds) {
+      return [];
+    }
+    $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
+    $statIds = $statStorage->getQuery()
+      ->condition('uid', $uid)
+      ->condition('field_card', $cardIds, 'IN')
+      ->condition('field_skipped', TRUE)
+      ->accessCheck(FALSE)
+      ->execute();
+    if (!$statIds) {
+      return [];
+    }
+    $skipped = [];
+    foreach ($statStorage->loadMultiple($statIds) as $stat) {
+      /** @var \Drupal\lms_flashcard\Entity\CardStat $stat */
+      $skipped[] = (int) $stat->get('field_card')->target_id;
+    }
+    return $skipped;
+  }
+
+  /**
    * Builds the initial ordered queue for a study session.
    *
    * @param int $uid
@@ -73,6 +110,10 @@ final class StudyQueueBuilder {
       return [];
     }
     $cardIds = array_values(array_map('intval', $cardIds));
+    $cardIds = array_values(array_diff($cardIds, $this->getSkippedCardIds($uid, $cardIds)));
+    if (!$cardIds) {
+      return [];
+    }
 
     if ($practice) {
       shuffle($cardIds);
@@ -230,6 +271,10 @@ final class StudyQueueBuilder {
       return [];
     }
     $cardIds = array_values(array_map('intval', $cardIds));
+    $cardIds = array_values(array_diff($cardIds, $this->getSkippedCardIds($uid, $cardIds)));
+    if (!$cardIds) {
+      return [];
+    }
 
     if (!$includeMastered) {
       $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
@@ -294,6 +339,10 @@ final class StudyQueueBuilder {
       return ['due' => 0, 'new' => 0];
     }
     $cardIds = array_values(array_map('intval', $cardIds));
+    $cardIds = array_values(array_diff($cardIds, $this->getSkippedCardIds($uid, $cardIds)));
+    if (!$cardIds) {
+      return ['due' => 0, 'new' => 0];
+    }
 
     $reviewIds = $reviewStorage->getQuery()
       ->condition('uid', $uid)
@@ -364,6 +413,10 @@ final class StudyQueueBuilder {
       return 100;
     }
     $cardIds = array_values(array_map('intval', $cardIds));
+    $cardIds = array_values(array_diff($cardIds, $this->getSkippedCardIds($uid, $cardIds)));
+    if (!$cardIds) {
+      return 100;
+    }
 
     $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
     $masteredCount = $statStorage->getQuery()
@@ -404,6 +457,10 @@ final class StudyQueueBuilder {
       return TRUE;
     }
     $cardIds = array_values(array_map('intval', $cardIds));
+    $cardIds = array_values(array_diff($cardIds, $this->getSkippedCardIds($uid, $cardIds)));
+    if (!$cardIds) {
+      return TRUE;
+    }
 
     $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
     $everMasteredCount = $statStorage->getQuery()

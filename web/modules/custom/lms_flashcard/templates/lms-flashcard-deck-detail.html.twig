@@ -1,0 +1,220 @@
+{# Deck Detail page: view all cards in a deck and toggle publish/unpublish #}
+{{ attach_library('lms_theme/global') }}
+{{ attach_library('lms_flashcard/flashcard_pages') }}
+{{ attach_library('lms_flashcard/flashcard_deck_detail') }}
+
+<section class="lms-section lms-flashcard-page lms-flashcard-deck-detail-page">
+  <div class="container">
+    {# ── Breadcrumb / Back link ──────────────────────────────────── #}
+    <div class="lms-flashcard-deck-detail__back">
+      <a href="{{ path('lms_flashcard.my_decks') }}" class="lms-flashcard-deck-detail__back-link">
+        <i class="fas fa-arrow-left"></i> {{ 'Back to Flashcards'|t }}
+      </a>
+    </div>
+
+    {# ── Header: Deck Info & Quick Actions ───────────────────────── #}
+    <div class="lms-flashcard-deck-detail__header">
+      <div class="lms-flashcard-deck-detail__header-main">
+        <div class="lms-flashcard-deck-detail__badges">
+          {% if deck.course %}
+            <span class="lms-flashcard-deck-detail__badge lms-flashcard-deck-detail__badge--course">
+              <i class="fas fa-graduation-cap"></i> {{ 'Course Deck'|t }}
+            </span>
+          {% endif %}
+          {% if deck.topic %}
+            <span class="lms-flashcard-deck-detail__badge lms-flashcard-deck-detail__badge--topic">{{ deck.topic }}</span>
+          {% endif %}
+          <span class="lms-flashcard-deck-detail__badge">{{ deck.language|upper }}</span>
+          {% if deck.is_mine %}
+            <span class="lms-flashcard-deck-detail__badge lms-flashcard-deck-detail__badge--mine">{{ 'Mine'|t }}</span>
+          {% endif %}
+        </div>
+        <h1 class="lms-flashcard-deck-detail__title">{{ deck.name }}</h1>
+        {% if deck.course %}
+          <div class="lms-flashcard-deck-detail__course-context">
+            <i class="fas fa-graduation-cap"></i>
+            <span class="lms-flashcard-deck-detail__course-label">{{ 'Course:'|t }}</span>
+            <a href="{{ path('lms_course.detail', {'lms_course': deck.course.id}) }}" class="lms-flashcard-deck-detail__course-link">
+              {{ deck.course.name }}
+            </a>
+            {% if deck.lesson %}
+              <span class="lms-flashcard-deck-detail__course-sep"><i class="fas fa-chevron-right"></i></span>
+              <a href="{{ path('lms_progress.lesson_view', {'lms_course': deck.course.id, 'lms_lesson': deck.lesson.id}) }}" class="lms-flashcard-deck-detail__lesson-link">
+                {{ deck.lesson.name }}
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+        {% if deck.description %}
+          <p class="lms-flashcard-deck-detail__desc">{{ deck.description|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <div class="lms-flashcard-deck-detail__actions">
+        <a href="{{ path('lms_flashcard.study', {'lms_flashcard_deck': deck.id}) }}" class="lms-flashcard-deck-detail__btn lms-flashcard-deck-detail__btn--primary">
+          <i class="fas fa-play"></i> {{ 'Study Now'|t }}
+        </a>
+        {% if can_edit %}
+          <a href="{{ path('lms_flashcard.import') }}" class="lms-flashcard-deck-detail__btn lms-flashcard-deck-detail__btn--outline">
+            <i class="fas fa-plus"></i> {{ 'Add cards'|t }}
+          </a>
+          <a href="{{ path('lms_flashcard.deck_export', {'lms_flashcard_deck': deck.id}) }}" class="lms-flashcard-deck-detail__btn lms-flashcard-deck-detail__btn--outline">
+            <i class="fas fa-file-export"></i> {{ 'Export'|t }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    {# ── Deck Stats Bar ──────────────────────────────────────────── #}
+    <div class="lms-flashcard-deck-detail__stats-bar">
+      <div class="lms-flashcard-deck-detail__stat-card">
+        <span class="lms-flashcard-deck-detail__stat-val" data-stat-total>{{ stats.total_cards }}</span>
+        <span class="lms-flashcard-deck-detail__stat-lbl"><i class="fas fa-clone"></i> {{ 'Total cards'|t }}</span>
+      </div>
+      <div class="lms-flashcard-deck-detail__stat-card lms-flashcard-deck-detail__stat-card--published">
+        <span class="lms-flashcard-deck-detail__stat-val" data-stat-published>{{ stats.published_cards }}</span>
+        <span class="lms-flashcard-deck-detail__stat-lbl"><i class="fas fa-check-circle"></i> {{ 'Studying'|t }}</span>
+      </div>
+      <div class="lms-flashcard-deck-detail__stat-card lms-flashcard-deck-detail__stat-card--unpublished">
+        <span class="lms-flashcard-deck-detail__stat-val" data-stat-unpublished>{{ stats.unpublished_cards }}</span>
+        <span class="lms-flashcard-deck-detail__stat-lbl"><i class="fas fa-forward"></i> {{ 'Skipped (Known)'|t }}</span>
+      </div>
+      <div class="lms-flashcard-deck-detail__stat-card">
+        <span class="lms-flashcard-deck-detail__stat-val">{{ stats.mastery_percent }}%</span>
+        <span class="lms-flashcard-deck-detail__stat-lbl"><i class="fas fa-chart-line"></i> {{ 'Mastery'|t }}</span>
+      </div>
+    </div>
+
+    {# ── Tip Note ────────────────────────────────────────────────── #}
+    <div class="lms-flashcard-deck-detail__tip">
+      <i class="fas fa-lightbulb"></i>
+      <span>{{ 'Tip: For cards you already know, click "Skip" to leave them out of study sessions and focus on unfamiliar vocabulary. Click "Study Again" any time to bring a card back.'|t }}</span>
+    </div>
+
+    {# ── Filter & Search Toolbar ─────────────────────────────────── #}
+    <div class="lms-flashcard-deck-detail__toolbar" data-card-filters>
+      <div class="lms-flashcard-deck-detail__search">
+        <i class="fas fa-search"></i>
+        <input type="search" class="lms-flashcard-deck-detail__search-input" data-filter-search placeholder="{{ 'Search cards, definitions, translations…'|t }}" aria-label="{{ 'Search cards'|t }}">
+      </div>
+
+      <div class="lms-flashcard-deck-detail__filter-group">
+        <div class="lms-flashcard-deck-detail__chips" role="group" aria-label="{{ 'Filter by status'|t }}">
+          <button type="button" class="lms-flashcard-deck-detail__chip is-active" data-filter-status="all">{{ 'All'|t }} (<span data-count-all>{{ stats.total_cards }}</span>)</button>
+          <button type="button" class="lms-flashcard-deck-detail__chip" data-filter-status="published">{{ 'Studying'|t }} (<span data-count-published>{{ stats.published_cards }}</span>)</button>
+          <button type="button" class="lms-flashcard-deck-detail__chip" data-filter-status="unpublished">{{ 'Skipped'|t }} (<span data-count-unpublished>{{ stats.unpublished_cards }}</span>)</button>
+        </div>
+
+        <select class="lms-flashcard-deck-detail__select" data-filter-pos aria-label="{{ 'Filter by part of speech'|t }}">
+          <option value="">{{ 'All parts of speech'|t }}</option>
+          <option value="noun">{{ 'Noun'|t }}</option>
+          <option value="verb">{{ 'Verb'|t }}</option>
+          <option value="adjective">{{ 'Adjective'|t }}</option>
+          <option value="adverb">{{ 'Adverb'|t }}</option>
+          <option value="phrase">{{ 'Phrase'|t }}</option>
+          <option value="phrasal verb">{{ 'Phrasal verb'|t }}</option>
+          <option value="idiom">{{ 'Idiom'|t }}</option>
+          <option value="other">{{ 'Other'|t }}</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lms-flashcard-empty lms-flashcard-deck-detail__no-match" data-filter-empty hidden>
+      {{ 'No cards match your filter criteria.'|t }}
+    </p>
+
+    {# ── Card Table / List ───────────────────────────────────────── #}
+    <div class="lms-flashcard-deck-detail__cards" data-card-list>
+      {% for card in cards %}
+        <div class="lms-flashcard-detail-item {{ card.is_skipped ? 'is-unpublished' : '' }}"
+          data-card-item
+          data-id="{{ card.id }}"
+          data-term="{{ card.term|lower }}"
+          data-translation="{{ card.translation|lower }}"
+          data-definition="{{ card.definition|lower }}"
+          data-status="{{ card.is_skipped ? 'unpublished' : 'published' }}"
+          data-pos="{{ card.part_of_speech|lower }}">
+          <div class="lms-flashcard-detail-item__index">{{ loop.index }}</div>
+
+          <div class="lms-flashcard-detail-item__term-col">
+            <div class="lms-flashcard-detail-item__term-row">
+              <span class="lms-flashcard-detail-item__term">{{ card.term }}</span>
+              <button type="button" class="lms-flashcard-detail-item__speak-btn" data-speak-term="{{ card.term }}" title="{{ 'Pronounce word'|t }}">
+                <i class="fas fa-volume-up"></i>
+              </button>
+            </div>
+            {% if card.pronunciation %}
+              <div class="lms-flashcard-detail-item__ipa">{{ card.pronunciation }}</div>
+            {% endif %}
+            {% if card.part_of_speech %}
+              <span class="lms-flashcard-detail-item__pos">{{ card.part_of_speech }}</span>
+            {% endif %}
+          </div>
+
+          <div class="lms-flashcard-detail-item__meaning-col">
+            {% if card.translation %}
+              <div class="lms-flashcard-detail-item__translation">{{ card.translation }}</div>
+            {% endif %}
+            {% if card.definition %}
+              <div class="lms-flashcard-detail-item__definition">{{ card.definition }}</div>
+            {% endif %}
+
+            {% if card.examples is not empty %}
+              <div class="lms-flashcard-detail-item__examples">
+                {% for example in card.examples %}
+                  <div class="lms-flashcard-detail-item__example">
+                    <span class="lms-flashcard-detail-item__example-sentence">• {{ example.sentence }}</span>
+                    {% if example.translation %}
+                      <span class="lms-flashcard-detail-item__example-translation"> — {{ example.translation }}</span>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% if card.collocations is not empty %}
+              <div class="lms-flashcard-detail-item__collocations">
+                <span class="lms-flashcard-detail-item__collocations-label">{{ 'Collocations:'|t }}</span>
+                {% for col in card.collocations %}
+                  <span class="lms-flashcard-detail-item__collocation-pill" title="{{ col.translation }}">
+                    {{ col.phrase }}
+                  </span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="lms-flashcard-detail-item__status-col">
+            <span class="lms-flashcard-detail-item__status-badge {{ card.is_skipped ? 'is-unpublished' : 'is-published' }}" data-status-badge>
+              <i class="fas {{ card.is_skipped ? 'fa-forward' : 'fa-check-circle' }}"></i>
+              <span class="lms-flashcard-detail-item__status-text">{{ card.is_skipped ? 'Skipped'|t : 'Studying'|t }}</span>
+            </span>
+
+            <div class="lms-flashcard-detail-item__actions">
+              {% if can_edit %}
+                <a href="{{ path('entity.lms_flashcard_card.edit_form', {'lms_flashcard_card': card.id}, {'query': {'destination': path('lms_flashcard.deck_detail', {'lms_flashcard_deck': deck.id})}}) }}"
+                  class="lms-flashcard-detail-item__quickedit-btn use-ajax"
+                  data-dialog-type="dialog"
+                  data-dialog-renderer="off_canvas"
+                  data-dialog-options="{{ {width: 560, title: 'Quick edit: ' ~ card.term}|json_encode }}"
+                  title="{{ 'Quick edit this card'|t }}">
+                  <i class="fas fa-pen"></i>
+                  <span>{{ 'Quick Edit'|t }}</span>
+                </a>
+              {% endif %}
+              {% if card.can_skip %}
+                <button type="button"
+                  class="lms-flashcard-detail-item__toggle-btn {{ card.is_skipped ? 'is-unpublished' : 'is-published' }}"
+                  data-toggle-card="{{ card.id }}"
+                  title="{{ card.is_skipped ? 'Bring this card back into your study sessions.'|t : 'Already know this word? Skip it so it stops showing up in study sessions.'|t }}">
+                  <i class="fas {{ card.is_skipped ? 'fa-undo' : 'fa-forward' }}"></i>
+                  <span>{{ card.is_skipped ? 'Study Again'|t : 'Skip'|t }}</span>
+                </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

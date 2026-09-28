@@ -68,6 +68,18 @@ lms_flashcard.my_decks:
   requirements:
     _user_is_logged_in: 'TRUE'
 
+lms_flashcard.deck_detail:
+  path: '/learn/flashcards/{lms_flashcard_deck}'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\StudyController::deckDetail'
+    _title_callback: '\Drupal\lms_flashcard\Controller\StudyController::deckDetailTitle'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      lms_flashcard_deck:
+        type: entity:lms_flashcard_deck
+
 lms_flashcard.study:
   path: '/learn/flashcards/{lms_flashcard_deck}/study'
   defaults:
@@ -163,3 +175,28 @@ lms_flashcard.api_quick_edit_save:
     parameters:
       lms_flashcard_card:
         type: entity:lms_flashcard_card
+
+lms_flashcard.api_toggle_card_status:
+  path: '/api/lms/flashcard/card/{lms_flashcard_card}/toggle-status'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\FlashcardApiController::toggleCardStatus'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+  options:
+    parameters:
+      lms_flashcard_card:
+        type: entity:lms_flashcard_card
+
+lms_flashcard.api_toggle_card_skip:
+  path: '/api/lms/flashcard/card/{lms_flashcard_card}/toggle-skip'
+  defaults:
+    _controller: '\Drupal\lms_flashcard\Controller\FlashcardApiController::toggleCardSkip'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [POST]
+  options:
+    parameters:
+      lms_flashcard_card:
+        type: entity:lms_flashcard_card
+

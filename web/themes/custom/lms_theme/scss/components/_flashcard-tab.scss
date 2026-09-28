@@ -1,0 +1,247 @@
+// ============================================================
+// Flashcard Tab — In-Lesson Vocabulary Card List
+// Located inside the Flashcards tab on the lesson view page.
+// ============================================================
+
+.lms-flashcard-tab {
+  padding: 0.5rem 0;
+}
+
+// ── Stats Row ──────────────────────────────────────────────
+.lms-flashcard-tab__stats {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.lms-flashcard-tab__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+
+  &--progress {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+.lms-flashcard-tab__stat-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: $color-accent-primary;
+  line-height: 1.1;
+}
+
+.lms-flashcard-tab__stat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: $color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+
+.lms-flashcard-tab__progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lms-flashcard-tab__progress-fill {
+  height: 100%;
+  background: $gradient-primary;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+// ── Action Buttons ─────────────────────────────────────────
+.lms-flashcard-tab__actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.lms-flashcard-tab__study-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+}
+
+.lms-flashcard-tab__add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 600;
+}
+
+// ── Add Card Form ──────────────────────────────────────────
+.lms-flashcard-tab__form {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.lms-flashcard-tab__form-group {
+  margin-bottom: 0.85rem;
+
+  label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: $color-text-secondary;
+    margin-bottom: 0.35rem;
+
+    .required { color: $color-accent-danger; }
+  }
+}
+
+.lms-flashcard-tab__form-actions {
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.lms-flashcard-tab__form-message {
+  margin-top: 0.65rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+// ── Card Grid ──────────────────────────────────────────────
+.lms-flashcard-tab__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.9rem;
+}
+
+// ── Single Card ────────────────────────────────────────────
+.lms-flashcard-tab__card {
+  background: $color-bg-tertiary;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  transition: border-color 0.2s, transform 0.15s;
+  cursor: default;
+
+  &:hover {
+    border-color: rgba($color-accent-primary, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba($color-accent-primary, 0.12);
+  }
+
+  &.is-mastered {
+    border-color: rgba($color-accent-success, 0.4);
+    background: rgba($color-accent-success, 0.06);
+  }
+}
+
+.lms-flashcard-tab__card-term {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-text-primary;
+  margin-bottom: 0.45rem;
+  line-height: 1.3;
+}
+
+.lms-flashcard-tab__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--mastered {
+    background: rgba($color-accent-success, 0.2);
+    color: $color-accent-success;
+    font-size: 0.75rem;
+  }
+}
+
+.lms-flashcard-tab__card-def {
+  font-size: 0.84rem;
+  color: $color-text-secondary;
+  line-height: 1.55;
+  margin-bottom: 0.4rem;
+}
+
+.lms-flashcard-tab__card-trans {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: $color-accent-info;
+  background: rgba($color-accent-info, 0.1);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  margin-top: 0.1rem;
+}
+
+// ── Empty States ───────────────────────────────────────────
+.lms-flashcard-tab__empty-cards {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem 1rem;
+  color: $color-text-muted;
+  font-size: 0.9rem;
+}
+
+.lms-flashcard-tab__empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+
+  .lms-flashcard-tab__empty-icon {
+    font-size: 2.5rem;
+    color: $color-text-muted;
+    margin-bottom: 0.75rem;
+  }
+
+  h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-text-primary;
+    margin: 0 0 0.5rem;
+  }
+
+  p {
+    font-size: 0.88rem;
+    color: $color-text-secondary;
+    margin: 0 0 1.25rem;
+    max-width: 340px;
+    margin-inline: auto;
+  }
+}
+
+// ── Tab Badge (card count on tab label) ───────────────────
+.lms-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: $color-accent-primary;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  margin-left: 4px;
+  vertical-align: middle;
+}

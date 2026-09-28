@@ -115,7 +115,7 @@
                 </div>
                 <button type="button" class="lms-flashcard__mastery-typing-check" data-flashcard-mastery-typing-check>{{ 'Check'|t }}</button>
               </div>
-              <button type="button" class="lms-flashcard__mastery-typing-reveal" data-flashcard-mastery-typing-reveal>{{ 'I don\'t remember (Show answer)'|t }}</button>
+              <button type="button" class="lms-flashcard__mastery-typing-reveal" data-flashcard-mastery-typing-reveal title="{{ 'Press Alt+P or Esc'|t }}">{{ 'I don\'t remember (Show answer)'|t }} <span class="lms-flashcard__reveal-hint">(Alt+P / Esc)</span></button>
             </div>
             <div class="lms-flashcard__pronounce" data-flashcard-pronounce hidden>
               <div class="lms-flashcard__pronounce-definition" data-flashcard-pronounce-definition></div>
@@ -139,6 +139,7 @@
             <p class="lms-flashcard__hint" data-flashcard-hint>{{ 'Click, tap or press space to reveal'|t }}</p>
           </div>
           <div class="lms-flashcard__face lms-flashcard__face--back">
+            <span class="lms-flashcard__pos" data-flashcard-back-pos></span>
             <div class="lms-flashcard__term-row" data-flashcard-back-term-row hidden>
               <div class="lms-flashcard__term" data-flashcard-back-term></div>
               <button type="button" class="lms-flashcard__speak" data-flashcard-speak-back aria-label="{{ 'Play pronunciation'|t }}" title="{{ 'Play pronunciation'|t }}">

@@ -93,6 +93,8 @@ final class FlashcardAdminController extends ControllerBase {
     foreach ($storage->loadMultiple($deck_ids) as $deck) {
       $owner_account = $users[$deck->getOwnerId()] ?? $deck->getOwner();
       $topic = $deck->get('field_topic')->entity;
+      $course = $deck->get('field_course')->entity;
+      $lesson = $deck->get('field_lesson')->entity;
       $decks[] = [
         'id' => (int) $deck->id(),
         'name' => $deck->label(),
@@ -100,6 +102,10 @@ final class FlashcardAdminController extends ControllerBase {
         'owner_name' => $owner_account?->getDisplayName() ?? $this->t('Deleted user'),
         'owner_id' => (int) $deck->getOwnerId(),
         'topic' => $topic?->label() ?? $this->t('Uncategorized'),
+        'course_name' => $course?->label() ?? '',
+        'course_id' => $course ? (int) $course->id() : NULL,
+        'lesson_name' => $lesson?->label() ?? '',
+        'lesson_id' => $lesson ? (int) $lesson->id() : NULL,
         'card_count' => $deck->get('field_cards')->count(),
         'status' => $deck->get('status')->value ? 'published' : 'draft',
         'changed' => $this->dateFormatter->format((int) $deck->get('changed')->value, 'short'),

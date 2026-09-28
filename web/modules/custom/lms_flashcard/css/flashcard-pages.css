@@ -349,6 +349,121 @@
   background: #eef2ff;
 }
 
+.lms-flashcard-deck-card__badge--course {
+  color: #0284c7;
+  border-color: #bae6fd;
+  background: #f0f9ff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.lms-flashcard-deck-card__badge--course i {
+  font-size: 0.72rem;
+  color: #0284c7;
+}
+
+.lms-flashcard-deck-card__course-context {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  margin-bottom: 0.65rem;
+  padding: 0.35rem 0.65rem;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  color: #065f46;
+  flex-wrap: wrap;
+}
+
+.lms-flashcard-deck-card__course-icon {
+  color: #059669;
+  font-size: 0.85rem;
+}
+
+.lms-flashcard-deck-card__course-link {
+  font-weight: 700;
+  color: #047857;
+  text-decoration: none;
+}
+
+.lms-flashcard-deck-card__course-link:hover {
+  text-decoration: underline;
+  color: #065f46;
+}
+
+.lms-flashcard-deck-card__course-sep {
+  color: #6ee7b7;
+  font-size: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.lms-flashcard-deck-card__lesson-link {
+  color: #065f46;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.lms-flashcard-deck-card__lesson-link:hover {
+  text-decoration: underline;
+}
+
+.lms-flashcard-deck-detail__badge--course {
+  color: #0284c7;
+  border-color: #bae6fd;
+  background: #f0f9ff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.lms-flashcard-deck-detail__course-context {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.4rem 0 0.7rem;
+  padding: 0.4rem 0.8rem;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #065f46;
+  flex-wrap: wrap;
+}
+
+.lms-flashcard-deck-detail__course-label {
+  font-weight: 600;
+  color: #047857;
+}
+
+.lms-flashcard-deck-detail__course-link {
+  font-weight: 700;
+  color: #047857;
+  text-decoration: none;
+}
+
+.lms-flashcard-deck-detail__course-link:hover {
+  text-decoration: underline;
+}
+
+.lms-flashcard-deck-detail__lesson-link {
+  color: #065f46;
+  text-decoration: none;
+}
+
+.lms-flashcard-deck-detail__lesson-link:hover {
+  text-decoration: underline;
+}
+
+.lms-flashcard-deck-detail__course-sep {
+  color: #6ee7b7;
+  font-size: 0.65rem;
+  display: inline-flex;
+  align-items: center;
+}
+
 .lms-flashcard-deck-card__desc {
   color: #64748b;
   font-size: 0.86rem;

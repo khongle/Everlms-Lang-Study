@@ -411,3 +411,31 @@ function lms_flashcard_update_10014(): string {
 
   return "Backfilled Card.status = 1 (published) for {$updated} card(s) left NULL by lms_flashcard_update_10013.";
 }
+
+/**
+ * Adds CardStat.field_skipped — a per-user "skip this card in this shared
+ * deck" flag, replacing Card.status as the mechanism the deck-detail page's
+ * "Skip" button writes to. Card.status stays what it always was (the deck
+ * owner's own content publish/unpublish switch, shared by every student
+ * studying that deck) — conflating the two meant one student skipping a
+ * card they already knew in a shared course deck silently hid it from
+ * every other student too. No backfill needed: the field defaults to
+ * FALSE, so every existing (uid, card) pair simply starts "not skipped",
+ * same as if this feature had always existed.
+ */
+function lms_flashcard_update_10015(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = _lms_flashcard_ensure_entity_type_installed('lms_flashcard_card_stat');
+  $storage_definitions = CardStat::baseFieldDefinitions($entity_type);
+
+  if (!$update_manager->getFieldStorageDefinition('field_skipped', 'lms_flashcard_card_stat')) {
+    $update_manager->installFieldStorageDefinition(
+      'field_skipped',
+      'lms_flashcard_card_stat',
+      'lms_flashcard',
+      $storage_definitions['field_skipped'],
+    );
+  }
+
+  return 'Added CardStat.field_skipped (per-user, not per-card) for the deck-detail "Skip" button.';
+}

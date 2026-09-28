@@ -100,6 +100,7 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
 .lms-flashcard {
   position: relative;
   width: 100%;
+  height: 500px;
   min-height: 500px;
   cursor: pointer;
   border-radius: 1.25rem;
@@ -117,6 +118,7 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
 .lms-flashcard__inner {
   position: relative;
   width: 100%;
+  height: 500px;
   min-height: 500px;
   display: grid;
   grid-template-columns: 1fr;
@@ -197,6 +199,7 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
   justify-content: flex-start;
   text-align: left;
   padding: 1.5rem 2rem 1.75rem;
+  overflow-y: auto;
   transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
 }
 
@@ -223,11 +226,10 @@ body.layout-academy .lms-flashcard-study__back-btn:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  padding: 0.32rem 1.05rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.28rem 0.85rem;
   border-radius: 999px;
   background: rgba(79, 70, 229, 0.08);
   color: #4f46e5;
@@ -1047,6 +1049,15 @@ body.layout-academy .lms-flashcard__mastery .lms-flashcard__quiz-choice.is-incor
 
 .lms-flashcard__mastery-typing-reveal:hover {
   color: #1e293b;
+}
+
+.lms-flashcard__reveal-hint {
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 0.75;
+  margin-left: 0.35rem;
+  text-decoration: none;
+  display: inline-block;
 }
 
 /* Academy Skin overrides for Mastery Typing */

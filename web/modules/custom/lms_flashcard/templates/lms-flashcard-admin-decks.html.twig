@@ -69,8 +69,17 @@
           </thead>
           <tbody>
             {% for deck in decks %}
-              <tr>
-                <td><a href="{{ deck.edit_url }}" class="lms-flashcard-admin__deck-name">{{ deck.name }}</a><span class="lms-flashcard-admin__machine-name">{{ deck.machine_name }}</span></td>
+                <td>
+                  <a href="{{ deck.edit_url }}" class="lms-flashcard-admin__deck-name">{{ deck.name }}</a>
+                  <span class="lms-flashcard-admin__machine-name">{{ deck.machine_name }}</span>
+                  {% if deck.course_name %}
+                    <div class="lms-flashcard-admin__course-badge">
+                      <i class="fas fa-graduation-cap"></i>
+                      <span>{{ deck.course_name }}</span>
+                      {% if deck.lesson_name %}<small>&bull; {{ deck.lesson_name }}</small>{% endif %}
+                    </div>
+                  {% endif %}
+                </td>
                 <td><span class="lms-flashcard-admin__owner">{{ deck.owner_name }}</span><small>#{{ deck.owner_id }}</small></td>
                 <td>{{ deck.topic }}</td>
                 <td><span class="lms-flashcard-admin__count">{{ deck.card_count }}</span></td>

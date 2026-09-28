@@ -72,8 +72,10 @@ final class ListeningController extends ControllerBase {
       ->sort('created', 'DESC')
       ->accessCheck(FALSE);
     $deckFilter = (int) $request->query->get('deck');
+    $filteredDeck = NULL;
     if ($deckFilter) {
       $query->condition('field_deck', $deckFilter);
+      $filteredDeck = $this->entityTypeManager->getStorage('lms_flashcard_deck')->load($deckFilter);
     }
     $ids = $query->execute();
 
@@ -85,6 +87,27 @@ final class ListeningController extends ControllerBase {
       }
 
       $deck = $passage->get('field_deck')->entity;
+      $audioUrl = $this->presentation->buildAudioUrl($passage);
+      $sentenceUrls = $this->presentation->buildSentenceAudioUrls($passage);
+      $hasAudio = ($audioUrl !== NULL) || !empty($sentenceUrls);
+      $firstAudio = $audioUrl ?: (!empty($sentenceUrls) ? $sentenceUrls[0] : '');
+
+      $bodySnippet = '';
+      if ($passage->get('field_format')->value === 'dialogue') {
+        $turns = $this->presentation->buildDialogueTurns($passage);
+        if (!empty($turns)) {
+          $lines = [];
+          foreach (array_slice($turns, 0, 4) as $turn) {
+            $lines[] = $turn['speaker'] . ': ' . $turn['line'];
+          }
+          $bodySnippet = implode("\n", $lines);
+        }
+      }
+      else {
+        $text = trim(strip_tags((string) $passage->get('field_body')->value));
+        $bodySnippet = mb_strimwidth($text, 0, 240, '…');
+      }
+
       $passages[] = [
         'entity' => $passage,
         'title' => $passage->label(),
@@ -93,6 +116,9 @@ final class ListeningController extends ControllerBase {
         'format' => $passage->get('field_format')->value,
         'word_count' => (int) $passage->get('field_word_count')->value,
         'question_count' => $passage->get('field_questions')->count(),
+        'has_audio' => $hasAudio,
+        'audio_url' => $firstAudio,
+        'body_snippet' => $bodySnippet,
         'is_mine' => (int) $passage->getOwnerId() === $uid,
         // Drives the bulk-select checkbox (see the template) — real entity
         // access (ListeningAccessControlHandler: owner OR 'edit lms_course'),
@@ -105,7 +131,10 @@ final class ListeningController extends ControllerBase {
     return [
       '#theme' => 'lms_listening_my_passages',
       '#passages' => $passages,
-      '#cache' => ['contexts' => ['user']],
+      '#deck' => $filteredDeck,
+      '#cache' => [
+        'contexts' => ['user', 'url.query_args:deck'],
+      ],
     ];
   }
 

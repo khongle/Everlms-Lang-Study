@@ -6,6 +6,8 @@ namespace Drupal\lms_flashcard\Entity;
 
 use Drupal\Core\Entity\Attribute\ContentEntityType;
 use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\Core\Entity\EntityPublishedInterface;
+use Drupal\Core\Entity\EntityPublishedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityViewBuilder;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -52,7 +54,8 @@ use Drupal\views\EntityViewsData;
     'collection' => '/admin/structure/lms_flashcard_card',
   ],
 )]
-class Card extends ContentEntityBase {
+class Card extends ContentEntityBase implements EntityPublishedInterface {
+  use EntityPublishedTrait;
 
   /**
    * {@inheritdoc}

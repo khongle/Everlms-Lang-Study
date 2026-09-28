@@ -117,6 +117,30 @@
       .replace(/\s+/g, ' ');
   }
 
+  var POS_LABELS = {
+    noun: 'Noun · Danh từ',
+    verb: 'Verb · Động từ',
+    adjective: 'Adjective · Tính từ',
+    adverb: 'Adverb · Trạng từ',
+    phrase: 'Phrase · Cụm từ',
+    idiom: 'Idiom · Thành ngữ',
+    preposition: 'Preposition · Giới từ',
+    pronoun: 'Pronoun · Đại từ',
+    conjunction: 'Conjunction · Liên từ',
+    interjection: 'Interjection · Thán từ',
+    determiner: 'Determiner · Từ hạn định',
+    article: 'Article · Mạo từ',
+    other: 'Other · Khác',
+  };
+
+  function formatPartOfSpeech(pos) {
+    if (!pos) {
+      return '';
+    }
+    var key = String(pos).trim().toLowerCase();
+    return POS_LABELS[key] || (pos.charAt(0).toUpperCase() + pos.slice(1));
+  }
+
   /**
    * Renders a list of {[textKey]: string, translation: string} pairs (an
    * example sentence, or a collocation phrase) into `containerEl` as
@@ -250,6 +274,7 @@
 
         var termEl = section.querySelector('[data-flashcard-term]');
         var posEl = section.querySelector('[data-flashcard-pos]');
+        var backPosEl = section.querySelector('[data-flashcard-back-pos]');
         var pronunciationEl = section.querySelector('[data-flashcard-pronunciation]');
         var seenCountEl = section.querySelector('[data-flashcard-seen-count]');
         var definitionEl = section.querySelector('[data-flashcard-definition]');
@@ -1655,14 +1680,14 @@
 
           masterySlotsData.forEach(function (slot) {
             if (slot.isSpace) {
-              if (typed[typedIdx] === ' ') {
+              while (typed[typedIdx] === ' ') {
                 typedIdx++;
               }
               return;
             }
 
             if (slot.isPunctuation) {
-              if (typed[typedIdx] === slot.targetChar) {
+              if (typed[typedIdx] === slot.targetChar || typed[typedIdx] === ' ') {
                 typedIdx++;
               }
               return;
@@ -1723,6 +1748,18 @@
           speakTerm();
         }
 
+        function normalizeTypingComparison(str) {
+          return String(str || '')
+            .toLowerCase()
+            .replace(/[^\p{L}\p{N}]/gu, '');
+        }
+
+        function stripAccents(str) {
+          return String(str || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+        }
+
         function checkMasteryTyping() {
           if (masteryTypingAnswered || !currentCard || !masteryTypingInputEl) {
             return;
@@ -1731,13 +1768,20 @@
           var expected = (currentCard.term || '').trim().toLowerCase();
           var valNoSpace = val.replace(/\s+/g, '');
           var expectedNoSpace = expected.replace(/\s+/g, '');
+          var valNorm = normalizeTypingComparison(val);
+          var expectedNorm = normalizeTypingComparison(expected);
 
           if (!val) {
             masteryTypingInputEl.focus();
             return;
           }
 
-          if (val === expected || (expectedNoSpace && valNoSpace === expectedNoSpace)) {
+          var isCorrect = (val === expected)
+            || (expectedNoSpace && valNoSpace === expectedNoSpace)
+            || (expectedNorm && valNorm === expectedNorm)
+            || (expectedNorm && stripAccents(valNorm) === stripAccents(expectedNorm));
+
+          if (isCorrect) {
             masteryTypingAnswered = true;
             masteryTypingInputEl.disabled = true;
             if (masterySlotsEl) {
@@ -2107,7 +2151,7 @@
           currentCard.audio_url = updated.audio_url;
           currentCard.image_url = updated.image_url;
 
-          posEl.textContent = currentCard.part_of_speech || '';
+          setCardPartOfSpeech(currentCard.part_of_speech);
           var direction = currentCard.direction || 'forward';
           if (direction === 'reverse') {
             promptEl.textContent = currentCard.definition;
@@ -2250,6 +2294,16 @@
           }
         }
 
+        function setCardPartOfSpeech(pos) {
+          var label = formatPartOfSpeech(pos);
+          if (posEl) {
+            posEl.textContent = label;
+          }
+          if (backPosEl) {
+            backPosEl.textContent = label;
+          }
+        }
+
         function showCard(card) {
           currentCard = card;
           var direction = card.direction || 'forward';
@@ -2260,7 +2314,7 @@
 
           toggleQuickEditButton(card);
 
-          posEl.textContent = card.part_of_speech || '';
+          setCardPartOfSpeech(card.part_of_speech);
 
           // "Seen N times" — a plain view counter kept separate from SRS
           // state (see FlashcardApiController::recordCardSeen()), so it
@@ -2803,11 +2857,19 @@
             updateMasterySlots(masteryTypingInputEl.value, false);
           });
           masteryTypingInputEl.addEventListener('keydown', function (e) {
-            e.stopPropagation();
             if (e.key === 'Enter') {
+              e.stopPropagation();
               e.preventDefault();
               checkMasteryTyping();
+              return;
             }
+            if (e.key === 'Escape' || ((e.key === 'p' || e.key === 'P') && (e.altKey || e.ctrlKey))) {
+              e.stopPropagation();
+              e.preventDefault();
+              revealMasteryTyping();
+              return;
+            }
+            e.stopPropagation();
           });
         }
 
@@ -3171,6 +3233,13 @@
               }
               else {
                 speakCard();
+              }
+            }
+            // Level 3 typing recall shortcuts (when focus is outside input):
+            else if (currentMasteryLevel === 3 && !masteryTypingAnswered) {
+              if (e.key === 'Escape' || e.key === 'p' || e.key === 'P') {
+                e.preventDefault();
+                revealMasteryTyping();
               }
             }
           }

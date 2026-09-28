@@ -57,8 +57,8 @@
           </div>
         {% elseif type == 'scorm' %}
           {% if scorm_url %}
-            <div class="lms-learn__video-wrapper lms-learn__video-wrapper--scorm">
-              <iframe class="lms-learn__iframe" src="{{ scorm_url }}?v={{ random() }}" allowfullscreen></iframe>
+            <div class="lms-learn__scorm-wrapper" style="width: 100%; background: #ffffff; border-radius: 12px; overflow: visible;">
+              <iframe class="lms-learn__scorm-iframe" src="{{ scorm_url }}?v={{ random() }}" style="width: 100%; min-height: 850px; border: none; display: block;" allowfullscreen onload="try{var f=this; function syncH(){var h=f.contentWindow.document.body.scrollHeight; if(h>300) f.style.height=(h+40)+'px';} syncH(); setTimeout(syncH, 300); setTimeout(syncH, 800); setInterval(syncH, 2000);}catch(e){}"></iframe>
             </div>
           {% else %}
             <div class="lms-learn__placeholder lms-learn__placeholder--compact">
@@ -154,6 +154,13 @@
             <li class="lms-tab-item" data-tab="resources">{{ 'Resources'|t }}</li>
             <li class="lms-tab-item" data-tab="notes">{{ 'My Notes'|t }}</li>
             <li class="lms-tab-item" data-tab="qna">{{ 'Q&A Discussion'|t }}</li>
+            {# Flashcard tab #}
+            <li class="lms-tab-item" data-tab="flashcards">
+              <i class="fas fa-clone"></i> {{ 'Flashcards'|t }}
+              {% if flashcard_stats.card_count > 0 %}
+                <span class="lms-tab-badge">{{ flashcard_stats.card_count }}</span>
+              {% endif %}
+            </li>
           </ul>
 
           <div class="lms-learn__actions">
@@ -234,7 +241,18 @@
                 <h3 class="lms-learn__notes-title"><i class="fas fa-edit lms-learn__notes-title-icon"></i> {{ 'My Notes'|t }}</h3>
                 <span id="lms-note-status" class="lms-learn__notes-status"></span>
               </div>
-              <textarea id="lms-note-textarea" class="lms-form-control lms-learn__notes-textarea" rows="8" placeholder="{{ 'Loading...'|t }}" disabled></textarea>
+
+              <div id="lms-note-toolbar" class="lms-learn__notes-toolbar is-disabled">
+                <button type="button" class="lms-learn__notes-tool" data-note-cmd="bold" title="{{ 'Bold'|t }}"><i class="fas fa-bold"></i></button>
+                <button type="button" class="lms-learn__notes-tool" data-note-cmd="italic" title="{{ 'Italic'|t }}"><i class="fas fa-italic"></i></button>
+                <button type="button" class="lms-learn__notes-tool" data-note-cmd="underline" title="{{ 'Underline'|t }}"><i class="fas fa-underline"></i></button>
+                <span class="lms-learn__notes-tool-sep"></span>
+                <button type="button" class="lms-learn__notes-tool" data-note-cmd="insertUnorderedList" title="{{ 'Bullet list'|t }}"><i class="fas fa-list-ul"></i></button>
+                <button type="button" class="lms-learn__notes-tool" data-note-cmd="insertOrderedList" title="{{ 'Numbered list'|t }}"><i class="fas fa-list-ol"></i></button>
+                <span class="lms-learn__notes-tool-sep"></span>
+                <button type="button" class="lms-learn__notes-tool" data-note-cmd="removeFormat" title="{{ 'Clear formatting'|t }}"><i class="fas fa-eraser"></i></button>
+              </div>
+              <div id="lms-note-textarea" class="lms-learn__notes-textarea" contenteditable="false" data-empty-text="{{ 'Loading…'|t }}"></div>
 
               <div class="lms-learn__notes-attachments">
                 <ul id="lms-note-attachment-list" class="lms-learn__notes-attachment-list"></ul>
@@ -269,6 +287,110 @@
                   {{ comments }}
                 </div>
               </div>
+            </div>
+          </div>
+
+          {# Tab 5: Flashcards #}
+          <div id="tab-flashcards" class="lms-tab-pane">
+            <div class="lms-flashcard-tab" data-course-id="{{ course.id() }}" data-lesson-id="{{ lesson.id() }}">
+
+              {% if flashcard_deck %}
+                {# Stats bar #}
+                <div class="lms-flashcard-tab__stats">
+                  <div class="lms-flashcard-tab__stat">
+                    <span class="lms-flashcard-tab__stat-value">{{ flashcard_stats.card_count }}</span>
+                    <span class="lms-flashcard-tab__stat-label">{{ 'Cards'|t }}</span>
+                  </div>
+                  <div class="lms-flashcard-tab__stat">
+                    <span class="lms-flashcard-tab__stat-value">{{ flashcard_stats.mastery_percent }}%</span>
+                    <span class="lms-flashcard-tab__stat-label">{{ 'Mastered'|t }}</span>
+                  </div>
+                  <div class="lms-flashcard-tab__stat">
+                    <span class="lms-flashcard-tab__stat-value">{{ flashcard_stats.due_count }}</span>
+                    <span class="lms-flashcard-tab__stat-label">{{ 'Due'|t }}</span>
+                  </div>
+                  <div class="lms-flashcard-tab__stat lms-flashcard-tab__stat--progress">
+                    <div class="lms-flashcard-tab__progress-bar">
+                      <div class="lms-flashcard-tab__progress-fill" style="width: {{ flashcard_stats.mastery_percent }}%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {# Action buttons #}
+                <div class="lms-flashcard-tab__actions">
+                  {% if flashcard_study_url %}
+                    <a href="{{ flashcard_study_url }}" class="btn-lms-primary lms-flashcard-tab__study-btn">
+                      <i class="fas fa-graduation-cap"></i> {{ 'Study Now'|t }}
+                    </a>
+                  {% endif %}
+                  <button type="button" class="btn-lms-outline lms-flashcard-tab__add-btn" id="lms-flashcard-toggle-form">
+                    <i class="fas fa-plus"></i> {{ 'Add Card'|t }}
+                  </button>
+                </div>
+
+                {# Add card form (hidden by default) #}
+                <div class="lms-flashcard-tab__form" id="lms-flashcard-add-form" style="display:none;" data-deck-id="{{ flashcard_deck.id() }}">
+                  <div class="lms-flashcard-tab__form-group">
+                    <label for="lms-fc-term">{{ 'Term / Word'|t }} <span class="required">*</span></label>
+                    <input type="text" id="lms-fc-term" class="lms-form-control" maxlength="255" placeholder="{{ 'e.g. Sustainability'|t }}">
+                  </div>
+                  <div class="lms-flashcard-tab__form-group">
+                    <label for="lms-fc-definition">{{ 'Definition'|t }} <span class="required">*</span></label>
+                    <textarea id="lms-fc-definition" class="lms-form-control" rows="2" placeholder="{{ 'e.g. The ability to maintain at a certain rate or level'|t }}"></textarea>
+                  </div>
+                  <div class="lms-flashcard-tab__form-group">
+                    <label for="lms-fc-translation">{{ 'Translation'|t }}</label>
+                    <input type="text" id="lms-fc-translation" class="lms-form-control" maxlength="255" placeholder="{{ 'e.g. Sự bền vững'|t }}">
+                  </div>
+                  <div class="lms-flashcard-tab__form-actions">
+                    <button type="button" class="btn-lms-primary" id="lms-flashcard-save-card">
+                      <i class="fas fa-check"></i> {{ 'Save Card'|t }}
+                    </button>
+                    <button type="button" class="btn-lms-outline" id="lms-flashcard-cancel-form">
+                      {{ 'Cancel'|t }}
+                    </button>
+                  </div>
+                  <div class="lms-flashcard-tab__form-message" id="lms-flashcard-form-msg"></div>
+                </div>
+
+                {# Card list #}
+                <div class="lms-flashcard-tab__cards" id="lms-flashcard-card-list">
+                  {% if flashcard_cards is empty %}
+                    <div class="lms-flashcard-tab__empty-cards">
+                      <p>{{ 'No cards yet. Click "Add Card" to start building your vocabulary.'|t }}</p>
+                    </div>
+                  {% else %}
+                    {% for card in flashcard_cards %}
+                      <div class="lms-flashcard-tab__card {{ card.is_mastered ? 'is-mastered' : '' }}">
+                        <div class="lms-flashcard-tab__card-term">
+                          {{ card.term }}
+                          {% if card.is_mastered %}
+                            <span class="lms-flashcard-tab__badge lms-flashcard-tab__badge--mastered"><i class="fas fa-check-circle"></i></span>
+                          {% endif %}
+                        </div>
+                        <div class="lms-flashcard-tab__card-def">{{ card.definition }}</div>
+                        {% if card.translation %}
+                          <div class="lms-flashcard-tab__card-trans">{{ card.translation }}</div>
+                        {% endif %}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+
+              {% else %}
+                {# Empty state — no deck yet #}
+                <div class="lms-flashcard-tab__empty">
+                  <div class="lms-flashcard-tab__empty-icon">
+                    <i class="fas fa-clone"></i>
+                  </div>
+                  <h4>{{ 'Create Flashcards for This Lesson'|t }}</h4>
+                  <p>{{ 'Build your own vocabulary deck while studying. Flashcards help reinforce key terms and concepts.'|t }}</p>
+                  <button type="button" class="btn-lms-primary" id="lms-flashcard-create-deck">
+                    <i class="fas fa-plus-circle"></i> {{ 'Create Flashcard Deck'|t }}
+                  </button>
+                </div>
+              {% endif %}
+
             </div>
           </div>
 

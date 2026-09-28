@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\lms_flashcard\Controller;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
@@ -59,22 +60,57 @@ final class StudyController extends ControllerBase {
       ->execute();
 
     $decks = [];
+    $cacheTags = [];
     foreach ($storage->loadMultiple($deckIds) as $deck) {
       /** @var \Drupal\lms_flashcard\Entity\Deck $deck */
       if (!$this->queueBuilder->isDeckVisibleTo($deck, $uid)) {
         continue;
       }
 
+      // Card publish/unpublish toggles invalidate the deck's cache tags (see
+      // FlashcardApiController::toggleCardStatus) — depend on them here too,
+      // so this due/new/card-count listing recomputes instead of staying
+      // stale after a toggle.
+      $cacheTags = Cache::mergeTags($cacheTags, $deck->getCacheTags());
+
       $counts = $this->queueBuilder->getDueCounts($uid, (int) $deck->id());
+
+      // Only cards this user hasn't skipped count here (plus the deck
+      // owner's own admin-published check) — this badge should reflect
+      // what's actually left to study, and shrink as this user skips
+      // cards. Skipping is per-user (CardStat::field_skipped), so two
+      // students looking at the same shared deck can see different
+      // counts here — see that field's docblock for why this is
+      // deliberately not Card.status.
+      $studyableCardIds = [];
+      foreach ($deck->get('field_cards')->referencedEntities() as $referencedCard) {
+        /** @var \Drupal\lms_flashcard\Entity\Card $referencedCard */
+        if ($referencedCard->isPublished()) {
+          $studyableCardIds[] = (int) $referencedCard->id();
+        }
+      }
+      $publishedCardCount = count($studyableCardIds) - count($this->queueBuilder->getSkippedCardIds($uid, $studyableCardIds));
+
+      $courseEntity = $deck->get('field_course')->entity;
+      $lessonEntity = $deck->get('field_lesson')->entity;
+
       $decks[] = [
         'entity' => $deck,
         'name' => $deck->label(),
         'description' => $deck->get('field_description')->value,
         'language' => $deck->get('field_language')->value,
-        'card_count' => $deck->get('field_cards')->count(),
+        'card_count' => $publishedCardCount,
         'due_count' => $counts['due'],
         'new_count' => $counts['new'],
         'is_mine' => (int) $deck->getOwnerId() === $uid,
+        'course' => $courseEntity ? [
+          'id' => (int) $courseEntity->id(),
+          'name' => $courseEntity->label(),
+        ] : NULL,
+        'lesson' => $lessonEntity ? [
+          'id' => (int) $lessonEntity->id(),
+          'name' => $lessonEntity->label(),
+        ] : NULL,
         // Progress-bar figure only — resettable via "Reset Mastery". Does
         // NOT gate Spelling/Pronunciation/Reading/Listening any more; see
         // practice_unlocked below for that.
@@ -90,7 +126,163 @@ final class StudyController extends ControllerBase {
     return [
       '#theme' => 'lms_flashcard_my_decks',
       '#decks' => $decks,
-      '#cache' => ['contexts' => ['user']],
+      '#cache' => [
+        'contexts' => ['user'],
+        'tags' => Cache::mergeTags($cacheTags, $storage->getEntityType()->getListCacheTags()),
+      ],
+    ];
+  }
+
+  /**
+   * Title callback for deck detail page.
+   */
+  public function deckDetailTitle(Deck $lms_flashcard_deck): string {
+    return (string) $lms_flashcard_deck->label();
+  }
+
+  /**
+   * Page: /learn/flashcards/{lms_flashcard_deck} — deck detail view.
+   *
+   * Displays all cards in the deck with their properties and provides an
+   * interactive toggle to publish/unpublish individual cards.
+   */
+  public function deckDetail(Deck $lms_flashcard_deck): array {
+    $uid = (int) $this->currentUser->id();
+
+    if (!$this->queueBuilder->isDeckVisibleTo($lms_flashcard_deck, $uid)) {
+      throw new AccessDeniedHttpException();
+    }
+
+    $deckId = (int) $lms_flashcard_deck->id();
+    $canEdit = $lms_flashcard_deck->access('update', $this->currentUser);
+
+    $cardStorage = $this->entityTypeManager->getStorage('lms_flashcard_card');
+    $cardIds = $cardStorage->getQuery()
+      ->condition('field_deck', $deckId)
+      ->sort('id', 'ASC')
+      ->accessCheck(FALSE)
+      ->execute();
+
+    // "Skip" is this user's own preference (CardStat::field_skipped, not
+    // Card.status — see that field's docblock), so a shared/course deck's
+    // cards read as skipped/studying differently per student rather than
+    // one student's skip hiding a card from everyone else studying the
+    // same deck.
+    $skippedCardIds = [];
+    if ($cardIds) {
+      $statStorage = $this->entityTypeManager->getStorage('lms_flashcard_card_stat');
+      $skippedStatIds = $statStorage->getQuery()
+        ->condition('uid', $uid)
+        ->condition('field_card', array_values(array_map('intval', $cardIds)), 'IN')
+        ->condition('field_skipped', TRUE)
+        ->accessCheck(FALSE)
+        ->execute();
+      foreach ($statStorage->loadMultiple($skippedStatIds) as $stat) {
+        /** @var \Drupal\lms_flashcard\Entity\CardStat $stat */
+        $skippedCardIds[(int) $stat->get('field_card')->target_id] = TRUE;
+      }
+    }
+
+    $cards = [];
+    $studyingCount = 0;
+    $skippedCount = 0;
+
+    if ($cardIds) {
+      $cardEntities = $cardStorage->loadMultiple($cardIds);
+      foreach ($cardEntities as $card) {
+        /** @var \Drupal\lms_flashcard\Entity\Card $card */
+        $isSkipped = isset($skippedCardIds[(int) $card->id()]);
+        if ($isSkipped) {
+          $skippedCount++;
+        }
+        else {
+          $studyingCount++;
+        }
+
+        // Example sentences + translations pairing.
+        $sentences = array_column($card->get('field_example_sentences')->getValue(), 'value');
+        $translations = array_column($card->get('field_example_translations')->getValue(), 'value');
+        $examples = [];
+        foreach ($sentences as $idx => $sentence) {
+          $examples[] = [
+            'sentence' => $sentence,
+            'translation' => $translations[$idx] ?? '',
+          ];
+        }
+
+        // Collocations + translations pairing.
+        $collocPhrases = array_column($card->get('field_collocations')->getValue(), 'value');
+        $collocTrans = array_column($card->get('field_collocation_translations')->getValue(), 'value');
+        $collocations = [];
+        foreach ($collocPhrases as $idx => $phrase) {
+          $collocations[] = [
+            'phrase' => $phrase,
+            'translation' => $collocTrans[$idx] ?? '',
+          ];
+        }
+
+        $cards[] = [
+          'id' => (int) $card->id(),
+          'term' => $card->label(),
+          'definition' => trim(strip_tags((string) ($card->get('field_definition')->value ?? ''))),
+          'translation' => $card->get('field_translation')->value ?? '',
+          'part_of_speech' => $card->get('field_part_of_speech')->value ?? '',
+          'pronunciation' => $card->get('field_pronunciation')->value ?? '',
+          'difficulty' => $card->get('field_difficulty')->value ?? 'medium',
+          'examples' => $examples,
+          'collocations' => $collocations,
+          'is_skipped' => $isSkipped,
+          // Skipping is a personal study preference, not a content edit —
+          // any user who can see this deck may skip cards in it, unlike
+          // can_edit (Quick Edit) which stays owner/staff-only below.
+          'can_skip' => TRUE,
+        ];
+      }
+    }
+
+    $counts = $this->queueBuilder->getDueCounts($uid, $deckId);
+
+    $topicTerm = $lms_flashcard_deck->get('field_topic')->entity;
+
+    $stats = [
+      'total_cards' => count($cards),
+      'published_cards' => $studyingCount,
+      'unpublished_cards' => $skippedCount,
+      'due_count' => $counts['due'],
+      'new_count' => $counts['new'],
+      'mastery_percent' => $this->queueBuilder->getMasteryPercent($uid, $deckId),
+      'practice_unlocked' => $this->queueBuilder->isPracticeUnlocked($uid, $deckId),
+    ];
+
+      $courseEntity = $lms_flashcard_deck->get('field_course')->entity;
+      $lessonEntity = $lms_flashcard_deck->get('field_lesson')->entity;
+
+      return [
+        '#theme' => 'lms_flashcard_deck_detail',
+        '#deck' => [
+          'id' => $deckId,
+          'name' => $lms_flashcard_deck->label(),
+          'description' => $lms_flashcard_deck->get('field_description')->value,
+          'language' => $lms_flashcard_deck->get('field_language')->value,
+          'native_language' => $lms_flashcard_deck->get('field_native_language')->value,
+          'topic' => $topicTerm?->label() ?? '',
+          'is_mine' => (int) $lms_flashcard_deck->getOwnerId() === $uid,
+          'course' => $courseEntity ? [
+            'id' => (int) $courseEntity->id(),
+            'name' => $courseEntity->label(),
+          ] : NULL,
+          'lesson' => $lessonEntity ? [
+            'id' => (int) $lessonEntity->id(),
+            'name' => $lessonEntity->label(),
+          ] : NULL,
+        ],
+      '#cards' => $cards,
+      '#stats' => $stats,
+      '#can_edit' => $canEdit,
+      '#cache' => [
+        'contexts' => ['user'],
+        'tags' => $lms_flashcard_deck->getCacheTags(),
+      ],
     ];
   }
 
